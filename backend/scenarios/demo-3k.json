@@ -1,0 +1,32 @@
+{
+  "name": "Demo field · 3,000 configurations",
+  "description": "A generated operational field with two opaque regions, one scenario boundary, one periodic source, and an illustrative commitment graph. The claims are sample material for exercising the practice console; the platform does not assert them.",
+  "seed": 11,
+  "generator": { "n": 3000, "mean_degree": 6.0, "groups": 5, "geo_fraction": 0.75 },
+  "sets": {
+    "S-core": { "address": "2" },
+    "S-periph": { "addresses": ["5", "6"] },
+    "B1": { "boundary_of": "S-core" },
+    "B0": { "boundary_of": "S-periph" },
+    "D1": { "address": "0.1.2" }
+  },
+  "boundaries": { "B0": { "set": "B0", "permeability": 0.35 } },
+  "drivers": [ { "set": "D1", "period": 30, "amount": 2.0 } ],
+  "practice": {
+    "concepts": ["human", "boundary", "address", "return"],
+    "claims": [
+      { "id": "K1", "text": "Differences arriving from outside a bounded region must be filtered.", "uses": ["boundary"], "commitment": 1.0 },
+      { "id": "K2", "text": "Only a human locus can hold a commitment.", "uses": ["human"], "commitment": 1.0,
+        "bindings": [ { "op": "scale_threshold", "target": "S-periph", "factor": 1.35 } ] },
+      { "id": "K3", "text": "A commitment requires a bounded locus.", "uses": ["boundary"], "default_entitled": false,
+        "bindings": [ { "op": "gate", "target": "B1", "factor": 0.12 } ] },
+      { "id": "K4", "text": "Returning differences are retained as memory.", "uses": ["return"], "commitment": 0.8,
+        "bindings": [ { "op": "memory_condition", "target": "S-core", "decay": 0.97, "coupling": 0.2 } ] },
+      { "id": "K5", "text": "Differences are addressed, not owned.", "uses": ["address"], "commitment": 0.0,
+        "bindings": [ { "op": "scale_threshold", "target": "S-core", "factor": 0.8 } ] }
+    ],
+    "dependencies": [ { "premises": ["K1", "K2"], "conclusion": "K3", "kind": "committive" } ],
+    "incompatibilities": [ ["K2", "K5"] ]
+  },
+  "checkpoint_every": 50
+}

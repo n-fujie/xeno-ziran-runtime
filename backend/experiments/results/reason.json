@@ -1,0 +1,5488 @@
+{
+ "suite": "philosophical_nonredundancy",
+ "scenario": "reason-lab",
+ "horizon": 400,
+ "edit_at": 150,
+ "enabling_conditions": [
+  {
+   "name": "persistent external memory",
+   "metric": "memory",
+   "target": "R",
+   "op": ">=",
+   "value": 0.7
+  },
+  {
+   "name": "stable addressability",
+   "metric": "stability",
+   "target": "R",
+   "op": ">=",
+   "value": 0.95
+  },
+  {
+   "name": "low mutation rate",
+   "metric": "mutation",
+   "target": "",
+   "op": "<=",
+   "value": 8.0
+  }
+ ],
+ "groundings": [
+  {
+   "claim": "K9",
+   "when": {
+    "metric": "activity",
+    "target": "B",
+    "op": "<",
+    "value": 0.041
+   },
+   "window": 2,
+   "effect": "assert",
+   "level": 1.0
+  },
+  {
+   "claim": "K9",
+   "when": {
+    "metric": "activity",
+    "target": "B",
+    "op": ">",
+    "value": 0.05
+   },
+   "window": 2,
+   "effect": "retract"
+  },
+  {
+   "claim": "K1",
+   "when": {
+    "metric": "flow",
+    "target": "BA",
+    "op": ">",
+    "value": 0.026
+   },
+   "window": 3,
+   "effect": "retract"
+  },
+  {
+   "claim": "K1",
+   "when": {
+    "metric": "flow",
+    "target": "BA",
+    "op": "<",
+    "value": 0.01
+   },
+   "window": 3,
+   "effect": "assert",
+   "level": 1.0
+  }
+ ],
+ "scenarios": {
+  "1_remove_concept_human": {
+   "representations": {
+    "none": {
+     "identical_to_scorekeeping": false,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.20329932546875337,
+      "graph_edit": 0.06332463144670002,
+      "difference_w1": 0.021214022374891076,
+      "signature": 0.24765625,
+      "first_divergence": 91,
+      "criterion:reachable_structure": 0.137793167220906,
+      "criterion:branching": 0.02030971811058255,
+      "criterion:closure": 0.030551861509067992,
+      "criterion:recurrent_loops": 0.12697189082478608,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.005606933979900468,
+      "criterion:persistence": 0.054967761288335824,
+      "criterion:amplification_regime": 0.019717327322251104,
+      "criterion:path_dependence": 0.01395305814226092
+     },
+     "overlay_changes": 1,
+     "revisions": 0,
+     "collapsed_share": 0.0
+    },
+    "scorekeeping": {
+     "identical_to_scorekeeping": true,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.0,
+      "graph_edit": 0.0,
+      "difference_w1": 0.0,
+      "signature": 0.0,
+      "first_divergence": 0.0,
+      "criterion:reachable_structure": 0.0,
+      "criterion:branching": 0.0,
+      "criterion:closure": 0.0,
+      "criterion:recurrent_loops": 0.0,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.0,
+      "criterion:persistence": 0.0,
+      "criterion:amplification_regime": 0.0,
+      "criterion:path_dependence": 0.0
+     },
+     "overlay_changes": 30,
+     "revisions": 2,
+     "collapsed_share": 0.0
+    },
+    "scorekeeping_no_entitlement": {
+     "identical_to_scorekeeping": false,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.17719677715763288,
+      "graph_edit": 0.057694150685386573,
+      "difference_w1": 0.026051280909962622,
+      "signature": 0.2267578125,
+      "first_divergence": 102,
+      "criterion:reachable_structure": 0.13135977601380477,
+      "criterion:branching": 0.020243029427117677,
+      "criterion:closure": 0.027334130138699782,
+      "criterion:recurrent_loops": 0.11508059073305239,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.005357004772936164,
+      "criterion:persistence": 0.029342794561776284,
+      "criterion:amplification_regime": 0.011922163477075396,
+      "criterion:path_dependence": 0.0032897268180069315
+     },
+     "overlay_changes": 27,
+     "revisions": 2,
+     "collapsed_share": 0.0
+    },
+    "support_single": {
+     "identical_to_scorekeeping": false,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.19489718438034623,
+      "graph_edit": 0.057818068706168305,
+      "difference_w1": 0.02929748450378766,
+      "signature": 0.2265625,
+      "first_divergence": 102,
+      "criterion:reachable_structure": 0.1374063378402732,
+      "criterion:branching": 0.0066522418774737765,
+      "criterion:closure": 0.01562073359424777,
+      "criterion:recurrent_loops": 0.12756795695529352,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.0061397843951479444,
+      "criterion:persistence": 0.019054431845564268,
+      "criterion:amplification_regime": 0.007976760946193517,
+      "criterion:path_dependence": 0.003921229282144242
+     },
+     "overlay_changes": 11,
+     "revisions": 2,
+     "collapsed_share": 0.0
+    },
+    "support": {
+     "identical_to_scorekeeping": true,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.0,
+      "graph_edit": 0.0,
+      "difference_w1": 0.0,
+      "signature": 0.0,
+      "first_divergence": null,
+      "criterion:reachable_structure": 0.0,
+      "criterion:branching": 0.0,
+      "criterion:closure": 0.0,
+      "criterion:recurrent_loops": 0.0,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.0,
+      "criterion:persistence": 0.0,
+      "criterion:amplification_regime": 0.0,
+      "criterion:path_dependence": 0.0
+     },
+     "overlay_changes": 30,
+     "revisions": 2,
+     "collapsed_share": 0.0
+    },
+    "support_greatest": {
+     "identical_to_scorekeeping": true,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.0,
+      "graph_edit": 0.0,
+      "difference_w1": 0.0,
+      "signature": 0.0,
+      "first_divergence": null,
+      "criterion:reachable_structure": 0.0,
+      "criterion:branching": 0.0,
+      "criterion:closure": 0.0,
+      "criterion:recurrent_loops": 0.0,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.0,
+      "criterion:persistence": 0.0,
+      "criterion:amplification_regime": 0.0,
+      "criterion:path_dependence": 0.0
+     },
+     "overlay_changes": 30,
+     "revisions": 2,
+     "collapsed_share": 0.0
+    }
+   },
+   "noise": {
+    "event_sequence": 0.15596855039255758,
+    "graph_edit": 0.09538771679289527,
+    "difference_w1": 0.057545734860312385,
+    "signature": 0.3548828125,
+    "first_divergence": 1,
+    "criterion:reachable_structure": 0.16198235645959133,
+    "criterion:branching": 0.034083119094773996,
+    "criterion:closure": 0.03460755221970091,
+    "criterion:recurrent_loops": 0.31277923543093583,
+    "criterion:fragmentation": 0.0,
+    "criterion:concentration": 0.008006049935421335,
+    "criterion:persistence": 0.06827302755018128,
+    "criterion:amplification_regime": 0.020141774342017693,
+    "criterion:path_dependence": 0.027789662012368255
+   },
+   "edit_effect": {
+    "distance": {
+     "event_sequence": 0.1732220110470487,
+     "graph_edit": 0.043772431317314946,
+     "difference_w1": 0.023344058563015833,
+     "signature": 0.191015625,
+     "first_divergence": 151,
+     "criterion:reachable_structure": 0.1145088009829471,
+     "criterion:branching": 0.012002943899799758,
+     "criterion:closure": 0.016726844855630023,
+     "criterion:recurrent_loops": 0.06957473851407601,
+     "criterion:fragmentation": 0.0,
+     "criterion:concentration": 0.004893555931548162,
+     "criterion:persistence": 0.012713553101080821,
+     "criterion:amplification_regime": 0.008293840389111453,
+     "criterion:path_dependence": 0.0025574545955664605
+    },
+    "exceeds": [],
+    "identical": false
+   },
+   "replay_reproduces_scorekeeping_exactly": true,
+   "vocabulary_nonredundant": false,
+   "two_status_nonredundant": true,
+   "entitlement_nonredundant": true,
+   "fixpoint_choice_matters": false,
+   "reasoning_vs_base_exceeds": [],
+   "statement": "The commitment/entitlement vocabulary produced NO non-redundant operational difference: the terminology-free support graph (greatest fixpoint) gave a bit-identical world trajectory and intervention schedule. The two-status structure (commitment vs entitlement) mattered here (single-status alternative diverged). The reasoning-enabled trajectory is exactly reproducible by the base runtime replaying the recorded operational intervention schedule. The edit's effect on the world stayed within the noise floor."
+  },
+  "2_remove_concept_responsibility": {
+   "representations": {
+    "none": {
+     "identical_to_scorekeeping": false,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.19616346258215014,
+      "graph_edit": 0.06555186621382432,
+      "difference_w1": 0.02581919520528704,
+      "signature": 0.271875,
+      "first_divergence": 91,
+      "criterion:reachable_structure": 0.15252238115570885,
+      "criterion:branching": 0.01371036999663378,
+      "criterion:closure": 0.027909469431504384,
+      "criterion:recurrent_loops": 0.18583300704022454,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.007571233546350774,
+      "criterion:persistence": 0.03723998384524065,
+      "criterion:amplification_regime": 0.012756221943251234,
+      "criterion:path_dependence": 0.013286568353925856
+     },
+     "overlay_changes": 1,
+     "revisions": 0,
+     "collapsed_share": 0.0
+    },
+    "scorekeeping": {
+     "identical_to_scorekeeping": true,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.0,
+      "graph_edit": 0.0,
+      "difference_w1": 0.0,
+      "signature": 0.0,
+      "first_divergence": 0.0,
+      "criterion:reachable_structure": 0.0,
+      "criterion:branching": 0.0,
+      "criterion:closure": 0.0,
+      "criterion:recurrent_loops": 0.0,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.0,
+      "criterion:persistence": 0.0,
+      "criterion:amplification_regime": 0.0,
+      "criterion:path_dependence": 0.0
+     },
+     "overlay_changes": 17,
+     "revisions": 1,
+     "collapsed_share": 0.0
+    },
+    "scorekeeping_no_entitlement": {
+     "identical_to_scorekeeping": false,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.08169706573472826,
+      "graph_edit": 0.05891627629624845,
+      "difference_w1": 0.035654877766981605,
+      "signature": 0.2361328125,
+      "first_divergence": 102,
+      "criterion:reachable_structure": 0.12837095980529747,
+      "criterion:branching": 0.014506712662370167,
+      "criterion:closure": 0.019042699320239036,
+      "criterion:recurrent_loops": 0.1544764157322944,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.008311726065397124,
+      "criterion:persistence": 0.006966747685287092,
+      "criterion:amplification_regime": 0.009243151815208506,
+      "criterion:path_dependence": 0.00785634838465658
+     },
+     "overlay_changes": 11,
+     "revisions": 1,
+     "collapsed_share": 0.0
+    },
+    "support_single": {
+     "identical_to_scorekeeping": false,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.1856866168387129,
+      "graph_edit": 0.05764892098107965,
+      "difference_w1": 0.03473795212644704,
+      "signature": 0.2517578125,
+      "first_divergence": 102,
+      "criterion:reachable_structure": 0.12795511498921947,
+      "criterion:branching": 0.010650415922864864,
+      "criterion:closure": 0.026509796590763076,
+      "criterion:recurrent_loops": 0.11212348999141081,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.007203397796704871,
+      "criterion:persistence": 0.014051646512747646,
+      "criterion:amplification_regime": 0.011383340694834713,
+      "criterion:path_dependence": 0.005675478086882919
+     },
+     "overlay_changes": 15,
+     "revisions": 1,
+     "collapsed_share": 0.0
+    },
+    "support": {
+     "identical_to_scorekeeping": true,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.0,
+      "graph_edit": 0.0,
+      "difference_w1": 0.0,
+      "signature": 0.0,
+      "first_divergence": null,
+      "criterion:reachable_structure": 0.0,
+      "criterion:branching": 0.0,
+      "criterion:closure": 0.0,
+      "criterion:recurrent_loops": 0.0,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.0,
+      "criterion:persistence": 0.0,
+      "criterion:amplification_regime": 0.0,
+      "criterion:path_dependence": 0.0
+     },
+     "overlay_changes": 17,
+     "revisions": 1,
+     "collapsed_share": 0.0
+    },
+    "support_greatest": {
+     "identical_to_scorekeeping": true,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.0,
+      "graph_edit": 0.0,
+      "difference_w1": 0.0,
+      "signature": 0.0,
+      "first_divergence": null,
+      "criterion:reachable_structure": 0.0,
+      "criterion:branching": 0.0,
+      "criterion:closure": 0.0,
+      "criterion:recurrent_loops": 0.0,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.0,
+      "criterion:persistence": 0.0,
+      "criterion:amplification_regime": 0.0,
+      "criterion:path_dependence": 0.0
+     },
+     "overlay_changes": 17,
+     "revisions": 1,
+     "collapsed_share": 0.0
+    }
+   },
+   "noise": {
+    "event_sequence": 0.14919091995029607,
+    "graph_edit": 0.09636975785028402,
+    "difference_w1": 0.05678295934818001,
+    "signature": 0.362109375,
+    "first_divergence": 1,
+    "criterion:reachable_structure": 0.1696420487267037,
+    "criterion:branching": 0.023604360375646512,
+    "criterion:closure": 0.024602026049204046,
+    "criterion:recurrent_loops": 0.40415304091114823,
+    "criterion:fragmentation": 0.0,
+    "criterion:concentration": 0.012530337093889093,
+    "criterion:persistence": 0.04968154146156859,
+    "criterion:amplification_regime": 0.012882842451912001,
+    "criterion:path_dependence": 0.03503613208147212
+   },
+   "edit_effect": {
+    "distance": {
+     "event_sequence": 0.17850917502271474,
+     "graph_edit": 0.040693232984977006,
+     "difference_w1": 0.03195868676962683,
+     "signature": 0.194140625,
+     "first_divergence": 153,
+     "criterion:reachable_structure": 0.11198371974269539,
+     "criterion:branching": 0.014394326982361256,
+     "criterion:closure": 0.02913893340507912,
+     "criterion:recurrent_loops": 0.05967690807082848,
+     "criterion:fragmentation": 0.0,
+     "criterion:concentration": 0.007513745351022467,
+     "criterion:persistence": 0.02283249474465092,
+     "criterion:amplification_regime": 0.013718646582552979,
+     "criterion:path_dependence": 0.0016162697007898628
+    },
+    "exceeds": [],
+    "identical": false
+   },
+   "replay_reproduces_scorekeeping_exactly": true,
+   "vocabulary_nonredundant": false,
+   "two_status_nonredundant": true,
+   "entitlement_nonredundant": true,
+   "fixpoint_choice_matters": false,
+   "reasoning_vs_base_exceeds": [],
+   "statement": "The commitment/entitlement vocabulary produced NO non-redundant operational difference: the terminology-free support graph (greatest fixpoint) gave a bit-identical world trajectory and intervention schedule. The two-status structure (commitment vs entitlement) mattered here (single-status alternative diverged). The reasoning-enabled trajectory is exactly reproducible by the base runtime replaying the recorded operational intervention schedule. The edit's effect on the world stayed within the noise floor."
+  },
+  "3_withdraw_K2": {
+   "representations": {
+    "none": {
+     "identical_to_scorekeeping": false,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.20329932546875337,
+      "graph_edit": 0.06332463144670002,
+      "difference_w1": 0.021214022374891076,
+      "signature": 0.24765625,
+      "first_divergence": 91,
+      "criterion:reachable_structure": 0.137793167220906,
+      "criterion:branching": 0.02030971811058255,
+      "criterion:closure": 0.030551861509067992,
+      "criterion:recurrent_loops": 0.12697189082478608,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.005606933979900468,
+      "criterion:persistence": 0.054967761288335824,
+      "criterion:amplification_regime": 0.019717327322251104,
+      "criterion:path_dependence": 0.01395305814226092
+     },
+     "overlay_changes": 1,
+     "revisions": 0,
+     "collapsed_share": 0.0
+    },
+    "scorekeeping": {
+     "identical_to_scorekeeping": true,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.0,
+      "graph_edit": 0.0,
+      "difference_w1": 0.0,
+      "signature": 0.0,
+      "first_divergence": 0.0,
+      "criterion:reachable_structure": 0.0,
+      "criterion:branching": 0.0,
+      "criterion:closure": 0.0,
+      "criterion:recurrent_loops": 0.0,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.0,
+      "criterion:persistence": 0.0,
+      "criterion:amplification_regime": 0.0,
+      "criterion:path_dependence": 0.0
+     },
+     "overlay_changes": 30,
+     "revisions": 2,
+     "collapsed_share": 0.0
+    },
+    "scorekeeping_no_entitlement": {
+     "identical_to_scorekeeping": false,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.17719677715763288,
+      "graph_edit": 0.057694150685386573,
+      "difference_w1": 0.026051280909962622,
+      "signature": 0.2267578125,
+      "first_divergence": 102,
+      "criterion:reachable_structure": 0.13135977601380477,
+      "criterion:branching": 0.020243029427117677,
+      "criterion:closure": 0.027334130138699782,
+      "criterion:recurrent_loops": 0.11508059073305239,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.005357004772936164,
+      "criterion:persistence": 0.029342794561776284,
+      "criterion:amplification_regime": 0.011922163477075396,
+      "criterion:path_dependence": 0.0032897268180069315
+     },
+     "overlay_changes": 27,
+     "revisions": 2,
+     "collapsed_share": 0.0
+    },
+    "support_single": {
+     "identical_to_scorekeeping": false,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.19489718438034623,
+      "graph_edit": 0.057818068706168305,
+      "difference_w1": 0.02929748450378766,
+      "signature": 0.2265625,
+      "first_divergence": 102,
+      "criterion:reachable_structure": 0.1374063378402732,
+      "criterion:branching": 0.0066522418774737765,
+      "criterion:closure": 0.01562073359424777,
+      "criterion:recurrent_loops": 0.12756795695529352,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.0061397843951479444,
+      "criterion:persistence": 0.019054431845564268,
+      "criterion:amplification_regime": 0.007976760946193517,
+      "criterion:path_dependence": 0.003921229282144242
+     },
+     "overlay_changes": 11,
+     "revisions": 2,
+     "collapsed_share": 0.0
+    },
+    "support": {
+     "identical_to_scorekeeping": true,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.0,
+      "graph_edit": 0.0,
+      "difference_w1": 0.0,
+      "signature": 0.0,
+      "first_divergence": null,
+      "criterion:reachable_structure": 0.0,
+      "criterion:branching": 0.0,
+      "criterion:closure": 0.0,
+      "criterion:recurrent_loops": 0.0,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.0,
+      "criterion:persistence": 0.0,
+      "criterion:amplification_regime": 0.0,
+      "criterion:path_dependence": 0.0
+     },
+     "overlay_changes": 30,
+     "revisions": 2,
+     "collapsed_share": 0.0
+    },
+    "support_greatest": {
+     "identical_to_scorekeeping": true,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.0,
+      "graph_edit": 0.0,
+      "difference_w1": 0.0,
+      "signature": 0.0,
+      "first_divergence": null,
+      "criterion:reachable_structure": 0.0,
+      "criterion:branching": 0.0,
+      "criterion:closure": 0.0,
+      "criterion:recurrent_loops": 0.0,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.0,
+      "criterion:persistence": 0.0,
+      "criterion:amplification_regime": 0.0,
+      "criterion:path_dependence": 0.0
+     },
+     "overlay_changes": 30,
+     "revisions": 2,
+     "collapsed_share": 0.0
+    }
+   },
+   "noise": {
+    "event_sequence": 0.15596855039255758,
+    "graph_edit": 0.09538771679289527,
+    "difference_w1": 0.057545734860312385,
+    "signature": 0.3548828125,
+    "first_divergence": 1,
+    "criterion:reachable_structure": 0.16198235645959133,
+    "criterion:branching": 0.034083119094773996,
+    "criterion:closure": 0.03460755221970091,
+    "criterion:recurrent_loops": 0.31277923543093583,
+    "criterion:fragmentation": 0.0,
+    "criterion:concentration": 0.008006049935421335,
+    "criterion:persistence": 0.06827302755018128,
+    "criterion:amplification_regime": 0.020141774342017693,
+    "criterion:path_dependence": 0.027789662012368255
+   },
+   "edit_effect": {
+    "distance": {
+     "event_sequence": 0.1732220110470487,
+     "graph_edit": 0.043772431317314946,
+     "difference_w1": 0.023344058563015833,
+     "signature": 0.191015625,
+     "first_divergence": 151,
+     "criterion:reachable_structure": 0.1145088009829471,
+     "criterion:branching": 0.012002943899799758,
+     "criterion:closure": 0.016726844855630023,
+     "criterion:recurrent_loops": 0.06957473851407601,
+     "criterion:fragmentation": 0.0,
+     "criterion:concentration": 0.004893555931548162,
+     "criterion:persistence": 0.012713553101080821,
+     "criterion:amplification_regime": 0.008293840389111453,
+     "criterion:path_dependence": 0.0025574545955664605
+    },
+    "exceeds": [],
+    "identical": false
+   },
+   "replay_reproduces_scorekeeping_exactly": true,
+   "vocabulary_nonredundant": false,
+   "two_status_nonredundant": true,
+   "entitlement_nonredundant": true,
+   "fixpoint_choice_matters": false,
+   "reasoning_vs_base_exceeds": [],
+   "statement": "The commitment/entitlement vocabulary produced NO non-redundant operational difference: the terminology-free support graph (greatest fixpoint) gave a bit-identical world trajectory and intervention schedule. The two-status structure (commitment vs entitlement) mattered here (single-status alternative diverged). The reasoning-enabled trajectory is exactly reproducible by the base runtime replaying the recorded operational intervention schedule. The edit's effect on the world stayed within the noise floor."
+  },
+  "4_remove_incompatibility": {
+   "representations": {
+    "none": {
+     "identical_to_scorekeeping": false,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.08982030312708754,
+      "graph_edit": 0.06427268477354169,
+      "difference_w1": 0.03146473327581742,
+      "signature": 0.2703125,
+      "first_divergence": 91,
+      "criterion:reachable_structure": 0.14729412726888103,
+      "criterion:branching": 0.022352279374948648,
+      "criterion:closure": 0.04190221477395992,
+      "criterion:recurrent_loops": 0.14077123682958137,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.00591867198389941,
+      "criterion:persistence": 0.05641912075132031,
+      "criterion:amplification_regime": 0.023160734184458746,
+      "criterion:path_dependence": 0.012300885804432535
+     },
+     "overlay_changes": 1,
+     "revisions": 0,
+     "collapsed_share": 0.0
+    },
+    "scorekeeping": {
+     "identical_to_scorekeeping": true,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.0,
+      "graph_edit": 0.0,
+      "difference_w1": 0.0,
+      "signature": 0.0,
+      "first_divergence": 0.0,
+      "criterion:reachable_structure": 0.0,
+      "criterion:branching": 0.0,
+      "criterion:closure": 0.0,
+      "criterion:recurrent_loops": 0.0,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.0,
+      "criterion:persistence": 0.0,
+      "criterion:amplification_regime": 0.0,
+      "criterion:path_dependence": 0.0
+     },
+     "overlay_changes": 27,
+     "revisions": 2,
+     "collapsed_share": 0.0
+    },
+    "scorekeeping_no_entitlement": {
+     "identical_to_scorekeeping": false,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.08968815074798794,
+      "graph_edit": 0.05923897096753373,
+      "difference_w1": 0.032569110707323705,
+      "signature": 0.2384765625,
+      "first_divergence": 102,
+      "criterion:reachable_structure": 0.12196203043867193,
+      "criterion:branching": 0.01714853224777154,
+      "criterion:closure": 0.028588998274752763,
+      "criterion:recurrent_loops": 0.1351435965540465,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.0039682041399317376,
+      "criterion:persistence": 0.022895036256932833,
+      "criterion:amplification_regime": 0.013574791936200712,
+      "criterion:path_dependence": 0.005231884779664891
+     },
+     "overlay_changes": 29,
+     "revisions": 1,
+     "collapsed_share": 0.0
+    },
+    "support_single": {
+     "identical_to_scorekeeping": false,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.1146928068518471,
+      "graph_edit": 0.05839616807681262,
+      "difference_w1": 0.03375746838953476,
+      "signature": 0.2337890625,
+      "first_divergence": 102,
+      "criterion:reachable_structure": 0.12502080838139096,
+      "criterion:branching": 0.014877800857687466,
+      "criterion:closure": 0.02612799783207624,
+      "criterion:recurrent_loops": 0.174640185785649,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.0069258585909191105,
+      "criterion:persistence": 0.018995395009131485,
+      "criterion:amplification_regime": 0.012659557305988379,
+      "criterion:path_dependence": 0.004758177009339181
+     },
+     "overlay_changes": 27,
+     "revisions": 1,
+     "collapsed_share": 0.0
+    },
+    "support": {
+     "identical_to_scorekeeping": true,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.0,
+      "graph_edit": 0.0,
+      "difference_w1": 0.0,
+      "signature": 0.0,
+      "first_divergence": null,
+      "criterion:reachable_structure": 0.0,
+      "criterion:branching": 0.0,
+      "criterion:closure": 0.0,
+      "criterion:recurrent_loops": 0.0,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.0,
+      "criterion:persistence": 0.0,
+      "criterion:amplification_regime": 0.0,
+      "criterion:path_dependence": 0.0
+     },
+     "overlay_changes": 27,
+     "revisions": 2,
+     "collapsed_share": 0.0
+    },
+    "support_greatest": {
+     "identical_to_scorekeeping": true,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.0,
+      "graph_edit": 0.0,
+      "difference_w1": 0.0,
+      "signature": 0.0,
+      "first_divergence": null,
+      "criterion:reachable_structure": 0.0,
+      "criterion:branching": 0.0,
+      "criterion:closure": 0.0,
+      "criterion:recurrent_loops": 0.0,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.0,
+      "criterion:persistence": 0.0,
+      "criterion:amplification_regime": 0.0,
+      "criterion:path_dependence": 0.0
+     },
+     "overlay_changes": 27,
+     "revisions": 2,
+     "collapsed_share": 0.0
+    }
+   },
+   "noise": {
+    "event_sequence": 0.2773309998632574,
+    "graph_edit": 0.0966211207887772,
+    "difference_w1": 0.04599343120946142,
+    "signature": 0.3654296875,
+    "first_divergence": 1,
+    "criterion:reachable_structure": 0.16028459036378026,
+    "criterion:branching": 0.03175766570347336,
+    "criterion:closure": 0.04024645660611616,
+    "criterion:recurrent_loops": 0.3749343064929714,
+    "criterion:fragmentation": 0.0,
+    "criterion:concentration": 0.007454342205348785,
+    "criterion:persistence": 0.07931778662950587,
+    "criterion:amplification_regime": 0.022151403243492247,
+    "criterion:path_dependence": 0.03398462062460702
+   },
+   "edit_effect": {
+    "distance": {
+     "event_sequence": 0.07925076381207605,
+     "graph_edit": 0.04116071902413544,
+     "difference_w1": 0.02630415692559634,
+     "signature": 0.182421875,
+     "first_divergence": 151,
+     "criterion:reachable_structure": 0.10435286384062092,
+     "criterion:branching": 0.013060221867074227,
+     "criterion:closure": 0.027945317933574274,
+     "criterion:recurrent_loops": 0.0588131777631761,
+     "criterion:fragmentation": 0.0,
+     "criterion:concentration": 0.004711512039659611,
+     "criterion:persistence": 0.018120480214747544,
+     "criterion:amplification_regime": 0.012488034963980089,
+     "criterion:path_dependence": 0.005041169281468787
+    },
+    "exceeds": [],
+    "identical": false
+   },
+   "replay_reproduces_scorekeeping_exactly": true,
+   "vocabulary_nonredundant": false,
+   "two_status_nonredundant": true,
+   "entitlement_nonredundant": true,
+   "fixpoint_choice_matters": false,
+   "reasoning_vs_base_exceeds": [],
+   "statement": "The commitment/entitlement vocabulary produced NO non-redundant operational difference: the terminology-free support graph (greatest fixpoint) gave a bit-identical world trajectory and intervention schedule. The two-status structure (commitment vs entitlement) mattered here (single-status alternative diverged). The reasoning-enabled trajectory is exactly reproducible by the base runtime replaying the recorded operational intervention schedule. The edit's effect on the world stayed within the noise floor."
+  },
+  "5_remove_entitlement_tracking": {
+   "representations": {
+    "none": {
+     "identical_to_scorekeeping": false,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.09275548480582202,
+      "graph_edit": 0.06535902913816863,
+      "difference_w1": 0.02439133356937265,
+      "signature": 0.2732421875,
+      "first_divergence": 91,
+      "criterion:reachable_structure": 0.14947353520032364,
+      "criterion:branching": 0.011175050867076326,
+      "criterion:closure": 0.020676977836059457,
+      "criterion:recurrent_loops": 0.1946682012484683,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.004649276354812668,
+      "criterion:persistence": 0.041482303569377425,
+      "criterion:amplification_regime": 0.013171480034751985,
+      "criterion:path_dependence": 0.011712384735830228
+     },
+     "overlay_changes": 1,
+     "revisions": 0,
+     "collapsed_share": 0.0
+    },
+    "scorekeeping": {
+     "identical_to_scorekeeping": true,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.0,
+      "graph_edit": 0.0,
+      "difference_w1": 0.0,
+      "signature": 0.0,
+      "first_divergence": 0.0,
+      "criterion:reachable_structure": 0.0,
+      "criterion:branching": 0.0,
+      "criterion:closure": 0.0,
+      "criterion:recurrent_loops": 0.0,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.0,
+      "criterion:persistence": 0.0,
+      "criterion:amplification_regime": 0.0,
+      "criterion:path_dependence": 0.0
+     },
+     "overlay_changes": 29,
+     "revisions": 1,
+     "collapsed_share": 0.0
+    },
+    "scorekeeping_no_entitlement": {
+     "identical_to_scorekeeping": true,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.0,
+      "graph_edit": 0.0,
+      "difference_w1": 0.0,
+      "signature": 0.0,
+      "first_divergence": null,
+      "criterion:reachable_structure": 0.0,
+      "criterion:branching": 0.0,
+      "criterion:closure": 0.0,
+      "criterion:recurrent_loops": 0.0,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.0,
+      "criterion:persistence": 0.0,
+      "criterion:amplification_regime": 0.0,
+      "criterion:path_dependence": 0.0
+     },
+     "overlay_changes": 29,
+     "revisions": 1,
+     "collapsed_share": 0.0
+    },
+    "support_single": {
+     "identical_to_scorekeeping": false,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.07220395594129515,
+      "graph_edit": 0.05974036156011132,
+      "difference_w1": 0.02107676785222485,
+      "signature": 0.2375,
+      "first_divergence": 102,
+      "criterion:reachable_structure": 0.12580324513602498,
+      "criterion:branching": 0.009216913575949627,
+      "criterion:closure": 0.007438981190585407,
+      "criterion:recurrent_loops": 0.1219333972001368,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.0024848664388186677,
+      "criterion:persistence": 0.012777901691049651,
+      "criterion:amplification_regime": 0.0033653540969950267,
+      "criterion:path_dependence": 0.005470275500053682
+     },
+     "overlay_changes": 15,
+     "revisions": 1,
+     "collapsed_share": 0.0
+    },
+    "support": {
+     "identical_to_scorekeeping": true,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.0,
+      "graph_edit": 0.0,
+      "difference_w1": 0.0,
+      "signature": 0.0,
+      "first_divergence": null,
+      "criterion:reachable_structure": 0.0,
+      "criterion:branching": 0.0,
+      "criterion:closure": 0.0,
+      "criterion:recurrent_loops": 0.0,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.0,
+      "criterion:persistence": 0.0,
+      "criterion:amplification_regime": 0.0,
+      "criterion:path_dependence": 0.0
+     },
+     "overlay_changes": 29,
+     "revisions": 1,
+     "collapsed_share": 0.0
+    },
+    "support_greatest": {
+     "identical_to_scorekeeping": true,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.0,
+      "graph_edit": 0.0,
+      "difference_w1": 0.0,
+      "signature": 0.0,
+      "first_divergence": null,
+      "criterion:reachable_structure": 0.0,
+      "criterion:branching": 0.0,
+      "criterion:closure": 0.0,
+      "criterion:recurrent_loops": 0.0,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.0,
+      "criterion:persistence": 0.0,
+      "criterion:amplification_regime": 0.0,
+      "criterion:path_dependence": 0.0
+     },
+     "overlay_changes": 29,
+     "revisions": 1,
+     "collapsed_share": 0.0
+    }
+   },
+   "noise": {
+    "event_sequence": 0.24660799315140114,
+    "graph_edit": 0.09544884391231169,
+    "difference_w1": 0.05724202091180283,
+    "signature": 0.3580078125,
+    "first_divergence": 1,
+    "criterion:reachable_structure": 0.1548486754829983,
+    "criterion:branching": 0.04089594358833063,
+    "criterion:closure": 0.04038072237809426,
+    "criterion:recurrent_loops": 0.40738971258638296,
+    "criterion:fragmentation": 0.0,
+    "criterion:concentration": 0.007622874246228019,
+    "criterion:persistence": 0.07719037106273648,
+    "criterion:amplification_regime": 0.022228855200789772,
+    "criterion:path_dependence": 0.03788433830092406
+   },
+   "edit_effect": {
+    "distance": {
+     "event_sequence": 0.07974990425899214,
+     "graph_edit": 0.05992609618280643,
+     "difference_w1": 0.03055451040200988,
+     "signature": 0.2291015625,
+     "first_divergence": 102,
+     "criterion:reachable_structure": 0.12798657314566791,
+     "criterion:branching": 0.008710302594722316,
+     "criterion:closure": 0.0152855058054688,
+     "criterion:recurrent_loops": 0.14372241738935043,
+     "criterion:fragmentation": 0.0,
+     "criterion:concentration": 0.00457995086966895,
+     "criterion:persistence": 0.00929633205465958,
+     "criterion:amplification_regime": 0.006951070957179958,
+     "criterion:path_dependence": 0.0028840121378180244
+    },
+    "exceeds": [],
+    "identical": false
+   },
+   "replay_reproduces_scorekeeping_exactly": true,
+   "vocabulary_nonredundant": false,
+   "two_status_nonredundant": true,
+   "entitlement_nonredundant": false,
+   "fixpoint_choice_matters": false,
+   "reasoning_vs_base_exceeds": [],
+   "statement": "The commitment/entitlement vocabulary produced NO non-redundant operational difference: the terminology-free support graph (greatest fixpoint) gave a bit-identical world trajectory and intervention schedule. The two-status structure (commitment vs entitlement) mattered here (single-status alternative diverged). The reasoning-enabled trajectory is exactly reproducible by the base runtime replaying the recorded operational intervention schedule. The edit's effect on the world stayed within the noise floor."
+  },
+  "6_remove_external_memory": {
+   "representations": {
+    "none": {
+     "identical_to_scorekeeping": false,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.09337100077005916,
+      "graph_edit": 0.05629187762758418,
+      "difference_w1": 0.02685607386042218,
+      "signature": 0.287109375,
+      "first_divergence": 91,
+      "criterion:reachable_structure": 0.13982127347798842,
+      "criterion:branching": 0.02136963023546016,
+      "criterion:closure": 0.03097059478853043,
+      "criterion:recurrent_loops": 0.1026027161249482,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.005659819845079395,
+      "criterion:persistence": 0.0318734340916421,
+      "criterion:amplification_regime": 0.012788764711711845,
+      "criterion:path_dependence": 0.013737991628860313
+     },
+     "overlay_changes": 2,
+     "revisions": 0,
+     "collapsed_share": 0.6
+    },
+    "scorekeeping": {
+     "identical_to_scorekeeping": true,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.0,
+      "graph_edit": 0.0,
+      "difference_w1": 0.0,
+      "signature": 0.0,
+      "first_divergence": 0.0,
+      "criterion:reachable_structure": 0.0,
+      "criterion:branching": 0.0,
+      "criterion:closure": 0.0,
+      "criterion:recurrent_loops": 0.0,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.0,
+      "criterion:persistence": 0.0,
+      "criterion:amplification_regime": 0.0,
+      "criterion:path_dependence": 0.0
+     },
+     "overlay_changes": 10,
+     "revisions": 1,
+     "collapsed_share": 0.6
+    },
+    "scorekeeping_no_entitlement": {
+     "identical_to_scorekeeping": false,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.18303749519740506,
+      "graph_edit": 0.04910043495993772,
+      "difference_w1": 0.044630784259754155,
+      "signature": 0.2640625,
+      "first_divergence": 102,
+      "criterion:reachable_structure": 0.1375337879516213,
+      "criterion:branching": 0.027240217440448376,
+      "criterion:closure": 0.04909058381537362,
+      "criterion:recurrent_loops": 0.10665135325398194,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.009122477389726082,
+      "criterion:persistence": 0.04984341489518406,
+      "criterion:amplification_regime": 0.02301526995263533,
+      "criterion:path_dependence": 0.007290805251188783
+     },
+     "overlay_changes": 9,
+     "revisions": 1,
+     "collapsed_share": 0.6
+    },
+    "support_single": {
+     "identical_to_scorekeeping": false,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.09002348854545719,
+      "graph_edit": 0.04903326773114788,
+      "difference_w1": 0.034509914170397775,
+      "signature": 0.2568359375,
+      "first_divergence": 102,
+      "criterion:reachable_structure": 0.1358940936568603,
+      "criterion:branching": 0.011978817003152727,
+      "criterion:closure": 0.03281947544642858,
+      "criterion:recurrent_loops": 0.13999196189442295,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.006292656679278843,
+      "criterion:persistence": 0.02686353536794409,
+      "criterion:amplification_regime": 0.014023754436435967,
+      "criterion:path_dependence": 0.007260469966292418
+     },
+     "overlay_changes": 8,
+     "revisions": 1,
+     "collapsed_share": 0.6
+    },
+    "support": {
+     "identical_to_scorekeeping": true,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.0,
+      "graph_edit": 0.0,
+      "difference_w1": 0.0,
+      "signature": 0.0,
+      "first_divergence": null,
+      "criterion:reachable_structure": 0.0,
+      "criterion:branching": 0.0,
+      "criterion:closure": 0.0,
+      "criterion:recurrent_loops": 0.0,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.0,
+      "criterion:persistence": 0.0,
+      "criterion:amplification_regime": 0.0,
+      "criterion:path_dependence": 0.0
+     },
+     "overlay_changes": 10,
+     "revisions": 1,
+     "collapsed_share": 0.6
+    },
+    "support_greatest": {
+     "identical_to_scorekeeping": true,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.0,
+      "graph_edit": 0.0,
+      "difference_w1": 0.0,
+      "signature": 0.0,
+      "first_divergence": null,
+      "criterion:reachable_structure": 0.0,
+      "criterion:branching": 0.0,
+      "criterion:closure": 0.0,
+      "criterion:recurrent_loops": 0.0,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.0,
+      "criterion:persistence": 0.0,
+      "criterion:amplification_regime": 0.0,
+      "criterion:path_dependence": 0.0
+     },
+     "overlay_changes": 10,
+     "revisions": 1,
+     "collapsed_share": 0.6
+    }
+   },
+   "noise": {
+    "event_sequence": 0.25256846453647197,
+    "graph_edit": 0.08783487977284736,
+    "difference_w1": 0.07200571771281818,
+    "signature": 0.376171875,
+    "first_divergence": 1,
+    "criterion:reachable_structure": 0.18525471499743051,
+    "criterion:branching": 0.05991337544880465,
+    "criterion:closure": 0.09870799742723507,
+    "criterion:recurrent_loops": 0.48254809437562146,
+    "criterion:fragmentation": 0.0,
+    "criterion:concentration": 0.020222768368811463,
+    "criterion:persistence": 0.12809987262606037,
+    "criterion:amplification_regime": 0.04895191264990434,
+    "criterion:path_dependence": 0.029676673233169606
+   },
+   "edit_effect": {
+    "distance": {
+     "event_sequence": 0.1067612068416642,
+     "graph_edit": 0.03933616009175622,
+     "difference_w1": 0.02198209123247242,
+     "signature": 0.2517578125,
+     "first_divergence": 153,
+     "criterion:reachable_structure": 0.12222969327129551,
+     "criterion:branching": 0.013052202933241856,
+     "criterion:closure": 0.01968438010659242,
+     "criterion:recurrent_loops": 0.09823154265304194,
+     "criterion:fragmentation": 0.0,
+     "criterion:concentration": 0.004181386537523879,
+     "criterion:persistence": 0.02328237290916089,
+     "criterion:amplification_regime": 0.007828643030075647,
+     "criterion:path_dependence": 0.007315132567690283
+    },
+    "exceeds": [],
+    "identical": false
+   },
+   "replay_reproduces_scorekeeping_exactly": true,
+   "vocabulary_nonredundant": false,
+   "two_status_nonredundant": true,
+   "entitlement_nonredundant": true,
+   "fixpoint_choice_matters": false,
+   "reasoning_vs_base_exceeds": [],
+   "statement": "The commitment/entitlement vocabulary produced NO non-redundant operational difference: the terminology-free support graph (greatest fixpoint) gave a bit-identical world trajectory and intervention schedule. The two-status structure (commitment vs entitlement) mattered here (single-status alternative diverged). The reasoning-enabled trajectory is exactly reproducible by the base runtime replaying the recorded operational intervention schedule. The edit's effect on the world stayed within the noise floor."
+  },
+  "7_high_mutation": {
+   "representations": {
+    "none": {
+     "identical_to_scorekeeping": false,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.05768794452542111,
+      "graph_edit": 0.16650062465381124,
+      "difference_w1": 0.02626774952805957,
+      "signature": 0.2728515625,
+      "first_divergence": 91,
+      "criterion:reachable_structure": 0.1386142452012104,
+      "criterion:branching": 0.02190228739809279,
+      "criterion:closure": 0.03780862415409845,
+      "criterion:recurrent_loops": 0.10789191202988523,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.004451802356061305,
+      "criterion:persistence": 0.049380810100846995,
+      "criterion:amplification_regime": 0.017588917911642868,
+      "criterion:path_dependence": 0.025824951762500773
+     },
+     "overlay_changes": 2,
+     "revisions": 0,
+     "collapsed_share": 0.6
+    },
+    "scorekeeping": {
+     "identical_to_scorekeeping": true,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.0,
+      "graph_edit": 0.0,
+      "difference_w1": 0.0,
+      "signature": 0.0,
+      "first_divergence": 0.0,
+      "criterion:reachable_structure": 0.0,
+      "criterion:branching": 0.0,
+      "criterion:closure": 0.0,
+      "criterion:recurrent_loops": 0.0,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.0,
+      "criterion:persistence": 0.0,
+      "criterion:amplification_regime": 0.0,
+      "criterion:path_dependence": 0.0
+     },
+     "overlay_changes": 10,
+     "revisions": 1,
+     "collapsed_share": 0.6
+    },
+    "scorekeeping_no_entitlement": {
+     "identical_to_scorekeeping": false,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.0652782988488329,
+      "graph_edit": 0.16144696921647278,
+      "difference_w1": 0.04253402655962767,
+      "signature": 0.259375,
+      "first_divergence": 102,
+      "criterion:reachable_structure": 0.1313851630854902,
+      "criterion:branching": 0.018121508386970825,
+      "criterion:closure": 0.043726523688355744,
+      "criterion:recurrent_loops": 0.17528219850216617,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.007504199481928555,
+      "criterion:persistence": 0.058616370511151476,
+      "criterion:amplification_regime": 0.021296929132804083,
+      "criterion:path_dependence": 0.013923671650728242
+     },
+     "overlay_changes": 10,
+     "revisions": 1,
+     "collapsed_share": 0.6
+    },
+    "support_single": {
+     "identical_to_scorekeeping": false,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.05787480582792053,
+      "graph_edit": 0.16137965978151805,
+      "difference_w1": 0.03815604919114827,
+      "signature": 0.2603515625,
+      "first_divergence": 102,
+      "criterion:reachable_structure": 0.13437505616684367,
+      "criterion:branching": 0.01626673960607757,
+      "criterion:closure": 0.02591083692236058,
+      "criterion:recurrent_loops": 0.25019586117985076,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.005932671524047944,
+      "criterion:persistence": 0.03891147830935009,
+      "criterion:amplification_regime": 0.01447693584126329,
+      "criterion:path_dependence": 0.012984190416097018
+     },
+     "overlay_changes": 8,
+     "revisions": 1,
+     "collapsed_share": 0.6
+    },
+    "support": {
+     "identical_to_scorekeeping": true,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.0,
+      "graph_edit": 0.0,
+      "difference_w1": 0.0,
+      "signature": 0.0,
+      "first_divergence": null,
+      "criterion:reachable_structure": 0.0,
+      "criterion:branching": 0.0,
+      "criterion:closure": 0.0,
+      "criterion:recurrent_loops": 0.0,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.0,
+      "criterion:persistence": 0.0,
+      "criterion:amplification_regime": 0.0,
+      "criterion:path_dependence": 0.0
+     },
+     "overlay_changes": 10,
+     "revisions": 1,
+     "collapsed_share": 0.6
+    },
+    "support_greatest": {
+     "identical_to_scorekeeping": true,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.0,
+      "graph_edit": 0.0,
+      "difference_w1": 0.0,
+      "signature": 0.0,
+      "first_divergence": null,
+      "criterion:reachable_structure": 0.0,
+      "criterion:branching": 0.0,
+      "criterion:closure": 0.0,
+      "criterion:recurrent_loops": 0.0,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.0,
+      "criterion:persistence": 0.0,
+      "criterion:amplification_regime": 0.0,
+      "criterion:path_dependence": 0.0
+     },
+     "overlay_changes": 10,
+     "revisions": 1,
+     "collapsed_share": 0.6
+    }
+   },
+   "noise": {
+    "event_sequence": 0.19647419335621283,
+    "graph_edit": 0.1888467758167075,
+    "difference_w1": 0.061991890540401155,
+    "signature": 0.3611328125,
+    "first_divergence": 1,
+    "criterion:reachable_structure": 0.18206578821902014,
+    "criterion:branching": 0.038205286599774124,
+    "criterion:closure": 0.04647739221871711,
+    "criterion:recurrent_loops": 0.3475237357067278,
+    "criterion:fragmentation": 0.0,
+    "criterion:concentration": 0.009006717290478593,
+    "criterion:persistence": 0.05520252045834854,
+    "criterion:amplification_regime": 0.022638434919309662,
+    "criterion:path_dependence": 0.04180681205620627
+   },
+   "edit_effect": {
+    "distance": {
+     "event_sequence": 0.18121259686175067,
+     "graph_edit": 0.13537392004103294,
+     "difference_w1": 0.07688969539837268,
+     "signature": 0.2361328125,
+     "first_divergence": 152,
+     "criterion:reachable_structure": 0.13436728623890273,
+     "criterion:branching": 0.0778949785879992,
+     "criterion:closure": 0.15267703167882332,
+     "criterion:recurrent_loops": 0.3411563462377887,
+     "criterion:fragmentation": 0.0,
+     "criterion:concentration": 0.018868998261786934,
+     "criterion:persistence": 0.22924221556051713,
+     "criterion:amplification_regime": 0.0746390399287862,
+     "criterion:path_dependence": 0.049944644084141
+    },
+    "exceeds": [
+     "criterion:closure",
+     "criterion:persistence",
+     "criterion:amplification_regime"
+    ],
+    "identical": false
+   },
+   "replay_reproduces_scorekeeping_exactly": true,
+   "vocabulary_nonredundant": false,
+   "two_status_nonredundant": true,
+   "entitlement_nonredundant": true,
+   "fixpoint_choice_matters": false,
+   "reasoning_vs_base_exceeds": [],
+   "statement": "The commitment/entitlement vocabulary produced NO non-redundant operational difference: the terminology-free support graph (greatest fixpoint) gave a bit-identical world trajectory and intervention schedule. The two-status structure (commitment vs entitlement) mattered here (single-status alternative diverged). The reasoning-enabled trajectory is exactly reproducible by the base runtime replaying the recorded operational intervention schedule. The edit changed the world beyond the noise floor on: criterion:closure, criterion:persistence, criterion:amplification_regime."
+  },
+  "8_remove_address_persistence": {
+   "representations": {
+    "none": {
+     "identical_to_scorekeeping": false,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.0810276597595499,
+      "graph_edit": 0.2945848429460611,
+      "difference_w1": 0.06913252745610093,
+      "signature": 0.28828125,
+      "first_divergence": 91,
+      "criterion:reachable_structure": 0.14565765359984467,
+      "criterion:branching": 0.04144361361304544,
+      "criterion:closure": 0.06667707682698315,
+      "criterion:recurrent_loops": 0.16589279990845107,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.00796410960768787,
+      "criterion:persistence": 0.08715954945365549,
+      "criterion:amplification_regime": 0.029640397947860588,
+      "criterion:path_dependence": 0.03179008473804415
+     },
+     "overlay_changes": 2,
+     "revisions": 0,
+     "collapsed_share": 0.6
+    },
+    "scorekeeping": {
+     "identical_to_scorekeeping": true,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.0,
+      "graph_edit": 0.0,
+      "difference_w1": 0.0,
+      "signature": 0.0,
+      "first_divergence": 0.0,
+      "criterion:reachable_structure": 0.0,
+      "criterion:branching": 0.0,
+      "criterion:closure": 0.0,
+      "criterion:recurrent_loops": 0.0,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.0,
+      "criterion:persistence": 0.0,
+      "criterion:amplification_regime": 0.0,
+      "criterion:path_dependence": 0.0
+     },
+     "overlay_changes": 10,
+     "revisions": 1,
+     "collapsed_share": 0.6
+    },
+    "scorekeeping_no_entitlement": {
+     "identical_to_scorekeeping": false,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.0850556032491326,
+      "graph_edit": 0.2934776592602283,
+      "difference_w1": 0.09081059190425353,
+      "signature": 0.291796875,
+      "first_divergence": 102,
+      "criterion:reachable_structure": 0.16523433381881836,
+      "criterion:branching": 0.04651648663817225,
+      "criterion:closure": 0.06451872734595251,
+      "criterion:recurrent_loops": 0.2277189140174399,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.011032898199377257,
+      "criterion:persistence": 0.08170968292645076,
+      "criterion:amplification_regime": 0.03322912275320476,
+      "criterion:path_dependence": 0.008748117755950642
+     },
+     "overlay_changes": 10,
+     "revisions": 1,
+     "collapsed_share": 0.6
+    },
+    "support_single": {
+     "identical_to_scorekeeping": false,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.05394803820798182,
+      "graph_edit": 0.2927733539324832,
+      "difference_w1": 0.05072451725785151,
+      "signature": 0.2646484375,
+      "first_divergence": 102,
+      "criterion:reachable_structure": 0.1499385719913107,
+      "criterion:branching": 0.029519701532686717,
+      "criterion:closure": 0.03955181446162738,
+      "criterion:recurrent_loops": 0.2036181865996559,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.00626920780788298,
+      "criterion:persistence": 0.04527792274246376,
+      "criterion:amplification_regime": 0.020934675877797442,
+      "criterion:path_dependence": 0.013749937201055369
+     },
+     "overlay_changes": 8,
+     "revisions": 1,
+     "collapsed_share": 0.6
+    },
+    "support": {
+     "identical_to_scorekeeping": true,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.0,
+      "graph_edit": 0.0,
+      "difference_w1": 0.0,
+      "signature": 0.0,
+      "first_divergence": null,
+      "criterion:reachable_structure": 0.0,
+      "criterion:branching": 0.0,
+      "criterion:closure": 0.0,
+      "criterion:recurrent_loops": 0.0,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.0,
+      "criterion:persistence": 0.0,
+      "criterion:amplification_regime": 0.0,
+      "criterion:path_dependence": 0.0
+     },
+     "overlay_changes": 10,
+     "revisions": 1,
+     "collapsed_share": 0.6
+    },
+    "support_greatest": {
+     "identical_to_scorekeeping": true,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.0,
+      "graph_edit": 0.0,
+      "difference_w1": 0.0,
+      "signature": 0.0,
+      "first_divergence": null,
+      "criterion:reachable_structure": 0.0,
+      "criterion:branching": 0.0,
+      "criterion:closure": 0.0,
+      "criterion:recurrent_loops": 0.0,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.0,
+      "criterion:persistence": 0.0,
+      "criterion:amplification_regime": 0.0,
+      "criterion:path_dependence": 0.0
+     },
+     "overlay_changes": 10,
+     "revisions": 1,
+     "collapsed_share": 0.6
+    }
+   },
+   "noise": {
+    "event_sequence": 0.20195798597848985,
+    "graph_edit": 0.3140988165492219,
+    "difference_w1": 0.05205675947336583,
+    "signature": 0.3669921875,
+    "first_divergence": 1,
+    "criterion:reachable_structure": 0.17684882271724287,
+    "criterion:branching": 0.04907070129469284,
+    "criterion:closure": 0.05497340949379553,
+    "criterion:recurrent_loops": 0.32447974586015954,
+    "criterion:fragmentation": 0.0,
+    "criterion:concentration": 0.00885073955209372,
+    "criterion:persistence": 0.07691215748114114,
+    "criterion:amplification_regime": 0.030575612161070752,
+    "criterion:path_dependence": 0.02971331208433895
+   },
+   "edit_effect": {
+    "distance": {
+     "event_sequence": 0.21547534141842378,
+     "graph_edit": 0.23465868236549758,
+     "difference_w1": 0.11739592866311253,
+     "signature": 0.2798828125,
+     "first_divergence": 152,
+     "criterion:reachable_structure": 0.14655754371909857,
+     "criterion:branching": 0.11843811784643131,
+     "criterion:closure": 0.23957280992928276,
+     "criterion:recurrent_loops": 0.3433181773500397,
+     "criterion:fragmentation": 0.0,
+     "criterion:concentration": 0.02662767873139089,
+     "criterion:persistence": 0.29695311533461377,
+     "criterion:amplification_regime": 0.10962635425843394,
+     "criterion:path_dependence": 0.040470549846085745
+    },
+    "exceeds": [
+     "criterion:branching",
+     "criterion:closure",
+     "criterion:persistence",
+     "criterion:amplification_regime"
+    ],
+    "identical": false
+   },
+   "replay_reproduces_scorekeeping_exactly": true,
+   "vocabulary_nonredundant": false,
+   "two_status_nonredundant": true,
+   "entitlement_nonredundant": true,
+   "fixpoint_choice_matters": false,
+   "reasoning_vs_base_exceeds": [],
+   "statement": "The commitment/entitlement vocabulary produced NO non-redundant operational difference: the terminology-free support graph (greatest fixpoint) gave a bit-identical world trajectory and intervention schedule. The two-status structure (commitment vs entitlement) mattered here (single-status alternative diverged). The reasoning-enabled trajectory is exactly reproducible by the base runtime replaying the recorded operational intervention schedule. The edit changed the world beyond the noise floor on: criterion:branching, criterion:closure, criterion:persistence, criterion:amplification_regime."
+  },
+  "9_change_dependency_graph": {
+   "representations": {
+    "none": {
+     "identical_to_scorekeeping": false,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.07702432654099828,
+      "graph_edit": 0.06562796075877605,
+      "difference_w1": 0.02632338315887783,
+      "signature": 0.27109375,
+      "first_divergence": 91,
+      "criterion:reachable_structure": 0.15206047840366654,
+      "criterion:branching": 0.013130181388608768,
+      "criterion:closure": 0.022971190762287173,
+      "criterion:recurrent_loops": 0.1468569846846387,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.00509535799966253,
+      "criterion:persistence": 0.044841324557138414,
+      "criterion:amplification_regime": 0.014645200775394286,
+      "criterion:path_dependence": 0.014082533231625293
+     },
+     "overlay_changes": 1,
+     "revisions": 0,
+     "collapsed_share": 0.0
+    },
+    "scorekeeping": {
+     "identical_to_scorekeeping": true,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.0,
+      "graph_edit": 0.0,
+      "difference_w1": 0.0,
+      "signature": 0.0,
+      "first_divergence": 0.0,
+      "criterion:reachable_structure": 0.0,
+      "criterion:branching": 0.0,
+      "criterion:closure": 0.0,
+      "criterion:recurrent_loops": 0.0,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.0,
+      "criterion:persistence": 0.0,
+      "criterion:amplification_regime": 0.0,
+      "criterion:path_dependence": 0.0
+     },
+     "overlay_changes": 30,
+     "revisions": 1,
+     "collapsed_share": 0.0
+    },
+    "scorekeeping_no_entitlement": {
+     "identical_to_scorekeeping": false,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.07974990425899214,
+      "graph_edit": 0.05992609618280643,
+      "difference_w1": 0.03055451040200988,
+      "signature": 0.2291015625,
+      "first_divergence": 102,
+      "criterion:reachable_structure": 0.12798657314566791,
+      "criterion:branching": 0.008710302594722316,
+      "criterion:closure": 0.0152855058054688,
+      "criterion:recurrent_loops": 0.14372241738935043,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.00457995086966895,
+      "criterion:persistence": 0.00929633205465958,
+      "criterion:amplification_regime": 0.006951070957179958,
+      "criterion:path_dependence": 0.0028840121378180244
+     },
+     "overlay_changes": 31,
+     "revisions": 1,
+     "collapsed_share": 0.0
+    },
+    "support_single": {
+     "identical_to_scorekeeping": false,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.07806948475116332,
+      "graph_edit": 0.0586073622457168,
+      "difference_w1": 0.03246076069905417,
+      "signature": 0.23984375,
+      "first_divergence": 102,
+      "criterion:reachable_structure": 0.13211699677143815,
+      "criterion:branching": 0.014245231316786228,
+      "criterion:closure": 0.019059469265297557,
+      "criterion:recurrent_loops": 0.0991445914499599,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.005514405325180874,
+      "criterion:persistence": 0.01854877793845578,
+      "criterion:amplification_regime": 0.008774558322614236,
+      "criterion:path_dependence": 0.004402436153465526
+     },
+     "overlay_changes": 17,
+     "revisions": 1,
+     "collapsed_share": 0.0
+    },
+    "support": {
+     "identical_to_scorekeeping": true,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.0,
+      "graph_edit": 0.0,
+      "difference_w1": 0.0,
+      "signature": 0.0,
+      "first_divergence": null,
+      "criterion:reachable_structure": 0.0,
+      "criterion:branching": 0.0,
+      "criterion:closure": 0.0,
+      "criterion:recurrent_loops": 0.0,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.0,
+      "criterion:persistence": 0.0,
+      "criterion:amplification_regime": 0.0,
+      "criterion:path_dependence": 0.0
+     },
+     "overlay_changes": 30,
+     "revisions": 1,
+     "collapsed_share": 0.0
+    },
+    "support_greatest": {
+     "identical_to_scorekeeping": true,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.0,
+      "graph_edit": 0.0,
+      "difference_w1": 0.0,
+      "signature": 0.0,
+      "first_divergence": null,
+      "criterion:reachable_structure": 0.0,
+      "criterion:branching": 0.0,
+      "criterion:closure": 0.0,
+      "criterion:recurrent_loops": 0.0,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.0,
+      "criterion:persistence": 0.0,
+      "criterion:amplification_regime": 0.0,
+      "criterion:path_dependence": 0.0
+     },
+     "overlay_changes": 30,
+     "revisions": 1,
+     "collapsed_share": 0.0
+    }
+   },
+   "noise": {
+    "event_sequence": 0.2450006381224313,
+    "graph_edit": 0.09619731849359485,
+    "difference_w1": 0.04284930054613442,
+    "signature": 0.3521484375,
+    "first_divergence": 1,
+    "criterion:reachable_structure": 0.16515416296154845,
+    "criterion:branching": 0.03555688565812123,
+    "criterion:closure": 0.03691391123026509,
+    "criterion:recurrent_loops": 0.32538632138882767,
+    "criterion:fragmentation": 0.0,
+    "criterion:concentration": 0.007815238305263848,
+    "criterion:persistence": 0.0727508936873816,
+    "criterion:amplification_regime": 0.021222210843837873,
+    "criterion:path_dependence": 0.029954625980107983
+   },
+   "edit_effect": {
+    "distance": {
+     "event_sequence": 0.04363836353155975,
+     "graph_edit": 0.018516471725939905,
+     "difference_w1": 0.020462785520234363,
+     "signature": 0.11328125,
+     "first_divergence": 251,
+     "criterion:reachable_structure": 0.07069997914271811,
+     "criterion:branching": 0.013311984463804466,
+     "criterion:closure": 0.024487199872793745,
+     "criterion:recurrent_loops": 0.01811689970597054,
+     "criterion:fragmentation": 0.0,
+     "criterion:concentration": 0.004752201759616332,
+     "criterion:persistence": 0.023734262969191212,
+     "criterion:amplification_regime": 0.012031856545844346,
+     "criterion:path_dependence": 0.0022387150160687185
+    },
+    "exceeds": [],
+    "identical": false
+   },
+   "replay_reproduces_scorekeeping_exactly": true,
+   "vocabulary_nonredundant": false,
+   "two_status_nonredundant": true,
+   "entitlement_nonredundant": true,
+   "fixpoint_choice_matters": false,
+   "reasoning_vs_base_exceeds": [],
+   "statement": "The commitment/entitlement vocabulary produced NO non-redundant operational difference: the terminology-free support graph (greatest fixpoint) gave a bit-identical world trajectory and intervention schedule. The two-status structure (commitment vs entitlement) mattered here (single-status alternative diverged). The reasoning-enabled trajectory is exactly reproducible by the base runtime replaying the recorded operational intervention schedule. The edit's effect on the world stayed within the noise floor."
+  },
+  "10_alter_scorekeeping_structure": {
+   "representations": {
+    "none": {
+     "identical_to_scorekeeping": false,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.06780354201587388,
+      "graph_edit": 0.06285646070584298,
+      "difference_w1": 0.03976461514494213,
+      "signature": 0.2666015625,
+      "first_divergence": 91,
+      "criterion:reachable_structure": 0.14177525062128818,
+      "criterion:branching": 0.019910745879508234,
+      "criterion:closure": 0.033707994830132905,
+      "criterion:recurrent_loops": 0.2074005027793052,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.007791450943926415,
+      "criterion:persistence": 0.05322780485000992,
+      "criterion:amplification_regime": 0.01912601755862227,
+      "criterion:path_dependence": 0.015636641528277893
+     },
+     "overlay_changes": 1,
+     "revisions": 0,
+     "collapsed_share": 0.0
+    },
+    "scorekeeping": {
+     "identical_to_scorekeeping": true,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.0,
+      "graph_edit": 0.0,
+      "difference_w1": 0.0,
+      "signature": 0.0,
+      "first_divergence": 0.0,
+      "criterion:reachable_structure": 0.0,
+      "criterion:branching": 0.0,
+      "criterion:closure": 0.0,
+      "criterion:recurrent_loops": 0.0,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.0,
+      "criterion:persistence": 0.0,
+      "criterion:amplification_regime": 0.0,
+      "criterion:path_dependence": 0.0
+     },
+     "overlay_changes": 30,
+     "revisions": 3,
+     "collapsed_share": 0.0
+    },
+    "scorekeeping_no_entitlement": {
+     "identical_to_scorekeeping": false,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.07857832420746891,
+      "graph_edit": 0.05651928279898432,
+      "difference_w1": 0.029866608333181496,
+      "signature": 0.2271484375,
+      "first_divergence": 102,
+      "criterion:reachable_structure": 0.1188467815117593,
+      "criterion:branching": 0.017371090210281957,
+      "criterion:closure": 0.02014882655981677,
+      "criterion:recurrent_loops": 0.20381433820709827,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.004652195373287452,
+      "criterion:persistence": 0.017167108621458326,
+      "criterion:amplification_regime": 0.009453375632295688,
+      "criterion:path_dependence": 0.005451513596716261
+     },
+     "overlay_changes": 29,
+     "revisions": 1,
+     "collapsed_share": 0.0
+    },
+    "support_single": {
+     "identical_to_scorekeeping": true,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.0,
+      "graph_edit": 0.0,
+      "difference_w1": 0.0,
+      "signature": 0.0,
+      "first_divergence": null,
+      "criterion:reachable_structure": 0.0,
+      "criterion:branching": 0.0,
+      "criterion:closure": 0.0,
+      "criterion:recurrent_loops": 0.0,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.0,
+      "criterion:persistence": 0.0,
+      "criterion:amplification_regime": 0.0,
+      "criterion:path_dependence": 0.0
+     },
+     "overlay_changes": 30,
+     "revisions": 3,
+     "collapsed_share": 0.0
+    },
+    "support": {
+     "identical_to_scorekeeping": true,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.0,
+      "graph_edit": 0.0,
+      "difference_w1": 0.0,
+      "signature": 0.0,
+      "first_divergence": null,
+      "criterion:reachable_structure": 0.0,
+      "criterion:branching": 0.0,
+      "criterion:closure": 0.0,
+      "criterion:recurrent_loops": 0.0,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.0,
+      "criterion:persistence": 0.0,
+      "criterion:amplification_regime": 0.0,
+      "criterion:path_dependence": 0.0
+     },
+     "overlay_changes": 30,
+     "revisions": 3,
+     "collapsed_share": 0.0
+    },
+    "support_greatest": {
+     "identical_to_scorekeeping": true,
+     "exceeds": [],
+     "distance": {
+      "event_sequence": 0.0,
+      "graph_edit": 0.0,
+      "difference_w1": 0.0,
+      "signature": 0.0,
+      "first_divergence": null,
+      "criterion:reachable_structure": 0.0,
+      "criterion:branching": 0.0,
+      "criterion:closure": 0.0,
+      "criterion:recurrent_loops": 0.0,
+      "criterion:fragmentation": 0.0,
+      "criterion:concentration": 0.0,
+      "criterion:persistence": 0.0,
+      "criterion:amplification_regime": 0.0,
+      "criterion:path_dependence": 0.0
+     },
+     "overlay_changes": 30,
+     "revisions": 3,
+     "collapsed_share": 0.0
+    }
+   },
+   "noise": {
+    "event_sequence": 0.22980594617876932,
+    "graph_edit": 0.09424692338771815,
+    "difference_w1": 0.050906578962802866,
+    "signature": 0.36640625,
+    "first_divergence": 1,
+    "criterion:reachable_structure": 0.15009768638324186,
+    "criterion:branching": 0.026615860857210745,
+    "criterion:closure": 0.04063665811619125,
+    "criterion:recurrent_loops": 0.3289091945239923,
+    "criterion:fragmentation": 0.0,
+    "criterion:concentration": 0.009733265223544209,
+    "criterion:persistence": 0.06387782686759866,
+    "criterion:amplification_regime": 0.02221882227791525,
+    "criterion:path_dependence": 0.036287639905778664
+   },
+   "edit_effect": {
+    "distance": {
+     "event_sequence": 0.06200721812405409,
+     "graph_edit": 0.057196336939082174,
+     "difference_w1": 0.03910983502215927,
+     "signature": 0.2318359375,
+     "first_divergence": 103,
+     "criterion:reachable_structure": 0.11594534264253187,
+     "criterion:branching": 0.020567886333622925,
+     "criterion:closure": 0.023835586605305787,
+     "criterion:recurrent_loops": 0.12682039180495167,
+     "criterion:fragmentation": 0.0,
+     "criterion:concentration": 0.006693848747265633,
+     "criterion:persistence": 0.021994011136776695,
+     "criterion:amplification_regime": 0.01044755657306235,
+     "criterion:path_dependence": 0.004991792556875008
+    },
+    "exceeds": [],
+    "identical": false
+   },
+   "replay_reproduces_scorekeeping_exactly": true,
+   "vocabulary_nonredundant": false,
+   "two_status_nonredundant": false,
+   "entitlement_nonredundant": true,
+   "fixpoint_choice_matters": false,
+   "reasoning_vs_base_exceeds": [],
+   "statement": "The commitment/entitlement vocabulary produced NO non-redundant operational difference: the terminology-free support graph (greatest fixpoint) gave a bit-identical world trajectory and intervention schedule. The two-status structure made no operational difference here (single-status alternative identical). The reasoning-enabled trajectory is exactly reproducible by the base runtime replaying the recorded operational intervention schedule. The edit's effect on the world stayed within the noise floor."
+  }
+ },
+ "representation_equivalence": {
+  "states": 12000,
+  "vs_scorekeeping": {
+   "scorekeeping_no_entitlement": {
+    "reference": "scorekeeping",
+    "disagreements": 8574,
+    "explained": 8574,
+    "by_cause": {
+     "cycle": 1467,
+     "unentitled_support": 8574,
+     "conflict_scope": 1795
+    }
+   },
+   "support": {
+    "reference": "scorekeeping",
+    "disagreements": 295,
+    "explained": 295,
+    "by_cause": {
+     "cycle": 163,
+     "unentitled_support": 225,
+     "conflict_scope": 212
+    }
+   },
+   "support_greatest": {
+    "reference": "scorekeeping",
+    "disagreements": 0,
+    "explained": 0,
+    "by_cause": {
+     "cycle": 0,
+     "unentitled_support": 0,
+     "conflict_scope": 0
+    }
+   },
+   "support_single": {
+    "reference": "scorekeeping",
+    "disagreements": 941,
+    "explained": 941,
+    "by_cause": {
+     "cycle": 344,
+     "unentitled_support": 542,
+     "conflict_scope": 834
+    }
+   },
+   "support_backed_only": {
+    "reference": "scorekeeping_no_entitlement",
+    "disagreements": 0,
+    "explained": 0,
+    "by_cause": {
+     "cycle": 0,
+     "unentitled_support": 0,
+     "conflict_scope": 0
+    }
+   }
+  },
+  "causes": {
+   "cycle": "claim on or downstream of a dependency cycle (least vs greatest fixpoint)",
+   "unentitled_support": "claim downstream of a committed-but-not-entitled claim (support through commitment vs through eligibility)",
+   "conflict_scope": "claim in, or downstream of, an incompatibility whose other member is committed but not finally entitled (which items conflicts are resolved among, and whether a defeat is undone when the defeating claim later loses entitlement)",
+   "support": "fixpoint choice: every differing claim is on or downstream of a dependency cycle (least vs greatest fixpoint of eligibility)",
+   "support_single": "two-status structure: every differing claim is downstream of a committed-but-not-entitled claim (support flows through commitment in two-status scorekeeping, only through eligibility in the single-status graph), or on/downstream of a cycle",
+   "scorekeeping_no_entitlement": "entitlement tracking: every differing claim is a committed-but-not-entitled claim or downstream of one",
+   "support_backed_only": "entitlement/eligibility checking: same as above"
+  },
+  "residual_examples": {
+   "scorekeeping_no_entitlement": [],
+   "support": [],
+   "support_greatest": [],
+   "support_single": [],
+   "support_backed_only": []
+  }
+ },
+ "criteria": {
+  "transition_prediction": {
+   "ops": {
+    "overlay_change": {
+     "accuracy": 0.8541666666666666,
+     "brier": 0.12493750118129615,
+     "base_rate": 0.75
+    },
+    "activity_AB": {
+     "r2": 0.9675079139283739
+    }
+   },
+   "ops+history": {
+    "overlay_change": {
+     "accuracy": 0.8541666666666666,
+     "brier": 0.126641714669288,
+     "base_rate": 0.75
+    },
+    "activity_AB": {
+     "r2": 0.9686398026989025
+    }
+   },
+   "ops+reasoning": {
+    "overlay_change": {
+     "accuracy": 0.8541666666666666,
+     "brier": 0.12665790441766783,
+     "base_rate": 0.75
+    },
+    "activity_AB": {
+     "r2": 0.9679304231940595
+    }
+   },
+   "ops+history+reasoning": {
+    "overlay_change": {
+     "accuracy": 0.8541666666666666,
+     "brier": 0.12930758566987074,
+     "base_rate": 0.75
+    },
+    "activity_AB": {
+     "r2": 0.9689246988937715
+    }
+   }
+  },
+  "intervention_precision": {
+   "modifiers": 6,
+   "min_side_effects_per_modifier": {
+    "0:gate:182": 1,
+    "1:scale_threshold:188": 0,
+    "2:gate:921": 2,
+    "3:memory_condition:187": 1,
+    "4:scale_threshold:188": 0,
+    "5:gate:921": 0
+   },
+   "reasoning_edit_mean_side_effects": 0.6666666666666666,
+   "unreachable_by_single_reasoning_edit": 0,
+   "direct_operational_edit_side_effects": 0
+  },
+  "dependency_tracing": {
+   "edits": 15,
+   "scores": {
+    "scorekeeping": {
+     "tp": 22,
+     "fp": 0,
+     "fn": 0,
+     "recall": 1.0,
+     "precision": 1.0
+    },
+    "support_greatest": {
+     "tp": 22,
+     "fp": 0,
+     "fn": 0,
+     "recall": 1.0,
+     "precision": 1.0
+    },
+    "operational_only": {
+     "tp": 0,
+     "fp": 0,
+     "fn": 22,
+     "recall": 0.0,
+     "precision": null
+    }
+   },
+   "note": "by construction for any representation with dependency records"
+  },
+  "error_detection": {
+   "trials": {
+    "orphan": 105,
+    "lost": 98,
+    "tampered": 95,
+    "clean": 102
+   },
+   "detected": {
+    "dependency_records": {
+     "orphan": 105,
+     "lost": 98,
+     "tampered": 95,
+     "clean": 0
+    },
+    "operational_only": {
+     "orphan": 0,
+     "lost": 0,
+     "tampered": 0,
+     "clean": 0
+    }
+   },
+   "rates": {
+    "dependency_records": {
+     "orphan": 1.0,
+     "lost": 1.0,
+     "tampered": 1.0,
+     "clean": 0.0
+    },
+    "operational_only": {
+     "orphan": 0.0,
+     "lost": 0.0,
+     "tampered": 0.0,
+     "clean": 0.0
+    }
+   },
+   "note": "clean = false-alarm rate. Detection by recompiling needs dependency records (any representation that has them), not a particular vocabulary"
+  },
+  "reconfiguration_control": {
+   "scorekeeping": {
+    "in_band_mean": 0.027777777777777776,
+    "in_band_by_seed": [
+     0.0,
+     0.0,
+     0.028,
+     0.083
+    ]
+   },
+   "memoryless": {
+    "in_band_mean": 0.06944444444444445,
+    "in_band_by_seed": [
+     0.0,
+     0.0,
+     0.0,
+     0.278
+    ]
+   },
+   "none": {
+    "in_band_mean": 0.0,
+    "in_band_by_seed": [
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "replay": {
+    "in_band_mean": 0.05555555555555555,
+    "in_band_by_seed": [
+     0.0,
+     0.0,
+     0.0,
+     0.222
+    ]
+   }
+  },
+  "compression": {
+   "1_remove_concept_human": {
+    "operational_tokens": 10,
+    "reasoning_tokens_dynamic": 3,
+    "reasoning_tokens_static": 25,
+    "reasoning_total": 28,
+    "compresses": false
+   },
+   "2_remove_concept_responsibility": {
+    "operational_tokens": 9,
+    "reasoning_tokens_dynamic": 2,
+    "reasoning_tokens_static": 25,
+    "reasoning_total": 27,
+    "compresses": false
+   },
+   "3_withdraw_K2": {
+    "operational_tokens": 10,
+    "reasoning_tokens_dynamic": 3,
+    "reasoning_tokens_static": 25,
+    "reasoning_total": 28,
+    "compresses": false
+   },
+   "4_remove_incompatibility": {
+    "operational_tokens": 12,
+    "reasoning_tokens_dynamic": 3,
+    "reasoning_tokens_static": 25,
+    "reasoning_total": 28,
+    "compresses": false
+   },
+   "5_remove_entitlement_tracking": {
+    "operational_tokens": 6,
+    "reasoning_tokens_dynamic": 1,
+    "reasoning_tokens_static": 25,
+    "reasoning_total": 26,
+    "compresses": false
+   },
+   "6_remove_external_memory": {
+    "operational_tokens": 13,
+    "reasoning_tokens_dynamic": 1,
+    "reasoning_tokens_static": 25,
+    "reasoning_total": 26,
+    "compresses": false
+   },
+   "7_high_mutation": {
+    "operational_tokens": 13,
+    "reasoning_tokens_dynamic": 1,
+    "reasoning_tokens_static": 25,
+    "reasoning_total": 26,
+    "compresses": false
+   },
+   "8_remove_address_persistence": {
+    "operational_tokens": 13,
+    "reasoning_tokens_dynamic": 1,
+    "reasoning_tokens_static": 25,
+    "reasoning_total": 26,
+    "compresses": false
+   },
+   "9_change_dependency_graph": {
+    "operational_tokens": 8,
+    "reasoning_tokens_dynamic": 4,
+    "reasoning_tokens_static": 25,
+    "reasoning_total": 29,
+    "compresses": false
+   },
+   "10_alter_scorekeeping_structure": {
+    "operational_tokens": 9,
+    "reasoning_tokens_dynamic": 3,
+    "reasoning_tokens_static": 25,
+    "reasoning_total": 28,
+    "compresses": false
+   }
+  }
+ },
+ "world_effects": {
+  "seeds": [
+   60,
+   61,
+   62,
+   63,
+   64,
+   65,
+   66,
+   67
+  ],
+  "horizon": 400,
+  "edit_at": 150,
+  "pairs": {
+   "reasoning layer vs none": {
+    "world_effects": {
+     "s:memory_dependence": {
+      "t": 9.1,
+      "relative": 1.5725
+     },
+     "rate:new_connections": {
+      "t": 6.5,
+      "relative": 0.0924
+     }
+    },
+    "world_effect_detected": true,
+    "identical_runs": 0,
+    "seeds": 8,
+    "intervention_checks_differing": 0.747,
+    "a": "none",
+    "b": "scorekeeping"
+   },
+   "vocabulary: scorekeeping vs terminology-free support graph (greatest fixpoint)": {
+    "world_effects": {},
+    "world_effect_detected": false,
+    "identical_runs": 8,
+    "seeds": 8,
+    "intervention_checks_differing": 0.0,
+    "a": "scorekeeping",
+    "b": "support_greatest"
+   },
+   "vocabulary under an edit: same, after removing concept human": {
+    "world_effects": {},
+    "world_effect_detected": false,
+    "identical_runs": 8,
+    "seeds": 8,
+    "intervention_checks_differing": 0.0,
+    "a": "edit_human",
+    "b": "support_greatest_edit_human"
+   },
+   "fixpoint choice: greatest vs least": {
+    "world_effects": {},
+    "world_effect_detected": false,
+    "identical_runs": 8,
+    "seeds": 8,
+    "intervention_checks_differing": 0.0,
+    "a": "scorekeeping",
+    "b": "support"
+   },
+   "two-status vs single-status": {
+    "world_effects": {},
+    "world_effect_detected": false,
+    "identical_runs": 0,
+    "seeds": 8,
+    "intervention_checks_differing": 0.722,
+    "a": "scorekeeping",
+    "b": "support_single"
+   },
+   "entitlement tracking on vs off": {
+    "world_effects": {},
+    "world_effect_detected": false,
+    "identical_runs": 0,
+    "seeds": 8,
+    "intervention_checks_differing": 0.722,
+    "a": "scorekeeping",
+    "b": "scorekeeping_no_entitlement"
+   },
+   "persistent reasoning state vs memoryless reactive policy": {
+    "world_effects": {},
+    "world_effect_detected": false,
+    "identical_runs": 0,
+    "seeds": 8,
+    "intervention_checks_differing": 0.35,
+    "a": "scorekeeping",
+    "b": "memoryless"
+   },
+   "edit: remove concept human": {
+    "world_effects": {
+     "s:memory_dependence": {
+      "t": -4.73,
+      "relative": -0.0969
+     }
+    },
+    "world_effect_detected": true,
+    "identical_runs": 0,
+    "seeds": 8,
+    "intervention_checks_differing": 0.581,
+    "a": "scorekeeping",
+    "b": "edit_human"
+   },
+   "edit: remove concept responsibility": {
+    "world_effects": {},
+    "world_effect_detected": false,
+    "identical_runs": 0,
+    "seeds": 8,
+    "intervention_checks_differing": 0.616,
+    "a": "scorekeeping",
+    "b": "edit_responsibility"
+   },
+   "counterfactual discrimination: same interventions, different dependency structure, same edit": {
+    "world_effects": {},
+    "world_effect_detected": false,
+    "identical_runs": 0,
+    "seeds": 8,
+    "intervention_checks_differing": 0.725,
+    "a": "edit_human",
+    "b": "p2_edit_human"
+   }
+  },
+  "adaptivity": {
+   "scorekeeping": 0.208,
+   "memoryless": 0.508,
+   "none": 0.0
+  },
+  "reasoning_active_share": {
+   "none": 0.0,
+   "scorekeeping": 0.747,
+   "support_greatest": 0.747,
+   "support": 0.747,
+   "support_single": 0.747,
+   "scorekeeping_no_entitlement": 0.747,
+   "memoryless": 0.747,
+   "edit_human": 0.747,
+   "edit_responsibility": 0.747,
+   "p2_edit_human": 0.747,
+   "support_greatest_edit_human": 0.747
+  }
+ },
+ "phases": {
+  "schedule": {
+   "reasoning_from": 150,
+   "degrade_at": 450,
+   "degradation": "memory condition on R (decay 0.3)",
+   "end": 700
+  },
+  "timeline": [
+   {
+    "t": 10,
+    "phase": "pre",
+    "enabled": false,
+    "conditions": [
+     0.36709,
+     1.0,
+     1.25477
+    ],
+    "groundings": [],
+    "overlay_items": 0,
+    "overlay_changed": false,
+    "revisions": 0,
+    "effects": [],
+    "commitment_distinction": false,
+    "entitlement_distinction": false,
+    "commitment_distinction_latent": false,
+    "entitlement_distinction_latent": false,
+    "effective": {
+     "K1": 1.0,
+     "K3": 1.0,
+     "K4": 0.9,
+     "K5": 1.0,
+     "K6": 0.9,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 0.0
+    }
+   },
+   {
+    "t": 20,
+    "phase": "pre",
+    "enabled": false,
+    "conditions": [
+     0.46679,
+     0.99105,
+     1.44279
+    ],
+    "groundings": [],
+    "overlay_items": 0,
+    "overlay_changed": false,
+    "revisions": 0,
+    "effects": [],
+    "commitment_distinction": false,
+    "entitlement_distinction": false,
+    "commitment_distinction_latent": false,
+    "entitlement_distinction_latent": false,
+    "effective": {
+     "K1": 1.0,
+     "K3": 1.0,
+     "K4": 0.9,
+     "K5": 1.0,
+     "K6": 0.9,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 0.0
+    }
+   },
+   {
+    "t": 30,
+    "phase": "pre",
+    "enabled": false,
+    "conditions": [
+     0.52452,
+     0.99406,
+     1.38757
+    ],
+    "groundings": [],
+    "overlay_items": 0,
+    "overlay_changed": false,
+    "revisions": 0,
+    "effects": [],
+    "commitment_distinction": false,
+    "entitlement_distinction": false,
+    "commitment_distinction_latent": false,
+    "entitlement_distinction_latent": false,
+    "effective": {
+     "K1": 1.0,
+     "K3": 1.0,
+     "K4": 0.9,
+     "K5": 1.0,
+     "K6": 0.9,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 0.0
+    }
+   },
+   {
+    "t": 40,
+    "phase": "pre",
+    "enabled": false,
+    "conditions": [
+     0.53455,
+     0.99116,
+     1.6262
+    ],
+    "groundings": [],
+    "overlay_items": 0,
+    "overlay_changed": false,
+    "revisions": 0,
+    "effects": [],
+    "commitment_distinction": false,
+    "entitlement_distinction": false,
+    "commitment_distinction_latent": false,
+    "entitlement_distinction_latent": false,
+    "effective": {
+     "K1": 1.0,
+     "K3": 1.0,
+     "K4": 0.9,
+     "K5": 1.0,
+     "K6": 0.9,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 0.0
+    }
+   },
+   {
+    "t": 50,
+    "phase": "pre",
+    "enabled": false,
+    "conditions": [
+     0.49676,
+     0.99706,
+     1.76882
+    ],
+    "groundings": [],
+    "overlay_items": 0,
+    "overlay_changed": false,
+    "revisions": 0,
+    "effects": [],
+    "commitment_distinction": false,
+    "entitlement_distinction": false,
+    "commitment_distinction_latent": false,
+    "entitlement_distinction_latent": false,
+    "effective": {
+     "K1": 1.0,
+     "K3": 1.0,
+     "K4": 0.9,
+     "K5": 1.0,
+     "K6": 0.9,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 0.0
+    }
+   },
+   {
+    "t": 60,
+    "phase": "pre",
+    "enabled": false,
+    "conditions": [
+     0.53293,
+     0.99512,
+     2.13987
+    ],
+    "groundings": [],
+    "overlay_items": 0,
+    "overlay_changed": false,
+    "revisions": 0,
+    "effects": [],
+    "commitment_distinction": false,
+    "entitlement_distinction": false,
+    "commitment_distinction_latent": false,
+    "entitlement_distinction_latent": false,
+    "effective": {
+     "K1": 1.0,
+     "K3": 1.0,
+     "K4": 0.9,
+     "K5": 1.0,
+     "K6": 0.9,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 0.0
+    }
+   },
+   {
+    "t": 70,
+    "phase": "pre",
+    "enabled": false,
+    "conditions": [
+     0.61544,
+     0.9913,
+     2.15844
+    ],
+    "groundings": [],
+    "overlay_items": 0,
+    "overlay_changed": false,
+    "revisions": 0,
+    "effects": [],
+    "commitment_distinction": false,
+    "entitlement_distinction": false,
+    "commitment_distinction_latent": false,
+    "entitlement_distinction_latent": false,
+    "effective": {
+     "K1": 1.0,
+     "K3": 1.0,
+     "K4": 0.9,
+     "K5": 1.0,
+     "K6": 0.9,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 0.0
+    }
+   },
+   {
+    "t": 80,
+    "phase": "pre",
+    "enabled": false,
+    "conditions": [
+     0.79266,
+     0.99232,
+     2.48172
+    ],
+    "groundings": [],
+    "overlay_items": 0,
+    "overlay_changed": false,
+    "revisions": 0,
+    "effects": [],
+    "commitment_distinction": false,
+    "entitlement_distinction": false,
+    "commitment_distinction_latent": false,
+    "entitlement_distinction_latent": false,
+    "effective": {
+     "K1": 1.0,
+     "K3": 1.0,
+     "K4": 0.9,
+     "K5": 1.0,
+     "K6": 0.9,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 0.0
+    }
+   },
+   {
+    "t": 90,
+    "phase": "pre",
+    "enabled": true,
+    "conditions": [
+     0.90554,
+     0.9933,
+     2.40336
+    ],
+    "groundings": [],
+    "overlay_items": 0,
+    "overlay_changed": false,
+    "revisions": 0,
+    "effects": [],
+    "commitment_distinction": false,
+    "entitlement_distinction": false,
+    "commitment_distinction_latent": false,
+    "entitlement_distinction_latent": false,
+    "effective": {
+     "K1": 1.0,
+     "K3": 1.0,
+     "K4": 0.9,
+     "K5": 1.0,
+     "K6": 0.9,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 0.0
+    }
+   },
+   {
+    "t": 100,
+    "phase": "pre",
+    "enabled": true,
+    "conditions": [
+     0.9612,
+     0.98486,
+     2.8658
+    ],
+    "groundings": [],
+    "overlay_items": 0,
+    "overlay_changed": false,
+    "revisions": 0,
+    "effects": [],
+    "commitment_distinction": false,
+    "entitlement_distinction": false,
+    "commitment_distinction_latent": false,
+    "entitlement_distinction_latent": false,
+    "effective": {
+     "K1": 1.0,
+     "K3": 1.0,
+     "K4": 0.9,
+     "K5": 1.0,
+     "K6": 0.9,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 0.0
+    }
+   },
+   {
+    "t": 110,
+    "phase": "pre",
+    "enabled": true,
+    "conditions": [
+     1.01308,
+     0.98782,
+     3.31014
+    ],
+    "groundings": [],
+    "overlay_items": 0,
+    "overlay_changed": false,
+    "revisions": 0,
+    "effects": [],
+    "commitment_distinction": false,
+    "entitlement_distinction": false,
+    "commitment_distinction_latent": false,
+    "entitlement_distinction_latent": false,
+    "effective": {
+     "K1": 1.0,
+     "K3": 1.0,
+     "K4": 0.9,
+     "K5": 1.0,
+     "K6": 0.9,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 0.0
+    }
+   },
+   {
+    "t": 120,
+    "phase": "pre",
+    "enabled": true,
+    "conditions": [
+     1.03321,
+     0.99162,
+     3.09653
+    ],
+    "groundings": [],
+    "overlay_items": 0,
+    "overlay_changed": false,
+    "revisions": 0,
+    "effects": [],
+    "commitment_distinction": false,
+    "entitlement_distinction": false,
+    "commitment_distinction_latent": false,
+    "entitlement_distinction_latent": false,
+    "effective": {
+     "K1": 1.0,
+     "K3": 1.0,
+     "K4": 0.9,
+     "K5": 1.0,
+     "K6": 0.9,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 0.0
+    }
+   },
+   {
+    "t": 130,
+    "phase": "pre",
+    "enabled": true,
+    "conditions": [
+     1.03401,
+     0.98527,
+     2.75336
+    ],
+    "groundings": [],
+    "overlay_items": 0,
+    "overlay_changed": false,
+    "revisions": 0,
+    "effects": [],
+    "commitment_distinction": false,
+    "entitlement_distinction": false,
+    "commitment_distinction_latent": false,
+    "entitlement_distinction_latent": false,
+    "effective": {
+     "K1": 1.0,
+     "K3": 1.0,
+     "K4": 0.9,
+     "K5": 1.0,
+     "K6": 0.9,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 0.0
+    }
+   },
+   {
+    "t": 140,
+    "phase": "pre",
+    "enabled": true,
+    "conditions": [
+     1.03282,
+     0.99084,
+     2.91587
+    ],
+    "groundings": [],
+    "overlay_items": 0,
+    "overlay_changed": false,
+    "revisions": 0,
+    "effects": [],
+    "commitment_distinction": false,
+    "entitlement_distinction": false,
+    "commitment_distinction_latent": false,
+    "entitlement_distinction_latent": false,
+    "effective": {
+     "K1": 1.0,
+     "K3": 1.0,
+     "K4": 0.9,
+     "K5": 1.0,
+     "K6": 0.9,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 0.0
+    }
+   },
+   {
+    "t": 150,
+    "phase": "reasoning",
+    "enabled": true,
+    "conditions": [
+     1.03651,
+     0.99091,
+     2.27077
+    ],
+    "groundings": [
+     0.01706,
+     0.01706,
+     0.04031,
+     0.04031
+    ],
+    "overlay_items": 6,
+    "overlay_changed": true,
+    "revisions": 0,
+    "effects": [
+     "gate \u00d7 0.25 on BA",
+     "gate \u00d7 0.37 on BB",
+     "gate \u00d7 0.64 on BB",
+     "memory condition on R",
+     "threshold \u00d7 0.865 on B",
+     "threshold \u00d7 1.3 on A"
+    ],
+    "commitment_distinction": false,
+    "entitlement_distinction": false,
+    "commitment_distinction_latent": false,
+    "entitlement_distinction_latent": false,
+    "effective": {
+     "K1": 1.0,
+     "K3": 1.0,
+     "K4": 0.9,
+     "K5": 1.0,
+     "K6": 0.9,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 0.0
+    }
+   },
+   {
+    "t": 160,
+    "phase": "reasoning",
+    "enabled": true,
+    "conditions": [
+     1.92828,
+     0.99188,
+     2.62688
+    ],
+    "groundings": [
+     0.01912,
+     0.01912,
+     0.01906,
+     0.01906
+    ],
+    "overlay_items": 4,
+    "overlay_changed": true,
+    "revisions": 1,
+    "effects": [
+     "gate \u00d7 0.25 on BA",
+     "gate \u00d7 0.64 on BB",
+     "memory condition on R",
+     "threshold \u00d7 1.3 on A"
+    ],
+    "commitment_distinction": true,
+    "entitlement_distinction": true,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 1.0,
+     "K3": 1.0,
+     "K4": 0.0,
+     "K5": 1.0,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 1.0
+    }
+   },
+   {
+    "t": 170,
+    "phase": "reasoning",
+    "enabled": true,
+    "conditions": [
+     2.61634,
+     0.99017,
+     2.18726
+    ],
+    "groundings": [
+     0.02035,
+     0.02035,
+     0.01738,
+     0.01738
+    ],
+    "overlay_items": 4,
+    "overlay_changed": true,
+    "revisions": 1,
+    "effects": [
+     "gate \u00d7 0.25 on BA",
+     "gate \u00d7 0.64 on BB",
+     "memory condition on R",
+     "threshold \u00d7 1.3 on A"
+    ],
+    "commitment_distinction": true,
+    "entitlement_distinction": true,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 1.0,
+     "K3": 1.0,
+     "K4": 0.0,
+     "K5": 1.0,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 1.0
+    }
+   },
+   {
+    "t": 180,
+    "phase": "reasoning",
+    "enabled": true,
+    "conditions": [
+     3.15636,
+     0.99027,
+     2.11682
+    ],
+    "groundings": [
+     0.02273,
+     0.02273,
+     0.01468,
+     0.01468
+    ],
+    "overlay_items": 4,
+    "overlay_changed": true,
+    "revisions": 1,
+    "effects": [
+     "gate \u00d7 0.25 on BA",
+     "gate \u00d7 0.64 on BB",
+     "memory condition on R",
+     "threshold \u00d7 1.3 on A"
+    ],
+    "commitment_distinction": true,
+    "entitlement_distinction": true,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 1.0,
+     "K3": 1.0,
+     "K4": 0.0,
+     "K5": 1.0,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 1.0
+    }
+   },
+   {
+    "t": 190,
+    "phase": "reasoning",
+    "enabled": true,
+    "conditions": [
+     3.59986,
+     0.99122,
+     1.67766
+    ],
+    "groundings": [
+     0.0248,
+     0.0248,
+     0.01332,
+     0.01332
+    ],
+    "overlay_items": 4,
+    "overlay_changed": true,
+    "revisions": 1,
+    "effects": [
+     "gate \u00d7 0.25 on BA",
+     "gate \u00d7 0.64 on BB",
+     "memory condition on R",
+     "threshold \u00d7 1.3 on A"
+    ],
+    "commitment_distinction": true,
+    "entitlement_distinction": true,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 1.0,
+     "K3": 1.0,
+     "K4": 0.0,
+     "K5": 1.0,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 1.0
+    }
+   },
+   {
+    "t": 200,
+    "phase": "reasoning",
+    "enabled": true,
+    "conditions": [
+     3.93588,
+     0.99388,
+     2.42368
+    ],
+    "groundings": [
+     0.02661,
+     0.02661,
+     0.01675,
+     0.01675
+    ],
+    "overlay_items": 4,
+    "overlay_changed": true,
+    "revisions": 1,
+    "effects": [
+     "gate \u00d7 0.25 on BA",
+     "gate \u00d7 0.64 on BB",
+     "memory condition on R",
+     "threshold \u00d7 1.3 on A"
+    ],
+    "commitment_distinction": true,
+    "entitlement_distinction": true,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 1.0,
+     "K3": 1.0,
+     "K4": 0.0,
+     "K5": 1.0,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 1.0
+    }
+   },
+   {
+    "t": 210,
+    "phase": "reasoning",
+    "enabled": true,
+    "conditions": [
+     4.21018,
+     0.98617,
+     2.93905
+    ],
+    "groundings": [
+     0.02884,
+     0.02884,
+     0.01916,
+     0.01916
+    ],
+    "overlay_items": 4,
+    "overlay_changed": true,
+    "revisions": 1,
+    "effects": [
+     "gate \u00d7 0.25 on BA",
+     "gate \u00d7 0.64 on BB",
+     "memory condition on R",
+     "threshold \u00d7 1.3 on A"
+    ],
+    "commitment_distinction": true,
+    "entitlement_distinction": true,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 1.0,
+     "K3": 1.0,
+     "K4": 0.0,
+     "K5": 1.0,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 1.0
+    }
+   },
+   {
+    "t": 220,
+    "phase": "reasoning",
+    "enabled": true,
+    "conditions": [
+     4.45175,
+     0.98632,
+     2.98427
+    ],
+    "groundings": [
+     0.03005,
+     0.03005,
+     0.02119,
+     0.02119
+    ],
+    "overlay_items": 4,
+    "overlay_changed": true,
+    "revisions": 1,
+    "effects": [
+     "gate \u00d7 0.25 on BA",
+     "gate \u00d7 0.64 on BB",
+     "memory condition on R",
+     "threshold \u00d7 1.3 on A"
+    ],
+    "commitment_distinction": true,
+    "entitlement_distinction": true,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 1.0,
+     "K3": 1.0,
+     "K4": 0.0,
+     "K5": 1.0,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 1.0
+    }
+   },
+   {
+    "t": 230,
+    "phase": "reasoning",
+    "enabled": true,
+    "conditions": [
+     4.68576,
+     0.98984,
+     3.00004
+    ],
+    "groundings": [
+     0.03182,
+     0.03182,
+     0.0219,
+     0.0219
+    ],
+    "overlay_items": 4,
+    "overlay_changed": true,
+    "revisions": 1,
+    "effects": [
+     "gate \u00d7 0.25 on BA",
+     "gate \u00d7 0.64 on BB",
+     "memory condition on R",
+     "threshold \u00d7 1.3 on A"
+    ],
+    "commitment_distinction": true,
+    "entitlement_distinction": true,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 1.0,
+     "K3": 1.0,
+     "K4": 0.0,
+     "K5": 1.0,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 1.0
+    }
+   },
+   {
+    "t": 240,
+    "phase": "reasoning",
+    "enabled": true,
+    "conditions": [
+     4.89703,
+     0.9866,
+     3.29388
+    ],
+    "groundings": [
+     0.03397,
+     0.03397,
+     0.02633,
+     0.02633
+    ],
+    "overlay_items": 4,
+    "overlay_changed": true,
+    "revisions": 1,
+    "effects": [
+     "gate \u00d7 0.25 on BA",
+     "gate \u00d7 0.64 on BB",
+     "memory condition on R",
+     "threshold \u00d7 1.3 on A"
+    ],
+    "commitment_distinction": true,
+    "entitlement_distinction": true,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 1.0,
+     "K3": 1.0,
+     "K4": 0.0,
+     "K5": 1.0,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 1.0
+    }
+   },
+   {
+    "t": 250,
+    "phase": "reasoning",
+    "enabled": true,
+    "conditions": [
+     5.06316,
+     0.98753,
+     3.2459
+    ],
+    "groundings": [
+     0.03646,
+     0.03646,
+     0.02371,
+     0.02371
+    ],
+    "overlay_items": 4,
+    "overlay_changed": true,
+    "revisions": 1,
+    "effects": [
+     "gate \u00d7 0.25 on BA",
+     "gate \u00d7 0.64 on BB",
+     "memory condition on R",
+     "threshold \u00d7 1.3 on A"
+    ],
+    "commitment_distinction": true,
+    "entitlement_distinction": true,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 1.0,
+     "K3": 1.0,
+     "K4": 0.0,
+     "K5": 1.0,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 1.0
+    }
+   },
+   {
+    "t": 260,
+    "phase": "reasoning",
+    "enabled": true,
+    "conditions": [
+     5.20118,
+     0.99091,
+     2.93534
+    ],
+    "groundings": [
+     0.03902,
+     0.03902,
+     0.02456,
+     0.02456
+    ],
+    "overlay_items": 4,
+    "overlay_changed": true,
+    "revisions": 1,
+    "effects": [
+     "gate \u00d7 0.25 on BA",
+     "gate \u00d7 0.64 on BB",
+     "memory condition on R",
+     "threshold \u00d7 1.3 on A"
+    ],
+    "commitment_distinction": true,
+    "entitlement_distinction": true,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 1.0,
+     "K3": 1.0,
+     "K4": 0.0,
+     "K5": 1.0,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 1.0
+    }
+   },
+   {
+    "t": 270,
+    "phase": "reasoning",
+    "enabled": true,
+    "conditions": [
+     5.28454,
+     0.98771,
+     2.87159
+    ],
+    "groundings": [
+     0.03719,
+     0.03719,
+     0.0223,
+     0.0223
+    ],
+    "overlay_items": 4,
+    "overlay_changed": true,
+    "revisions": 1,
+    "effects": [
+     "gate \u00d7 0.25 on BA",
+     "gate \u00d7 0.64 on BB",
+     "memory condition on R",
+     "threshold \u00d7 1.3 on A"
+    ],
+    "commitment_distinction": true,
+    "entitlement_distinction": true,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 1.0,
+     "K3": 1.0,
+     "K4": 0.0,
+     "K5": 1.0,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 1.0
+    }
+   },
+   {
+    "t": 280,
+    "phase": "reasoning",
+    "enabled": true,
+    "conditions": [
+     5.36607,
+     0.98301,
+     3.07889
+    ],
+    "groundings": [
+     0.03466,
+     0.03466,
+     0.02247,
+     0.02247
+    ],
+    "overlay_items": 4,
+    "overlay_changed": true,
+    "revisions": 1,
+    "effects": [
+     "gate \u00d7 0.25 on BA",
+     "gate \u00d7 0.64 on BB",
+     "memory condition on R",
+     "threshold \u00d7 1.3 on A"
+    ],
+    "commitment_distinction": true,
+    "entitlement_distinction": true,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 1.0,
+     "K3": 1.0,
+     "K4": 0.0,
+     "K5": 1.0,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 1.0
+    }
+   },
+   {
+    "t": 290,
+    "phase": "reasoning",
+    "enabled": true,
+    "conditions": [
+     5.41239,
+     0.99115,
+     3.27756
+    ],
+    "groundings": [
+     0.03253,
+     0.03253,
+     0.02617,
+     0.02617
+    ],
+    "overlay_items": 4,
+    "overlay_changed": true,
+    "revisions": 1,
+    "effects": [
+     "gate \u00d7 0.25 on BA",
+     "gate \u00d7 0.64 on BB",
+     "memory condition on R",
+     "threshold \u00d7 1.3 on A"
+    ],
+    "commitment_distinction": true,
+    "entitlement_distinction": true,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 1.0,
+     "K3": 1.0,
+     "K4": 0.0,
+     "K5": 1.0,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 1.0
+    }
+   },
+   {
+    "t": 300,
+    "phase": "reasoning",
+    "enabled": true,
+    "conditions": [
+     5.45114,
+     0.98962,
+     2.89843
+    ],
+    "groundings": [
+     0.03176,
+     0.03176,
+     0.02392,
+     0.02392
+    ],
+    "overlay_items": 4,
+    "overlay_changed": true,
+    "revisions": 1,
+    "effects": [
+     "gate \u00d7 0.25 on BA",
+     "gate \u00d7 0.64 on BB",
+     "memory condition on R",
+     "threshold \u00d7 1.3 on A"
+    ],
+    "commitment_distinction": true,
+    "entitlement_distinction": true,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 1.0,
+     "K3": 1.0,
+     "K4": 0.0,
+     "K5": 1.0,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 1.0
+    }
+   },
+   {
+    "t": 310,
+    "phase": "reasoning",
+    "enabled": true,
+    "conditions": [
+     5.49025,
+     0.98348,
+     3.61799
+    ],
+    "groundings": [
+     0.02934,
+     0.02934,
+     0.03011,
+     0.03011
+    ],
+    "overlay_items": 4,
+    "overlay_changed": true,
+    "revisions": 1,
+    "effects": [
+     "gate \u00d7 0.25 on BA",
+     "gate \u00d7 0.64 on BB",
+     "memory condition on R",
+     "threshold \u00d7 1.3 on A"
+    ],
+    "commitment_distinction": true,
+    "entitlement_distinction": true,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 1.0,
+     "K3": 1.0,
+     "K4": 0.0,
+     "K5": 1.0,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 1.0
+    }
+   },
+   {
+    "t": 320,
+    "phase": "reasoning",
+    "enabled": true,
+    "conditions": [
+     5.5291,
+     0.99063,
+     3.05069
+    ],
+    "groundings": [
+     0.02881,
+     0.02881,
+     0.02919,
+     0.02919
+    ],
+    "overlay_items": 4,
+    "overlay_changed": true,
+    "revisions": 1,
+    "effects": [
+     "gate \u00d7 0.25 on BA",
+     "gate \u00d7 0.64 on BB",
+     "memory condition on R",
+     "threshold \u00d7 1.3 on A"
+    ],
+    "commitment_distinction": true,
+    "entitlement_distinction": true,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 1.0,
+     "K3": 1.0,
+     "K4": 0.0,
+     "K5": 1.0,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 1.0
+    }
+   },
+   {
+    "t": 330,
+    "phase": "reasoning",
+    "enabled": true,
+    "conditions": [
+     5.58613,
+     0.98152,
+     3.48454
+    ],
+    "groundings": [
+     0.02987,
+     0.02987,
+     0.02788,
+     0.02788
+    ],
+    "overlay_items": 2,
+    "overlay_changed": true,
+    "revisions": 2,
+    "effects": [
+     "gate \u00d7 0.64 on BB",
+     "memory condition on R"
+    ],
+    "commitment_distinction": true,
+    "entitlement_distinction": true,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 0.0,
+     "K3": 0.0,
+     "K4": 0.0,
+     "K5": 1.0,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 1.0
+    }
+   },
+   {
+    "t": 340,
+    "phase": "reasoning",
+    "enabled": true,
+    "conditions": [
+     5.62809,
+     0.98097,
+     3.79121
+    ],
+    "groundings": [
+     0.03072,
+     0.03072,
+     0.05209,
+     0.05209
+    ],
+    "overlay_items": 2,
+    "overlay_changed": true,
+    "revisions": 2,
+    "effects": [
+     "gate \u00d7 0.64 on BB",
+     "memory condition on R"
+    ],
+    "commitment_distinction": true,
+    "entitlement_distinction": true,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 0.0,
+     "K3": 0.0,
+     "K4": 0.0,
+     "K5": 1.0,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 1.0
+    }
+   },
+   {
+    "t": 350,
+    "phase": "reasoning",
+    "enabled": true,
+    "conditions": [
+     5.65383,
+     0.98491,
+     3.70649
+    ],
+    "groundings": [
+     0.03271,
+     0.03271,
+     0.05803,
+     0.05803
+    ],
+    "overlay_items": 2,
+    "overlay_changed": true,
+    "revisions": 2,
+    "effects": [
+     "gate \u00d7 0.64 on BB",
+     "memory condition on R"
+    ],
+    "commitment_distinction": true,
+    "entitlement_distinction": true,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 0.0,
+     "K3": 0.0,
+     "K4": 0.0,
+     "K5": 1.0,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 1.0
+    }
+   },
+   {
+    "t": 360,
+    "phase": "reasoning",
+    "enabled": true,
+    "conditions": [
+     5.68405,
+     0.98357,
+     3.71704
+    ],
+    "groundings": [
+     0.03447,
+     0.03447,
+     0.06684,
+     0.06684
+    ],
+    "overlay_items": 2,
+    "overlay_changed": true,
+    "revisions": 2,
+    "effects": [
+     "gate \u00d7 0.64 on BB",
+     "memory condition on R"
+    ],
+    "commitment_distinction": true,
+    "entitlement_distinction": true,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 0.0,
+     "K3": 0.0,
+     "K4": 0.0,
+     "K5": 1.0,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 1.0
+    }
+   },
+   {
+    "t": 370,
+    "phase": "reasoning",
+    "enabled": true,
+    "conditions": [
+     5.68303,
+     0.983,
+     4.00359
+    ],
+    "groundings": [
+     0.03528,
+     0.03528,
+     0.06889,
+     0.06889
+    ],
+    "overlay_items": 2,
+    "overlay_changed": true,
+    "revisions": 2,
+    "effects": [
+     "gate \u00d7 0.64 on BB",
+     "memory condition on R"
+    ],
+    "commitment_distinction": true,
+    "entitlement_distinction": true,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 0.0,
+     "K3": 0.0,
+     "K4": 0.0,
+     "K5": 1.0,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 1.0
+    }
+   },
+   {
+    "t": 380,
+    "phase": "reasoning",
+    "enabled": true,
+    "conditions": [
+     5.67965,
+     0.98174,
+     3.94593
+    ],
+    "groundings": [
+     0.03493,
+     0.03493,
+     0.06569,
+     0.06569
+    ],
+    "overlay_items": 2,
+    "overlay_changed": true,
+    "revisions": 2,
+    "effects": [
+     "gate \u00d7 0.64 on BB",
+     "memory condition on R"
+    ],
+    "commitment_distinction": true,
+    "entitlement_distinction": true,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 0.0,
+     "K3": 0.0,
+     "K4": 0.0,
+     "K5": 1.0,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 1.0
+    }
+   },
+   {
+    "t": 390,
+    "phase": "reasoning",
+    "enabled": true,
+    "conditions": [
+     5.68699,
+     0.98266,
+     3.71443
+    ],
+    "groundings": [
+     0.03519,
+     0.03519,
+     0.07521,
+     0.07521
+    ],
+    "overlay_items": 2,
+    "overlay_changed": true,
+    "revisions": 2,
+    "effects": [
+     "gate \u00d7 0.64 on BB",
+     "memory condition on R"
+    ],
+    "commitment_distinction": true,
+    "entitlement_distinction": true,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 0.0,
+     "K3": 0.0,
+     "K4": 0.0,
+     "K5": 1.0,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 1.0
+    }
+   },
+   {
+    "t": 400,
+    "phase": "reasoning",
+    "enabled": true,
+    "conditions": [
+     5.69182,
+     0.98564,
+     3.13897
+    ],
+    "groundings": [
+     0.03656,
+     0.03656,
+     0.06637,
+     0.06637
+    ],
+    "overlay_items": 2,
+    "overlay_changed": true,
+    "revisions": 2,
+    "effects": [
+     "gate \u00d7 0.64 on BB",
+     "memory condition on R"
+    ],
+    "commitment_distinction": true,
+    "entitlement_distinction": true,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 0.0,
+     "K3": 0.0,
+     "K4": 0.0,
+     "K5": 1.0,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 1.0
+    }
+   },
+   {
+    "t": 410,
+    "phase": "reasoning",
+    "enabled": true,
+    "conditions": [
+     5.70444,
+     0.98714,
+     3.43801
+    ],
+    "groundings": [
+     0.03726,
+     0.03726,
+     0.06741,
+     0.06741
+    ],
+    "overlay_items": 2,
+    "overlay_changed": true,
+    "revisions": 2,
+    "effects": [
+     "gate \u00d7 0.64 on BB",
+     "memory condition on R"
+    ],
+    "commitment_distinction": true,
+    "entitlement_distinction": true,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 0.0,
+     "K3": 0.0,
+     "K4": 0.0,
+     "K5": 1.0,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 1.0
+    }
+   },
+   {
+    "t": 420,
+    "phase": "reasoning",
+    "enabled": true,
+    "conditions": [
+     5.75958,
+     0.98229,
+     3.37604
+    ],
+    "groundings": [
+     0.03834,
+     0.03834,
+     0.0788,
+     0.0788
+    ],
+    "overlay_items": 2,
+    "overlay_changed": true,
+    "revisions": 2,
+    "effects": [
+     "gate \u00d7 0.64 on BB",
+     "memory condition on R"
+    ],
+    "commitment_distinction": true,
+    "entitlement_distinction": true,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 0.0,
+     "K3": 0.0,
+     "K4": 0.0,
+     "K5": 1.0,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 1.0
+    }
+   },
+   {
+    "t": 430,
+    "phase": "reasoning",
+    "enabled": true,
+    "conditions": [
+     5.78698,
+     0.98243,
+     3.39303
+    ],
+    "groundings": [
+     0.03895,
+     0.03895,
+     0.07791,
+     0.07791
+    ],
+    "overlay_items": 2,
+    "overlay_changed": true,
+    "revisions": 2,
+    "effects": [
+     "gate \u00d7 0.64 on BB",
+     "memory condition on R"
+    ],
+    "commitment_distinction": true,
+    "entitlement_distinction": true,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 0.0,
+     "K3": 0.0,
+     "K4": 0.0,
+     "K5": 1.0,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 1.0
+    }
+   },
+   {
+    "t": 440,
+    "phase": "reasoning",
+    "enabled": true,
+    "conditions": [
+     5.81651,
+     0.99158,
+     3.36214
+    ],
+    "groundings": [
+     0.04051,
+     0.04051,
+     0.08334,
+     0.08334
+    ],
+    "overlay_items": 2,
+    "overlay_changed": true,
+    "revisions": 2,
+    "effects": [
+     "gate \u00d7 0.64 on BB",
+     "memory condition on R"
+    ],
+    "commitment_distinction": true,
+    "entitlement_distinction": true,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 0.0,
+     "K3": 0.0,
+     "K4": 0.0,
+     "K5": 1.0,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 1.0
+    }
+   },
+   {
+    "t": 450,
+    "phase": "reasoning",
+    "enabled": true,
+    "conditions": [
+     5.8389,
+     0.98265,
+     3.52511
+    ],
+    "groundings": [
+     0.03991,
+     0.03991,
+     0.07696,
+     0.07696
+    ],
+    "overlay_items": 2,
+    "overlay_changed": true,
+    "revisions": 2,
+    "effects": [
+     "gate \u00d7 0.64 on BB",
+     "memory condition on R"
+    ],
+    "commitment_distinction": true,
+    "entitlement_distinction": true,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 0.0,
+     "K3": 0.0,
+     "K4": 0.0,
+     "K5": 1.0,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 1.0
+    }
+   },
+   {
+    "t": 460,
+    "phase": "reasoning",
+    "enabled": true,
+    "conditions": [
+     0.21414,
+     0.98963,
+     3.63723
+    ],
+    "groundings": [
+     0.04122,
+     0.04122,
+     0.0811,
+     0.0811
+    ],
+    "overlay_items": 3,
+    "overlay_changed": true,
+    "revisions": 2,
+    "effects": [
+     "gate \u00d7 0.64 on BB",
+     "memory condition on R",
+     "world MemoryCondition"
+    ],
+    "commitment_distinction": true,
+    "entitlement_distinction": true,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 0.0,
+     "K3": 0.0,
+     "K4": 0.0,
+     "K5": 1.0,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 1.0
+    }
+   },
+   {
+    "t": 470,
+    "phase": "collapsed",
+    "enabled": false,
+    "conditions": [
+     0.20847,
+     0.99036,
+     3.20499
+    ],
+    "groundings": [],
+    "overlay_items": 1,
+    "overlay_changed": true,
+    "revisions": 2,
+    "effects": [
+     "world MemoryCondition"
+    ],
+    "commitment_distinction": false,
+    "entitlement_distinction": false,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 0.0,
+     "K3": 0.0,
+     "K4": 0.0,
+     "K5": 0.6,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.54,
+     "K2": 0.6,
+     "K9": 0.6
+    }
+   },
+   {
+    "t": 480,
+    "phase": "collapsed",
+    "enabled": false,
+    "conditions": [
+     0.17584,
+     0.9938,
+     3.10823
+    ],
+    "groundings": [],
+    "overlay_items": 1,
+    "overlay_changed": false,
+    "revisions": 2,
+    "effects": [
+     "world MemoryCondition"
+    ],
+    "commitment_distinction": false,
+    "entitlement_distinction": false,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 0.0,
+     "K3": 0.0,
+     "K4": 0.0,
+     "K5": 0.36,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.324,
+     "K2": 0.36,
+     "K9": 0.36
+    }
+   },
+   {
+    "t": 490,
+    "phase": "collapsed",
+    "enabled": false,
+    "conditions": [
+     0.18227,
+     0.9904,
+     3.3118
+    ],
+    "groundings": [],
+    "overlay_items": 1,
+    "overlay_changed": false,
+    "revisions": 2,
+    "effects": [
+     "world MemoryCondition"
+    ],
+    "commitment_distinction": false,
+    "entitlement_distinction": false,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 0.0,
+     "K3": 0.0,
+     "K4": 0.0,
+     "K5": 0.216,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.1944,
+     "K2": 0.216,
+     "K9": 0.216
+    }
+   },
+   {
+    "t": 500,
+    "phase": "collapsed",
+    "enabled": false,
+    "conditions": [
+     0.17363,
+     0.99179,
+     3.20696
+    ],
+    "groundings": [],
+    "overlay_items": 1,
+    "overlay_changed": false,
+    "revisions": 2,
+    "effects": [
+     "world MemoryCondition"
+    ],
+    "commitment_distinction": false,
+    "entitlement_distinction": false,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 0.0,
+     "K3": 0.0,
+     "K4": 0.0,
+     "K5": 0.1296,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.11664,
+     "K2": 0.1296,
+     "K9": 0.1296
+    }
+   },
+   {
+    "t": 510,
+    "phase": "collapsed",
+    "enabled": false,
+    "conditions": [
+     0.17489,
+     0.99453,
+     2.81134
+    ],
+    "groundings": [],
+    "overlay_items": 1,
+    "overlay_changed": false,
+    "revisions": 2,
+    "effects": [
+     "world MemoryCondition"
+    ],
+    "commitment_distinction": false,
+    "entitlement_distinction": false,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 0.0,
+     "K3": 0.0,
+     "K4": 0.0,
+     "K5": 0.07776,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.069984,
+     "K2": 0.07776,
+     "K9": 0.07776
+    }
+   },
+   {
+    "t": 520,
+    "phase": "collapsed",
+    "enabled": false,
+    "conditions": [
+     0.18258,
+     0.9925,
+     3.04468
+    ],
+    "groundings": [],
+    "overlay_items": 1,
+    "overlay_changed": false,
+    "revisions": 2,
+    "effects": [
+     "world MemoryCondition"
+    ],
+    "commitment_distinction": false,
+    "entitlement_distinction": false,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 0.0,
+     "K3": 0.0,
+     "K4": 0.0,
+     "K5": 0.046656,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.04199,
+     "K2": 0.046656,
+     "K9": 0.046656
+    }
+   },
+   {
+    "t": 530,
+    "phase": "collapsed",
+    "enabled": false,
+    "conditions": [
+     0.18454,
+     0.99455,
+     3.00033
+    ],
+    "groundings": [],
+    "overlay_items": 1,
+    "overlay_changed": false,
+    "revisions": 2,
+    "effects": [
+     "world MemoryCondition"
+    ],
+    "commitment_distinction": false,
+    "entitlement_distinction": false,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 0.0,
+     "K3": 0.0,
+     "K4": 0.0,
+     "K5": 0.027994,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.025194,
+     "K2": 0.027994,
+     "K9": 0.027994
+    }
+   },
+   {
+    "t": 540,
+    "phase": "collapsed",
+    "enabled": false,
+    "conditions": [
+     0.17605,
+     0.99524,
+     3.48716
+    ],
+    "groundings": [],
+    "overlay_items": 1,
+    "overlay_changed": false,
+    "revisions": 2,
+    "effects": [
+     "world MemoryCondition"
+    ],
+    "commitment_distinction": false,
+    "entitlement_distinction": false,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 0.0,
+     "K3": 0.0,
+     "K4": 0.0,
+     "K5": 0.016796,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.015117,
+     "K2": 0.016796,
+     "K9": 0.016796
+    }
+   },
+   {
+    "t": 550,
+    "phase": "collapsed",
+    "enabled": false,
+    "conditions": [
+     0.17097,
+     0.99254,
+     2.7249
+    ],
+    "groundings": [],
+    "overlay_items": 1,
+    "overlay_changed": false,
+    "revisions": 2,
+    "effects": [
+     "world MemoryCondition"
+    ],
+    "commitment_distinction": false,
+    "entitlement_distinction": false,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 0.0,
+     "K3": 0.0,
+     "K4": 0.0,
+     "K5": 0.010078,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.00907,
+     "K2": 0.010078,
+     "K9": 0.010078
+    }
+   },
+   {
+    "t": 560,
+    "phase": "collapsed",
+    "enabled": false,
+    "conditions": [
+     0.17706,
+     0.99256,
+     3.0995
+    ],
+    "groundings": [],
+    "overlay_items": 1,
+    "overlay_changed": false,
+    "revisions": 2,
+    "effects": [
+     "world MemoryCondition"
+    ],
+    "commitment_distinction": false,
+    "entitlement_distinction": false,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 0.0,
+     "K3": 0.0,
+     "K4": 0.0,
+     "K5": 0.006047,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.005442,
+     "K2": 0.006047,
+     "K9": 0.006047
+    }
+   },
+   {
+    "t": 570,
+    "phase": "collapsed",
+    "enabled": false,
+    "conditions": [
+     0.21116,
+     0.99461,
+     3.09772
+    ],
+    "groundings": [],
+    "overlay_items": 1,
+    "overlay_changed": false,
+    "revisions": 2,
+    "effects": [
+     "world MemoryCondition"
+    ],
+    "commitment_distinction": false,
+    "entitlement_distinction": false,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 0.0,
+     "K3": 0.0,
+     "K4": 0.0,
+     "K5": 0.003628,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.003265,
+     "K2": 0.003628,
+     "K9": 0.003628
+    }
+   },
+   {
+    "t": 580,
+    "phase": "collapsed",
+    "enabled": false,
+    "conditions": [
+     0.18906,
+     0.99329,
+     2.86177
+    ],
+    "groundings": [],
+    "overlay_items": 1,
+    "overlay_changed": false,
+    "revisions": 2,
+    "effects": [
+     "world MemoryCondition"
+    ],
+    "commitment_distinction": false,
+    "entitlement_distinction": false,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 0.0,
+     "K3": 0.0,
+     "K4": 0.0,
+     "K5": 0.002177,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.001959,
+     "K2": 0.002177,
+     "K9": 0.002177
+    }
+   },
+   {
+    "t": 590,
+    "phase": "collapsed",
+    "enabled": false,
+    "conditions": [
+     0.19559,
+     0.99331,
+     2.93314
+    ],
+    "groundings": [],
+    "overlay_items": 1,
+    "overlay_changed": false,
+    "revisions": 2,
+    "effects": [
+     "world MemoryCondition"
+    ],
+    "commitment_distinction": false,
+    "entitlement_distinction": false,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 0.0,
+     "K3": 0.0,
+     "K4": 0.0,
+     "K5": 0.001306,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.001175,
+     "K2": 0.001306,
+     "K9": 0.001306
+    }
+   },
+   {
+    "t": 600,
+    "phase": "collapsed",
+    "enabled": false,
+    "conditions": [
+     0.1881,
+     0.99198,
+     3.46278
+    ],
+    "groundings": [],
+    "overlay_items": 1,
+    "overlay_changed": false,
+    "revisions": 2,
+    "effects": [
+     "world MemoryCondition"
+    ],
+    "commitment_distinction": false,
+    "entitlement_distinction": false,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 0.0,
+     "K3": 0.0,
+     "K4": 0.0,
+     "K5": 0.000784,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.000705,
+     "K2": 0.000784,
+     "K9": 0.000784
+    }
+   },
+   {
+    "t": 610,
+    "phase": "collapsed",
+    "enabled": false,
+    "conditions": [
+     0.17904,
+     0.98935,
+     2.98388
+    ],
+    "groundings": [],
+    "overlay_items": 1,
+    "overlay_changed": false,
+    "revisions": 2,
+    "effects": [
+     "world MemoryCondition"
+    ],
+    "commitment_distinction": false,
+    "entitlement_distinction": false,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 0.0,
+     "K3": 0.0,
+     "K4": 0.0,
+     "K5": 0.00047,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.000423,
+     "K2": 0.00047,
+     "K9": 0.00047
+    }
+   },
+   {
+    "t": 620,
+    "phase": "collapsed",
+    "enabled": false,
+    "conditions": [
+     0.19055,
+     0.99202,
+     3.16254
+    ],
+    "groundings": [],
+    "overlay_items": 1,
+    "overlay_changed": false,
+    "revisions": 2,
+    "effects": [
+     "world MemoryCondition"
+    ],
+    "commitment_distinction": false,
+    "entitlement_distinction": false,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 0.0,
+     "K3": 0.0,
+     "K4": 0.0,
+     "K5": 0.000282,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.000254,
+     "K2": 0.000282,
+     "K9": 0.000282
+    }
+   },
+   {
+    "t": 630,
+    "phase": "collapsed",
+    "enabled": false,
+    "conditions": [
+     0.18125,
+     0.98938,
+     3.89442
+    ],
+    "groundings": [],
+    "overlay_items": 1,
+    "overlay_changed": false,
+    "revisions": 2,
+    "effects": [
+     "world MemoryCondition"
+    ],
+    "commitment_distinction": false,
+    "entitlement_distinction": false,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 0.0,
+     "K3": 0.0,
+     "K4": 0.0,
+     "K5": 0.000169,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.000152,
+     "K2": 0.000169,
+     "K9": 0.000169
+    }
+   },
+   {
+    "t": 640,
+    "phase": "collapsed",
+    "enabled": false,
+    "conditions": [
+     0.20127,
+     0.9927,
+     3.6944
+    ],
+    "groundings": [],
+    "overlay_items": 1,
+    "overlay_changed": false,
+    "revisions": 2,
+    "effects": [
+     "world MemoryCondition"
+    ],
+    "commitment_distinction": false,
+    "entitlement_distinction": false,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 0.0,
+     "K3": 0.0,
+     "K4": 0.0,
+     "K5": 0.000102,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 9.1e-05,
+     "K2": 0.000102,
+     "K9": 0.000102
+    }
+   },
+   {
+    "t": 650,
+    "phase": "collapsed",
+    "enabled": false,
+    "conditions": [
+     0.19447,
+     0.98942,
+     3.78391
+    ],
+    "groundings": [],
+    "overlay_items": 1,
+    "overlay_changed": false,
+    "revisions": 2,
+    "effects": [
+     "world MemoryCondition"
+    ],
+    "commitment_distinction": false,
+    "entitlement_distinction": false,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 0.0,
+     "K3": 0.0,
+     "K4": 0.0,
+     "K5": 6.1e-05,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 5.5e-05,
+     "K2": 6.1e-05,
+     "K9": 6.1e-05
+    }
+   },
+   {
+    "t": 660,
+    "phase": "collapsed",
+    "enabled": false,
+    "conditions": [
+     0.18587,
+     0.99207,
+     3.9287
+    ],
+    "groundings": [],
+    "overlay_items": 1,
+    "overlay_changed": false,
+    "revisions": 2,
+    "effects": [
+     "world MemoryCondition"
+    ],
+    "commitment_distinction": false,
+    "entitlement_distinction": false,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 0.0,
+     "K3": 0.0,
+     "K4": 0.0,
+     "K5": 3.7e-05,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 3.3e-05,
+     "K2": 3.7e-05,
+     "K9": 3.7e-05
+    }
+   },
+   {
+    "t": 670,
+    "phase": "collapsed",
+    "enabled": false,
+    "conditions": [
+     0.18797,
+     0.99144,
+     3.46644
+    ],
+    "groundings": [],
+    "overlay_items": 1,
+    "overlay_changed": false,
+    "revisions": 2,
+    "effects": [
+     "world MemoryCondition"
+    ],
+    "commitment_distinction": false,
+    "entitlement_distinction": false,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 0.0,
+     "K3": 0.0,
+     "K4": 0.0,
+     "K5": 2.2e-05,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 2e-05,
+     "K2": 2.2e-05,
+     "K9": 2.2e-05
+    }
+   },
+   {
+    "t": 680,
+    "phase": "collapsed",
+    "enabled": false,
+    "conditions": [
+     0.18893,
+     0.9967,
+     2.90314
+    ],
+    "groundings": [],
+    "overlay_items": 1,
+    "overlay_changed": false,
+    "revisions": 2,
+    "effects": [
+     "world MemoryCondition"
+    ],
+    "commitment_distinction": false,
+    "entitlement_distinction": false,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 0.0,
+     "K3": 0.0,
+     "K4": 0.0,
+     "K5": 1.3e-05,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 1.2e-05,
+     "K2": 1.3e-05,
+     "K9": 1.3e-05
+    }
+   },
+   {
+    "t": 690,
+    "phase": "collapsed",
+    "enabled": false,
+    "conditions": [
+     0.18999,
+     0.99736,
+     2.68638
+    ],
+    "groundings": [],
+    "overlay_items": 1,
+    "overlay_changed": false,
+    "revisions": 2,
+    "effects": [
+     "world MemoryCondition"
+    ],
+    "commitment_distinction": false,
+    "entitlement_distinction": false,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 0.0,
+     "K3": 0.0,
+     "K4": 0.0,
+     "K5": 8e-06,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 7e-06,
+     "K2": 8e-06,
+     "K9": 8e-06
+    }
+   },
+   {
+    "t": 700,
+    "phase": "collapsed",
+    "enabled": false,
+    "conditions": [
+     0.19598,
+     0.99539,
+     2.84137
+    ],
+    "groundings": [],
+    "overlay_items": 1,
+    "overlay_changed": false,
+    "revisions": 2,
+    "effects": [
+     "world MemoryCondition"
+    ],
+    "commitment_distinction": false,
+    "entitlement_distinction": false,
+    "commitment_distinction_latent": true,
+    "entitlement_distinction_latent": true,
+    "effective": {
+     "K1": 0.0,
+     "K3": 0.0,
+     "K4": 0.0,
+     "K5": 5e-06,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 4e-06,
+     "K2": 5e-06,
+     "K9": 5e-06
+    }
+   }
+  ],
+  "by_phase": {
+   "pre": {
+    "checks": 14,
+    "commitment_distinction": 0,
+    "entitlement_distinction": 0,
+    "overlay_changes": 0
+   },
+   "reasoning": {
+    "checks": 32,
+    "commitment_distinction": 31,
+    "entitlement_distinction": 31,
+    "overlay_changes": 32
+   },
+   "collapsed": {
+    "checks": 24,
+    "commitment_distinction": 0,
+    "entitlement_distinction": 0,
+    "overlay_changes": 1
+   }
+  },
+  "first_commitment_distinction": 160,
+  "first_entitlement_distinction": 160,
+  "enabled_at": 150,
+  "collapsed_at": 470,
+  "sensitivity_to_reasoning_edit": {
+   "100": {
+    "phase": "pre",
+    "exceeds_noise_on": [],
+    "edit_event_distance": 0.08355624294329715,
+    "noise_event_distance": 0.1281401900815083,
+    "edit_first_divergence": 51
+   },
+   "300": {
+    "phase": "reasoning",
+    "exceeds_noise_on": [],
+    "edit_event_distance": 0.0925556681347221,
+    "noise_event_distance": 0.1800732875120559,
+    "edit_first_divergence": 2
+   },
+   "600": {
+    "phase": "collapsed",
+    "exceeds_noise_on": [],
+    "edit_event_distance": 0.0,
+    "noise_event_distance": 0.11353511977458933,
+    "edit_first_divergence": null
+   }
+  },
+  "reasoning_vs_none_world_distance": {
+   "event_sequence": 0.08116283730357116,
+   "graph_edit": 0.10214448802703761,
+   "difference_w1": 0.03560570385343497,
+   "signature": 0.29799107142857145,
+   "first_divergence": 151,
+   "criterion:reachable_structure": 0.0906789871857695,
+   "criterion:branching": 0.01772797050507388,
+   "criterion:closure": 0.04814882894317528,
+   "criterion:recurrent_loops": 0.10522654373473593,
+   "criterion:fragmentation": 0.0,
+   "criterion:concentration": 0.010398561290426128,
+   "criterion:persistence": 0.05280388676772626,
+   "criterion:amplification_regime": 0.02567243851905527,
+   "criterion:path_dependence": 0.0067210308906765675
+  }
+ },
+ "enabling_matrix": {
+  "conditions": {
+   "none degraded (reference)": {
+    "gated_collapsed_share": 0.0,
+    "measured_by_gate": false,
+    "ungated": {
+     "world_effect_vs_none": {
+      "world_effect_detected": true,
+      "intervention_checks_differing": 0.975,
+      "identical_runs": 0,
+      "effects": {
+       "s:reignitions": {
+        "t": -4.21,
+        "relative": -0.1915
+       },
+       "s:topology_change": {
+        "t": 7.8,
+        "relative": 0.2101
+       },
+       "s:memory_dependence": {
+        "t": 6.84,
+        "relative": 1.933
+       },
+       "rate:new_connections": {
+        "t": 6.3,
+        "relative": 0.1193
+       }
+      }
+     },
+     "persistence_vs_memoryless": {
+      "world_effect_detected": false,
+      "intervention_checks_differing": 0.312,
+      "identical_runs": 0,
+      "effects": {}
+     },
+     "counterfactual_discrimination": {
+      "world_effect_detected": true,
+      "intervention_checks_differing": 0.95,
+      "identical_runs": 0,
+      "effects": {
+       "rate:new_connections": {
+        "t": 4.35,
+        "relative": 0.0604
+       }
+      }
+     }
+    },
+    "adaptivity": 0.0,
+    "valuable_on": [
+     "world_effect_vs_none",
+     "counterfactual_discrimination"
+    ]
+   },
+   "external memory": {
+    "gated_collapsed_share": 0.833,
+    "measured_by_gate": true,
+    "ungated": {
+     "world_effect_vs_none": {
+      "world_effect_detected": false,
+      "intervention_checks_differing": 0.975,
+      "identical_runs": 0,
+      "effects": {}
+     },
+     "persistence_vs_memoryless": {
+      "world_effect_detected": false,
+      "intervention_checks_differing": 0.271,
+      "identical_runs": 0,
+      "effects": {}
+     },
+     "counterfactual_discrimination": {
+      "world_effect_detected": false,
+      "intervention_checks_differing": 0.95,
+      "identical_runs": 0,
+      "effects": {}
+     }
+    },
+    "adaptivity": 0.075,
+    "valuable_on": []
+   },
+   "stable addressability": {
+    "gated_collapsed_share": 0.833,
+    "measured_by_gate": true,
+    "ungated": {
+     "world_effect_vs_none": {
+      "world_effect_detected": true,
+      "intervention_checks_differing": 0.975,
+      "identical_runs": 0,
+      "effects": {
+       "s:decays": {
+        "t": 7.49,
+        "relative": 0.1652
+       },
+       "s:topology_change": {
+        "t": 4.92,
+        "relative": 0.1044
+       },
+       "s:memory_dependence": {
+        "t": 11.68,
+        "relative": 1.5542
+       },
+       "rate:decays": {
+        "t": 7.49,
+        "relative": 0.1652
+       }
+      }
+     },
+     "persistence_vs_memoryless": {
+      "world_effect_detected": false,
+      "intervention_checks_differing": 0.254,
+      "identical_runs": 0,
+      "effects": {}
+     },
+     "counterfactual_discrimination": {
+      "world_effect_detected": false,
+      "intervention_checks_differing": 0.95,
+      "identical_runs": 0,
+      "effects": {}
+     }
+    },
+    "adaptivity": 0.117,
+    "valuable_on": [
+     "world_effect_vs_none"
+    ]
+   },
+   "repeated interaction": {
+    "gated_collapsed_share": 0.333,
+    "measured_by_gate": true,
+    "ungated": {
+     "world_effect_vs_none": {
+      "world_effect_detected": true,
+      "intervention_checks_differing": 0.975,
+      "identical_runs": 0,
+      "effects": {
+       "s:memory_dependence": {
+        "t": 4.33,
+        "relative": 4.0661
+       }
+      }
+     },
+     "persistence_vs_memoryless": {
+      "world_effect_detected": false,
+      "intervention_checks_differing": 0.292,
+      "identical_runs": 0,
+      "effects": {}
+     },
+     "counterfactual_discrimination": {
+      "world_effect_detected": true,
+      "intervention_checks_differing": 0.95,
+      "identical_runs": 0,
+      "effects": {
+       "s:reignitions": {
+        "t": 4.2,
+        "relative": 0.1055
+       }
+      }
+     }
+    },
+    "adaptivity": 0.042,
+    "valuable_on": [
+     "world_effect_vs_none",
+     "counterfactual_discrimination"
+    ]
+   },
+   "traceable dependency structure": {
+    "gated_collapsed_share": 0.833,
+    "measured_by_gate": true,
+    "ungated": {
+     "world_effect_vs_none": {
+      "world_effect_detected": true,
+      "intervention_checks_differing": 0.975,
+      "identical_runs": 0,
+      "effects": {
+       "s:reignitions": {
+        "t": -4.67,
+        "relative": -0.1338
+       },
+       "s:topology_change": {
+        "t": 4.11,
+        "relative": 0.1797
+       },
+       "s:memory_dependence": {
+        "t": 8.01,
+        "relative": 1.3946
+       },
+       "g:largest_loop": {
+        "t": 8.28,
+        "relative": 0.5759
+       }
+      }
+     },
+     "persistence_vs_memoryless": {
+      "world_effect_detected": false,
+      "intervention_checks_differing": 0.096,
+      "identical_runs": 0,
+      "effects": {}
+     },
+     "counterfactual_discrimination": {
+      "world_effect_detected": false,
+      "intervention_checks_differing": 0.95,
+      "identical_runs": 0,
+      "effects": {}
+     }
+    },
+    "adaptivity": 0.0,
+    "valuable_on": [
+     "world_effect_vs_none"
+    ]
+   },
+   "incompatibility tracking": {
+    "gated_collapsed_share": 0.0,
+    "measured_by_gate": false,
+    "ungated": {
+     "world_effect_vs_none": {
+      "world_effect_detected": true,
+      "intervention_checks_differing": 0.975,
+      "identical_runs": 0,
+      "effects": {
+       "s:memory_dependence": {
+        "t": 6.33,
+        "relative": 1.4006
+       },
+       "rate:cuts": {
+        "t": 4.38,
+        "relative": 0.3951
+       },
+       "rate:new_connections": {
+        "t": 4.18,
+        "relative": 0.1308
+       }
+      }
+     },
+     "persistence_vs_memoryless": {
+      "world_effect_detected": false,
+      "intervention_checks_differing": 0.129,
+      "identical_runs": 0,
+      "effects": {}
+     },
+     "counterfactual_discrimination": {
+      "world_effect_detected": false,
+      "intervention_checks_differing": 0.7,
+      "identical_runs": 0,
+      "effects": {}
+     }
+    },
+    "adaptivity": 0.0,
+    "valuable_on": [
+     "world_effect_vs_none"
+    ]
+   },
+   "inferential interface stability": {
+    "gated_collapsed_share": 0.0,
+    "measured_by_gate": false,
+    "ungated": {
+     "world_effect_vs_none": {
+      "world_effect_detected": true,
+      "intervention_checks_differing": 0.975,
+      "identical_runs": 0,
+      "effects": {
+       "s:topology_change": {
+        "t": 8.82,
+        "relative": 0.1872
+       },
+       "s:memory_dependence": {
+        "t": 6.52,
+        "relative": 1.9208
+       },
+       "rate:new_connections": {
+        "t": 6.39,
+        "relative": 0.124
+       },
+       "rate:reconfigurations": {
+        "t": 4.57,
+        "relative": 0.5336
+       }
+      }
+     },
+     "persistence_vs_memoryless": {
+      "world_effect_detected": false,
+      "intervention_checks_differing": 0.508,
+      "identical_runs": 0,
+      "effects": {}
+     },
+     "counterfactual_discrimination": {
+      "world_effect_detected": false,
+      "intervention_checks_differing": 0.95,
+      "identical_runs": 0,
+      "effects": {}
+     }
+    },
+    "adaptivity": 0.0,
+    "valuable_on": [
+     "world_effect_vs_none"
+    ]
+   },
+   "low mutation rate": {
+    "gated_collapsed_share": 0.833,
+    "measured_by_gate": true,
+    "ungated": {
+     "world_effect_vs_none": {
+      "world_effect_detected": true,
+      "intervention_checks_differing": 0.975,
+      "identical_runs": 0,
+      "effects": {
+       "s:ignitions": {
+        "t": 4.84,
+        "relative": 0.6888
+       },
+       "s:penetrations": {
+        "t": 4.71,
+        "relative": 0.7134
+       },
+       "s:branch_points": {
+        "t": 5.75,
+        "relative": 0.8175
+       },
+       "s:topology_change": {
+        "t": 4.57,
+        "relative": 0.06
+       }
+      }
+     },
+     "persistence_vs_memoryless": {
+      "world_effect_detected": false,
+      "intervention_checks_differing": 0.108,
+      "identical_runs": 0,
+      "effects": {}
+     },
+     "counterfactual_discrimination": {
+      "world_effect_detected": true,
+      "intervention_checks_differing": 0.95,
+      "identical_runs": 0,
+      "effects": {
+       "g:path_dependency": {
+        "t": -4.5,
+        "relative": -0.0293
+       }
+      }
+     }
+    },
+    "adaptivity": 0.0,
+    "valuable_on": [
+     "world_effect_vs_none",
+     "counterfactual_discrimination"
+    ]
+   },
+   "shared record persistence": {
+    "gated_collapsed_share": 0.13,
+    "measured_by_gate": false,
+    "ungated": {
+     "world_effect_vs_none": {
+      "world_effect_detected": false,
+      "intervention_checks_differing": 0.975,
+      "identical_runs": 0,
+      "effects": {}
+     },
+     "persistence_vs_memoryless": {
+      "world_effect_detected": true,
+      "intervention_checks_differing": 0.708,
+      "identical_runs": 0,
+      "effects": {
+       "s:ignitions": {
+        "t": -4.41,
+        "relative": -0.1765
+       },
+       "s:reignitions": {
+        "t": 4.45,
+        "relative": 0.1691
+       },
+       "s:memory_dependence": {
+        "t": -4.52,
+        "relative": -0.5406
+       },
+       "s:persistence": {
+        "t": -6.3,
+        "relative": -0.2556
+       }
+      }
+     },
+     "counterfactual_discrimination": {
+      "world_effect_detected": false,
+      "intervention_checks_differing": 0.95,
+      "identical_runs": 0,
+      "effects": {}
+     }
+    },
+    "adaptivity": 0.367,
+    "valuable_on": [
+     "persistence_vs_memoryless"
+    ]
+   }
+  },
+  "seeds": [
+   80,
+   81,
+   82,
+   83,
+   84,
+   85
+  ],
+  "probe_edit": "remove concept human at t=250",
+  "degradation_at": 150,
+  "note": "gated collapse is by construction for conditions measured by a gate; the ungated columns are the empirical test of whether reasoning adds operational value in the degraded world"
+ },
+ "mutation_sweep": {
+  "0.0": {
+   "collapsed_share_after": 0.0,
+   "first_collapse": null,
+   "stability_R_after_mean": 0.9874887999999999,
+   "revisions": 1
+  },
+  "0.0005": {
+   "collapsed_share_after": 0.0,
+   "first_collapse": null,
+   "stability_R_after_mean": 0.9800644,
+   "revisions": 2
+  },
+  "0.001": {
+   "collapsed_share_after": 0.0,
+   "first_collapse": null,
+   "stability_R_after_mean": 0.9725315999999999,
+   "revisions": 1
+  },
+  "0.002": {
+   "collapsed_share_after": 0.96,
+   "first_collapse": 170,
+   "stability_R_after_mean": 0.96414,
+   "revisions": 1
+  },
+  "0.004": {
+   "collapsed_share_after": 0.96,
+   "first_collapse": 170,
+   "stability_R_after_mean": 0.9314916000000001,
+   "revisions": 1
+  },
+  "0.008": {
+   "collapsed_share_after": 0.96,
+   "first_collapse": 170,
+   "stability_R_after_mean": 0.8677308,
+   "revisions": 1
+  },
+  "0.016": {
+   "collapsed_share_after": 0.96,
+   "first_collapse": 170,
+   "stability_R_after_mean": 0.7634276000000001,
+   "revisions": 1
+  }
+ },
+ "closed_loop": {
+  "chain": [
+   {
+    "t": 50,
+    "event": "phase: pre \u2192 not_enabled"
+   },
+   {
+    "t": 90,
+    "event": "enabling conditions met",
+    "conditions": [
+     0.90554,
+     0.9933,
+     2.40336
+    ]
+   },
+   {
+    "t": 90,
+    "event": "reasoning \u2192 world: operational interventions changed",
+    "added": [
+     "gate \u00d7 0.25 on BA",
+     "gate \u00d7 0.37 on BB",
+     "gate \u00d7 0.64 on BB",
+     "memory condition on R",
+     "threshold \u00d7 0.865 on B",
+     "threshold \u00d7 1.3 on A"
+    ],
+    "removed": []
+   },
+   {
+    "t": 90,
+    "event": "phase: not_enabled \u2192 reasoning"
+   },
+   {
+    "t": 100,
+    "event": "world \u2192 reasoning: grounded revision",
+    "effective": {
+     "K1": 1.0,
+     "K3": 1.0,
+     "K4": 0.0,
+     "K5": 1.0,
+     "K6": 0.0,
+     "K7": 0.0,
+     "K8": 0.9,
+     "K2": 1.0,
+     "K9": 1.0
+    }
+   },
+   {
+    "t": 100,
+    "event": "reasoning \u2192 world: operational interventions changed",
+    "added": [],
+    "removed": [
+     "gate \u00d7 0.37 on BB",
+     "threshold \u00d7 0.865 on B"
+    ]
+   },
+   {
+    "t": 310,
+    "event": "external world intervention (degradation)",
+    "items": [
+     "world MemoryCondition"
+    ]
+   },
+   {
+    "t": 320,
+    "event": "enabling conditions failed",
+    "conditions": [
+     0.2001,
+     0.9947,
+     3.08767
+    ]
+   },
+   {
+    "t": 320,
+    "event": "reasoning \u2192 world: operational interventions changed",
+    "added": [],
+    "removed": [
+     "gate \u00d7 0.25 on BA",
+     "gate \u00d7 0.64 on BB",
+     "memory condition on R",
+     "threshold \u00d7 1.3 on A"
+    ]
+   },
+   {
+    "t": 320,
+    "event": "phase: reasoning \u2192 collapsed"
+   }
+  ],
+  "revisions": 1,
+  "overlay_changes": 24,
+  "semantic_intervention_changes": 4,
+  "gate_calls": 24,
+  "phases": [
+   "pre",
+   "pre",
+   "pre",
+   "pre",
+   "not_enabled",
+   "not_enabled",
+   "not_enabled",
+   "not_enabled",
+   "reasoning",
+   "reasoning",
+   "reasoning",
+   "reasoning",
+   "reasoning",
+   "reasoning",
+   "reasoning",
+   "reasoning",
+   "reasoning",
+   "reasoning",
+   "reasoning",
+   "reasoning",
+   "reasoning",
+   "reasoning",
+   "reasoning",
+   "reasoning",
+   "reasoning",
+   "reasoning",
+   "reasoning",
+   "reasoning",
+   "reasoning",
+   "reasoning",
+   "reasoning",
+   "collapsed",
+   "collapsed",
+   "collapsed",
+   "collapsed",
+   "collapsed",
+   "collapsed",
+   "collapsed",
+   "collapsed",
+   "collapsed",
+   "collapsed",
+   "collapsed",
+   "collapsed",
+   "collapsed",
+   "collapsed",
+   "collapsed",
+   "collapsed",
+   "collapsed",
+   "collapsed",
+   "collapsed"
+  ]
+ },
+ "elapsed_s": 272.5
+}

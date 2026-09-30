@@ -1,0 +1,623 @@
+{
+ "primitive_classification": {
+  "Ignition (as a separate operation)": {
+   "status": "REDUCIBLE",
+   "diverges_in": null,
+   "reduced_to": "thresholded transition",
+   "why_unresolved": null
+  },
+  "Threshold gating (ignition condition)": {
+   "status": "NON-REDUNDANT",
+   "diverges_in": [
+    "intermittent",
+    "sparse",
+    "memory_heavy",
+    "churn"
+   ],
+   "reduced_to": null,
+   "why_unresolved": null
+  },
+  "Retention": {
+   "status": "NON-REDUNDANT",
+   "diverges_in": [
+    "intermittent",
+    "sparse",
+    "memory_heavy",
+    "churn"
+   ],
+   "reduced_to": null,
+   "why_unresolved": null
+  },
+  "Memory": {
+   "status": "NON-REDUNDANT",
+   "diverges_in": [
+    "intermittent",
+    "sparse",
+    "memory_heavy",
+    "churn"
+   ],
+   "reduced_to": null,
+   "why_unresolved": null
+  },
+  "Transformation": {
+   "status": "DESCRIPTIVE ONLY",
+   "diverges_in": null,
+   "reduced_to": null,
+   "why_unresolved": null
+  },
+  "Penetration": {
+   "status": "DERIVED",
+   "diverges_in": null,
+   "reduced_to": "dominant incoming connection of a configuration that passed its threshold + observer",
+   "why_unresolved": null
+  },
+  "Return": {
+   "status": "DESCRIPTIVE ONLY",
+   "diverges_in": null,
+   "reduced_to": null,
+   "why_unresolved": null
+  },
+  "Reconfiguration": {
+   "status": "REDUCIBLE",
+   "diverges_in": [
+    "intermittent",
+    "memory_heavy",
+    "churn"
+   ],
+   "reduced_to": "connection mutation (remove + create)",
+   "why_unresolved": null
+  },
+  "Difference": {
+   "status": "DERIVED",
+   "diverges_in": null,
+   "reduced_to": "sum of relational state",
+   "why_unresolved": null
+  },
+  "Reachability": {
+   "status": "DERIVED",
+   "diverges_in": null,
+   "reduced_to": null,
+   "why_unresolved": null
+  },
+  "Transition": {
+   "status": "NON-REDUNDANT",
+   "diverges_in": [
+    "intermittent",
+    "sparse",
+    "memory_heavy",
+    "churn"
+   ],
+   "reduced_to": null,
+   "why_unresolved": null
+  },
+  "Cut": {
+   "status": "NON-REDUNDANT",
+   "diverges_in": [
+    "intermittent",
+    "memory_heavy"
+   ],
+   "reduced_to": null,
+   "why_unresolved": null
+  },
+  "Disconnection": {
+   "status": "UNRESOLVED",
+   "diverges_in": [],
+   "reduced_to": null,
+   "why_unresolved": "the operation fires (its own outputs change detectably in: intermittent, memory_heavy), but no downstream effect is detected in any regime; absence of a detected effect is not evidence of redundancy"
+  },
+  "Connection (closure)": {
+   "status": "NON-REDUNDANT",
+   "diverges_in": [
+    "intermittent",
+    "sparse",
+    "memory_heavy",
+    "churn"
+   ],
+   "reduced_to": null,
+   "why_unresolved": null
+  },
+  "Weight adaptation": {
+   "status": "NON-REDUNDANT",
+   "diverges_in": [
+    "intermittent",
+    "memory_heavy"
+   ],
+   "reduced_to": null,
+   "why_unresolved": null
+  },
+  "Decay": {
+   "status": "DESCRIPTIVE ONLY",
+   "diverges_in": null,
+   "reduced_to": null,
+   "why_unresolved": null
+  }
+ },
+ "minimal_runtime": {
+  "flags": {
+   "threshold": "on",
+   "fused_transition": true,
+   "retention": "on",
+   "memory": "on",
+   "transform": "off",
+   "wave_state": "off",
+   "return_events": "off",
+   "adapt_source": "dominant",
+   "reconfigure": "mutation",
+   "cut": "on",
+   "disconnect": "on",
+   "connect": "on",
+   "difference": "node",
+   "transition": "on"
+  },
+  "verification": "EQUIVALENT in every regime"
+ },
+ "reasoning": {
+  "scenarios": {
+   "1_remove_concept_human": {
+    "vocabulary_nonredundant": false,
+    "two_status_nonredundant": true,
+    "entitlement_nonredundant": true,
+    "fixpoint_choice_matters": false,
+    "replay_reproduces_scorekeeping_exactly": true,
+    "statement": "The commitment/entitlement vocabulary produced NO non-redundant operational difference: the terminology-free support graph (greatest fixpoint) gave a bit-identical world trajectory and intervention schedule. The two-status structure (commitment vs entitlement) mattered here (single-status alternative diverged). The reasoning-enabled trajectory is exactly reproducible by the base runtime replaying the recorded operational intervention schedule. The edit's effect on the world stayed within the noise floor."
+   },
+   "2_remove_concept_responsibility": {
+    "vocabulary_nonredundant": false,
+    "two_status_nonredundant": true,
+    "entitlement_nonredundant": true,
+    "fixpoint_choice_matters": false,
+    "replay_reproduces_scorekeeping_exactly": true,
+    "statement": "The commitment/entitlement vocabulary produced NO non-redundant operational difference: the terminology-free support graph (greatest fixpoint) gave a bit-identical world trajectory and intervention schedule. The two-status structure (commitment vs entitlement) mattered here (single-status alternative diverged). The reasoning-enabled trajectory is exactly reproducible by the base runtime replaying the recorded operational intervention schedule. The edit's effect on the world stayed within the noise floor."
+   },
+   "3_withdraw_K2": {
+    "vocabulary_nonredundant": false,
+    "two_status_nonredundant": true,
+    "entitlement_nonredundant": true,
+    "fixpoint_choice_matters": false,
+    "replay_reproduces_scorekeeping_exactly": true,
+    "statement": "The commitment/entitlement vocabulary produced NO non-redundant operational difference: the terminology-free support graph (greatest fixpoint) gave a bit-identical world trajectory and intervention schedule. The two-status structure (commitment vs entitlement) mattered here (single-status alternative diverged). The reasoning-enabled trajectory is exactly reproducible by the base runtime replaying the recorded operational intervention schedule. The edit's effect on the world stayed within the noise floor."
+   },
+   "4_remove_incompatibility": {
+    "vocabulary_nonredundant": false,
+    "two_status_nonredundant": true,
+    "entitlement_nonredundant": true,
+    "fixpoint_choice_matters": false,
+    "replay_reproduces_scorekeeping_exactly": true,
+    "statement": "The commitment/entitlement vocabulary produced NO non-redundant operational difference: the terminology-free support graph (greatest fixpoint) gave a bit-identical world trajectory and intervention schedule. The two-status structure (commitment vs entitlement) mattered here (single-status alternative diverged). The reasoning-enabled trajectory is exactly reproducible by the base runtime replaying the recorded operational intervention schedule. The edit's effect on the world stayed within the noise floor."
+   },
+   "5_remove_entitlement_tracking": {
+    "vocabulary_nonredundant": false,
+    "two_status_nonredundant": true,
+    "entitlement_nonredundant": false,
+    "fixpoint_choice_matters": false,
+    "replay_reproduces_scorekeeping_exactly": true,
+    "statement": "The commitment/entitlement vocabulary produced NO non-redundant operational difference: the terminology-free support graph (greatest fixpoint) gave a bit-identical world trajectory and intervention schedule. The two-status structure (commitment vs entitlement) mattered here (single-status alternative diverged). The reasoning-enabled trajectory is exactly reproducible by the base runtime replaying the recorded operational intervention schedule. The edit's effect on the world stayed within the noise floor."
+   },
+   "6_remove_external_memory": {
+    "vocabulary_nonredundant": false,
+    "two_status_nonredundant": true,
+    "entitlement_nonredundant": true,
+    "fixpoint_choice_matters": false,
+    "replay_reproduces_scorekeeping_exactly": true,
+    "statement": "The commitment/entitlement vocabulary produced NO non-redundant operational difference: the terminology-free support graph (greatest fixpoint) gave a bit-identical world trajectory and intervention schedule. The two-status structure (commitment vs entitlement) mattered here (single-status alternative diverged). The reasoning-enabled trajectory is exactly reproducible by the base runtime replaying the recorded operational intervention schedule. The edit's effect on the world stayed within the noise floor."
+   },
+   "7_high_mutation": {
+    "vocabulary_nonredundant": false,
+    "two_status_nonredundant": true,
+    "entitlement_nonredundant": true,
+    "fixpoint_choice_matters": false,
+    "replay_reproduces_scorekeeping_exactly": true,
+    "statement": "The commitment/entitlement vocabulary produced NO non-redundant operational difference: the terminology-free support graph (greatest fixpoint) gave a bit-identical world trajectory and intervention schedule. The two-status structure (commitment vs entitlement) mattered here (single-status alternative diverged). The reasoning-enabled trajectory is exactly reproducible by the base runtime replaying the recorded operational intervention schedule. The edit changed the world beyond the noise floor on: criterion:closure, criterion:persistence, criterion:amplification_regime."
+   },
+   "8_remove_address_persistence": {
+    "vocabulary_nonredundant": false,
+    "two_status_nonredundant": true,
+    "entitlement_nonredundant": true,
+    "fixpoint_choice_matters": false,
+    "replay_reproduces_scorekeeping_exactly": true,
+    "statement": "The commitment/entitlement vocabulary produced NO non-redundant operational difference: the terminology-free support graph (greatest fixpoint) gave a bit-identical world trajectory and intervention schedule. The two-status structure (commitment vs entitlement) mattered here (single-status alternative diverged). The reasoning-enabled trajectory is exactly reproducible by the base runtime replaying the recorded operational intervention schedule. The edit changed the world beyond the noise floor on: criterion:branching, criterion:closure, criterion:persistence, criterion:amplification_regime."
+   },
+   "9_change_dependency_graph": {
+    "vocabulary_nonredundant": false,
+    "two_status_nonredundant": true,
+    "entitlement_nonredundant": true,
+    "fixpoint_choice_matters": false,
+    "replay_reproduces_scorekeeping_exactly": true,
+    "statement": "The commitment/entitlement vocabulary produced NO non-redundant operational difference: the terminology-free support graph (greatest fixpoint) gave a bit-identical world trajectory and intervention schedule. The two-status structure (commitment vs entitlement) mattered here (single-status alternative diverged). The reasoning-enabled trajectory is exactly reproducible by the base runtime replaying the recorded operational intervention schedule. The edit's effect on the world stayed within the noise floor."
+   },
+   "10_alter_scorekeeping_structure": {
+    "vocabulary_nonredundant": false,
+    "two_status_nonredundant": false,
+    "entitlement_nonredundant": true,
+    "fixpoint_choice_matters": false,
+    "replay_reproduces_scorekeeping_exactly": true,
+    "statement": "The commitment/entitlement vocabulary produced NO non-redundant operational difference: the terminology-free support graph (greatest fixpoint) gave a bit-identical world trajectory and intervention schedule. The two-status structure made no operational difference here (single-status alternative identical). The reasoning-enabled trajectory is exactly reproducible by the base runtime replaying the recorded operational intervention schedule. The edit's effect on the world stayed within the noise floor."
+   }
+  },
+  "representation_equivalence": {
+   "scorekeeping_no_entitlement": 8574,
+   "support": 295,
+   "support_greatest": 0,
+   "support_single": 941,
+   "support_backed_only": 0
+  },
+  "enabling_matrix": {
+   "none degraded (reference)": {
+    "world_value_on": [
+     "world_effect_vs_none",
+     "counterfactual_discrimination"
+    ],
+    "gated_collapsed_share": 0.0,
+    "measured_by_gate": false,
+    "adaptivity": 0.0,
+    "strength": {
+     "world_effect_vs_none": "yes",
+     "persistence_vs_memoryless": "no",
+     "counterfactual_discrimination": "marginal"
+    }
+   },
+   "external memory": {
+    "world_value_on": [],
+    "gated_collapsed_share": 0.833,
+    "measured_by_gate": true,
+    "adaptivity": 0.075,
+    "strength": {
+     "world_effect_vs_none": "no",
+     "persistence_vs_memoryless": "no",
+     "counterfactual_discrimination": "no"
+    }
+   },
+   "stable addressability": {
+    "world_value_on": [
+     "world_effect_vs_none"
+    ],
+    "gated_collapsed_share": 0.833,
+    "measured_by_gate": true,
+    "adaptivity": 0.117,
+    "strength": {
+     "world_effect_vs_none": "yes",
+     "persistence_vs_memoryless": "no",
+     "counterfactual_discrimination": "no"
+    }
+   },
+   "repeated interaction": {
+    "world_value_on": [
+     "world_effect_vs_none",
+     "counterfactual_discrimination"
+    ],
+    "gated_collapsed_share": 0.333,
+    "measured_by_gate": true,
+    "adaptivity": 0.042,
+    "strength": {
+     "world_effect_vs_none": "marginal",
+     "persistence_vs_memoryless": "no",
+     "counterfactual_discrimination": "marginal"
+    }
+   },
+   "traceable dependency structure": {
+    "world_value_on": [
+     "world_effect_vs_none"
+    ],
+    "gated_collapsed_share": 0.833,
+    "measured_by_gate": true,
+    "adaptivity": 0.0,
+    "strength": {
+     "world_effect_vs_none": "yes",
+     "persistence_vs_memoryless": "no",
+     "counterfactual_discrimination": "no"
+    }
+   },
+   "incompatibility tracking": {
+    "world_value_on": [
+     "world_effect_vs_none"
+    ],
+    "gated_collapsed_share": 0.0,
+    "measured_by_gate": false,
+    "adaptivity": 0.0,
+    "strength": {
+     "world_effect_vs_none": "yes",
+     "persistence_vs_memoryless": "no",
+     "counterfactual_discrimination": "no"
+    }
+   },
+   "inferential interface stability": {
+    "world_value_on": [
+     "world_effect_vs_none"
+    ],
+    "gated_collapsed_share": 0.0,
+    "measured_by_gate": false,
+    "adaptivity": 0.0,
+    "strength": {
+     "world_effect_vs_none": "yes",
+     "persistence_vs_memoryless": "no",
+     "counterfactual_discrimination": "no"
+    }
+   },
+   "low mutation rate": {
+    "world_value_on": [
+     "world_effect_vs_none",
+     "counterfactual_discrimination"
+    ],
+    "gated_collapsed_share": 0.833,
+    "measured_by_gate": true,
+    "adaptivity": 0.0,
+    "strength": {
+     "world_effect_vs_none": "yes",
+     "persistence_vs_memoryless": "no",
+     "counterfactual_discrimination": "marginal"
+    }
+   },
+   "shared record persistence": {
+    "world_value_on": [
+     "persistence_vs_memoryless"
+    ],
+    "gated_collapsed_share": 0.13,
+    "measured_by_gate": false,
+    "adaptivity": 0.367,
+    "strength": {
+     "world_effect_vs_none": "no",
+     "persistence_vs_memoryless": "yes",
+     "counterfactual_discrimination": "no"
+    }
+   }
+  },
+  "world_effects": {
+   "reasoning layer vs none": {
+    "identical_runs": "0/8",
+    "intervention_checks_differing": 0.747,
+    "systematic_world_effects": {
+     "s:memory_dependence": {
+      "t": 9.1,
+      "relative": 1.5725
+     },
+     "rate:new_connections": {
+      "t": 6.5,
+      "relative": 0.0924
+     }
+    },
+    "strength": "yes"
+   },
+   "vocabulary: scorekeeping vs terminology-free support graph (greatest fixpoint)": {
+    "identical_runs": "8/8",
+    "intervention_checks_differing": 0.0,
+    "systematic_world_effects": {},
+    "strength": "no"
+   },
+   "vocabulary under an edit: same, after removing concept human": {
+    "identical_runs": "8/8",
+    "intervention_checks_differing": 0.0,
+    "systematic_world_effects": {},
+    "strength": "no"
+   },
+   "fixpoint choice: greatest vs least": {
+    "identical_runs": "8/8",
+    "intervention_checks_differing": 0.0,
+    "systematic_world_effects": {},
+    "strength": "no"
+   },
+   "two-status vs single-status": {
+    "identical_runs": "0/8",
+    "intervention_checks_differing": 0.722,
+    "systematic_world_effects": {},
+    "strength": "no"
+   },
+   "entitlement tracking on vs off": {
+    "identical_runs": "0/8",
+    "intervention_checks_differing": 0.722,
+    "systematic_world_effects": {},
+    "strength": "no"
+   },
+   "persistent reasoning state vs memoryless reactive policy": {
+    "identical_runs": "0/8",
+    "intervention_checks_differing": 0.35,
+    "systematic_world_effects": {},
+    "strength": "no"
+   },
+   "edit: remove concept human": {
+    "identical_runs": "0/8",
+    "intervention_checks_differing": 0.581,
+    "systematic_world_effects": {
+     "s:memory_dependence": {
+      "t": -4.73,
+      "relative": -0.0969
+     }
+    },
+    "strength": "marginal"
+   },
+   "edit: remove concept responsibility": {
+    "identical_runs": "0/8",
+    "intervention_checks_differing": 0.616,
+    "systematic_world_effects": {},
+    "strength": "no"
+   },
+   "counterfactual discrimination: same interventions, different dependency structure, same edit": {
+    "identical_runs": "0/8",
+    "intervention_checks_differing": 0.725,
+    "systematic_world_effects": {},
+    "strength": "no"
+   }
+  },
+  "criteria": {
+   "transition_prediction": {
+    "ops": {
+     "overlay_change": {
+      "accuracy": 0.8541666666666666,
+      "brier": 0.12493750118129615,
+      "base_rate": 0.75
+     },
+     "activity_AB": {
+      "r2": 0.9675079139283739
+     }
+    },
+    "ops+history": {
+     "overlay_change": {
+      "accuracy": 0.8541666666666666,
+      "brier": 0.126641714669288,
+      "base_rate": 0.75
+     },
+     "activity_AB": {
+      "r2": 0.9686398026989025
+     }
+    },
+    "ops+reasoning": {
+     "overlay_change": {
+      "accuracy": 0.8541666666666666,
+      "brier": 0.12665790441766783,
+      "base_rate": 0.75
+     },
+     "activity_AB": {
+      "r2": 0.9679304231940595
+     }
+    },
+    "ops+history+reasoning": {
+     "overlay_change": {
+      "accuracy": 0.8541666666666666,
+      "brier": 0.12930758566987074,
+      "base_rate": 0.75
+     },
+     "activity_AB": {
+      "r2": 0.9689246988937715
+     }
+    }
+   },
+   "intervention_precision": {
+    "modifiers": 6,
+    "reasoning_edit_mean_side_effects": 0.6666666666666666,
+    "unreachable_by_single_reasoning_edit": 0,
+    "direct_operational_edit_side_effects": 0
+   },
+   "dependency_tracing_recall": {
+    "scorekeeping": 1.0,
+    "support_greatest": 1.0,
+    "operational_only": 0.0
+   },
+   "error_detection_rates": {
+    "dependency_records": {
+     "orphan": 1.0,
+     "lost": 1.0,
+     "tampered": 1.0,
+     "clean": 0.0
+    },
+    "operational_only": {
+     "orphan": 0.0,
+     "lost": 0.0,
+     "tampered": 0.0,
+     "clean": 0.0
+    }
+   },
+   "compression": {
+    "1_remove_concept_human": {
+     "operational_tokens": 10,
+     "reasoning_tokens_dynamic": 3,
+     "reasoning_tokens_static": 25,
+     "reasoning_total": 28,
+     "compresses": false
+    },
+    "2_remove_concept_responsibility": {
+     "operational_tokens": 9,
+     "reasoning_tokens_dynamic": 2,
+     "reasoning_tokens_static": 25,
+     "reasoning_total": 27,
+     "compresses": false
+    },
+    "3_withdraw_K2": {
+     "operational_tokens": 10,
+     "reasoning_tokens_dynamic": 3,
+     "reasoning_tokens_static": 25,
+     "reasoning_total": 28,
+     "compresses": false
+    },
+    "4_remove_incompatibility": {
+     "operational_tokens": 12,
+     "reasoning_tokens_dynamic": 3,
+     "reasoning_tokens_static": 25,
+     "reasoning_total": 28,
+     "compresses": false
+    },
+    "5_remove_entitlement_tracking": {
+     "operational_tokens": 6,
+     "reasoning_tokens_dynamic": 1,
+     "reasoning_tokens_static": 25,
+     "reasoning_total": 26,
+     "compresses": false
+    },
+    "6_remove_external_memory": {
+     "operational_tokens": 13,
+     "reasoning_tokens_dynamic": 1,
+     "reasoning_tokens_static": 25,
+     "reasoning_total": 26,
+     "compresses": false
+    },
+    "7_high_mutation": {
+     "operational_tokens": 13,
+     "reasoning_tokens_dynamic": 1,
+     "reasoning_tokens_static": 25,
+     "reasoning_total": 26,
+     "compresses": false
+    },
+    "8_remove_address_persistence": {
+     "operational_tokens": 13,
+     "reasoning_tokens_dynamic": 1,
+     "reasoning_tokens_static": 25,
+     "reasoning_total": 26,
+     "compresses": false
+    },
+    "9_change_dependency_graph": {
+     "operational_tokens": 8,
+     "reasoning_tokens_dynamic": 4,
+     "reasoning_tokens_static": 25,
+     "reasoning_total": 29,
+     "compresses": false
+    },
+    "10_alter_scorekeeping_structure": {
+     "operational_tokens": 9,
+     "reasoning_tokens_dynamic": 3,
+     "reasoning_tokens_static": 25,
+     "reasoning_total": 28,
+     "compresses": false
+    }
+   },
+   "reconfiguration_control": {
+    "scorekeeping": 0.027777777777777776,
+    "memoryless": 0.06944444444444445,
+    "none": 0.0,
+    "replay": 0.05555555555555555
+   }
+  },
+  "phases": {
+   "enabled_at": 150,
+   "collapsed_at": 470,
+   "first_commitment_distinction": 160,
+   "first_entitlement_distinction": 160,
+   "by_phase": {
+    "pre": {
+     "checks": 14,
+     "commitment_distinction": 0,
+     "entitlement_distinction": 0,
+     "overlay_changes": 0
+    },
+    "reasoning": {
+     "checks": 32,
+     "commitment_distinction": 31,
+     "entitlement_distinction": 31,
+     "overlay_changes": 32
+    },
+    "collapsed": {
+     "checks": 24,
+     "commitment_distinction": 0,
+     "entitlement_distinction": 0,
+     "overlay_changes": 1
+    }
+   }
+  },
+  "mutation_collapse": {
+   "0.0": 0.0,
+   "0.0005": 0.0,
+   "0.001": 0.0,
+   "0.002": 0.96,
+   "0.004": 0.96,
+   "0.008": 0.96,
+   "0.016": 0.96
+  }
+ }
+}

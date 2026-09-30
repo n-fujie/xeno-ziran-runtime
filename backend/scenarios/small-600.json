@@ -1,0 +1,13 @@
+{
+  "name": "Small field · 600 configurations",
+  "description": "Minimal generated field without geo coordinates: projections other than the map remain fully usable.",
+  "seed": 3,
+  "generator": { "n": 600, "mean_degree": 5.0, "groups": 3, "geo_fraction": 0.0 },
+  "sets": { "A": { "address": "1" }, "BA": { "boundary_of": "A" } },
+  "boundaries": { "BA": { "set": "BA", "permeability": 0.2 } },
+  "practice": {
+    "concepts": ["inside"],
+    "claims": [ { "id": "P1", "text": "What is inside stays inside.", "uses": ["inside"], "commitment": 1.0,
+                  "bindings": [ { "op": "gate", "target": "BA", "factor": 0.5 } ] } ]
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "Benchmark · 10,000 configurations",
+  "description": "Performance scenario: 10,000 configurations, >50,000 connections, continuous transitions.",
+  "seed": 7,
+  "generator": { "n": 10000, "mean_degree": 7.0, "groups": 6, "geo_fraction": 0.7 },
+  "sets": { "S-core": { "address": "3" }, "B1": { "boundary_of": "S-core" } },
+  "boundaries": { "B1": { "set": "B1", "permeability": 0.5 } },
+  "checkpoint_every": 100
+}

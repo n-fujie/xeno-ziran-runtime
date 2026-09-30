@@ -1,0 +1,42 @@
+{
+  "name": "Reason lab · 1,500 configurations",
+  "description": "Operational field with a record region (R), two regions (A, B) and their boundaries, and an illustrative claim graph used by the reasoning non-redundancy experiments. Claims are experimental material, not assertions.",
+  "seed": 5,
+  "generator": { "n": 1500, "mean_degree": 6.0, "groups": 5, "geo_fraction": 0.0 },
+  "sets": {
+    "R": { "address": "0" },
+    "A": { "address": "3" },
+    "B": { "address": "5" },
+    "BA": { "boundary_of": "A" },
+    "BB": { "boundary_of": "B" },
+    "BR": { "boundary_of": "R" }
+  },
+  "practice": {
+    "concepts": ["human", "responsibility", "boundary", "record", "return", "address"],
+    "claims": [
+      { "id": "K1", "text": "Bounded regions filter what enters them.", "uses": ["boundary"], "commitment": 1.0,
+        "bindings": [ { "op": "gate", "target": "BA", "factor": 0.25 } ] },
+      { "id": "K2", "text": "Only a human locus can hold a commitment.", "uses": ["human"], "commitment": 1.0 },
+      { "id": "K3", "text": "Holding a commitment requires a bounded locus.", "uses": ["boundary"], "default_entitled": false,
+        "bindings": [ { "op": "scale_threshold", "target": "A", "factor": 1.3 } ] },
+      { "id": "K4", "text": "Responsibility attaches to whatever can be answered for.", "uses": ["responsibility"], "commitment": 0.9,
+        "bindings": [ { "op": "gate", "target": "BB", "factor": 0.3 } ] },
+      { "id": "K5", "text": "Records of returned differences are retained.", "uses": ["record", "return"], "commitment": 1.0,
+        "bindings": [ { "op": "memory_condition", "target": "R", "decay": 0.97, "coupling": 0.25 } ] },
+      { "id": "K6", "text": "Answerability requires a record.", "uses": ["responsibility", "record"], "default_entitled": false,
+        "bindings": [ { "op": "scale_threshold", "target": "B", "factor": 0.85 } ] },
+      { "id": "K7", "text": "Differences are addressed, not owned.", "uses": ["address"], "commitment": 0.0,
+        "bindings": [ { "op": "scale_threshold", "target": "A", "factor": 0.8 } ] },
+      { "id": "K8", "text": "What is answered for is bounded.", "uses": ["boundary"],
+        "bindings": [ { "op": "gate", "target": "BB", "factor": 0.6 } ] },
+      { "id": "K9", "text": "Nothing here is answered for.", "uses": [], "commitment": 0.0 }
+    ],
+    "dependencies": [
+      { "premises": ["K1", "K2"], "conclusion": "K3", "kind": "committive" },
+      { "premises": ["K4", "K5"], "conclusion": "K6", "kind": "committive" },
+      { "premises": ["K4"], "conclusion": "K8", "kind": "committive" }
+    ],
+    "incompatibilities": [ ["K2", "K7"], ["K4", "K9"] ]
+  },
+  "checkpoint_every": 50
+}

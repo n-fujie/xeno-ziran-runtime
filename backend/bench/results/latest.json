@@ -1,0 +1,156 @@
+{
+  "scenario": "benchmark-10k",
+  "machine": {
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "processor": "arm",
+    "python": "3.12.13",
+    "numpy": "2.5.3"
+  },
+  "date": "2026-09-30 08:56:02",
+  "simulation": {
+    "configurations": 10000,
+    "connections": 59329,
+    "connection_capacity": 79105,
+    "build_seconds": 1.43,
+    "runtime_only": {
+      "steps": 1000,
+      "steps_per_second": 230.2,
+      "step_ms_p50": 4.36,
+      "step_ms_p95": 5.1,
+      "events_per_step_mean": 1210.3,
+      "delta_bytes_per_step_mean": 24136,
+      "delta_bytes_per_step_p95": 32430,
+      "full_state_bytes_equivalent": 7313770
+    },
+    "runtime_plus_shape_detection": {
+      "steps": 1000,
+      "steps_per_second": 110.4,
+      "step_ms_p50": 5.21,
+      "step_ms_p95": 43.86,
+      "graph_pass_every": 10
+    },
+    "connections_after": 58992,
+    "runtime_array_mib": 7.0
+  },
+  "simulation_minimal": {
+    "configurations": 10000,
+    "connections": 59329,
+    "connection_capacity": 79105,
+    "build_seconds": 1.42,
+    "runtime_only": {
+      "steps": 1000,
+      "steps_per_second": 228.4,
+      "step_ms_p50": 4.38,
+      "step_ms_p95": 5.06,
+      "events_per_step_mean": 1117.7,
+      "delta_bytes_per_step_mean": 23351,
+      "delta_bytes_per_step_p95": 31235,
+      "full_state_bytes_equivalent": 7313770
+    },
+    "runtime_plus_shape_detection": {
+      "steps": 1000,
+      "steps_per_second": 106.7,
+      "step_ms_p50": 5.54,
+      "step_ms_p95": 44.22,
+      "graph_pass_every": 10
+    },
+    "connections_after": 58724,
+    "runtime_array_mib": 7.0
+  },
+  "reasoning": {
+    "none": {
+      "steps_per_second": 254.4,
+      "ms_per_step": 3.93,
+      "reasoning_active_share": 0.0
+    },
+    "none+detection": {
+      "steps_per_second": 123.4,
+      "ms_per_step": 8.1,
+      "reasoning_active_share": 0.0
+    },
+    "scorekeeping": {
+      "steps_per_second": 206.1,
+      "ms_per_step": 4.85,
+      "reasoning_active_share": 1.0
+    },
+    "scorekeeping+detection": {
+      "steps_per_second": 110.9,
+      "ms_per_step": 9.02,
+      "reasoning_active_share": 1.0
+    },
+    "scorekeeping+instrumentation": {
+      "steps_per_second": 163.2,
+      "ms_per_step": 6.13,
+      "reasoning_active_share": 1.0
+    },
+    "scorekeeping+instrumentation+detection": {
+      "steps_per_second": 97.0,
+      "ms_per_step": 10.31,
+      "reasoning_active_share": 1.0
+    },
+    "reasoning_overhead_ms_per_step": 0.92,
+    "reasoning_overhead_relative": 0.2341,
+    "instrumentation_overhead_ms_per_step": 1.28
+  },
+  "comparison": {
+    "horizon": 150,
+    "branches": 3,
+    "seconds": 3.37,
+    "steps_simulated": 450,
+    "ms_per_branch_step": 7.48,
+    "first_divergence_step": 101
+  },
+  "websocket": {
+    "max_speed": {
+      "requested_steps_per_second": "max",
+      "delta_frames_per_second": 13.9,
+      "steps_streamed_per_second": 99.9,
+      "kib_per_second": 2215.2,
+      "mean_frame_kib": 159.5,
+      "server_rss_mib": 168.9
+    },
+    "speed_30": {
+      "requested_steps_per_second": 30,
+      "delta_frames_per_second": 20.7,
+      "steps_streamed_per_second": 24.0,
+      "kib_per_second": 632.7,
+      "mean_frame_kib": 30.6,
+      "server_rss_mib": 153.9
+    },
+    "speed_60": {
+      "requested_steps_per_second": 60,
+      "delta_frames_per_second": 21.2,
+      "steps_streamed_per_second": 42.4,
+      "kib_per_second": 1104.9,
+      "mean_frame_kib": 52.1,
+      "server_rss_mib": 179.7
+    }
+  },
+  "websocket_minimal": {
+    "max_speed": {
+      "requested_steps_per_second": "max",
+      "delta_frames_per_second": 12.2,
+      "steps_streamed_per_second": 91.1,
+      "kib_per_second": 2065.8,
+      "mean_frame_kib": 169.1,
+      "server_rss_mib": 154.4
+    },
+    "speed_30": {
+      "requested_steps_per_second": 30,
+      "delta_frames_per_second": 19.6,
+      "steps_streamed_per_second": 23.6,
+      "kib_per_second": 607.0,
+      "mean_frame_kib": 31.0,
+      "server_rss_mib": 179.2
+    },
+    "speed_60": {
+      "requested_steps_per_second": 60,
+      "delta_frames_per_second": 20.7,
+      "steps_streamed_per_second": 41.5,
+      "kib_per_second": 1044.0,
+      "mean_frame_kib": 50.4,
+      "server_rss_mib": 213.5
+    }
+  },
+  "peak_rss_mib": 293.9
+}
