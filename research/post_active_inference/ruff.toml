@@ -1,0 +1,8 @@
+# Benchmark layer: the repository's rules (backend/pyproject.toml) with a longer line for table-like code.
+extend = "../../backend/pyproject.toml"
+line-length = 150
+
+[lint.per-file-ignores]
+"tests/*" = ["E702"]
+"pai/report_data.py" = ["E501"]  # markdown table templates
+"pai/confirmatory.py" = ["E501"]  # markdown table templates

@@ -1,0 +1,248 @@
+{
+ "stage": "dev",
+ "description": "Stage 2: 10 seeds, four severities, every perturbation subtype (all eight families), ablations on 16 cells spanning the regimes seen in the smoke run.",
+ "seeds": [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10
+ ],
+ "severities": [
+  0.25,
+  0.5,
+  0.75,
+  1.0
+ ],
+ "perturbations": [
+  "boundary.noise",
+  "boundary.leakage",
+  "boundary.delayed_update",
+  "boundary.reassignment",
+  "boundary.fragmentation",
+  "boundary.merge",
+  "boundary.disappearance",
+  "topology.edge_deletion",
+  "topology.edge_addition",
+  "topology.cluster_split",
+  "topology.cluster_merge",
+  "topology.hub_removal",
+  "topology.rerouting",
+  "topology.dynamic_mutation",
+  "sensor.dropout",
+  "sensor.reassignment",
+  "sensor.permutation",
+  "sensor.delay",
+  "sensor.noise",
+  "sensor.partial_observability",
+  "sensor.scale_mismatch",
+  "sensor.window_mismatch",
+  "variable.remap",
+  "variable.deletion",
+  "variable.duplication",
+  "variable.relabel",
+  "variable.outcome_merge",
+  "memory.deletion",
+  "memory.truncation",
+  "memory.access_block",
+  "memory.history_removal",
+  "memory.history_reactivation",
+  "memory.migration",
+  "coupling.weakening",
+  "coupling.strengthening",
+  "coupling.asymmetric",
+  "coupling.cross_cluster",
+  "coupling.reversal",
+  "coupling.temporary_decoupling",
+  "temporal.horizon_compression",
+  "temporal.horizon_expansion",
+  "temporal.asynchronous",
+  "temporal.interface_drift",
+  "temporal.world_drift",
+  "structural.cut_reconnect",
+  "structural.disconnection",
+  "structural.multi_cluster_reorganization"
+ ],
+ "controllers": [
+  "none",
+  "aif_fixed",
+  "aif_adaptive",
+  "ost"
+ ],
+ "ablations": [
+  "no_latent",
+  "no_model",
+  "no_prediction_error",
+  "no_free_energy",
+  "no_efe_epistemic",
+  "no_policy",
+  "no_agent",
+  "no_boundary"
+ ],
+ "ablation_cells": [
+  [
+   "topology.cluster_split",
+   0.5
+  ],
+  [
+   "topology.cluster_split",
+   1.0
+  ],
+  [
+   "sensor.noise",
+   0.5
+  ],
+  [
+   "sensor.noise",
+   1.0
+  ],
+  [
+   "boundary.reassignment",
+   0.5
+  ],
+  [
+   "boundary.reassignment",
+   1.0
+  ],
+  [
+   "temporal.interface_drift",
+   0.5
+  ],
+  [
+   "temporal.interface_drift",
+   1.0
+  ],
+  [
+   "memory.history_reactivation",
+   0.5
+  ],
+  [
+   "memory.history_reactivation",
+   1.0
+  ],
+  [
+   "coupling.temporary_decoupling",
+   0.5
+  ],
+  [
+   "coupling.temporary_decoupling",
+   1.0
+  ],
+  [
+   "structural.disconnection",
+   0.5
+  ],
+  [
+   "structural.disconnection",
+   1.0
+  ],
+  [
+   "variable.relabel",
+   0.5
+  ],
+  [
+   "variable.relabel",
+   1.0
+  ]
+ ],
+ "world": {},
+ "phases": {},
+ "procs": 4,
+ "trace": true,
+ "noise_offset": 1000,
+ "extra_severities": {
+  "boundary.disappearance": [
+   0.833,
+   0.917
+  ],
+  "boundary.fragmentation": [
+   0.833,
+   0.917
+  ],
+  "boundary.leakage": [
+   0.583,
+   0.667
+  ],
+  "boundary.merge": [
+   0.083,
+   0.167
+  ],
+  "boundary.reassignment": [
+   0.083,
+   0.167,
+   0.833,
+   0.917
+  ],
+  "coupling.reversal": [
+   0.833,
+   0.917
+  ],
+  "coupling.weakening": [
+   0.583,
+   0.667
+  ],
+  "sensor.delay": [
+   0.083,
+   0.167,
+   0.333,
+   0.417
+  ],
+  "sensor.dropout": [
+   0.833,
+   0.917
+  ],
+  "sensor.noise": [
+   0.333,
+   0.417
+  ],
+  "sensor.reassignment": [
+   0.333,
+   0.417,
+   0.833,
+   0.917
+  ],
+  "sensor.window_mismatch": [
+   0.833,
+   0.917
+  ],
+  "structural.cut_reconnect": [
+   0.833,
+   0.917
+  ],
+  "structural.disconnection": [
+   0.833,
+   0.917
+  ],
+  "temporal.asynchronous": [
+   0.583,
+   0.667,
+   0.833,
+   0.917
+  ],
+  "temporal.interface_drift": [
+   0.083,
+   0.167
+  ],
+  "topology.cluster_merge": [
+   0.583,
+   0.667
+  ],
+  "variable.deletion": [
+   0.833,
+   0.917
+  ],
+  "variable.relabel": [
+   0.833,
+   0.917
+  ],
+  "variable.remap": [
+   0.333,
+   0.417
+  ]
+ }
+}

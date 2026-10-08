@@ -7,8 +7,17 @@ asymmetry — not interpretations of what the shapes are.
 from __future__ import annotations
 
 import numpy as np
-import scipy.sparse as sp
-from scipy.sparse import csgraph
+
+from .._compat import FORCE as _COMPAT
+
+try:  # the iOS app has no scipy: numpy implementations of the same graph operations (see _compat/csgraph.py)
+    if _COMPAT:
+        raise ImportError
+    import scipy.sparse as sp
+    from scipy.sparse import csgraph
+except ImportError:
+    from .._compat import csgraph  # type: ignore[no-redef]
+    from .._compat import sparse as sp  # type: ignore[no-redef]
 
 from ..runtime.state import State
 

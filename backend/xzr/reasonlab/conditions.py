@@ -9,6 +9,8 @@ properties* of the world, each configurable:
     mutation    connection changes per step, whole field        (low mutation rate)
     flow        mean load on a set of connections               (traceable dependency across a boundary)
     reach       fraction of a set reachable from another set within 3 hops (traceable dependency structure)
+    closure     new connections created from a set per step (decaying average)
+    churn       connection changes touching a set per step (decaying average)
 """
 
 from __future__ import annotations
@@ -19,7 +21,7 @@ import scipy.sparse as sp
 from ..runtime.delta import StepDelta
 from ..scenario.build import World
 
-METRICS = ("memory", "activity", "stability", "mutation", "flow", "reach")
+METRICS = ("memory", "activity", "stability", "mutation", "flow", "reach", "closure", "churn")
 OPS = {"<": np.less, "<=": np.less_equal, ">": np.greater, ">=": np.greater_equal}
 
 
@@ -29,6 +31,8 @@ class WorldProbe:
         n = world.state.n
         self.ign = np.zeros(n)
         self.topo = 0.0
+        self.closure = np.zeros(n)
+        self.churn = np.zeros(n)
         self._prev_edges: dict[str, np.ndarray] = {}
         self._cache: dict[tuple, float] = {}
 
@@ -41,6 +45,17 @@ class WorldProbe:
         self.ign[d.ignitions] += 0.05
         change = len(d.cuts) + len(d.new_connections) + len(d.removed_connections) + len(d.reconfigurations)
         self.topo = 0.9 * self.topo + 0.1 * change
+        self.closure *= 0.95
+        self.churn *= 0.95
+        s = self.world.state
+        if len(d.new_connections):
+            np.add.at(self.closure, d.new_connections[:, 1], 0.05)
+            np.add.at(self.churn, d.new_connections[:, 1], 0.05)
+        for ev in (d.cuts, d.removed_connections):
+            if len(ev):
+                np.add.at(self.churn, s.src[ev], 0.05)
+        if len(d.reconfigurations):
+            np.add.at(self.churn, s.src[d.reconfigurations[:, 0]], 0.05)
 
     def _incident(self, target: str) -> np.ndarray:
         s = self.world.state
@@ -63,6 +78,10 @@ class WorldProbe:
             return float(self.ign[self.world.resolve(target, "nodes")].mean())
         if metric == "mutation":
             return float(self.topo)
+        if metric == "closure":
+            return float(self.closure[self.world.resolve(target, "nodes")].mean())
+        if metric == "churn":
+            return float(self.churn[self.world.resolve(target, "nodes")].mean())
         if metric == "flow":
             e = self.world.resolve(target, "edges")
             return float(s.load[e].mean()) if len(e) else 0.0

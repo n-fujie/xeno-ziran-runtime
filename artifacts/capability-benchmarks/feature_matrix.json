@@ -1,0 +1,157 @@
+{
+ "scale_variation": {
+  "status": "IMPLEMENTED AND TESTED",
+  "code": "xzr/experiments/escalation/harness.py REFERENCE['n'], condition()",
+  "evidence": "b1_harness.jsonl (n 1,500-96,000); resolution-escalation preset run (scale:600/3000)"
+ },
+ "topology_variation": {
+  "status": "IMPLEMENTED AND TESTED",
+  "code": "xzr/scenario/topologies.py TOPOLOGIES, topology()",
+  "evidence": "tests/test_escalation.py::test_topologies_build; batch112 (7 topologies)"
+ },
+ "memory_variation": {
+  "status": "IMPLEMENTED AND TESTED",
+  "code": "xzr/scenario/topologies.py MEMORY_REGIMES; harness.build",
+  "evidence": "tests (test_memory_*); resolution-escalation preset (memory:short/long)"
+ },
+ "coupling_variation": {
+  "status": "IMPLEMENTED AND TESTED",
+  "code": "harness.REFERENCE['coupling'], harness.build",
+  "evidence": "executed in resolution-escalation preset (coupling:weak/strong); no dedicated unit test"
+ },
+ "horizon_variation": {
+  "status": "IMPLEMENTED AND TESTED",
+  "code": "harness condition 'horizon'",
+  "evidence": "b2_horizon.jsonl; preset horizon:1200"
+ },
+ "observation_level_variation": {
+  "status": "PARTIALLY IMPLEMENTED",
+  "code": "escalation/analysis.py + harness scale_values: five fixed resolutions (node, local, meso, macro, global)",
+  "evidence": "tests/test_escalation.py::test_resolution_sensitive_equivalence_node_vs_cluster; fixed set, not configurable"
+ },
+ "multi_cluster_experiments": {
+  "status": "IMPLEMENTED AND TESTED",
+  "code": "xzr/experiments/escalation/clusters.py",
+  "evidence": "tests: test_multiple_clusters_and_mixed_rules"
+ },
+ "world_responsive_revision": {
+  "status": "IMPLEMENTED AND TESTED",
+  "code": "xzr/reasonlab/triggers.py, loop.py; escalation/adaptivity.py",
+  "evidence": "tests: test_closed_loop_is_deterministic, test_open_loop_replay_of_own_schedule_reproduces_the_closed_loop"
+ },
+ "disconnection": {
+  "status": "IMPLEMENTED AND TESTED",
+  "code": "xzr/runtime/ops.py disconnect; escalation/disconnection.py",
+  "evidence": "tests: test_reconnect_and_disconnect, test_disconnection_replacements_and_relabellings"
+ },
+ "cut": {
+  "status": "IMPLEMENTED AND TESTED",
+  "code": "xzr/runtime/ops.py cut",
+  "evidence": "tests: test_cut_reconfiguration_trigger_variants; ablation preset no_cut"
+ },
+ "reconnection": {
+  "status": "IMPLEMENTED AND TESTED",
+  "code": "xzr/runtime/ops.py connect",
+  "evidence": "tests: test_reconnect_and_disconnect"
+ },
+ "reconfiguration": {
+  "status": "IMPLEMENTED AND TESTED",
+  "code": "xzr/runtime/ops.py reconfigure, reconfigure_by_mutation",
+  "evidence": "tests: test_reconfiguration_as_mutation_retires_and_creates"
+ },
+ "compression_reduction": {
+  "status": "IMPLEMENTED AND TESTED",
+  "code": "escalation/compression.py; experiments/reduction.py, reduction_rules.py",
+  "evidence": "tests: test_long_run_compression_fidelity_on_recurrent_sequences, test_minimal_exact_reductions_are_bit_identical"
+ },
+ "history_fork": {
+  "status": "IMPLEMENTED AND TESTED",
+  "code": "xzr/runtime/engine.py Engine.fork; experiments/history.py",
+  "evidence": "tests: test_fork_is_independent_and_identical, test_history_operations_are_deterministic_and_fork_is_exact"
+ },
+ "history_removal": {
+  "status": "IMPLEMENTED AND TESTED",
+  "code": "xzr/experiments/history.py seed_job ('remove': memory of region set to 0)",
+  "evidence": "tests/test_cli.py history tests; history-reentry preset run"
+ },
+ "history_reactivation": {
+  "status": "IMPLEMENTED AND TESTED",
+  "code": "xzr/experiments/history.py ('reactivate': saved memory added back at reactivate_at)",
+  "evidence": "tests/test_cli.py; history-reentry preset run"
+ },
+ "history_migration": {
+  "status": "IMPLEMENTED AND TESTED",
+  "code": "xzr/experiments/history.py ('migrate': memory moved to another region)",
+  "evidence": "tests/test_cli.py (destination_generation); history-reentry preset run"
+ },
+ "configuration_crossing_recurrence": {
+  "status": "PARTIALLY IMPLEMENTED",
+  "code": "shapes/detector.py recurrence events and recurrent signatures; experiments/history.py 'migrate' (destination-region ignitions)",
+  "evidence": "no dedicated test of recurrence across configurations (grep of tests: none); migrate executed in history tests and preset"
+ },
+ "sensor_addition_removal": {
+  "status": "ABSENT",
+  "code": null,
+  "evidence": "no code path (grep: sensor)"
+ },
+ "variable_set_changes": {
+  "status": "ABSENT",
+  "code": null,
+  "evidence": "feature sets fixed (harness GLOBAL_KEYS, detector descriptors)"
+ },
+ "observation_map_changes": {
+  "status": "ABSENT",
+  "code": null,
+  "evidence": "layouts (network/shape/geo) are visual projections only; no experimental observation map"
+ },
+ "boundary_changes": {
+  "status": "IMPLEMENTED AND TESTED",
+  "code": "harness _apply_world_event (world_schedule open/close between clusters); runtime/intervention.py Gate",
+  "evidence": "boundary-scale-window preset run; tests: test_reachability_horizon_and_closure_respect_gates"
+ },
+ "temporal_window_changes": {
+  "status": "PARTIALLY IMPLEMENTED",
+  "code": "horizon varies; analysis windows fixed (harness WINDOWS=40, SEGMENTS=8)",
+  "evidence": "preset window:200/1200"
+ },
+ "access_blocking": {
+  "status": "IMPLEMENTED AND TESTED",
+  "code": "runtime/intervention.py Gate (factor 0), Freeze",
+  "evidence": "tests: test_reachability_horizon_and_closure_respect_gates; no separate 'access' concept"
+ },
+ "delayed_re_entry": {
+  "status": "IMPLEMENTED AND TESTED",
+  "code": "experiments/history.py reactivate_at; topologies RETURN_STRUCTURES 'delayed'",
+  "evidence": "tests/test_cli.py history tests"
+ },
+ "correction_latency": {
+  "status": "ABSENT",
+  "code": null,
+  "evidence": "no code path"
+ },
+ "adversarial_configuration_search": {
+  "status": "ABSENT",
+  "code": null,
+  "evidence": "no code path (grep: adversar)"
+ },
+ "cross_configuration_robustness_testing": {
+  "status": "PARTIALLY IMPLEMENTED",
+  "code": "xzr/results.py configuration_sensitivity over listed conditions",
+  "evidence": "preset runs; no search over configurations"
+ },
+ "independent_re_detection": {
+  "status": "ABSENT",
+  "code": null,
+  "evidence": "no code path"
+ },
+ "checkpoint_restart": {
+  "status": "PARTIALLY IMPLEMENTED",
+  "code": "Engine checkpoints/rewind (in-run); runner persisted jobs + resume (studies); xzr run: no resume",
+  "evidence": "tests: test_rewind, test_runner_persists_jobs_and_resumes_only_missing_seeds"
+ },
+ "experiment_provenance": {
+  "status": "IMPLEMENTED AND TESTED",
+  "code": "xzr/results.py execute; escalation/runner.py provenance",
+  "evidence": "tests/test_cli.py::test_complete_experiment_through_the_cli"
+ }
+}

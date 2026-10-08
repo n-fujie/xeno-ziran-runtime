@@ -147,7 +147,8 @@
    "disconnect": "on",
    "connect": "on",
    "difference": "node",
-   "transition": "on"
+   "transition": "on",
+   "topology_trigger": "separate"
   },
   "verification": "EQUIVALENT in every regime"
  },

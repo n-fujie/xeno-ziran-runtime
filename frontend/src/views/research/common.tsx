@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { api } from '../../api/client';
+import { makeLoader, type SectionIndex, type Select } from '../../api/results';
 
 export const STATUS_COLOR: Record<string, string> = {
   'NON-REDUNDANT': '#e6e6ea', REDUCIBLE: '#a0c8ff', DERIVED: '#9fe0b4', 'DESCRIPTIVE ONLY': '#8a8a92',
@@ -17,13 +18,26 @@ export function Yes({ v, invert = false }: { v: boolean | null | undefined; inve
   return <span className={on ? 'up' : 'dim'}>{v ? 'yes' : 'no'}</span>;
 }
 
+// The static mirror's result files never change: each is read once per page load there, and a large file is read
+// only in the sections the view renders (see api/results.ts; the 4.6 MB resolution summary feeds six views). With the
+// local server a file can be regenerated, so every view load reads the whole file afresh.
+const staticLoad = import.meta.env.VITE_STATIC === '1'
+  ? makeLoader((url) => fetch(url).then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status} ${url}`)))),
+    JSON.parse(import.meta.env.VITE_SECTIONS || '{}') as SectionIndex)
+  : null;
+
+// Sections a view never reads, by file (the full file stays available as the download).
+const DEFAULT_SELECT: Record<string, Select> = { reduction: { exclude: ['systematic.raw'] } };
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function useExperiment<T = any>(name: string): { data: T | null; error: string | null } {
+export function useExperiment<T = any>(name: string, select?: Select): { data: T | null; error: string | null } {
   const [data, setData] = useState<T | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const sel = JSON.stringify(select ?? DEFAULT_SELECT[name] ?? null);
   useEffect(() => {
-    api.experiment<T>(name).then(setData).catch((e) => setError(String(e)));
-  }, [name]);
+    const s = JSON.parse(sel) as Select | null;
+    (staticLoad ? staticLoad<T>(name, s ?? undefined) : api.experiment<T>(name)).then(setData).catch((e) => setError(String(e)));
+  }, [name, sel]);
   return { data, error };
 }
 

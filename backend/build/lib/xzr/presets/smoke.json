@@ -1,0 +1,32 @@
+{
+ "schema": "xzr.experiment/1",
+ "id": "smoke",
+ "kind": "conditions",
+ "description": "Minimal end-to-end run (CI / installation check). Two seeds: no statistical claim is possible.",
+ "question": "Does the pipeline run, write a result and classify comparisons?",
+ "manipulated": [
+  "reasoning layer on/off (variant A vs reference C)"
+ ],
+ "fixed": [
+  "everything else"
+ ],
+ "measured": [
+  "per-resolution status of each comparison"
+ ],
+ "does_not_show": "Anything about the runtime: with 2 seeds the sign-flip test cannot reach the significance level; statuses are UNRESOLVED or reflect deterministic differences only.",
+ "seeds": 2,
+ "baseline": {
+  "n": 600,
+  "horizon": 400,
+  "variants": [
+   "A",
+   "C"
+  ]
+ },
+ "conditions": [
+  {
+   "id": "reference",
+   "changed": {}
+  }
+ ]
+}

@@ -7,3 +7,5 @@
 **/.ruff_cache
 frontend/dist
 backend/bench/results
+backend/experiments/results
+site

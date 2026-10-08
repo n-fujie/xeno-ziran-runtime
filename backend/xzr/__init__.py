@@ -1,6 +1,7 @@
-"""Xeno / Ziran Philosophical Runtime — Operational Shape Simulation Platform.
+"""XENO ZIRAN SIMULATOR runtime — Operational Shape Simulation Platform.
 
-Not a prediction. Explore possible transitions.
+Explore possible transitions under intervention. The Philosophical Runtime (practice, reasonlab) is one operational
+region of the simulator, beside the experimental runtime and the research results.
 """
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"

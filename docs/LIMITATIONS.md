@@ -2,10 +2,11 @@
 
 Stated plainly so the tool is not read as more than it is.
 
-## What the simulator is not
+## What the simulator does not claim
 
-* **Not a prediction engine.** It explores counterfactual transitions in a generated or user-given operational
-  field. No output is a forecast about any real system.
+* **No validated real-world forecasts.** It explores counterfactual transitions in a generated or user-given
+  operational field. Its outputs have not been calibrated or validated against any real system, so none is offered
+  as a forecast about one; this is a statement about validation status, not about what the runtime can compute.
 * **No probability claims.** Comparisons use common random numbers plus one noise-floor replicate (the baseline
   under a different random stream). "Exceeds noise" means |Δ| > 2·|baseline′ − baseline| — a heuristic guard
   against over-reading, not a significance test. In the demo, node-level reach changes after

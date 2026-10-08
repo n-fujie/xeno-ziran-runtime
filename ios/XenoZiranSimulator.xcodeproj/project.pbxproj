@@ -1,0 +1,696 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1D813380BF09AFB7E8ADEFD5 /* SimulatorWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD17C5A61A3D8ABAFCCB08B1 /* SimulatorWebView.swift */; };
+		1F2419421183436D7E4ABC66 /* RuntimeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A04E5371FE6CE6AADE71A48B /* RuntimeTests.swift */; };
+		448532CDA2F087F8F8872FEB /* XenoZiranApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB4DB5A23B79165D83D7AA60 /* XenoZiranApp.swift */; };
+		50F454C582B1F08D351B6824 /* LaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0FD57BED62F4A5EFCFF34C2 /* LaunchTests.swift */; };
+		62E9A2146DF09D8C5D6372C5 /* WebHostTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6301A66ACD6BC3848B8AD767 /* WebHostTests.swift */; };
+		7D943A4E26C665490C3EED09 /* SimulatorRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C3BB38AF0A5705E0222CA4 /* SimulatorRuntime.swift */; };
+		887CC775C10A0BC57C12F9C2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8DAD8B0FAAFEFB519848FBB6 /* Assets.xcassets */; };
+		989EBAA1B0A0C825BE8D01BB /* Python.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95E2535DF8CAEC2C7192100A /* Python.xcframework */; };
+		9A896C06E77A6786BC7A67F8 /* XZRPython.c in Sources */ = {isa = PBXBuildFile; fileRef = 9976FF0A131362E4AEF725E6 /* XZRPython.c */; };
+		B1C84B3B89CC80F1DF2AB9A8 /* Python.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 95E2535DF8CAEC2C7192100A /* Python.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		B5D136D4568EFF22BC945C3D /* desktop_save_expect.json in Resources */ = {isa = PBXBuildFile; fileRef = E0B87666FB22D01FA7DC3EFD /* desktop_save_expect.json */; };
+		C02705465931C3E0CF0FA3CC /* conformance_reference.json in Resources */ = {isa = PBXBuildFile; fileRef = E576E52BA94165C98651989C /* conformance_reference.json */; };
+		CAFA6B1AB54D7916174FBB92 /* BundleSchemeHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D934D2AE331B1D2978515B /* BundleSchemeHandler.swift */; };
+		CE18FB6E1C177B3E3B7813D5 /* desktop_save.json in Resources */ = {isa = PBXBuildFile; fileRef = 4EC792BF9BB60247ADD8D9EC /* desktop_save.json */; };
+		E9E918A8A8AB9F7A470FD61C /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 8B22C31E8A06FDD832844041 /* PrivacyInfo.xcprivacy */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		856A7E48475F3900F7668DDB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B9220E8F575309F72B7356B8 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 725386DE7E661F7933920143;
+			remoteInfo = XenoZiranSimulator;
+		};
+		BB03C4DED4DFFB4695C3FB84 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B9220E8F575309F72B7356B8 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 725386DE7E661F7933920143;
+			remoteInfo = XenoZiranSimulator;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		D14BCAD95EB9D87052C40D27 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				B1C84B3B89CC80F1DF2AB9A8 /* Python.xcframework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		1875CFBD9591560D7F99C025 /* XenoZiranSimulator.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = XenoZiranSimulator.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		29C3BB38AF0A5705E0222CA4 /* SimulatorRuntime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulatorRuntime.swift; sourceTree = "<group>"; };
+		30B20F0B7EC513D7385BEA8B /* XZRPython.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XZRPython.h; sourceTree = "<group>"; };
+		4EC792BF9BB60247ADD8D9EC /* desktop_save.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = desktop_save.json; sourceTree = "<group>"; };
+		6301A66ACD6BC3848B8AD767 /* WebHostTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebHostTests.swift; sourceTree = "<group>"; };
+		69EC51475469755CC1778B4D /* XenoZiranSimulatorTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = XenoZiranSimulatorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		8B22C31E8A06FDD832844041 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		8DAD8B0FAAFEFB519848FBB6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		911EEF8FA21479A5B29C19C6 /* XenoZiranSimulatorUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = XenoZiranSimulatorUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		95E2535DF8CAEC2C7192100A /* Python.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Python.xcframework; path = vendor/py/Python.xcframework; sourceTree = "<group>"; };
+		9976FF0A131362E4AEF725E6 /* XZRPython.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = XZRPython.c; sourceTree = "<group>"; };
+		A04E5371FE6CE6AADE71A48B /* RuntimeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuntimeTests.swift; sourceTree = "<group>"; };
+		AFBE94AA5AD4C02E3CC851BD /* XenoZiran-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "XenoZiran-Bridging-Header.h"; sourceTree = "<group>"; };
+		C2D934D2AE331B1D2978515B /* BundleSchemeHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundleSchemeHandler.swift; sourceTree = "<group>"; };
+		DB4DB5A23B79165D83D7AA60 /* XenoZiranApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XenoZiranApp.swift; sourceTree = "<group>"; };
+		DD17C5A61A3D8ABAFCCB08B1 /* SimulatorWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulatorWebView.swift; sourceTree = "<group>"; };
+		E0B87666FB22D01FA7DC3EFD /* desktop_save_expect.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = desktop_save_expect.json; sourceTree = "<group>"; };
+		E576E52BA94165C98651989C /* conformance_reference.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = conformance_reference.json; sourceTree = "<group>"; };
+		F0FD57BED62F4A5EFCFF34C2 /* LaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		DE11CD0F02A957B06DE12406 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				989EBAA1B0A0C825BE8D01BB /* Python.xcframework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		4AEB3F81CF93DEA65D245434 = {
+			isa = PBXGroup;
+			children = (
+				7411D630903EAB88E718088B /* XenoZiran */,
+				59AF9E1C3EE71666CDCA7465 /* XenoZiranTests */,
+				C4E7D93E016BBD4EA411F0D0 /* XenoZiranUITests */,
+				C9E67242684985E26E2DE810 /* Frameworks */,
+				4FBEE3EC52B32CB8ABD8783F /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		4FBEE3EC52B32CB8ABD8783F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1875CFBD9591560D7F99C025 /* XenoZiranSimulator.app */,
+				69EC51475469755CC1778B4D /* XenoZiranSimulatorTests.xctest */,
+				911EEF8FA21479A5B29C19C6 /* XenoZiranSimulatorUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		5826A32A1CDCA35E7FA82575 /* Fixtures */ = {
+			isa = PBXGroup;
+			children = (
+				E576E52BA94165C98651989C /* conformance_reference.json */,
+				E0B87666FB22D01FA7DC3EFD /* desktop_save_expect.json */,
+				4EC792BF9BB60247ADD8D9EC /* desktop_save.json */,
+			);
+			path = Fixtures;
+			sourceTree = "<group>";
+		};
+		59AF9E1C3EE71666CDCA7465 /* XenoZiranTests */ = {
+			isa = PBXGroup;
+			children = (
+				A04E5371FE6CE6AADE71A48B /* RuntimeTests.swift */,
+				6301A66ACD6BC3848B8AD767 /* WebHostTests.swift */,
+				5826A32A1CDCA35E7FA82575 /* Fixtures */,
+			);
+			path = XenoZiranTests;
+			sourceTree = "<group>";
+		};
+		6E50487ABEC2B9A15BECD717 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				DB4DB5A23B79165D83D7AA60 /* XenoZiranApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		70C868D9280FAFF3BE50F348 /* Runtime */ = {
+			isa = PBXGroup;
+			children = (
+				29C3BB38AF0A5705E0222CA4 /* SimulatorRuntime.swift */,
+				AFBE94AA5AD4C02E3CC851BD /* XenoZiran-Bridging-Header.h */,
+				9976FF0A131362E4AEF725E6 /* XZRPython.c */,
+				30B20F0B7EC513D7385BEA8B /* XZRPython.h */,
+			);
+			path = Runtime;
+			sourceTree = "<group>";
+		};
+		7411D630903EAB88E718088B /* XenoZiran */ = {
+			isa = PBXGroup;
+			children = (
+				6E50487ABEC2B9A15BECD717 /* App */,
+				7C2685272EC46557502E3D57 /* Resources */,
+				70C868D9280FAFF3BE50F348 /* Runtime */,
+				8BDBD88A3494DD5C120E3C31 /* Web */,
+			);
+			path = XenoZiran;
+			sourceTree = "<group>";
+		};
+		7C2685272EC46557502E3D57 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				8DAD8B0FAAFEFB519848FBB6 /* Assets.xcassets */,
+				8B22C31E8A06FDD832844041 /* PrivacyInfo.xcprivacy */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		8BDBD88A3494DD5C120E3C31 /* Web */ = {
+			isa = PBXGroup;
+			children = (
+				C2D934D2AE331B1D2978515B /* BundleSchemeHandler.swift */,
+				DD17C5A61A3D8ABAFCCB08B1 /* SimulatorWebView.swift */,
+			);
+			path = Web;
+			sourceTree = "<group>";
+		};
+		C4E7D93E016BBD4EA411F0D0 /* XenoZiranUITests */ = {
+			isa = PBXGroup;
+			children = (
+				F0FD57BED62F4A5EFCFF34C2 /* LaunchTests.swift */,
+			);
+			path = XenoZiranUITests;
+			sourceTree = "<group>";
+		};
+		C9E67242684985E26E2DE810 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				95E2535DF8CAEC2C7192100A /* Python.xcframework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		3342536BBC8FC19C09616747 /* XenoZiranSimulatorTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 37856612843A72D1E5D17479 /* Build configuration list for PBXNativeTarget "XenoZiranSimulatorTests" */;
+			buildPhases = (
+				EE118C47839CAD7769DF4D7B /* Sources */,
+				0DFDBCD26DD2002AC4817F32 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BB0826C78448A9AEF9FBE320 /* PBXTargetDependency */,
+			);
+			name = XenoZiranSimulatorTests;
+			packageProductDependencies = (
+			);
+			productName = XenoZiranSimulatorTests;
+			productReference = 69EC51475469755CC1778B4D /* XenoZiranSimulatorTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		725386DE7E661F7933920143 /* XenoZiranSimulator */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 11920D1939A4308D53870E6F /* Build configuration list for PBXNativeTarget "XenoZiranSimulator" */;
+			buildPhases = (
+				8A81C5FC38AB62A1FDEE2F6F /* Sources */,
+				815E68DC9895EC890156A4B2 /* Install on-device runtime */,
+				DA7870294B20F414EC8EB63E /* Resources */,
+				DE11CD0F02A957B06DE12406 /* Frameworks */,
+				D14BCAD95EB9D87052C40D27 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = XenoZiranSimulator;
+			packageProductDependencies = (
+			);
+			productName = XenoZiranSimulator;
+			productReference = 1875CFBD9591560D7F99C025 /* XenoZiranSimulator.app */;
+			productType = "com.apple.product-type.application";
+		};
+		98ACD0D7509172A56ECBA288 /* XenoZiranSimulatorUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 02931B36BF8776B24BCA3439 /* Build configuration list for PBXNativeTarget "XenoZiranSimulatorUITests" */;
+			buildPhases = (
+				D91D1F5963302E58B563463A /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B55B96B3E8682C8D494FDEB5 /* PBXTargetDependency */,
+			);
+			name = XenoZiranSimulatorUITests;
+			packageProductDependencies = (
+			);
+			productName = XenoZiranSimulatorUITests;
+			productReference = 911EEF8FA21479A5B29C19C6 /* XenoZiranSimulatorUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B9220E8F575309F72B7356B8 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					3342536BBC8FC19C09616747 = {
+						DevelopmentTeam = 4YPXSK4SM2;
+						ProvisioningStyle = Automatic;
+					};
+					725386DE7E661F7933920143 = {
+						DevelopmentTeam = 4YPXSK4SM2;
+						ProvisioningStyle = Automatic;
+					};
+					98ACD0D7509172A56ECBA288 = {
+						DevelopmentTeam = 4YPXSK4SM2;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 725386DE7E661F7933920143;
+					};
+				};
+			};
+			buildConfigurationList = C694C1AA12C195B19ED7CCE0 /* Build configuration list for PBXProject "XenoZiranSimulator" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 4AEB3F81CF93DEA65D245434;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 4FBEE3EC52B32CB8ABD8783F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				725386DE7E661F7933920143 /* XenoZiranSimulator */,
+				3342536BBC8FC19C09616747 /* XenoZiranSimulatorTests */,
+				98ACD0D7509172A56ECBA288 /* XenoZiranSimulatorUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		0DFDBCD26DD2002AC4817F32 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C02705465931C3E0CF0FA3CC /* conformance_reference.json in Resources */,
+				CE18FB6E1C177B3E3B7813D5 /* desktop_save.json in Resources */,
+				B5D136D4568EFF22BC945C3D /* desktop_save_expect.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DA7870294B20F414EC8EB63E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				887CC775C10A0BC57C12F9C2 /* Assets.xcassets in Resources */,
+				E9E918A8A8AB9F7A470FD61C /* PrivacyInfo.xcprivacy in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		815E68DC9895EC890156A4B2 /* Install on-device runtime */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Install on-device runtime";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\nsh \"$PROJECT_DIR/scripts/install_runtime.sh\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8A81C5FC38AB62A1FDEE2F6F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CAFA6B1AB54D7916174FBB92 /* BundleSchemeHandler.swift in Sources */,
+				7D943A4E26C665490C3EED09 /* SimulatorRuntime.swift in Sources */,
+				1D813380BF09AFB7E8ADEFD5 /* SimulatorWebView.swift in Sources */,
+				9A896C06E77A6786BC7A67F8 /* XZRPython.c in Sources */,
+				448532CDA2F087F8F8872FEB /* XenoZiranApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D91D1F5963302E58B563463A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				50F454C582B1F08D351B6824 /* LaunchTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EE118C47839CAD7769DF4D7B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1F2419421183436D7E4ABC66 /* RuntimeTests.swift in Sources */,
+				62E9A2146DF09D8C5D6372C5 /* WebHostTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B55B96B3E8682C8D494FDEB5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 725386DE7E661F7933920143 /* XenoZiranSimulator */;
+			targetProxy = BB03C4DED4DFFB4695C3FB84 /* PBXContainerItemProxy */;
+		};
+		BB0826C78448A9AEF9FBE320 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 725386DE7E661F7933920143 /* XenoZiranSimulator */;
+			targetProxy = 856A7E48475F3900F7668DDB /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		19B14BF66F8ECA9FC8FB49E4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEAD_CODE_STRIPPING = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"vendor/py\"",
+				);
+				HEADER_SEARCH_PATHS = "\"$(BUILT_PRODUCTS_DIR)/Python.framework/Headers\"";
+				INFOPLIST_FILE = XenoZiran/Resources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = io.platodesign.xenoziransimulator;
+				PRODUCT_NAME = XenoZiranSimulator;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "XenoZiran/Runtime/XenoZiran-Bridging-Header.h";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		2F8C08DCDE453BAE3C121FB0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEAD_CODE_STRIPPING = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"vendor/py\"",
+				);
+				HEADER_SEARCH_PATHS = "\"$(BUILT_PRODUCTS_DIR)/Python.framework/Headers\"";
+				INFOPLIST_FILE = XenoZiran/Resources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = io.platodesign.xenoziransimulator;
+				PRODUCT_NAME = XenoZiranSimulator;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "XenoZiran/Runtime/XenoZiran-Bridging-Header.h";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		3BCA3CA2EFA655839A314E7B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = io.platodesign.xenoziransimulator.uitests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = XenoZiranSimulator;
+			};
+			name = Debug;
+		};
+		476A0549D6E284E6BD12DF76 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 3;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 4YPXSK4SM2;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		63E11552BF9DC98CF7F5620F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = io.platodesign.xenoziransimulator.uitests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = XenoZiranSimulator;
+			};
+			name = Release;
+		};
+		C2D6C3270364AB7A2832F07D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = io.platodesign.xenoziransimulator.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/XenoZiranSimulator.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/XenoZiranSimulator";
+			};
+			name = Debug;
+		};
+		E3AEDB0EFB7DDEA3CC331347 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 3;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 4YPXSK4SM2;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+		FAA910E3966925E52D27ED0D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = io.platodesign.xenoziransimulator.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/XenoZiranSimulator.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/XenoZiranSimulator";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		02931B36BF8776B24BCA3439 /* Build configuration list for PBXNativeTarget "XenoZiranSimulatorUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3BCA3CA2EFA655839A314E7B /* Debug */,
+				63E11552BF9DC98CF7F5620F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		11920D1939A4308D53870E6F /* Build configuration list for PBXNativeTarget "XenoZiranSimulator" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				19B14BF66F8ECA9FC8FB49E4 /* Debug */,
+				2F8C08DCDE453BAE3C121FB0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		37856612843A72D1E5D17479 /* Build configuration list for PBXNativeTarget "XenoZiranSimulatorTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C2D6C3270364AB7A2832F07D /* Debug */,
+				FAA910E3966925E52D27ED0D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		C694C1AA12C195B19ED7CCE0 /* Build configuration list for PBXProject "XenoZiranSimulator" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				476A0549D6E284E6BD12DF76 /* Debug */,
+				E3AEDB0EFB7DDEA3CC331347 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = B9220E8F575309F72B7356B8 /* Project object */;
+}

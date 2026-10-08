@@ -9,3 +9,20 @@ __pycache__/
 .DS_Store
 *.egg-info/
 *.tsbuildinfo
+site/
+ios/build/
+ios/vendor/
+ios/DerivedData/
+ios/*.xcodeproj/xcuserdata/
+# per-seed raw jobs of the long studies (~1.8 GB; re-creatable, re-analysable locally) and local backups
+backend/experiments/results/resolution/jobs/
+backend/experiments/results/resolution/backups/
+# default output root of `xzr run`
+xzr-results/
+# run logs and the one-off orchestration script of the original study run (machine-specific)
+backend/experiments/results/resolution/*.log
+backend/experiments/results/resolution/run_studies.sh
+# Post-Active-Inference benchmark: per-cell raw jobs (~550 MB, re-creatable with run_benchmark.py; summaries,
+# tables, pre-registration and frozen source archives are kept), and local ZIP exports
+research/post_active_inference/results/*/jobs/
+artifacts/zips/

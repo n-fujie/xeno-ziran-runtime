@@ -1,0 +1,359 @@
+{
+ "verdict": "READY FOR MEDIUM EXPERIMENTS",
+ "hardware": {
+  "cpu": "Apple M1 (4 performance + 4 efficiency cores)",
+  "logical_cores": 8,
+  "ram_gb": 8,
+  "gpu": "Apple M1 7-core GPU — not used (no GPU code path in the simulator)",
+  "vram": null,
+  "os": "macOS 26.6.2 (arm64)",
+  "python": "3.12.13",
+  "numpy": "2.5.3 (Accelerate BLAS/LAPACK)",
+  "scipy": "1.18.1",
+  "storage": "APFS SSD, 228 GiB, 27 GiB free at measurement time",
+  "background_load": "other processes used ~2 CPU cores; swap 3.5-5 GB of 5-6 GB in use during benchmarks"
+ },
+ "runtime": {
+  "repository": "xeno-ziran-runtime",
+  "git_head": "2634e697e9f743536a2efffb13a4a2938b94b0c4",
+  "working_tree": "uncommitted changes present (measured as-is)",
+  "package_version": "0.2.0",
+  "engine": "backend/xzr/runtime/engine.py: Engine.step (numpy, vectorised O(N+E) per step)",
+  "experiment_path": "backend/xzr/experiments/escalation/{harness.py:seed_job, runner.py:run_conditions}",
+  "parallelism": "concurrent.futures.ProcessPoolExecutor (runner.run_conditions, results.execute); no threads, no GPU, no distributed execution"
+ },
+ "largest_verified_single_run": {
+  "runtime_only": {
+   "n": 2048000,
+   "edges_alive_initial": 9772246,
+   "steps": 300,
+   "steps_per_s": 1.46,
+   "peak_rss_mb": 2029.4,
+   "init_total_s": 105.143
+  },
+  "runtime_plus_shape_detection": {
+   "n": 1024000,
+   "edges_alive_initial": 4886130,
+   "steps": 200,
+   "steps_per_s": 1.18,
+   "peak_rss_mb": 2042.0,
+   "init_total_s": 218.914,
+   "init_hierarchy_s": 185.799
+  },
+  "experiment_harness_reference_run": {
+   "n": 96000,
+   "steps": 400,
+   "steps_per_s": 13.08,
+   "peak_rss_mb": 457.5,
+   "init_calibration_s": 90.484
+  },
+  "first_unsafe": {
+   "spec": "engine:4096000:300:1",
+   "failure": "RSS 3038 MB > limit 2500 MB",
+   "guard_peak_rss_mb": 3037.5
+  }
+ },
+ "longest_verified_run": {
+  "runtime_plus_shape_detection": {
+   "n": 1500,
+   "steps": 50000,
+   "steps_per_s": 329.69,
+   "segment_steps_per_s": [
+    395.25,
+    306.74,
+    302.25
+   ],
+   "rss_mb_samples": [
+    71.4,
+    82.0,
+    84.1,
+    55.3,
+    55.4
+   ]
+  },
+  "experiment_harness": {
+   "n": 1500,
+   "steps": 40000,
+   "steps_per_s": 1119.48,
+   "peak_rss_mb": 89.5,
+   "result_pickle_bytes": 4267882
+  },
+  "memory_growth_with_horizon": "bounded: detector series capped at 20,000 points (shapes/detector.py MAX_POINTS); engine checkpoints capped at 24; harness frames fixed at 40 windows"
+ },
+ "optimal_parallelism": 4,
+ "parallel_scaling": {
+  "small_jobs_n1500_h400": {
+   "1": 1391.9,
+   "3": 2703.0,
+   "4": 3016.2,
+   "8": 3521.0
+  },
+  "larger_jobs_n12000_h400": {
+   "1": 288.5,
+   "2": 492.1,
+   "4": 567.8,
+   "8": 682.3
+  },
+  "note": "4 workers = best throughput per worker; 8 workers adds 15-20 % more throughput for ~2x RAM"
+ },
+ "throughput": {
+  "runtime_config_updates_per_s": {
+   "min": 1.38,
+   "max": 3.42,
+   "unit": "million"
+  },
+  "with_shape_detection_config_updates_per_s": {
+   "min": 0.6,
+   "max": 1.58,
+   "unit": "million"
+  },
+  "flagship_seed_jobs_per_hour": {
+   "serial_n1500_h4000": 139.6,
+   "4_workers_n1500_h4000": 301.9,
+   "2_workers_n10000_h4000": 64.8,
+   "production_batch_112_jobs_4_workers": 234.8
+  }
+ },
+ "peak_memory": {
+  "largest_single_run_mb": 2029.4,
+  "first_unsafe_guard_mb": 3037.5,
+  "production_batch_112_jobs_4_workers_tree_mb": 1594
+ },
+ "peak_vram": null,
+ "reproducibility": "DETERMINISTIC (same hardware and software stack): identical state fingerprints across processes and reruns; per-seed experiment results identical across 1/3/4/8 workers once three wall-clock timing fields are excluded. Cross-platform: NOT VERIFIED (except the iOS stand-in path against the golden fixture).",
+ "batch_112": {
+  "config": "7 topologies x 16 seeds; n=1500; horizon=4000; variants A,C,E,H (+C~); workers=4; production path python -m xzr run",
+  "jobs": 112,
+  "wall_s": 1717,
+  "peak_tree_rss_mb": 1594,
+  "storage_bytes": 98033664,
+  "jobs_storage_bytes": 97632256,
+  "result_json_bytes": 20404,
+  "raw_json_bytes": 364464,
+  "failures": 0,
+  "exit_code": 0,
+  "noise_replicate_detected_in_any_condition": false
+ },
+ "osp_feature_matrix": {
+  "scale_variation": {
+   "status": "IMPLEMENTED AND TESTED",
+   "code": "xzr/experiments/escalation/harness.py REFERENCE['n'], condition()",
+   "evidence": "b1_harness.jsonl (n 1,500-96,000); resolution-escalation preset run (scale:600/3000)"
+  },
+  "topology_variation": {
+   "status": "IMPLEMENTED AND TESTED",
+   "code": "xzr/scenario/topologies.py TOPOLOGIES, topology()",
+   "evidence": "tests/test_escalation.py::test_topologies_build; batch112 (7 topologies)"
+  },
+  "memory_variation": {
+   "status": "IMPLEMENTED AND TESTED",
+   "code": "xzr/scenario/topologies.py MEMORY_REGIMES; harness.build",
+   "evidence": "tests (test_memory_*); resolution-escalation preset (memory:short/long)"
+  },
+  "coupling_variation": {
+   "status": "IMPLEMENTED AND TESTED",
+   "code": "harness.REFERENCE['coupling'], harness.build",
+   "evidence": "executed in resolution-escalation preset (coupling:weak/strong); no dedicated unit test"
+  },
+  "horizon_variation": {
+   "status": "IMPLEMENTED AND TESTED",
+   "code": "harness condition 'horizon'",
+   "evidence": "b2_horizon.jsonl; preset horizon:1200"
+  },
+  "observation_level_variation": {
+   "status": "PARTIALLY IMPLEMENTED",
+   "code": "escalation/analysis.py + harness scale_values: five fixed resolutions (node, local, meso, macro, global)",
+   "evidence": "tests/test_escalation.py::test_resolution_sensitive_equivalence_node_vs_cluster; fixed set, not configurable"
+  },
+  "multi_cluster_experiments": {
+   "status": "IMPLEMENTED AND TESTED",
+   "code": "xzr/experiments/escalation/clusters.py",
+   "evidence": "tests: test_multiple_clusters_and_mixed_rules"
+  },
+  "world_responsive_revision": {
+   "status": "IMPLEMENTED AND TESTED",
+   "code": "xzr/reasonlab/triggers.py, loop.py; escalation/adaptivity.py",
+   "evidence": "tests: test_closed_loop_is_deterministic, test_open_loop_replay_of_own_schedule_reproduces_the_closed_loop"
+  },
+  "disconnection": {
+   "status": "IMPLEMENTED AND TESTED",
+   "code": "xzr/runtime/ops.py disconnect; escalation/disconnection.py",
+   "evidence": "tests: test_reconnect_and_disconnect, test_disconnection_replacements_and_relabellings"
+  },
+  "cut": {
+   "status": "IMPLEMENTED AND TESTED",
+   "code": "xzr/runtime/ops.py cut",
+   "evidence": "tests: test_cut_reconfiguration_trigger_variants; ablation preset no_cut"
+  },
+  "reconnection": {
+   "status": "IMPLEMENTED AND TESTED",
+   "code": "xzr/runtime/ops.py connect",
+   "evidence": "tests: test_reconnect_and_disconnect"
+  },
+  "reconfiguration": {
+   "status": "IMPLEMENTED AND TESTED",
+   "code": "xzr/runtime/ops.py reconfigure, reconfigure_by_mutation",
+   "evidence": "tests: test_reconfiguration_as_mutation_retires_and_creates"
+  },
+  "compression_reduction": {
+   "status": "IMPLEMENTED AND TESTED",
+   "code": "escalation/compression.py; experiments/reduction.py, reduction_rules.py",
+   "evidence": "tests: test_long_run_compression_fidelity_on_recurrent_sequences, test_minimal_exact_reductions_are_bit_identical"
+  },
+  "history_fork": {
+   "status": "IMPLEMENTED AND TESTED",
+   "code": "xzr/runtime/engine.py Engine.fork; experiments/history.py",
+   "evidence": "tests: test_fork_is_independent_and_identical, test_history_operations_are_deterministic_and_fork_is_exact"
+  },
+  "history_removal": {
+   "status": "IMPLEMENTED AND TESTED",
+   "code": "xzr/experiments/history.py seed_job ('remove': memory of region set to 0)",
+   "evidence": "tests/test_cli.py history tests; history-reentry preset run"
+  },
+  "history_reactivation": {
+   "status": "IMPLEMENTED AND TESTED",
+   "code": "xzr/experiments/history.py ('reactivate': saved memory added back at reactivate_at)",
+   "evidence": "tests/test_cli.py; history-reentry preset run"
+  },
+  "history_migration": {
+   "status": "IMPLEMENTED AND TESTED",
+   "code": "xzr/experiments/history.py ('migrate': memory moved to another region)",
+   "evidence": "tests/test_cli.py (destination_generation); history-reentry preset run"
+  },
+  "configuration_crossing_recurrence": {
+   "status": "PARTIALLY IMPLEMENTED",
+   "code": "shapes/detector.py recurrence events and recurrent signatures; experiments/history.py 'migrate' (destination-region ignitions)",
+   "evidence": "no dedicated test of recurrence across configurations (grep of tests: none); migrate executed in history tests and preset"
+  },
+  "sensor_addition_removal": {
+   "status": "ABSENT",
+   "code": null,
+   "evidence": "no code path (grep: sensor)"
+  },
+  "variable_set_changes": {
+   "status": "ABSENT",
+   "code": null,
+   "evidence": "feature sets fixed (harness GLOBAL_KEYS, detector descriptors)"
+  },
+  "observation_map_changes": {
+   "status": "ABSENT",
+   "code": null,
+   "evidence": "layouts (network/shape/geo) are visual projections only; no experimental observation map"
+  },
+  "boundary_changes": {
+   "status": "IMPLEMENTED AND TESTED",
+   "code": "harness _apply_world_event (world_schedule open/close between clusters); runtime/intervention.py Gate",
+   "evidence": "boundary-scale-window preset run; tests: test_reachability_horizon_and_closure_respect_gates"
+  },
+  "temporal_window_changes": {
+   "status": "PARTIALLY IMPLEMENTED",
+   "code": "horizon varies; analysis windows fixed (harness WINDOWS=40, SEGMENTS=8)",
+   "evidence": "preset window:200/1200"
+  },
+  "access_blocking": {
+   "status": "IMPLEMENTED AND TESTED",
+   "code": "runtime/intervention.py Gate (factor 0), Freeze",
+   "evidence": "tests: test_reachability_horizon_and_closure_respect_gates; no separate 'access' concept"
+  },
+  "delayed_re_entry": {
+   "status": "IMPLEMENTED AND TESTED",
+   "code": "experiments/history.py reactivate_at; topologies RETURN_STRUCTURES 'delayed'",
+   "evidence": "tests/test_cli.py history tests"
+  },
+  "correction_latency": {
+   "status": "ABSENT",
+   "code": null,
+   "evidence": "no code path"
+  },
+  "adversarial_configuration_search": {
+   "status": "ABSENT",
+   "code": null,
+   "evidence": "no code path (grep: adversar)"
+  },
+  "cross_configuration_robustness_testing": {
+   "status": "PARTIALLY IMPLEMENTED",
+   "code": "xzr/results.py configuration_sensitivity over listed conditions",
+   "evidence": "preset runs; no search over configurations"
+  },
+  "independent_re_detection": {
+   "status": "ABSENT",
+   "code": null,
+   "evidence": "no code path"
+  },
+  "checkpoint_restart": {
+   "status": "PARTIALLY IMPLEMENTED",
+   "code": "Engine checkpoints/rewind (in-run); runner persisted jobs + resume (studies); xzr run: no resume",
+   "evidence": "tests: test_rewind, test_runner_persists_jobs_and_resumes_only_missing_seeds"
+  },
+  "experiment_provenance": {
+   "status": "IMPLEMENTED AND TESTED",
+   "code": "xzr/results.py execute; escalation/runner.py provenance",
+   "evidence": "tests/test_cli.py::test_complete_experiment_through_the_cli"
+  }
+ },
+ "estimated_matrices": {
+  "100": {
+   "assumed_configuration": "seed job = reference C + noise replicate C~ + variants A, E, H; 1,500 configurations; 4,000 steps; multi-condition xzr run (production path)",
+   "serial_wall_h": 0.7,
+   "wall_h_at_4_workers": 0.4,
+   "expected_peak_ram_mb": 1594,
+   "expected_storage_gb": 0.09,
+   "confidence": "HIGH (measured: smaller than the executed batch)",
+   "basis": "measured: 112-job production batch (235 jobs/h at 4 workers) and 4-job serial run (140 jobs/h); storage 0.88 MB/job measured on disk"
+  },
+  "1000": {
+   "assumed_configuration": "seed job = reference C + noise replicate C~ + variants A, E, H; 1,500 configurations; 4,000 steps; multi-condition xzr run (production path)",
+   "serial_wall_h": 7.2,
+   "wall_h_at_4_workers": 4.3,
+   "expected_peak_ram_mb": 1594,
+   "expected_storage_gb": 0.88,
+   "confidence": "MEDIUM",
+   "basis": "measured: 112-job production batch (235 jobs/h at 4 workers) and 4-job serial run (140 jobs/h); storage 0.88 MB/job measured on disk"
+  },
+  "5000": {
+   "assumed_configuration": "seed job = reference C + noise replicate C~ + variants A, E, H; 1,500 configurations; 4,000 steps; multi-condition xzr run (production path)",
+   "serial_wall_h": 35.8,
+   "wall_h_at_4_workers": 21.3,
+   "expected_peak_ram_mb": 1594,
+   "expected_storage_gb": 4.38,
+   "confidence": "LOW",
+   "basis": "measured: 112-job production batch (235 jobs/h at 4 workers) and 4-job serial run (140 jobs/h); storage 0.88 MB/job measured on disk; more than ~10x beyond the measured batch: LOW CONFIDENCE"
+  },
+  "10000": {
+   "assumed_configuration": "seed job = reference C + noise replicate C~ + variants A, E, H; 1,500 configurations; 4,000 steps; multi-condition xzr run (production path)",
+   "serial_wall_h": 71.6,
+   "wall_h_at_4_workers": 42.6,
+   "expected_peak_ram_mb": 1594,
+   "expected_storage_gb": 8.75,
+   "confidence": "LOW",
+   "basis": "measured: 112-job production batch (235 jobs/h at 4 workers) and 4-job serial run (140 jobs/h); storage 0.88 MB/job measured on disk; more than ~10x beyond the measured batch: LOW CONFIDENCE"
+  }
+ },
+ "blocking_issues": [
+  "Generated-observability experiments: NOT IMPLEMENTED (no sensor addition/removal, variable-set or observation-map changes in the runtime or harness)",
+  "Adversarial-differentiation experiments: NOT IMPLEMENTED (no adversarial configuration search, no independent re-detection)"
+ ],
+ "important_issues": [
+  "8 GB RAM / 4 performance cores: parallel speed-up measured at most 2.5x (8 workers); single runs above ~2 M configurations unsafe",
+  "a seed-job exception aborts the whole run (runner.run_conditions: unguarded f.result()); xzr run is not resumable (studies are, via persisted jobs)",
+  "storage ~1 MB per seed job; 10,000 jobs would use ~10 GB of the 27 GB free",
+  "seed count: presets validator caps at 16 (xzr/presets/__init__.py MAX_SEEDS); history statistics enumerate 2^seeds",
+  "result files embed wall-clock timing fields (build_s, ms_per_step, loop_ms_per_step) — exclude them for byte comparison",
+  "result.json environment capture is partial (version, Python, numpy, git; no OS/CPU/scipy)",
+  "the repository's own .venv lacks the `xzr` console script until reinstalled (python -m xzr works)"
+ ],
+ "evidence": [
+  "artifacts/capability-benchmarks/b1_engine.jsonl",
+  "artifacts/capability-benchmarks/b1_detector.jsonl",
+  "artifacts/capability-benchmarks/b1_harness.jsonl",
+  "artifacts/capability-benchmarks/b2_horizon.jsonl",
+  "artifacts/capability-benchmarks/b3_pool.jsonl",
+  "artifacts/capability-benchmarks/b3_pool_det.jsonl",
+  "artifacts/capability-benchmarks/b3_pool_large.jsonl",
+  "artifacts/capability-benchmarks/b4_repro.jsonl",
+  "artifacts/capability-benchmarks/b5_flagship.jsonl",
+  "artifacts/capability-benchmarks/batch112.json",
+  "artifacts/capability-benchmarks/{bench_one,guard,bench_pool,diff_job}.py (temporary harness, not part of the package)",
+  "backend tests executed: 175 passed (test_cli, test_compat, test_bridge, test_escalation + replay/determinism tests)"
+ ]
+}

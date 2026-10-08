@@ -1,14 +1,123 @@
-# Xeno / Ziran Philosophical Runtime
+# XENO ZIRAN SIMULATOR — runtime repository (`xeno-ziran-runtime`)
 
-**Operational Shape Simulation Platform** — *Not a prediction. Explore possible transitions.*
+> **Operational-Shape tools are not an implementation of a final ontology. They are experimental instruments for
+> varying configurations, testing operational distinctions, comparing transformations, and measuring changes in
+> subsequent possibilities.**
 
-A counterfactual transition-exploration runtime. It does not start from domains (people, markets, institutions,
-states…). It simulates domain-neutral operations — difference, connection, ignition, transition, retention,
-transformation, cut, penetration, return, reconfiguration, memory, reachability — detects the operational shapes
-that recur, and only then (optionally) attaches interpretive labels. Philosophical claims and commitments can be
-entered as structured interventions; the runtime is rerun and baseline vs intervention are compared.
+## What is this?
 
-## Quick start
+A simulation runtime in which differences ignite, propagate, are retained as memory, cut and reconfigure
+connections across a field of configurations — plus the instruments to experiment on it: vary scale, topology,
+memory, coupling, horizon, boundary and observation resolution; switch runtime mechanisms off; fork, remove,
+reactivate or migrate retained history; and compare paired runs against a noise replicate, with the effective
+configuration and provenance recorded for every result. It also contains the interactive simulator (web and iOS)
+built on the same runtime.
+
+## What can I run, and what does it test?
+
+| command | tests |
+|---|---|
+| `xzr run resolution-escalation` | at which observation resolution (node → global) structural differences are systematic, as scale, topology, memory, coupling and horizon change |
+| `xzr run history-reentry` | whether removing, restoring or moving a region's retained history changes reachability, generation, discrimination, intervention response and later configuration — and whether restored history re-enters |
+| `xzr run boundary-scale-window` | whether a candidate distinction survives a closed boundary, another scale or another time window |
+| `xzr run ablation` | which runtime mechanisms change downstream behaviour when removed |
+| `xzr compare A B` · `xzr export R` | cell-by-cell change of detection status between runs · CSV export |
+| `xzr study …` | the long published studies (resolution matrix, disconnection, triggers, adaptivity, clusters, compression, reduction, reasoning layer) |
+
+Details per experiment — question, manipulated and fixed variables, measured outputs, what it does **not**
+show: [docs/EXPERIMENTS.md](docs/EXPERIMENTS.md). The few concepts the software uses:
+[docs/THEORY.md](docs/THEORY.md).
+
+## What it is NOT
+
+* Not a validator of Operational-Shape Philosophy, Ziran, Xenoscience or any vocabulary — a detected difference
+  is a difference in this simulation under the stated configuration, nothing more.
+* Its results are experimental and analytical outputs under stated configurations — not real-world forecasts or
+  predictive claims.
+* Not a source of proof by absence: *not detected* is not *absent*; `EQUIVALENT` (shown within ±5 %) and
+  `UNRESOLVED` (neither shown) are reported separately; *bit-identical* means no difference in the represented
+  and measured state.
+* Not a novelty detector: a residual or newly detectable difference is labelled as such; whether it is
+  theoretically novel is an interpretation outside the software.
+* Target-coupled validation of newly constructed variables or sensors is not supported (no such mechanism exists
+  in the runtime).
+
+## Quick start (experiments)
+
+Python ≥ 3.11. No network, account or credential is needed.
+
+```bash
+git clone <repository-url> xeno-ziran-runtime && cd xeno-ziran-runtime
+python3 -m venv .venv && .venv/bin/pip install -e "backend[dev]"
+.venv/bin/xzr presets
+.venv/bin/xzr run history-reentry          # ~30 s on 4 cores
+```
+
+Results go to `xzr-results/<experiment>/<run-id>/`: `config.json` (the effective configuration — what actually
+ran), `result.json` (schema `xzr.result/1`: seeds, provenance, per-condition statuses, warnings, failures),
+`summary.txt`, and the raw per-seed outputs. Runs never overwrite earlier runs. Exit code 0 = success,
+1 = the run recorded failures, 2 = invalid configuration or usage.
+
+## Representative experiment
+
+`xzr run resolution-escalation` (12 paired seeds, 10 conditions, 5.2 min on 6 processes) — status of each
+structural variant against the reference reasoning layer C at node · local · meso · macro · global resolution
+(DETE detected, EQUI equivalent within ±5 %, UNRE unresolved):
+
+```text
+  reference
+       C~  UNRE UNRE UNRE UNRE UNRE   noise replicate: never detected (in any of the 10 conditions)
+        A  DETE DETE DETE DETE DETE   no reasoning layer
+        E  DETE DETE DETE DETE EQUI   no eligibility tracking
+        H  UNRE UNRE UNRE UNRE EQUI   no dependency records
+across conditions (macro/global):
+        A  configuration-sensitive — detected in 7 of 10 conditions
+        E  configuration-sensitive — detected only in the reference
+        H  configuration-sensitive — detected only at n = 3,000 and under strong coupling
+```
+
+Read it as: these distinctions exist in this runtime under some configurations and not others; which ones, and at
+which resolution, is the result. It does not show that any of them is necessary in general.
+
+## Research benchmark: where does an Active-Inference description hold?
+
+[`research/post_active_inference/`](research/post_active_inference/) uses this runtime as a world and perturbation
+engine to test when the descriptive units of a discrete Active Inference comparator (agent, boundary, generative
+model, latent state, prediction error, free energy, policy) stay stable, and what happens to control when they do
+not. It was run in three stages; the last one was pre-registered
+([PREREGISTRATION.md](research/post_active_inference/PREREGISTRATION.md)) and run on 30 fresh seeds (55,680 runs).
+Result ([REPORT_RESEARCH.md](research/post_active_inference/REPORT_RESEARCH.md)): the comparator's primitives lose
+stability reproducibly and mostly gradually under **sensor and action-interface** disruptions, not under the tested
+changes of world structure; where they fail, its **control fails with them** (no dissociation); inside the stable
+regime its control advantage is small. Scope: one simulated world, one task, one comparator family — not a claim
+about Active Inference in general.
+
+## Reproducibility, citation, license
+
+Exact commands, determinism and its limits: [docs/REPRODUCIBILITY.md](docs/REPRODUCIBILITY.md). Every run records
+version, code hash, git commit (with a flag for uncommitted changes), Python/numpy versions, seeds and the
+effective configuration. Cite with [CITATION.cff](CITATION.cff). License: MIT ([LICENSE](LICENSE)).
+
+## The interactive simulator
+
+Operational-Shape Dynamics (theory) › Xenoscience (scientific regime) › Ziran System (architecture family) ›
+XENO ZIRAN SIMULATOR (this application). The simulator's operations fall into distinct regions: the **experimental
+runtime** (configuration, intervention, execution, comparison, replay), the **research results** produced on it
+(`backend/experiments/`), and the **Philosophical Runtime** (philosophical analysis: claims and commitments as
+structured interventions). The Philosophical Runtime is one region of the simulator, not its enclosing category.
+
+The public deployment (https://ziran-xeno-simulator.vercel.app, built by `backend/scripts/export_static.py`) exposes
+only the read-only research-result layer; the interactive runtime runs on the local server (or on the device, in
+the iOS app — [docs/IOS_APP.md](docs/IOS_APP.md)). The published result views are experimental and analytical
+outputs and should not be interpreted as real-world forecasts or predictive claims.
+
+It does not start from domains (people, markets, institutions, states…). It simulates domain-neutral operations —
+difference, connection, ignition, transition, retention, transformation, cut, penetration, return,
+reconfiguration, memory, reachability — detects the operational shapes that recur, and only then (optionally)
+attaches interpretive labels. Philosophical claims and commitments can be entered as structured interventions;
+the runtime is rerun and baseline vs intervention are compared.
+
+### Running the interactive simulator
 
 Requirements: Python ≥ 3.11, Node ≥ 20.
 
@@ -37,12 +146,14 @@ make docker
 make docker-run
 ```
 
-## Using it
+### Using it
 
 * **Views** — Network, Shape Space, Address Space, World Map, 3D Globe (spatial projections of the *same*
   configurations; the map is one optional projection, configurations without geo coordinates remain in all
   other views), Timeline, Compare, Philosophical Practice, and **Research** (Reduction · Minimal primitives ·
-  Reason layer · Phases — read-only views of the experiment result files).
+  Reason layer · Phases — read-only views of the experiment result files). Resolution escalation adds six more
+  views: Resolution Matrix · Hidden Difference · Scale Penetration · Reasoning Structure Inspector · Disconnection
+  Study · Long-Run Compression.
 * **Runtime** — full (default) or the evidence-based MINIMAL runtime: `/?runtime=minimal`, or
   `"flags": "minimal"` when creating a session via the API.
 * **Scales** — Macro → Global → Regional → Local → Configuration → Relation. Zoom with the wheel, click a
@@ -88,22 +199,34 @@ backend/
                   terminology-free support graph (support.py)
   xzr/compare     baseline vs intervention (+ noise floor); trajectory distances for ablations
   xzr/reasonlab   closed loop world ↔ reasoning through an operational intervention gate; enabling conditions
-  xzr/experiments primitive reduction study and reasoning non-redundancy suite
+  xzr/experiments primitive reduction study, reasoning non-redundancy suite, resolution escalation
+                  (escalation/), history operations (history.py: fork, removal, reactivation, migration)
+  xzr/cli.py      the `xzr` command; xzr/results.py: result schema, provenance, compare, export
+  xzr/presets     experiment presets (JSON) and configuration validation
   experiments/    run_reduction.py; results/{reduction,reason,final_results}.json
   xzr/lod         intrinsic hierarchy (recursive Fiedler bisection), projections, viewport tiles
   xzr/scenario    scenario schema, world builder, import/export
   xzr/service     FastAPI + WebSocket, session worker threads, comparison job pool
+                  + operations.py: transport-independent session operations (HTTP and the iOS bridge)
+  xzr/native      iOS in-process bridge (allowlisted routes, stream polling) and behavioural conformance
+  xzr/_compat     numpy stand-ins for the scipy/pydantic surface the engine uses (iOS has neither) +
+                  desktop reference hierarchies for the bundled scenarios
   scenarios/      demo-3k (with practice layer), small-600 (no geo), benchmark-10k, reason-lab, benchmark-10k-reason
-  tests/          125 tests · bench/benchmark.py · scripts/{make_fixtures,make_reports}.py
-frontend/         React + TypeScript + deck.gl + Zustand; binary protocol decoder; 5 tests
-docs/             ARCHITECTURE.md · BENCHMARK.md · LIMITATIONS.md · REDUCTION.md · MINIMAL_RUNTIME.md ·
-                  REASON_NONREDUNDANCY.md · EXPERIMENT_RESULTS.md
+  tests/          245 tests · bench/{benchmark,escalation_bench}.py · scripts/{make_fixtures,make_reports,escalation_reports,export_static}.py
+frontend/         React + TypeScript + deck.gl + Zustand; binary protocol decoder; `npm run build:native` for iOS
+docs/             THEORY.md · EXPERIMENTS.md · REPRODUCIBILITY.md · ARCHITECTURE.md · BENCHMARK.md · LIMITATIONS.md · REDUCTION.md · MINIMAL_RUNTIME.md ·
+                  REASON_NONREDUNDANCY.md · EXPERIMENT_RESULTS.md · RESOLUTION_ESCALATION.md ·
+                  REASONING_CONFIGURATION_MAP.md · DISCONNECTION.md · SCALE_PENETRATION.md · LONG_RUN_COMPRESSION.md
+ios/              iOS app (SwiftUI + WKWebView + embedded CPython running this engine on the device);
+                  see docs/IOS_APP.md
 Dockerfile · docker-compose.yml · Makefile
 ```
 
-Checks: `make test` (pytest + vitest), `make lint` (ruff, mypy, eslint, tsc), `make bench`.
+Checks: `make test` (pytest + vitest), `make lint` (ruff, mypy, eslint, tsc), `make bench`; CI runs the same
+plus a CLI smoke run and a two-run reproducibility check (`.github/workflows/ci.yml`).
 Experiments: `make experiments` (= `experiments-reduction` + `experiments-reason`), then
-`python backend/scripts/make_reports.py` to regenerate the data tables in the docs.
+`python backend/scripts/make_reports.py` to regenerate the data tables in the docs. Resolution escalation:
+`make experiments-escalation` (several hours; resumable), `make reports-escalation`, `make bench-escalation`.
 
 Tests cover ignition, retention, penetration, return, transformation, cut, disconnection, reconnection,
 reconfiguration, deterministic replay and rewind across interventions, overlay reversibility, intervention

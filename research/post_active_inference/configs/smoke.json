@@ -1,0 +1,14 @@
+{
+ "stage": "smoke",
+ "description": "Stage 1: 3 seeds, two severities, every perturbation subtype, ablations on six cells. Correctness check.",
+ "seeds": [1, 2, 3],
+ "severities": [0.5, 1.0],
+ "perturbations": "all",
+ "controllers": ["none", "aif_fixed", "aif_adaptive", "ost"],
+ "ablations": ["no_latent", "no_model", "no_prediction_error", "no_free_energy", "no_efe_epistemic", "no_policy", "no_agent", "no_boundary"],
+ "ablation_cells": [["topology.cluster_split", 1.0], ["sensor.noise", 1.0], ["boundary.reassignment", 1.0],
+                    ["temporal.interface_drift", 1.0], ["memory.history_reactivation", 1.0], ["coupling.temporary_decoupling", 1.0]],
+ "world": {},
+ "phases": {},
+ "procs": 4
+}

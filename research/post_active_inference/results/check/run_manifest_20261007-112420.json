@@ -1,0 +1,104 @@
+{
+ "stage": "check",
+ "config": {
+  "stage": "check",
+  "description": "Targeted validation of the post-smoke fixes (dead sensors, multi-probe policy identity, boundary response share, longer phases). Not a benchmark stage.",
+  "seeds": [
+   1,
+   2,
+   3
+  ],
+  "severities": [
+   1.0
+  ],
+  "perturbations": [
+   "boundary.reassignment",
+   "boundary.fragmentation",
+   "temporal.interface_drift",
+   "sensor.dropout",
+   "variable.deletion",
+   "sensor.permutation",
+   "topology.cluster_merge",
+   "memory.history_removal"
+  ],
+  "controllers": [
+   "none",
+   "aif_fixed",
+   "aif_adaptive",
+   "ost"
+  ],
+  "procs": 4,
+  "world": {},
+  "phases": {},
+  "noise_offset": 1000,
+  "ablations": [],
+  "ablation_cells": []
+ },
+ "config_hash": "071d91758b1131b3",
+ "runtime_provenance": {
+  "version": "0.2.0",
+  "git_head": "2634e697e9f743536a2efffb13a4a2938b94b0c4",
+  "dirty": true,
+  "code_sha1": "7c7b297411d5a834",
+  "time": "2026-10-07 11:24:21",
+  "python": "3.12.13",
+  "numpy": "2.5.3"
+ },
+ "benchmark_code_sha1": "1cf2c0365f3a67b2",
+ "dependencies": {
+  "numpy": "2.5.3",
+  "scipy": "1.18.1",
+  "python": "3.12.13"
+ },
+ "aif_source": "ziran-xeno-simulator embodied/active_inference @ d4ad6a7544bbb515027e1a97fa914423f01bf8e6 (vendored)",
+ "hardware": {
+  "machine": "arm64",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "processor": "arm",
+  "cpu_count": 8,
+  "python": "3.12.13",
+  "ram_gb": 8.0,
+  "cpu_brand": "Apple M1",
+  "available_gb": 1.469146728515625,
+  "gpu": "not used (the runtime has no GPU code path)"
+ },
+ "timestamp": "2026-10-07T11:24:21+0900",
+ "plan": {
+  "stage": "check",
+  "cells": 27,
+  "cells_done": 0,
+  "runs": 117,
+  "procs": 4,
+  "estimated_wall_min": 1.4,
+  "estimated_peak_mb": 800,
+  "hardware": {
+   "machine": "arm64",
+   "platform": "macOS-26.6.2-arm64-arm-64bit",
+   "processor": "arm",
+   "cpu_count": 8,
+   "python": "3.12.13",
+   "ram_gb": 8.0,
+   "cpu_brand": "Apple M1",
+   "available_gb": 1.4444580078125,
+   "gpu": "not used (the runtime has no GPU code path)"
+  },
+  "config_hash": "071d91758b1131b3",
+  "perturbations": 8,
+  "aliases": {
+   "variable.latent_split": "topology.cluster_split",
+   "variable.latent_merge": "topology.cluster_merge",
+   "variable.feature_remap": "sensor.scale_mismatch",
+   "temporal.delayed_feedback": "sensor.delay",
+   "temporal.adaptation_delay": "boundary.delayed_update",
+   "structural.reconfiguration": "topology.rerouting",
+   "structural.expansion": "topology.cluster_merge",
+   "structural.configuration_crossing_recurrence": "memory.migration",
+   "memory.memory_migration": "memory.migration"
+  },
+  "not_implemented": {
+   "structural.compression": "fixed-N engine: no operation removes configurations while keeping the run comparable",
+   "memory.history_fork": "Engine.fork is an exact continuation (bit-identical, tested), so it is not a perturbation",
+   "sensor.temporal_window_mismatch": "covered by sensor.window_mismatch"
+  }
+ }
+}

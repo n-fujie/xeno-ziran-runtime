@@ -11,7 +11,15 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 import numpy as np
-from scipy.spatial import cKDTree
+
+from .._compat import FORCE as _COMPAT
+
+try:  # the iOS app has no scipy: an exact brute-force neighbour query stands in (see _compat/spatial.py)
+    if _COMPAT:
+        raise ImportError
+    from scipy.spatial import cKDTree
+except ImportError:
+    from .._compat.spatial import cKDTree
 
 from .state import Params, State, allocate
 

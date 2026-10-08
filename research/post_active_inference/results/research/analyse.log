@@ -1,0 +1,5 @@
+/Users/user/Desktop/BIM/xeno-ziran-runtime/research/post_active_inference/pai/stats.py:101: RuntimeWarning: Mean of empty slice
+  mean = np.nanmean(M, 0)
+/Users/user/Desktop/BIM/xeno-ziran-runtime/research/post_active_inference/pai/stats.py:108: RuntimeWarning: Mean of empty slice
+  c = crossing(levels, np.nanmean(M[rng.integers(0, len(M), len(M))], 0), thr)
+{"cells": 12720, "regimes": {"ACTIVE_INFERENCE_COMPATIBLE": 10911, "TRANSITION": 893, "POST_ACTIVE_INFERENCE": 916}, "failures": {"simulator_failure": 0, "numerical_failure": 0, "benchmark_failure": 0, "comparator_failure": 0, "model_structure_failure": 0, "controller_failure": 9070, "genuine_regime_transition": 1809}, "null_mislabelled_share": 0.0}

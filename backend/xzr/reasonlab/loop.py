@@ -70,6 +70,12 @@ class LoopConfig:
     # degradations of the reasoning interface itself (enabling-condition experiments)
     interface_churn: dict | None = None  # {"from": t, "every": checks, "seed": s}: random dependency edits
     record_decay: dict | None = None  # {"from": t, "factor": f}: records fade every check, even while active
+    triggers: Any = None  # reasonlab.triggers.TriggerSet: world-responsive revisions (optional)
+    light: bool = False  # compact timeline (long runs): no per-check effective levels
+
+
+def hash_effects(effects: tuple) -> str:
+    return hashlib.sha1("|".join(effects).encode()).hexdigest()[:12]
 
 
 def _overlay_key(items: list) -> str:
@@ -77,12 +83,15 @@ def _overlay_key(items: list) -> str:
 
 
 class ReasonLoop:
-    def __init__(self, world: World, practice_json: dict, cfg: LoopConfig):
+    def __init__(self, world: World, practice_json: dict, cfg: LoopConfig, rep: Any = None):
         self.world = world
         self.cfg = cfg
         self.base_json = copy.deepcopy(practice_json)
         kind = cfg.representation
-        self.rep: Any = build(kind, practice_json) if kind not in ("memoryless", "none", "replay") else None
+        if rep is not None:  # a prebuilt representation (structures.build_variant); kind is then only a label
+            self.rep: Any = rep
+        else:
+            self.rep = build(kind, practice_json) if kind not in ("memoryless", "none", "replay") else None
         if kind == "memoryless":
             self.rep = build("scorekeeping", practice_json)
         self.gate = InterventionGate(world.engine)
@@ -100,6 +109,8 @@ class ReasonLoop:
         self._frozen_overlay: list | None = None
         self._frozen_effects: tuple = ()
         self.effects: tuple = ()
+        self.effect_changes: list[tuple[int, tuple]] = []
+        self._calib: dict[int, list[float]] = {}
         self._churn_rng = random.Random(cfg.interface_churn["seed"]) if cfg.interface_churn else None
         self._apply(initial=True)
         if cfg.representation == "replay":
@@ -130,7 +141,15 @@ class ReasonLoop:
         in force — independent of which connection indices a target set resolves to at this moment."""
         boundaries = {k: b.permeability for k, b in self.world.scenario.boundaries.items()}
         cfg = InterventionConfig(rep if rep is not None else _Empty(), boundaries)
-        items, _, prov, _ = compile_config(cfg, self.world.resolve)
+        cache: dict[tuple[str, str], Any] = {}
+
+        def resolve(target: str, want: str = "nodes"):
+            k = (target, want)
+            if k not in cache:
+                cache[k] = self.world.resolve(target, want)
+            return cache[k]
+
+        items, _, prov, _ = compile_config(cfg, resolve)
         effects = tuple(sorted(p["effect"] for p in prov if p.get("targets") and "inactive" not in p["effect"]))
         return items, effects
 
@@ -151,14 +170,20 @@ class ReasonLoop:
             reasoning_items, effects = self._compile(rep)
         if active:
             self._frozen_overlay, self._frozen_effects = reasoning_items, effects
-        self.effects = (*tuple(effects), *sorted(f"world {type(i).__name__}" for i in self.world_items))
+        new_effects = (*tuple(effects), *sorted(f"world {type(i).__name__}" for i in self.world_items))
+        if new_effects != self.effects or initial:
+            self.effect_changes.append((self.world.state.t, new_effects))
+        self.effects = new_effects
         items = [*reasoning_items, *self.world_items]
         key = _overlay_key(items)
         if key != self.key or initial:
             self.gate.set_overlay(items)
             self.key = key
             self.overlay = items
-            self.overlay_changes.append((self.world.state.t, list(items)))
+            if not self.cfg.light:
+                self.overlay_changes.append((self.world.state.t, list(items)))
+            else:
+                self.world.engine.log.clear()  # long runs: the rewind log is not needed
 
     def _replay_apply(self, items: list) -> None:
         self.gate.set_overlay(items)
@@ -175,6 +200,8 @@ class ReasonLoop:
                 self._apply()
         for at, e in self.cfg.edits:
             if at == t_next and self.rep is not None:
+                if e.op in ("lose_records", "restore_records") and self._persistent():
+                    continue
                 if self.cfg.representation == "memoryless":
                     p = build("scorekeeping", self.base_json)
                     apply_edit(p, e)
@@ -197,10 +224,26 @@ class ReasonLoop:
         for _ in range(steps):
             self.step()
 
+    def _persistent(self) -> bool:
+        return bool(getattr(self.rep, "persistent", False))
+
+    def _holds(self, k: int, c: dict, calibrating: bool) -> tuple[bool, float]:
+        """Enabling condition; with ``rel`` the threshold is rel × the metric's mean over the calibration checks
+        (the checks before reasoning is allowed)."""
+        if "rel" not in c:
+            return holds(self.probe, c)
+        v = self.probe.value(c["metric"], c.get("target", ""), c.get("source", ""))
+        if calibrating:
+            self._calib.setdefault(k, []).append(v)
+            return True, v
+        base = float(sum(self._calib.get(k, [v])) / max(len(self._calib.get(k, [v])), 1))
+        return holds(self.probe, {**c, "value": c["rel"] * base})
+
     def _check(self) -> None:
         t = self.world.state.t
         self.probe.begin_check()
-        conds = [holds(self.probe, c) for c in self.cfg.enabling]
+        calibrating = t < self.cfg.reasoning_from
+        conds = [self._holds(k, c, calibrating) for k, c in enumerate(self.cfg.enabling)]
         ok = all(c[0] for c in conds)
         allowed = t >= self.cfg.reasoning_from
         if ok != self.enabled:
@@ -212,8 +255,17 @@ class ReasonLoop:
             self._streak = 0
         self.ever_enabled |= self.enabled and allowed
         if (not self.enabled and self.ever_enabled and self.rep is not None and self.cfg.collapse == "decay"
-                and self.cfg.representation != "memoryless"):
+                and self.cfg.representation != "memoryless" and not self._persistent()):
             self._decay()
+        trig = self.cfg.triggers
+        if trig is not None and self.rep is not None:
+            trig.observe(self, calibrating)
+            if self.enabled and allowed:
+                before_eff = effective(self.rep)
+                for e in trig.fire(self):
+                    apply_edit(self.rep, e)
+                if effective(self.rep) != before_eff:
+                    self.revisions += 1
         gvals = []
         if self.enabled and allowed and self.rep is not None:
             if self.cfg.representation == "memoryless":
@@ -237,6 +289,11 @@ class ReasonLoop:
         phase = ("no_reasoning_layer" if self.cfg.representation in ("none", "replay") else
                  "pre" if not allowed else "reasoning" if self.enabled else
                  "collapsed" if self.ever_enabled else "not_enabled")
+        if self.cfg.light:
+            lv = "" if self.rep is None else hash_effects(tuple(f"{k}={v}" for k, v in sorted(effective(self.rep).items())))
+            self.timeline.append({"t": t, "phase": phase, "effects": hash_effects(self.effects), "levels": lv,
+                                  "revisions": self.revisions, "conditions": [round(c[1], 5) for c in conds]})
+            return
         rec = {"t": t, "phase": phase, "enabled": self.enabled, "conditions": [round(c[1], 5) for c in conds],
                "groundings": [round(v, 5) for v in gvals], "overlay_items": len(self.overlay),
                "overlay_changed": self.key != before, "revisions": self.revisions, "effects": list(self.effects)}
@@ -252,7 +309,7 @@ class ReasonLoop:
         self.timeline.append(rec)
 
     def _interface_degradation(self, t: int) -> None:
-        if self.rep is None:
+        if self.rep is None or self._persistent():
             return
         rd = self.cfg.record_decay
         if rd and t >= rd["from"] and self.enabled:

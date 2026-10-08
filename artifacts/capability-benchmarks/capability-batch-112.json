@@ -1,0 +1,72 @@
+{
+ "schema": "xzr.experiment/1",
+ "id": "capability-batch-112",
+ "kind": "conditions",
+ "description": "Capability verification batch: 7 topologies x 16 seeds at 1,500 configurations, 4,000 steps.",
+ "question": "Throughput, storage and stability of a 112-seed-job experiment on the production path.",
+ "manipulated": [
+  "topology"
+ ],
+ "fixed": [
+  "everything else"
+ ],
+ "measured": [
+  "wall time, storage, statuses"
+ ],
+ "does_not_show": "Anything beyond runtime capacity on this machine.",
+ "seeds": 16,
+ "baseline": {
+  "n": 1500,
+  "horizon": 4000,
+  "variants": [
+   "A",
+   "C",
+   "E",
+   "H"
+  ]
+ },
+ "conditions": [
+  {
+   "id": "topology:multi_region",
+   "changed": {
+    "topology": "multi_region"
+   }
+  },
+  {
+   "id": "topology:small_world",
+   "changed": {
+    "topology": "small_world"
+   }
+  },
+  {
+   "id": "topology:modular",
+   "changed": {
+    "topology": "modular"
+   }
+  },
+  {
+   "id": "topology:sparse_random",
+   "changed": {
+    "topology": "sparse_random"
+   }
+  },
+  {
+   "id": "topology:dense_random",
+   "changed": {
+    "topology": "dense_random"
+   }
+  },
+  {
+   "id": "topology:hierarchical",
+   "changed": {
+    "topology": "hierarchical"
+   }
+  },
+  {
+   "id": "topology:highly_clustered",
+   "changed": {
+    "topology": "highly_clustered"
+   }
+  }
+ ]
+}

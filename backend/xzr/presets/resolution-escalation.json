@@ -1,0 +1,96 @@
+{
+ "schema": "xzr.experiment/1",
+ "id": "resolution-escalation",
+ "kind": "conditions",
+ "description": "Which structural differences appear, disappear or persist as scale, topology, memory, coupling and horizon change, at five observation resolutions.",
+ "question": "At which observation resolutions (node, local, meso, macro, global) is each structural difference systematic, and does that depend on scale, topology, memory, coupling or horizon?",
+ "manipulated": [
+  "n (scale)",
+  "topology",
+  "memory regime",
+  "coupling",
+  "horizon"
+ ],
+ "fixed": [
+  "world generator seed",
+  "reasoning structure (competing_clusters, size 32)",
+  "triggers",
+  "engine seeds 100…111"
+ ],
+ "measured": [
+  "for each variant vs the reference C: DETECTED / EQUIVALENT / UNRESOLVED at each resolution, with the noise replicate C~ as false-positive control"
+ ],
+ "does_not_show": "That a difference is necessary or fundamental: one-factor-at-a-time around one reference, not a factorial design; other untested factors may change the picture.",
+ "seeds": 12,
+ "baseline": {
+  "n": 1500,
+  "horizon": 400,
+  "seeds": 12,
+  "variants": [
+   "A",
+   "C",
+   "E",
+   "H"
+  ]
+ },
+ "conditions": [
+  {
+   "id": "reference",
+   "changed": {}
+  },
+  {
+   "id": "scale:600",
+   "changed": {
+    "n": 600
+   }
+  },
+  {
+   "id": "scale:3000",
+   "changed": {
+    "n": 3000
+   }
+  },
+  {
+   "id": "topology:small_world",
+   "changed": {
+    "topology": "small_world"
+   }
+  },
+  {
+   "id": "topology:modular",
+   "changed": {
+    "topology": "modular"
+   }
+  },
+  {
+   "id": "memory:short",
+   "changed": {
+    "memory": "short"
+   }
+  },
+  {
+   "id": "memory:long",
+   "changed": {
+    "memory": "long"
+   }
+  },
+  {
+   "id": "coupling:weak",
+   "changed": {
+    "coupling": "weak"
+   }
+  },
+  {
+   "id": "coupling:strong",
+   "changed": {
+    "coupling": "strong"
+   }
+  },
+  {
+   "id": "horizon:1200",
+   "changed": {
+    "horizon": 1200
+   }
+  }
+ ]
+}

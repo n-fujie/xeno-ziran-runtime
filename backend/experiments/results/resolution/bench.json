@@ -1,0 +1,184 @@
+{
+ "machine": {
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "python": "3.12.13",
+  "numpy": "2.5.3"
+ },
+ "date": "2026-10-01 09:46:24",
+ "core": {
+  "1500:full": {
+   "n": 1500,
+   "steps": 2000,
+   "steps_per_second": 966.9,
+   "ms_p50": 1.043,
+   "ms_p95": 1.242,
+   "array_mib": 0.89
+  },
+  "1500:minimal": {
+   "n": 1500,
+   "steps": 2000,
+   "steps_per_second": 943.2,
+   "ms_p50": 1.074,
+   "ms_p95": 1.26,
+   "array_mib": 0.89
+  },
+  "10000:full": {
+   "n": 10000,
+   "steps": 800,
+   "steps_per_second": 229.6,
+   "ms_p50": 4.397,
+   "ms_p95": 5.484,
+   "array_mib": 5.92
+  },
+  "10000:minimal": {
+   "n": 10000,
+   "steps": 800,
+   "steps_per_second": 217.5,
+   "ms_p50": 4.634,
+   "ms_p95": 5.451,
+   "array_mib": 5.92
+  },
+  "100000:full": {
+   "n": 100000,
+   "steps": 120,
+   "steps_per_second": 29.3,
+   "ms_p50": 35.033,
+   "ms_p95": 41.867,
+   "array_mib": 58.84
+  },
+  "100000:minimal": {
+   "n": 100000,
+   "steps": 120,
+   "steps_per_second": 25.7,
+   "ms_p50": 36.253,
+   "ms_p95": 56.043,
+   "array_mib": 58.84
+  },
+  "10000:with_shape_detection": {
+   "steps": 600,
+   "steps_per_second": 96.5,
+   "step_ms_p50": 5.94,
+   "step_ms_p95": 49.85,
+   "graph_pass_every": 10
+  },
+  "10000:delta_and_memory": {
+   "connections": 59329,
+   "runtime_only": {
+    "steps": 300,
+    "steps_per_second": 226.0,
+    "step_ms_p50": 4.39,
+    "step_ms_p95": 5.05,
+    "events_per_step_mean": 807.8,
+    "delta_bytes_per_step_mean": 20480,
+    "delta_bytes_per_step_p95": 27353,
+    "full_state_bytes_equivalent": 7313770
+   },
+   "runtime_array_mib": 7.0
+  },
+  "websocket_full": {
+   "max_speed": {
+    "requested_steps_per_second": "max",
+    "delta_frames_per_second": 10.8,
+    "steps_streamed_per_second": 90.0,
+    "kib_per_second": 1861.4,
+    "mean_frame_kib": 172.4,
+    "server_rss_mib": 217.5
+   },
+   "speed_30": {
+    "requested_steps_per_second": 30,
+    "delta_frames_per_second": 23.5,
+    "steps_streamed_per_second": 26.7,
+    "kib_per_second": 690.0,
+    "mean_frame_kib": 29.4,
+    "server_rss_mib": 240.0
+   },
+   "speed_60": {
+    "requested_steps_per_second": 60,
+    "delta_frames_per_second": 23.0,
+    "steps_streamed_per_second": 46.1,
+    "kib_per_second": 1214.8,
+    "mean_frame_kib": 52.7,
+    "server_rss_mib": 283.1
+   }
+  }
+ },
+ "reasoning": [
+  {
+   "n": 1500,
+   "size": 32,
+   "none_ms_per_step": 1.021,
+   "closed_loop_ms_per_step": 1.235,
+   "reasoning_overhead_ms_per_step": 0.215,
+   "reasoning_overhead_relative": 0.21
+  },
+  {
+   "n": 10000,
+   "size": 32,
+   "none_ms_per_step": 3.33,
+   "closed_loop_ms_per_step": 4.219,
+   "reasoning_overhead_ms_per_step": 0.889,
+   "reasoning_overhead_relative": 0.267
+  },
+  {
+   "n": 100000,
+   "size": 32,
+   "none_ms_per_step": 41.677,
+   "closed_loop_ms_per_step": 52.828,
+   "reasoning_overhead_ms_per_step": 11.15,
+   "reasoning_overhead_relative": 0.268
+  },
+  {
+   "n": 1500,
+   "size": 128,
+   "none_ms_per_step": 1.28,
+   "closed_loop_ms_per_step": 2.234,
+   "reasoning_overhead_ms_per_step": 0.955,
+   "reasoning_overhead_relative": 0.746
+  },
+  {
+   "n": 1500,
+   "size": 512,
+   "none_ms_per_step": 1.182,
+   "closed_loop_ms_per_step": 4.549,
+   "reasoning_overhead_ms_per_step": 3.367,
+   "reasoning_overhead_relative": 2.847
+  },
+  {
+   "n": 1500,
+   "size": 2048,
+   "none_ms_per_step": 1.09,
+   "closed_loop_ms_per_step": 22.502,
+   "reasoning_overhead_ms_per_step": 21.412,
+   "reasoning_overhead_relative": 19.647
+  }
+ ],
+ "instrumentation": {
+  "observer": [
+   {
+    "n": 1500,
+    "observer_ms_per_step": 0.036,
+    "coupling_probe_ms_per_step": 0.008
+   },
+   {
+    "n": 10000,
+    "observer_ms_per_step": 0.168,
+    "coupling_probe_ms_per_step": 0.029
+   },
+   {
+    "n": 100000,
+    "observer_ms_per_step": 1.477,
+    "coupling_probe_ms_per_step": 0.256
+   }
+  ],
+  "statistics_s": {
+   "1500 node-level family (8\u00d74\u00d74000)": 6.068,
+   "meso family (8\u00d74\u00d732)": 0.101
+  }
+ },
+ "compression_s": {
+  "400": 0.039,
+  "4000": 0.142,
+  "40000": 0.858
+ },
+ "peak_rss_mib": 1076.2
+}

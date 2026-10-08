@@ -53,6 +53,10 @@ class SupportGraph:
     blocked_tokens: set[str] = field(default_factory=set)
     mode: str = "two_level"  # "two_level" | "single_level" | "backed_only" (no eligibility check)
     fixpoint: str = "least"  # "least" | "greatest" (two_level only)
+    # conflict persistence: with sticky=True a defeated item stays ineligible at later evaluations for as long as
+    # the item that defeated it remains usable (defeats are not recomputed from scratch at each evaluation)
+    sticky: bool = False
+    defeats: dict[str, str] = field(default_factory=dict)  # loser -> winner (sticky mode)
 
     @classmethod
     def from_spec(cls, spec: dict) -> SupportGraph:
@@ -106,9 +110,13 @@ class SupportGraph:
                 if level[a] > level[b]:
                     out.discard(b)
                     note[b] = f"conflicts with higher-level {a}"
+                    if self.sticky:
+                        self.defeats[b] = a
                 elif level[b] > level[a]:
                     out.discard(a)
                     note[a] = f"conflicts with higher-level {b}"
+                    if self.sticky:
+                        self.defeats[a] = b
                 else:
                     out -= {a, b}
                     note[a] = note[b] = "equal-level conflict"
@@ -120,7 +128,28 @@ class SupportGraph:
         return any(r.target == i and all(s in pool for s in r.sources) for r in self.requirements)
 
     def evaluate(self) -> Evaluation:
+        """Evaluation of the current state. Memoized on (edit version, base levels, rule) unless defeats are
+        sticky (then evaluation itself updates state). Every edit method bumps the version."""
+        if self.sticky:
+            return self._evaluate()
+        key = (self.__dict__.get("_version", 0), tuple(it.base_level for it in self.items.values()), self.mode,
+               self.fixpoint, len(self.requirements), len(self.conflicts), len(self.retracted),
+               len(self.blocked_tokens))
+        memo = self.__dict__.get("_memo")
+        if memo is not None and memo[0] == key:
+            return memo[1]
+        ev = self._evaluate()
+        self.__dict__["_memo"] = (key, ev)
+        return ev
+
+    def _bump(self) -> None:
+        self.__dict__["_version"] = self.__dict__.get("_version", 0) + 1
+
+    def _evaluate(self) -> Evaluation:
         usable = {i for i in self.items if self._usable(i)}
+        if self.sticky:
+            self.defeats = {lo: w for lo, w in self.defeats.items() if w in usable and lo in self.items}
+            usable -= set(self.defeats)
         base = {i: self.items[i].base_level for i in usable if self.items[i].base_level > 0}
         note: dict[str, str] = {i: "retracted or blocked" for i in self.items if i not in usable}
         if self.mode == "backed_only":
@@ -176,20 +205,26 @@ class SupportGraph:
 
     # ------------------------------------------------------------------ edits
     def block_token(self, t: str) -> None:
+        self._bump()
         self.blocked_tokens.add(t)
 
     def retract(self, i: str) -> None:
+        self._bump()
         self.retracted.add(i)
 
     def set_level(self, i: str, v: float) -> None:
+        self._bump()
         self.retracted.discard(i)
         self.items[i].base_level = max(0.0, min(1.0, v))
 
     def drop_conflict(self, a: str, b: str) -> None:
+        self._bump()
         self.conflicts = [c for c in self.conflicts if set(c) != {a, b}]
 
     def drop_requirement(self, target: str, source: str) -> None:
+        self._bump()
         self.requirements = [r for r in self.requirements if not (r.target == target and source in r.sources)]
 
     def add_requirement(self, target: str, sources: tuple[str, ...]) -> None:
+        self._bump()
         self.requirements.append(Requirement(tuple(sources), target, "carry"))

@@ -110,3 +110,69 @@ and the stream contain every ignition, penetration, transformation, return, deca
 and reconfiguration. Reductions come only from: level of detail (clusters at coarse scales, viewport tiles at
 fine scales), quantization of continuous state with hysteresis, dense/sparse state encoding, memory afterimages
 streamed every 5 steps, and backpressure.
+
+## Resolution escalation phase (generated)
+
+Measured on a quiet machine: no other simulation, experiment or benchmark running. The costs are split into core
+runtime, reasoning runtime, diagnostic instrumentation, experiment-harness overhead and compression overhead;
+research instrumentation is never counted as product runtime cost.
+
+<!-- GENERATED:ESCALATION:BEGIN -->
+Measured 2026-10-01 09:46:24 (macOS-26.6.2-arm64-arm-64bit, Python 3.12.13, NumPy 2.5.3); `make bench-escalation`; raw: `backend/experiments/results/resolution/bench.json`.
+
+### 1. Core runtime (engine step only)
+
+| configurations | runtime | steps/s | ms/step p50 | p95 | runtime arrays (MiB) |
+|---|---|---|---|---|---|
+| 1,500 | full | 966.9 | 1.043 | 1.242 | 0.89 |
+| 1,500 | minimal | 943.2 | 1.074 | 1.26 | 0.89 |
+| 10,000 | full | 229.6 | 4.397 | 5.484 | 5.92 |
+| 10,000 | minimal | 217.5 | 4.634 | 5.451 | 5.92 |
+| 100,000 | full | 29.3 | 35.033 | 41.867 | 58.84 |
+| 100,000 | minimal | 25.7 | 36.253 | 56.043 | 58.84 |
+
+Shape detection at 10,000: 96.5 steps/s (p95 49.85 ms). Delta: 20480 bytes/step mean. WebSocket (full runtime): max_speed: 90.0 steps/s, 10.8 frames/s, 1861.4 KiB/s; speed_30: 26.7 steps/s, 23.5 frames/s, 690.0 KiB/s; speed_60: 46.1 steps/s, 23.0 frames/s, 1214.8 KiB/s
+
+### 2. Reasoning runtime (closed loop with the reference structure and triggers vs no reasoning layer)
+
+| configurations | structure size | no reasoning (ms/step) | closed loop (ms/step) | overhead (ms/step) | relative |
+|---|---|---|---|---|---|
+| 1,500 | 32 | 1.021 | 1.235 | 0.215 | 21.0% |
+| 10,000 | 32 | 3.33 | 4.219 | 0.889 | 26.7% |
+| 100,000 | 32 | 41.677 | 52.828 | 11.15 | 26.8% |
+| 1,500 | 128 | 1.28 | 2.234 | 0.955 | 74.6% |
+| 1,500 | 512 | 1.182 | 4.549 | 3.367 | 284.7% |
+| 1,500 | 2048 | 1.09 | 22.502 | 21.412 | 1964.7% |
+
+### 3. Diagnostic instrumentation (research only; never part of product runtime cost)
+
+| configurations | multi-scale observer (ms/step) | realized-coupling probe (ms/step) |
+|---|---|---|
+| 1,500 | 0.036 | 0.008 |
+| 10,000 | 0.168 | 0.029 |
+| 100,000 | 1.477 | 0.256 |
+
+Per-condition statistics (sign-flip max-T, 12 seeds): 1500 node-level family (8×4×4000): 6.068 s; meso family (8×4×32): 0.101 s
+
+### 4. Experiment harness overhead (measured inside the matrix runs, 7 parallel workers)
+
+| configurations | harness run (ms/step, median) | loop only (ms/step) | observer + probes + bookkeeping |
+|---|---|---|---|
+| 1,500 | 4.33 | 4.18 | 0.15 |
+| 10,000 | 11.35 | 10.93 | 0.42 |
+| 100,000 | 124.71 | 117.74 | 6.98 |
+
+### 5. Compression overhead (codebook + encoding + phrase factorisation, one run)
+
+| steps | seconds |
+|---|---|
+| 400 | 0.039 |
+| 4,000 | 0.142 |
+| 40,000 | 0.858 |
+
+Peak RSS of the benchmark process: 1076.2 MiB.
+<!-- GENERATED:ESCALATION:END -->
+
+**Rendering FPS: not re-measured in this phase.** Only a measurement taken with the browser pane actually visible and
+focused is valid. The last valid figure is the 60 fps at every scale measured on 2026-09-29 (section *Rendering FPS*
+above). It is historical: this phase did not change the rendering path, and it has not been re-measured.

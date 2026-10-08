@@ -1,9 +1,9 @@
-# Xeno / Ziran Philosophical Runtime — developer entry points. Requires python3.11+ and node 20+.
+# XENO ZIRAN SIMULATOR runtime (xeno-ziran-runtime) — developer entry points. Requires python3.11+ and node 20+.
 PY ?= python3
 VENV := .venv
 BIN := $(VENV)/bin
 
-.PHONY: setup dev backend frontend build test lint bench fixtures docker docker-run clean experiments experiments-reduction experiments-reason
+.PHONY: setup dev backend frontend build test lint bench fixtures docker docker-run clean experiments experiments-reduction experiments-reason experiments-escalation bench-escalation reports-escalation
 
 setup:            ## create venv, install backend (editable, dev extras) and frontend deps
 	$(PY) -m venv $(VENV)
@@ -44,6 +44,18 @@ experiments-reason:     ## reasoning-layer non-redundancy suite, writes backend/
 	cd backend && OMP_NUM_THREADS=1 ../$(BIN)/python -m xzr.experiments.reason experiments/results/reason.json
 
 experiments: experiments-reduction experiments-reason
+
+ESC_ENV := OMP_NUM_THREADS=1 VECLIB_MAXIMUM_THREADS=1
+experiments-escalation: ## resolution escalation: matrix + studies (several hours on 8 cores; resumable)
+	cd backend && for s in matrix disconnection topology_triggers adaptivity clusters compression; do \
+		$(ESC_ENV) ../$(BIN)/python experiments/run_escalation.py $$s || exit 1; done
+	$(MAKE) reports-escalation
+
+reports-escalation:     ## regenerate results/resolution/summary.json and the generated doc tables
+	cd backend && ../$(BIN)/python -m xzr.experiments.escalation.summary && ../$(BIN)/python scripts/make_reports.py
+
+bench-escalation:       ## core / reasoning / instrumentation / compression benchmark for the escalation phase
+	$(ESC_ENV) $(BIN)/python backend/bench/escalation_bench.py
 
 docker:
 	docker build -t xeno-ziran-runtime .

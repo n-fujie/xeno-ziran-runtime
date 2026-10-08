@@ -2,11 +2,15 @@
 // render loop); React-visible state here is updated at a throttled rate.
 
 import { create } from 'zustand';
-import { api, connect, type CommandReport, type CompareResult, type Job, type SessionInfo, type Status } from '../api/client';
+import { isGone, markGone, onGone } from '../api/sessionGone';
+import { NATIVE } from '../api/native';
+import { ApiError, SESSION_GONE, api, connect, type CommandReport, type CompareResult, type Job, type SessionInfo, type Status, type Stream } from '../api/client';
 import { Mirror } from '../lod/mirror';
 
 export type View = 'network' | 'shape' | 'address' | 'map' | 'globe' | 'timeline' | 'compare' | 'practice'
-  | 'reduction' | 'reason' | 'phases' | 'primitives';
+  | 'reduction' | 'reason' | 'phases' | 'primitives'
+  | 'res_matrix' | 'res_hidden' | 'res_penetration' | 'res_structure' | 'res_disconnection' | 'res_compression'
+  | 'overview';
 export const GRAPH_VIEWS: View[] = ['network', 'shape', 'address', 'map', 'globe'];
 
 export interface ConsoleEntry { id: number; text: string; report?: CommandReport; error?: string; suggestions?: string[] }
@@ -17,7 +21,7 @@ interface State {
   info: SessionInfo | null;
   status: Status | null;
   mirror: Mirror | null;
-  ws: WebSocket | null;
+  ws: Stream | null;
   connected: boolean;
   view: View;
   scale: number; // 0..5 (macro … relation)
@@ -37,8 +41,11 @@ interface State {
   consoleLog: ConsoleEntry[];
   practiceTick: number;
   error: string | null;
+  notice: string | null;
+  sessionGone: boolean;  // definitive loss (not a transient disconnect)
   // actions
   open: (sample: string) => Promise<void>;
+  resumeOrOpen: (sample: string | null) => Promise<void>;
   openSaved: (saved: { scenario: unknown; applied?: unknown }) => Promise<void>;
   control: (action: string, extra?: { steps?: number; speed?: number }) => Promise<void>;
   rewind: (t: number) => Promise<void>;
@@ -63,11 +70,13 @@ export const useSim = create<State>((set, get) => ({
   view: 'network', scale: 0, requestedScale: null, selected: null, hoverCluster: null,
   step: {}, graph: {}, tick: 0, layoutTick: 0, resyncTick: 0,
   stream: { framesPerSec: 0, bytesPerSec: 0, stepsPerFrame: 0 }, fps: 0,
-  jobs: {}, compare: null, compareOverlay: false, consoleLog: [], practiceTick: 0, error: null,
+  jobs: {}, compare: null, compareOverlay: false, consoleLog: [], practiceTick: 0, error: null, notice: null, sessionGone: false,
 
   open: async (sample) => {
     get().ws?.close();
-    set({ error: null, info: null, mirror: null, compare: null, selected: null, jobs: {} });
+    const prev = get().info;  // the session being replaced is closed, not left to expire
+    if (prev) void api.deleteSession(prev.id).catch(() => {});
+    set({ error: null, notice: null, sessionGone: false, info: null, mirror: null, compare: null, selected: null, jobs: {} });
     try {
       const runtime = new URLSearchParams(location.search).get('runtime') ?? undefined;
       const info = await api.createSession(sample, runtime);
@@ -77,8 +86,27 @@ export const useSim = create<State>((set, get) => ({
     }
   },
 
+  // Public runtime: a reload re-attaches to this browser's latest own session instead of creating another one (its
+  // work survives a refresh, and sessions are not churned). The local runtime starts a fresh session as before.
+  resumeOrOpen: async (sample) => {
+    try {
+      // a shared runtime (public) or the app's own on-device runtime (native: e.g. after the system reloaded the
+      // page) resumes the latest existing session instead of building a new one
+      if (!sample && (NATIVE || (await api.health()).public)) {
+        const mine = await api.sessions();
+        if (mine.length) {
+          attach(await api.info(mine[mine.length - 1].id));
+          return;
+        }
+      }
+    } catch { /* fall through to a new session */ }
+    await get().open(sample ?? 'demo-3k');
+  },
+
   openSaved: async (saved) => {
     get().ws?.close();
+    const prev = get().info;  // the session being replaced is closed, not left to expire
+    if (prev) void api.deleteSession(prev.id).catch(() => {});
     try {
       attach(await api.loadSession(saved));
     } catch (e) {
@@ -192,8 +220,49 @@ function attach(info: SessionInfo) {
         if (job.status === 'done') void get().loadCompare(job.id);
       } else if (msg.type === 'hello') {
         set({ connected: true });
+      } else if (msg.type === 'notice') {
+        set({ notice: String(msg.notice) });  // e.g. the stream was resynchronised after falling behind
+      } else if (msg.type === 'error') {
+        set({ error: `${String(msg.error)}${msg.limit ? ` [limit: ${String(msg.limit)}]` : ''}` });
       }
     }
-  }, () => set({ connected: false }));
-  set({ ws });
+  }, (code) => {
+    set({ connected: false });
+    if (get().info?.id !== info.id || isGone(info.id)) return;  // replaced on purpose, or already known gone
+    if (code === 4404) markGone(info.id);  // the runtime refused it: no such session
+    else if (code !== 1000) void probe(info);  // unexpected close: transient, or is the session gone?
+  });
+  set({ ws, sessionGone: false });
 }
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+/** After an unexpected socket close, ask the runtime whether the session still exists — with backoff — until it
+ *  answers: 200 → reconnect the stream (transient loss); 404 → the session is gone (definitive, see sessionGone.ts).
+ *  Network errors and 5xx (e.g. a proxy waiting for a restarting runtime) keep it a transient disconnect. */
+export async function probe(info: SessionInfo) {
+  const get = useSim.getState;
+  for (let attempt = 0; get().info?.id === info.id && !isGone(info.id); attempt++) {
+    await sleep(Math.min(1000 * 2 ** attempt, 5000));
+    if (get().info?.id !== info.id || isGone(info.id)) return;
+    try {
+      const fresh = await api.info(info.id);
+      if (get().info?.id !== info.id) return;
+      useSim.setState({ notice: null });
+      attach(fresh);  // same session, new stream (state resent as a snapshot)
+      return;
+    } catch (e) {
+      if (e instanceof ApiError && e.status === 404) return;  // marked gone by the API client
+      useSim.setState({ notice: 'Connection to the runtime lost — reconnecting…' });
+    }
+  }
+}
+
+// Definitive loss of the current session: stop its stream and every session-bound request (the API client refuses
+// them locally from now on), and say so once.
+onGone((sid) => {
+  const s = useSim.getState();
+  if (s.info?.id !== sid) return;
+  s.ws?.close(1000);
+  useSim.setState({ sessionGone: true, connected: false, notice: null, error: SESSION_GONE });
+});

@@ -32,14 +32,33 @@ def _internal_imports(path: Path) -> set[str]:
     return out
 
 
+# ``_compat`` stands in for third-party libraries missing on iOS (scipy, pydantic); like them it may be used by any
+# layer, and it is a leaf: it imports nothing from xzr (checked below).
+FOUNDATION = {"_compat"}
+
+
+def test_compat_is_a_leaf():
+    for p in (ROOT / "_compat").glob("*.py"):
+        assert _internal_imports(p) <= {"_compat"}, p.name
+
+
 def test_layers_import_only_what_they_may():
     bad = []
     for layer, allowed in ALLOWED.items():
         for p in (ROOT / layer).glob("*.py"):
-            extra = _internal_imports(p) - allowed
+            extra = _internal_imports(p) - allowed - FOUNDATION
             if extra:
                 bad.append(f"{layer}/{p.name} imports {sorted(extra)}")
     assert bad == [], bad
+
+
+def test_experiment_layer_is_not_imported_by_the_product_layers():
+    """Resolution-escalation machinery (experiments/escalation) is imported by nothing in runtime, shapes, lod,
+    compare, scenario, practice or reasonlab; the multi-scale observer never imports reasoning."""
+    for layer in ("runtime", "shapes", "lod", "compare", "scenario", "practice", "reasonlab"):
+        for p in (ROOT / layer).glob("*.py"):
+            assert "experiments" not in _internal_imports(p), p
+    assert _internal_imports(ROOT / "shapes" / "multiscale.py") <= {"runtime", "lod", "shapes"}
 
 
 def test_practice_reaches_runtime_only_through_intervention_records():

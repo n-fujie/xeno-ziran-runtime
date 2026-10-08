@@ -20,7 +20,25 @@ adapt_source      "dominant" | "all_carriers" | "off"
                                            which connections are strengthened by a successful transition
 reconfigure       "redirect" | "mutation" | "off"
                                            mutation: implemented as removal + creation of connections
-cut, disconnect, connect  "on" | "off"
+cut, connect      "on" | "off"
+disconnect        "on" | "off" | "weight_zero" | "as_cut" | "as_mutation" | "redirect"
+                                           replacements of disconnection (same trigger, weight < w_min):
+                                           weight_zero  the connection stays, with weight and base weight set to 0
+                                           as_cut       executed by the cut operation (reported as a cut)
+                                           as_mutation  removal through the generic mutation path (retired slot)
+                                           redirect     generic connection mutation: redirected to a uniformly
+                                                        random configuration, weight reset to its base value
+topology_trigger  "separate" | "unified" | "generic_conditions" | "merged"
+                                           separate            cut (connection load > capacity → remove) and
+                                                               reconfiguration (overload streak → redirect)
+                                           unified             one trigger (connection load > capacity), one
+                                                               operation: redirect that connection past its target
+                                           generic_conditions  both conditions kept; both executed as generic
+                                                               connection mutation (remove; remove + create)
+                                           merged              one condition per configuration (an overloaded
+                                                               outgoing connection, or an overload streak) → remove
+                                                               its most loaded connection and create one to a
+                                                               second-order neighbour
 difference        "node" | "relational"   relational: difference is held on connections (plus one self-held term per
                                            configuration); the per-configuration value is recomputed as their sum
 transition        "on" | "off"            off: no emission along connections at all
@@ -47,13 +65,16 @@ class Flags:
     connect: str = "on"
     difference: str = "node"
     transition: str = "on"
+    topology_trigger: str = "separate"
 
     _CHOICES = {
         "threshold": ("on", "off"), "retention": ("on", "off"), "memory": ("on", "off"),
         "transform": ("on", "off"), "wave_state": ("on", "off"), "return_events": ("on", "off"),
         "adapt_source": ("dominant", "all_carriers", "off"), "reconfigure": ("redirect", "mutation", "off"),
-        "cut": ("on", "off"), "disconnect": ("on", "off"), "connect": ("on", "off"),
+        "cut": ("on", "off"), "connect": ("on", "off"),
+        "disconnect": ("on", "off", "weight_zero", "as_cut", "as_mutation", "redirect"),
         "difference": ("node", "relational"), "transition": ("on", "off"),
+        "topology_trigger": ("separate", "unified", "generic_conditions", "merged"),
     }
 
     def __post_init__(self) -> None:

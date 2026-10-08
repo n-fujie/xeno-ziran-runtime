@@ -1,0 +1,21 @@
+{
+ "schema": "xzr.experiment/1",
+ "id": "history-reentry",
+ "kind": "history",
+ "description": "Fork, remove, reactivate and migrate the retained history (memory) of one region, and compare reachability, discrimination, intervention response, generation and later configuration.",
+ "question": "Does removing a region's retained history change what happens next, and does restoring it re-enter (re-addressed and acted on) with a downstream difference?",
+ "manipulated": [
+  "history operation on region '1' at step 150: none / remove / remove then re-add at step 200 / move to region '4'"
+ ],
+ "fixed": [
+  "world",
+  "engine seeds",
+  "probe intervention (threshold ×1.3 on region '6' at step 220)"
+ ],
+ "measured": [
+  "paired differences against the intact branch per metric, with a noise branch (other random stream) as control; HRGI-style verdict only when all four re-entry criteria are measured"
+ ],
+ "does_not_show": "That history re-entry is general: one region, one window, one world; the runtime is chaotic, so small perturbations diverge — compare every effect with the noise branch.",
+ "seeds": 12,
+ "history": {}
+}

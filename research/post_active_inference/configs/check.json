@@ -1,0 +1,9 @@
+{
+ "stage": "check",
+ "description": "Targeted validation of the post-smoke fixes (dead sensors, multi-probe policy identity, boundary response share, longer phases). Not a benchmark stage.",
+ "seeds": [1, 2, 3],
+ "severities": [1.0],
+ "perturbations": ["boundary.reassignment", "boundary.fragmentation", "temporal.interface_drift", "sensor.dropout", "variable.deletion", "sensor.permutation", "topology.cluster_merge", "memory.history_removal"],
+ "controllers": ["none", "aif_fixed", "aif_adaptive", "ost"],
+ "procs": 4
+}

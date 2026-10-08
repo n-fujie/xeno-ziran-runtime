@@ -164,17 +164,53 @@ class Engine:
         elif fx.adapt_source == "all_carriers":
             ops.adapt_weights(s, ops.successful_carriers(s, self._carried_prev, ign.mask), self._carried_prev)
         self._carried_prev = fl.edges
-        cuts = ops.cut(s) if fx.cut == "on" else EMPTY_I
-        removed = ops.disconnect(s) if fx.disconnect == "on" else EMPTY_I
-        freed = np.concatenate([cuts, removed])
-        new = ops.connect(s, self.rng, ign, freed) if fx.connect == "on" else np.zeros((0, 3), I32)
+        tt = fx.topology_trigger
         retired = EMPTY_I
-        if fx.reconfigure == "redirect":
+        extra_reconf = np.zeros((0, 3), I32)
+        if tt == "separate":
+            cuts = ops.cut(s) if fx.cut == "on" else EMPTY_I
+        elif tt == "generic_conditions":
+            cuts = EMPTY_I
+            retired = ops.retire(s, np.flatnonzero(s.alive & (s.load > s.capacity))) if fx.cut == "on" else EMPTY_I
+        elif tt == "unified":
+            cuts = EMPTY_I
+            extra_reconf = ops.redirect_overloaded(s, self.rng)
+        else:  # merged
+            cuts = EMPTY_I
+            extra_reconf, retired = ops.merged_topology_mutation(s, self.rng)
+        dc = fx.disconnect
+        if dc == "on":
+            removed = ops.disconnect(s)
+        elif dc == "weight_zero":
+            ops.disconnect_to_zero(s)
+            removed = EMPTY_I
+        elif dc == "as_cut":
+            weak = ops.weak_connections(s)
+            s.alive[weak] = False
+            s.load[weak] = 0.0
+            cuts = np.union1d(cuts, weak).astype(I32)
+            removed = EMPTY_I
+        elif dc == "as_mutation":
+            retired = np.concatenate([retired, ops.retire(s, ops.weak_connections(s))]).astype(I32)
+            removed = EMPTY_I
+        elif dc == "redirect":
+            extra_reconf = np.concatenate([extra_reconf, ops.redirect_random(s, self.rng, ops.weak_connections(s))])
+            removed = EMPTY_I
+        else:
+            removed = EMPTY_I
+        freed = np.concatenate([cuts, removed, retired])
+        new = ops.connect(s, self.rng, ign, freed) if fx.connect == "on" else np.zeros((0, 3), I32)
+        if tt in ("unified", "merged"):
+            reconf = np.zeros((0, 3), I32)
+        elif fx.reconfigure == "redirect":
             reconf = ops.reconfigure(s, self.rng)
-        elif fx.reconfigure == "mutation":
-            reconf, retired = ops.reconfigure_by_mutation(s, self.rng)
+        elif fx.reconfigure == "mutation" or tt == "generic_conditions":
+            reconf, r2 = ops.reconfigure_by_mutation(s, self.rng, exclude=freed if tt == "generic_conditions" else None)
+            retired = np.concatenate([retired, r2]).astype(I32)
         else:
             reconf = np.zeros((0, 3), I32)
+        if len(extra_reconf):
+            reconf = np.concatenate([extra_reconf, reconf]) if len(reconf) else extra_reconf
         mutated = ops.mutate(s, self.rng)
         if rel:
             if fx.reconfigure == "redirect":

@@ -22,7 +22,15 @@ from collections.abc import Sequence
 from dataclasses import dataclass, field
 
 import numpy as np
-from scipy.stats import wasserstein_distance
+
+from .._compat import FORCE as _COMPAT
+
+try:  # the iOS app has no scipy: the same 1-D CDF-distance algorithm (see _compat/stats.py)
+    if _COMPAT:
+        raise ImportError
+    from scipy.stats import wasserstein_distance
+except ImportError:
+    from .._compat.stats import wasserstein_distance
 
 from ..runtime.delta import EVENT_KINDS, StepDelta
 from ..runtime.state import State

@@ -1,0 +1,3759 @@
+{
+ "tests": [
+  {
+   "element": "agent",
+   "ablation": "no_agent",
+   "capability": "prediction",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": 0.10370370370370371,
+   "ci95": [
+    -0.07777777777777777,
+    0.30749999999999955
+   ],
+   "p": 0.40625,
+   "dz": 0.3177563898358246,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "agent",
+   "ablation": "no_agent",
+   "capability": "prediction",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": 0.24444444444444446,
+   "ci95": [
+    0.20000000000000004,
+    0.3
+   ],
+   "p": 0.25,
+   "dz": 4.800793585191834,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "agent",
+   "ablation": "no_agent",
+   "capability": "prediction",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": 0.37777777777777777,
+   "ci95": [
+    0.20000000000000007,
+    0.6
+   ],
+   "p": 0.25,
+   "dz": 1.8548520670059356,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "agent",
+   "ablation": "no_agent",
+   "capability": "prediction",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": 0.1388888888888889,
+   "ci95": [
+    -0.09999999999999998,
+    0.4055555555555555
+   ],
+   "p": 0.46875,
+   "dz": 0.40137150170338054,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "agent",
+   "ablation": "no_agent",
+   "capability": "intervention",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": 0.025925925925925943,
+   "ci95": [
+    -0.06296296296296294,
+    0.10740740740740744
+   ],
+   "p": 0.640625,
+   "dz": 0.1862202730424453,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "agent",
+   "ablation": "no_agent",
+   "capability": "intervention",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": 0.2222222222222222,
+   "ci95": [
+    0.06666666666666667,
+    0.39999999999999997
+   ],
+   "p": 0.25,
+   "dz": 1.3245323570650438,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "agent",
+   "ablation": "no_agent",
+   "capability": "intervention",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": 0.022222222222222254,
+   "ci95": [
+    -0.06666666666666665,
+    0.13333333333333341
+   ],
+   "p": 1.0,
+   "dz": 0.2182178902359926,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "agent",
+   "ablation": "no_agent",
+   "capability": "intervention",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": -0.11666666666666665,
+   "ci95": [
+    -0.2611111111111111,
+    0.016666666666666663
+   ],
+   "p": 0.3125,
+   "dz": -0.5941598577819135,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "agent",
+   "ablation": "no_agent",
+   "capability": "recovery",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": -0.09259259259259262,
+   "ci95": [
+    -0.22592592592592597,
+    0.018518518518518504
+   ],
+   "p": 0.34375,
+   "dz": -0.4570070809225682,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "agent",
+   "ablation": "no_agent",
+   "capability": "recovery",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": 0.04444444444444445,
+   "ci95": [
+    -0.16666666666666666,
+    0.3666666666666667
+   ],
+   "p": 1.0,
+   "dz": 0.1567723603339241,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "agent",
+   "ablation": "no_agent",
+   "capability": "recovery",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": 0.022222222222222254,
+   "ci95": [
+    -0.1333333333333333,
+    0.16666666666666674
+   ],
+   "p": 0.75,
+   "dz": 0.14784425419091476,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "agent",
+   "ablation": "no_agent",
+   "capability": "recovery",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": -0.10000000000000002,
+   "ci95": [
+    -0.3277777777777778,
+    0.14458333333333256
+   ],
+   "p": 0.5,
+   "dz": -0.30181636371957526,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "agent",
+   "ablation": "no_agent",
+   "capability": "reachable_state_estimation",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "agent",
+   "ablation": "no_agent",
+   "capability": "reachable_state_estimation",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "agent",
+   "ablation": "no_agent",
+   "capability": "reachable_state_estimation",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "agent",
+   "ablation": "no_agent",
+   "capability": "reachable_state_estimation",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": -0.005555555555555554,
+   "ci95": [
+    -0.016666666666666663,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": -0.408248290463863,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "agent",
+   "ablation": "no_agent",
+   "capability": "perturbation_localisation",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 6,
+   "mean": -0.16312056737588657,
+   "ci95": [
+    -0.20567375886524827,
+    -0.12056737588652484
+   ],
+   "p": 0.03125,
+   "dz": -2.8840267098092354,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "agent",
+   "ablation": "no_agent",
+   "capability": "perturbation_localisation",
+   "regime": "TRANSITION",
+   "n": 3,
+   "mean": -0.17021276595744683,
+   "ci95": [
+    -0.25531914893617025,
+    -0.08510638297872342
+   ],
+   "p": 0.25,
+   "dz": -2.0,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "agent",
+   "ablation": "no_agent",
+   "capability": "structural_transition_detection",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": 0.0,
+   "ci95": [
+    -0.3333333333333333,
+    0.3333333333333333
+   ],
+   "p": 1.0,
+   "dz": 0.0,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "agent",
+   "ablation": "no_agent",
+   "capability": "structural_transition_detection",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "agent",
+   "ablation": "no_agent",
+   "capability": "structural_transition_detection",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "agent",
+   "ablation": "no_agent",
+   "capability": "structural_transition_detection",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": -0.16666666666666666,
+   "ci95": [
+    -0.5,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": -0.408248290463863,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "agent",
+   "ablation": "no_agent",
+   "capability": "history_reuse",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 3,
+   "mean": 0.04444444444444443,
+   "ci95": [
+    0.0,
+    0.09999999999999998
+   ],
+   "p": 0.5,
+   "dz": 0.8728715609439694,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "boundary",
+   "ablation": "no_boundary",
+   "capability": "prediction",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": -0.3925925925925926,
+   "ci95": [
+    -0.5222222222222223,
+    -0.24444444444444446
+   ],
+   "p": 0.0078125,
+   "dz": -1.7235772357723578,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "boundary",
+   "ablation": "no_boundary",
+   "capability": "prediction",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": -0.5,
+   "ci95": [
+    -0.6999999999999998,
+    -0.2333333333333334
+   ],
+   "p": 0.25,
+   "dz": -2.0801257358446095,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "boundary",
+   "ablation": "no_boundary",
+   "capability": "prediction",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": -0.11111111111111112,
+   "ci95": [
+    -0.30000000000000004,
+    0.0
+   ],
+   "p": 0.5,
+   "dz": -0.6757373783994858,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "boundary",
+   "ablation": "no_boundary",
+   "capability": "prediction",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": -0.21666666666666665,
+   "ci95": [
+    -0.29999999999999993,
+    -0.11666666666666665
+   ],
+   "p": 0.0625,
+   "dz": -1.7188791273808217,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "boundary",
+   "ablation": "no_boundary",
+   "capability": "intervention",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": 0.26296296296296295,
+   "ci95": [
+    0.15175925925925943,
+    0.3925925925925926
+   ],
+   "p": 0.00390625,
+   "dz": 1.303795220139267,
+   "within_margin": false,
+   "p_holm": 0.75,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "boundary",
+   "ablation": "no_boundary",
+   "capability": "intervention",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": 0.19999999999999998,
+   "ci95": [
+    -0.2333333333333333,
+    0.4666666666666666
+   ],
+   "p": 0.5,
+   "dz": 0.5282705437953743,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "boundary",
+   "ablation": "no_boundary",
+   "capability": "intervention",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": 0.47777777777777786,
+   "ci95": [
+    0.2333333333333333,
+    0.6666666666666666
+   ],
+   "p": 0.25,
+   "dz": 2.152692549583563,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "boundary",
+   "ablation": "no_boundary",
+   "capability": "intervention",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": 0.35000000000000003,
+   "ci95": [
+    0.21111111111111114,
+    0.5111111111111111
+   ],
+   "p": 0.03125,
+   "dz": 1.7238613961706863,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "boundary",
+   "ablation": "no_boundary",
+   "capability": "recovery",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": 0.30000000000000004,
+   "ci95": [
+    0.20731481481481495,
+    0.3925925925925926
+   ],
+   "p": 0.00390625,
+   "dz": 2.0000000000000004,
+   "within_margin": false,
+   "p_holm": 0.75,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "boundary",
+   "ablation": "no_boundary",
+   "capability": "recovery",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": 0.14444444444444446,
+   "ci95": [
+    -0.06666666666666665,
+    0.46666666666666673
+   ],
+   "p": 0.75,
+   "dz": 0.5095101710852533,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "boundary",
+   "ablation": "no_boundary",
+   "capability": "recovery",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": 0.35555555555555557,
+   "ci95": [
+    0.06666666666666665,
+    0.6333333333333333
+   ],
+   "p": 0.25,
+   "dz": 1.2541788826713929,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "boundary",
+   "ablation": "no_boundary",
+   "capability": "recovery",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": 0.18888888888888888,
+   "ci95": [
+    0.011111111111111113,
+    0.3611111111111111
+   ],
+   "p": 0.125,
+   "dz": 0.7608720536668974,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "boundary",
+   "ablation": "no_boundary",
+   "capability": "reachable_state_estimation",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "boundary",
+   "ablation": "no_boundary",
+   "capability": "reachable_state_estimation",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "boundary",
+   "ablation": "no_boundary",
+   "capability": "reachable_state_estimation",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "boundary",
+   "ablation": "no_boundary",
+   "capability": "reachable_state_estimation",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": -0.005555555555555554,
+   "ci95": [
+    -0.016666666666666663,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": -0.408248290463863,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "boundary",
+   "ablation": "no_boundary",
+   "capability": "perturbation_localisation",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 6,
+   "mean": 0.06998375755374635,
+   "ci95": [
+    0.0397460100077681,
+    0.10542709562866336
+   ],
+   "p": 0.03125,
+   "dz": 1.5885927784032992,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "boundary",
+   "ablation": "no_boundary",
+   "capability": "perturbation_localisation",
+   "regime": "TRANSITION",
+   "n": 3,
+   "mean": 0.035904885848894785,
+   "ci95": [
+    0.011379800853485056,
+    0.04816742834659965
+   ],
+   "p": 0.25,
+   "dz": 1.6904891880262265,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "boundary",
+   "ablation": "no_boundary",
+   "capability": "structural_transition_detection",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": 0.1111111111111111,
+   "ci95": [
+    0.0,
+    0.3333333333333333
+   ],
+   "p": 1.0,
+   "dz": 0.3333333333333333,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "boundary",
+   "ablation": "no_boundary",
+   "capability": "structural_transition_detection",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "boundary",
+   "ablation": "no_boundary",
+   "capability": "structural_transition_detection",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "boundary",
+   "ablation": "no_boundary",
+   "capability": "structural_transition_detection",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "boundary",
+   "ablation": "no_boundary",
+   "capability": "history_reuse",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 3,
+   "mean": 0.26666666666666666,
+   "ci95": [
+    0.06666666666666665,
+    0.5
+   ],
+   "p": 0.25,
+   "dz": 1.2199885626608373,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "boundary (model-light controller)",
+   "ablation": "no_boundary",
+   "capability": "intervention",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": 0.2518518518518518,
+   "ci95": [
+    0.12222222222222223,
+    0.3851851851851852
+   ],
+   "p": 0.00390625,
+   "dz": 1.119768321041128,
+   "within_margin": false,
+   "p_holm": 0.75,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "boundary (model-light controller)",
+   "ablation": "no_boundary",
+   "capability": "intervention",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": 0.011111111111111127,
+   "ci95": [
+    -0.3333333333333333,
+    0.4666666666666666
+   ],
+   "p": 1.0,
+   "dz": 0.027007306464731796,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "boundary (model-light controller)",
+   "ablation": "no_boundary",
+   "capability": "intervention",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": 0.17777777777777778,
+   "ci95": [
+    0.06666666666666665,
+    0.3
+   ],
+   "p": 0.25,
+   "dz": 1.5186527932039984,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "boundary (model-light controller)",
+   "ablation": "no_boundary",
+   "capability": "intervention",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": 0.15,
+   "ci95": [
+    -0.027777777777777776,
+    0.339027777777777
+   ],
+   "p": 0.21875,
+   "dz": 0.5976143046671969,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "boundary (model-light controller)",
+   "ablation": "no_boundary",
+   "capability": "recovery",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": 0.23703703703703705,
+   "ci95": [
+    0.14444444444444446,
+    0.34444444444444444
+   ],
+   "p": 0.00390625,
+   "dz": 1.4190722245071774,
+   "within_margin": false,
+   "p_holm": 0.75,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "boundary (model-light controller)",
+   "ablation": "no_boundary",
+   "capability": "recovery",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": 0.04444444444444443,
+   "ci95": [
+    -0.09999999999999998,
+    0.1333333333333333
+   ],
+   "p": 0.75,
+   "dz": 0.3521803625302495,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "boundary (model-light controller)",
+   "ablation": "no_boundary",
+   "capability": "recovery",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": 0.3555555555555556,
+   "ci95": [
+    0.2333333333333333,
+    0.4666666666666666
+   ],
+   "p": 0.25,
+   "dz": 3.037305586407997,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "boundary (model-light controller)",
+   "ablation": "no_boundary",
+   "capability": "recovery",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": 0.09999999999999999,
+   "ci95": [
+    -0.03347222222222198,
+    0.24444444444444446
+   ],
+   "p": 0.375,
+   "dz": 0.4972451580988469,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "model",
+   "ablation": "no_model",
+   "capability": "prediction",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": 0.04074074074074073,
+   "ci95": [
+    -0.2925925925925926,
+    0.38888888888888895
+   ],
+   "p": 0.8359375,
+   "dz": 0.0723101526062187,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "model",
+   "ablation": "no_model",
+   "capability": "prediction",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": 0.055555555555555546,
+   "ci95": [
+    -0.30000000000000004,
+    0.2333333333333333
+   ],
+   "p": 1.0,
+   "dz": 0.180421959121758,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "model",
+   "ablation": "no_model",
+   "capability": "prediction",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": 0.43333333333333335,
+   "ci95": [
+    -0.09999999999999998,
+    0.8000000000000002
+   ],
+   "p": 0.5,
+   "dz": 0.9169493006161777,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "model",
+   "ablation": "no_model",
+   "capability": "prediction",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": 0.17777777777777778,
+   "ci95": [
+    -0.17777777777777778,
+    0.4611111111111111
+   ],
+   "p": 0.375,
+   "dz": 0.4176535056766959,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "model",
+   "ablation": "no_model",
+   "capability": "intervention",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": 0.16666666666666669,
+   "ci95": [
+    -0.04824074074074058,
+    0.3851851851851852
+   ],
+   "p": 0.22265625,
+   "dz": 0.46225016352102427,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "model",
+   "ablation": "no_model",
+   "capability": "intervention",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": 0.19999999999999998,
+   "ci95": [
+    0.06666666666666665,
+    0.4666666666666666
+   ],
+   "p": 0.25,
+   "dz": 0.8660254037844385,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "model",
+   "ablation": "no_model",
+   "capability": "intervention",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": 0.5333333333333333,
+   "ci95": [
+    0.30000000000000004,
+    0.7666666666666667
+   ],
+   "p": 0.25,
+   "dz": 2.2857142857142856,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "model",
+   "ablation": "no_model",
+   "capability": "intervention",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": 0.2833333333333333,
+   "ci95": [
+    0.11666666666666665,
+    0.45
+   ],
+   "p": 0.0625,
+   "dz": 1.1798729561602077,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "model",
+   "ablation": "no_model",
+   "capability": "recovery",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": 0.26296296296296295,
+   "ci95": [
+    0.14814814814814817,
+    0.37037037037037035
+   ],
+   "p": 0.015625,
+   "dz": 1.4258580517381076,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "model",
+   "ablation": "no_model",
+   "capability": "recovery",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": 0.3333333333333333,
+   "ci95": [
+    0.033333333333333326,
+    0.7666666666666667
+   ],
+   "p": 0.25,
+   "dz": 0.8671099695241199,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "model",
+   "ablation": "no_model",
+   "capability": "recovery",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": 0.4222222222222222,
+   "ci95": [
+    0.13333333333333336,
+    0.8666666666666667
+   ],
+   "p": 0.25,
+   "dz": 1.0808722355782912,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "model",
+   "ablation": "no_model",
+   "capability": "recovery",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": 0.16666666666666666,
+   "ci95": [
+    0.03333333333333333,
+    0.28888888888888886
+   ],
+   "p": 0.09375,
+   "dz": 0.938233281301002,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "model",
+   "ablation": "no_model",
+   "capability": "reachable_state_estimation",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "model",
+   "ablation": "no_model",
+   "capability": "reachable_state_estimation",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "model",
+   "ablation": "no_model",
+   "capability": "reachable_state_estimation",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "model",
+   "ablation": "no_model",
+   "capability": "reachable_state_estimation",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": -0.005555555555555554,
+   "ci95": [
+    -0.016666666666666663,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": -0.408248290463863,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "model",
+   "ablation": "no_model",
+   "capability": "perturbation_localisation",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 6,
+   "mean": -0.07092198581560284,
+   "ci95": [
+    -0.12056737588652483,
+    -0.021276595744680864
+   ],
+   "p": 0.125,
+   "dz": -1.0206207261596578,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "model",
+   "ablation": "no_model",
+   "capability": "perturbation_localisation",
+   "regime": "TRANSITION",
+   "n": 3,
+   "mean": -0.11347517730496459,
+   "ci95": [
+    -0.17021276595744683,
+    -0.042553191489361764
+   ],
+   "p": 0.25,
+   "dz": -1.7457431218879402,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "model",
+   "ablation": "no_model",
+   "capability": "structural_transition_detection",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": -0.1111111111111111,
+   "ci95": [
+    -0.4444444444444444,
+    0.2222222222222222
+   ],
+   "p": 1.0,
+   "dz": -0.1849000654084097,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "model",
+   "ablation": "no_model",
+   "capability": "structural_transition_detection",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "model",
+   "ablation": "no_model",
+   "capability": "structural_transition_detection",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "model",
+   "ablation": "no_model",
+   "capability": "structural_transition_detection",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": -0.3333333333333333,
+   "ci95": [
+    -0.6666666666666666,
+    0.0
+   ],
+   "p": 0.5,
+   "dz": -0.6454972243679027,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "model",
+   "ablation": "no_model",
+   "capability": "history_reuse",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 3,
+   "mean": 0.37777777777777777,
+   "ci95": [
+    0.26666666666666666,
+    0.5666666666666667
+   ],
+   "p": 0.25,
+   "dz": 2.2975070865582525,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "prediction_error",
+   "ablation": "no_prediction_error",
+   "capability": "prediction",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": -0.0962962962962963,
+   "ci95": [
+    -0.2111111111111111,
+    -0.011111111111111112
+   ],
+   "p": 0.078125,
+   "dz": -0.5793894344028921,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "prediction_error",
+   "ablation": "no_prediction_error",
+   "capability": "prediction",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": 0.05555555555555556,
+   "ci95": [
+    -0.033333333333333326,
+    0.20000000000000004
+   ],
+   "p": 1.0,
+   "dz": 0.44022545316281186,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "prediction_error",
+   "ablation": "no_prediction_error",
+   "capability": "prediction",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": -0.07777777777777777,
+   "ci95": [
+    -0.1333333333333333,
+    0.033333333333333326
+   ],
+   "p": 0.5,
+   "dz": -0.8082903768654761,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "prediction_error",
+   "ablation": "no_prediction_error",
+   "capability": "prediction",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": -4.625929269271485e-18,
+   "ci95": [
+    -0.11111111111111112,
+    0.09999999999999998
+   ],
+   "p": 1.0,
+   "dz": -3.2352759646314466e-17,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "prediction_error",
+   "ablation": "no_prediction_error",
+   "capability": "intervention",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": -0.011111111111111108,
+   "ci95": [
+    -0.09629629629629627,
+    0.06675925925925877
+   ],
+   "p": 0.875,
+   "dz": -0.08535791995526397,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "prediction_error",
+   "ablation": "no_prediction_error",
+   "capability": "intervention",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": 0.022222222222222213,
+   "ci95": [
+    -0.03333333333333334,
+    0.1333333333333333
+   ],
+   "p": 1.0,
+   "dz": 0.23094010767585027,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "prediction_error",
+   "ablation": "no_prediction_error",
+   "capability": "intervention",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": 0.03333333333333336,
+   "ci95": [
+    -0.09999999999999998,
+    0.20000000000000007
+   ],
+   "p": 1.0,
+   "dz": 0.21821789023599253,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "prediction_error",
+   "ablation": "no_prediction_error",
+   "capability": "intervention",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": -0.08888888888888886,
+   "ci95": [
+    -0.1611111111111111,
+    -0.011111111111111108
+   ],
+   "p": 0.125,
+   "dz": -0.8322503785764789,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "prediction_error",
+   "ablation": "no_prediction_error",
+   "capability": "recovery",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": 0.03703703703703702,
+   "ci95": [
+    -0.06296296296296296,
+    0.12962962962962962
+   ],
+   "p": 0.5390625,
+   "dz": 0.23366654574426046,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "prediction_error",
+   "ablation": "no_prediction_error",
+   "capability": "recovery",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": 0.03333333333333335,
+   "ci95": [
+    -0.13333333333333336,
+    0.30000000000000004
+   ],
+   "p": 1.0,
+   "dz": 0.14285714285714288,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "prediction_error",
+   "ablation": "no_prediction_error",
+   "capability": "recovery",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": 0.011111111111111146,
+   "ci95": [
+    -0.09999999999999998,
+    0.16666666666666674
+   ],
+   "p": 1.0,
+   "dz": 0.0800640769025438,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "prediction_error",
+   "ablation": "no_prediction_error",
+   "capability": "recovery",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": -0.07777777777777778,
+   "ci95": [
+    -0.23888888888888885,
+    0.011111111111111108
+   ],
+   "p": 0.75,
+   "dz": -0.40577153379014724,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "prediction_error",
+   "ablation": "no_prediction_error",
+   "capability": "reachable_state_estimation",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": 0.014814814814814812,
+   "ci95": [
+    0.003703703703703703,
+    0.029629629629629624
+   ],
+   "p": 0.25,
+   "dz": 0.611775290321498,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "prediction_error",
+   "ablation": "no_prediction_error",
+   "capability": "reachable_state_estimation",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "prediction_error",
+   "ablation": "no_prediction_error",
+   "capability": "reachable_state_estimation",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "prediction_error",
+   "ablation": "no_prediction_error",
+   "capability": "reachable_state_estimation",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "prediction_error",
+   "ablation": "no_prediction_error",
+   "capability": "perturbation_localisation",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 6,
+   "mean": -0.035460992907801414,
+   "ci95": [
+    -0.07092198581560284,
+    0.007092198581560312
+   ],
+   "p": 0.25,
+   "dz": -0.6269623282193986,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "prediction_error",
+   "ablation": "no_prediction_error",
+   "capability": "perturbation_localisation",
+   "regime": "TRANSITION",
+   "n": 3,
+   "mean": -0.014184397163120588,
+   "ci95": [
+    -0.042553191489361764,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": -0.5773502691896257,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "prediction_error",
+   "ablation": "no_prediction_error",
+   "capability": "structural_transition_detection",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": 0.0,
+   "ci95": [
+    -0.3333333333333333,
+    0.3333333333333333
+   ],
+   "p": 1.0,
+   "dz": 0.0,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "prediction_error",
+   "ablation": "no_prediction_error",
+   "capability": "structural_transition_detection",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "prediction_error",
+   "ablation": "no_prediction_error",
+   "capability": "structural_transition_detection",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "prediction_error",
+   "ablation": "no_prediction_error",
+   "capability": "structural_transition_detection",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "prediction_error",
+   "ablation": "no_prediction_error",
+   "capability": "history_reuse",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 3,
+   "mean": 0.04444444444444442,
+   "ci95": [
+    -0.10000000000000003,
+    0.1333333333333333
+   ],
+   "p": 0.75,
+   "dz": 0.35218036253024926,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "free_energy",
+   "ablation": "no_free_energy",
+   "capability": "prediction",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": -0.01851851851851852,
+   "ci95": [
+    -0.09629629629629631,
+    0.05925925925925926
+   ],
+   "p": 1.0,
+   "dz": -0.14331119346411592,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "free_energy",
+   "ablation": "no_free_energy",
+   "capability": "prediction",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": -0.07777777777777778,
+   "ci95": [
+    -0.2333333333333333,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": -0.5773502691896257,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "free_energy",
+   "ablation": "no_free_energy",
+   "capability": "prediction",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "free_energy",
+   "ablation": "no_free_energy",
+   "capability": "prediction",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": -0.033333333333333326,
+   "ci95": [
+    -0.09999999999999998,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": -0.408248290463863,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "free_energy",
+   "ablation": "no_free_energy",
+   "capability": "intervention",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": -0.04814814814814815,
+   "ci95": [
+    -0.1037037037037037,
+    -0.007407407407407406
+   ],
+   "p": 0.25,
+   "dz": -0.6009252125773316,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "free_energy",
+   "ablation": "no_free_energy",
+   "capability": "intervention",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": 0.022222222222222216,
+   "ci95": [
+    0.0,
+    0.06666666666666665
+   ],
+   "p": 1.0,
+   "dz": 0.5773502691896257,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "free_energy",
+   "ablation": "no_free_energy",
+   "capability": "intervention",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "free_energy",
+   "ablation": "no_free_energy",
+   "capability": "intervention",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": -0.05555555555555555,
+   "ci95": [
+    -0.15555555555555556,
+    0.0
+   ],
+   "p": 0.5,
+   "dz": -0.4610694459770734,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "free_energy",
+   "ablation": "no_free_energy",
+   "capability": "recovery",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": -0.03703703703703703,
+   "ci95": [
+    -0.08888888888888886,
+    0.0
+   ],
+   "p": 0.5,
+   "dz": -0.4589522605476762,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "free_energy",
+   "ablation": "no_free_energy",
+   "capability": "recovery",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": 0.12222222222222223,
+   "ci95": [
+    0.0,
+    0.3666666666666667
+   ],
+   "p": 1.0,
+   "dz": 0.5773502691896257,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "free_energy",
+   "ablation": "no_free_energy",
+   "capability": "recovery",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "free_energy",
+   "ablation": "no_free_energy",
+   "capability": "recovery",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": -0.05000000000000001,
+   "ci95": [
+    -0.25,
+    0.09999999999999998
+   ],
+   "p": 1.0,
+   "dz": -0.21320071635561047,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "free_energy",
+   "ablation": "no_free_energy",
+   "capability": "reachable_state_estimation",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "free_energy",
+   "ablation": "no_free_energy",
+   "capability": "reachable_state_estimation",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "free_energy",
+   "ablation": "no_free_energy",
+   "capability": "reachable_state_estimation",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "free_energy",
+   "ablation": "no_free_energy",
+   "capability": "reachable_state_estimation",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "free_energy",
+   "ablation": "no_free_energy",
+   "capability": "perturbation_localisation",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 6,
+   "mean": 0.007092198581560276,
+   "ci95": [
+    0.0,
+    0.021276595744680826
+   ],
+   "p": 1.0,
+   "dz": 0.408248290463863,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "free_energy",
+   "ablation": "no_free_energy",
+   "capability": "perturbation_localisation",
+   "regime": "TRANSITION",
+   "n": 3,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "free_energy",
+   "ablation": "no_free_energy",
+   "capability": "structural_transition_detection",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "free_energy",
+   "ablation": "no_free_energy",
+   "capability": "structural_transition_detection",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "free_energy",
+   "ablation": "no_free_energy",
+   "capability": "structural_transition_detection",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "free_energy",
+   "ablation": "no_free_energy",
+   "capability": "structural_transition_detection",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": -0.16666666666666666,
+   "ci95": [
+    -0.5,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": -0.408248290463863,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "free_energy",
+   "ablation": "no_free_energy",
+   "capability": "history_reuse",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 3,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "expected_free_energy",
+   "ablation": "no_efe_epistemic",
+   "capability": "prediction",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": -0.07777777777777775,
+   "ci95": [
+    -0.1815740740740739,
+    0.02962962962962966
+   ],
+   "p": 0.25,
+   "dz": -0.4390030719123452,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "expected_free_energy",
+   "ablation": "no_efe_epistemic",
+   "capability": "prediction",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": 0.022222222222222216,
+   "ci95": [
+    -0.06666666666666665,
+    0.1333333333333333
+   ],
+   "p": 1.0,
+   "dz": 0.21821789023599236,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "expected_free_energy",
+   "ablation": "no_efe_epistemic",
+   "capability": "prediction",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": 0.022222222222222292,
+   "ci95": [
+    -0.09999999999999998,
+    0.10000000000000009
+   ],
+   "p": 1.0,
+   "dz": 0.2073903389460856,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "expected_free_energy",
+   "ablation": "no_efe_epistemic",
+   "capability": "prediction",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": -0.03333333333333332,
+   "ci95": [
+    -0.12222222222222219,
+    0.061111111111111116
+   ],
+   "p": 0.625,
+   "dz": -0.2599376224550181,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "expected_free_energy",
+   "ablation": "no_efe_epistemic",
+   "capability": "intervention",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": 0.048148148148148176,
+   "ci95": [
+    -0.033333333333333326,
+    0.13333333333333336
+   ],
+   "p": 0.37109375,
+   "dz": 0.35264166546750264,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "expected_free_energy",
+   "ablation": "no_efe_epistemic",
+   "capability": "intervention",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": 0.26666666666666666,
+   "ci95": [
+    0.06666666666666667,
+    0.6
+   ],
+   "p": 0.25,
+   "dz": 0.917662935482247,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "expected_free_energy",
+   "ablation": "no_efe_epistemic",
+   "capability": "intervention",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": 0.0888888888888889,
+   "ci95": [
+    -0.06666666666666665,
+    0.3333333333333333
+   ],
+   "p": 1.0,
+   "dz": 0.41478067789217016,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "expected_free_energy",
+   "ablation": "no_efe_epistemic",
+   "capability": "intervention",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": -0.03888888888888889,
+   "ci95": [
+    -0.12222222222222219,
+    0.04444444444444443
+   ],
+   "p": 0.4375,
+   "dz": -0.3344729377972476,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "expected_free_energy",
+   "ablation": "no_efe_epistemic",
+   "capability": "recovery",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": 0.022222222222222223,
+   "ci95": [
+    -0.1111111111111111,
+    0.15185185185185185
+   ],
+   "p": 0.75,
+   "dz": 0.10540925533894599,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "expected_free_energy",
+   "ablation": "no_efe_epistemic",
+   "capability": "recovery",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": 0.10000000000000002,
+   "ci95": [
+    -0.06666666666666671,
+    0.4333333333333334
+   ],
+   "p": 1.0,
+   "dz": 0.34641016151377546,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "expected_free_energy",
+   "ablation": "no_efe_epistemic",
+   "capability": "recovery",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": 0.07777777777777778,
+   "ci95": [
+    -0.06666666666666665,
+    0.2333333333333333
+   ],
+   "p": 0.75,
+   "dz": 0.517454889668201,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "expected_free_energy",
+   "ablation": "no_efe_epistemic",
+   "capability": "recovery",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": 0.011111111111111108,
+   "ci95": [
+    -0.12222222222222223,
+    0.15
+   ],
+   "p": 0.875,
+   "dz": 0.060993754559283304,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "expected_free_energy",
+   "ablation": "no_efe_epistemic",
+   "capability": "reachable_state_estimation",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": 0.003703703703703703,
+   "ci95": [
+    0.0,
+    0.011111111111111108
+   ],
+   "p": 1.0,
+   "dz": 0.33333333333333337,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "expected_free_energy",
+   "ablation": "no_efe_epistemic",
+   "capability": "reachable_state_estimation",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": 0.011111111111111108,
+   "ci95": [
+    0.0,
+    0.033333333333333326
+   ],
+   "p": 1.0,
+   "dz": 0.5773502691896257,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "expected_free_energy",
+   "ablation": "no_efe_epistemic",
+   "capability": "reachable_state_estimation",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "expected_free_energy",
+   "ablation": "no_efe_epistemic",
+   "capability": "reachable_state_estimation",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": -0.005555555555555554,
+   "ci95": [
+    -0.016666666666666663,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": -0.408248290463863,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "expected_free_energy",
+   "ablation": "no_efe_epistemic",
+   "capability": "perturbation_localisation",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 6,
+   "mean": 0.04255319148936169,
+   "ci95": [
+    0.014184397163120551,
+    0.07092198581560283
+   ],
+   "p": 0.125,
+   "dz": 1.1180339887498942,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "expected_free_energy",
+   "ablation": "no_efe_epistemic",
+   "capability": "perturbation_localisation",
+   "regime": "TRANSITION",
+   "n": 3,
+   "mean": 0.028368794326241103,
+   "ci95": [
+    0.0,
+    0.04255319148936165
+   ],
+   "p": 0.5,
+   "dz": 1.1547005383792515,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "expected_free_energy",
+   "ablation": "no_efe_epistemic",
+   "capability": "structural_transition_detection",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": -0.1111111111111111,
+   "ci95": [
+    -0.3333333333333333,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": -0.3333333333333333,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "expected_free_energy",
+   "ablation": "no_efe_epistemic",
+   "capability": "structural_transition_detection",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": -0.3333333333333333,
+   "ci95": [
+    -1.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": -0.5773502691896256,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "expected_free_energy",
+   "ablation": "no_efe_epistemic",
+   "capability": "structural_transition_detection",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "expected_free_energy",
+   "ablation": "no_efe_epistemic",
+   "capability": "structural_transition_detection",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": -0.16666666666666666,
+   "ci95": [
+    -0.5,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": -0.408248290463863,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "expected_free_energy",
+   "ablation": "no_efe_epistemic",
+   "capability": "history_reuse",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 3,
+   "mean": 0.022222222222222216,
+   "ci95": [
+    0.0,
+    0.033333333333333326
+   ],
+   "p": 0.5,
+   "dz": 1.1547005383792515,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "latent_state",
+   "ablation": "no_latent",
+   "capability": "prediction",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": 0.003703703703703706,
+   "ci95": [
+    -0.13703703703703704,
+    0.16675925925925877
+   ],
+   "p": 1.0,
+   "dz": 0.01448249084345938,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "latent_state",
+   "ablation": "no_latent",
+   "capability": "prediction",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": -0.11111111111111112,
+   "ci95": [
+    -0.3,
+    0.23333333333333328
+   ],
+   "p": 0.5,
+   "dz": -0.37190400165280096,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "latent_state",
+   "ablation": "no_latent",
+   "capability": "prediction",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": 0.1444444444444445,
+   "ci95": [
+    -0.06666666666666665,
+    0.5333333333333334
+   ],
+   "p": 1.0,
+   "dz": 0.4283645641073089,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "latent_state",
+   "ablation": "no_latent",
+   "capability": "prediction",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": 0.005555555555555559,
+   "ci95": [
+    -0.08888888888888886,
+    0.07777777777777778
+   ],
+   "p": 1.0,
+   "dz": 0.04858721702431707,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "latent_state",
+   "ablation": "no_latent",
+   "capability": "intervention",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": 0.05555555555555558,
+   "ci95": [
+    0.0037037037037037277,
+    0.11481481481481486
+   ],
+   "p": 0.125,
+   "dz": 0.6299407883487123,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "latent_state",
+   "ablation": "no_latent",
+   "capability": "intervention",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": 0.24444444444444446,
+   "ci95": [
+    -0.06666666666666667,
+    0.5333333333333333
+   ],
+   "p": 0.5,
+   "dz": 0.8131433980500302,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "latent_state",
+   "ablation": "no_latent",
+   "capability": "intervention",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": 0.044444444444444474,
+   "ci95": [
+    0.0,
+    0.09999999999999998
+   ],
+   "p": 0.5,
+   "dz": 0.8728715609439704,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "latent_state",
+   "ablation": "no_latent",
+   "capability": "intervention",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": 0.0111111111111111,
+   "ci95": [
+    -0.06666666666666668,
+    0.07777777777777777
+   ],
+   "p": 0.875,
+   "dz": 0.11070186069251181,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "latent_state",
+   "ablation": "no_latent",
+   "capability": "recovery",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": 0.003703703703703709,
+   "ci95": [
+    -0.14074074074074072,
+    0.15194444444444394
+   ],
+   "p": 1.0,
+   "dz": 0.014866293601709728,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "latent_state",
+   "ablation": "no_latent",
+   "capability": "recovery",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": 0.17777777777777778,
+   "ci95": [
+    -0.16666666666666666,
+    0.5
+   ],
+   "p": 0.5,
+   "dz": 0.5324466605117775,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "latent_state",
+   "ablation": "no_latent",
+   "capability": "recovery",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": 0.05555555555555558,
+   "ci95": [
+    -0.06666666666666665,
+    0.2333333333333334
+   ],
+   "p": 1.0,
+   "dz": 0.3526728079292992,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "latent_state",
+   "ablation": "no_latent",
+   "capability": "recovery",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": -0.10555555555555556,
+   "ci95": [
+    -0.3111111111111111,
+    0.12222222222222222
+   ],
+   "p": 0.375,
+   "dz": -0.3468215957025097,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "latent_state",
+   "ablation": "no_latent",
+   "capability": "reachable_state_estimation",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": 0.011111111111111108,
+   "ci95": [
+    0.0,
+    0.022222222222222216
+   ],
+   "p": 0.25,
+   "dz": 0.6666666666666665,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "latent_state",
+   "ablation": "no_latent",
+   "capability": "reachable_state_estimation",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "latent_state",
+   "ablation": "no_latent",
+   "capability": "reachable_state_estimation",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "latent_state",
+   "ablation": "no_latent",
+   "capability": "reachable_state_estimation",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": 0.005555555555555554,
+   "ci95": [
+    0.0,
+    0.016666666666666663
+   ],
+   "p": 1.0,
+   "dz": 0.408248290463863,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "latent_state",
+   "ablation": "no_latent",
+   "capability": "perturbation_localisation",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 6,
+   "mean": -0.021276595744680864,
+   "ci95": [
+    -0.056737588652482275,
+    0.014184397163120551
+   ],
+   "p": 0.5,
+   "dz": -0.40824829046386335,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "latent_state",
+   "ablation": "no_latent",
+   "capability": "perturbation_localisation",
+   "regime": "TRANSITION",
+   "n": 3,
+   "mean": -0.014184397163120588,
+   "ci95": [
+    -0.08510638297872342,
+    0.04255319148936165
+   ],
+   "p": 1.0,
+   "dz": -0.21821789023599275,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "latent_state",
+   "ablation": "no_latent",
+   "capability": "structural_transition_detection",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": 0.1111111111111111,
+   "ci95": [
+    0.0,
+    0.3333333333333333
+   ],
+   "p": 1.0,
+   "dz": 0.3333333333333333,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "latent_state",
+   "ablation": "no_latent",
+   "capability": "structural_transition_detection",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "latent_state",
+   "ablation": "no_latent",
+   "capability": "structural_transition_detection",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "latent_state",
+   "ablation": "no_latent",
+   "capability": "structural_transition_detection",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "latent_state",
+   "ablation": "no_latent",
+   "capability": "history_reuse",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 3,
+   "mean": 0.16666666666666666,
+   "ci95": [
+    0.0,
+    0.5
+   ],
+   "p": 1.0,
+   "dz": 0.5773502691896256,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "policy",
+   "ablation": "no_policy",
+   "capability": "prediction",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": 0.0,
+   "ci95": [
+    -0.11851851851851852,
+    0.1037037037037037
+   ],
+   "p": 1.0,
+   "dz": 0.0,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "policy",
+   "ablation": "no_policy",
+   "capability": "prediction",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": 0.12222222222222222,
+   "ci95": [
+    -0.06666666666666665,
+    0.39999999999999997
+   ],
+   "p": 0.75,
+   "dz": 0.49743719481074805,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "policy",
+   "ablation": "no_policy",
+   "capability": "prediction",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": 0.12222222222222223,
+   "ci95": [
+    -0.06666666666666665,
+    0.43333333333333335
+   ],
+   "p": 1.0,
+   "dz": 0.4502000299885319,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "policy",
+   "ablation": "no_policy",
+   "capability": "prediction",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": 0.07777777777777778,
+   "ci95": [
+    0.011111111111111108,
+    0.15555555555555559
+   ],
+   "p": 0.1875,
+   "dz": 0.7583649325305191,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "policy",
+   "ablation": "no_policy",
+   "capability": "intervention",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": 0.15185185185185185,
+   "ci95": [
+    0.029629629629629634,
+    0.28518518518518515
+   ],
+   "p": 0.09375,
+   "dz": 0.7200466053575707,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "policy",
+   "ablation": "no_policy",
+   "capability": "intervention",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": 0.04444444444444443,
+   "ci95": [
+    0.033333333333333326,
+    0.06666666666666667
+   ],
+   "p": 0.25,
+   "dz": 2.309401076758502,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "policy",
+   "ablation": "no_policy",
+   "capability": "intervention",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": 0.3666666666666667,
+   "ci95": [
+    0.16666666666666666,
+    0.5333333333333334
+   ],
+   "p": 0.25,
+   "dz": 1.9756583222945236,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "policy",
+   "ablation": "no_policy",
+   "capability": "intervention",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": 0.19999999999999998,
+   "ci95": [
+    0.12777777777777777,
+    0.25555555555555554
+   ],
+   "p": 0.03125,
+   "dz": 2.176428750330035,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "policy",
+   "ablation": "no_policy",
+   "capability": "recovery",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": 0.26666666666666666,
+   "ci95": [
+    0.17768518518518533,
+    0.35185185185185186
+   ],
+   "p": 0.00390625,
+   "dz": 1.8599622199011083,
+   "within_margin": false,
+   "p_holm": 0.75,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "policy",
+   "ablation": "no_policy",
+   "capability": "recovery",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": 0.3333333333333333,
+   "ci95": [
+    0.16666666666666663,
+    0.6666666666666666
+   ],
+   "p": 0.25,
+   "dz": 1.1547005383792512,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "policy",
+   "ablation": "no_policy",
+   "capability": "recovery",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": 0.37777777777777777,
+   "ci95": [
+    0.19999999999999998,
+    0.6666666666666666
+   ],
+   "p": 0.25,
+   "dz": 1.49676654075356,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "policy",
+   "ablation": "no_policy",
+   "capability": "recovery",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": 0.15555555555555553,
+   "ci95": [
+    0.038888888888888876,
+    0.3
+   ],
+   "p": 0.09375,
+   "dz": 0.8482512026457812,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "policy",
+   "ablation": "no_policy",
+   "capability": "reachable_state_estimation",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": 0.011111111111111108,
+   "ci95": [
+    0.0,
+    0.022222222222222216
+   ],
+   "p": 0.25,
+   "dz": 0.6666666666666665,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "policy",
+   "ablation": "no_policy",
+   "capability": "reachable_state_estimation",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "policy",
+   "ablation": "no_policy",
+   "capability": "reachable_state_estimation",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "policy",
+   "ablation": "no_policy",
+   "capability": "reachable_state_estimation",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "policy",
+   "ablation": "no_policy",
+   "capability": "perturbation_localisation",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 6,
+   "mean": -0.10638297872340428,
+   "ci95": [
+    -0.16312056737588654,
+    -0.04964539007092202
+   ],
+   "p": 0.0625,
+   "dz": -1.3363062095621225,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "policy",
+   "ablation": "no_policy",
+   "capability": "perturbation_localisation",
+   "regime": "TRANSITION",
+   "n": 3,
+   "mean": -0.14184397163120568,
+   "ci95": [
+    -0.21276595744680848,
+    -0.08510638297872342
+   ],
+   "p": 0.25,
+   "dz": -2.182178902359925,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "policy",
+   "ablation": "no_policy",
+   "capability": "structural_transition_detection",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 9,
+   "mean": -0.4444444444444444,
+   "ci95": [
+    -0.7777777777777778,
+    -0.1111111111111111
+   ],
+   "p": 0.125,
+   "dz": -0.8432740427115677,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "policy",
+   "ablation": "no_policy",
+   "capability": "structural_transition_detection",
+   "regime": "POST_ACTIVE_INFERENCE",
+   "n": 3,
+   "mean": -1.0,
+   "ci95": [
+    -1.0,
+    -1.0
+   ],
+   "p": 0.25,
+   "dz": -Infinity,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "policy",
+   "ablation": "no_policy",
+   "capability": "structural_transition_detection",
+   "regime": "REFERENCE (unperturbed)",
+   "n": 3,
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "dz": null,
+   "within_margin": true,
+   "p_holm": 1.0,
+   "status": "REDUNDANT"
+  },
+  {
+   "element": "policy",
+   "ablation": "no_policy",
+   "capability": "structural_transition_detection",
+   "regime": "TRANSITION",
+   "n": 6,
+   "mean": -0.3333333333333333,
+   "ci95": [
+    -0.6666666666666666,
+    0.0
+   ],
+   "p": 0.5,
+   "dz": -0.6454972243679027,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  },
+  {
+   "element": "policy",
+   "ablation": "no_policy",
+   "capability": "history_reuse",
+   "regime": "ACTIVE_INFERENCE_COMPATIBLE",
+   "n": 3,
+   "mean": 0.3,
+   "ci95": [
+    0.13333333333333333,
+    0.39999999999999997
+   ],
+   "p": 0.25,
+   "dz": 2.064741604835056,
+   "within_margin": false,
+   "p_holm": 1.0,
+   "status": "UNRESOLVED"
+  }
+ ],
+ "table": {
+  "agent": {
+   "ACTIVE_INFERENCE_COMPATIBLE": {
+    "prediction": "UNRESOLVED",
+    "intervention": "UNRESOLVED",
+    "recovery": "UNRESOLVED",
+    "reachable_state_estimation": "REDUNDANT",
+    "perturbation_localisation": "UNRESOLVED",
+    "structural_transition_detection": "UNRESOLVED",
+    "history_reuse": "UNRESOLVED"
+   },
+   "POST_ACTIVE_INFERENCE": {
+    "prediction": "UNRESOLVED",
+    "intervention": "UNRESOLVED",
+    "recovery": "UNRESOLVED",
+    "reachable_state_estimation": "REDUNDANT",
+    "structural_transition_detection": "REDUNDANT"
+   },
+   "REFERENCE (unperturbed)": {
+    "prediction": "UNRESOLVED",
+    "intervention": "UNRESOLVED",
+    "recovery": "UNRESOLVED",
+    "reachable_state_estimation": "REDUNDANT",
+    "structural_transition_detection": "REDUNDANT"
+   },
+   "TRANSITION": {
+    "prediction": "UNRESOLVED",
+    "intervention": "UNRESOLVED",
+    "recovery": "UNRESOLVED",
+    "reachable_state_estimation": "REDUNDANT",
+    "perturbation_localisation": "UNRESOLVED",
+    "structural_transition_detection": "UNRESOLVED"
+   }
+  },
+  "boundary": {
+   "ACTIVE_INFERENCE_COMPATIBLE": {
+    "prediction": "UNRESOLVED",
+    "intervention": "UNRESOLVED",
+    "recovery": "UNRESOLVED",
+    "reachable_state_estimation": "REDUNDANT",
+    "perturbation_localisation": "UNRESOLVED",
+    "structural_transition_detection": "UNRESOLVED",
+    "history_reuse": "UNRESOLVED"
+   },
+   "POST_ACTIVE_INFERENCE": {
+    "prediction": "UNRESOLVED",
+    "intervention": "UNRESOLVED",
+    "recovery": "UNRESOLVED",
+    "reachable_state_estimation": "REDUNDANT",
+    "structural_transition_detection": "REDUNDANT"
+   },
+   "REFERENCE (unperturbed)": {
+    "prediction": "UNRESOLVED",
+    "intervention": "UNRESOLVED",
+    "recovery": "UNRESOLVED",
+    "reachable_state_estimation": "REDUNDANT",
+    "structural_transition_detection": "REDUNDANT"
+   },
+   "TRANSITION": {
+    "prediction": "UNRESOLVED",
+    "intervention": "UNRESOLVED",
+    "recovery": "UNRESOLVED",
+    "reachable_state_estimation": "REDUNDANT",
+    "perturbation_localisation": "REDUNDANT",
+    "structural_transition_detection": "REDUNDANT"
+   }
+  },
+  "boundary (model-light controller)": {
+   "ACTIVE_INFERENCE_COMPATIBLE": {
+    "intervention": "UNRESOLVED",
+    "recovery": "UNRESOLVED"
+   },
+   "POST_ACTIVE_INFERENCE": {
+    "intervention": "UNRESOLVED",
+    "recovery": "UNRESOLVED"
+   },
+   "REFERENCE (unperturbed)": {
+    "intervention": "UNRESOLVED",
+    "recovery": "UNRESOLVED"
+   },
+   "TRANSITION": {
+    "intervention": "UNRESOLVED",
+    "recovery": "UNRESOLVED"
+   }
+  },
+  "model": {
+   "ACTIVE_INFERENCE_COMPATIBLE": {
+    "prediction": "UNRESOLVED",
+    "intervention": "UNRESOLVED",
+    "recovery": "UNRESOLVED",
+    "reachable_state_estimation": "REDUNDANT",
+    "perturbation_localisation": "UNRESOLVED",
+    "structural_transition_detection": "UNRESOLVED",
+    "history_reuse": "UNRESOLVED"
+   },
+   "POST_ACTIVE_INFERENCE": {
+    "prediction": "UNRESOLVED",
+    "intervention": "UNRESOLVED",
+    "recovery": "UNRESOLVED",
+    "reachable_state_estimation": "REDUNDANT",
+    "structural_transition_detection": "REDUNDANT"
+   },
+   "REFERENCE (unperturbed)": {
+    "prediction": "UNRESOLVED",
+    "intervention": "UNRESOLVED",
+    "recovery": "UNRESOLVED",
+    "reachable_state_estimation": "REDUNDANT",
+    "structural_transition_detection": "REDUNDANT"
+   },
+   "TRANSITION": {
+    "prediction": "UNRESOLVED",
+    "intervention": "UNRESOLVED",
+    "recovery": "UNRESOLVED",
+    "reachable_state_estimation": "REDUNDANT",
+    "perturbation_localisation": "UNRESOLVED",
+    "structural_transition_detection": "UNRESOLVED"
+   }
+  },
+  "prediction_error": {
+   "ACTIVE_INFERENCE_COMPATIBLE": {
+    "prediction": "UNRESOLVED",
+    "intervention": "UNRESOLVED",
+    "recovery": "UNRESOLVED",
+    "reachable_state_estimation": "REDUNDANT",
+    "perturbation_localisation": "UNRESOLVED",
+    "structural_transition_detection": "UNRESOLVED",
+    "history_reuse": "UNRESOLVED"
+   },
+   "POST_ACTIVE_INFERENCE": {
+    "prediction": "UNRESOLVED",
+    "intervention": "UNRESOLVED",
+    "recovery": "UNRESOLVED",
+    "reachable_state_estimation": "REDUNDANT",
+    "structural_transition_detection": "REDUNDANT"
+   },
+   "REFERENCE (unperturbed)": {
+    "prediction": "UNRESOLVED",
+    "intervention": "UNRESOLVED",
+    "recovery": "UNRESOLVED",
+    "reachable_state_estimation": "REDUNDANT",
+    "structural_transition_detection": "REDUNDANT"
+   },
+   "TRANSITION": {
+    "prediction": "UNRESOLVED",
+    "intervention": "UNRESOLVED",
+    "recovery": "UNRESOLVED",
+    "reachable_state_estimation": "REDUNDANT",
+    "perturbation_localisation": "REDUNDANT",
+    "structural_transition_detection": "REDUNDANT"
+   }
+  },
+  "free_energy": {
+   "ACTIVE_INFERENCE_COMPATIBLE": {
+    "prediction": "UNRESOLVED",
+    "intervention": "UNRESOLVED",
+    "recovery": "UNRESOLVED",
+    "reachable_state_estimation": "REDUNDANT",
+    "perturbation_localisation": "REDUNDANT",
+    "structural_transition_detection": "REDUNDANT",
+    "history_reuse": "REDUNDANT"
+   },
+   "POST_ACTIVE_INFERENCE": {
+    "prediction": "UNRESOLVED",
+    "intervention": "UNRESOLVED",
+    "recovery": "UNRESOLVED",
+    "reachable_state_estimation": "REDUNDANT",
+    "structural_transition_detection": "REDUNDANT"
+   },
+   "REFERENCE (unperturbed)": {
+    "prediction": "REDUNDANT",
+    "intervention": "REDUNDANT",
+    "recovery": "REDUNDANT",
+    "reachable_state_estimation": "REDUNDANT",
+    "structural_transition_detection": "REDUNDANT"
+   },
+   "TRANSITION": {
+    "prediction": "UNRESOLVED",
+    "intervention": "UNRESOLVED",
+    "recovery": "UNRESOLVED",
+    "reachable_state_estimation": "REDUNDANT",
+    "perturbation_localisation": "REDUNDANT",
+    "structural_transition_detection": "UNRESOLVED"
+   }
+  },
+  "expected_free_energy": {
+   "ACTIVE_INFERENCE_COMPATIBLE": {
+    "prediction": "UNRESOLVED",
+    "intervention": "UNRESOLVED",
+    "recovery": "UNRESOLVED",
+    "reachable_state_estimation": "REDUNDANT",
+    "perturbation_localisation": "UNRESOLVED",
+    "structural_transition_detection": "UNRESOLVED",
+    "history_reuse": "REDUNDANT"
+   },
+   "POST_ACTIVE_INFERENCE": {
+    "prediction": "UNRESOLVED",
+    "intervention": "UNRESOLVED",
+    "recovery": "UNRESOLVED",
+    "reachable_state_estimation": "REDUNDANT",
+    "structural_transition_detection": "UNRESOLVED"
+   },
+   "REFERENCE (unperturbed)": {
+    "prediction": "UNRESOLVED",
+    "intervention": "UNRESOLVED",
+    "recovery": "UNRESOLVED",
+    "reachable_state_estimation": "REDUNDANT",
+    "structural_transition_detection": "REDUNDANT"
+   },
+   "TRANSITION": {
+    "prediction": "UNRESOLVED",
+    "intervention": "UNRESOLVED",
+    "recovery": "UNRESOLVED",
+    "reachable_state_estimation": "REDUNDANT",
+    "perturbation_localisation": "REDUNDANT",
+    "structural_transition_detection": "UNRESOLVED"
+   }
+  },
+  "latent_state": {
+   "ACTIVE_INFERENCE_COMPATIBLE": {
+    "prediction": "UNRESOLVED",
+    "intervention": "UNRESOLVED",
+    "recovery": "UNRESOLVED",
+    "reachable_state_estimation": "REDUNDANT",
+    "perturbation_localisation": "UNRESOLVED",
+    "structural_transition_detection": "UNRESOLVED",
+    "history_reuse": "UNRESOLVED"
+   },
+   "POST_ACTIVE_INFERENCE": {
+    "prediction": "UNRESOLVED",
+    "intervention": "UNRESOLVED",
+    "recovery": "UNRESOLVED",
+    "reachable_state_estimation": "REDUNDANT",
+    "structural_transition_detection": "REDUNDANT"
+   },
+   "REFERENCE (unperturbed)": {
+    "prediction": "UNRESOLVED",
+    "intervention": "UNRESOLVED",
+    "recovery": "UNRESOLVED",
+    "reachable_state_estimation": "REDUNDANT",
+    "structural_transition_detection": "REDUNDANT"
+   },
+   "TRANSITION": {
+    "prediction": "UNRESOLVED",
+    "intervention": "UNRESOLVED",
+    "recovery": "UNRESOLVED",
+    "reachable_state_estimation": "REDUNDANT",
+    "perturbation_localisation": "UNRESOLVED",
+    "structural_transition_detection": "REDUNDANT"
+   }
+  },
+  "policy": {
+   "ACTIVE_INFERENCE_COMPATIBLE": {
+    "prediction": "UNRESOLVED",
+    "intervention": "UNRESOLVED",
+    "recovery": "UNRESOLVED",
+    "reachable_state_estimation": "REDUNDANT",
+    "perturbation_localisation": "UNRESOLVED",
+    "structural_transition_detection": "UNRESOLVED",
+    "history_reuse": "UNRESOLVED"
+   },
+   "POST_ACTIVE_INFERENCE": {
+    "prediction": "UNRESOLVED",
+    "intervention": "UNRESOLVED",
+    "recovery": "UNRESOLVED",
+    "reachable_state_estimation": "REDUNDANT",
+    "structural_transition_detection": "UNRESOLVED"
+   },
+   "REFERENCE (unperturbed)": {
+    "prediction": "UNRESOLVED",
+    "intervention": "UNRESOLVED",
+    "recovery": "UNRESOLVED",
+    "reachable_state_estimation": "REDUNDANT",
+    "structural_transition_detection": "REDUNDANT"
+   },
+   "TRANSITION": {
+    "prediction": "UNRESOLVED",
+    "intervention": "UNRESOLVED",
+    "recovery": "UNRESOLVED",
+    "reachable_state_estimation": "REDUNDANT",
+    "perturbation_localisation": "UNRESOLVED",
+    "structural_transition_detection": "UNRESOLVED"
+   }
+  }
+ },
+ "margin": 0.05,
+ "n_tests": 192,
+ "not_applicable": {
+  "reignition_detection": "tracker-only capability (exact from the step records); no comparator analogue",
+  "configuration_crossing_recurrence": "tracker-only capability; no comparator analogue"
+ },
+ "correction": "Holm over all tests",
+ "summary": {
+  "agent": {
+   "ACTIVE_INFERENCE_COMPATIBLE": {
+    "status": "UNRESOLVED",
+    "harmful_for": [],
+    "non_redundant_for": []
+   },
+   "POST_ACTIVE_INFERENCE": {
+    "status": "UNRESOLVED",
+    "harmful_for": [],
+    "non_redundant_for": []
+   },
+   "REFERENCE (unperturbed)": {
+    "status": "UNRESOLVED",
+    "harmful_for": [],
+    "non_redundant_for": []
+   },
+   "TRANSITION": {
+    "status": "UNRESOLVED",
+    "harmful_for": [],
+    "non_redundant_for": []
+   }
+  },
+  "boundary": {
+   "ACTIVE_INFERENCE_COMPATIBLE": {
+    "status": "UNRESOLVED",
+    "harmful_for": [],
+    "non_redundant_for": []
+   },
+   "POST_ACTIVE_INFERENCE": {
+    "status": "UNRESOLVED",
+    "harmful_for": [],
+    "non_redundant_for": []
+   },
+   "REFERENCE (unperturbed)": {
+    "status": "UNRESOLVED",
+    "harmful_for": [],
+    "non_redundant_for": []
+   },
+   "TRANSITION": {
+    "status": "UNRESOLVED",
+    "harmful_for": [],
+    "non_redundant_for": []
+   }
+  },
+  "boundary (model-light controller)": {
+   "ACTIVE_INFERENCE_COMPATIBLE": {
+    "status": "UNRESOLVED",
+    "harmful_for": [],
+    "non_redundant_for": []
+   },
+   "POST_ACTIVE_INFERENCE": {
+    "status": "UNRESOLVED",
+    "harmful_for": [],
+    "non_redundant_for": []
+   },
+   "REFERENCE (unperturbed)": {
+    "status": "UNRESOLVED",
+    "harmful_for": [],
+    "non_redundant_for": []
+   },
+   "TRANSITION": {
+    "status": "UNRESOLVED",
+    "harmful_for": [],
+    "non_redundant_for": []
+   }
+  },
+  "model": {
+   "ACTIVE_INFERENCE_COMPATIBLE": {
+    "status": "UNRESOLVED",
+    "harmful_for": [],
+    "non_redundant_for": []
+   },
+   "POST_ACTIVE_INFERENCE": {
+    "status": "UNRESOLVED",
+    "harmful_for": [],
+    "non_redundant_for": []
+   },
+   "REFERENCE (unperturbed)": {
+    "status": "UNRESOLVED",
+    "harmful_for": [],
+    "non_redundant_for": []
+   },
+   "TRANSITION": {
+    "status": "UNRESOLVED",
+    "harmful_for": [],
+    "non_redundant_for": []
+   }
+  },
+  "prediction_error": {
+   "ACTIVE_INFERENCE_COMPATIBLE": {
+    "status": "UNRESOLVED",
+    "harmful_for": [],
+    "non_redundant_for": []
+   },
+   "POST_ACTIVE_INFERENCE": {
+    "status": "UNRESOLVED",
+    "harmful_for": [],
+    "non_redundant_for": []
+   },
+   "REFERENCE (unperturbed)": {
+    "status": "UNRESOLVED",
+    "harmful_for": [],
+    "non_redundant_for": []
+   },
+   "TRANSITION": {
+    "status": "UNRESOLVED",
+    "harmful_for": [],
+    "non_redundant_for": []
+   }
+  },
+  "free_energy": {
+   "ACTIVE_INFERENCE_COMPATIBLE": {
+    "status": "UNRESOLVED",
+    "harmful_for": [],
+    "non_redundant_for": []
+   },
+   "POST_ACTIVE_INFERENCE": {
+    "status": "UNRESOLVED",
+    "harmful_for": [],
+    "non_redundant_for": []
+   },
+   "REFERENCE (unperturbed)": {
+    "status": "REDUNDANT",
+    "harmful_for": [],
+    "non_redundant_for": []
+   },
+   "TRANSITION": {
+    "status": "UNRESOLVED",
+    "harmful_for": [],
+    "non_redundant_for": []
+   }
+  },
+  "expected_free_energy": {
+   "ACTIVE_INFERENCE_COMPATIBLE": {
+    "status": "UNRESOLVED",
+    "harmful_for": [],
+    "non_redundant_for": []
+   },
+   "POST_ACTIVE_INFERENCE": {
+    "status": "UNRESOLVED",
+    "harmful_for": [],
+    "non_redundant_for": []
+   },
+   "REFERENCE (unperturbed)": {
+    "status": "UNRESOLVED",
+    "harmful_for": [],
+    "non_redundant_for": []
+   },
+   "TRANSITION": {
+    "status": "UNRESOLVED",
+    "harmful_for": [],
+    "non_redundant_for": []
+   }
+  },
+  "latent_state": {
+   "ACTIVE_INFERENCE_COMPATIBLE": {
+    "status": "UNRESOLVED",
+    "harmful_for": [],
+    "non_redundant_for": []
+   },
+   "POST_ACTIVE_INFERENCE": {
+    "status": "UNRESOLVED",
+    "harmful_for": [],
+    "non_redundant_for": []
+   },
+   "REFERENCE (unperturbed)": {
+    "status": "UNRESOLVED",
+    "harmful_for": [],
+    "non_redundant_for": []
+   },
+   "TRANSITION": {
+    "status": "UNRESOLVED",
+    "harmful_for": [],
+    "non_redundant_for": []
+   }
+  },
+  "policy": {
+   "ACTIVE_INFERENCE_COMPATIBLE": {
+    "status": "UNRESOLVED",
+    "harmful_for": [],
+    "non_redundant_for": []
+   },
+   "POST_ACTIVE_INFERENCE": {
+    "status": "UNRESOLVED",
+    "harmful_for": [],
+    "non_redundant_for": []
+   },
+   "REFERENCE (unperturbed)": {
+    "status": "UNRESOLVED",
+    "harmful_for": [],
+    "non_redundant_for": []
+   },
+   "TRANSITION": {
+    "status": "UNRESOLVED",
+    "harmful_for": [],
+    "non_redundant_for": []
+   }
+  }
+ }
+}

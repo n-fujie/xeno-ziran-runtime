@@ -1,0 +1,134 @@
+{
+ "D:bottleneck|1500": {
+  "activity": 0.0435,
+  "gain": 3.172,
+  "reached": true,
+  "seconds": 23.0
+ },
+ "D:delayed_return_route|1500": {
+  "activity": 0.04019,
+  "gain": 3.0376,
+  "reached": true,
+  "seconds": 18.9
+ },
+ "D:fragile_loop|1500": {
+  "activity": 0.0447,
+  "gain": 3.1347,
+  "reached": true,
+  "seconds": 19.4
+ },
+ "D:high_path_dependence|1500": {
+  "activity": 0.04413,
+  "gain": 3.1471,
+  "reached": true,
+  "seconds": 18.7
+ },
+ "D:isolated_regions_bridge|1500": {
+  "activity": 0.04146,
+  "gain": 2.9902,
+  "reached": true,
+  "seconds": 19.8
+ },
+ "D:one_way_path|1500": {
+  "activity": 0.04378,
+  "gain": 3.172,
+  "reached": true,
+  "seconds": 18.6
+ },
+ "D:single_bridge|1500": {
+  "activity": 0.04345,
+  "gain": 3.2223,
+  "reached": true,
+  "seconds": 23.8
+ },
+ "D:sparse_tree|1500": {
+  "activity": 0.04251,
+  "gain": 3.0138,
+  "reached": true,
+  "seconds": 18.8
+ },
+ "bottlenecked|1500": {
+  "activity": 0.05996,
+  "gain": 3.098,
+  "reached": true,
+  "seconds": 11.5
+ },
+ "dense_random|1500": {
+  "activity": 0.19366,
+  "gain": 4.8329,
+  "reached": true,
+  "seconds": 20.4
+ },
+ "hierarchical|1500": {
+  "activity": 0.04379,
+  "gain": 2.8299,
+  "reached": true,
+  "seconds": 11.4
+ },
+ "highly_clustered|1500": {
+  "activity": 0.04013,
+  "gain": 2.753,
+  "reached": true,
+  "seconds": 13.5
+ },
+ "modular@0.6|1500": {
+  "activity": 0.16521,
+  "gain": 3.5415,
+  "reached": true,
+  "seconds": 45.6
+ },
+ "modular@0.95|1500": {
+  "activity": 0.0431,
+  "gain": 3.0138,
+  "reached": true,
+  "seconds": 41.1
+ },
+ "modular|1500": {
+  "activity": 0.10279,
+  "gain": 3.235,
+  "reached": true,
+  "seconds": 10.0
+ },
+ "multi_region|10000": {
+  "activity": 0.0445,
+  "gain": 2.7314,
+  "reached": true,
+  "seconds": 30.0
+ },
+ "multi_region|100000": {
+  "activity": 0.04745,
+  "gain": 2.8077,
+  "reached": true,
+  "seconds": 93.4
+ },
+ "multi_region|1500": {
+  "activity": 0.04067,
+  "gain": 2.753,
+  "reached": true,
+  "seconds": 4.8
+ },
+ "nested_multiscale|1500": {
+  "activity": 0.04057,
+  "gain": 3.0858,
+  "reached": true,
+  "seconds": 9.9
+ },
+ "small_world|1500": {
+  "activity": 0.04179,
+  "gain": 2.6363,
+  "reached": true,
+  "seconds": 9.4
+ },
+ "sparse_random|1500": {
+  "activity": 0.00994,
+  "gain": 9.0,
+  "reached": false,
+  "seconds": 1.2
+ },
+ "weakly_connected|1500": {
+  "activity": 0.052,
+  "gain": 3.1347,
+  "reached": true,
+  "seconds": 8.7
+ }
+}

@@ -8,7 +8,14 @@ from __future__ import annotations
 
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from .._compat import FORCE as _COMPAT
+
+try:  # the iOS app has no pydantic (compiled core): a pure-Python subset stands in (see _compat/pmodel.py)
+    if _COMPAT:
+        raise ImportError
+    from pydantic import BaseModel, ConfigDict, Field, model_validator
+except ImportError:
+    from .._compat.pmodel import BaseModel, ConfigDict, Field, model_validator  # type: ignore[assignment,no-redef]
 
 
 class _M(BaseModel):

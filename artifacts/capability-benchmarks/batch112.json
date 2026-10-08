@@ -1,0 +1,13 @@
+{
+ "config": "7 topologies x 16 seeds; n=1500; horizon=4000; variants A,C,E,H (+C~); workers=4; production path python -m xzr run",
+ "jobs": 112,
+ "wall_s": 1717,
+ "peak_tree_rss_mb": 1594,
+ "storage_bytes": 98033664,
+ "jobs_storage_bytes": 97632256,
+ "result_json_bytes": 20404,
+ "raw_json_bytes": 364464,
+ "failures": 0,
+ "exit_code": 0,
+ "noise_replicate_detected_in_any_condition": false
+}

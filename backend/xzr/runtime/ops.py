@@ -254,6 +254,96 @@ def disconnect(state: State) -> np.ndarray:
     return r
 
 
+def weak_connections(state: State) -> np.ndarray:
+    """The disconnection trigger: alive connections whose weight dissolved below w_min (and is not already 0)."""
+    return np.flatnonzero(state.alive & (state.weight < state.params.w_min) & (state.weight > 0.0)).astype(I32)
+
+
+def disconnect_to_zero(state: State) -> np.ndarray:
+    """Replacement candidate: a dissolved connection stays alive with weight and base weight 0."""
+    r = weak_connections(state)
+    state.weight[r] = 0.0
+    state.base_weight[r] = 0.0
+    return r
+
+
+def retire(state: State, edges: np.ndarray) -> np.ndarray:
+    """Generic mutation path for removal: the slot is retired (not reused within the step), nothing else changes."""
+    edges = np.asarray(edges, dtype=I32)
+    c = edges[state.alive[edges]]
+    state.alive[c] = False
+    return c
+
+
+def redirect_random(state: State, rng: np.random.Generator, edges: np.ndarray) -> np.ndarray:
+    """Generic connection mutation (as in :func:`mutate`): each connection is redirected to a uniformly random
+    configuration (not its source, not an existing target of its source); weight reset to its base value."""
+    out: list[tuple[int, int, int]] = []
+    if len(edges) == 0:
+        return np.zeros((0, 3), I32)
+    targets = rng.integers(0, state.n, len(edges))
+    for e, b in zip(edges.tolist(), targets.tolist(), strict=True):
+        a = int(state.src[e])
+        if b == a or np.any(state.dst[_out_edges(state, a)] == b):
+            continue
+        old = int(state.dst[e])
+        state.dst[e] = b
+        state.weight[e] = state.base_weight[e]
+        state.load[e] = 0.0
+        out.append((e, old, b))
+    return np.array(out, dtype=I32).reshape(-1, 3)
+
+
+def redirect_overloaded(state: State, rng: np.random.Generator) -> np.ndarray:
+    """Unified topology trigger: every connection with load > capacity is redirected past its target to a
+    second-order neighbour of its source (reconfiguration-style operation, connection-level trigger)."""
+    over = np.flatnonzero(state.alive & (state.load > state.capacity))
+    out: list[tuple[int, int, int]] = []
+    for e in over.tolist():
+        a, x = int(state.src[e]), int(state.dst[e])
+        ox = _out_edges(state, x)
+        cand = np.setdiff1d(state.dst[ox], np.r_[state.dst[_out_edges(state, a)], a])
+        if len(cand) == 0:
+            continue
+        b = int(cand[rng.integers(len(cand))])
+        state.dst[e] = b
+        state.load[e] = 0.0
+        out.append((e, x, b))
+    return np.array(out, dtype=I32).reshape(-1, 3)
+
+
+def merged_topology_mutation(state: State, rng: np.random.Generator) -> tuple[np.ndarray, np.ndarray]:
+    """Fully merged topology trigger: one condition per configuration — an outgoing connection over capacity, or
+    an overload streak — and one operation: remove its most loaded outgoing connection and create a connection
+    to a second-order neighbour carrying the removed connection's attributes. Returns (events, retired ids)."""
+    p = state.params
+    alive = np.flatnonzero(state.alive)
+    over_edge = alive[state.load[alive] > state.capacity[alive]]
+    trig = np.union1d(np.unique(state.src[over_edge]), np.flatnonzero(state.overload >= p.overload_steps))
+    out: list[tuple[int, int, int]] = []
+    retired: list[int] = []
+    for a in trig.tolist():
+        oa = _out_edges(state, a)
+        if len(oa) == 0:
+            continue
+        e = int(oa[np.argmax(state.load[oa])])
+        x = int(state.dst[e])
+        cand = np.setdiff1d(state.dst[_out_edges(state, x)], np.r_[state.dst[oa], a])
+        state.alive[e] = False
+        state.overload[a] = 0
+        retired.append(e)
+        if len(cand) == 0:
+            continue
+        b = int(cand[rng.integers(len(cand))])
+        e2 = add_connection(state, a, b, float(state.weight[e]), int(state.transform[e]),
+                            exclude=np.array(retired, dtype=np.int64))
+        if e2 < 0:
+            continue
+        state.base_weight[e2], state.capacity[e2] = state.base_weight[e], state.capacity[e]
+        out.append((e2, x, b))
+    return np.array(out, dtype=I32).reshape(-1, 3), np.array(retired, dtype=I32)
+
+
 def sever(state: State, edges: np.ndarray) -> np.ndarray:
     """Cut specific connections (intervention form of cut)."""
     edges = np.asarray(edges, dtype=I32)
@@ -346,7 +436,8 @@ def reconfigure(state: State, rng: np.random.Generator) -> np.ndarray:
     return np.array(out, dtype=I32).reshape(-1, 3)
 
 
-def reconfigure_by_mutation(state: State, rng: np.random.Generator) -> tuple[np.ndarray, np.ndarray]:
+def reconfigure_by_mutation(state: State, rng: np.random.Generator,
+                            exclude: np.ndarray | None = None) -> tuple[np.ndarray, np.ndarray]:
     """Reduction candidate: reconfiguration expressed as connection mutation — remove the strongest outgoing
     connection and create a connection to a second-order neighbour carrying over its attributes.
 
@@ -375,7 +466,10 @@ def reconfigure_by_mutation(state: State, rng: np.random.Generator) -> tuple[np.
                  state.gate_mod[e], state.gate[e])
         state.alive[e] = False  # remove
         # create — never in a slot retired during this step (events must stay unambiguous)
-        e2 = add_connection(state, a, b, float(attrs[0]), int(attrs[2]), exclude=np.array([*retired, e], dtype=np.int64))
+        ex = np.array([*retired, e], dtype=np.int64)
+        if exclude is not None and len(exclude):
+            ex = np.concatenate([ex, np.asarray(exclude, dtype=np.int64)])
+        e2 = add_connection(state, a, b, float(attrs[0]), int(attrs[2]), exclude=ex)
         if e2 < 0:  # pool full: restore
             state.alive[e] = True
             continue

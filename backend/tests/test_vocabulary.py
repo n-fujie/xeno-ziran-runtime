@@ -12,7 +12,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1] / "xzr"
 LAYERS = ("runtime", "shapes", "lod", "compare")
 # domain-neutral modules of the experiment layer (the reasoning experiments legitimately use practice terms)
-EXTRA = ("experiments/runs.py", "experiments/reduction.py", "experiments/reduction_rules.py")
+EXTRA = ("experiments/runs.py", "experiments/reduction.py", "experiments/reduction_rules.py",
+         # resolution escalation: world families, structures, triggers and the whole experiment layer are neutral
+         "scenario/topologies.py", "reasonlab/structures.py", "reasonlab/mixed.py", "reasonlab/triggers.py",
+         *(f"experiments/escalation/{p.name}" for p in sorted((ROOT / "experiments" / "escalation").glob("*.py"))))
 FORBIDDEN = re.compile(
     r"(human|person|people|bank|market|institution|capital|societ|social|politic|agent|organi[sz]ation|"
     r"financ|econom|credit|nation|government|ideolog|citizen|\bleft\b|\bright\b|owner|worker|firm|"

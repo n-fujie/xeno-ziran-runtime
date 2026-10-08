@@ -15,7 +15,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from ..practice.graph import Practice
-from ..practice.support import SupportGraph
+from ..practice.support import Requirement, SupportGraph
+from .mixed import MixedSupport
 
 REPRESENTATIONS = ("scorekeeping", "scorekeeping_no_entitlement", "support", "support_greatest", "support_single",
                    "support_backed_only")
@@ -32,6 +33,20 @@ def translate(practice_json: dict, mode: str = "two_level", fixpoint: str = "lea
             "retracted": list(practice_json.get("withdrawn", [])),
             "blocked_tokens": list(practice_json.get("removed_concepts", [])),
             "mode": mode, "fixpoint": fixpoint}
+
+
+def untranslate(spec: dict) -> dict:
+    """Inverse of :func:`translate`: express a neutral support specification in the vocabulary-bearing
+    representation (used only for the vocabulary control)."""
+    tokens = sorted(set(spec.get("tokens", [])) | {x for it in spec["items"] for x in it["tokens"]})
+    return {"concepts": tokens, "claims": [{"id": it["id"], "uses": list(it["tokens"]), "bindings": list(it["effects"]),
+                        "commitment": float(it["base_level"]), "default_entitled": bool(it["self_standing"])}
+                       for it in spec["items"]],
+            "dependencies": [{"premises": list(r["sources"]), "conclusion": r["target"],
+                              "kind": "committive" if r["mode"] == "carry" else "permissive"}
+                             for r in spec["requirements"]],
+            "incompatibilities": [list(c) for c in spec["conflicts"]],
+            "withdrawn": list(spec.get("retracted", [])), "removed_concepts": list(spec.get("blocked_tokens", []))}
 
 
 def build(kind: str, practice_json: dict):
@@ -57,6 +72,7 @@ class Edit:
     """One reasoning edit, expressible in every representation."""
 
     op: str  # remove_token | restore_token | retract | set_level | drop_conflict | drop_requirement | add_requirement
+    #          | add_conflict | lose_records | restore_records (the last three: support structures only)
     a: str = ""
     b: str = ""
     value: float = 0.0
@@ -79,9 +95,28 @@ def apply_edit(rep, e: Edit) -> None:
             rep.disconnect(e.a, e.b)
         elif e.op == "add_requirement":
             rep.reconnect(e.a, e.sources)
+        elif e.op == "add_conflict":
+            if (e.a, e.b) not in rep.incompatibilities and (e.b, e.a) not in rep.incompatibilities:
+                rep.incompatibilities.append((e.a, e.b))
         else:
             raise ValueError(e.op)
-    elif isinstance(rep, SupportGraph):
+    elif isinstance(rep, SupportGraph | MixedSupport):
+        g = rep.record if isinstance(rep, MixedSupport) else rep
+        g._bump()  # any edit invalidates the memoized evaluation
+        if e.op == "add_conflict":
+            if (e.a, e.b) not in g.conflicts and (e.b, e.a) not in g.conflicts:
+                g.conflicts.append((e.a, e.b))
+            return
+        if e.op == "lose_records":  # the dependency records are lost (kept aside for a later reconstruction)
+            g.__dict__.setdefault("_lost", []).extend(g.requirements)
+            g.requirements = []
+            return
+        if e.op == "restore_records":
+            lost = g.__dict__.pop("_lost", [])
+            have = {(r.sources, r.target, r.mode) for r in g.requirements}
+            g.requirements += [Requirement(r.sources, r.target, r.mode) for r in lost
+                               if (r.sources, r.target, r.mode) not in have]
+            return
         if e.op == "remove_token":
             rep.block_token(e.a)
         elif e.op == "restore_token":

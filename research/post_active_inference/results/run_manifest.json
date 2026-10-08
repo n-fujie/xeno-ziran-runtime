@@ -1,0 +1,193 @@
+{
+ "stage": "dev",
+ "config": {
+  "stage": "dev",
+  "description": "Stage 2: 10 seeds, four severities, every perturbation subtype (all eight families), ablations on 16 cells spanning the regimes seen in the smoke run.",
+  "seeds": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10
+  ],
+  "severities": [
+   0.25,
+   0.5,
+   0.75,
+   1.0
+  ],
+  "perturbations": [
+   "boundary.noise",
+   "boundary.leakage",
+   "boundary.delayed_update",
+   "boundary.reassignment",
+   "boundary.fragmentation",
+   "boundary.merge",
+   "boundary.disappearance",
+   "topology.edge_deletion",
+   "topology.edge_addition",
+   "topology.cluster_split",
+   "topology.cluster_merge",
+   "topology.hub_removal",
+   "topology.rerouting",
+   "topology.dynamic_mutation",
+   "sensor.dropout",
+   "sensor.reassignment",
+   "sensor.permutation",
+   "sensor.delay",
+   "sensor.noise",
+   "sensor.partial_observability",
+   "sensor.scale_mismatch",
+   "sensor.window_mismatch",
+   "variable.remap",
+   "variable.deletion",
+   "variable.duplication",
+   "variable.relabel",
+   "variable.outcome_merge",
+   "memory.deletion",
+   "memory.truncation",
+   "memory.access_block",
+   "memory.history_removal",
+   "memory.history_reactivation",
+   "memory.migration",
+   "coupling.weakening",
+   "coupling.strengthening",
+   "coupling.asymmetric",
+   "coupling.cross_cluster",
+   "coupling.reversal",
+   "coupling.temporary_decoupling",
+   "temporal.horizon_compression",
+   "temporal.horizon_expansion",
+   "temporal.asynchronous",
+   "temporal.interface_drift",
+   "temporal.world_drift",
+   "structural.cut_reconnect",
+   "structural.disconnection",
+   "structural.multi_cluster_reorganization"
+  ],
+  "controllers": [
+   "none",
+   "aif_fixed",
+   "aif_adaptive",
+   "ost"
+  ],
+  "ablations": [
+   "no_latent",
+   "no_model",
+   "no_prediction_error",
+   "no_free_energy",
+   "no_efe_epistemic",
+   "no_policy",
+   "no_agent",
+   "no_boundary"
+  ],
+  "ablation_cells": [
+   [
+    "topology.cluster_split",
+    0.5
+   ],
+   [
+    "topology.cluster_split",
+    1.0
+   ],
+   [
+    "sensor.noise",
+    0.5
+   ],
+   [
+    "sensor.noise",
+    1.0
+   ],
+   [
+    "boundary.reassignment",
+    0.5
+   ],
+   [
+    "boundary.reassignment",
+    1.0
+   ],
+   [
+    "temporal.interface_drift",
+    0.5
+   ],
+   [
+    "temporal.interface_drift",
+    1.0
+   ],
+   [
+    "memory.history_reactivation",
+    0.5
+   ],
+   [
+    "memory.history_reactivation",
+    1.0
+   ],
+   [
+    "coupling.temporary_decoupling",
+    0.5
+   ],
+   [
+    "coupling.temporary_decoupling",
+    1.0
+   ],
+   [
+    "structural.disconnection",
+    0.5
+   ],
+   [
+    "structural.disconnection",
+    1.0
+   ],
+   [
+    "variable.relabel",
+    0.5
+   ],
+   [
+    "variable.relabel",
+    1.0
+   ]
+  ],
+  "world": {},
+  "phases": {},
+  "procs": 4,
+  "trace": true,
+  "noise_offset": 1000
+ },
+ "config_hash": "daa355f8508d141e",
+ "runtime_provenance": {
+  "version": "0.2.0",
+  "git_head": "2634e697e9f743536a2efffb13a4a2938b94b0c4",
+  "dirty": true,
+  "code_sha1": "7c7b297411d5a834",
+  "time": "2026-10-07 14:24:39",
+  "python": "3.12.13",
+  "numpy": "2.5.3"
+ },
+ "benchmark_code_sha1": "c4d4be2801b71821",
+ "dependencies": {
+  "numpy": "2.5.3",
+  "scipy": "1.18.1",
+  "python": "3.12.13"
+ },
+ "aif_source": "ziran-xeno-simulator embodied/active_inference @ d4ad6a7544bbb515027e1a97fa914423f01bf8e6 (vendored)",
+ "hardware": {
+  "machine": "arm64",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "processor": "arm",
+  "cpu_count": 8,
+  "python": "3.12.13",
+  "ram_gb": 8.0,
+  "cpu_brand": "Apple M1",
+  "available_gb": 1.40374755859375,
+  "gpu": "not used (the runtime has no GPU code path)"
+ },
+ "timestamp": "2026-10-07T14:24:39+0900",
+ "analysed_cells": 1890,
+ "analysed_runs": 9120,
+ "results_dir": "results/dev"
+}

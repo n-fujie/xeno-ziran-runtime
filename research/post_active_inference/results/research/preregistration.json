@@ -1,0 +1,1324 @@
+{
+ "preregistration_time": "2026-10-07T14:33:50+0900",
+ "stage": "research (confirmatory)",
+ "git": {
+  "head": "2634e697e9f743536a2efffb13a4a2938b94b0c4",
+  "working_tree_dirty": true,
+  "note": "benchmark layer and part of backend/xzr are uncommitted; the exact code is pinned by the per-file SHA-256 below and the frozen source archives"
+ },
+ "config": {
+  "path": "configs/research.json",
+  "sha256_file": "fa4aa011cad65e36f1c248e6433b7ff1d3e08b05669dcf651660227cb58140d9",
+  "config_hash": "6ffcbaa0fa3a5dd2",
+  "seeds": [
+   11,
+   12,
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19,
+   20,
+   21,
+   22,
+   23,
+   24,
+   25,
+   26,
+   27,
+   28,
+   29,
+   30,
+   31,
+   32,
+   33,
+   34,
+   35,
+   36,
+   37,
+   38,
+   39,
+   40
+  ],
+  "severities": [
+   0.125,
+   0.25,
+   0.375,
+   0.5,
+   0.625,
+   0.75,
+   0.875,
+   1.0
+  ],
+  "extra_severities_from_dev": {
+   "boundary.disappearance": [
+    0.833,
+    0.917
+   ],
+   "boundary.fragmentation": [
+    0.833,
+    0.917
+   ],
+   "boundary.leakage": [
+    0.583,
+    0.667
+   ],
+   "boundary.merge": [
+    0.083,
+    0.167
+   ],
+   "boundary.reassignment": [
+    0.083,
+    0.167,
+    0.833,
+    0.917
+   ],
+   "coupling.reversal": [
+    0.833,
+    0.917
+   ],
+   "coupling.weakening": [
+    0.583,
+    0.667
+   ],
+   "sensor.delay": [
+    0.083,
+    0.167,
+    0.333,
+    0.417
+   ],
+   "sensor.dropout": [
+    0.833,
+    0.917
+   ],
+   "sensor.noise": [
+    0.333,
+    0.417
+   ],
+   "sensor.reassignment": [
+    0.333,
+    0.417,
+    0.833,
+    0.917
+   ],
+   "sensor.window_mismatch": [
+    0.833,
+    0.917
+   ],
+   "structural.cut_reconnect": [
+    0.833,
+    0.917
+   ],
+   "structural.disconnection": [
+    0.833,
+    0.917
+   ],
+   "temporal.asynchronous": [
+    0.583,
+    0.667,
+    0.833,
+    0.917
+   ],
+   "temporal.interface_drift": [
+    0.083,
+    0.167
+   ],
+   "topology.cluster_merge": [
+    0.583,
+    0.667
+   ],
+   "variable.deletion": [
+    0.833,
+    0.917
+   ],
+   "variable.relabel": [
+    0.833,
+    0.917
+   ],
+   "variable.remap": [
+    0.333,
+    0.417
+   ]
+  },
+  "n_refinement_points": 48,
+  "controllers": [
+   "none",
+   "aif_fixed",
+   "aif_adaptive",
+   "ost"
+  ],
+  "ablations": [
+   "no_latent",
+   "no_model",
+   "no_prediction_error",
+   "no_free_energy",
+   "no_efe_epistemic",
+   "no_policy",
+   "no_agent",
+   "no_boundary"
+  ],
+  "ablation_cells": [
+   [
+    "topology.cluster_split",
+    0.5
+   ],
+   [
+    "topology.cluster_split",
+    1.0
+   ],
+   [
+    "sensor.noise",
+    0.5
+   ],
+   [
+    "sensor.noise",
+    1.0
+   ],
+   [
+    "boundary.reassignment",
+    0.5
+   ],
+   [
+    "boundary.reassignment",
+    1.0
+   ],
+   [
+    "temporal.interface_drift",
+    0.5
+   ],
+   [
+    "temporal.interface_drift",
+    1.0
+   ],
+   [
+    "memory.history_reactivation",
+    0.5
+   ],
+   [
+    "memory.history_reactivation",
+    1.0
+   ],
+   [
+    "coupling.temporary_decoupling",
+    0.5
+   ],
+   [
+    "coupling.temporary_decoupling",
+    1.0
+   ],
+   [
+    "structural.disconnection",
+    0.5
+   ],
+   [
+    "structural.disconnection",
+    1.0
+   ],
+   [
+    "variable.relabel",
+    0.5
+   ],
+   [
+    "variable.relabel",
+    1.0
+   ]
+  ]
+ },
+ "plan": {
+  "cells": 12750,
+  "runs": 55680,
+  "procs": 4,
+  "estimated_wall_min": 539.6
+ },
+ "negative_controls": {
+  "included": true,
+  "per_seed": [
+   "control: severity 0, engine seed s; controllers none/aif_fixed/aif_adaptive/ost + all ablations",
+   "noise replicate: severity 0, engine seed s+1000; controllers none/aif_fixed/aif_adaptive"
+  ],
+  "check": "null classification with leave-one-seed-out tolerance (regime_classifier.null_scores)"
+ },
+ "classifier": {
+  "HI": 0.8,
+  "LO": 0.5,
+  "sensitivity": [
+   [
+    0.7,
+    0.4
+   ],
+   [
+    0.9,
+    0.6
+   ]
+  ],
+  "scores": [
+   "S_sensor",
+   "S_model",
+   "S_variable",
+   "S_boundary",
+   "S_policy"
+  ],
+  "raw_quantities": [
+   "acc",
+   "acc_adaptive",
+   "sensor",
+   "pc1",
+   "sep",
+   "bshare"
+  ],
+  "phase_probes": [
+   "p1",
+   "mid",
+   "p3"
+  ],
+  "min_reference": 0.2,
+  "rule": "C_AIF = min(scores); >= HI compatible; < LO post; else transition; primary label per cell (scores averaged over seeds); noise tolerance = max |control - noise| per raw quantity over all seeds",
+  "development_tolerance_for_sensitivity_analysis": {
+   "acc": 0.42,
+   "acc_adaptive": 0.32,
+   "sensor": 0.03,
+   "pc1": 0.148,
+   "sep": 0.37,
+   "bshare": 0.266
+  }
+ },
+ "nonredundancy": {
+  "margin": 0.05,
+  "elements": {
+   "agent": "no_agent",
+   "boundary": "no_boundary",
+   "model": "no_model",
+   "prediction_error": "no_prediction_error",
+   "free_energy": "no_free_energy",
+   "expected_free_energy": "no_efe_epistemic",
+   "latent_state": "no_latent",
+   "policy": "no_policy"
+  },
+  "capabilities": [
+   "prediction",
+   "intervention",
+   "recovery",
+   "reachable_state_estimation",
+   "perturbation_localisation",
+   "structural_transition_detection",
+   "history_reuse"
+  ],
+  "correction": "Holm"
+ },
+ "tracker": {
+  "Z_DETECT": 4.0,
+  "window": 20
+ },
+ "aif_frozen_parameters": {
+  "GAMMA": 4.0,
+  "DIRICHLET": 0.5,
+  "FORGET": 0.98,
+  "SURPRISE_WINDOW": 5,
+  "BASELINE_DECISIONS": 15,
+  "REBUILD_Z": 3.0,
+  "COOLDOWN": 10,
+  "N_LEVELS": 5,
+  "preferences": "C = -2|level - goal|, normalised",
+  "ost": {
+   "alpha": 0.25,
+   "eps": 0.05
+  }
+ },
+ "world": {
+  "n": 1500,
+  "gen_seed": 3,
+  "topology": "modular",
+  "gain": 3.235,
+  "target_module": 1,
+  "sensor_channels": 6,
+  "sensor_size": 8,
+  "dt": 10,
+  "damp": 2.5,
+  "excite": 0.4,
+  "shield": 0.2,
+  "pulse": 0.6
+ },
+ "phases": {
+  "warmup": 1000,
+  "calib_end": 3000,
+  "t_p": 3200,
+  "t_r": 3700,
+  "horizon": 4200
+ },
+ "actions": [
+  "noop",
+  "damp",
+  "excite",
+  "shield",
+  "pulse"
+ ],
+ "setpoints": [
+  1,
+  3
+ ],
+ "setpoint_period": 100,
+ "perturbations": {
+  "registered": [
+   "boundary.noise",
+   "boundary.leakage",
+   "boundary.delayed_update",
+   "boundary.reassignment",
+   "boundary.fragmentation",
+   "boundary.merge",
+   "boundary.disappearance",
+   "topology.edge_deletion",
+   "topology.edge_addition",
+   "topology.cluster_split",
+   "topology.cluster_merge",
+   "topology.hub_removal",
+   "topology.rerouting",
+   "topology.dynamic_mutation",
+   "sensor.dropout",
+   "sensor.reassignment",
+   "sensor.permutation",
+   "sensor.delay",
+   "sensor.noise",
+   "sensor.partial_observability",
+   "sensor.scale_mismatch",
+   "sensor.window_mismatch",
+   "variable.remap",
+   "variable.deletion",
+   "variable.duplication",
+   "variable.relabel",
+   "variable.outcome_merge",
+   "memory.deletion",
+   "memory.truncation",
+   "memory.access_block",
+   "memory.history_removal",
+   "memory.history_reactivation",
+   "memory.migration",
+   "coupling.weakening",
+   "coupling.strengthening",
+   "coupling.asymmetric",
+   "coupling.cross_cluster",
+   "coupling.reversal",
+   "coupling.temporary_decoupling",
+   "temporal.horizon_compression",
+   "temporal.horizon_expansion",
+   "temporal.asynchronous",
+   "temporal.interface_drift",
+   "temporal.world_drift",
+   "structural.cut_reconnect",
+   "structural.disconnection",
+   "structural.multi_cluster_reorganization"
+  ],
+  "aliases": {
+   "variable.latent_split": "topology.cluster_split",
+   "variable.latent_merge": "topology.cluster_merge",
+   "variable.feature_remap": "sensor.scale_mismatch",
+   "temporal.delayed_feedback": "sensor.delay",
+   "temporal.adaptation_delay": "boundary.delayed_update",
+   "structural.reconfiguration": "topology.rerouting",
+   "structural.expansion": "topology.cluster_merge",
+   "structural.configuration_crossing_recurrence": "memory.migration",
+   "memory.memory_migration": "memory.migration"
+  },
+  "not_implemented": {
+   "structural.compression": "fixed-N engine: no operation removes configurations while keeping the run comparable",
+   "memory.history_fork": "Engine.fork is an exact continuation (bit-identical, tested), so it is not a perturbation",
+   "sensor.temporal_window_mismatch": "covered by sensor.window_mismatch"
+  }
+ },
+ "development_reference_labels": {
+  "boundary.delayed_update@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9980098995103834
+  },
+  "boundary.delayed_update@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9852338308457711
+  },
+  "boundary.delayed_update@0.75": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9778706467661692
+  },
+  "boundary.delayed_update@1": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9585671641791045
+  },
+  "boundary.disappearance@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 1.0
+  },
+  "boundary.disappearance@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9706268656716418
+  },
+  "boundary.disappearance@0.75": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9689154228855722
+  },
+  "boundary.disappearance@1": {
+   "label": "TRANSITION",
+   "C_AIF": 0.7747728944645325
+  },
+  "boundary.fragmentation@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9965510227559242
+  },
+  "boundary.fragmentation@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9439806600798823
+  },
+  "boundary.fragmentation@0.75": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.8309405586422545
+  },
+  "boundary.fragmentation@1": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.8032060237127098
+  },
+  "boundary.leakage@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9669517331958734
+  },
+  "boundary.leakage@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9162994623435541
+  },
+  "boundary.leakage@0.75": {
+   "label": "TRANSITION",
+   "C_AIF": 0.7822449266892677
+  },
+  "boundary.leakage@1": {
+   "label": "TRANSITION",
+   "C_AIF": 0.6767077652292931
+  },
+  "boundary.merge@0.25": {
+   "label": "TRANSITION",
+   "C_AIF": 0.754666249462083
+  },
+  "boundary.merge@0.5": {
+   "label": "TRANSITION",
+   "C_AIF": 0.6457779805147418
+  },
+  "boundary.merge@0.75": {
+   "label": "TRANSITION",
+   "C_AIF": 0.6720968158405329
+  },
+  "boundary.merge@1": {
+   "label": "TRANSITION",
+   "C_AIF": 0.6469882620436158
+  },
+  "boundary.noise@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 1.0
+  },
+  "boundary.noise@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9965061170500326
+  },
+  "boundary.noise@0.75": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9776119402985074
+  },
+  "boundary.noise@1": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9372763390059212
+  },
+  "boundary.reassignment@0.25": {
+   "label": "TRANSITION",
+   "C_AIF": 0.740204900248975
+  },
+  "boundary.reassignment@0.5": {
+   "label": "TRANSITION",
+   "C_AIF": 0.7672690497900229
+  },
+  "boundary.reassignment@0.75": {
+   "label": "TRANSITION",
+   "C_AIF": 0.7692963267682345
+  },
+  "boundary.reassignment@1": {
+   "label": "POST_ACTIVE_INFERENCE",
+   "C_AIF": 0.4485148397452453
+  },
+  "coupling.asymmetric@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9949374320287794
+  },
+  "coupling.asymmetric@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9925373134328359
+  },
+  "coupling.asymmetric@0.75": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9895522388059701
+  },
+  "coupling.asymmetric@1": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9776119402985074
+  },
+  "coupling.cross_cluster@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9909288228212683
+  },
+  "coupling.cross_cluster@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9899380166898581
+  },
+  "coupling.cross_cluster@0.75": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9848741771438867
+  },
+  "coupling.cross_cluster@1": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9938848171692565
+  },
+  "coupling.reversal@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9705696867773806
+  },
+  "coupling.reversal@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.8961331802525832
+  },
+  "coupling.reversal@0.75": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.8295524554389742
+  },
+  "coupling.reversal@1": {
+   "label": "TRANSITION",
+   "C_AIF": 0.761772182678254
+  },
+  "coupling.strengthening@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9897192238217236
+  },
+  "coupling.strengthening@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9815331133192092
+  },
+  "coupling.strengthening@0.75": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9710066936744901
+  },
+  "coupling.strengthening@1": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9728693877611383
+  },
+  "coupling.temporary_decoupling@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9686567164179104
+  },
+  "coupling.temporary_decoupling@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9955223880597014
+  },
+  "coupling.temporary_decoupling@0.75": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9443575392269421
+  },
+  "coupling.temporary_decoupling@1": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.8536826282994561
+  },
+  "coupling.weakening@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9656716417910447
+  },
+  "coupling.weakening@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9375547614042464
+  },
+  "coupling.weakening@0.75": {
+   "label": "TRANSITION",
+   "C_AIF": 0.7676446771299718
+  },
+  "coupling.weakening@1": {
+   "label": "TRANSITION",
+   "C_AIF": 0.6557574922324105
+  },
+  "memory.access_block@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9986629054864226
+  },
+  "memory.access_block@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9990736205206344
+  },
+  "memory.access_block@0.75": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9994644369053678
+  },
+  "memory.access_block@1": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9916098451203323
+  },
+  "memory.deletion@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9895522388059701
+  },
+  "memory.deletion@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9928136052684537
+  },
+  "memory.deletion@0.75": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9980432482419564
+  },
+  "memory.deletion@1": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9858498850778773
+  },
+  "memory.history_reactivation@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 1.0
+  },
+  "memory.history_reactivation@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9987637212348031
+  },
+  "memory.history_reactivation@0.75": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 1.0
+  },
+  "memory.history_reactivation@1": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 1.0
+  },
+  "memory.history_removal@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.997482728389034
+  },
+  "memory.history_removal@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 1.0
+  },
+  "memory.history_removal@0.75": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 1.0
+  },
+  "memory.history_removal@1": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 1.0
+  },
+  "memory.migration@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 1.0
+  },
+  "memory.migration@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9998881746771572
+  },
+  "memory.migration@0.75": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 1.0
+  },
+  "memory.migration@1": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9776119402985074
+  },
+  "memory.truncation@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 1.0
+  },
+  "memory.truncation@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9776119402985074
+  },
+  "memory.truncation@0.75": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9955223880597014
+  },
+  "memory.truncation@1": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9858498850778773
+  },
+  "sensor.delay@0.25": {
+   "label": "TRANSITION",
+   "C_AIF": 0.5147684253306042
+  },
+  "sensor.delay@0.5": {
+   "label": "POST_ACTIVE_INFERENCE",
+   "C_AIF": 0.1963425167126152
+  },
+  "sensor.delay@0.75": {
+   "label": "POST_ACTIVE_INFERENCE",
+   "C_AIF": 0.07439448465408847
+  },
+  "sensor.delay@1": {
+   "label": "POST_ACTIVE_INFERENCE",
+   "C_AIF": 0.22534554688904623
+  },
+  "sensor.dropout@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9353799751243781
+  },
+  "sensor.dropout@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9295809802339653
+  },
+  "sensor.dropout@0.75": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.8922678913126674
+  },
+  "sensor.dropout@1": {
+   "label": "POST_ACTIVE_INFERENCE",
+   "C_AIF": 0.030385864615773566
+  },
+  "sensor.noise@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9282156413879884
+  },
+  "sensor.noise@0.5": {
+   "label": "TRANSITION",
+   "C_AIF": 0.7389903130125202
+  },
+  "sensor.noise@0.75": {
+   "label": "TRANSITION",
+   "C_AIF": 0.6174824797804694
+  },
+  "sensor.noise@1": {
+   "label": "TRANSITION",
+   "C_AIF": 0.512310667871523
+  },
+  "sensor.partial_observability@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 1.0
+  },
+  "sensor.partial_observability@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9728557213930348
+  },
+  "sensor.partial_observability@0.75": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.949180539609644
+  },
+  "sensor.partial_observability@1": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9192456820796719
+  },
+  "sensor.permutation@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 1.0
+  },
+  "sensor.permutation@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 1.0
+  },
+  "sensor.permutation@0.75": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 1.0
+  },
+  "sensor.permutation@1": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 1.0
+  },
+  "sensor.reassignment@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9690200681759353
+  },
+  "sensor.reassignment@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.8004720151598702
+  },
+  "sensor.reassignment@0.75": {
+   "label": "TRANSITION",
+   "C_AIF": 0.6240953267847649
+  },
+  "sensor.reassignment@1": {
+   "label": "POST_ACTIVE_INFERENCE",
+   "C_AIF": 0.22739005754949612
+  },
+  "sensor.scale_mismatch@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 1.0
+  },
+  "sensor.scale_mismatch@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9995933408154599
+  },
+  "sensor.scale_mismatch@0.75": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9846153846153847
+  },
+  "sensor.scale_mismatch@1": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9667615767317261
+  },
+  "sensor.window_mismatch@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9732935323383085
+  },
+  "sensor.window_mismatch@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9716417910447761
+  },
+  "sensor.window_mismatch@0.75": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.864155046834562
+  },
+  "sensor.window_mismatch@1": {
+   "label": "TRANSITION",
+   "C_AIF": 0.6039025833963793
+  },
+  "structural.cut_reconnect@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9746268656716417
+  },
+  "structural.cut_reconnect@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9746268656716417
+  },
+  "structural.cut_reconnect@0.75": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.887832878050068
+  },
+  "structural.cut_reconnect@1": {
+   "label": "TRANSITION",
+   "C_AIF": 0.7528575112037075
+  },
+  "structural.disconnection@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9835820895522389
+  },
+  "structural.disconnection@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9563383084577113
+  },
+  "structural.disconnection@0.75": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9153285576451436
+  },
+  "structural.disconnection@1": {
+   "label": "TRANSITION",
+   "C_AIF": 0.781021383701443
+  },
+  "structural.multi_cluster_reorganization@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9859910629707933
+  },
+  "structural.multi_cluster_reorganization@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9769722320382368
+  },
+  "structural.multi_cluster_reorganization@0.75": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9776119402985074
+  },
+  "structural.multi_cluster_reorganization@1": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9496119402985075
+  },
+  "temporal.asynchronous@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9904113325900603
+  },
+  "temporal.asynchronous@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9290192488173463
+  },
+  "temporal.asynchronous@0.75": {
+   "label": "TRANSITION",
+   "C_AIF": 0.675986428047727
+  },
+  "temporal.asynchronous@1": {
+   "label": "POST_ACTIVE_INFERENCE",
+   "C_AIF": 0.0303858646157737
+  },
+  "temporal.horizon_compression@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9958540630182421
+  },
+  "temporal.horizon_compression@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 1.0
+  },
+  "temporal.horizon_compression@0.75": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 1.0
+  },
+  "temporal.horizon_compression@1": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 1.0
+  },
+  "temporal.horizon_expansion@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9846356453028973
+  },
+  "temporal.horizon_expansion@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9626865671641791
+  },
+  "temporal.horizon_expansion@0.75": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9626865671641791
+  },
+  "temporal.horizon_expansion@1": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9802458296751537
+  },
+  "temporal.interface_drift@0.25": {
+   "label": "POST_ACTIVE_INFERENCE",
+   "C_AIF": 0.31649852898465125
+  },
+  "temporal.interface_drift@0.5": {
+   "label": "POST_ACTIVE_INFERENCE",
+   "C_AIF": 0.0
+  },
+  "temporal.interface_drift@0.75": {
+   "label": "POST_ACTIVE_INFERENCE",
+   "C_AIF": 0.32926000724909554
+  },
+  "temporal.interface_drift@1": {
+   "label": "TRANSITION",
+   "C_AIF": 0.622897406383056
+  },
+  "temporal.world_drift@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9953919981902468
+  },
+  "temporal.world_drift@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9925373134328359
+  },
+  "temporal.world_drift@0.75": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9953293067187768
+  },
+  "temporal.world_drift@1": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9999191968646652
+  },
+  "topology.cluster_merge@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9807451767263279
+  },
+  "topology.cluster_merge@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.8890337753626643
+  },
+  "topology.cluster_merge@0.75": {
+   "label": "TRANSITION",
+   "C_AIF": 0.6692927213158522
+  },
+  "topology.cluster_merge@1": {
+   "label": "TRANSITION",
+   "C_AIF": 0.6483284239415623
+  },
+  "topology.cluster_split@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9992889045662501
+  },
+  "topology.cluster_split@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9925881856570282
+  },
+  "topology.cluster_split@0.75": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9746268656716417
+  },
+  "topology.cluster_split@1": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9608069160984349
+  },
+  "topology.dynamic_mutation@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9682786069651741
+  },
+  "topology.dynamic_mutation@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9686567164179104
+  },
+  "topology.dynamic_mutation@0.75": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9527336508142328
+  },
+  "topology.dynamic_mutation@1": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9216306107981275
+  },
+  "topology.edge_addition@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9963947331470608
+  },
+  "topology.edge_addition@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.984504490599142
+  },
+  "topology.edge_addition@0.75": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9887077684371588
+  },
+  "topology.edge_addition@1": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9853145985613047
+  },
+  "topology.edge_deletion@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9693333333333334
+  },
+  "topology.edge_deletion@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9393448143895906
+  },
+  "topology.edge_deletion@0.75": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9549965664634573
+  },
+  "topology.edge_deletion@1": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.8930277042879251
+  },
+  "topology.hub_removal@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9746268656716417
+  },
+  "topology.hub_removal@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9746268656716417
+  },
+  "topology.hub_removal@0.75": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9776119402985074
+  },
+  "topology.hub_removal@1": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.993103448275862
+  },
+  "topology.rerouting@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9897567258577263
+  },
+  "topology.rerouting@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9612338308457711
+  },
+  "topology.rerouting@0.75": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9173969806141706
+  },
+  "topology.rerouting@1": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9147467624186646
+  },
+  "variable.deletion@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9971297359357061
+  },
+  "variable.deletion@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9689054726368159
+  },
+  "variable.deletion@0.75": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9626865671641791
+  },
+  "variable.deletion@1": {
+   "label": "POST_ACTIVE_INFERENCE",
+   "C_AIF": 0.030385864615773566
+  },
+  "variable.duplication@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9933333333333334
+  },
+  "variable.duplication@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9986666666666666
+  },
+  "variable.duplication@0.75": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9832820512820513
+  },
+  "variable.duplication@1": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9831794871794873
+  },
+  "variable.outcome_merge@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 1.0
+  },
+  "variable.outcome_merge@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9513813540990699
+  },
+  "variable.outcome_merge@0.75": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9070136004758813
+  },
+  "variable.outcome_merge@1": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.8537970449696968
+  },
+  "variable.relabel@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 1.0
+  },
+  "variable.relabel@0.5": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.8734221545580814
+  },
+  "variable.relabel@0.75": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.8259730568632344
+  },
+  "variable.relabel@1": {
+   "label": "TRANSITION",
+   "C_AIF": 0.694867691956648
+  },
+  "variable.remap@0.25": {
+   "label": "ACTIVE_INFERENCE_COMPATIBLE",
+   "C_AIF": 0.9626732557946056
+  },
+  "variable.remap@0.5": {
+   "label": "TRANSITION",
+   "C_AIF": 0.751955552862108
+  },
+  "variable.remap@0.75": {
+   "label": "TRANSITION",
+   "C_AIF": 0.7704307444716281
+  },
+  "variable.remap@1": {
+   "label": "TRANSITION",
+   "C_AIF": 0.7704307444716281
+  }
+ },
+ "hardware": {
+  "machine": "arm64",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "processor": "arm",
+  "cpu_count": 8,
+  "python": "3.12.13",
+  "ram_gb": 8.0,
+  "cpu_brand": "Apple M1",
+  "available_gb": 1.368011474609375,
+  "gpu": "not used (the runtime has no GPU code path)"
+ },
+ "dependencies": {
+  "python": "3.12.13",
+  "numpy": "2.5.3",
+  "scipy": "1.18.1"
+ },
+ "runtime_provenance": {
+  "version": "0.2.0",
+  "git_head": "2634e697e9f743536a2efffb13a4a2938b94b0c4",
+  "dirty": true,
+  "code_sha1": "7c7b297411d5a834",
+  "time": "2026-10-07 14:33:50",
+  "python": "3.12.13",
+  "numpy": "2.5.3"
+ },
+ "aif_source": "ziran-xeno-simulator embodied/active_inference @ d4ad6a7544bbb515027e1a97fa914423f01bf8e6 (vendored, test-checked)",
+ "file_sha256": {
+  "benchmark": {
+   "metrics.py": "34cf2dfec9d8f6cec843c5dc93e3ee4a7229ce7751b2de45cd40f4d623776444",
+   "nonredundancy.py": "73e5304d8992abf8ee28f6eb42590ab1295486b9dd6f33311a6de5a92c7af63e",
+   "pai/__init__.py": "e88f2a48fd7e13fc864a8b5920906889078836ff02dd641dcdad18b242c1ab02",
+   "pai/aif_vendor.py": "f94cabc400258248600d52ae7229d7d18f89f049423ce28d75202b0f75a0dc77",
+   "pai/analysis.py": "b8c49df26e41161d0475bd4eaf56ca252e789381c2ece94a3a690829913d06e6",
+   "pai/controllers.py": "e4ae23e210fae638a037ecbddf45a3ae23b86aafb4ee7456fc150f50ac0f6d9c",
+   "pai/episode.py": "bc9712093cdbaa1b3a9c7a2814526533bf76e5367a7d16900a3169c7f9e820e2",
+   "pai/perturbations.py": "c2cca4f778ee233fc85359cae9c1058f1ce7e46b5faeeab23565b3d3617fbd74",
+   "pai/preregister.py": "296c1af5dba24114de69734d50157428174d837d25b6bcaee145e16868d0535d",
+   "pai/report_data.py": "4307c1d3f1d0bd8085c756d9240a286c2585809438477db642c5e419938dcc7d",
+   "pai/stats.py": "7871812acfbe90771a387dc64d0ea8c0438f89ce36de814dfeead4ee7d8c06c4",
+   "pai/tracker.py": "9b248eba260434d943e28d317d2a6066c737a19fc681b27d97074e3eed2623f0",
+   "pai/world.py": "e6ac80196c5093101a69f81e7a6f54140d97edf4ed73e2940f2e176c025fcff5",
+   "regime_classifier.py": "af7c974bac6aaf1cc438058418eb090e3e39a970294d3c3318d1bc48553e55e2",
+   "run_benchmark.py": "3ad1b9d32a7dc9d979c1bfda34c9b0f8eddc13f862a21ab011c8626b4b2de316",
+   "tests/test_benchmark.py": "9fb496bc9fc6ccf3ecd8a7ee40778756aafa7cc6dde111675166b5b3aac2ea19",
+   "configs/research.json": "fa4aa011cad65e36f1c248e6433b7ff1d3e08b05669dcf651660227cb58140d9",
+   "configs/dev.json": "535f97f0ac8cecfdc5aceecf8e5e0538d8b8fbecc0fc7e9e778f08886b6890e8",
+   "configs/dev_refined.json": "cfe7519746acab6a985ff2bdddd35e40339d17d288051bd1a212833803103762",
+   "ruff.toml": "8415e30ad8ce1857e4e8667933896e3e2b53562e8ee4efade762b6fb6f7061e9",
+   "PREREGISTRATION.md": "055b853a0dc1a56a7a05563a4d98ec16bd3bd573c6af27befe783f738d7663b7"
+  },
+  "runtime": {
+   "xzr/__init__.py": "487333a6c0def2c43a3285c3b8a0f7b232c8f57707c5cfa50bd8699fe396404b",
+   "xzr/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+   "xzr/_compat/__init__.py": "45443c615fbf520930e8108b747986a06e67ee23400236227d1742787832d43f",
+   "xzr/_compat/csgraph.py": "8e7a840cc590b7b99d9eac5d57fb75714892ce70f00125643fdd2d8f0da54477",
+   "xzr/_compat/hierarchy_cache.py": "3889413d334e914dcf3393baf9f16e1e1a2218ed91e0c466be21d440abab42d7",
+   "xzr/_compat/linalg.py": "3b716034d5345fa9408cecab2f1c19669ae091bd2039b1f7d644cfd75ec78b8b",
+   "xzr/_compat/pmodel.py": "7a1f7a20b4496fea52598b6b0b94d8f0056a5f934a8d43d98e1789044802116b",
+   "xzr/_compat/sparse.py": "abdf0a04565a26205a61f34ab98d10310dc452bcb33b19210c9c3fbed101f522",
+   "xzr/_compat/spatial.py": "9d94e4c053ae4f42f04ee736784832ff204ac571169bb23a3f0ae06c5c88da0a",
+   "xzr/_compat/stats.py": "41a5eb8092491f45f480f041ae1e986a5874a473fa2e5cecc0ca637df03326b2",
+   "xzr/cli.py": "99f61b145db1cfae02b2b367ddab061f7637c203c3c19acf95a4f8c37022593e",
+   "xzr/compare/__init__.py": "babe15193097f5887612c7d8585757c2a26e327fcc83ddf09824bf128d16db61",
+   "xzr/compare/compare.py": "b95a133bb933c3656af178645b9cb86ffddfff153651dc2eb308638c87ffd101",
+   "xzr/compare/trajectory.py": "bec2461a426577a721f26a5df0e41788f67f1a7f30c00d3cda10d2f5fc08597d",
+   "xzr/experiments/__init__.py": "06054208de6088189c60e9d46dc0c39d6fdebff6424292e213afcda900e4a688",
+   "xzr/experiments/catalog.py": "b148b05ebbdb83f2a229a4fc8dfe95d5a42483658cb7f1f2a91db2c9b33627a5",
+   "xzr/experiments/escalation/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "xzr/experiments/escalation/adaptivity.py": "5888286a12961954bf789d7f5fed6c3208c92e9fa84216c13a7d2ffced580811",
+   "xzr/experiments/escalation/analysis.py": "014c273fba5225cb14721228c1ee3716e1198eaaf8db83058c51c08647c9508f",
+   "xzr/experiments/escalation/answers.py": "545c6c4283ccdc925c4e85f8e4247c5b943ee754ee54d79943f30f60446339da",
+   "xzr/experiments/escalation/clusters.py": "8b90b2da14db16a8dcd3bedf033a392b90c88301335882c96702d4a8ce0e1435",
+   "xzr/experiments/escalation/compression.py": "a2ce1f14c3b543cb0e8bdbb36fd80488c83c215d6b7ca07e35b151854df1ff1a",
+   "xzr/experiments/escalation/disconnection.py": "69584ffa1ca5788851eb28a4773db723c587763ac2117b0b3c1277ebe2e447a0",
+   "xzr/experiments/escalation/harness.py": "acf6b68075f8a4b33c57eaf749c167e7f99f53a86ef4736643ceb2ba9cb0c582",
+   "xzr/experiments/escalation/matrix.py": "c7fb166ff8f3d7e5265495dcd5f2b7bc4567464456fd8a4ef35467ac49b896f6",
+   "xzr/experiments/escalation/reanalyse.py": "22222a2f29149d82248d8d8020b991e572d076f9f12a58467dfe0cdd989a776c",
+   "xzr/experiments/escalation/runner.py": "49539c701f30da5d0659858bdd11cc1c6be2f43139529560aabc3f9ec49e1092",
+   "xzr/experiments/escalation/stats.py": "1988d530c59958848d9e9113f8789b8b2f3e4e3c4fa49e33f7a02b2bb640ec80",
+   "xzr/experiments/escalation/summary.py": "9560b4472250fae4b153ee4abb2805bd0e55861e5f54244f062647e28e1251f7",
+   "xzr/experiments/escalation/topology_triggers.py": "dcdcd4a645a03d73cf9b395ca9fd9eadc335574f302339e06cf1a1324e3e39df",
+   "xzr/experiments/history.py": "55e28b21c167255a1b022bd8e5572ead41dc550230abfb09848fd06eb8ce534d",
+   "xzr/experiments/reason.py": "f37c1995e4bdebb3af0cbca81d9cb678b53634d1b018e430360e46e8d24fd44f",
+   "xzr/experiments/reduction.py": "8b91109e3a34c1f9adee34f06710a0e0049c2bc0cfe33350bfa29ef11d91a201",
+   "xzr/experiments/reduction_rules.py": "e2fe26a4a29ac23f2ddefbbf916b39273b1c5da9b07ff3e499a7a738d7226b3a",
+   "xzr/experiments/runs.py": "6227e03ae1cde43814eb9499bab18093b2a806acd2a9fbd5fe4b14e3e35f710f",
+   "xzr/interpret/__init__.py": "babe15193097f5887612c7d8585757c2a26e327fcc83ddf09824bf128d16db61",
+   "xzr/interpret/labels.py": "deb4292853f8617008384f3f17ba6a53a7c927ec1a5dd228074d927d9e2af930",
+   "xzr/lod/__init__.py": "babe15193097f5887612c7d8585757c2a26e327fcc83ddf09824bf128d16db61",
+   "xzr/lod/hierarchy.py": "3cf27b4df433d284fd142abac9423f60ddf0bb4f08b0ab17325164a52d726117",
+   "xzr/lod/layouts.py": "8bed9babdbf2e9d02dc7a3c5114ea314abd793df057fd6c928453269a12d41b8",
+   "xzr/lod/tiles.py": "a1bc1dfa52d5f63032cdf0e9bd71f342c39aa0e904af2b3ea3a9551df939c188",
+   "xzr/native/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "xzr/native/bridge.py": "757a7ed614dfb2fbbeaacebed895115cc7efa5243c3ac05e00ea4d26a329d42a",
+   "xzr/native/conformance.py": "94493ab388cd875b7b50650730d6e850f0e2c607d4a289f2728f50c53187ad22",
+   "xzr/practice/__init__.py": "babe15193097f5887612c7d8585757c2a26e327fcc83ddf09824bf128d16db61",
+   "xzr/practice/compile.py": "ed725feeac36cca92a4f402d5f3f73771bbca9ad327f8aba27b559155e3a0d79",
+   "xzr/practice/graph.py": "5a3ed1f2bae1aed9c0a876374c26c691a734e0cc238c959cc8fab0e4aafbe093",
+   "xzr/practice/parser.py": "8bd3efb0a406cc46fb3db77718283271ab655aee3fee43b661d7c77a8cfc778b",
+   "xzr/practice/support.py": "7bd183611a376c588c64e06fbae105915c6a85de3e7096a404bf1d452486d5d9",
+   "xzr/presets/__init__.py": "9bff7be35d62c6dd1de62a30f0b2032754d8036b16408a5feb1a1124b981bd44",
+   "xzr/reasonlab/__init__.py": "408cc5ac617e627ec8a00defe965d66a535b293541062ac85f6cf78d6863edd0",
+   "xzr/reasonlab/conditions.py": "28980ecc1e4dd519168cd6c30bf5aa2f0d9e18cd7ae073a3de4b490bef4c57d5",
+   "xzr/reasonlab/loop.py": "46b5483ce1c495efcf53f7f2c4d1ebcba41c366d729a7d84fc9bd78fe1b7e352",
+   "xzr/reasonlab/mixed.py": "7691b2f5ca1da29b299655d2de9be7aa87cad96df7c3065fcb9151a811bd0ed2",
+   "xzr/reasonlab/representations.py": "be2adf040b04c585fa5d0d7c02cc0821dcc746ee32dad8829f5b61da0ee8b2f8",
+   "xzr/reasonlab/structures.py": "76035679a98d2f3806b4db913aeffa75346fcab5410d7d216983bb9f31584010",
+   "xzr/reasonlab/triggers.py": "218aee11dc4dfc8b2c2a02477677e7eb8942aa908079f269c450794e7f593f06",
+   "xzr/results.py": "f98b6521775047b7fc82c83bd14a1c677f667cbf623bb30cd1119929f7271037",
+   "xzr/runtime/__init__.py": "babe15193097f5887612c7d8585757c2a26e327fcc83ddf09824bf128d16db61",
+   "xzr/runtime/delta.py": "c5e34f8b5be48fc54204184516ecea8fbe1f62efe5ca4e0cb7ad0592a357645e",
+   "xzr/runtime/engine.py": "881da8bbeecdfa4c8900f412de8d2093a6586e4ddf9d9cdb823209b50a9062f2",
+   "xzr/runtime/flags.py": "19e8701afd7237c8ea2ce37b34407d5ad4253c3d6d2857c9798fe664376b250b",
+   "xzr/runtime/generator.py": "9882b8513309e545e2fddb7afe57f7e73b3462966d2a430cb2f62b6019656e8f",
+   "xzr/runtime/intervention.py": "3e95456de413b87bf6d9d73e97ef392c244d6ba5e756dce05f1ff117a97f8496",
+   "xzr/runtime/ops.py": "d42f17b887db910fe3139f282345d2c5e630f936ddf2c650194654c59f0a0249",
+   "xzr/runtime/relational.py": "1819ccc376ced7b2270c197f3d6550a673f8010d21c165e502b9a44918b01d0f",
+   "xzr/runtime/state.py": "aefba539a92b903234098abaa625285e156267b0e87674ecb41bc4c592a7491c",
+   "xzr/scenario/__init__.py": "babe15193097f5887612c7d8585757c2a26e327fcc83ddf09824bf128d16db61",
+   "xzr/scenario/build.py": "9837936d63b83ea2c6edffd8be36af7ebbc0cf547f81e53de2a273cbf3c4472b",
+   "xzr/scenario/io.py": "3324b36f183b75b9cde61458b382847da77821daf05e22a4d03e58fd6dc80041",
+   "xzr/scenario/model.py": "51098cae7a33378c24757aeb963932dd431a661715c37a7279926b824ec131d8",
+   "xzr/scenario/topologies.py": "2995af668ea76280b601b714a39054a391cd4215499d16fbb028de645d33d21f",
+   "xzr/service/__init__.py": "babe15193097f5887612c7d8585757c2a26e327fcc83ddf09824bf128d16db61",
+   "xzr/service/app.py": "bfc66865ab6b9244097fd3aa52559fc4ca8b29e8379fc231e82d1b4f369a5981",
+   "xzr/service/limits.py": "f58ff01e0a51247a71234080ac641ab674793f624794de27781e55bd69bd3743",
+   "xzr/service/operations.py": "9d4d78dc4ed58caa3b13539eaf1cdd9cb8ec9744498668ec1267de810a68cb7a",
+   "xzr/service/protocol.py": "c7e6b887b63b8b1a422aef09b2b91e236b76a54ee03d7f3f4ba569c68c568aa9",
+   "xzr/service/security.py": "80a4e4ac99f79ebb357d7710ea655fb6cf5cfa8c5aae065799445797dbef53dd",
+   "xzr/service/session.py": "e5c6f9e8c9963c878eb06657398b4354be84635f00b4bf1025de7a8058d7ea8a",
+   "xzr/shapes/__init__.py": "babe15193097f5887612c7d8585757c2a26e327fcc83ddf09824bf128d16db61",
+   "xzr/shapes/detector.py": "4d867ac65532b1cf996d6e80adfabaa896e1b11fb698fecd0cfa00eee0516631",
+   "xzr/shapes/metrics.py": "71fc45c1b3b99b9f2a0acfea14c0fe4b5bf8530f0e14e25a8fe3574e71676fe4",
+   "xzr/shapes/multiscale.py": "b56c6cfa7bb69b52ac79fadc19e4136ab38233d5fdcec0943458a0349bba20c2",
+   "xzr/shapes/waves.py": "a3e634c2fdb0ad515da8fe44becf04280466820818ed98ce18a45dd9e82d53e5"
+  }
+ },
+ "frozen_archives": {
+  "frozen_source_benchmark.tar.gz": "76e77ea172c1f800208d6a88ab1531fd980ceaaed100fb86c08fcf2de16faf37",
+  "frozen_source_runtime_xzr.tar.gz": "c80ededf767fd08e99d26473e12469d02bbae2ffd9cf13faedc353eeef5b2ef7"
+ }
+}

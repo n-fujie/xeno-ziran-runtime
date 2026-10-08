@@ -39,6 +39,10 @@ is not called necessary unless removing it demonstrably changes behaviour.
 | NON-REDUNDANT | removal demonstrably changes behaviour in ≥ 1 regime **and** no tested replacement/compensation is equivalent everywhere |
 | UNRESOLVED | no demonstrated downstream effect (absence of detected effect is not proof of redundancy), or trigger (almost) never fires |
 
+All statuses are statements about the represented runtime state under the stated comparisons. "Bit-identical" means
+no difference was detected within the represented and measured state under the stated comparison procedure; it is not
+a claim that the operation is absent or has no possible effect outside what is represented and measured.
+
 "Demonstrably changes behaviour" = stage-1 exceedance or a stage-2 downstream systematic effect. Regime dependence
 is reported per row and never averaged away.
 
@@ -95,7 +99,7 @@ Result file: `backend/experiments/results/reduction.json` · stage 1: 4 regimes 
 
 ### Full vs MINIMAL
 
-MINIMAL = `{'threshold': 'on', 'fused_transition': True, 'retention': 'on', 'memory': 'on', 'transform': 'off', 'wave_state': 'off', 'return_events': 'off', 'adapt_source': 'dominant', 'reconfigure': 'mutation', 'cut': 'on', 'disconnect': 'on', 'connect': 'on', 'difference': 'node', 'transition': 'on'}`
+MINIMAL = `{'threshold': 'on', 'fused_transition': True, 'retention': 'on', 'memory': 'on', 'transform': 'off', 'wave_state': 'off', 'return_events': 'off', 'adapt_source': 'dominant', 'reconfigure': 'mutation', 'cut': 'on', 'disconnect': 'on', 'connect': 'on', 'difference': 'node', 'transition': 'on', 'topology_trigger': 'separate'}`
 
 Verdict: **EQUIVALENT in every regime**
 

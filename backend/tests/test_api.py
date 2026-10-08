@@ -137,16 +137,18 @@ def test_experiment_endpoints(client):
     names = {e["name"] for e in client.get("/api/experiments").json()}
     prims = client.get("/api/experiments/primitives").json()
     assert {"name", "status", "definition", "implementation", "tests", "evidence"} <= set(prims[0])
-    # the name guard itself (HTTP paths with "/" never reach this handler; the SPA fallback answers instead)
+    # the name guard itself (HTTP paths with "/" never reach this handler; unknown /api paths are a 404)
     from fastapi import HTTPException
 
     from xzr.service.app import experiment
-    for bad in ("../reduction", "..", "a/b", "reduction.json", "REDUCTION", ""):
+    for bad in ("../reduction", "..", "a/b", "reduction.json", "REDUCTION", "", "resolution-..", "resolution-a/b",
+                "resolution-../reduction", "resolution-nope"):
         with pytest.raises(HTTPException):
             experiment(bad)
     r = client.get("/api/experiments/..%2F..%2Fscenarios%2Fdemo-3k")
-    assert "application/json" not in r.headers.get("content-type", "")
+    assert r.status_code == 404 and "generator" not in r.text and "Demo field" not in r.text  # the file is never served
     assert client.get("/api/experiments/nope_not_there").status_code == 404
+    assert any(n.startswith("resolution-") for n in names)  # resolution-escalation results are listed
     for n in names:
         assert client.get(f"/api/experiments/{n}").status_code == 200
 

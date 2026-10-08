@@ -1,7 +1,7 @@
 [project]
 name = "xzr"
-version = "0.1.0"
-description = "Xeno / Ziran Philosophical Runtime — Operational Shape Simulation Platform (backend)"
+version = "0.2.0"
+description = "XENO ZIRAN SIMULATOR runtime: operational-shape simulation and experimental instruments for comparing configurations"
 requires-python = ">=3.11"
 license = { text = "MIT" }
 dependencies = [
@@ -12,6 +12,11 @@ dependencies = [
   "pydantic>=2.9",
 ]
 
+authors = [{ name = "Naoto Fujie" }]
+
+[project.scripts]
+xzr = "xzr.cli:main"
+
 [project.optional-dependencies]
 dev = ["pytest>=8", "httpx>=0.27", "ruff>=0.8", "mypy>=1.13", "websockets>=13"]
 
@@ -21,6 +26,9 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 include = ["xzr*"]
+
+[tool.setuptools.package-data]
+xzr = ["presets/*.json", "_compat/hierarchies/*.npz"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

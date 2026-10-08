@@ -1,0 +1,214 @@
+{
+ "taxonomy": {
+  "simulator_failure": "exception or non-finite state inside the runtime (run aborted)",
+  "numerical_failure": "non-finite runtime state detected by the benchmark (run aborted)",
+  "benchmark_failure": "exception in benchmark code outside the runtime (run aborted)",
+  "comparator_failure": "comparator exception, non-finite belief/free energy, or zero-evidence inference (run continued)",
+  "model_structure_failure": "fixed generative model's predictive validity < 0.5 of the unperturbed reference",
+  "controller_failure": "controller success in the perturbation phase > 0.2 below no control (same cell, seed)",
+  "genuine_regime_transition": "cell-seed labelled TRANSITION or POST_ACTIVE_INFERENCE with no aborted run"
+ },
+ "categories": {
+  "simulator_failure": [],
+  "numerical_failure": [],
+  "benchmark_failure": [],
+  "comparator_failure": [],
+  "model_structure_failure": [
+   {
+    "perturbation": "boundary.reassignment",
+    "severity": 1.0,
+    "seed": 1,
+    "S_model": 0.4927536231884059,
+    "S_model_adaptive": 0.9487179487179487
+   },
+   {
+    "perturbation": "sensor.dropout",
+    "severity": 1.0,
+    "seed": 1,
+    "S_model": 0.46376811594202905,
+    "S_model_adaptive": 1.0
+   },
+   {
+    "perturbation": "sensor.dropout",
+    "severity": 1.0,
+    "seed": 3,
+    "S_model": 0.41025641025641024,
+    "S_model_adaptive": 1.0
+   }
+  ],
+  "controller_failure": [
+   {
+    "perturbation": "memory.history_removal",
+    "severity": 1.0,
+    "seed": 2,
+    "controller": "ost",
+    "success_pert": 0.28,
+    "none_success_pert": 0.54
+   },
+   {
+    "perturbation": "sensor.dropout",
+    "severity": 1.0,
+    "seed": 2,
+    "controller": "ost",
+    "success_pert": 0.08,
+    "none_success_pert": 0.54
+   },
+   {
+    "perturbation": "sensor.permutation",
+    "severity": 1.0,
+    "seed": 2,
+    "controller": "ost",
+    "success_pert": 0.28,
+    "none_success_pert": 0.54
+   }
+  ],
+  "genuine_regime_transition": [
+   {
+    "perturbation": "boundary.fragmentation",
+    "severity": 1.0,
+    "seed": 1,
+    "label": "TRANSITION",
+    "C_AIF": 0.550840159662037,
+    "first_unstable": "S_variable"
+   },
+   {
+    "perturbation": "boundary.reassignment",
+    "severity": 1.0,
+    "seed": 1,
+    "label": "POST_ACTIVE_INFERENCE",
+    "C_AIF": 0.006344827108000924,
+    "first_unstable": "S_policy"
+   },
+   {
+    "perturbation": "sensor.dropout",
+    "severity": 1.0,
+    "seed": 1,
+    "label": "POST_ACTIVE_INFERENCE",
+    "C_AIF": 0.030168037464440085,
+    "first_unstable": "S_sensor"
+   },
+   {
+    "perturbation": "temporal.interface_drift",
+    "severity": 1.0,
+    "seed": 1,
+    "label": "TRANSITION",
+    "C_AIF": 0.5790221256616135,
+    "first_unstable": "S_policy"
+   },
+   {
+    "perturbation": "topology.cluster_merge",
+    "severity": 1.0,
+    "seed": 1,
+    "label": "POST_ACTIVE_INFERENCE",
+    "C_AIF": 0.3318539504589668,
+    "first_unstable": "S_variable"
+   },
+   {
+    "perturbation": "variable.deletion",
+    "severity": 1.0,
+    "seed": 1,
+    "label": "POST_ACTIVE_INFERENCE",
+    "C_AIF": 0.030168037464440085,
+    "first_unstable": "S_sensor"
+   },
+   {
+    "perturbation": "boundary.fragmentation",
+    "severity": 1.0,
+    "seed": 2,
+    "label": "TRANSITION",
+    "C_AIF": 0.7697524649888583,
+    "first_unstable": "S_policy"
+   },
+   {
+    "perturbation": "boundary.reassignment",
+    "severity": 1.0,
+    "seed": 2,
+    "label": "POST_ACTIVE_INFERENCE",
+    "C_AIF": 0.36718707479643153,
+    "first_unstable": "S_policy"
+   },
+   {
+    "perturbation": "sensor.dropout",
+    "severity": 1.0,
+    "seed": 2,
+    "label": "POST_ACTIVE_INFERENCE",
+    "C_AIF": 0.030845358542743524,
+    "first_unstable": "S_sensor"
+   },
+   {
+    "perturbation": "temporal.interface_drift",
+    "severity": 1.0,
+    "seed": 2,
+    "label": "TRANSITION",
+    "C_AIF": 0.6233321786753822,
+    "first_unstable": "S_policy"
+   },
+   {
+    "perturbation": "topology.cluster_merge",
+    "severity": 1.0,
+    "seed": 2,
+    "label": "POST_ACTIVE_INFERENCE",
+    "C_AIF": 0.43183997031242133,
+    "first_unstable": "S_variable"
+   },
+   {
+    "perturbation": "variable.deletion",
+    "severity": 1.0,
+    "seed": 2,
+    "label": "POST_ACTIVE_INFERENCE",
+    "C_AIF": 0.030845358542743524,
+    "first_unstable": "S_sensor"
+   },
+   {
+    "perturbation": "boundary.reassignment",
+    "severity": 1.0,
+    "seed": 3,
+    "label": "TRANSITION",
+    "C_AIF": 0.652170734616146,
+    "first_unstable": "S_policy"
+   },
+   {
+    "perturbation": "sensor.dropout",
+    "severity": 1.0,
+    "seed": 3,
+    "label": "POST_ACTIVE_INFERENCE",
+    "C_AIF": 0.03016474788366255,
+    "first_unstable": "S_sensor"
+   },
+   {
+    "perturbation": "temporal.interface_drift",
+    "severity": 1.0,
+    "seed": 3,
+    "label": "TRANSITION",
+    "C_AIF": 0.6704790712233805,
+    "first_unstable": "S_policy"
+   },
+   {
+    "perturbation": "topology.cluster_merge",
+    "severity": 1.0,
+    "seed": 3,
+    "label": "POST_ACTIVE_INFERENCE",
+    "C_AIF": 0.35802658610836746,
+    "first_unstable": "S_variable"
+   },
+   {
+    "perturbation": "variable.deletion",
+    "severity": 1.0,
+    "seed": 3,
+    "label": "POST_ACTIVE_INFERENCE",
+    "C_AIF": 0.03016474788366255,
+    "first_unstable": "S_sensor"
+   }
+  ]
+ },
+ "counts": {
+  "simulator_failure": 0,
+  "numerical_failure": 0,
+  "benchmark_failure": 0,
+  "comparator_failure": 0,
+  "model_structure_failure": 3,
+  "controller_failure": 3,
+  "genuine_regime_transition": 17
+ },
+ "note": "no run is discarded; aborted runs are excluded from metrics that need them and listed here"
+}

@@ -1,6 +1,12 @@
 // REST + WebSocket access to the backend. All paths are same-origin (Vite proxies in development).
 
+import type { Listing } from './results';
+import { isGone, markGone, provesGone, SessionGoneError, sessionOf } from './sessionGone';
 import { decodeFrame, decodeTile, type Frame, type Tile } from '../proto/decode';
+import { NATIVE, NativeSocket, nativeFetch } from './native';
+
+// The iOS app reaches its in-process runtime through the native bridge; every other build uses HTTP.
+const send: (path: string, init?: RequestInit) => Promise<Response> = NATIVE ? nativeFetch : (p, i) => fetch(p, i);
 
 export interface SessionInfo {
   id: string;
@@ -11,10 +17,12 @@ export interface SessionInfo {
   scales: string[]; layouts: string[]; clusters_per_level: number[]; geo_count: number; sets: string[];
   boundaries: Record<string, number>;
   runtime_flags?: Record<string, string | boolean>; runtime_is_full?: boolean;
+  /** how the address hierarchy was obtained: 'computed', 'reference', or computed on device (may differ) */
+  hierarchy_source?: string;
 }
 
 export interface Status {
-  t: number; running: boolean; speed: number; pending_steps: number; steps_per_second: number;
+  t: number; running: boolean; speed: number; speed_limit?: number | null; pending_steps: number; steps_per_second: number;
   connections: number; checkpoints: number[]; layout_version: number; draft_differs: boolean;
 }
 
@@ -26,6 +34,13 @@ export interface ClusterSummary {
   layout_version: number;
 }
 
+/** Sessions are ephemeral: they end on expiry, when closed, or when the runtime restarts. Nothing is persisted. */
+export const SESSION_GONE = NATIVE
+  ? 'This session no longer exists in the on-device runtime (the app was closed or ended by the system, or the '
+    + 'session was closed; sessions are not persisted). Start a new session; use Save to keep a copy of your work.'
+  : 'This session no longer exists on the runtime (it expired, was closed, or the runtime '
+    + 'restarted; sessions are not persisted). Reload to start a new session; use Save to keep a copy of your work.';
+
 export class ApiError extends Error {
   constructor(msg: string, public status: number, public body: unknown) {
     super(msg);
@@ -33,11 +48,17 @@ export class ApiError extends Error {
 }
 
 async function j<T>(path: string, init?: RequestInit): Promise<T> {
-  const r = await fetch(path, { headers: { 'Content-Type': 'application/json' }, ...init });
+  const bound = sessionOf(path);
+  if (bound && isGone(bound)) throw new SessionGoneError(bound);  // never re-request a session known to be gone
+  const r = await send(path, { headers: { 'Content-Type': 'application/json' }, ...init });
   const body = r.headers.get('content-type')?.includes('json') ? await r.json() : await r.text();
   if (!r.ok) {
-    const msg = typeof body === 'object' && body ? (body as { error?: string; detail?: unknown }).error ??
-      JSON.stringify((body as { detail?: unknown }).detail) : String(body);
+    // a refused limit names itself: {"error": "...", "limit": "max_nodes"}
+    const b = (typeof body === 'object' && body ? body : {}) as { error?: string; limit?: string; detail?: unknown };
+    const detail = typeof b.detail === 'string' ? b.detail : b.detail !== undefined ? JSON.stringify(b.detail) : undefined;
+    const msg = b.error ? (b.limit ? `${b.error} [limit: ${b.limit}]` : b.error)
+      : r.status === 404 && detail === 'no such session' ? SESSION_GONE : detail ?? String(body);
+    if (bound && provesGone(path, r.status, detail)) markGone(bound);
     throw new ApiError(msg, r.status, body);
   }
   return body as T;
@@ -46,11 +67,13 @@ async function j<T>(path: string, init?: RequestInit): Promise<T> {
 const post = <T>(path: string, body: unknown) => j<T>(path, { method: 'POST', body: JSON.stringify(body) });
 
 export const api = {
+  health: () => j<{ ok: boolean; public?: boolean; max_nodes?: number }>('/api/health'),
   scenarios: () => j<{ id: string; name: string; description: string; configurations: number }[]>('/api/scenarios'),
   createSession: (sample: string, flags?: string) => post<SessionInfo>('/api/sessions', { sample, flags }),
   loadSession: (saved: { scenario: unknown; applied?: unknown }) =>
     post<SessionInfo>('/api/sessions', { scenario: saved.scenario, applied: saved.applied }),
   sessions: () => j<{ id: string; scenario: string; t: number }[]>('/api/sessions'),
+  deleteSession: (sid: string) => j<{ deleted: string }>(`/api/sessions/${sid}`, { method: 'DELETE' }),
   info: (sid: string) => j<SessionInfo>(`/api/sessions/${sid}`),
   control: (sid: string, action: string, extra: { steps?: number; speed?: number } = {}) =>
     post<Status>(`/api/sessions/${sid}/control`, { action, ...extra }),
@@ -58,8 +81,16 @@ export const api = {
   clusters: (sid: string, level: number) => j<ClusterSummary>(`/api/sessions/${sid}/clusters?level=${level}`),
   tile: async (sid: string, layout: string, level: number, b: [number, number, number, number], maxEdges = 20000): Promise<Tile> => {
     const q = `layout=${layout}&level=${level}&x0=${b[0]}&y0=${b[1]}&x1=${b[2]}&y1=${b[3]}&max_edges=${maxEdges}`;
-    const r = await fetch(`/api/sessions/${sid}/tile?${q}`);
-    if (!r.ok) throw new ApiError(await r.text(), r.status, null);
+    if (isGone(sid)) throw new SessionGoneError(sid);
+    const path = `/api/sessions/${sid}/tile?${q}`;
+    const r = await send(path);
+    if (!r.ok) {
+      const text = await r.text();
+      let detail: unknown;
+      try { detail = (JSON.parse(text) as { detail?: unknown }).detail; } catch { detail = undefined; }
+      if (provesGone(path, r.status, detail)) markGone(sid);
+      throw new ApiError(text, r.status, null);
+    }
     return decodeTile(await r.arrayBuffer());
   },
   node: (sid: string, i: number) => j<NodeDetail>(`/api/sessions/${sid}/node/${i}`),
@@ -73,7 +104,7 @@ export const api = {
   job: (jid: string) => j<Job>(`/api/jobs/${jid}`),
   save: (sid: string) => j<{ scenario: unknown; applied: unknown }>(`/api/sessions/${sid}/save`),
   exportUrl: (sid: string, what: string, format: string) => `/api/sessions/${sid}/export?what=${what}&format=${format}`,
-  experiments: () => j<{ name: string; bytes: number; modified: number }[]>('/api/experiments'),
+  experiments: () => j<Listing>('/api/experiments'),
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   experiment: <T = any>(name: string) => j<T>(`/api/experiments/${name}`),
   primitives: () => j<PrimitiveEntry[]>('/api/experiments/primitives'),
@@ -89,15 +120,22 @@ export type WsMessage =
   | { kind: 'frame'; frame: Frame }
   | { kind: 'json'; msg: Record<string, unknown> & { type: string } };
 
-export function connect(sid: string, onMessage: (m: WsMessage) => void, onClose: () => void): WebSocket {
+export type Stream = WebSocket | NativeSocket;
+
+export function connect(sid: string, onMessage: (m: WsMessage) => void, onClose: (code: number) => void): Stream {
   const proto = location.protocol === 'https:' ? 'wss' : 'ws';
-  const ws = new WebSocket(`${proto}://${location.host}/ws/${sid}`);
-  ws.binaryType = 'arraybuffer';
-  ws.onmessage = (ev) => {
+  const ws: Stream = NATIVE ? new NativeSocket(sid) : new WebSocket(`${proto}://${location.host}/ws/${sid}`);
+  // both transports deliver the same events: text messages (JSON) and binary frames (ArrayBuffer)
+  const sock = ws as unknown as { binaryType: string; onmessage: (ev: { data: unknown }) => void;
+    onclose: (ev: { code: number }) => void };
+  sock.binaryType = 'arraybuffer';
+  sock.onmessage = (ev) => {
     if (typeof ev.data === 'string') onMessage({ kind: 'json', msg: JSON.parse(ev.data) });
     else onMessage({ kind: 'frame', frame: decodeFrame(ev.data as ArrayBuffer) });
   };
-  ws.onclose = onClose;
+  // keep-alive: the server closes sockets that stay silent beyond its idle limit
+  const ping = setInterval(() => { if (ws.readyState === 1) ws.send(JSON.stringify({ type: 'ping', t: Date.now() })); }, 30_000);
+  sock.onclose = (ev) => { clearInterval(ping); onClose(ev.code); };
   return ws;
 }
 

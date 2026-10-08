@@ -1,0 +1,12 @@
+{
+ "tests": [],
+ "table": {},
+ "margin": 0.05,
+ "n_tests": 0,
+ "not_applicable": {
+  "reignition_detection": "tracker-only capability (exact from the step records); no comparator analogue",
+  "configuration_crossing_recurrence": "tracker-only capability; no comparator analogue"
+ },
+ "correction": "Holm over all tests",
+ "summary": {}
+}

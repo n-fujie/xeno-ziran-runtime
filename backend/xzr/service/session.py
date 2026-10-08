@@ -11,7 +11,7 @@ import time
 import uuid
 from collections import deque
 from collections.abc import Callable
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import Future, ThreadPoolExecutor
 
 import numpy as np
 
@@ -28,13 +28,54 @@ from ..scenario.build import World, build_world
 from ..scenario.model import Scenario
 from ..shapes.detector import ShapeDetector
 from ..shapes.waves import WaveObserver
+from .limits import LIMITS, LimitError
+from .security import METRICS, event, new_session_id
 
 OUTBOX_MAX = 600  # hard bound: beyond this, clients are resynced with a snapshot (event log keeps everything)
 BACKPRESSURE = 45  # while clients are connected, the simulation waits once this many steps are unsent
 RING = 1500  # steps of full event history kept in memory for the event log / inspection
 
-_POOL = ThreadPoolExecutor(max_workers=2, thread_name_prefix="xzr-job")
-JOBS: dict[str, dict] = {}
+_POOL = ThreadPoolExecutor(max_workers=2, thread_name_prefix="xzr-job")  # bounded concurrency of comparison jobs
+JOBS: dict[str, dict] = {}  # job records; pruned by prune_jobs (TTL and count)
+FUTURES: dict[str, Future] = {}  # queued / running jobs, for cancellation
+_JOBS_LOCK = threading.Lock()
+FINISHED = ("done", "error", "cancelled")
+
+
+def active_jobs(session_id: str | None = None) -> int:
+    with _JOBS_LOCK:
+        return sum(1 for j in JOBS.values()
+                   if j["status"] in ("queued", "running") and (session_id is None or j["session"] == session_id))
+
+
+def prune_jobs(now: float | None = None) -> int:
+    """Drop finished job records older than the TTL, then the oldest finished ones beyond the count limit."""
+    now = time.time() if now is None else now
+    with _JOBS_LOCK:
+        finished = sorted((j for j in JOBS.values() if j["status"] in FINISHED), key=lambda j: j.get("finished", 0))
+        drop = [j["id"] for j in finished if now - j.get("finished", now) > LIMITS.job_ttl_s]
+        excess = len(JOBS) - len(drop) - LIMITS.max_jobs
+        if excess > 0:
+            drop += [j["id"] for j in finished if j["id"] not in drop][:excess]
+        for jid in drop:
+            JOBS.pop(jid, None)
+            FUTURES.pop(jid, None)
+    if drop:
+        METRICS.inc("jobs_pruned", len(drop))
+    return len(drop)
+
+
+def cancel_job(jid: str) -> bool:
+    """Cancel a job that has not started (a running comparison runs to completion within its horizon cap)."""
+    with _JOBS_LOCK:
+        f, job = FUTURES.get(jid), JOBS.get(jid)
+        if f is None or job is None or not f.cancel():
+            return False
+        job["status"] = "cancelled"
+        job["finished"] = time.time()
+        FUTURES.pop(jid, None)
+    METRICS.inc("jobs_cancelled")
+    return True
 
 
 class CommandError(ValueError):
@@ -55,7 +96,11 @@ def config_from_json(d: dict, boundaries: dict[str, float]) -> InterventionConfi
 class Session:
     def __init__(self, scenario: Scenario, applied: dict | None = None, graph_every: int = 10, flags=None):
         self.flags = flags
-        self.id = uuid.uuid4().hex[:10]
+        self.id = new_session_id()
+        self.owner: str | None = None  # hash of the owner capability (set by the service)
+        self.owner_expires = float("inf")  # when the owner capability expires (set by the service)
+        self.ip = ""
+        self.step_latency = 0.0  # moving average, seconds per simulation step
         self.created = time.time()
         self.touched = time.time()
         self.scenario = scenario
@@ -90,6 +135,7 @@ class Session:
         overlay, _, self.applied_prov, _ = compile_config(self.applied, self.world.resolve)
         self.engine.set_overlay(overlay)
         self.engine.log.clear()
+        self.engine.max_checkpoints = LIMITS.max_checkpoints
         self.engine.checkpoints.clear()
         self.engine._save_checkpoint()
         self.outbox: list[StepDelta] = []
@@ -136,6 +182,7 @@ class Session:
                     return
                 t0 = time.perf_counter()
                 self._step_locked()
+                self.step_latency = 0.9 * self.step_latency + 0.1 * (time.perf_counter() - t0)
                 if self.pending_steps > 0:
                     self.pending_steps -= 1
                 speed = self.speed if self.pending_steps == 0 else 0
@@ -163,6 +210,11 @@ class Session:
         with self.cv:
             if speed is not None:
                 self.speed = max(0.0, float(speed))
+                if LIMITS.max_speed > 0 and (self.speed == 0 or self.speed > LIMITS.max_speed):
+                    self.speed = LIMITS.max_speed  # reported as speed / speed_limit in the status
+            if action == "step" and int(steps) > LIMITS.max_step_batch:
+                raise LimitError("max_step_batch", f"{int(steps):,} steps requested; at most "
+                                 f"{LIMITS.max_step_batch:,} per request", 422)
             if action == "run":
                 self.running = True
             elif action in ("pause", "stop"):
@@ -193,7 +245,8 @@ class Session:
 
     def status(self) -> dict:
         s = self.engine.state
-        return {"t": s.t, "running": self.running, "speed": self.speed, "pending_steps": self.pending_steps,
+        return {"t": s.t, "running": self.running, "speed": self.speed, "speed_limit": LIMITS.max_speed or None,
+                "pending_steps": self.pending_steps,
                 "steps_per_second": round(self.steps_per_second(), 1), "connections": int(s.alive.sum()),
                 "checkpoints": sorted(self.engine.checkpoints), "layout_version": self.layout_version,
                 "draft_differs": self.draft.to_json() != self.applied.to_json()}
@@ -206,6 +259,7 @@ class Session:
                 "n": s.n, "e_cap": s.e_cap, "params": s.params.to_dict(), "quant_max": s.params.quant_max,
                 "mem_qmax": MEM_QMAX, "n_forms": s.params.n_forms, "scales": list(SCALES), "layouts": list(LAYOUTS),
                 "clusters_per_level": [self.h.n_clusters(lv) for lv in range(4)],
+                "hierarchy_source": self.h.source,
                 "geo_count": int(np.isfinite(s.geo).all(1).sum()), "sets": sorted(self.scenario.sets),
                 "boundaries": {k: b.permeability for k, b in self.scenario.boundaries.items()},
                 "runtime_flags": self.engine.flags.to_dict(), "runtime_is_full": self.engine.flags.is_full(),
@@ -460,35 +514,56 @@ class Session:
 
     # ------------------------------------------------------------------ comparison jobs
     def start_compare(self, horizon: int = 150) -> str:
-        horizon = max(10, min(int(horizon), 5000))
+        if int(horizon) > LIMITS.max_compare_horizon:
+            raise LimitError("max_compare_horizon", f"comparison horizon {int(horizon):,} exceeds "
+                             f"{LIMITS.max_compare_horizon:,} steps", 422)
+        if active_jobs(self.id) >= LIMITS.max_active_jobs_per_session:
+            raise LimitError("max_active_jobs_per_session", f"this session already has "
+                             f"{LIMITS.max_active_jobs_per_session} comparison(s) running; wait for it to finish")
+        if active_jobs() >= LIMITS.max_queued_jobs:
+            raise LimitError("max_queued_jobs", "the runtime's comparison queue is full; retry shortly", 503)
+        prune_jobs()
+        horizon = max(10, int(horizon))
         with self.lock:
             fork = self.engine.fork()
             ov_a, act_a, prov_a, _ = compile_config(self.applied, self.world.resolve)
             ov_b, act_b, prov_b, _ = compile_config(self.draft, self.world.resolve)
             changes = self._score_diff(self.applied.practice, self.draft.practice)
             draft_log = list(self.draft.log)
-        jid = uuid.uuid4().hex[:10]
-        job = {"id": jid, "kind": "compare", "session": self.id, "status": "running", "created": time.time(),
+        jid = uuid.uuid4().hex
+        job = {"id": jid, "kind": "compare", "session": self.id, "status": "queued", "created": time.time(),
                "horizon": horizon}
-        JOBS[jid] = job
+        with _JOBS_LOCK:
+            JOBS[jid] = job
+        METRICS.inc("jobs_started")
 
         def work() -> None:
+            job["status"] = "running"
             try:
                 res = compare(fork, ov_a, act_a, ov_b, act_b, self.h, horizon=horizon, graph_every=self.graph_every)
                 res["id"] = jid
                 res["commitment_changes"] = changes
                 res["operational_changes"] = {"baseline": prov_a, "intervention": prov_b}
                 res["intervention_log"] = draft_log
-                self.compares[jid] = res
+                with self.lock:
+                    self.compares[jid] = res
+                    while len(self.compares) > LIMITS.max_compares_per_session:  # keep the latest branch pairs
+                        self.compares.pop(next(iter(self.compares)))
                 job["status"] = "done"
                 job["summary"] = res["summary"]
+                METRICS.inc("jobs_done")
             except Exception as e:  # noqa: BLE001 — reported to the client
                 job["status"] = "error"
                 job["error"] = f"{type(e).__name__}: {e}"
+                METRICS.inc("jobs_failed")
+            job["finished"] = time.time()
+            with _JOBS_LOCK:
+                FUTURES.pop(jid, None)
             for fn in list(self.listeners):
                 fn({"type": "job", **{k: v for k, v in job.items() if k != "created"}})
 
-        _POOL.submit(work)
+        with _JOBS_LOCK:
+            FUTURES[jid] = _POOL.submit(work)
         return jid
 
     # ------------------------------------------------------------------ persistence
@@ -502,3 +577,8 @@ class Session:
         with self.cv:
             self.closed = True
             self.cv.notify_all()
+        with _JOBS_LOCK:
+            mine = [jid for jid, j in JOBS.items() if j["session"] == self.id and j["status"] == "queued"]
+        for jid in mine:
+            cancel_job(jid)
+        event("session_closed", session=self.id[:8], age_s=round(time.time() - self.created))

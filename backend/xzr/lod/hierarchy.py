@@ -7,11 +7,24 @@ component 0–7 (3 bits) and each finer component 0–3 (2 bits).
 
 from __future__ import annotations
 
+import hashlib
 from dataclasses import dataclass
 
 import numpy as np
-import scipy.sparse as sp
-from scipy.sparse.linalg import ArpackNoConvergence, eigsh
+
+from .._compat import FORCE as _COMPAT
+
+try:  # the iOS app has no scipy: a dense symmetric eigensolve stands in for ARPACK (see _compat/linalg.py)
+    if _COMPAT:
+        raise ImportError
+    import scipy.sparse as sp
+    from scipy.sparse.linalg import ArpackNoConvergence, eigsh
+    _COMPAT_PATH = False
+except ImportError:
+    from .._compat import sparse as sp  # type: ignore[no-redef]
+    from .._compat.linalg import ArpackNoConvergence, eigsh  # type: ignore[assignment]
+    _COMPAT_PATH = True
+from .._compat import hierarchy_cache as _reference_cache
 
 SCALES = ("macro", "global", "regional", "local", "configuration", "relation")
 CLUSTER_DEPTHS = (3, 5, 7, 9)  # bits of the leaf path used by the four cluster scales
@@ -55,6 +68,7 @@ class Hierarchy:
     labels: list[np.ndarray]  # per cluster scale: compact cluster index for each configuration
     codes: list[np.ndarray]  # per cluster scale: path prefix of each compact cluster
     parents: list[np.ndarray]  # per cluster scale: compact index of the parent cluster (scale-1), -1 for macro
+    source: str = "computed"  # how the leaf paths were obtained (see build_hierarchy)
 
     @property
     def n(self) -> int:
@@ -102,7 +116,29 @@ class Hierarchy:
         }
 
 
+def adjacency_key(a) -> str:
+    """Identity of a symmetric adjacency (its node count and sorted edge set), for the reference-hierarchy cache."""
+    coo = a.tocoo() if hasattr(a, "tocoo") else None
+    r, c = (coo.row, coo.col) if coo is not None else a._coo()[:2]
+    o = np.lexsort((c, r))
+    h = hashlib.sha256(np.int64(a.shape[0]).tobytes())
+    h.update(np.asarray(r, dtype=np.int64)[o].tobytes())
+    h.update(np.asarray(c, dtype=np.int64)[o].tobytes())
+    return h.hexdigest()
+
+
 def build_hierarchy(a: sp.csr_matrix) -> Hierarchy:
+    if _COMPAT_PATH:  # no scipy (iOS): exact desktop reference where available, else the dense eigensolver
+        cached = _reference_cache.load(adjacency_key(a))
+        if cached is not None:
+            return hierarchy_from(*cached, source="reference")
+    h = _build_hierarchy(a)
+    if _COMPAT_PATH:
+        h.source = "on-device eigensolver (may differ from the desktop's ARPACK hierarchy)"
+    return h
+
+
+def _build_hierarchy(a: sp.csr_matrix) -> Hierarchy:
     n = a.shape[0]
     path = np.zeros(n, dtype=np.int64)
     pos = np.zeros(n)  # continuous position within the final leaf (used for ordering)
@@ -124,6 +160,12 @@ def build_hierarchy(a: sp.csr_matrix) -> Hierarchy:
         stack.append((lo, depth + 1))
         stack.append((hi, depth + 1))
     order = np.lexsort((pos, path)).astype(np.int32)
+    return hierarchy_from(path, order)
+
+
+def hierarchy_from(path: np.ndarray, order: np.ndarray, source: str = "computed") -> Hierarchy:
+    """The cluster scales of a hierarchy, derived from its leaf paths and linear order."""
+    path = np.asarray(path, dtype=np.int64)
     labels, codes, parents = [], [], []
     for lv, bits in enumerate(CLUSTER_DEPTHS):
         prefix = path >> (DEPTH - bits)
@@ -135,4 +177,4 @@ def build_hierarchy(a: sp.csr_matrix) -> Hierarchy:
         else:
             pc = c >> (bits - CLUSTER_DEPTHS[lv - 1])
             parents.append(np.searchsorted(codes[lv - 1], pc).astype(np.int32))
-    return Hierarchy(path.astype(np.int32), order, labels, codes, parents)
+    return Hierarchy(path.astype(np.int32), np.asarray(order, dtype=np.int32), labels, codes, parents, source)

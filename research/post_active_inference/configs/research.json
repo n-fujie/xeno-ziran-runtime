@@ -1,0 +1,223 @@
+{
+ "stage": "research",
+ "description": "Stage 3 (prepared, not launched): 30 seeds per principal condition, eight severities; after the coarse run, `refine` adds severities near observed crossings (configs/research_refined.json). Ablation cells as in dev. Extra severities: midpoints near the dev-stage C_AIF crossings (run_benchmark.py refine on dev). Seeds 11\u201340: disjoint from the development seeds 1\u201310, so no research run duplicates a development run (pre-launch correction, 2026-10-07).",
+ "seeds": [
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  20,
+  21,
+  22,
+  23,
+  24,
+  25,
+  26,
+  27,
+  28,
+  29,
+  30,
+  31,
+  32,
+  33,
+  34,
+  35,
+  36,
+  37,
+  38,
+  39,
+  40
+ ],
+ "severities": [
+  0.125,
+  0.25,
+  0.375,
+  0.5,
+  0.625,
+  0.75,
+  0.875,
+  1.0
+ ],
+ "perturbations": "all",
+ "controllers": [
+  "none",
+  "aif_fixed",
+  "aif_adaptive",
+  "ost"
+ ],
+ "ablations": [
+  "no_latent",
+  "no_model",
+  "no_prediction_error",
+  "no_free_energy",
+  "no_efe_epistemic",
+  "no_policy",
+  "no_agent",
+  "no_boundary"
+ ],
+ "ablation_cells": [
+  [
+   "topology.cluster_split",
+   0.5
+  ],
+  [
+   "topology.cluster_split",
+   1.0
+  ],
+  [
+   "sensor.noise",
+   0.5
+  ],
+  [
+   "sensor.noise",
+   1.0
+  ],
+  [
+   "boundary.reassignment",
+   0.5
+  ],
+  [
+   "boundary.reassignment",
+   1.0
+  ],
+  [
+   "temporal.interface_drift",
+   0.5
+  ],
+  [
+   "temporal.interface_drift",
+   1.0
+  ],
+  [
+   "memory.history_reactivation",
+   0.5
+  ],
+  [
+   "memory.history_reactivation",
+   1.0
+  ],
+  [
+   "coupling.temporary_decoupling",
+   0.5
+  ],
+  [
+   "coupling.temporary_decoupling",
+   1.0
+  ],
+  [
+   "structural.disconnection",
+   0.5
+  ],
+  [
+   "structural.disconnection",
+   1.0
+  ],
+  [
+   "variable.relabel",
+   0.5
+  ],
+  [
+   "variable.relabel",
+   1.0
+  ]
+ ],
+ "world": {},
+ "phases": {},
+ "procs": 4,
+ "trace": false,
+ "extra_severities": {
+  "boundary.disappearance": [
+   0.833,
+   0.917
+  ],
+  "boundary.fragmentation": [
+   0.833,
+   0.917
+  ],
+  "boundary.leakage": [
+   0.583,
+   0.667
+  ],
+  "boundary.merge": [
+   0.083,
+   0.167
+  ],
+  "boundary.reassignment": [
+   0.083,
+   0.167,
+   0.833,
+   0.917
+  ],
+  "coupling.reversal": [
+   0.833,
+   0.917
+  ],
+  "coupling.weakening": [
+   0.583,
+   0.667
+  ],
+  "sensor.delay": [
+   0.083,
+   0.167,
+   0.333,
+   0.417
+  ],
+  "sensor.dropout": [
+   0.833,
+   0.917
+  ],
+  "sensor.noise": [
+   0.333,
+   0.417
+  ],
+  "sensor.reassignment": [
+   0.333,
+   0.417,
+   0.833,
+   0.917
+  ],
+  "sensor.window_mismatch": [
+   0.833,
+   0.917
+  ],
+  "structural.cut_reconnect": [
+   0.833,
+   0.917
+  ],
+  "structural.disconnection": [
+   0.833,
+   0.917
+  ],
+  "temporal.asynchronous": [
+   0.583,
+   0.667,
+   0.833,
+   0.917
+  ],
+  "temporal.interface_drift": [
+   0.083,
+   0.167
+  ],
+  "topology.cluster_merge": [
+   0.583,
+   0.667
+  ],
+  "variable.deletion": [
+   0.833,
+   0.917
+  ],
+  "variable.relabel": [
+   0.833,
+   0.917
+  ],
+  "variable.remap": [
+   0.333,
+   0.417
+  ]
+ }
+}

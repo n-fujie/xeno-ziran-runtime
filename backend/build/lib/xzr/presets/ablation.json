@@ -1,0 +1,76 @@
+{
+ "schema": "xzr.experiment/1",
+ "id": "ablation",
+ "kind": "conditions",
+ "description": "Remove one runtime mechanism at a time (no reasoning layer) and test whether downstream behaviour changes beyond the noise replicate.",
+ "question": "Which runtime mechanisms change downstream behaviour when removed, at which resolution?",
+ "manipulated": [
+  "one runtime flag per variant: memory, retention, transform, wave state, return events, disconnection, reconfiguration, cut, connection creation"
+ ],
+ "fixed": [
+  "world",
+  "engine seeds",
+  "all other flags"
+ ],
+ "measured": [
+  "status per resolution for each ablated variant vs the full runtime C"
+ ],
+ "does_not_show": "Theoretical necessity: a detected effect of removal in this configuration does not show the mechanism is irreducible (see the reduction study, docs/REDUCTION.md, for reductions and compensations); the variants' own event counts differ by construction.",
+ "seeds": 12,
+ "baseline": {
+  "n": 1500,
+  "horizon": 400,
+  "seeds": 12,
+  "enabling": false,
+  "triggers": [],
+  "reasoning_from": 0,
+  "flag_variants": {
+   "C": {},
+   "no_memory": {
+    "memory": "off"
+   },
+   "no_retention": {
+    "retention": "off"
+   },
+   "no_transform": {
+    "transform": "off"
+   },
+   "no_wave_state": {
+    "wave_state": "off"
+   },
+   "no_return_events": {
+    "return_events": "off"
+   },
+   "no_disconnect": {
+    "disconnect": "off"
+   },
+   "no_reconfigure": {
+    "reconfigure": "off"
+   },
+   "no_cut": {
+    "cut": "off"
+   },
+   "no_connect": {
+    "connect": "off"
+   }
+  },
+  "variants": [
+   "C",
+   "no_memory",
+   "no_retention",
+   "no_transform",
+   "no_wave_state",
+   "no_return_events",
+   "no_disconnect",
+   "no_reconfigure",
+   "no_cut",
+   "no_connect"
+  ]
+ },
+ "conditions": [
+  {
+   "id": "reference",
+   "changed": {}
+  }
+ ]
+}

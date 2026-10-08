@@ -1,5 +1,5 @@
 import { useSim } from '../store/sim';
-import { SCALE_NAMES } from '../views/GraphView';
+import { SCALE_NAMES } from '../views/scales';
 
 export default function ScaleNav({ hoverAddress }: { hoverAddress?: string | null }) {
   const scale = useSim((s) => s.scale);

@@ -17,10 +17,10 @@ import { TK, type Layout, type Mirror } from '../lod/mirror';
 import { dequantize } from '../proto/decode';
 import { useSim } from '../store/sim';
 import { C, EDGE_CLASS_COLOR, FORMS, NODE_CLASS_COLOR } from './palette';
+import { SCALE_NAMES } from './scales';
 
 export type Projection = 'network' | 'shape' | 'address' | 'map' | 'globe';
 const LAYOUT_OF: Record<Projection, Layout> = { network: 'network', shape: 'shape', address: 'address', map: 'geo', globe: 'geo' };
-export const SCALE_NAMES = ['Macro', 'Global', 'Regional', 'Local', 'Configuration', 'Relation'];
 const BANDS = [0.7, 1.4, 2.1, 2.8, 3.9]; // zoom offsets above the base zoom at which the scale changes
 
 const LAND = feature(landTopo as unknown as Topology, (landTopo as unknown as Topology).objects.land as GeometryCollection);
@@ -173,7 +173,7 @@ export default function GraphView({ projection, compare, onClusterHover }: {
       clusterLevel = s;
       clusterLayoutVersion = lv;
       const ws = useSim.getState().ws;
-      if (ws && ws.readyState === ws.OPEN) ws.send(JSON.stringify({ type: 'view', level: s }));
+      if (ws && ws.readyState === 1) ws.send(JSON.stringify({ type: 'view', level: s }));
       try {
         const c = await api.clusters(sid, s);
         if (!destroyed && c.level === currentScale()) {

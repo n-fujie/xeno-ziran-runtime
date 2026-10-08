@@ -201,6 +201,8 @@ def main() -> None:
         _replace_block(ROOT / "docs" / "EXPERIMENT_RESULTS.md", reason_section(rs))
     (RES / "final_results.json").write_text(json.dumps(final, indent=1))
     print("wrote docs/REDUCTION.md and docs/EXPERIMENT_RESULTS.md data blocks and", RES / "final_results.json")
+    import escalation_reports  # resolution-escalation docs (results/resolution/summary.json)
+    escalation_reports.main()
 
 
 if __name__ == "__main__":

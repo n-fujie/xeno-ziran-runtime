@@ -1,0 +1,342 @@
+{
+ "stage": "research",
+ "config": {
+  "stage": "research",
+  "description": "Stage 3 (prepared, not launched): 30 seeds per principal condition, eight severities; after the coarse run, `refine` adds severities near observed crossings (configs/research_refined.json). Ablation cells as in dev. Extra severities: midpoints near the dev-stage C_AIF crossings (run_benchmark.py refine on dev). Seeds 11\u201340: disjoint from the development seeds 1\u201310, so no research run duplicates a development run (pre-launch correction, 2026-10-07).",
+  "seeds": [
+   11,
+   12,
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19,
+   20,
+   21,
+   22,
+   23,
+   24,
+   25,
+   26,
+   27,
+   28,
+   29,
+   30,
+   31,
+   32,
+   33,
+   34,
+   35,
+   36,
+   37,
+   38,
+   39,
+   40
+  ],
+  "severities": [
+   0.125,
+   0.25,
+   0.375,
+   0.5,
+   0.625,
+   0.75,
+   0.875,
+   1.0
+  ],
+  "perturbations": [
+   "boundary.noise",
+   "boundary.leakage",
+   "boundary.delayed_update",
+   "boundary.reassignment",
+   "boundary.fragmentation",
+   "boundary.merge",
+   "boundary.disappearance",
+   "topology.edge_deletion",
+   "topology.edge_addition",
+   "topology.cluster_split",
+   "topology.cluster_merge",
+   "topology.hub_removal",
+   "topology.rerouting",
+   "topology.dynamic_mutation",
+   "sensor.dropout",
+   "sensor.reassignment",
+   "sensor.permutation",
+   "sensor.delay",
+   "sensor.noise",
+   "sensor.partial_observability",
+   "sensor.scale_mismatch",
+   "sensor.window_mismatch",
+   "variable.remap",
+   "variable.deletion",
+   "variable.duplication",
+   "variable.relabel",
+   "variable.outcome_merge",
+   "memory.deletion",
+   "memory.truncation",
+   "memory.access_block",
+   "memory.history_removal",
+   "memory.history_reactivation",
+   "memory.migration",
+   "coupling.weakening",
+   "coupling.strengthening",
+   "coupling.asymmetric",
+   "coupling.cross_cluster",
+   "coupling.reversal",
+   "coupling.temporary_decoupling",
+   "temporal.horizon_compression",
+   "temporal.horizon_expansion",
+   "temporal.asynchronous",
+   "temporal.interface_drift",
+   "temporal.world_drift",
+   "structural.cut_reconnect",
+   "structural.disconnection",
+   "structural.multi_cluster_reorganization"
+  ],
+  "controllers": [
+   "none",
+   "aif_fixed",
+   "aif_adaptive",
+   "ost"
+  ],
+  "ablations": [
+   "no_latent",
+   "no_model",
+   "no_prediction_error",
+   "no_free_energy",
+   "no_efe_epistemic",
+   "no_policy",
+   "no_agent",
+   "no_boundary"
+  ],
+  "ablation_cells": [
+   [
+    "topology.cluster_split",
+    0.5
+   ],
+   [
+    "topology.cluster_split",
+    1.0
+   ],
+   [
+    "sensor.noise",
+    0.5
+   ],
+   [
+    "sensor.noise",
+    1.0
+   ],
+   [
+    "boundary.reassignment",
+    0.5
+   ],
+   [
+    "boundary.reassignment",
+    1.0
+   ],
+   [
+    "temporal.interface_drift",
+    0.5
+   ],
+   [
+    "temporal.interface_drift",
+    1.0
+   ],
+   [
+    "memory.history_reactivation",
+    0.5
+   ],
+   [
+    "memory.history_reactivation",
+    1.0
+   ],
+   [
+    "coupling.temporary_decoupling",
+    0.5
+   ],
+   [
+    "coupling.temporary_decoupling",
+    1.0
+   ],
+   [
+    "structural.disconnection",
+    0.5
+   ],
+   [
+    "structural.disconnection",
+    1.0
+   ],
+   [
+    "variable.relabel",
+    0.5
+   ],
+   [
+    "variable.relabel",
+    1.0
+   ]
+  ],
+  "world": {},
+  "phases": {},
+  "procs": 4,
+  "trace": false,
+  "extra_severities": {
+   "boundary.disappearance": [
+    0.833,
+    0.917
+   ],
+   "boundary.fragmentation": [
+    0.833,
+    0.917
+   ],
+   "boundary.leakage": [
+    0.583,
+    0.667
+   ],
+   "boundary.merge": [
+    0.083,
+    0.167
+   ],
+   "boundary.reassignment": [
+    0.083,
+    0.167,
+    0.833,
+    0.917
+   ],
+   "coupling.reversal": [
+    0.833,
+    0.917
+   ],
+   "coupling.weakening": [
+    0.583,
+    0.667
+   ],
+   "sensor.delay": [
+    0.083,
+    0.167,
+    0.333,
+    0.417
+   ],
+   "sensor.dropout": [
+    0.833,
+    0.917
+   ],
+   "sensor.noise": [
+    0.333,
+    0.417
+   ],
+   "sensor.reassignment": [
+    0.333,
+    0.417,
+    0.833,
+    0.917
+   ],
+   "sensor.window_mismatch": [
+    0.833,
+    0.917
+   ],
+   "structural.cut_reconnect": [
+    0.833,
+    0.917
+   ],
+   "structural.disconnection": [
+    0.833,
+    0.917
+   ],
+   "temporal.asynchronous": [
+    0.583,
+    0.667,
+    0.833,
+    0.917
+   ],
+   "temporal.interface_drift": [
+    0.083,
+    0.167
+   ],
+   "topology.cluster_merge": [
+    0.583,
+    0.667
+   ],
+   "variable.deletion": [
+    0.833,
+    0.917
+   ],
+   "variable.relabel": [
+    0.833,
+    0.917
+   ],
+   "variable.remap": [
+    0.333,
+    0.417
+   ]
+  },
+  "noise_offset": 1000
+ },
+ "config_hash": "6ffcbaa0fa3a5dd2",
+ "runtime_provenance": {
+  "version": "0.2.0",
+  "git_head": "2634e697e9f743536a2efffb13a4a2938b94b0c4",
+  "dirty": true,
+  "code_sha1": "7c7b297411d5a834",
+  "time": "2026-10-07 14:39:49",
+  "python": "3.12.13",
+  "numpy": "2.5.3"
+ },
+ "benchmark_code_sha1": "c50b561ca174d3a4",
+ "dependencies": {
+  "numpy": "2.5.3",
+  "scipy": "1.18.1",
+  "python": "3.12.13"
+ },
+ "aif_source": "ziran-xeno-simulator embodied/active_inference @ d4ad6a7544bbb515027e1a97fa914423f01bf8e6 (vendored)",
+ "hardware": {
+  "machine": "arm64",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "processor": "arm",
+  "cpu_count": 8,
+  "python": "3.12.13",
+  "ram_gb": 8.0,
+  "cpu_brand": "Apple M1",
+  "available_gb": 1.458251953125,
+  "gpu": "not used (the runtime has no GPU code path)"
+ },
+ "timestamp": "2026-10-07T14:39:49+0900",
+ "plan": {
+  "stage": "research",
+  "cells": 12750,
+  "cells_done": 0,
+  "runs": 55680,
+  "procs": 4,
+  "estimated_wall_min": 539.6,
+  "estimated_peak_mb": 800,
+  "hardware": {
+   "machine": "arm64",
+   "platform": "macOS-26.6.2-arm64-arm-64bit",
+   "processor": "arm",
+   "cpu_count": 8,
+   "python": "3.12.13",
+   "ram_gb": 8.0,
+   "cpu_brand": "Apple M1",
+   "available_gb": 1.4761199951171875,
+   "gpu": "not used (the runtime has no GPU code path)"
+  },
+  "config_hash": "6ffcbaa0fa3a5dd2",
+  "perturbations": 47,
+  "aliases": {
+   "variable.latent_split": "topology.cluster_split",
+   "variable.latent_merge": "topology.cluster_merge",
+   "variable.feature_remap": "sensor.scale_mismatch",
+   "temporal.delayed_feedback": "sensor.delay",
+   "temporal.adaptation_delay": "boundary.delayed_update",
+   "structural.reconfiguration": "topology.rerouting",
+   "structural.expansion": "topology.cluster_merge",
+   "structural.configuration_crossing_recurrence": "memory.migration",
+   "memory.memory_migration": "memory.migration"
+  },
+  "not_implemented": {
+   "structural.compression": "fixed-N engine: no operation removes configurations while keeping the run comparable",
+   "memory.history_fork": "Engine.fork is an exact continuation (bit-identical, tested), so it is not a perturbation",
+   "sensor.temporal_window_mismatch": "covered by sensor.window_mismatch"
+  }
+ }
+}

@@ -1,0 +1,38 @@
+name: ci
+on:
+  push:
+  pull_request:
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    env:
+      OMP_NUM_THREADS: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: install
+        run: pip install -e "backend[dev]"
+      - name: lint
+        run: cd backend && ruff check xzr tests bench scripts && mypy xzr
+      - name: tests
+        run: cd backend && pytest -q
+      - name: CLI smoke
+        run: |
+          xzr --version
+          xzr presets
+          xzr validate resolution-escalation > /dev/null
+      - name: short reproducibility check (two identical smoke runs must agree cell by cell)
+        run: |
+          xzr run smoke --out ci-a --procs 2
+          xzr run smoke --out ci-b --procs 2
+          xzr compare ci-a/smoke/* ci-b/smoke/* --json | python -c "import json,sys; c=json.load(sys.stdin)['counts']; assert set(c) == {'same'}, c; print(c)"
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: cd frontend && npm ci && npm run lint && npm run typecheck && npm test && npm run build

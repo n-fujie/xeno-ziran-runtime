@@ -1,0 +1,76 @@
+{
+ "schema": "xzr.experiment/1",
+ "id": "boundary-scale-window",
+ "kind": "conditions",
+ "description": "Does a candidate distinction (eligibility tracking, variant E; no dependency records, variant H) survive a changed boundary, scale or temporal window?",
+ "question": "Is the E/C and H/C distinction detected under every boundary, scale and window tested, or only under some?",
+ "manipulated": [
+  "boundary between clusters (closed at 25 % of the run)",
+  "scale (n)",
+  "temporal window (horizon)"
+ ],
+ "fixed": [
+  "topology",
+  "memory",
+  "coupling",
+  "reasoning structure",
+  "engine seeds"
+ ],
+ "measured": [
+  "status per resolution per condition; the summary lists, for each comparison, the conditions where it is detected (configuration-sensitive) or detected in all (survives)"
+ ],
+ "does_not_show": "Survival across these settings is not survival across all settings; failure to detect is not absence (check EQUIVALENT vs UNRESOLVED).",
+ "seeds": 12,
+ "baseline": {
+  "n": 1500,
+  "horizon": 400,
+  "seeds": 12,
+  "variants": [
+   "C",
+   "E",
+   "H"
+  ]
+ },
+ "conditions": [
+  {
+   "id": "reference",
+   "changed": {}
+  },
+  {
+   "id": "boundary:closed",
+   "changed": {
+    "world_schedule": [
+     {
+      "t": 0.25,
+      "op": "close",
+      "between": "clusters"
+     }
+    ]
+   }
+  },
+  {
+   "id": "scale:600",
+   "changed": {
+    "n": 600
+   }
+  },
+  {
+   "id": "scale:3000",
+   "changed": {
+    "n": 3000
+   }
+  },
+  {
+   "id": "window:200",
+   "changed": {
+    "horizon": 200
+   }
+  },
+  {
+   "id": "window:1200",
+   "changed": {
+    "horizon": 1200
+   }
+  }
+ ]
+}

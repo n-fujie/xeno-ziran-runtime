@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below. It is an experimental research toolkit; its results are simulation results under the stated configurations, not empirical findings about any system outside the simulation."
+type: software
+title: "XENO ZIRAN SIMULATOR runtime: operational-shape simulation and experimental instruments for comparing configurations"
+version: "0.2.0"
+date-released: "2026-10-07"
+license: MIT
+authors:
+  - family-names: "Fujie"
+    given-names: "Naoto"
+# repository-code: add the public repository URL when it is published
+# No DOI has been assigned. If a DOI is issued later, add it here as `doi:`.
+abstract: >-
+  A runtime for simulating how differences ignite, propagate, are retained and reconfigure connections across a
+  field of configurations, with experimental instruments for varying scale, topology, memory, coupling, horizon,
+  boundary and observation resolution, ablating runtime mechanisms, operating on retained history (fork, removal,
+  reactivation, migration) and comparing the results with paired seeds, noise replicates and recorded provenance.
+  The instruments compare configurations; they are not an implementation of a final ontology.
+keywords:
+  - simulation
+  - complex systems
+  - operational shape
+  - ablation
+  - reproducibility

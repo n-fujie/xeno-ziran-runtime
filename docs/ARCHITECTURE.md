@@ -1,6 +1,8 @@
-# Architecture — Xeno / Ziran Philosophical Runtime
+# Architecture — XENO ZIRAN SIMULATOR runtime (`xeno-ziran-runtime`)
 
-*Operational Shape Simulation Platform.* Not a prediction. Explore possible transitions.
+*Operational Shape Simulation Platform.* Explore possible transitions under intervention. The Philosophical Runtime
+(practice layer, reason lab) is one operational region of the simulator, beside the experimental runtime and the
+research results; see the README for the layering.
 
 ## 0. Relation to the existing repository (Phase 1 inspection)
 
@@ -231,3 +233,68 @@ Only what the reduction and non-redundancy experiments required; the layering ab
   read-only `/api/experiments*` endpoints, which serve the result files to the Research views.
 * **Layering tests** cover `reasonlab` (never imported by runtime/shapes) and the vocabulary scan now also covers
   `practice/support.py`, `reasonlab/conditions.py` and the runtime docstrings.
+
+## 12. Resolution escalation additions (as built)
+
+All additions are additive. The default runtime is still byte-identical to the protocol fixtures. The reasoning
+layer still reaches the world only through `InterventionGate`, and no propagation semantics were added to the runtime.
+
+* **Runtime flag values** (`runtime/flags.py`, `runtime/ops.py`):
+  * `disconnect` = `weight_zero | as_cut | as_mutation | redirect`, the disconnection replacements;
+  * `topology_trigger` = `unified | generic_conditions | merged`, the cut / reconfiguration trigger merges.
+
+  These are experiment variants; the defaults (`on`, `separate`) are unchanged.
+* **World families** (`scenario/topologies.py`):
+  * 10 topology families;
+  * memory regimes;
+  * return / delay structures;
+  * 8 targeted disconnection structures;
+  * transmission-gain calibration to a common sustained activity.
+
+  Node parameters are drawn as in the default generator.
+* **Multi-resolution observer** (`shapes/multiscale.py`). Read-only. It records:
+  * exact per-step signatures;
+  * window fingerprints;
+  * node features;
+  * cluster aggregates at local, meso and macro resolution (hierarchy depths 9, 5 and 3);
+  * global aggregates.
+* **Reasoning structures**:
+  * `reasonlab/structures.py` holds the 15 neutral structure generators, their descriptors, variants A–K and
+    `revert_to_reference`;
+  * `reasonlab/mixed.py` holds mixed rules per cluster;
+  * `practice/support.py` gains an optional `sticky` conflict-persistence mode and a version-keyed evaluation memo,
+    which gives identical results;
+  * `reasonlab/representations.py` gains `untranslate` and the edits `add_conflict`, `lose_records` and
+    `restore_records`.
+* **World-responsive revision** (`reasonlab/triggers.py`). 10 trigger kinds, plus `overwrite`, each calibrated on
+  its region's pre-reasoning baseline. `ReasonLoop` gains optional hooks, all off by default:
+  * `triggers`;
+  * a prebuilt `rep`;
+  * a `light` (compact) timeline;
+  * enabling conditions relative to a calibrated baseline (`rel`);
+  * persistent records (`rep.persistent`);
+  * a memo in target resolution per compile.
+
+  `WorldProbe` gains the `closure` and `churn` metrics.
+* **Experiments** (`experiments/escalation/`):
+
+  | module | role |
+  |---|---|
+  | `harness` | world assembly per condition; paired runs per seed |
+  | `stats` | sign-flip max-T, equivalence, classification rules |
+  | `analysis` | per-condition tests at five resolutions × two time families |
+  | `runner` | resumable process pool |
+  | `matrix` | the design and its recorded omissions |
+  | `disconnection`, `topology_triggers`, `adaptivity`, `clusters`, `compression` | the studies |
+  | `summary` | aggregation into `results/resolution/summary.json` |
+
+  `experiments/run_escalation.py` is the entry point, and `scripts/escalation_reports.py` generates the doc tables.
+* **Service**. Results in `experiments/results/resolution/*.json` are served as `resolution-<name>` by
+  `/api/experiments/{name}`, with the name guard extended.
+* **UI** (`frontend/src/views/resolution/`), six read-only views backed by `summary.json`:
+  * Resolution Matrix;
+  * Hidden Difference;
+  * Scale Penetration;
+  * Reasoning Structure Inspector;
+  * Disconnection Study;
+  * Long-Run Compression.
