@@ -32,6 +32,8 @@ FILES = {  # API name -> result file
     "reason": RES / "reason.json",
     "final_results": RES / "final_results.json",
     "resolution-summary": RES / "resolution" / "summary.json",
+    # Heterogeneous Philosophical Operations (published when generated; see docs/HPO.md)
+    **{f"hpo-{p.stem}": p for p in sorted((RES / "hpo").glob("*.json"))},
 }
 SPLIT_MIN = 512_000  # files larger than this are also published as sections
 SECTION_SPLIT = 256_000  # a top-level object section larger than this is split one level further

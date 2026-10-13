@@ -483,12 +483,14 @@ EXP_DIR = Path(__file__).resolve().parents[2] / "experiments" / "results"
 
 @app.get("/api/experiments")
 def experiments() -> list[dict]:
-    """Result files: experiments/results/*.json, and resolution-escalation results (results/resolution/*.json)
-    under the name ``resolution-<stem>``."""
+    """Result files: experiments/results/*.json, resolution-escalation results (results/resolution/*.json) under the
+    name ``resolution-<stem>``, and HPO results (results/hpo/*.json) under ``hpo-<stem>``."""
     out = [{"name": p.stem, "bytes": p.stat().st_size, "modified": p.stat().st_mtime}
            for p in sorted(EXP_DIR.glob("*.json"))]
     out += [{"name": f"resolution-{p.stem}", "bytes": p.stat().st_size, "modified": p.stat().st_mtime}
             for p in sorted((EXP_DIR / "resolution").glob("*.json"))]
+    out += [{"name": f"hpo-{p.stem}", "bytes": p.stat().st_size, "modified": p.stat().st_mtime}
+            for p in sorted((EXP_DIR / "hpo").glob("*.json"))]
     return [e for e in out if _NAME.fullmatch(str(e["name"]))]  # only names the endpoint below serves
 
 
@@ -500,6 +502,8 @@ def _experiment_path(name: str) -> Path | None:
         return None
     if name.startswith("resolution-"):
         p = EXP_DIR / "resolution" / f"{name[len('resolution-'):]}.json"
+    elif name.startswith("hpo-"):
+        p = EXP_DIR / "hpo" / f"{name[len('hpo-'):]}.json"
     else:
         p = EXP_DIR / f"{name}.json"
     return p if p.is_file() else None

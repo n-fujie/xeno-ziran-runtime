@@ -242,3 +242,26 @@ table.matrix td.clickable-cell:hover { background: #111116; }
 @media (pointer: coarse) {
   input, select, textarea { font-size: 16px; }
 }
+
+/* Heterogeneous Philosophical Operations (lists and cards only: nothing wider than the screen) */
+.hpo { max-width: 1100px; }
+.hpo-nav { display: flex; flex-wrap: wrap; gap: 4px; margin: 8px 0 12px; }
+.hpo-nav button { font-size: 11.5px; padding: 3px 8px; }
+.hpo-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 8px; }
+.hpo-kv { display: grid; grid-template-columns: minmax(80px, max-content) 1fr; gap: 2px 8px; margin: 6px 0 0; }
+.hpo-kv dt { color: var(--dim); }
+.hpo-kv dd { margin: 0; overflow-wrap: anywhere; }
+ul.hpo-rows { list-style: none; margin: 0; padding: 0; }
+ul.hpo-rows li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; padding: 3px 0; border-bottom: 1px solid #111115; }
+ul.hpo-rows li > * { overflow-wrap: anywhere; min-width: 0; }
+.hpo-metric { min-width: 150px; }
+.hpo-verdict { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; padding: 4px 0; }
+.hpo-ops { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+svg.hpo-tl { display: block; width: 100%; height: 12px; }
+.hpo-bar { display: grid; grid-template-columns: 22px 1fr minmax(48px, auto); gap: 6px; align-items: center; }
+.hpo-select { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; margin: 10px 0 6px; }
+.hpo-select select { max-width: 100%; }
+.hpo-neg li, .hpo-chain li { margin: 3px 0; overflow-wrap: anywhere; }
+.hpo-source { margin-bottom: 8px; }
+.hpo details { margin: 6px 0; }
+@media (max-width: 700px) { .hpo-metric { min-width: 0; flex-basis: 100%; } .hpo-kv { grid-template-columns: 1fr; } }

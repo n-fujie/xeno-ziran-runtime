@@ -15,6 +15,9 @@ ALLOWED = {
     "compare": {"runtime", "lod", "shapes", "compare"},
     "scenario": {"scenario", "runtime", "lod"},
     "reasonlab": {"reasonlab", "practice", "runtime", "scenario"},  # never interpret, shapes or service
+    # HPO: an experiment layer over the runtime (world regimes and provenance from experiments); never service,
+    # practice, interpret or reasonlab
+    "hpo": {"hpo", "runtime", "lod", "experiments"},
 }
 
 
@@ -58,6 +61,7 @@ def test_experiment_layer_is_not_imported_by_the_product_layers():
     for layer in ("runtime", "shapes", "lod", "compare", "scenario", "practice", "reasonlab"):
         for p in (ROOT / layer).glob("*.py"):
             assert "experiments" not in _internal_imports(p), p
+            assert "hpo" not in _internal_imports(p), p
     assert _internal_imports(ROOT / "shapes" / "multiscale.py") <= {"runtime", "lod", "shapes"}
 
 

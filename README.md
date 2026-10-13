@@ -92,6 +92,26 @@ changes of world structure; where they fail, its **control fails with them** (no
 regime its control advantage is small. Scope: one simulated world, one task, one comparator family — not a claim
 about Active Inference in general.
 
+## Heterogeneous Philosophical Operations (HPO)
+
+[`backend/xzr/hpo/`](backend/xzr/hpo/) runs six operational series together in one world. They are engineering
+proxies named after operations of Harman (withdrawal), Simondon (transduction), Whitehead (concrescence), Sellars
+(picturing), Deleuze & Guattari (assemblage) and Luhmann (operational closure). They:
+
+* ignite under configuration-dependent conditions (unobservable is never read as absent);
+* act only through runtime intervention records;
+* change one another's ignition conditions, rules, instruments, resources, history and partition;
+* reconfigure the experiment's own settings inside a sandbox.
+
+Every change is recorded as a causal event with before/after state. Experiments HPO-001/002/003 follow a frozen
+protocol ([docs/HPO_PROTOCOL.md](docs/HPO_PROTOCOL.md)); results are in [docs/HPO_RESULTS.md](docs/HPO_RESULTS.md) and
+in the viewer (`?view=hpo`). No result is evidence for or against a philosophical doctrine
+([docs/HPO.md](docs/HPO.md)).
+
+```bash
+.venv/bin/xzr hpo run hpo-002 --pilot --seeds 8
+```
+
 ## Reproducibility, citation, license
 
 Exact commands, determinism and its limits: [docs/REPRODUCIBILITY.md](docs/REPRODUCIBILITY.md). Every run records
@@ -201,6 +221,8 @@ backend/
   xzr/reasonlab   closed loop world ↔ reasoning through an operational intervention gate; enabling conditions
   xzr/experiments primitive reduction study, reasoning non-redundancy suite, resolution escalation
                   (escalation/), history operations (history.py: fork, removal, reactivation, migration)
+  xzr/hpo         Heterogeneous Philosophical Operations: registry, instruments, operations, interaction engine,
+                  causal history, sandboxed reconfiguration, HPO-001/002/003 (docs/HPO.md)
   xzr/cli.py      the `xzr` command; xzr/results.py: result schema, provenance, compare, export
   xzr/presets     experiment presets (JSON) and configuration validation
   experiments/    run_reduction.py; results/{reduction,reason,final_results}.json

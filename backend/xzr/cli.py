@@ -7,6 +7,11 @@
     xzr compare RESULT_A RESULT_B       cell-by-cell change of detection status between two runs
     xzr export RESULT [--format csv|json]
     xzr study NAME [--procs P]          the long published studies (results in backend/experiments/results)
+    xzr hpo registry                    the Philosophical Operational Registry (JSON)
+    xzr hpo run NAME [--seeds N] [--procs P] [--pilot] [--out DIR]
+                                        Heterogeneous Philosophical Operations experiments (hpo-001, hpo-002,
+                                        hpo-003, generalization); --pilot runs on the smoke seed range into --out
+    xzr hpo verify                      reproducibility check of the HPO runs
     xzr --version
 
 Exit codes: 0 success; 1 the experiment ran but recorded failures (or the command failed at run time);
@@ -65,7 +70,22 @@ def _parser() -> argparse.ArgumentParser:
     s = sub.add_parser("study", help="run one of the long published studies (writes backend/experiments/results)")
     s.add_argument("name", choices=sorted(STUDIES))
     s.add_argument("--procs", type=int, default=7)
+
+    h = sub.add_parser("hpo", help="Heterogeneous Philosophical Operations (registry, experiments, verification)")
+    hs = h.add_subparsers(dest="hpo_command", required=True, metavar="HPO_COMMAND")
+    hs.add_parser("registry", help="print the Philosophical Operational Registry")
+    hr = hs.add_parser("run", help="run an HPO experiment")
+    hr.add_argument("name", choices=sorted(HPO_EXPERIMENTS))
+    hr.add_argument("--seeds", type=int, help="number of seeds (default: the protocol's)")
+    hr.add_argument("--procs", type=int, default=7)
+    hr.add_argument("--pilot", action="store_true", help="smoke seed range, protocol not required, written to --out")
+    hr.add_argument("--out", default="xzr-results/hpo-pilot", help="output directory for --pilot runs")
+    hs.add_parser("verify", help="re-run seeds and check bit-identical metrics")
     return p
+
+
+HPO_EXPERIMENTS = {"hpo-001": ("hpo001", 64), "hpo-002": ("hpo002", 360), "hpo-003": ("hpo003", 96),
+                   "generalization": ("general", 64)}
 
 
 def _fail(msg: str, code: int = 2) -> int:
@@ -170,7 +190,59 @@ def main(argv: list[str] | None = None) -> int:
             import importlib
             importlib.import_module(f"xzr.experiments.escalation.{args.name}").main(args.procs)
         return 0
+    if args.command == "hpo":
+        return _hpo(args)
     return _fail(f"unknown command {args.command}")
+
+
+def _hpo(args) -> int:
+    import os
+    import time
+
+    from .hpo import experiments as X
+    from .hpo import registry
+
+    if args.hpo_command == "registry":
+        print(json.dumps(registry.snapshot(), indent=1, ensure_ascii=False))
+        return 0
+    if args.hpo_command == "verify":
+        r = X.reproducibility(2)
+        print(json.dumps(r, indent=1))
+        return 0 if r["identical"] else 1
+    for var in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "VECLIB_MAXIMUM_THREADS", "MKL_NUM_THREADS"):
+        os.environ.setdefault(var, "1")
+    file, default_seeds = HPO_EXPERIMENTS[args.name]
+    seeds = args.seeds or default_seeds
+    if args.procs < 1 or seeds < 2:
+        return _fail("--procs ≥ 1 and --seeds ≥ 2")
+    pilot = args.pilot
+    if not pilot:
+        if not (X.RESULTS.parents[2] / "pyproject.toml").exists():
+            return _fail("confirmatory HPO runs write the published result files of a source checkout; use --pilot")
+        if (X.RESULTS / f"{file}.json").exists():
+            return _fail(f"{X.RESULTS / f'{file}.json'} exists; published results are never overwritten")
+    kw: dict = {"confirmatory": not pilot}
+    if pilot:  # the smoke seed ranges: disjoint from every confirmatory range
+        kw["range_name"] = "smoke"
+        if args.name == "hpo-003":
+            kw["validation_range"] = "smoke_validation"
+    try:
+        if args.name == "hpo-001":
+            doc = X.hpo001(seeds, args.procs, **kw)
+        elif args.name == "hpo-002":
+            doc = X.hpo002(seeds, args.procs, **kw)
+        elif args.name == "hpo-003":
+            doc = X.hpo003(seeds, args.procs, max(8, seeds * 2 // 3), **kw)
+        else:
+            doc = X.generalization(seeds, args.procs, **kw)
+    except X.ProtocolError as e:
+        return _fail(str(e), 1)
+    if pilot:
+        out = X.write(f"{file}-pilot-{time.strftime('%Y%m%dT%H%M%SZ', time.gmtime())}", doc, Path(args.out))
+    else:
+        out = X.write(file, doc)
+    print(f"results: {out}", file=sys.stderr)
+    return 0
 
 
 if __name__ == "__main__":
