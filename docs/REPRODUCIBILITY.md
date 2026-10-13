@@ -84,3 +84,7 @@ are resumable (conditions already in the output file are skipped), so delete or 
   macOS 14 (CI) and macOS 26. The scipy path's ARPACK hierarchy depends on the OS's Accelerate, so it differed on
   macOS 14. Hierarchies computed at run time (generated worlds, including all HPO worlds) can therefore differ
   between OS versions or BLAS builds, and so can any result that depends on them.
+  On Linux x86_64 CI, even the same runner image gives different fingerprints on different runner machines: three runs
+  on 2026-10-13 disagreed on every value, and on the scipy path even two runs made close together disagreed. A
+  Linux-specific golden fixture would therefore be unstable. In all three runs the platform-independent guarantees held
+  for both paths.
