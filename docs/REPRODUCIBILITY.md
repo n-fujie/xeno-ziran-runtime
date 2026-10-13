@@ -73,3 +73,18 @@ are resumable (conditions already in the output file are skipped), so delete or 
 * **Provenance.** Every result records the package version, code hash, git commit and whether the tree had
   uncommitted changes (when run from a source checkout), Python and numpy versions, the seed list and the
   effective configuration.
+
+* **Engine-conformance fixture** (`backend/tests/fixtures/conformance_reference.json`): its bit-level values are
+  defined on macOS arm64 (the iOS app's platform). Linux x86_64 CI, with the same numpy and scipy versions, gives other
+  fingerprints from the initial state on. The causes are the generator's vectorised `exp` and the ARPACK hierarchy on
+  OpenBLAS. The graph structure is identical there, and rewind and save/load stay bit-identical within a run. So on
+  other platforms `test_compat.py` checks those platform-independent guarantees, and the golden values are checked on
+  macOS arm64, both locally and in the `conformance-macos` CI job.
+  On macOS arm64, the stand-in path (numpy plus the cached reference hierarchy) reproduces every golden value on both
+  macOS 14 (CI) and macOS 26. The scipy path's ARPACK hierarchy depends on the OS's Accelerate, so it differed on
+  macOS 14. Hierarchies computed at run time (generated worlds, including all HPO worlds) can therefore differ
+  between OS versions or BLAS builds, and so can any result that depends on them.
+  On Linux x86_64 CI, even the same runner image gives different fingerprints on different runner machines: three runs
+  on 2026-10-13 disagreed on every value, and on the scipy path even two runs made close together disagreed. A
+  Linux-specific golden fixture would therefore be unstable. In all three runs the platform-independent guarantees held
+  for both paths.

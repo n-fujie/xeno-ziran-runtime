@@ -28,6 +28,20 @@ jobs:
           xzr run smoke --out ci-a --procs 2
           xzr run smoke --out ci-b --procs 2
           xzr compare ci-a/smoke/* ci-b/smoke/* --json | python -c "import json,sys; c=json.load(sys.stdin)['counts']; assert set(c) == {'same'}, c; print(c)"
+  conformance-macos:
+    # the golden engine-conformance fixture is defined on macOS arm64 (the iOS app's platform); see tests/test_compat.py
+    runs-on: macos-14
+    env:
+      OMP_NUM_THREADS: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: install
+        run: pip install -e "backend[dev]"
+      - name: engine conformance against the golden fixture
+        run: cd backend && pytest -q tests/test_compat.py
   frontend:
     runs-on: ubuntu-latest
     steps:
