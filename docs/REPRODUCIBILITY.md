@@ -80,3 +80,7 @@ are resumable (conditions already in the output file are skipped), so delete or 
   OpenBLAS. The graph structure is identical there, and rewind and save/load stay bit-identical within a run. So on
   other platforms `test_compat.py` checks those platform-independent guarantees, and the golden values are checked on
   macOS arm64, both locally and in the `conformance-macos` CI job.
+  On macOS arm64, the stand-in path (numpy plus the cached reference hierarchy) reproduces every golden value on both
+  macOS 14 (CI) and macOS 26. The scipy path's ARPACK hierarchy depends on the OS's Accelerate, so it differed on
+  macOS 14. Hierarchies computed at run time (generated worlds, including all HPO worlds) can therefore differ
+  between OS versions or BLAS builds, and so can any result that depends on them.
