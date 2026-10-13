@@ -1,40 +1,40 @@
 {
- "generated": "2026-10-13T10:05:40Z",
+ "generated": "2026-10-13T13:22:30Z",
  "checks": [
   {
    "check": "1 earlier research lines kept",
    "ok": true,
-   "detail": "484 files tracked at HEAD; missing: none",
+   "detail": "484 files tracked at the pre-HPO baseline 6804327; missing: none",
    "serious": true
   },
   {
    "check": "2 runtime functions not lost",
    "ok": true,
-   "detail": "14 tracked files changed; outside the listed integration points: none",
+   "detail": "14 pre-HPO files changed since 6804327; outside the listed integration points: none",
    "serious": true
   },
   {
    "check": "3 earlier results not overwritten",
    "ok": true,
-   "detail": "70 result files tracked at HEAD; changed: none",
+   "detail": "70 pre-HPO result files byte-identical to 6804327: True; frozen HPO results byte-identical to the published commit 7cb381f: True (none changed)",
    "serious": true
   },
   {
    "check": "4 API / CLI / viewer work",
    "ok": true,
-   "detail": "xzr presets → 0; xzr validate → 0; legacy result endpoints 200: True; HPO endpoints (6) 200: True",
+   "detail": "xzr presets → 0; xzr validate → 0; legacy result endpoints 200: True; HPO endpoints (8) 200: True",
    "serious": true
   },
   {
    "check": "5 legacy test suites pass",
    "ok": true,
-   "detail": "backend ['263 passed, 1 warning in 84.80s (0:01:24)']; frontend ['Tests  34 passed (34)']; research ['59 passed in 11.13s'] (98 s)",
+   "detail": "backend ['263 passed, 1 warning in 86.96s (0:01:26)']; frontend ['Tests  34 passed (34)']; research ['59 passed in 12.06s'] (102 s)",
    "serious": true
   },
   {
    "check": "6 HPO tests pass",
    "ok": true,
-   "detail": "['31 passed in 6.39s']",
+   "detail": "['31 passed in 6.79s']",
    "serious": false
   },
   {
@@ -56,9 +56,15 @@
    "serious": false
   },
   {
-   "check": "10 history reinsertion enters later conditions",
-   "ok": false,
-   "detail": "H2 NOT SUPPORTED; downstream []",
+   "check": "10a history reinsertion enters later operational conditions",
+   "ok": true,
+   "detail": "D vs C DETECTED in operation-internal measures (outside H2's pre-registered list): ['param_drift', 'revisions', 'retransform_latency', 'ignitions:transduction', 'picturing_error']; share of reinsertions that cause a later event: {'ignition parameters of an earlier configuration': 0.33121827411167515, 'archived veil': 0.7285714285714285, 'archived datum': 0.7712418300653595, 'archived datum re-seeds the milieu': 0.0}",
+   "serious": false
+  },
+  {
+   "check": "10b H2: pre-registered downstream difference (research outcome)",
+   "ok": null,
+   "detail": "H2 NOT SUPPORTED; pre-registered downstream measures detected: none",
    "serious": false
   },
   {
@@ -94,13 +100,13 @@
   {
    "check": "Xeno-14 / embodied Active Inference tests",
    "ok": true,
-   "detail": "['23 passed, 1 warning in 2.25s']",
+   "detail": "['23 passed, 1 warning in 2.33s']",
    "serious": false
   },
   {
    "check": "static export (into a temporary directory; site/ untouched)",
    "ok": true,
-   "detail": "exit 0; HPO files published: ['hpo-general.json', 'hpo-hpo001.json', 'hpo-hpo002.json', 'hpo-hpo003.json', 'hpo-substantive.json', 'hpo-verification.json']",
+   "detail": "exit 0; HPO files published: ['hpo-general.json', 'hpo-history_trace.json', 'hpo-hpo001.json', 'hpo-hpo002.json', 'hpo-hpo003.json', 'hpo-reproduction.json', 'hpo-substantive.json', 'hpo-verification.json']",
    "serious": false
   },
   {

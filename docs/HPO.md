@@ -226,6 +226,114 @@ For the post-hoc analysis, regression report and generated docs, run in order:
 `hpo_verify.py` needs the sibling repository `ziran-xeno-simulator` next to this one. Pass `--embodied-python PATH`
 for the embodied suites.
 
+## Effects: implementation path and evidence
+
+An event count is not taken as evidence of transformation. Each kind of effect is tied to the code path that produces it
+and to the measure that shows it. "conf." marks confirmatory results (HPO-002, 360 seeds, C vs B unless noted);
+"post-hoc" marks the descriptive re-run (`substantive.json`); "expl." marks the exploratory counterfactual trace
+(`history_trace.json`).
+
+| effect | implementation path | evidence |
+|---|---|---|
+| event occurrence | `CausalHistory.add` | event counts only. They are not used as evidence below. |
+| state modification | `Field._transform`, `_competition`, `_filter` (before ≠ after is asserted in tests) | post-hoc Q4: 22 % of parameters still changed at the end (B: 16 %, own feedback only) |
+| ignition-condition change | `RULES` effects `primary` / `ign`; `_revise` (instrument level); veils (`Instruments.veiled_mask`) | conf.: `first_ignition_mean`, `fired_samples`, `unobservable_samples` DETECTED. Post-hoc Q1: e.g. picturing tolerance −8 % in 48/48 runs |
+| executable-rule change | `RULES` effect `rule`; competition attenuation; the closure filter rewrites other operations' requests | post-hoc Q1: transduction factor (118 changes per run), assemblage links −24 %. `filtered` DETECTED |
+| downstream reachability | the world's gates and connections, from compiled requests | conf. C vs B: `op_states_visited` +36 % DETECTED; `reach_from_regions` and `reachable_share` not detected (see H1 conditions) |
+| historical reinsertion | `Field._reinsert` (see below) | conf. D vs C: parameter drift −27 %, revisions −11 %, transduction ignitions −8 % DETECTED. H2 pre-registered measures: none |
+| operational cessation | `Field._cease` (blind or condition votes) | conf. H3: consequences detected for all six kinds |
+| re-ignition | `Field._sample` (ceased → FIRED) | conf. H4: detected for all six kinds |
+| recursive reconfiguration | `reconfig.Controller` + `reconfig.apply` (sandbox) | conf. HPO-003: detected against both static and random controls |
+
+### When H1 holds (exploratory; the pre-registered verdict is unchanged)
+
+The pre-registered generalization verdict stands: **H1 does not generalize** (world and operation effects together
+in 2 of 6 settings, where the protocol requires at least half). The reading below is an exploratory look at the same
+frozen contrasts. It tests nothing new and does not change that verdict.
+
+The operation-level part of H1 (states visited, unobservability) is detected in the base setting and in all six
+generalization settings. The world-level part depends on the setting:
+
+* **World memory** falls under mutual transformation in every setting (−2 % to −28 %, always the same direction). It is
+  DETECTED at 360 seeds and in `sparse` and `n1200`. Elsewhere it is UNRESOLVED with d_z of 0.2–0.4: at 64 seeds that is
+  mostly a matter of statistical power.
+* **Field ignitions** change sign between settings (−6 % to +5 %): this part depends on the regime.
+* **With `placement = separate`**, transformations themselves are not detected. The rules need overlapping or
+  co-located regions. Mutual transformation in this proxy needs shared configurations: when the series do not share
+  them, there is little to transform.
+
+## History Reentry: execution path and evidence
+
+| step | implementation | what happens |
+|---|---|---|
+| 1. generation | `_act_concrescence` (datum), `_act_withdrawal` (veil), `Field._record_series` (ignition parameters every step) | past operational differences are produced |
+| 2. recording | `Field._execute` "archive" → `Field.archive` (capacity 64); `Field._param_hist` (last 64 steps) | kept in external memory |
+| 3. retrieval | `Field._reinsert`: entries at least `lag` (60) steps old; data from the 3 most recent such entries, veils from the 2 most recent; parameters from ≥ 60 steps ago | every `every` (40) steps from step 80 |
+| 4. reinsertion | `World.deposit_memory(nodes, 0.3)`; `Veil("history", until = t + 10)`; restore `op.ign` | into the world's memory, the observation conditions and the ignition conditions |
+| 5. ignition conditions | `State.theta_eff` (signed memory coupling); `Instruments.veiled_mask`; `Operation.evaluate` reads the restored parameters | effective thresholds, visibility and ignition parameters change |
+| 6. intervention selection | requests depend on observations (`_act_*`), compiled in `Field._execute` | other configurations are acted on |
+| 7. reachability | world dynamics | measured by `reach_from_regions`, `reachable_share`, `op_states_visited` |
+| 8. cessation / re-ignition | cease votes and FIRED in `Field._sample` | measured |
+| 9. recursive feedback | `Field._feedback` (habituation); HPO-003 changes `history.lag` when reinsertions cause nothing | measured in HPO-003 |
+| 10. counterfactual | D vs C (confirmatory); per-moment fork without the reinsertion (`hpo_history_trace.py`, exploratory) | below |
+
+### Exploratory investigation: counterfactual history trace
+
+* **Status:** exploratory. It was not pre-registered, tests no hypothesis, and cannot change H2.
+* **Script and result:** `backend/scripts/hpo_history_trace.py` → `results/hpo/history_trace.json`.
+* **Seeds:** the first 32 confirmatory HPO-002 seeds (generator 100–131, engine 20000–20031). Condition D, with the
+  settings and code of the confirmatory run.
+* **Intervention design:** at each reinsertion moment that can be followed (steps 80, 120, 160 and 200; the one at step 240 is the run's last step), the whole field — world,
+  operations, archive and causal history — is deep-copied just before the step. The copy takes that one step without
+  the reinsertion, either all of it or a single component: data → memory, veils → observation, or parameters →
+  ignition conditions. Both branches then continue with identical exogenous and endogenous streams and are compared
+  after 1, 10 and 30 steps.
+* **Effect sizes:** reported as mean differences (with − without) per moment, both absolute and signed. With
+  identical streams, every difference is caused by the skipped reinsertion and how the dynamics carry it.
+* **Limitations:**
+  * no inferential statistics;
+  * one condition (D) and one regime;
+  * moments within a seed are not independent;
+  * the effect of the reinsertion at step 240 cannot be followed.
+
+128 reinsertion moments were traced. Results:
+
+* **It enters.** One step after reinsertion, memory in the receiving configurations differs by 0.35 and effective
+  thresholds by 0.043. About 3.3 operations have other ignition parameters.
+* **It fades.** The memory difference falls to 0.12 after 10 steps and 0.05 after 30 (memory decays).
+* **It propagates weakly and without direction.** After 30 steps, 0.55 operations per moment have another ignition
+  status, and field ignitions differ by 5.9 in absolute terms but only −0.5 on average (signed).
+* **Reinserted veils** change observation only. They reached the world state in 11–12 % of moments.
+* **In about 20 % of moments no data was re-inserted.** The 3 most recent eligible archive entries were all veils:
+  retrieval takes the most recent entries of any type. This is a design property of the frozen mechanism, not
+  changed here.
+
+**H2 interpretation.** No software defect was found: every step of the path executes and its effects are measured.
+The pre-registered world measures of D vs C are EQUIVALENT (their 95 % intervals lie within ±5 %), so the null at
+the world level is shown, not merely undetected. Reinsertion does change later operational conditions. Parameter
+drift, revisions, re-transformation latency and transduction ignitions are DETECTED, but none of these is in H2's
+pre-registered list, so H2 remains NOT SUPPORTED and they are reported as exploratory.
+
+The likely reasons lie in the model:
+
+* deposits are small and decay within tens of steps;
+* memory coupling is signed, so a deposit raises some thresholds and lowers others;
+* restored parameters are re-transformed by the ongoing interactions.
+
+H2 is not supported in this proxy, and the limit is the model's: transient, sign-symmetric history. It is not a
+statistical-power problem at the world level. Until 2026-10-13, verification check 10 was labelled "history
+reinsertion enters later conditions" but tested the H2 verdict. It is now split into 10a (entry: pass) and 10b (H2:
+research outcome).
+
+## Cross-platform reproducibility
+
+* HPO runs are bit-identical on the same machine and software: `xzr hpo verify`, the seed-0 trace check, and the
+  independent reproduction below.
+* Worlds compute their address hierarchy with ARPACK, whose last bits depend on the BLAS. It differs between macOS 14
+  and macOS 26 on arm64, and between macOS and Linux (see `docs/REPRODUCIBILITY.md` and PR #2). HPO regions are
+  placed from the hierarchy, so a re-run on another OS or BLAS can place operations differently.
+* There, only statistical agreement can be expected, not identical numbers, and it has not been tested.
+
 ## Philosophical correspondence, by layer
 
 For every series the layers below are kept apart. Nothing in a lower layer is evidence for an upper one, and a

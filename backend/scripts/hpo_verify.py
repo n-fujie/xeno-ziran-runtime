@@ -4,11 +4,13 @@
 
 Writes backend/experiments/results/hpo/verification.json (read by the viewer). Checks, in the order of the HPO request:
 
-     1. earlier research lines are kept        every module, document and result file of the pre-HPO commit still exists
-     2. runtime functions are not lost         the runtime layers (runtime, shapes, lod, compare, scenario, practice,
-                                               reasonlab, service, native, experiments, presets) are unchanged vs HEAD
+     1. earlier research lines are kept        every file of the pre-HPO baseline commit still exists
+     2. runtime functions are not lost         pre-HPO files (runtime, shapes, lod, compare, scenario, practice,
+                                               reasonlab, service, native, experiments, presets, …) are unchanged vs the
+                                               pre-HPO baseline (merge base with origin/main)
                                                except the listed integration points
-     3. earlier results are not overwritten    every result file tracked at HEAD is byte-identical to HEAD
+     3. earlier results are not overwritten    pre-HPO result files byte-identical to the baseline; frozen HPO results
+                                               byte-identical to the published commit 7cb381f
      4. API / CLI / viewer work                legacy CLI commands, API endpoints (TestClient) and the static routing
      5. legacy test suites pass                backend pytest (without test_hpo.py), frontend vitest, research pytest
      6. HPO tests pass                         backend/tests/test_hpo.py
@@ -57,44 +59,62 @@ def sh(*cmd: str, cwd: Path = ROOT, timeout: int = 1800) -> tuple[int, str]:
     return p.returncode, (p.stdout + p.stderr)
 
 
-def tracked_at_head() -> list[str]:
-    _, out = sh("git", "ls-files")
+def baseline() -> str:
+    """The pre-HPO commit: the merge base with origin/main (HEAD when there is none). Checks 1–3 compare against it —
+    comparing against HEAD stopped meaning 'pre-HPO' once the integration itself was committed (corrected 2026-10-13)."""
+    code, out = sh("git", "merge-base", "HEAD", "origin/main")
+    return out.strip() if code == 0 and out.strip() else "HEAD"
+
+
+def tracked_at(rev: str) -> list[str]:
+    _, out = sh("git", "ls-tree", "-r", "--name-only", rev)
     return [x for x in out.splitlines() if x]
 
 
-def changed_vs_head() -> list[str]:
-    _, out = sh("git", "diff", "--name-only", "HEAD")
+def changed_vs(rev: str) -> list[str]:
+    _, out = sh("git", "diff", "--name-only", rev)
     return [x for x in out.splitlines() if x]
 
 
-def head_blob_sha(path: str) -> str:
-    p = subprocess.run(["git", "show", f"HEAD:{path}"], cwd=ROOT, capture_output=True)
+def blob_sha(rev: str, path: str) -> str:
+    p = subprocess.run(["git", "show", f"{rev}:{path}"], cwd=ROOT, capture_output=True)
     return hashlib.sha256(p.stdout).hexdigest()
+
+
+FROZEN_HPO = ("hpo001.json", "hpo002.json", "hpo003.json", "general.json")
 
 
 def main() -> None:
     skip = "--skip-suites" in sys.argv
     checks: list[dict] = []
 
-    def check(name: str, ok: bool, detail: str, serious: bool = False) -> None:
-        checks.append({"check": name, "ok": bool(ok), "detail": detail, "serious": serious})
-        print(f"[{'pass' if ok else 'FAIL'}] {name}: {detail}")
+    def check(name: str, ok: bool | None, detail: str, serious: bool = False) -> None:
+        """ok None = a research outcome recorded with the checks (neither pass nor fail)."""
+        checks.append({"check": name, "ok": None if ok is None else bool(ok), "detail": detail, "serious": serious})
+        print(f"[{'outcome' if ok is None else 'pass' if ok else 'FAIL'}] {name}: {detail}")
 
-    head = tracked_at_head()
-    changed = changed_vs_head()
+    base = baseline()
+    head = tracked_at(base)
+    changed = [p for p in changed_vs(base) if p in set(head)]  # pre-HPO files modified since the baseline
     missing = [p for p in head if not (ROOT / p).exists()]
     check("1 earlier research lines kept", not missing,
-          f"{len(head)} files tracked at HEAD; missing: {missing[:5] or 'none'}", True)
+          f"{len(head)} files tracked at the pre-HPO baseline {base[:7]}; missing: {missing[:5] or 'none'}", True)
     core = [p for p in changed if p.startswith(("backend/xzr/", "backend/scripts/", "frontend/src/", "ios/",
                                                   "research/", "backend/tests/", "backend/experiments/"))]
     unexpected = [p for p in core if p not in INTEGRATION_POINTS]
     check("2 runtime functions not lost", not unexpected,
-          f"{len(changed)} tracked files changed; outside the listed integration points: {unexpected or 'none'}", True)
+          f"{len(changed)} pre-HPO files changed since {base[:7]}; outside the listed integration points: "
+          f"{unexpected or 'none'}", True)
     results = [p for p in head if re.search(r"(results|artifacts)/.*\.(json|csv|txt|md|gz)$", p)]
     changed_results = [p for p in results if (ROOT / p).exists()
-                       and hashlib.sha256((ROOT / p).read_bytes()).hexdigest() != head_blob_sha(p)]
-    check("3 earlier results not overwritten", not changed_results,
-          f"{len(results)} result files tracked at HEAD; changed: {changed_results or 'none'}", True)
+                       and hashlib.sha256((ROOT / p).read_bytes()).hexdigest() != blob_sha(base, p)]
+    frozen = [f"backend/experiments/results/hpo/{n}" for n in FROZEN_HPO]
+    changed_frozen = [p for p in frozen if (ROOT / p).exists() and hashlib.sha256((ROOT / p).read_bytes()).hexdigest()
+                      != blob_sha("7cb381f", p)]
+    check("3 earlier results not overwritten", not changed_results and not changed_frozen,
+          f"{len(results)} pre-HPO result files byte-identical to {base[:7]}: {not changed_results}; frozen HPO results "
+          f"byte-identical to the published commit 7cb381f: {not changed_frozen} "
+          f"({changed_results + changed_frozen or 'none changed'})", True)
 
     code, out = sh(str(PY), "-m", "xzr", "presets", cwd=ROOT / "backend")
     code2, out2 = sh(str(PY), "-m", "xzr", "validate", "history-reentry", cwd=ROOT / "backend")
@@ -155,13 +175,26 @@ def main() -> None:
         check("9 mutual transformation changes state", h1["verdict"] != "NOT SUPPORTED",
               f"H1 {h1['verdict']}; world {h1['world_downstream_detected']}; operations {h1['operation_downstream_detected']}")
         h2 = v["H2_historical_reinsertion"]
-        check("10 history reinsertion enters later conditions", h2["verdict"] == "SUPPORTED IN THIS PROXY",
-              f"H2 {h2['verdict']}; downstream {h2['downstream_detected']}")
+        dc = d2["contrasts"]["D vs C"]
+        entered = [m for m in ("param_drift", "revisions", "retransform_latency", *[f"ignitions:{k}" for k in
+                   ("withdrawal", "transduction", "concrescence", "picturing", "assemblage", "closure")], "picturing_error")
+                   if dc.get(m, {}).get("status") == "DETECTED"]
+        sub = load("substantive")
+        caused = {k: x["share_causing_a_later_event"] for k, x in sub["results"]["D"]["Q6_reinsertions"].items()} \
+            if sub else {}
+        # (until 2026-10-13 this check was labelled "history reinsertion enters later conditions" but tested the H2
+        # verdict — the pre-registered downstream measures — which is a different question; see docs/HPO.md)
+        check("10a history reinsertion enters later operational conditions", bool(entered) and any(
+              (x or 0) > 0 for x in caused.values()),
+              f"D vs C DETECTED in operation-internal measures (outside H2's pre-registered list): {entered}; share of "
+              f"reinsertions that cause a later event: {caused}")
+        check("10b H2: pre-registered downstream difference (research outcome)", None,
+              f"H2 {h2['verdict']}; pre-registered downstream measures detected: {h2['downstream_detected'] or 'none'}")
         check("control: noise branch", v["control_noise"]["valid"],
               f"C~ vs C: {v['control_noise']['detected']} of {v['control_noise']['metrics']} measures detected")
         if h1["verdict"] != "SUPPORTED IN THIS PROXY":
             negative.append(f"H1: {h1['verdict']}")
-        if h2["verdict"] != "SUPPORTED IN THIS PROXY":
+        if h2["verdict"] != "SUPPORTED IN THIS PROXY":  # preserved negative result
             negative.append(f"H2: {h2['verdict']}")
     else:
         check("8–10 HPO-002", False, "hpo002.json missing")

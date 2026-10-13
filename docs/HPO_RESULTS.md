@@ -369,3 +369,35 @@ Removing withdrawal, closure or assemblage removes most of their downstream tran
 4. A reclassification criterion that can fire, or evidence that partition change through coupling suffices.
 5. Implementations for the proposed variables veil_coverage and conflict_density, then held-out tests.
 6. Consulting the primary texts and revising each proxy's registry entry (and possibly its rule) against them; adding extension candidates only with consulted sources.
+
+## History reinsertion: counterfactual trace (exploratory)
+
+32 confirmatory HPO-002 seeds, condition D. At each reinsertion moment the field was copied and the copy skipped that reinsertion (all of it, or one component); the two then continued with identical streams. Mean differences (with − without) at each window:
+
+| window | variant | moments | memory Δ (receivers) | threshold Δ | ops with other ignition params | ops with other status | abs. field-ignition Δ | signed field-ignition Δ | bit-different |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | all | 128 | 0.346 | 0.0428 | 3.34 | 0 | 0 | 0 | +79.7% |
+| 1 | data | 128 | 0.346 | 0.0428 | 0 | 0 | 0 | 0 | +79.7% |
+| 1 | veils | 128 | 0 | 0 | 0 | 0 | 0 | 0 | +0.0% |
+| 1 | params | 128 | 0 | 0 | 3.34 | 0 | 0 | 0 | +0.0% |
+| 10 | all | 128 | 0.121 | 0.0167 | 3.34 | 0.0938 | 0.867 | -0.586 | +85.2% |
+| 10 | data | 128 | 0.121 | 0.0156 | 0.141 | 0.0391 | 0.742 | -0.602 | +79.7% |
+| 10 | veils | 128 | 0.000561 | 0.000545 | 0.141 | 0.0234 | 0.0938 | -0.0938 | +10.9% |
+| 10 | params | 128 | 2.12e-05 | 0.00117 | 3.26 | 0.0234 | 0.0547 | 0.0391 | +17.2% |
+| 30 | all | 128 | 0.0499 | 0.0127 | 3.55 | 0.555 | 5.88 | -0.531 | +88.3% |
+| 30 | data | 128 | 0.0406 | 0.00877 | 0.492 | 0.102 | 4.4 | -0.805 | +79.7% |
+| 30 | veils | 128 | 0.00254 | 0.00124 | 0.273 | 0.125 | 0.875 | -0.469 | +11.7% |
+| 30 | params | 128 | 0.0109 | 0.00477 | 3.28 | 0.359 | 1.75 | 0.75 | +40.6% |
+
+Executed reinsertions: ignition parameters of an earlier configuration 428, archived veil 40, archived datum 241, archived datum re-seeds the milieu 2. Interpretation: docs/HPO.md, 'History Reentry: execution path and evidence'.
+
+## Independent reproduction
+
+Re-run of every confirmatory experiment with its original protocol, seeds and code, from a clean clone of the published commit on the same machine, written to a separate directory; compared field by field with the published files (run bookkeeping excluded).
+
+| experiment | compared | identical | differences |
+|---|---|---|---|
+| hpo001 | corrections_implemented, experiment, not_a_ranking, paired_comparisons, pilot_assets, results, seeds | True | none |
+| hpo002 | condition_settings, conditions, contrast_pairs, contrasts, divergence_from_R0, experiment, external_effects, horizon, means, paired_comparisons, registry, rules, seed_ranges, seeds, trace, verdicts, warmup, world | True | none |
+| general | paired_comparisons, results, seed_ranges, seeds_per_setting, settings | True | none |
+| hpo003 | base_condition, changed_paths, contrasts, epoch, experiment, final_settings_example, horizon, means, paired_comparisons, proposals, rejected_changes, reproducible_trace, sandbox, seeds, trace_example, validation | True | none |

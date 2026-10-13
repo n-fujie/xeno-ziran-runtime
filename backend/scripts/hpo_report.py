@@ -130,7 +130,42 @@ def results() -> str:
         for key in ("recursive vs static", "random vs static", "recursive vs random"):
             out += ["", f"### {key} (DETECTED measures)", ""] + table(d3["contrasts"][key], only_detected=True)
     out += substantive(d2, d3, dg)
+    out += history_trace()
+    out += reproduction()
     return "\n".join(out) + "\n"
+
+
+def history_trace() -> list[str]:
+    h = load("history_trace")
+    if not h:
+        return []
+    r = h["results"]
+    out = ["", "## History reinsertion: counterfactual trace (exploratory)", "",
+           f"{h['seeds']} confirmatory HPO-002 seeds, condition D. At each reinsertion moment the field was copied and "
+           "the copy skipped that reinsertion (all of it, or one component); the two then continued with identical "
+           "streams. Mean differences (with − without) at each window:", "",
+           "| window | variant | moments | memory Δ (receivers) | threshold Δ | ops with other ignition params | ops with "
+           "other status | abs. field-ignition Δ | signed field-ignition Δ | bit-different |",
+           "|---|---|---|---|---|---|---|---|---|---|"]
+    for w, byv in r["by_window"].items():
+        for v, x in byv.items():
+            out.append(f"| {w} | {v} | {x['moments']} | {f(x['memory_nodes_abs'])} | {f(x['theta_nodes_abs'])} | "
+                       f"{f(x['ops_with_other_ign_params'])} | {f(x['ops_with_other_status'])} | {f(x['abs_field_ign'])} | "
+                       f"{f(x['field_ign'])} | {pct(x['bit_different_share'])} |")
+    out += ["", "Executed reinsertions: " + ", ".join(f"{k} {v}" for k, v in r["reinsertions_executed"].items())
+            + ". Interpretation: docs/HPO.md, 'History Reentry: execution path and evidence'."]
+    return out
+
+
+def reproduction() -> list[str]:
+    r = load("reproduction")
+    if not r:
+        return []
+    out = ["", "## Independent reproduction", "", r["method"], "", "| experiment | compared | identical | differences |",
+           "|---|---|---|---|"]
+    for k, x in r["experiments"].items():
+        out.append(f"| {k} | {', '.join(x['compared'])} | {x['identical']} | {x['differences'] or 'none'} |")
+    return out
 
 
 def substantive(d2: dict | None, d3: dict | None, dg: dict | None) -> list[str]:
@@ -251,7 +286,8 @@ def verification() -> str:
            "(a failed serious check — 1 to 5 — stops publication; nothing is discarded).", "",
            "| check | result | detail |", "|---|---|---|"]
     for c in v["checks"]:
-        out.append(f"| {c['check']} | {'pass' if c['ok'] else '**FAIL**'} | {c['detail'].replace('|', '/')} |")
+        res = "outcome" if c["ok"] is None else "pass" if c["ok"] else "**FAIL**"
+        out.append(f"| {c['check']} | {res} | {c['detail'].replace('|', '/')} |")
     out += ["", "## Integration points (pre-HPO files changed, each additively)", "", "| file | change |", "|---|---|"]
     out += [f"| {k} | {x} |" for k, x in v["integration_points"].items()]
     out += ["", "Files changed vs HEAD at verification time: " + (", ".join(v["files_changed_vs_head"]) or "none") + "."]

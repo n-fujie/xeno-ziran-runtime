@@ -429,7 +429,7 @@ function Limits({ d1, dv }: { d1: any; dv: any }) {
       <h4>Verification</h4>
       <ul className="hpo-rows">{(dv.checks ?? []).map((c: any) => (
         <li key={c.check}><span className="small hpo-metric">{c.check}</span>
-          <span className="mono small">{c.ok ? 'pass' : 'FAIL'}</span><span className="small dim">{c.detail}</span></li>))}</ul>
+          <span className="mono small">{c.ok === null ? 'outcome' : c.ok ? 'pass' : 'FAIL'}</span><span className="small dim">{c.detail}</span></li>))}</ul>
     </>)}
   </>);
 }
