@@ -1,0 +1,3 @@
+robustness sweep before re-freezing (smoke seed ranges only)
+jobs 200 errors 0 secs 510
+(64 HPO-002 seeds x all 28 conditions, 6 generalization settings x 16 seeds, 16 HPO-001 seeds, 24 HPO-003 seeds)

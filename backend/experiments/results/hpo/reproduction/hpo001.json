@@ -1,0 +1,2081 @@
+{
+ "experiment": "HPO-001 (re-specified; pilot not inherited)",
+ "seeds": 64,
+ "pilot_assets": {
+  "HPO_001_Pilot.zip": "not available in the implementation environment (searched the machine); no pilot code or result was inherited, reconstructed or estimated"
+ },
+ "corrections_implemented": [
+  "operations receive instrument observations only; the world's true state is read by the harness (oracle access exists only as the explicit truth-leak control)",
+  "exogenous input comes from its own stream, identical in every paired branch; the endogenous stream is tracked and its first divergence from the no-HPO branch is reported (intervention-branched continuation) separately from the exogenously matched comparison",
+  "prediction error (picturing) is reported as a property of the proxy under this configuration, never as a ranking of philosophical theories"
+ ],
+ "results": {
+  "withdrawal": {
+   "truth_leak (oracle vs instrument)": {
+    "ignitions": {
+     "n": 64,
+     "mean_x": 3.296875,
+     "mean_y": 3.296875,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 3.296875,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "fired_samples": {
+     "n": 64,
+     "mean_x": 27.359375,
+     "mean_y": 27.359375,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 27.359375,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "first_ignition_mean": {
+     "n": 64,
+     "mean_x": 56.28125,
+     "mean_y": 56.28125,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 56.28125,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "cessations": {
+     "n": 64,
+     "mean_x": 2.640625,
+     "mean_y": 2.640625,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 2.640625,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "reignitions": {
+     "n": 64,
+     "mean_x": 2.296875,
+     "mean_y": 2.296875,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 2.296875,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "applied_records": {
+     "n": 64,
+     "mean_x": 2495.9375,
+     "mean_y": 2495.9375,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 2495.9375,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "unobservable_samples": {
+     "n": 64,
+     "mean_x": 0.0,
+     "mean_y": 0.0,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 1e-12,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "picturing_error": {
+     "n": 0,
+     "status": "NOT MEASURED",
+     "note": "metric undefined in every pair"
+    },
+    "field_ignitions": {
+     "n": 64,
+     "mean_x": 6662.21875,
+     "mean_y": 6662.21875,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 6662.21875,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "memory_mean": {
+     "n": 64,
+     "mean_x": 0.4147499085349298,
+     "mean_y": 0.4147499085349298,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 0.4147499085349298,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "alive_connections": {
+     "n": 64,
+     "mean_x": 4373.59375,
+     "mean_y": 4373.59375,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 4373.59375,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "gate_mean": {
+     "n": 64,
+     "mean_x": 0.9910877834114084,
+     "mean_y": 0.9910877834114084,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 0.9910877834114084,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "reachable_share": {
+     "n": 64,
+     "mean_x": 1.0,
+     "mean_y": 1.0,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 1.0,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    }
+   },
+   "instrument vs R0 (world)": {
+    "field_ignitions": {
+     "n": 64,
+     "mean_x": 6662.21875,
+     "mean_y": 6640.9375,
+     "mean": 21.28125,
+     "sd": 557.348156238006,
+     "dz": 0.03818304548389356,
+     "relative": 0.003194318709514004,
+     "ci95": [
+      -114.069921875,
+      155.28007812499985
+     ],
+     "p": 0.76081195940203,
+     "noise_floor": 0.0,
+     "scale": 6662.21875,
+     "identical": false,
+     "p_holm": 1.0,
+     "status": "EQUIVALENT"
+    },
+    "memory_mean": {
+     "n": 64,
+     "mean_x": 0.4147499085349298,
+     "mean_y": 0.42197527011139563,
+     "mean": -0.007225361576465769,
+     "sd": 0.06334596889526045,
+     "dz": -0.11406190010942228,
+     "relative": -0.017122713315778845,
+     "ci95": [
+      -0.022127397365596126,
+      0.007910909548749267
+     ],
+     "p": 0.36578171091445427,
+     "noise_floor": 0.0,
+     "scale": 0.42197527011139563,
+     "identical": false,
+     "p_holm": 1.0,
+     "status": "UNRESOLVED"
+    },
+    "alive_connections": {
+     "n": 64,
+     "mean_x": 4373.59375,
+     "mean_y": 4375.9375,
+     "mean": -2.34375,
+     "sd": 27.159270830850595,
+     "dz": -0.08629649943833181,
+     "relative": -0.0005355995143897736,
+     "ci95": [
+      -9.125,
+      4.25
+     ],
+     "p": 0.4999750012499375,
+     "noise_floor": 0.0,
+     "scale": 4375.9375,
+     "identical": false,
+     "p_holm": 1.0,
+     "status": "EQUIVALENT"
+    },
+    "gate_mean": {
+     "n": 64,
+     "mean_x": 0.9910877834114084,
+     "mean_y": 1.0,
+     "mean": -0.008912216588591594,
+     "sd": 0.007698597395101499,
+     "dz": -1.1576415977100325,
+     "relative": -0.008912216588591594,
+     "ci95": [
+      -0.010855753110440465,
+      -0.007059974142567365
+     ],
+     "p": 4.999750012499375e-05,
+     "noise_floor": 0.0,
+     "scale": 1.0,
+     "identical": false,
+     "p_holm": 0.00024998750062496874,
+     "status": "EQUIVALENT"
+    },
+    "reachable_share": {
+     "n": 64,
+     "mean_x": 1.0,
+     "mean_y": 1.0,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 1.0,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    }
+   },
+   "branching": {
+    "endogenous_divergence_step_mean": 102.515625,
+    "share_identical_to_R0": 0.0,
+    "div_connections_mean": 0.22353799599771867,
+    "noise_div_connections_mean": 0.30639992824190065
+   }
+  },
+  "transduction": {
+   "truth_leak (oracle vs instrument)": {
+    "ignitions": {
+     "n": 64,
+     "mean_x": 1.546875,
+     "mean_y": 1.59375,
+     "mean": -0.046875,
+     "sd": 0.6529466178136507,
+     "dz": -0.07178994227270506,
+     "relative": -0.029411764705882353,
+     "ci95": [
+      -0.21875,
+      0.109375
+     ],
+     "p": 0.6913154342282886,
+     "noise_floor": 0.0,
+     "scale": 1.59375,
+     "identical": false,
+     "p_holm": 1.0,
+     "status": "UNRESOLVED"
+    },
+    "fired_samples": {
+     "n": 64,
+     "mean_x": 50.328125,
+     "mean_y": 27.09375,
+     "mean": 23.234375,
+     "sd": 47.56841094926438,
+     "dz": 0.48844126882399685,
+     "relative": 0.4616578702266377,
+     "ci95": [
+      12.233984375,
+      35.375781249999996
+     ],
+     "p": 0.00014999250037498125,
+     "noise_floor": 0.0,
+     "scale": 50.328125,
+     "identical": false,
+     "p_holm": 0.0016499175041247937,
+     "status": "DETECTED"
+    },
+    "first_ignition_mean": {
+     "n": 64,
+     "mean_x": 112.625,
+     "mean_y": 112.625,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 112.625,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "cessations": {
+     "n": 64,
+     "mean_x": 2.59375,
+     "mean_y": 2.1875,
+     "mean": 0.40625,
+     "sd": 2.7297232256932,
+     "dz": 0.14882461202521174,
+     "relative": 0.1566265060240964,
+     "ci95": [
+      -0.203125,
+      1.15625
+     ],
+     "p": 0.27173641317934105,
+     "noise_floor": 0.0,
+     "scale": 2.59375,
+     "identical": false,
+     "p_holm": 1.0,
+     "status": "UNRESOLVED"
+    },
+    "reignitions": {
+     "n": 64,
+     "mean_x": 0.828125,
+     "mean_y": 0.875,
+     "mean": -0.046875,
+     "sd": 0.6529466178136507,
+     "dz": -0.07178994227270506,
+     "relative": -0.05357142857142857,
+     "ci95": [
+      -0.203125,
+      0.109375
+     ],
+     "p": 0.6842657867106645,
+     "noise_floor": 0.0,
+     "scale": 0.875,
+     "identical": false,
+     "p_holm": 1.0,
+     "status": "UNRESOLVED"
+    },
+    "applied_records": {
+     "n": 64,
+     "mean_x": 3431.21875,
+     "mean_y": 1550.078125,
+     "mean": 1881.140625,
+     "sd": 3871.740246383565,
+     "dz": 0.48586436725890814,
+     "relative": 0.5482426980209292,
+     "ci95": [
+      979.9875,
+      2905.8703124999997
+     ],
+     "p": 4.999750012499375e-05,
+     "noise_floor": 0.0,
+     "scale": 3431.21875,
+     "identical": false,
+     "p_holm": 0.000599970001499925,
+     "status": "DETECTED"
+    },
+    "unobservable_samples": {
+     "n": 64,
+     "mean_x": 0.0,
+     "mean_y": 0.0,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 1e-12,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "picturing_error": {
+     "n": 0,
+     "status": "NOT MEASURED",
+     "note": "metric undefined in every pair"
+    },
+    "field_ignitions": {
+     "n": 64,
+     "mean_x": 7042.734375,
+     "mean_y": 7010.234375,
+     "mean": 32.5,
+     "sd": 82.92203260933425,
+     "dz": 0.3919344350025205,
+     "relative": 0.0046146849035464295,
+     "ci95": [
+      14.421875,
+      54.26249999999993
+     ],
+     "p": 0.000199990000499975,
+     "noise_floor": 0.0,
+     "scale": 7042.734375,
+     "identical": false,
+     "p_holm": 0.00199990000499975,
+     "status": "EQUIVALENT"
+    },
+    "memory_mean": {
+     "n": 64,
+     "mean_x": 0.46448250241485467,
+     "mean_y": 0.45816353812712857,
+     "mean": 0.006318964287726155,
+     "sd": 0.01601316008399262,
+     "dz": 0.39461069861175235,
+     "relative": 0.013604310721875899,
+     "ci95": [
+      0.0028213073483174707,
+      0.010574263176984788
+     ],
+     "p": 0.0011499425028748563,
+     "noise_floor": 0.0,
+     "scale": 0.46448250241485467,
+     "identical": false,
+     "p_holm": 0.010349482525873706,
+     "status": "EQUIVALENT"
+    },
+    "alive_connections": {
+     "n": 64,
+     "mean_x": 4383.421875,
+     "mean_y": 4383.09375,
+     "mean": 0.328125,
+     "sd": 4.8009743968001075,
+     "dz": 0.06834550090887763,
+     "relative": 7.485590238790328e-05,
+     "ci95": [
+      -0.750390625,
+      1.578125
+     ],
+     "p": 0.6222188890555472,
+     "noise_floor": 0.0,
+     "scale": 4383.421875,
+     "identical": false,
+     "p_holm": 1.0,
+     "status": "EQUIVALENT"
+    },
+    "gate_mean": {
+     "n": 64,
+     "mean_x": 1.0,
+     "mean_y": 1.0,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 1.0,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "reachable_share": {
+     "n": 64,
+     "mean_x": 1.0,
+     "mean_y": 1.0,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 1.0,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    }
+   },
+   "instrument vs R0 (world)": {
+    "field_ignitions": {
+     "n": 64,
+     "mean_x": 7010.234375,
+     "mean_y": 6640.9375,
+     "mean": 369.296875,
+     "sd": 696.7585876857844,
+     "dz": 0.5300212749821764,
+     "relative": 0.052679675920250524,
+     "ci95": [
+      210.089453125,
+      545.3804687499999
+     ],
+     "p": 4.999750012499375e-05,
+     "noise_floor": 0.0,
+     "scale": 7010.234375,
+     "identical": false,
+     "p_holm": 0.00024998750062496874,
+     "status": "DETECTED"
+    },
+    "memory_mean": {
+     "n": 64,
+     "mean_x": 0.45816353812712857,
+     "mean_y": 0.42197527011139563,
+     "mean": 0.036188268015732966,
+     "sd": 0.06686964540472108,
+     "dz": 0.5411763109660221,
+     "relative": 0.07898548226614152,
+     "ci95": [
+      0.02096671030014176,
+      0.052827370480704516
+     ],
+     "p": 4.999750012499375e-05,
+     "noise_floor": 0.0,
+     "scale": 0.45816353812712857,
+     "identical": false,
+     "p_holm": 0.00024998750062496874,
+     "status": "DETECTED"
+    },
+    "alive_connections": {
+     "n": 64,
+     "mean_x": 4383.09375,
+     "mean_y": 4375.9375,
+     "mean": 7.15625,
+     "sd": 24.659084259313776,
+     "dz": 0.29020745153166316,
+     "relative": 0.0016326938021802523,
+     "ci95": [
+      1.3425781250000002,
+      13.766406249999996
+     ],
+     "p": 0.0231988400579971,
+     "noise_floor": 0.0,
+     "scale": 4383.09375,
+     "identical": false,
+     "p_holm": 0.06959652017399129,
+     "status": "EQUIVALENT"
+    },
+    "gate_mean": {
+     "n": 64,
+     "mean_x": 1.0,
+     "mean_y": 1.0,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 1.0,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "reachable_share": {
+     "n": 64,
+     "mean_x": 1.0,
+     "mean_y": 1.0,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 1.0,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    }
+   },
+   "branching": {
+    "endogenous_divergence_step_mean": 134.453125,
+    "share_identical_to_R0": 0.28125,
+    "div_connections_mean": 0.17499934729456967,
+    "noise_div_connections_mean": 0.30639992824190065
+   }
+  },
+  "concrescence": {
+   "truth_leak (oracle vs instrument)": {
+    "ignitions": {
+     "n": 64,
+     "mean_x": 1.3125,
+     "mean_y": 1.3125,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 1.3125,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "fired_samples": {
+     "n": 64,
+     "mean_x": 46.84375,
+     "mean_y": 46.84375,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 46.84375,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "first_ignition_mean": {
+     "n": 64,
+     "mean_x": 55.6875,
+     "mean_y": 55.6875,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 55.6875,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "cessations": {
+     "n": 64,
+     "mean_x": 0.609375,
+     "mean_y": 0.609375,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 0.609375,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "reignitions": {
+     "n": 64,
+     "mean_x": 0.484375,
+     "mean_y": 0.484375,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 0.484375,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "applied_records": {
+     "n": 64,
+     "mean_x": 580.46875,
+     "mean_y": 580.46875,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 580.46875,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "unobservable_samples": {
+     "n": 64,
+     "mean_x": 0.0,
+     "mean_y": 0.0,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 1e-12,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "picturing_error": {
+     "n": 0,
+     "status": "NOT MEASURED",
+     "note": "metric undefined in every pair"
+    },
+    "field_ignitions": {
+     "n": 64,
+     "mean_x": 6572.59375,
+     "mean_y": 6572.59375,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 6572.59375,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "memory_mean": {
+     "n": 64,
+     "mean_x": 0.431835499551786,
+     "mean_y": 0.431835499551786,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 0.431835499551786,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "alive_connections": {
+     "n": 64,
+     "mean_x": 4371.8125,
+     "mean_y": 4371.8125,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 4371.8125,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "gate_mean": {
+     "n": 64,
+     "mean_x": 1.0,
+     "mean_y": 1.0,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 1.0,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "reachable_share": {
+     "n": 64,
+     "mean_x": 1.0,
+     "mean_y": 1.0,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 1.0,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    }
+   },
+   "instrument vs R0 (world)": {
+    "field_ignitions": {
+     "n": 64,
+     "mean_x": 6572.59375,
+     "mean_y": 6640.9375,
+     "mean": -68.34375,
+     "sd": 509.7329278534939,
+     "dz": -0.13407756545726468,
+     "relative": -0.010291280410333632,
+     "ci95": [
+      -202.306640625,
+      53.4562499999999
+     ],
+     "p": 0.2928353582320884,
+     "noise_floor": 0.0,
+     "scale": 6640.9375,
+     "identical": false,
+     "p_holm": 0.9851507424628768,
+     "status": "EQUIVALENT"
+    },
+    "memory_mean": {
+     "n": 64,
+     "mean_x": 0.431835499551786,
+     "mean_y": 0.42197527011139563,
+     "mean": 0.009860229440390403,
+     "sd": 0.052495260562221716,
+     "dz": 0.1878308505337019,
+     "relative": 0.02283329983436889,
+     "ci95": [
+      -0.002939467831019871,
+      0.022472151819682103
+     ],
+     "p": 0.13579321033948302,
+     "noise_floor": 0.0,
+     "scale": 0.431835499551786,
+     "identical": false,
+     "p_holm": 0.6789660516974151,
+     "status": "UNRESOLVED"
+    },
+    "alive_connections": {
+     "n": 64,
+     "mean_x": 4371.8125,
+     "mean_y": 4375.9375,
+     "mean": -4.125,
+     "sd": 28.030878664968007,
+     "dz": -0.14715914007916128,
+     "relative": -0.0009426551453260016,
+     "ci95": [
+      -11.09375,
+      2.7351562499999957
+     ],
+     "p": 0.2462876856157192,
+     "noise_floor": 0.0,
+     "scale": 4375.9375,
+     "identical": false,
+     "p_holm": 0.9851507424628768,
+     "status": "EQUIVALENT"
+    },
+    "gate_mean": {
+     "n": 64,
+     "mean_x": 1.0,
+     "mean_y": 1.0,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 1.0,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "reachable_share": {
+     "n": 64,
+     "mean_x": 1.0,
+     "mean_y": 1.0,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 1.0,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    }
+   },
+   "branching": {
+    "endogenous_divergence_step_mean": 98.90625,
+    "share_identical_to_R0": 0.171875,
+    "div_connections_mean": 0.21373117188389476,
+    "noise_div_connections_mean": 0.30639992824190065
+   }
+  },
+  "picturing": {
+   "truth_leak (oracle vs instrument)": {
+    "ignitions": {
+     "n": 64,
+     "mean_x": 0.296875,
+     "mean_y": 0.296875,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 0.296875,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "fired_samples": {
+     "n": 64,
+     "mean_x": 1.6875,
+     "mean_y": 1.578125,
+     "mean": 0.109375,
+     "sd": 0.6202198151039832,
+     "dz": 0.17634876754407258,
+     "relative": 0.06481481481481481,
+     "ci95": [
+      0.0,
+      0.28125
+     ],
+     "p": 0.5045747712614369,
+     "noise_floor": 0.0,
+     "scale": 1.6875,
+     "identical": false,
+     "p_holm": 1.0,
+     "status": "UNRESOLVED"
+    },
+    "first_ignition_mean": {
+     "n": 64,
+     "mean_x": 180.15625,
+     "mean_y": 180.15625,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 180.15625,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "cessations": {
+     "n": 64,
+     "mean_x": 0.0,
+     "mean_y": 0.0,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 1e-12,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "reignitions": {
+     "n": 64,
+     "mean_x": 0.0,
+     "mean_y": 0.0,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 1e-12,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "applied_records": {
+     "n": 64,
+     "mean_x": 55.6875,
+     "mean_y": 53.5,
+     "mean": 2.1875,
+     "sd": 15.193853184863102,
+     "dz": 0.14397269562794646,
+     "relative": 0.03928170594837262,
+     "ci95": [
+      -0.78125,
+      6.328125
+     ],
+     "p": 0.4976751162441878,
+     "noise_floor": 0.0,
+     "scale": 55.6875,
+     "identical": false,
+     "p_holm": 1.0,
+     "status": "UNRESOLVED"
+    },
+    "unobservable_samples": {
+     "n": 64,
+     "mean_x": 0.0,
+     "mean_y": 0.0,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 1e-12,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "picturing_error": {
+     "n": 64,
+     "mean_x": 0.6636283473873263,
+     "mean_y": 0.6688555864879401,
+     "mean": -0.005227239100613647,
+     "sd": 0.010537931058292116,
+     "dz": -0.49604035855789946,
+     "relative": -0.007815198386935947,
+     "ci95": [
+      -0.007841105147631438,
+      -0.002669380504559885
+     ],
+     "p": 0.00024998750062496874,
+     "noise_floor": 0.0,
+     "scale": 0.6688555864879401,
+     "identical": false,
+     "p_holm": 0.003249837508124594,
+     "status": "EQUIVALENT"
+    },
+    "field_ignitions": {
+     "n": 64,
+     "mean_x": 6507.5,
+     "mean_y": 6508.25,
+     "mean": -0.75,
+     "sd": 45.311969756065594,
+     "dz": -0.0165519178273993,
+     "relative": -0.0001152383513233204,
+     "ci95": [
+      -12.328125,
+      11.015625
+     ],
+     "p": 0.7501124943752813,
+     "noise_floor": 0.0,
+     "scale": 6508.25,
+     "identical": false,
+     "p_holm": 1.0,
+     "status": "EQUIVALENT"
+    },
+    "memory_mean": {
+     "n": 64,
+     "mean_x": 0.4100471977092277,
+     "mean_y": 0.41038353898889174,
+     "mean": -0.00033634127966399724,
+     "sd": 0.0072941364837593526,
+     "dz": -0.0461111853901929,
+     "relative": -0.0008195779014252843,
+     "ci95": [
+      -0.0019895068450729025,
+      0.0013801328630129173
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 0.41038353898889174,
+     "identical": false,
+     "p_holm": 1.0,
+     "status": "EQUIVALENT"
+    },
+    "alive_connections": {
+     "n": 64,
+     "mean_x": 4371.625,
+     "mean_y": 4371.390625,
+     "mean": 0.234375,
+     "sd": 3.1307090707560623,
+     "dz": 0.07486323216337656,
+     "relative": 5.361278700711978e-05,
+     "ci95": [
+      -0.453125,
+      1.109375
+     ],
+     "p": 0.7469126543672816,
+     "noise_floor": 0.0,
+     "scale": 4371.625,
+     "identical": false,
+     "p_holm": 1.0,
+     "status": "EQUIVALENT"
+    },
+    "gate_mean": {
+     "n": 64,
+     "mean_x": 1.0,
+     "mean_y": 1.0,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 1.0,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "reachable_share": {
+     "n": 64,
+     "mean_x": 1.0,
+     "mean_y": 1.0,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 1.0,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    }
+   },
+   "instrument vs R0 (world)": {
+    "field_ignitions": {
+     "n": 64,
+     "mean_x": 6508.25,
+     "mean_y": 6640.9375,
+     "mean": -132.6875,
+     "sd": 370.57659384365047,
+     "dz": -0.3580568827182378,
+     "relative": -0.019980236224177685,
+     "ci95": [
+      -230.21953125,
+      -52.35585937500002
+     ],
+     "p": 0.0014499275036248187,
+     "noise_floor": 0.0,
+     "scale": 6640.9375,
+     "identical": false,
+     "p_holm": 0.007249637518124094,
+     "status": "EQUIVALENT"
+    },
+    "memory_mean": {
+     "n": 64,
+     "mean_x": 0.41038353898889174,
+     "mean_y": 0.42197527011139563,
+     "mean": -0.01159173112250389,
+     "sd": 0.04342919483572367,
+     "dz": -0.2669110299270123,
+     "relative": -0.027470166958940112,
+     "ci95": [
+      -0.023199295384779512,
+      -0.001493799526991376
+     ],
+     "p": 0.03569821508924554,
+     "noise_floor": 0.0,
+     "scale": 0.42197527011139563,
+     "identical": false,
+     "p_holm": 0.14279286035698216,
+     "status": "UNRESOLVED"
+    },
+    "alive_connections": {
+     "n": 64,
+     "mean_x": 4371.390625,
+     "mean_y": 4375.9375,
+     "mean": -4.546875,
+     "sd": 20.94280168602848,
+     "dz": -0.217109203828891,
+     "relative": -0.0010390630579161608,
+     "ci95": [
+      -9.891015625,
+      -0.015234375000002132
+     ],
+     "p": 0.09964501774911254,
+     "noise_floor": 0.0,
+     "scale": 4375.9375,
+     "identical": false,
+     "p_holm": 0.2989350532473376,
+     "status": "EQUIVALENT"
+    },
+    "gate_mean": {
+     "n": 64,
+     "mean_x": 1.0,
+     "mean_y": 1.0,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 1.0,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "reachable_share": {
+     "n": 64,
+     "mean_x": 1.0,
+     "mean_y": 1.0,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 1.0,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    }
+   },
+   "branching": {
+    "endogenous_divergence_step_mean": 191.3125,
+    "share_identical_to_R0": 0.71875,
+    "div_connections_mean": 0.07227587821656299,
+    "noise_div_connections_mean": 0.30639992824190065
+   }
+  },
+  "assemblage": {
+   "truth_leak (oracle vs instrument)": {
+    "ignitions": {
+     "n": 64,
+     "mean_x": 1.640625,
+     "mean_y": 1.640625,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 1.640625,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "fired_samples": {
+     "n": 64,
+     "mean_x": 50.890625,
+     "mean_y": 50.890625,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 50.890625,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "first_ignition_mean": {
+     "n": 64,
+     "mean_x": 41.1875,
+     "mean_y": 41.1875,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 41.1875,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "cessations": {
+     "n": 64,
+     "mean_x": 0.890625,
+     "mean_y": 0.890625,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 0.890625,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "reignitions": {
+     "n": 64,
+     "mean_x": 0.6875,
+     "mean_y": 0.6875,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 0.6875,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "applied_records": {
+     "n": 64,
+     "mean_x": 11051.921875,
+     "mean_y": 11051.921875,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 11051.921875,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "unobservable_samples": {
+     "n": 64,
+     "mean_x": 0.0,
+     "mean_y": 0.0,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 1e-12,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "picturing_error": {
+     "n": 0,
+     "status": "NOT MEASURED",
+     "note": "metric undefined in every pair"
+    },
+    "field_ignitions": {
+     "n": 64,
+     "mean_x": 6232.109375,
+     "mean_y": 6232.109375,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 6232.109375,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "memory_mean": {
+     "n": 64,
+     "mean_x": 0.3783983806782726,
+     "mean_y": 0.3783983806782726,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 0.3783983806782726,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "alive_connections": {
+     "n": 64,
+     "mean_x": 4389.234375,
+     "mean_y": 4389.234375,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 4389.234375,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "gate_mean": {
+     "n": 64,
+     "mean_x": 1.0116304827162936,
+     "mean_y": 1.0116304827162936,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 1.0116304827162936,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "reachable_share": {
+     "n": 64,
+     "mean_x": 1.0,
+     "mean_y": 1.0,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 1.0,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    }
+   },
+   "instrument vs R0 (world)": {
+    "field_ignitions": {
+     "n": 64,
+     "mean_x": 6232.109375,
+     "mean_y": 6640.9375,
+     "mean": -408.828125,
+     "sd": 767.8647068887315,
+     "dz": -0.5324220807810116,
+     "relative": -0.061561808856053835,
+     "ci95": [
+      -599.656640625,
+      -234.7910156250002
+     ],
+     "p": 4.999750012499375e-05,
+     "noise_floor": 0.0,
+     "scale": 6640.9375,
+     "identical": false,
+     "p_holm": 0.00024998750062496874,
+     "status": "DETECTED"
+    },
+    "memory_mean": {
+     "n": 64,
+     "mean_x": 0.3783983806782726,
+     "mean_y": 0.42197527011139563,
+     "mean": -0.04357688943312305,
+     "sd": 0.08058048793908976,
+     "dz": -0.5407871129554654,
+     "relative": -0.10326882289006974,
+     "ci95": [
+      -0.06316815904920023,
+      -0.024464610571748598
+     ],
+     "p": 9.99950002499875e-05,
+     "noise_floor": 0.0,
+     "scale": 0.42197527011139563,
+     "identical": false,
+     "p_holm": 0.0002999850007499625,
+     "status": "DETECTED"
+    },
+    "alive_connections": {
+     "n": 64,
+     "mean_x": 4389.234375,
+     "mean_y": 4375.9375,
+     "mean": 13.296875,
+     "sd": 33.13736666430277,
+     "dz": 0.40126528866049155,
+     "relative": 0.003029429249833577,
+     "ci95": [
+      5.265234375,
+      21.409374999999983
+     ],
+     "p": 0.0015999200039998,
+     "noise_floor": 0.0,
+     "scale": 4389.234375,
+     "identical": false,
+     "p_holm": 0.0031998400079996,
+     "status": "EQUIVALENT"
+    },
+    "gate_mean": {
+     "n": 64,
+     "mean_x": 1.0116304827162936,
+     "mean_y": 1.0,
+     "mean": 0.01163048271629366,
+     "sd": 0.007068388301621218,
+     "dz": 1.6454221556597384,
+     "relative": 0.011496769734602163,
+     "ci95": [
+      0.009870418133428252,
+      0.013299665481545988
+     ],
+     "p": 4.999750012499375e-05,
+     "noise_floor": 0.0,
+     "scale": 1.0116304827162936,
+     "identical": false,
+     "p_holm": 0.00024998750062496874,
+     "status": "EQUIVALENT"
+    },
+    "reachable_share": {
+     "n": 64,
+     "mean_x": 1.0,
+     "mean_y": 1.0,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 1.0,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    }
+   },
+   "branching": {
+    "endogenous_divergence_step_mean": 81.453125,
+    "share_identical_to_R0": 0.046875,
+    "div_connections_mean": 0.24311659979536926,
+    "noise_div_connections_mean": 0.30639992824190065
+   }
+  },
+  "closure": {
+   "truth_leak (oracle vs instrument)": {
+    "ignitions": {
+     "n": 64,
+     "mean_x": 1.71875,
+     "mean_y": 1.71875,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 1.71875,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "fired_samples": {
+     "n": 64,
+     "mean_x": 15.453125,
+     "mean_y": 15.453125,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 15.453125,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "first_ignition_mean": {
+     "n": 64,
+     "mean_x": 55.25,
+     "mean_y": 55.25,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 55.25,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "cessations": {
+     "n": 64,
+     "mean_x": 1.109375,
+     "mean_y": 1.109375,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 1.109375,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "reignitions": {
+     "n": 64,
+     "mean_x": 0.765625,
+     "mean_y": 0.765625,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 0.765625,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "applied_records": {
+     "n": 64,
+     "mean_x": 512.484375,
+     "mean_y": 512.484375,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 512.484375,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "unobservable_samples": {
+     "n": 64,
+     "mean_x": 0.0,
+     "mean_y": 0.0,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 1e-12,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "picturing_error": {
+     "n": 0,
+     "status": "NOT MEASURED",
+     "note": "metric undefined in every pair"
+    },
+    "field_ignitions": {
+     "n": 64,
+     "mean_x": 6540.484375,
+     "mean_y": 6540.484375,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 6540.484375,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "memory_mean": {
+     "n": 64,
+     "mean_x": 0.40886151724200115,
+     "mean_y": 0.40886151724200115,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 0.40886151724200115,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "alive_connections": {
+     "n": 64,
+     "mean_x": 4371.09375,
+     "mean_y": 4371.09375,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 4371.09375,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "gate_mean": {
+     "n": 64,
+     "mean_x": 0.9967611570859465,
+     "mean_y": 0.9967611570859465,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 0.9967611570859465,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    },
+    "reachable_share": {
+     "n": 64,
+     "mean_x": 1.0,
+     "mean_y": 1.0,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 1.0,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    }
+   },
+   "instrument vs R0 (world)": {
+    "field_ignitions": {
+     "n": 64,
+     "mean_x": 6540.484375,
+     "mean_y": 6640.9375,
+     "mean": -100.453125,
+     "sd": 521.7484320429586,
+     "dz": -0.19253172377857594,
+     "relative": -0.015126346995435509,
+     "ci95": [
+      -223.694921875,
+      31.90156249999994
+     ],
+     "p": 0.13159342032898355,
+     "noise_floor": 0.0,
+     "scale": 6640.9375,
+     "identical": false,
+     "p_holm": 0.3238338083095845,
+     "status": "EQUIVALENT"
+    },
+    "memory_mean": {
+     "n": 64,
+     "mean_x": 0.40886151724200115,
+     "mean_y": 0.42197527011139563,
+     "mean": -0.013113752869394459,
+     "sd": 0.05330369340188513,
+     "dz": -0.24601959137283122,
+     "relative": -0.03107706493305309,
+     "ci95": [
+      -0.026333966200576386,
+      -0.0005398381293052998
+     ],
+     "p": 0.05264736763161842,
+     "noise_floor": 0.0,
+     "scale": 0.42197527011139563,
+     "identical": false,
+     "p_holm": 0.21058947052647367,
+     "status": "UNRESOLVED"
+    },
+    "alive_connections": {
+     "n": 64,
+     "mean_x": 4371.09375,
+     "mean_y": 4375.9375,
+     "mean": -4.84375,
+     "sd": 23.842884366633054,
+     "dz": -0.2031528537201057,
+     "relative": -0.0011069056630721988,
+     "ci95": [
+      -10.54765625,
+      0.8128906249999979
+     ],
+     "p": 0.10794460276986151,
+     "noise_floor": 0.0,
+     "scale": 4375.9375,
+     "identical": false,
+     "p_holm": 0.3238338083095845,
+     "status": "EQUIVALENT"
+    },
+    "gate_mean": {
+     "n": 64,
+     "mean_x": 0.9967611570859465,
+     "mean_y": 1.0,
+     "mean": -0.0032388429140536214,
+     "sd": 0.0030417481221035837,
+     "dz": -1.0647965525211642,
+     "relative": -0.0032388429140536214,
+     "ci95": [
+      -0.003973494834362986,
+      -0.0025095082552536777
+     ],
+     "p": 4.999750012499375e-05,
+     "noise_floor": 0.0,
+     "scale": 1.0,
+     "identical": false,
+     "p_holm": 0.00024998750062496874,
+     "status": "EQUIVALENT"
+    },
+    "reachable_share": {
+     "n": 64,
+     "mean_x": 1.0,
+     "mean_y": 1.0,
+     "mean": 0.0,
+     "sd": 0.0,
+     "dz": 0.0,
+     "relative": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "p": 1.0,
+     "noise_floor": 0.0,
+     "scale": 1.0,
+     "identical": true,
+     "p_holm": 1.0,
+     "status": "IDENTICAL"
+    }
+   },
+   "branching": {
+    "endogenous_divergence_step_mean": 121.375,
+    "share_identical_to_R0": 0.109375,
+    "div_connections_mean": 0.18516215976855877,
+    "noise_div_connections_mean": 0.30639992824190065
+   }
+  }
+ },
+ "paired_comparisons": 768,
+ "provenance": {
+  "version": "0.2.0",
+  "git_head": "e6f7b3efb0f37431580826e44381b7d1da77cd81",
+  "dirty": true,
+  "code_sha1": "b3f2c34b2b7e4c30",
+  "time": "2026-10-13 22:06:16",
+  "python": "3.12.13",
+  "numpy": "2.5.3",
+  "protocol_sha256": "71e589c7d88cdb1119810579121e65a89c4557b98856c66fd047d6c031f67685",
+  "pinned_protocol_sha256": "71e589c7d88cdb1119810579121e65a89c4557b98856c66fd047d6c031f67685"
+ },
+ "not_a_ranking": "No metric here ranks the philosophical series against one another; the series do different things and their proxies are not commensurable as theories."
+}

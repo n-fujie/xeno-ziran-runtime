@@ -16,6 +16,7 @@ import PhaseView from './views/research/PhaseView';
 import PrimitiveView from './views/research/PrimitiveView';
 import ReasonView from './views/research/ReasonView';
 import ReductionView from './views/research/ReductionView';
+import HPOView from './views/research/HPOView';
 import CompressionView from './views/resolution/CompressionView';
 import DisconnectionView from './views/resolution/DisconnectionView';
 import HiddenDifferenceView from './views/resolution/HiddenDifferenceView';
@@ -51,6 +52,7 @@ const VIEWS: { id: View; label: () => string }[] = [
   { id: 'res_structure', label: () => t('view_res_structure') },
   { id: 'res_disconnection', label: () => t('view_res_disconnection') },
   { id: 'res_compression', label: () => t('view_res_compression') },
+  { id: 'hpo', label: () => t('view_hpo') },
 ];
 
 // Static read-only mirror (VITE_STATIC=1): no backend session; only the research views, read from exported result
@@ -229,6 +231,7 @@ export default function App() {
             {view === 'res_structure' && <ReasoningStructureView />}
             {view === 'res_disconnection' && <DisconnectionView />}
             {view === 'res_compression' && <CompressionView />}
+            {view === 'hpo' && <HPOView />}
             {view === 'overview' && (
               <div className="entry">
                 <Orientation views={AVAILABLE.filter((v) => v !== 'overview').map((v) => ({ id: v, label: labelOf(v) }))}

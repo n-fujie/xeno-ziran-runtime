@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased — Heterogeneous Philosophical Operations (HPO)
+
+* New experiment layer `backend/xzr/hpo/` (nothing in the runtime, shape, LOD, compare, scenario, practice, reasonlab
+  or service layers changed except the integration points listed in docs/HPO_VERIFICATION.md). It contains:
+  * a Philosophical Operational Registry with source status, approximations, and failure / revision conditions;
+  * instruments that separate what an operation can observe from the world's true state, with six unobservability
+    reasons that are never read as zero;
+  * six operational series;
+  * a Configuration / Ignition Engine and an Interaction Engine (sharing, transformation rules, observation change,
+    competition, coupling / splitting / reclassification, closure filter, history reinsertion);
+  * a causal execution history with before / after state;
+  * sandboxed recursive reconfiguration (HPO-003).
+* `xzr hpo registry | run | verify`; `/api/experiments/hpo-<name>`; viewer section "Heterogeneous Philosophical
+  Operations" (`?view=hpo`, also in the static mirror).
+* Frozen protocol docs/HPO_PROTOCOL.md (SHA-256 pinned). Results: HPO-001 (re-specified, because the pilot archive
+  was unavailable), HPO-002 (360 seeds, 10,440 paired comparisons, plus generalization) and HPO-003. See
+  docs/HPO_RESULTS.md; regression and verification in docs/HPO_VERIFICATION.md.
+
 ## 0.2.0 — research toolkit release
 
 * `xzr` command (`run`, `validate`, `presets`, `compare`, `export`, `study`, `--version`), installed as a console
