@@ -73,3 +73,10 @@ are resumable (conditions already in the output file are skipped), so delete or 
 * **Provenance.** Every result records the package version, code hash, git commit and whether the tree had
   uncommitted changes (when run from a source checkout), Python and numpy versions, the seed list and the
   effective configuration.
+
+* **Engine-conformance fixture** (`backend/tests/fixtures/conformance_reference.json`): its bit-level values are
+  defined on macOS arm64 (the iOS app's platform). Linux x86_64 CI, with the same numpy and scipy versions, gives other
+  fingerprints from the initial state on. The causes are the generator's vectorised `exp` and the ARPACK hierarchy on
+  OpenBLAS. The graph structure is identical there, and rewind and save/load stay bit-identical within a run. So on
+  other platforms `test_compat.py` checks those platform-independent guarantees, and the golden values are checked on
+  macOS arm64, both locally and in the `conformance-macos` CI job.
