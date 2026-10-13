@@ -168,6 +168,64 @@ Barad / Agential Realism, Sacilotto / Structural Mapping, Constructor Theory, Sc
 Scientific Operational Extinction Point. They exist as concepts in documents only (see `ziran-xeno-simulator`). HPO
 does not claim them, and the registry lists them only where a series is an extension candidate.
 
+## Publication, deployment and reproduction
+
+**Source ↔ deployment.** The production site https://ziran-xeno-simulator.vercel.app was built from a clean working tree at
+commit `7cb381f` on branch `hpo-integration`, with `backend/scripts/export_static.py`. On 2026-10-13 the production files
+were compared with that commit:
+
+* the JavaScript and CSS bundle names are identical;
+* the six published HPO result files (`/api/experiments/hpo-*`) are byte-identical to the files at `7cb381f` (SHA-256);
+* the earlier result files are byte-identical to the local copies.
+
+A later commit that changes only documentation does not change the deployed site.
+
+**Reproduction** (Python ≥ 3.11, Node ≥ 20; about 45 min of compute on 8 cores in total):
+
+```bash
+git clone https://github.com/n-fujie/xeno-ziran-runtime.git && cd xeno-ziran-runtime
+git checkout hpo-integration
+make setup
+.venv/bin/xzr hpo verify
+.venv/bin/xzr hpo run hpo-002 --pilot --seeds 8
+mv backend/experiments/results/hpo backend/experiments/results/hpo.published
+mkdir backend/experiments/results/hpo
+.venv/bin/xzr hpo run hpo-001 --procs 7
+.venv/bin/xzr hpo run hpo-002 --procs 7
+.venv/bin/xzr hpo run generalization --procs 7
+.venv/bin/xzr hpo run hpo-003 --procs 7
+```
+
+* `make setup` creates the venv and installs the backend and frontend.
+* `xzr hpo verify` re-runs seeds and checks the measures are identical.
+* The pilot run uses the smoke seed range and writes to `xzr-results/hpo-pilot/`, never to the published results.
+* The `mv` and `mkdir` lines are needed because confirmatory runs refuse to overwrite published results: the published
+  results move aside first.
+* Each confirmatory run checks that docs/HPO_PROTOCOL.md matches the pinned hash before it starts.
+
+Then compare `contrasts` and `verdicts` in each new file with the file in `hpo.published/`:
+
+```bash
+for f in hpo001 hpo002 general hpo003; do .venv/bin/python -c "import json,sys; a,b=(json.load(open(p)) for p in sys.argv[1:]); \
+  k=[x for x in ('contrasts','verdicts','results','proposals') if x in a]; print(sys.argv[1], all(a[x]==b[x] for x in k))" \
+  backend/experiments/results/hpo/$f.json backend/experiments/results/hpo.published/$f.json; done
+```
+
+Timings, timestamps and the commit / dirty flags in `provenance` differ by design. Platform note: runs are
+bit-identical on the same machine and numpy version (`xzr hpo verify`, and the seed-0 trace check in
+`hpo_substantive.py`). A full confirmatory re-run on another platform has not been carried out.
+
+For the post-hoc analysis, regression report and generated docs, run in order:
+
+```bash
+.venv/bin/python backend/scripts/hpo_substantive.py
+.venv/bin/python backend/scripts/hpo_verify.py
+.venv/bin/python backend/scripts/hpo_report.py
+```
+
+`hpo_verify.py` needs the sibling repository `ziran-xeno-simulator` next to this one. Pass `--embodied-python PATH`
+for the embodied suites.
+
 ## Philosophical correspondence, by layer
 
 For every series the layers below are kept apart. Nothing in a lower layer is evidence for an upper one, and a
