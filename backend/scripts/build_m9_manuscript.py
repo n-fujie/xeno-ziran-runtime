@@ -758,7 +758,8 @@ def part9(D: Doc) -> None:
         D.p("Every condition holds: Level 2 is reached under the frozen criteria.")
     else:
         missing = [n.split(".")[0] for n, ok, _ in res if not ok]
-        D.p(f"{met} of {len(res)} conditions hold; condition(s) {', '.join(missing)} do not. Under the frozen criteria "
+        which = f"condition {missing[0]} does not" if len(missing) == 1 else f"conditions {', '.join(missing)} do not"
+        D.p(f"{met} of {len(res)} conditions hold; {which}. Under the frozen criteria "
             "Level 2 is therefore not established. Several consequential autonomous operations are demonstrated — "
             "systems select and execute their own experiments, their interventions are consequential, a revision "
             "changes later reachability on held-out worlds, the loss and restoration of identified operations change "
