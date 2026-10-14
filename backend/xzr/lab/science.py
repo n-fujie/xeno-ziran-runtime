@@ -32,6 +32,16 @@ Observation revision (M5-A): a local system may move its sensor head and change 
 (M5-B): candidate variables (products, temporal trends, relational conduit counts) are adopted only if they lower the
 leave-one-out prediction error of the system's own observed outcomes by ≥ ADOPT_GAIN and more than a capacity-matched
 control (the same candidate with its values permuted).
+
+Causal pathway switches (M9, opt-in; defaults reproduce M4–M7 exactly):
+
+    comm      how a distributed system's readings reach its hub: "conduit" (live runtime connections, the M4–M7
+              behaviour), "frozen" (the connection graph as it was when the systems started: the same structure and
+              delays, but nothing that happens later, including another system's connections, changes it) or "free"
+              (no dependence on connections, = comm_free)
+    inert     the system decides and does all its physical work (gantries, material, queues, wear), but its transfers
+              change nothing in the runtime: no extraction, no connection, no load, no isolation. It removes the
+              system's runtime (environmental and communication) pathways and keeps its physical one.
 """
 
 from __future__ import annotations
@@ -79,9 +89,14 @@ class SystemSpec:
     reach: str | None = None  # override: bay | adjacent | any
     see_all: bool = False  # equalization control: observe every chamber (no range / comm limit)
     comm_free: bool = False  # control: distributed readings reach the hub without runtime connections
+    comm: str = "conduit"  # conduit | frozen | free (M9; comm_free=True is "free")
+    inert: bool = False  # M9: physical work without any runtime effect
     shared_memory_from: str | None = None  # read another system's memory store (M7 test 6)
     explore: float = 1.5
     ridge: float = 1.0
+
+    def comm_mode(self) -> str:
+        return "free" if self.comm_free else self.comm
 
     def reach_rule(self) -> str:
         return self.reach or {"local": "bay", "distributed": "any", "history": "adjacent"}[self.kind]
@@ -148,6 +163,8 @@ class Science:
             self.owner[c.nodes] = i
         self._cache: dict = {}
         self._cache_t = -1
+        # the connection graph when the systems start (comm="frozen"); computed only if a system uses it
+        self._graph0 = self._conduit_graph_raw() if any(s.comm == "frozen" for s in specs) else None
 
     def _cached(self, key, fn):
         """Per-step cache of runtime-derived quantities (they cannot change within a step)."""
@@ -217,10 +234,10 @@ class Science:
             out = {c.cid: 0 for c in self.cs if np.linalg.norm(np.array(self.lab.pos[c.cid]) - p) <= SENSOR_RANGE}
         elif sp.kind == "history":
             out = {c.cid: 0 for c in self.cs if self.bay[c.cid] == self.bay[sp.home]}
-        elif sp.comm_free:
+        elif sp.comm_mode() == "free":
             out = {s: 0 for s in (sys_.sensor, *sp.sensors)}
         else:
-            g = self.conduit_graph()
+            g = self._graph0 if sp.comm_mode() == "frozen" and self._graph0 is not None else self.conduit_graph()
             dist = {sys_.sensor: 0}
             frontier = [sys_.sensor]
             while frontier:
@@ -234,6 +251,11 @@ class Science:
             out = {s: dist[s] for s in (sys_.sensor, *sp.sensors) if s in dist}
         return {c: d for c, d in out.items() if self.shutter(c) >= 0.5}
 
+    def _material(self, c: str, sid: str) -> list:
+        """Material in a chamber that the system can use (the shared laboratory: all of it)."""
+        lab = self.lab
+        return lab.material(c, sid) if getattr(lab, "part", None) is not None else lab.contents.get(c, [])
+
     def _reach_ok(self, sp: SystemSpec, a: str, b: str) -> bool:
         r = sp.reach_rule()
         if r == "any":
@@ -246,7 +268,7 @@ class Science:
         """Executable experiments as the system knows them: material in an observed source, a target it can observe
         (an experiment whose outcome cannot be observed is not selected), reachable, both containments open."""
         sp = sys_.spec
-        src = [c for c in sorted(cov) if self.lab.contents.get(c)]
+        src = [c for c in sorted(cov) if self._material(c, sp.sid)]
         return [(a, b) for a in src for b in sorted(cov)
                 if b != a and self._reach_ok(sp, a, b) and self.shutter(b) >= 0.5 and b not in sys_.isolated]
 
@@ -318,7 +340,7 @@ class Science:
             cov = self.coverage(sys_)
             sys_.stats["coverage"].append(len(cov) / len(self.cs))
             for c in cov:
-                sys_.seen_contents[c] = len(self.lab.contents.get(c, []))
+                sys_.seen_contents[c] = len(self._material(c, sp.sid))
             if sp.isolate_above is not None and sys_.budget >= sp.cost_isolate:
                 self._isolate(sys_, cov, t)
             if sp.revise_observation and t % (4 * sp.period) == 0:
@@ -362,7 +384,10 @@ class Science:
         src = int(na[np.argmax(st.ignite_count[na])])
         dst = int(nb[np.argmin(st.theta_eff()[nb])])
         act = Connect(src, dst, 0.5)
-        ev = self.lab.request(act, lambda n: self.cs[int(self.owner[n])].cid, t)
+        if getattr(self.lab, "part", None) is not None:
+            ev = self.lab.request(act, lambda n: self.cs[int(self.owner[n])].cid, t, owner=sp.sid)
+        else:
+            ev = self.lab.request(act, lambda n: self.cs[int(self.owner[n])].cid, t)
         sys_.budget -= sp.cost_transfer
         sys_.stats["spent"] += sp.cost_transfer
         sys_.stats["requests"] += 1
@@ -393,8 +418,9 @@ class Science:
                 inside = np.zeros(stt.n, bool)
                 inside[n] = True
                 e = np.flatnonzero(stt.alive & inside[stt.dst] & ~inside[stt.src])
-                self.w.set_owner_overlay(f"{sp.sid}:isolate:{c}", [Gate(tuple(int(x) for x in e), ISOLATE_FACTOR)])
-                self.invalidate()
+                if not sp.inert:
+                    self.w.set_owner_overlay(f"{sp.sid}:isolate:{c}", [Gate(tuple(int(x) for x in e), ISOLATE_FACTOR)])
+                    self.invalidate()
                 sys_.isolated[c] = t + sp.isolate_steps
                 sys_.budget -= sp.cost_isolate
                 sys_.stats["spent"] += sp.cost_isolate
@@ -405,8 +431,9 @@ class Science:
     def _reopen(self, sys_: SystemState, t: int) -> None:
         for c, until in list(sys_.isolated.items()):
             if t >= until:
-                self.w.set_owner_overlay(f"{sys_.spec.sid}:isolate:{c}", [])
-                self.invalidate()
+                if not sys_.spec.inert:
+                    self.w.set_owner_overlay(f"{sys_.spec.sid}:isolate:{c}", [])
+                    self.invalidate()
                 del sys_.isolated[c]
                 self.events.append({"t": t, "type": "reopened", "system": sys_.spec.sid, "chamber": c})
 
@@ -500,12 +527,15 @@ class Science:
                 st = self.w.state
                 total = float(st.diff[n].sum())
                 q = min(LOAD_FRACTION * total, LOAD_MAX)
-                if total > 0:
+                if total > 0 and not sys_.spec.inert:
                     st.diff[n] *= (1 - q / total)
                     self.invalidate()
                 exp["load"] = q
-                self.events.append({"t": t, "type": "material_extracted", "system": exp["system"], "chamber": exp["src"],
-                                    "load": round(q, 4)})
+                ev = {"t": t, "type": "material_extracted", "system": exp["system"], "chamber": exp["src"],
+                      "load": round(q, 4)}
+                if sys_.spec.inert:
+                    ev["inert"] = True  # moved physically, nothing removed from the runtime
+                self.events.append(ev)
             elif e["type"] == "transfer_failed":
                 sys_.stats["failed"] += 1
                 sys_.pending = None
@@ -527,7 +557,10 @@ class Science:
             return []
         nb = self.cs[self.idx[b]].nodes
         acts = [action, Inject(tuple(int(x) for x in nb), exp["load"] / len(nb))]
-        true = self._true_effect(acts, nb)
+        if sys_.spec.inert:  # physical work done; the runtime is not touched (true effect 0 by construction)
+            acts, true = [], 0.0
+        else:
+            true = self._true_effect(acts, nb)
         sys_.stats["completed"] += 1
         sys_.stats["true_gain"] += true
         if self.config_change and t >= self.config_change["at"]:

@@ -29,11 +29,18 @@ from . import apparatus
 
 SCHEMA = "xzr.labrun/1"  # runs without scientific systems (M2, M3)
 SCHEMA_V2 = "xzr.labrun/2"  # runs with scientific systems (M4–M7): adds science state per step and science events
+SCHEMA_V3 = "xzr.labrun/3"  # M9: resource partition, causal-pathway switches, harness interventions, physics params
 DEFAULT_CONFIG: dict[str, Any] = {"n": 800, "gen_seed": 9100, "seed": 91000, "regime": "intermittent", "warmup": 40,
                                   "horizon": 240, "settings": {"interaction": "all", "history": {"reinsert": True}},
                                   "physics": False, "resources": 3.0}
 # keys that only v2 (scientific systems) configurations carry; absent = v1 behaviour, unchanged
 V2_KEYS = ("systems", "config_change")
+V3_KEYS = ("partition", "harness", "physics_params")  # any of these (or a system with comm / inert) makes a v3 run
+V3_SYSTEM_KEYS = ("comm", "inert", "sensor_range", "relocation")
+
+
+def is_v3(cfg: dict) -> bool:
+    return any(cfg.get(k) for k in V3_KEYS) or any(k in s for s in cfg.get("systems") or [] for k in V3_SYSTEM_KEYS)
 
 
 def _settings(cfg: dict) -> dict:
@@ -143,7 +150,9 @@ class LabRun:
         self.lab = None
         if cfg["physics"] or cfg.get("systems"):
             from .physics import PhysicalLab
-            self.lab = PhysicalLab(self.ch_records, resources=float(cfg["resources"]))
+            self.lab = (PhysicalLab(self.ch_records, resources=float(cfg["resources"]), partition=cfg.get("partition"),
+                                    params=cfg.get("physics_params")) if is_v3(cfg)
+                        else PhysicalLab(self.ch_records, resources=float(cfg["resources"])))
         self.tap = _Tap(w, self.lab, lambda node: cs[int(owner[node])].cid if owner[node] >= 0 else None)
         self.t0 = w.t
         self.f = Field(w, _settings(cfg), cfg["seed"], keep_states=False) if cfg["settings"] is not None else None
@@ -159,6 +168,7 @@ class LabRun:
         self.physical: list[dict] = []
         self.applied_phys: list[tuple[int, int, str]] = []
         self.science_seen = 0
+        self.harness = sorted(cfg.get("harness") or [], key=lambda h: h["at"])
 
     @property
     def t(self) -> int:
@@ -184,6 +194,9 @@ class LabRun:
         if lab is not None:
             if sci is not None:
                 sci.apply_config_change(t)
+                for h in self.harness:
+                    if h["at"] == t:
+                        new_phys += self._harness(h, t)
                 sci.decide(t)
             new_phys += self.tap.take_requests()
             pev, done = lab.step(t)
@@ -224,9 +237,47 @@ class LabRun:
         self.prev = cur
         return {"step": rec_step, "events": new_events, "physical_events": new_phys, "science_events": new_sci}
 
+    def _harness(self, h: dict, t: int) -> list[dict]:
+        """A declared harness intervention (M9): physical (gantry failure, resources) or runtime (containment, severed
+        connections). It is part of the configuration, applied at its step before the systems decide, and recorded."""
+        from ..runtime.intervention import Gate, Sever
+        lab, w, sci = self.lab, self.w, self.science
+        assert lab is not None and sci is not None
+        ev: list[dict] = []
+        do = h["do"]
+        if do == "fail_gantry":
+            lab.force_failure(h["gantry"], t, ev)
+        elif do == "set_resources":
+            lab.set_resources(h["gantry"], h["value"], t, ev)
+        elif do in ("close", "open"):
+            st = w.state
+            for c in h["chambers"]:
+                n = self.cs[self.idx[c]].nodes
+                inside = np.zeros(st.n, bool)
+                inside[n] = True
+                e = np.flatnonzero(st.alive & inside[st.dst] & ~inside[st.src])
+                w.set_owner_overlay(f"harness:close:{c}",
+                                    [Gate(tuple(int(x) for x in e), float(h.get("factor", 0.2)))] if do == "close" else [])
+        elif do == "sever":  # cut every live connection between the listed chambers and any other chamber
+            st = w.state
+            sel = np.zeros(st.n, bool)
+            for c in h["chambers"]:
+                sel[self.cs[self.idx[c]].nodes] = True
+            own = self.owner
+            e = np.flatnonzero(st.alive & (sel[st.src] | sel[st.dst]) & (own[st.src] != own[st.dst]))
+            if len(e):
+                w.engine.apply([Sever(tuple(int(x) for x in e))])
+            h = {**h, "severed": int(len(e))}
+        else:
+            raise ValueError(f"unknown harness intervention {do!r}")
+        sci.invalidate()
+        sci.events.append({"t": t, "type": "harness", **{k: v for k, v in h.items() if k != "at"}})
+        return ev
+
     def record(self) -> dict:
         cfg, lab, f, sci = self.cfg, self.lab, self.f, self.science
-        rec = {"schema": SCHEMA_V2 if sci is not None else SCHEMA, "config": cfg, "chambers": self.ch_records,
+        schema = SCHEMA_V3 if is_v3(cfg) else SCHEMA_V2 if sci is not None else SCHEMA
+        rec = {"schema": schema, "config": cfg, "chambers": self.ch_records,
                "layout": lab.layout() if lab is not None else None,
                "steps": self.steps, "events": self.events, "physical_events": self.physical,
                "operations": sorted({o.label for o in f.ops.values()}) if f else [],

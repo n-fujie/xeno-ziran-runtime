@@ -11,11 +11,11 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from .record import SCHEMA, SCHEMA_V2, LabRun
+from .record import SCHEMA, SCHEMA_V2, SCHEMA_V3, LabRun
 
 
 def replay(record: dict) -> dict:
-    if record.get("schema") not in (SCHEMA, SCHEMA_V2):
+    if record.get("schema") not in (SCHEMA, SCHEMA_V2, SCHEMA_V3):
         raise ValueError(f"not an {SCHEMA} / {SCHEMA_V2} record")
     # re-execute exactly as many steps as were recorded (a stopped live run is a prefix of its horizon)
     r = LabRun(record["config"])
