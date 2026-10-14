@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { frameAt, HIGHLIGHT_STEPS, validate } from './labScene';
+import { frameAt, HIGHLIGHT_STEPS, pathways, validate } from './labScene';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..');
 const rec = validate(JSON.parse(readFileSync(join(root, 'backend/experiments/results/lab/m2-run-9100.json'), 'utf8')));
@@ -76,5 +76,25 @@ describe('scientific systems are drawn from the recorded science state', () => {
     expect(f.systems.map((x) => x.sid)).toEqual(['A', 'B', 'C']);
     f.systems.forEach((x) => expect(x.coverage).toEqual(v2.steps[last].science![x.sid].coverage));
     expect(f.scienceEvents.length).toBeGreaterThan(0);
+  });
+});
+
+describe('schema-3 records (M9): private carriages and harness interventions are drawn as recorded', () => {
+  it('the separated-resources record validates; every carriage is drawn at its recorded tip, per bay and group', () => {
+    const r = validate(JSON.parse(readFileSync(join(root, 'backend/experiments/results/lab/m9-separated-resources-7000.json'), 'utf8')));
+    expect(r.schema).toBe('xzr.labrun/3');
+    const last = r.steps.length - 1;
+    const f = frameAt(r, last);
+    const rec = r.steps[last].physics!.gantries;
+    expect(f.gantries.length).toBe(Object.keys(rec).length);
+    expect(new Set(f.gantries.map((g) => g.group))).toEqual(new Set(['a', 's']));
+    f.gantries.forEach((g) => expect(g.bay).toBe(rec[g.key].bay));
+    expect(pathways(r).join(' ')).toContain('gantries, material private per group');
+  });
+  it('the extinction record carries its harness interventions in the timeline and the pathway panel', () => {
+    const r = validate(JSON.parse(readFileSync(join(root, 'backend/experiments/results/lab/m9-extinction-relocation-7000.json'), 'utf8')));
+    const f = frameAt(r, r.steps.length - 1);
+    expect(f.scienceEvents.filter((e) => e.type === 'harness').map((e) => e.do)).toEqual(['close', 'open']);
+    expect(pathways(r).join(' ')).toContain('close_view@320');
   });
 });

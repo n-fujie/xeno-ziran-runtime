@@ -1,0 +1,25 @@
+{
+ "verification": "D (replay): schema-3 records generated from confirmatory configurations (seed 7000), final runtime fingerprint compared with the published confirmatory run, then replayed from configuration alone",
+ "sources": {
+  "m9-separated-resources-7000": "m9ab LP+ seed 0",
+  "m9-extinction-relocation-7000": "m9c X6 seed 0"
+ },
+ "records": {
+  "m9-separated-resources-7000": {
+   "schema": "xzr.labrun/3",
+   "bytes": 7719772,
+   "final_fingerprint_equals_published": true,
+   "replay_agreement": true,
+   "events_identical": true,
+   "steps": 960
+  },
+  "m9-extinction-relocation-7000": {
+   "schema": "xzr.labrun/3",
+   "bytes": 5197572,
+   "final_fingerprint_equals_published": true,
+   "replay_agreement": true,
+   "events_identical": true,
+   "steps": 960
+  }
+ }
+}
