@@ -20,6 +20,7 @@ const en = {
   view_res_structure: 'Reasoning Structure Inspector', view_res_disconnection: 'Disconnection Study',
   view_res_compression: 'Long-Run Compression', view_overview: 'Overview',
   view_hpo: 'Heterogeneous Philosophical Operations',
+  view_laboratory: '3D Laboratory',
 };
 
 type Key = keyof typeof en;

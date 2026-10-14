@@ -491,6 +491,8 @@ def experiments() -> list[dict]:
             for p in sorted((EXP_DIR / "resolution").glob("*.json"))]
     out += [{"name": f"hpo-{p.stem}", "bytes": p.stat().st_size, "modified": p.stat().st_mtime}
             for p in sorted((EXP_DIR / "hpo").glob("*.json"))]
+    out += [{"name": f"lab-{p.stem}", "bytes": p.stat().st_size, "modified": p.stat().st_mtime}
+            for p in sorted((EXP_DIR / "lab").glob("*.json"))]
     return [e for e in out if _NAME.fullmatch(str(e["name"]))]  # only names the endpoint below serves
 
 
@@ -504,6 +506,8 @@ def _experiment_path(name: str) -> Path | None:
         p = EXP_DIR / "resolution" / f"{name[len('resolution-'):]}.json"
     elif name.startswith("hpo-"):
         p = EXP_DIR / "hpo" / f"{name[len('hpo-'):]}.json"
+    elif name.startswith("lab-"):
+        p = EXP_DIR / "lab" / f"{name[len('lab-'):]}.json"
     else:
         p = EXP_DIR / f"{name}.json"
     return p if p.is_file() else None

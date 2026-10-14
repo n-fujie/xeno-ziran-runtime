@@ -265,3 +265,17 @@ svg.hpo-tl { display: block; width: 100%; height: 12px; }
 .hpo-source { margin-bottom: 8px; }
 .hpo details { margin: 6px 0; }
 @media (max-width: 700px) { .hpo-metric { min-width: 0; flex-basis: 100%; } .hpo-kv { grid-template-columns: 1fr; } }
+
+/* 3D laboratory: the stage fills the view; the side panel stacks below the stage on narrow screens */
+.lab { display: grid; grid-template-columns: 1fr 340px; height: 100%; min-height: 0; }
+.lab-stage { position: relative; min-height: 420px; height: 100%; overflow: hidden; }
+.lab-stage canvas { display: block; width: 100% !important; height: 100% !important; }
+.lab-side { border-left: 1px solid var(--line); padding: 10px 12px; overflow: auto; background: var(--panel); display: grid; gap: 8px; align-content: start; }
+.lab-status { border: 1px solid var(--line2); padding: 6px 8px; }
+.lab-controls { display: flex; flex-wrap: wrap; gap: 4px; }
+.lab-side input[type='range'] { width: 100%; }
+.lab-events { list-style: none; margin: 0; padding: 0; max-height: 40vh; overflow: auto; }
+.lab-events li { padding: 3px 0; border-bottom: 1px solid #111115; cursor: pointer; overflow-wrap: anywhere; }
+.lab-events li.on { color: #fff; }
+.lab-inspect { border-top: 1px solid var(--line); padding-top: 6px; overflow-wrap: anywhere; }
+@media (max-width: 900px) { .lab { grid-template-columns: 1fr; grid-template-rows: 60vh auto; } .lab-side { border-left: none; border-top: 1px solid var(--line); } }

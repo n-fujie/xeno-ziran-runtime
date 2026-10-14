@@ -18,6 +18,8 @@ ALLOWED = {
     # HPO: an experiment layer over the runtime (world regimes and provenance from experiments); never service,
     # practice, interpret or reasonlab
     "hpo": {"hpo", "runtime", "lod", "experiments"},
+    # laboratory layer: apparatus states derived from the runtime, observing an HPO field; never service or practice
+    "lab": {"lab", "hpo", "runtime", "lod"},
 }
 
 
@@ -62,6 +64,7 @@ def test_experiment_layer_is_not_imported_by_the_product_layers():
         for p in (ROOT / layer).glob("*.py"):
             assert "experiments" not in _internal_imports(p), p
             assert "hpo" not in _internal_imports(p), p
+            assert "lab" not in _internal_imports(p), p
     assert _internal_imports(ROOT / "shapes" / "multiscale.py") <= {"runtime", "lod", "shapes"}
 
 

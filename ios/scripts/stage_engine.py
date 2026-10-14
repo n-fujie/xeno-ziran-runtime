@@ -3,7 +3,7 @@
     python3 stage_engine.py <backend dir> <dest dir>
 
 Writes <dest>/xzr (the engine package) and <dest>/scenarios (the bundled scenarios). Excluded, because the app does
-not run them: the HTTP service module (service/app.py: FastAPI), the experiment harnesses (experiments/, reasonlab/, hpo/:
+not run them: the HTTP service module (service/app.py: FastAPI), the experiment harnesses (experiments/, reasonlab/, hpo/, lab/:
 desktop research runs whose results are published on the research-results site) and bytecode caches. The copy is
 exact otherwise: the app runs the same engine source as the desktop runtime.
 """
@@ -14,7 +14,7 @@ import shutil
 import sys
 from pathlib import Path
 
-EXCLUDE_DIRS = {"__pycache__", "experiments", "reasonlab", "hpo"}
+EXCLUDE_DIRS = {"__pycache__", "experiments", "reasonlab", "hpo", "lab"}
 EXCLUDE_FILES = {Path("service") / "app.py"}
 
 

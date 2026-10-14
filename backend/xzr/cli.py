@@ -12,6 +12,9 @@
                                         Heterogeneous Philosophical Operations experiments (hpo-001, hpo-002,
                                         hpo-003, generalization); --pilot runs on the smoke seed range into --out
     xzr hpo verify                      reproducibility check of the HPO runs
+    xzr lab run [--config FILE] [--out PATH]
+                                        record a laboratory run (runtime-driven 3D apparatus states, xzr.labrun/1)
+    xzr lab replay PATH                 re-execute a record from its configuration and check step-by-step agreement
     xzr --version
 
 Exit codes: 0 success; 1 the experiment ran but recorded failures (or the command failed at run time);
@@ -81,6 +84,14 @@ def _parser() -> argparse.ArgumentParser:
     hr.add_argument("--pilot", action="store_true", help="smoke seed range, protocol not required, written to --out")
     hr.add_argument("--out", default="xzr-results/hpo-pilot", help="output directory for --pilot runs")
     hs.add_parser("verify", help="re-run seeds and check bit-identical metrics")
+
+    lb = sub.add_parser("lab", help="laboratory runs: runtime-driven 3D apparatus states, recording and replay")
+    ls = lb.add_subparsers(dest="lab_command", required=True, metavar="LAB_COMMAND")
+    lr = ls.add_parser("run", help="record a laboratory run")
+    lr.add_argument("--config", help="JSON file with overrides of xzr.lab.record.DEFAULT_CONFIG")
+    lr.add_argument("--out", required=True, help="record path (refuses to overwrite)")
+    lp = ls.add_parser("replay", help="re-execute a record and compare step by step")
+    lp.add_argument("record")
     return p
 
 
@@ -192,6 +203,20 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     if args.command == "hpo":
         return _hpo(args)
+    if args.command == "lab":
+        from .lab.record import run as lab_run
+        from .lab.replay import replay_file
+        if args.lab_command == "run":
+            lab_cfg = json.loads(Path(args.config).read_text()) if args.config else None
+            try:
+                rec = lab_run(lab_cfg, Path(args.out))
+            except FileExistsError as e:
+                return _fail(str(e))
+            print(f"{len(rec['steps'])} steps, {len(rec['events'])} apparatus events, {rec['elapsed_s']} s → {args.out}")
+            return 0
+        r = replay_file(args.record)
+        print(json.dumps(r, indent=1))
+        return 0 if r["agreement"] else 1
     return _fail(f"unknown command {args.command}")
 
 
