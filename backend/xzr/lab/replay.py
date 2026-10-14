@@ -11,13 +11,17 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from .record import SCHEMA, SCHEMA_V2, run
+from .record import SCHEMA, SCHEMA_V2, LabRun
 
 
 def replay(record: dict) -> dict:
     if record.get("schema") not in (SCHEMA, SCHEMA_V2):
         raise ValueError(f"not an {SCHEMA} / {SCHEMA_V2} record")
-    again = run(record["config"])
+    # re-execute exactly as many steps as were recorded (a stopped live run is a prefix of its horizon)
+    r = LabRun(record["config"])
+    for _ in range(len(record["steps"])):
+        r.step()
+    again = r.record()
     mism = []
     for a, b in zip(record["steps"], again["steps"], strict=False):
         for k in ("fingerprint", "digest", "shutter", "activity", "memory", "conduits", "physics", "science"):

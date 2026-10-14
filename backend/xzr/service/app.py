@@ -7,6 +7,7 @@ client streams binary delta frames at a capped frame rate; simulation speed is i
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import json
 import os
 import re
@@ -18,7 +19,7 @@ import numpy as np
 from fastapi import FastAPI, HTTPException, Query, Request, WebSocket, WebSocketDisconnect
 from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse, Response
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from .. import __version__
 from ..scenario.io import list_samples, load_sample
@@ -525,6 +526,112 @@ def experiment(name: str) -> Response:
     if p is None:
         raise HTTPException(404, f"no experiment result {name}")
     return FileResponse(p, media_type="application/json")
+
+
+# ---------------------------------------------------------------------------------------------- live laboratory
+class LabLiveIn(BaseModel):
+    preset: str = "systems"
+    seed: int = Field(8000, ge=0, le=2**31 // 10)
+    rate: float = Field(10.0, ge=0.5, le=200.0)
+
+
+class LabControlIn(BaseModel):
+    rate: float | None = None
+
+
+def _same_origin(headers: dict[str, str]) -> bool:
+    origin = headers.get("origin")
+    if LIMITS.allowed_origins:
+        return origin is None or origin.rstrip("/").lower() in LIMITS.allowed_origins
+    return origin is None or origin.split("://", 1)[-1] == headers.get("host", "")
+
+
+def _lab_local_only(request: Request) -> None:
+    """Live runs cost CPU and write records: local runtime only, and never on behalf of another site's page."""
+    if LIMITS.public:
+        raise HTTPException(403, "live laboratory runs are available on a local runtime only")
+    if not _same_origin({k.lower(): v for k, v in request.headers.items()}):
+        raise HTTPException(403, "cross-origin request refused")
+
+
+@app.post("/api/lab/live")
+def lab_live_start(body: LabLiveIn, request: Request) -> dict:
+    """Start a live laboratory run (the runtime steps in its own thread; viewers subscribe over /ws/lab/{id})."""
+    _lab_local_only(request)
+    from ..lab import live
+    try:
+        return live.start(body.preset, body.seed, body.rate).status()
+    except ValueError as e:
+        raise HTTPException(400, str(e)) from e
+    except RuntimeError as e:
+        raise HTTPException(429, str(e)) from e
+
+
+@app.get("/api/lab/live")
+def lab_live_list() -> list[dict]:
+    from ..lab import live
+    return [r.status() for r in live.RUNS.values()]
+
+
+@app.get("/api/lab/live/{rid}")
+def lab_live_status(rid: str) -> dict:
+    from ..lab import live
+    r = live.RUNS.get(rid)
+    if r is None:
+        raise HTTPException(404, "no such live run")
+    return r.status()
+
+
+@app.post("/api/lab/live/{rid}/{action}")
+def lab_live_control(rid: str, action: str, request: Request, body: LabControlIn | None = None) -> dict:
+    _lab_local_only(request)
+    from ..lab import live
+    r = live.RUNS.get(rid)
+    if r is None:
+        raise HTTPException(404, "no such live run")
+    try:
+        r.control(action, body.rate if body else None)
+    except ValueError as e:
+        raise HTTPException(400, str(e)) from e
+    return r.status()
+
+
+@app.websocket("/ws/lab/{rid}")
+async def lab_live_ws(ws: WebSocket, rid: str) -> None:
+    from ..lab import live
+    allowed = _same_origin({k.lower(): v for k, v in ws.headers.items()})
+    r = live.RUNS.get(rid)
+    if not allowed or LIMITS.public or r is None:
+        await ws.close(code=4403 if r is not None else 4404)
+        return
+    await ws.accept()
+    while r.state == "starting":  # the world and laboratory are still being built: the hello must carry them
+        await asyncio.sleep(0.05)
+    loop = asyncio.get_running_loop()
+    wake = asyncio.Event()
+    sub, hello = r.subscribe(lambda: loop.call_soon_threadsafe(wake.set))
+    wake.set()  # a run that already ended sends no further notification: check once immediately
+    try:
+        await ws.send_text(json.dumps(hello))
+        while True:
+            await wake.wait()
+            wake.clear()
+            if sub.overflow:
+                await ws.send_text(json.dumps({"type": "error", "error": "viewer fell too far behind; reconnect "
+                                               "(the run continues and its record is complete)"}))
+                break
+            msg = sub.take()
+            if msg is not None:
+                await ws.send_text(json.dumps(msg))
+            if r.state in ("finished", "stopped", "failed") and sub.latest is None:
+                await ws.send_text(json.dumps({"type": "end", **r.status()}))
+                break
+    except WebSocketDisconnect:
+        pass
+    finally:
+        r.unsubscribe(sub)
+        with contextlib.suppress(RuntimeError):  # already closed by the client
+            await ws.close()
 
 
 # ---------------------------------------------------------------------------------------------- websocket

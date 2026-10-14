@@ -13,9 +13,11 @@ export type PhysState = {
   samples: Record<string, [number, number, number]>;
   contents: Record<string, string[]>;
 };
+export type SystemState = { sensor: string; window: number; budget: number; coverage: string[]; features: string[];
+  pending: [string, string] | null; isolated: string[]; memory: number };
 export type LabStep = {
   t: number; fingerprint: string; digest: string; shutter: number[]; activity: number[]; memory: number[];
-  conduits: Record<string, number>; physics?: PhysState;
+  conduits: Record<string, number>; physics?: PhysState; science?: Record<string, SystemState>;
 };
 export type PhysEvent = { t: number; type: string; [k: string]: unknown };
 export type Layout = { bays: Record<string, [number, number]>; ports: Record<string, [number, number]>; chamber_half: number;
@@ -23,8 +25,10 @@ export type Layout = { bays: Record<string, [number, number]>; ports: Record<str
 export type LabRecord = {
   schema: string; config: Record<string, unknown>; chambers: { cid: string; position: [number, number, number]; size: number }[];
   steps: LabStep[]; events: LabEvent[]; operations: string[]; note: string;
-  layout?: Layout | null; physical_events?: PhysEvent[];
+  layout?: Layout | null; physical_events?: PhysEvent[]; science_events?: PhysEvent[];
 };
+export type SystemSpecLite = { sid: string; kind: string; home: string; store?: string | null; sensors?: string[] };
+export type SystemVisual = SystemState & { sid: string; kind: string; store: string | null };
 
 /** Physics plane (x, y, z-up; chamber floor top at z = 0.05) → 3D view (x, height, z; chamber floor top at 0.3). */
 export const PHYS_Y0 = 0.25;
@@ -48,11 +52,14 @@ export type ConduitVisual = { a: string; b: string; count: number; highlight: La
 export type Frame = {
   t: number; index: number; chambers: ChamberVisual[]; conduits: ConduitVisual[]; events: LabEvent[];
   gantries: GantryVisual[]; samples: SampleVisual[]; physicalEvents: PhysEvent[];
+  systems: SystemVisual[]; scienceEvents: PhysEvent[];
 };
 
 export function validate(r: unknown): LabRecord {
   const x = r as LabRecord;
-  if (!x || x.schema !== 'xzr.labrun/1' || !Array.isArray(x.steps) || !x.steps.length) throw new Error('not an xzr.labrun/1 record');
+  if (!x || !['xzr.labrun/1', 'xzr.labrun/2'].includes(x.schema) || !Array.isArray(x.steps) || !x.steps.length) {
+    throw new Error('not an xzr.labrun/1 or /2 record');
+  }
   return x;
 }
 
@@ -81,5 +88,10 @@ export function frameAt(r: LabRecord, index: number): Frame {
       failed: g.failed, carrying: g.carrying })) : [],
     samples: ph ? Object.entries(ph.samples).map(([sid, p]) => ({ sid, position: physToView(p), carried: carried.has(sid) })) : [],
     physicalEvents: (r.physical_events ?? []).filter((e) => e.t <= s.t),
+    systems: s.science ? Object.entries(s.science).map(([sid, st]) => {
+      const spec = ((r.config.systems ?? []) as SystemSpecLite[]).find((x) => x.sid === sid);
+      return { ...st, sid, kind: spec?.kind ?? '?', store: spec?.store ?? null };
+    }) : [],
+    scienceEvents: (r.science_events ?? []).filter((e) => e.t <= s.t),
   };
 }

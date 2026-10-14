@@ -287,7 +287,9 @@ def test_no_route_runs_experiments_or_touches_the_filesystem():
     assert mutating == sorted([
         ("POST", "/api/sessions"), ("DELETE", "/api/sessions/{sid}"), ("POST", "/api/sessions/{sid}/control"),
         ("POST", "/api/sessions/{sid}/rewind"), ("POST", "/api/sessions/{sid}/practice/command"),
-        ("POST", "/api/sessions/{sid}/compare"), ("POST", "/api/jobs/{jid}/cancel"), ("POST", "/api/owner/reset")])
+        ("POST", "/api/sessions/{sid}/compare"), ("POST", "/api/jobs/{jid}/cancel"), ("POST", "/api/owner/reset"),
+        # live laboratory runs: local runtime and same origin only (test_lab_live.py::test_live_routes_boundary)
+        ("POST", "/api/lab/live"), ("POST", "/api/lab/live/{rid}/{action}")])
     src = Path(app_mod.__file__).read_text()
     for forbidden in ("subprocess", "os.system", "run_escalation", "run_reduction", "experiments.run"):
         assert forbidden not in src

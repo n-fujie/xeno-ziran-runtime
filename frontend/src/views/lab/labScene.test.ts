@@ -56,3 +56,15 @@ describe('every drawn quantity is a recorded runtime-derived value', () => {
     expect(() => validate({ schema: 'other', steps: [] })).toThrow();
   });
 });
+
+describe('scientific systems are drawn from the recorded science state', () => {
+  it('coverage, sensor, pending experiment and isolation equal the recorded values', () => {
+    const steps = [{ ...rec.steps[0], science: { A: { sensor: '0.0', window: 8, budget: 23, coverage: ['0.0', '0.1'], features: [],
+      pending: ['0.0', '0.1'] as [string, string], isolated: [], memory: 0 } } }];
+    const r = { ...rec, schema: 'xzr.labrun/2', steps, config: { ...rec.config, systems: [{ sid: 'A', kind: 'local', home: '0.0' }] },
+      science_events: [{ t: steps[0].t, type: 'experiment_selected', system: 'A' }] };
+    const f = frameAt(validate(r), 0);
+    expect(f.systems).toEqual([{ ...steps[0].science.A, sid: 'A', kind: 'local', store: null }]);
+    expect(f.scienceEvents.length).toBe(1);
+  });
+});

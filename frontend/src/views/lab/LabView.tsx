@@ -4,6 +4,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { api } from '../../api/client';
 import { useExperiment } from '../research/common';
 import { frameAt, PHYS_Y0, validate, type Frame, type LabRecord } from './labScene';
+import { NATIVE } from '../../api/native';
 
 // XENO–ZIRAN 3D laboratory (Level 1 component): replays a recorded runtime execution.
 //   runtime-derived (drawn from xzr/lab/apparatus.py values): containment shutters (gates entering a chamber), state lamp
@@ -59,8 +60,59 @@ function buildChamber(pos: [number, number, number], half: number, physical: boo
   return { group: g, lamp, shutters, ring, h: H };
 }
 
+// one line style per system (monochrome): solid, dashed, dotted
+const SYS_STYLE: Record<number, { dash: number; gap: number }> = { 0: { dash: 0, gap: 0 }, 1: { dash: 0.32, gap: 0.2 }, 2: { dash: 0.06, gap: 0.12 } };
+
+function styled(points: THREE.Vector3[], k: number, opacity: number, loop = false): THREE.Line {
+  const geo = new THREE.BufferGeometry().setFromPoints(points);
+  const st = SYS_STYLE[k % 3];
+  const mat = st.dash ? new THREE.LineDashedMaterial({ color: 0xffffff, dashSize: st.dash, gapSize: st.gap, transparent: true, opacity })
+    : new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity });
+  const line = loop ? new THREE.LineLoop(geo, mat) : new THREE.Line(geo, mat);
+  line.computeLineDistances();
+  return line;
+}
+
+function drawSystems(f: Frame, group: THREE.Group, objs: Map<string, ChamberObj>, pos: Map<string, THREE.Vector3>, half: number) {
+  group.clear();
+  f.systems.forEach((sy, k) => {
+    for (const c of sy.coverage) {  // recorded observation coverage of the system
+      const p = pos.get(c);
+      if (!p) continue;
+      const r = half * 1.22 + k * 0.17;
+      group.add(styled(Array.from({ length: 40 }, (_, i) => new THREE.Vector3(p.x + r * Math.cos((i / 40) * 2 * Math.PI), FLOOR_Y + 0.03, p.z + r * Math.sin((i / 40) * 2 * Math.PI))), k, 0.8, true));
+    }
+    const sp = pos.get(sy.sensor), so = objs.get(sy.sensor);
+    if (sp && so) {  // sensor head (local) / hub (distributed) / bay (history)
+      const m = new THREE.Mesh(sy.kind === 'distributed' ? new THREE.OctahedronGeometry(0.28) : new THREE.ConeGeometry(0.22, 0.5, 4),
+        new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: k === 2 }));
+      m.position.set(sp.x + (k - 1) * 0.5, FLOOR_Y + so.h + 0.9, sp.z);
+      if (sy.kind !== 'distributed') m.rotation.x = Math.PI;
+      group.add(m);
+    }
+    if (sy.store) {  // external memory store
+      const p = pos.get(sy.store), o = objs.get(sy.store);
+      if (p && o) {
+        const m = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.34, 0.34), new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true }));
+        m.position.set(p.x, FLOOR_Y + o.h + 0.6, p.z);
+        m.scale.setScalar(0.6 + Math.min(1.4, sy.memory / 10));
+        group.add(m);
+      }
+    }
+    if (sy.pending) {  // the experiment the system selected and is executing
+      const a = pos.get(sy.pending[0]), b = pos.get(sy.pending[1]);
+      if (a && b) {
+        const mid = a.clone().add(b).multiplyScalar(0.5);
+        mid.y = 4.6 + 0.2 * k;
+        const curve = new THREE.QuadraticBezierCurve3(a.clone().setY(3.2), mid, b.clone().setY(3.2));
+        group.add(styled(curve.getPoints(30), k, 0.95));
+      }
+    }
+  });
+}
+
 function applyFrame(f: Frame, objs: Map<string, ChamberObj>, conduitGroup: THREE.Group, pos: Map<string, THREE.Vector3>,
-  gantries: Map<string, GantryObj>, samples: Map<string, THREE.Mesh>) {
+  gantries: Map<string, GantryObj>, samples: Map<string, THREE.Mesh>, sysGroup: THREE.Group, half: number) {
   for (const c of f.chambers) {
     const o = objs.get(c.cid);
     if (!o) continue;
@@ -107,13 +159,17 @@ function applyFrame(f: Frame, objs: Map<string, ChamberObj>, conduitGroup: THREE
     m.position.set(...s.position);
     (m.material as THREE.MeshStandardMaterial).emissiveIntensity = s.carried ? 0.35 : 0;
   }
+  drawSystems(f, sysGroup, objs, pos, half);
 }
+
+type Live = { id: string; state: string; t: number; horizon: number; coalesced: number; seq: number; error?: string | null };
+const PRESETS = ['systems', 'physical', 'apparatus'];
 
 export default function LabView() {
   const [name, setName] = useState(RECORDS[0]);
   const [available, setAvailable] = useState<string[]>(RECORDS);
   const { data, error } = useExperiment<LabRecord>(name);
-  const rec = useMemo(() => (data ? validate(data) : null), [data]);
+  const replayRec = useMemo(() => (data ? validate(data) : null), [data]);
   const mount = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
@@ -121,7 +177,62 @@ export default function LabView() {
   const [fps, setFps] = useState(0);
   const [sel, setSel] = useState<string | null>(null);
   const state = useRef<{ apply: (f: Frame) => void } | null>(null);
-  const frame = useMemo(() => (rec ? frameAt(rec, index) : null), [rec, index]);
+  // live mode: the record grows from the stream; the scene is built once from the hello message
+  const [live, setLive] = useState<Live | null>(null);
+  const [liveBase, setLiveBase] = useState<LabRecord | null>(null);
+  const liveRec = useRef<LabRecord | null>(null);
+  const [tick, setTick] = useState(0);
+  const [preset, setPreset] = useState('systems');
+  const [seed, setSeed] = useState(8000);
+  const wsRef = useRef<WebSocket | null>(null);
+  const base = live ? liveBase : replayRec;
+  const frame = useMemo(() => {
+    if (live) {
+      const r = liveRec.current;
+      return r && r.steps.length ? frameAt(r, r.steps.length - 1) : null;
+    }
+    return replayRec ? frameAt(replayRec, index) : null;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [live, tick, replayRec, index]);
+
+  const startLive = async () => {
+    setPlaying(false);
+    const res = await fetch('/api/lab/live', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ preset, seed, rate: 10 }) });
+    const st = await res.json();
+    if (!res.ok) { setLive({ id: '', state: 'failed', t: 0, horizon: 0, coalesced: 0, seq: 0, error: String(st.detail ?? res.status) }); return; }
+    const ws = new WebSocket(`${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}/ws/lab/${st.id}`);
+    wsRef.current = ws;
+    let coalesced = 0;
+    ws.onmessage = (ev) => {
+      const m = JSON.parse(ev.data as string);
+      if (m.type === 'hello') {
+        const r: LabRecord = { schema: (m.config.systems ? 'xzr.labrun/2' : 'xzr.labrun/1'), config: m.config, chambers: m.chambers,
+          layout: m.layout, steps: m.latest ? [m.latest.step] : [], events: m.history.events, physical_events: m.history.physical_events,
+          science_events: m.history.science_events, operations: [], note: 'live' };
+        liveRec.current = r;
+        setLiveBase({ ...r, steps: [] });
+        setLive({ id: m.id, state: m.state, t: m.t, horizon: m.horizon, coalesced: 0, seq: m.seq });
+      } else if (m.type === 'frame' && liveRec.current) {
+        const r = liveRec.current;
+        r.steps.push(m.step);  // the latest step of this message (intermediate visual frames may be coalesced)
+        r.events.push(...m.events);
+        r.physical_events?.push(...m.physical_events);
+        r.science_events?.push(...m.science_events);
+        coalesced += m.coalesced_frames;
+        setLive((l) => (l ? { ...l, state: 'running', t: m.step.t, seq: m.seq_to, coalesced } : l));
+        setTick((x) => x + 1);
+      } else if (m.type === 'end' || m.type === 'error') {
+        setLive((l) => (l ? { ...l, state: m.state ?? 'error', error: m.error ?? null } : l));
+      }
+    };
+  };
+  const control = (action: string) => {
+    if (live?.id) void fetch(`/api/lab/live/${live.id}/${action}`, { method: 'POST' }).then((r) => r.json())
+      .then((st) => setLive((l) => (l ? { ...l, state: st.state } : l)));
+  };
+  const leaveLive = () => { wsRef.current?.close(); wsRef.current = null; setLive(null); liveRec.current = null; setLiveBase(null); };
+  useEffect(() => () => wsRef.current?.close(), []);
 
   useEffect(() => {
     void api.experiments().then((l) => {
@@ -131,6 +242,7 @@ export default function LabView() {
   }, []);
 
   useEffect(() => {
+    const rec = base;
     if (!rec || !mount.current) return;
     const el = mount.current;
     const physical = !!rec.layout;
@@ -201,8 +313,9 @@ export default function LabView() {
       }
     }
     const conduitGroup = new THREE.Group();
-    scene.add(conduitGroup);
-    state.current = { apply: (f) => applyFrame(f, objs, conduitGroup, pos, gantries, samples) };
+    const sysGroup = new THREE.Group();
+    scene.add(conduitGroup, sysGroup);
+    state.current = { apply: (f) => applyFrame(f, objs, conduitGroup, pos, gantries, samples, sysGroup, half) };
     const ray = new THREE.Raycaster();
     const onClick = (ev: MouseEvent) => {
       const r = renderer.domElement.getBoundingClientRect();
@@ -238,21 +351,40 @@ export default function LabView() {
       el.removeChild(renderer.domElement);
       state.current = null;
     };
-  }, [rec]);
+  }, [base]);
 
   useEffect(() => { if (frame) state.current?.apply(frame); }, [frame]);
 
   useEffect(() => {
-    if (!playing || !rec) return;
-    const id = setInterval(() => setIndex((i) => (i + 1 >= rec.steps.length ? (setPlaying(false), i) : i + 1)), 1000 / rate);
+    if (!playing || !replayRec) return;
+    const n = replayRec.steps.length;
+    const id = setInterval(() => setIndex((i) => (i + 1 >= n ? (setPlaying(false), i) : i + 1)), 1000 / rate);
     return () => clearInterval(id);
-  }, [playing, rate, rec]);
+  }, [playing, rate, replayRec]);
 
   const picker = (
     <select value={name} onChange={(e) => { setPlaying(false); setIndex(0); setName(e.target.value); }}>
       {available.map((n) => <option key={n} value={n}>{n.replace(/^lab-/, '')}</option>)}</select>
   );
-  if (!rec || !frame) return <div className="panel-view dim">{picker} {error ? `No laboratory record (${error}).` : 'loading…'}</div>;
+  const liveControls = !NATIVE && import.meta.env.VITE_STATIC !== '1' && (
+    <div className="lab-controls">
+      {live ? (<>
+        <span className="lab-live mono">LIVE {live.state} · t {live.t}/{live.horizon} · seq {live.seq} · coalesced frames {live.coalesced}</span>
+        <button onClick={() => control('pause')}>Pause</button><button onClick={() => control('resume')}>Resume</button>
+        <button onClick={() => control('stop')}>Stop</button><button onClick={leaveLive}>Back to replay</button>
+        {live.error && <span className="warn">{live.error}</span>}
+      </>) : (<>
+        <select value={preset} onChange={(e) => setPreset(e.target.value)}>{PRESETS.map((p) => <option key={p}>{p}</option>)}</select>
+        <input type="number" value={seed} onChange={(e) => setSeed(Number(e.target.value))} aria-label="seed" />
+        <button onClick={() => void startLive()}>Start live run</button>
+      </>)}
+    </div>
+  );
+  if (!base || !frame) {
+    return (<div className="lab"><div className="lab-stage" ref={mount} /><aside className="lab-side small">{liveControls}
+      <div className="dim">{picker} {live ? 'waiting for the first live step…' : error ? `No laboratory record (${error}).` : 'loading…'}</div></aside></div>);
+  }
+  const rec = (live ? liveRec.current : base) as LabRecord;
   const s = rec.steps[frame.index];
   const k = sel ? rec.chambers.findIndex((c) => c.cid === sel) : -1;
   const phys = s.physics;
@@ -264,15 +396,22 @@ export default function LabView() {
       cause: [e.operation ? `operation:${str(e.operation)}` : '', e.causal_event !== undefined ? `causal_event:${str(e.causal_event)}` : '',
         str(e.reason), Array.isArray(e.via) && e.via.length ? `via ${(e.via as string[]).join(', ')}` : ''].filter(Boolean).join(', '),
     })),
-  ].sort((a, b) => b.t - a.t).slice(0, 50);
+    ...frame.scienceEvents.filter((e) => e.type !== 'variable_candidate' || e.adopted).map((e) => ({
+      t: e.t, kind: `system ${str(e.system)}`.trim(),
+      text: `${e.type.replace(/_/g, ' ')} ${str(e.chamber ?? '')}${e.src ? str(e.src) + '→' + str(e.dst) : str(e.dst ?? '')}${e.variable ? ' ' + str(e.variable) : ''}`,
+      cause: e.type === 'material_delivered' ? `predicted ${str(e.pred)} · harness true effect ${str(e.true_effect)} (not seen by the system)`
+        : e.type === 'experiment_selected' ? `basis ${str(e.basis)} · physical ${str(e.physical)}` : str(e.reason ?? ''),
+    })),
+  ].sort((a, b) => b.t - a.t).slice(0, 60);
   return (
     <div className="lab">
       <div className="lab-stage" ref={mount} />
       <aside className="lab-side small">
-        <div className="lab-status"><b>Recorded runtime execution, replayed.</b> Level 1 component. Simulation-internal
+        {liveControls}
+        <div className="lab-status"><b>{live ? 'Live runtime execution (streamed as it runs).' : 'Recorded runtime execution, replayed.'}</b> Level 1 component. Simulation-internal
           {rec.layout ? ' (rigid-body physics within declared approximations)' : ''}: not a physical laboratory; not evidence of
           autonomous science.</div>
-        <div className="lab-controls">
+        {!live && <div className="lab-controls">
           {picker}
           <button onClick={() => setPlaying(!playing)}>{playing ? 'Pause' : 'Run'}</button>
           <button onClick={() => setIndex(Math.max(0, frame.index - 1))}>−1</button>
@@ -280,11 +419,20 @@ export default function LabView() {
           <button onClick={() => { setPlaying(false); setIndex(0); }}>Reset</button>
           <select value={rate} onChange={(e) => setRate(Number(e.target.value))}>
             {[2, 8, 24].map((r) => <option key={r} value={r}>{r} steps/s</option>)}</select>
-        </div>
-        <input type="range" min={0} max={rec.steps.length - 1} value={frame.index} onChange={(e) => setIndex(Number(e.target.value))} />
+        </div>}
+        {!live && <input type="range" min={0} max={rec.steps.length - 1} value={frame.index} onChange={(e) => setIndex(Number(e.target.value))} />}
         <div className="mono dim">step {frame.t} / {rec.steps.length} · {fps} fps · runtime {s.fingerprint.slice(0, 12)}{phys ? ` · physics ${phys.fingerprint}` : ''}</div>
         <div className="mono dim">config gen {str(rec.config.gen_seed)} · seed {str(rec.config.seed)} · n {str(rec.config.n)} · physics {String(!!rec.layout)}</div>
         {phys && <div className="mono dim">gantries: {Object.entries(phys.gantries).map(([b, g]) => `${b}:${g.failed ? 'FAILED' : g.health.toFixed(2)}`).join(' ')}</div>}
+        {frame.systems.length > 0 && (
+          <ul className="hpo-rows mono">
+            {frame.systems.map((sy, k) => (
+              <li key={sy.sid}><span>{['—', '- -', '···'][k % 3]} {sy.sid} ({sy.kind})</span>
+                <span className="dim">budget {sy.budget} · sees {sy.coverage.length} · window {sy.window}{sy.features.length ? ` · vars ${sy.features.join(', ')}` : ''}
+                  {sy.pending ? ` · experiment ${sy.pending[0]}→${sy.pending[1]}` : ''}{sy.isolated.length ? ` · isolating ${sy.isolated.join(', ')}` : ''}{sy.store ? ` · memory ${sy.memory}` : ''}</span></li>
+            ))}
+          </ul>
+        )}
         {k >= 0 && (
           <div className="lab-inspect">
             <h4>Chamber {sel}</h4>

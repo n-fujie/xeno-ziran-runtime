@@ -279,3 +279,5 @@ svg.hpo-tl { display: block; width: 100%; height: 12px; }
 .lab-events li.on { color: #fff; }
 .lab-inspect { border-top: 1px solid var(--line); padding-top: 6px; overflow-wrap: anywhere; }
 @media (max-width: 900px) { .lab { grid-template-columns: 1fr; grid-template-rows: 60vh auto; } .lab-side { border-left: none; border-top: 1px solid var(--line); } }
+.lab-live { color: #fff; border: 1px solid var(--line2); padding: 2px 6px; }
+.lab-side input[type='number'] { width: 80px; }
