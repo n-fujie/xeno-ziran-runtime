@@ -1,0 +1,5 @@
+Superseded run (not published): a first confirmatory launch at 16:11 imported xzr from the main working tree
+instead of the frozen worktree (the runner script was outside the worktree, so sys.path[0] was the script directory).
+Its M4 result was set aside unpublished and all four experiments were re-run from the worktree with PYTHONPATH set
+(16:33-17:54). Published results: code_sha1 a94f2bc0c413ea6f at commit 4ae0840 for all four; "dirty" in M5-M7
+provenance reflects only the untracked result files of the earlier experiments in that worktree (0 tracked changes).
