@@ -281,6 +281,7 @@ class LabRun:
             raise ValueError(f"unknown harness intervention {do!r}")
         sci.invalidate()
         sci.events.append({"t": t, "type": "harness", **{k: v for k, v in h.items() if k != "at"}})
+        sci.on_physical(ev, t)  # e.g. transfers failed with a forced gantry failure end the systems' pending experiments
         return ev
 
     def record(self) -> dict:

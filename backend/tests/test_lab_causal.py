@@ -156,3 +156,15 @@ def test_legs_are_attributed_to_their_system_in_the_shared_laboratory():
     assert r.lab is not None and r.lab.trace["legs"]
     assert {lg["owner"] for lg in r.lab.trace["legs"]} <= {"A", "B"}
     assert None not in {lg["owner"] for lg in r.lab.trace["legs"]}
+
+
+def test_a_forced_failure_ends_the_pending_experiment_it_destroys():
+    """Harness physical events reach the systems like physics events (found by the M9 pilot: a transfer lost to a
+    forced gantry failure stayed pending forever and the system never requested again)."""
+    r = run([A], horizon=200, harness=[{"at": 60, "do": "fail_gantry", "gantry": "0"}])
+    sci = r.science
+    assert sci is not None
+    lost = [e for e in r.physical if e["type"] == "transfer_failed" and e["t"] == 60]
+    assert lost, "the forced failure must destroy a queued transfer for this test to say anything"
+    assert any(e["type"] == "experiment_failed" and e["t"] == 60 for e in sci.events)
+    assert sci.systems["A"].stats["requests"] > sum(1 for e in sci.events if e["type"] == "experiment_selected" and e["t"] <= 60)

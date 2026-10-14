@@ -191,7 +191,9 @@ tested). M+ is referenced to M0.
 * **C7, communication loss extinguishes B:** X7 vs X7f on "extinct" is DETECTED and higher.
 * **C8, loss of evidence is not operational extinction:** X8 extinct in ≤ 20 %, and evidence unavailable in every
   seed.
-* **C9, history restores the same dependency:** X10 restores the same dependency in at least 6 more seeds than X10n.
+* **C9, history restores the same dependency:** X10 vs X10n on the reuse share (the share of experiments after
+  re-ignition made on pairs used before T) is DETECTED and higher. The all-or-nothing "restored the same dependency"
+  indicator is reported. The pilot showed it is never met when exploration tries new pairs, so it cannot discriminate.
 
 ## 7. M9-D, M9-E, M9-F, cross-world, alternative arrangement
 

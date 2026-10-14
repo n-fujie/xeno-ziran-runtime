@@ -42,6 +42,7 @@ repository only as a name). For a target system and an intervention at step T:
     reignition_step      first completion after the extinct interval
     restored_same        re-ignited, and every (source, target) pair and gantry bay after re-ignition was already used
                          before T (the same operational dependency); otherwise the re-ignition is a new dependency
+    reuse_share          re-ignited: share of the later completed experiments on pairs already used before T (graded)
     outage_paths         mean executable experiments the system saw during [T + 30, T + 190) (substitute paths known
                          to the system)
     apparatus_failed     a gantry failure at or after T (an apparatus failure is not counted as extinction by itself)
@@ -195,6 +196,7 @@ def extinction(run, sid: str, T: int) -> dict[str, float]:
     return {"active_before": float(active), "extinct": float(extinct), "extinction_point": point,
             "reignited": float(reign), "reignition_step": float(min(e["t"] for e in later)) if reign else math.nan,
             "restored_same": float(restored) if reign else math.nan,
+            "reuse_share": (float(np.mean([(e["src"], e["dst"]) in pre_pairs for e in later])) if reign else math.nan),
             "new_dependency": float(reign and not restored) if reign else math.nan,
             "outage_paths": float(np.mean(win)) if win else math.nan,
             "apparatus_failed": float(any(e["type"] == "gantry_failed" and e["t"] >= T for e in run.physical)),

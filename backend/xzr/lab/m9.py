@@ -318,7 +318,7 @@ def _count(rs: list[dict], key: str, cond_key: str | None = None) -> dict[str, i
 
 def analyse_m9c(jobs: list[dict]) -> dict[str, Any]:
     ks = ("active_before", "extinct", "reignited", "restored_same", "new_dependency", "apparatus_failed")
-    ms = ("completed_after", "outage_paths", "extinction_point", "reignition_step", "evidence_unavailable",
+    ms = ("completed_after", "outage_paths", "extinction_point", "reignition_step", "reuse_share", "evidence_unavailable",
           "persisting_conduits", "completed", "true_gain", "relocations")
     R = {c: rows(jobs, c, _sys(M9C[c])) for c in M9C}
     counts = {c: {k: _count(R[c], k, None if k in ("active_before", "apparatus_failed") else
@@ -327,8 +327,8 @@ def analyse_m9c(jobs: list[dict]) -> dict[str, Any]:
     c = out["contrasts"]
     for i, (x, y) in enumerate((("X1", "X0"), ("X2", "X1"), ("X3", "X1"), ("X4", "X1"), ("X5", "X0"), ("X6", "X5"),
                                 ("X7", "X7f"), ("X10", "X10n"))):
-        c[f"{x} vs {y}"] = con(R[x], R[y], ("extinct", "completed_after"), [m for m in ms if m != "completed_after"],
-                               None, 9500 + i)
+        prim = ("reuse_share", "reignition_step") if x == "X10" else ("extinct", "completed_after")
+        c[f"{x} vs {y}"] = con(R[x], R[y], prim, [m for m in ms if m not in prim], None, 9500 + i)
     n = lambda cond, k: counts[cond][k]["count"]  # noqa: E731
     e = lambda cond: counts[cond]["extinct"]["eligible"]  # noqa: E731
     out["verdicts"] = {
@@ -342,7 +342,8 @@ def analyse_m9c(jobs: list[dict]) -> dict[str, Any]:
         "C7_communication_loss_extinguishes_B": det(c["X7 vs X7f"], "extinct") and c["X7 vs X7f"]["extinct"]["mean"] > 0,
         "C8_evidence_loss_is_not_extinction": n("X8", "extinct") <= 0.2 * max(e("X8"), 1)
         and all(r["evidence_unavailable"] > 0 for r in R["X8"]),
-        "C9_history_restores_the_same_dependency": (n("X10", "restored_same") - n("X10n", "restored_same")) >= 6,
+        "C9_history_restores_the_same_dependency": det(c["X10 vs X10n"], "reuse_share")
+        and c["X10 vs X10n"]["reuse_share"]["mean"] > 0,
         "X0_natural_extinction": n("X0", "extinct"),
     }
     return out
