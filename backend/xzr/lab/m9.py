@@ -25,7 +25,7 @@ from .record import LabRun
 
 ROOT = Path(__file__).resolve().parents[3]
 PROTOCOL = ROOT / "docs" / "LAB_PROTOCOL_M9.md"
-PROTOCOL_SHA256 = "UNFROZEN"
+PROTOCOL_SHA256 = "4757ee7dc7dfbc9be25759a6491d65070b14fe6001cbf1faddfa24105bf1afbd"
 RESULTS = ROOT / "backend" / "experiments" / "results" / "lab9"
 # confirmatory seeds are new (never used in M4–M7, pilots or the exploratory T7 diagnostic)
 RANGES: dict[str, tuple[int, int]] = {"confirm": (7000, 70000), "heldout": (7500, 75000), "worlds": (7700, 77000),
@@ -79,7 +79,8 @@ M9C: dict[str, dict[str, Any]] = {
     "X2": ext("A", [A], [{"at": T_EXT - 1, "do": "set_resources", "gantry": "0", "value": 1.0},
                          {"at": T_EXT, "do": "fail_gantry", "gantry": "0"}]),  # failure with repair
     "X3": ext("A", [A], [*FAIL0, {"at": 480, "do": "set_resources", "gantry": "0", "value": 1.0}]),  # redistribution
-    "X4": ext("A", [{**A, "reach": "adjacent"}], FAIL0),  # failure with redundant paths (adjacent bays' gantries)
+    "X4": ext("A", [{**A, "reach": "adjacent"}], FAIL0),  # failure with redundant reach (adjacent bays' gantries)
+    "X4b": ext("A", [{**A, "reach": "adjacent", "sensor_range": 7.0}], FAIL0),  # redundant reach and observation
     "X5": ext("A", [A], VIEW),  # loss of observation (A's observed chambers closed 320-640)
     "X6": ext("A", [{**A, "revise_observation": True}], VIEW),  # the same, with sensor relocation
     "X7": ext("B", [B], [{"at": T_EXT, "do": "sever", "chambers": SENSE_B}]),  # communication loss (conduits cut)
@@ -135,8 +136,9 @@ ROTATE = [{"at": 160, "do": "close", "chambers": ["0.2", "1.2"]}, {"at": 320, "d
 WORLDS: dict[str, dict[str, Any]] = {
     "transport": {"doc": "more experiments per system (budget 48, decisions every 2 steps): transport and contention dominate",
                   "spec": {"budget": 48.0, "period": 2}},
-    "sensor": {"doc": "restricted observation: local sensing radius 2.0, distributed readings 1 hop",
-               "spec_by": {"local": {"sensor_range": 2.0}, "distributed": {"comm_hops": 1}}},
+    "sensor": {"doc": "restricted observation: observation window 4 steps for every system, distributed readings 1 hop "
+                      "(a local radius below the 3.4 chamber spacing would leave A no experiment at all: pilot)",
+               "spec": {"window": 4}, "spec_by": {"distributed": {"comm_hops": 1}}},
     "fractured": {"doc": "communication fractured: the distributed system's connections are severed every 120 steps",
                   "harness": EVERY},
     "scarce": {"doc": "scarce resources: no repair resources, budgets 12", "spec": {"budget": 12.0}, "resources": 0.0},
@@ -326,7 +328,7 @@ def analyse_m9c(jobs: list[dict]) -> dict[str, Any]:
     out: dict[str, Any] = {"counts": counts, "contrasts": {}}
     c = out["contrasts"]
     for i, (x, y) in enumerate((("X1", "X0"), ("X2", "X1"), ("X3", "X1"), ("X4", "X1"), ("X5", "X0"), ("X6", "X5"),
-                                ("X7", "X7f"), ("X10", "X10n"))):
+                                ("X7", "X7f"), ("X10", "X10n"), ("X4b", "X1"))):
         prim = ("reuse_share", "reignition_step") if x == "X10" else ("extinct", "completed_after")
         c[f"{x} vs {y}"] = con(R[x], R[y], prim, [m for m in ms if m not in prim], None, 9500 + i)
     n = lambda cond, k: counts[cond][k]["count"]  # noqa: E731
@@ -337,6 +339,8 @@ def analyse_m9c(jobs: list[dict]) -> dict[str, Any]:
         "C3_redistribution_reignites_same_dependency": n("X3", "reignited") >= 0.8 * max(n("X3", "extinct"), 1)
         and n("X3", "restored_same") >= 0.8 * max(n("X3", "reignited"), 1),
         "C4_redundant_paths_prevent_extinction": det(c["X4 vs X1"], "extinct") and c["X4 vs X1"]["extinct"]["mean"] < 0,
+        "C4b_redundant_reach_and_observation_prevent_extinction": det(c["X4b vs X1"], "extinct")
+        and c["X4b vs X1"]["extinct"]["mean"] < 0,
         "C5_observation_loss_extinguishes": n("X5", "extinct") >= 0.8 * max(e("X5"), 1),
         "C6_sensor_relocation_prevents_or_shortens": det(c["X6 vs X5"], "extinct") and c["X6 vs X5"]["extinct"]["mean"] < 0,
         "C7_communication_loss_extinguishes_B": det(c["X7 vs X7f"], "extinct") and c["X7 vs X7f"]["extinct"]["mean"] > 0,

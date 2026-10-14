@@ -172,6 +172,7 @@ tested). M+ is referenced to M0.
 * **X2:** the same failure with 1 repair resource.
 * **X3:** X1, then 1 resource moved to bay 0 at 480.
 * **X4:** X1 with A reaching adjacent bays.
+* **X4b:** X1 with A reaching and sensing adjacent bays (radius 7.0). Added after the pilot; see §8.
 * **X5:** A's observed chambers closed 320–640.
 * **X6:** X5 with sensor relocation.
 * **X7:** B's hub and sensor chambers have every connection severed at 320.
@@ -186,6 +187,7 @@ tested). M+ is referenced to M0.
 * **C3, redistribution re-ignites the same dependency:** X3 re-ignites in ≥ 80 % of its extinct seeds, and ≥ 80 % of
   those re-ignitions restore the same dependency.
 * **C4, redundant paths prevent extinction:** X4 vs X1 on "extinct" is DETECTED and lower.
+* **C4b, redundant reach and observation prevent extinction:** X4b vs X1 on "extinct" is DETECTED and lower.
 * **C5, observation loss extinguishes:** X5 extinct in ≥ 80 % of active seeds.
 * **C6, sensor relocation prevents or shortens extinction:** X6 vs X5 on "extinct" is DETECTED and lower.
 * **C7, communication loss extinguishes B:** X7 vs X7f on "extinct" is DETECTED and higher.
@@ -256,7 +258,7 @@ tested). M+ is referenced to M0.
 
 * **Laboratories:**
   * **transport:** budget 48, decisions every 2 steps;
-  * **sensor:** local radius 2.0, distributed readings 1 hop;
+  * **sensor:** observation window 4 steps for every system, distributed readings 1 hop;
   * **fractured:** B's connections severed every 120 steps;
   * **scarce:** no repair resources, budgets 12;
   * **dynamic:** pairs of chambers closed and reopened every 160 steps.
@@ -285,7 +287,57 @@ They are reported as they come out; a disagreement is reported, not repaired by 
 
 ## 8. Pilot (design only; seeds 8100–8103, cross-world 8100–8101)
 
-To be filled in before freezing: what the pilot showed, and which design choices it changed.
+The pilot ran every experiment on pilot seeds; with 4 seeds no contrast can reach p < 0.01 (the smallest exact
+sign-flip p is 0.125). It was used only to find defects and to check that every condition can produce its endpoints.
+
+**Defects found and fixed before freezing** (each covered by a test):
+
+1. **Race on shared material.** With private carriages over shared material, two carriages in one bay could grasp the
+   same sample, and the second grasp crashed the run (M9-B G+). It is now a recorded transfer failure ("taken by
+   another gantry").
+2. **Legs without owners.** In the shared laboratory the requesting system was not passed to the physical
+   laboratory, so the leg trace had no owners, and queue wait and contention were empty for the shared cells. It is
+   passed now. This changes nothing physically; the M3 and M7 demonstration records still replay.
+3. **Forced failures did not reach the systems.** The events of a harness-forced gantry failure were not passed to
+   the systems. A transfer lost to the failure stayed pending forever, so every gantry-failure condition of M9-C
+   stopped at the same budget whatever the repair. Fixed.
+
+**Design changes:**
+
+* **Re-ignition reuse.** The all-or-nothing indicator "re-ignition restored the same dependency" was never met in any
+  re-ignited pilot seed: exploration always tries some new pair. C9 now uses the graded reuse share (§6), and the
+  indicator is reported.
+* **Sensor-restricted laboratory.** A local sensing radius of 2.0 left A without any executable experiment (chambers
+  of a bay are 3.4 apart), so every contrast in that laboratory was IDENTICAL by construction. The laboratory now
+  restricts observation by a shorter window (4 steps) and 1-hop distributed readings (§7).
+
+**Structural facts, stated before confirmation:**
+
+* **Queue capacity and priority are not pathways.** Private queue capacity (Q+) and priority (P+) were bit-identical
+  to the shared laboratory. Each system has at most one pending transfer, so a queue never fills and B never waits
+  behind a waiting A leg. The protocol expects IDENTICAL for these two and keeps them as declared negative controls.
+* **True gain is very noisy.** The noise replicates moved mean true gain from 18 to 27 (M9-D, A alone) and post-change
+  gain from 21 to 6 (M9-F). Power on true-gain endpoints is low; an UNRESOLVED result there means "not shown".
+* **Measurement is weakly informative.** A system's own observed outcome correlated only weakly with the true effect
+  (r ≈ 0.13–0.34, pilot). Generated variables changed about 24 % of decisions when present, the model's predictions
+  about 75 %, and memory 30–47 %. These are diagnostics, not results.
+
+**M9-C after the fix** (seeds 8100–8103):
+
+* **X2 (failure with repair):** not extinct. A completes 6–11 transfers afterwards.
+* **X1, X3, X4:** the same in every pilot seed. After the failure A keeps requesting impossible transfers and spends
+  its whole budget within about 60 steps, so the resource moved to bay 0 at 480 (X3) finds A without budget. Extended
+  reach alone (X4) gives no substitute, because A still observes only its own bay.
+* **Criteria kept:** C3 and C4 are kept unchanged and will be reported. These are properties of the frozen system
+  semantics (no failure awareness; refused requests cost budget), not defects.
+* **X4b and C4b:** added to test redundancy that includes observation. In 2 pilot seeds X4b was still extinct,
+  although A saw 6.3 and 8.7 executable experiments on average during the outage. A keeps choosing bay-0 sources whose
+  transfers are refused: its selection rule does not represent apparatus failure. C4b is kept unchanged; it
+  distinguishes "no substitute path exists" from "substitutes exist but are not used".
+
+**Pilot directions:** not evidence, and not used to choose hypotheses (they were written before the pilot). With
+shared resources, A's presence lowered B's completed transfers (−2 per run) and raised B's latency (+31 steps). With
+resources separated, the dependence was near zero.
 
 ## 9. Level 2 candidate claim (separate from the M4–M7 Level 2 criterion)
 
