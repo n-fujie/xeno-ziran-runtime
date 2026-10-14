@@ -11,7 +11,16 @@ the experiment harness: it does not import xzr.lab.causal, xzr.lab.m9's analyses
                   (arrival, service duration, owner) of runs with A present: B's predicted waiting with and without A's
                   legs, against the waiting B shows in the runs without A
 
-Usage: python scripts/m9_independent.py <published m9ab.json> <out.json> [seeds]
+    B1+ events    from the same raw records: attempted / physically completed / delivered transfers, blocked and failed
+                  deliveries, gantry failures, repairs, budget spent (recomputed from costs); and, for M9-C runs,
+                  extinction, re-ignition and completions after the intervention, with the operational definitions coded
+                  again here from their text in the protocol
+    C2  wear      every recorded gantry health value checked against the declared wear rules (each completed leg
+                  -0.035*(1+0.8), each failed leg after motion -0.035, repair resets to 1); wear on the bay-0 gantry
+                  attributed to systems from the event log
+    C3  material  B's "no material" failures with and without A, from the event log
+
+Usage: python scripts/m9_independent.py <published m9ab.json> <out.json> [seeds] [published m9c.json]
 """
 
 from __future__ import annotations
@@ -44,14 +53,94 @@ def recount(rec: dict, sid: str) -> dict[str, float]:
             "latency_mean": float(np.mean(lat)) if lat else math.nan}
 
 
-def run_cond(cond: str, i: int) -> tuple[dict, list[dict]]:
+def run_cond(cond: str, i: int, exp: str = "m9ab") -> tuple[dict, list[dict]]:
     gen0, seed0 = M.RANGES["confirm"]
-    r = LabRun(M.config(M.EXPERIMENTS["m9ab"][cond], gen0 + i, seed0 + i))
+    r = LabRun(M.config(M.EXPERIMENTS[exp][cond], gen0 + i, seed0 + i))
     while not r.done:
         r.step()
     rec = json.loads(json.dumps(r.record()))  # only what a record file would hold
     assert r.lab is not None
     return rec, [dict(x) for x in r.lab.trace["legs"]]
+
+
+def owners(rec: dict) -> dict[int, str]:
+    """Transfer id -> system, from the event log only (completed and failed transfers matched to science events)."""
+    sci, phys = rec.get("science_events", []), rec.get("physical_events", [])
+    out: dict[int, str] = {}
+    for e in phys:
+        if e["type"] == "transfer_complete":
+            m = [d["system"] for d in sci if d["type"] in ("material_delivered", "delivery_blocked") and d["t"] == e["t"]
+                 and d["dst"] == e["dst"]]
+            if m:
+                out[e["transfer"]] = m[0]
+        elif e["type"] == "transfer_failed":
+            m = [d["system"] for d in sci if d["type"] == "experiment_failed" and d["t"] == e["t"] and d["src"] == e["src"]
+                 and d["dst"] == e["dst"]]
+            if m:
+                out[e["transfer"]] = m[0]
+    return out
+
+
+def events_count(rec: dict, sid: str) -> dict[str, float]:
+    sci, phys = rec.get("science_events", []), rec.get("physical_events", [])
+    own = owners(rec)
+    sel = [e for e in sci if e["type"] == "experiment_selected" and e["system"] == sid]
+    iso = sum(1 for e in sci if e["type"] == "isolation" and e["system"] == sid)
+    rel = sum(1 for e in sci if e["type"] == "sensor_relocated" and e["system"] == sid)
+    return {"attempted": float(sum(1 for e in sel if e["physical"] == "transfer_queued")),
+            "requests": float(len(sel)),
+            "physically_completed": float(sum(1 for e in phys if e["type"] == "transfer_complete"
+                                              and own.get(e["transfer"]) == sid)),
+            "delivered": float(sum(1 for e in sci if e["type"] == "material_delivered" and e["system"] == sid)),
+            "blocked_deliveries": float(sum(1 for e in sci if e["type"] == "delivery_blocked" and e["system"] == sid)),
+            "spent": float(len(sel) * 1.0 + iso * 0.5 + rel * 0.5),
+            "gantry_failures": float(sum(1 for e in phys if e["type"] == "gantry_failed")),
+            "repairs": float(sum(1 for e in phys if e["type"] == "gantry_repaired"))}
+
+
+def extinction_recount(rec: dict, sid: str, T: int) -> dict[str, float]:
+    """Protocol §6 definitions, coded again: extinct = a delivery in [T-160, T) and none in [T+30, T+190)."""
+    ts = sorted(e["t"] for e in rec["science_events"] if e["type"] == "material_delivered" and e["system"] == sid)
+    active = any(T - 160 <= t < T for t in ts)
+    extinct = active and not any(T + 30 <= t < T + 190 for t in ts)
+    later = [t for t in ts if t >= T + 190]
+    return {"extinct": float(extinct), "reignited": float(extinct and bool(later)),
+            "reignition_step": float(later[0]) if extinct and later else math.nan,
+            "completed_after": float(sum(1 for t in ts if t >= T))}
+
+
+def wear_check(rec: dict) -> dict:
+    """Each gantry's recorded health sequence against the declared wear rules."""
+    by: dict[str, list[dict]] = {}
+    for e in rec["physical_events"]:
+        if e["type"] in ("leg_complete", "transfer_failed", "gantry_repaired") and ("bay" in e):
+            by.setdefault(e["bay"], []).append(e)
+    checked = mismatches = 0
+    for evs in by.values():
+        h = 1.0
+        for e in evs:
+            if e["type"] == "gantry_repaired":
+                h = 1.0
+                continue
+            if "health" not in e:
+                continue
+            step = round(h - e["health"], 6)
+            ok = (e["type"] == "leg_complete" and abs(step - 0.035 * 1.8) < 1e-6) or (
+                e["type"] == "transfer_failed" and (abs(step - 0.035) < 1e-6 or abs(step) < 1e-9))
+            checked += 1
+            mismatches += 0 if ok else 1
+            h = e["health"]
+    return {"health_values_checked": checked, "inconsistent_with_wear_rules": mismatches}
+
+
+def wear_shares(rec: dict) -> dict[str, float]:
+    own = owners(rec)
+    w: dict[str, float] = {}
+    for e in rec["physical_events"]:
+        if e["type"] == "leg_complete" and e.get("bay") == "0":
+            k = own.get(e["transfer"], "?")
+            w[k] = w.get(k, 0.0) + 0.035 * 1.8
+    return w
 
 
 # ------------------------------------------------------------------ B2: statistics written independently
@@ -170,11 +259,25 @@ def main() -> None:
     pub_path, out_path = Path(sys.argv[1]), Path(sys.argv[2])
     seeds = int(sys.argv[3]) if len(sys.argv) > 3 else 6
     doc = json.loads(pub_path.read_text())
-    out: dict = {"published": str(pub_path), "seeds_rerun": seeds, "B1_recount": [], "B2_statistics": b2(doc)}
+    out: dict = {"published": str(pub_path), "seeds_rerun": seeds, "B1_recount": [], "B2_statistics": b2(doc),
+                 "B1_events": [], "C2_wear": [], "C3_material": {"LS+": [], "LS0": []}, "wear_on_bay0_by_system": []}
     traces, waits0 = [], []
     for i in range(seeds):
         for cond in ("LS+", "LS0"):
             rec, legs = run_cond(cond, i)
+            fp_ok = rec["steps"][-1]["fingerprint"] == doc["fingerprints"][f"{cond}/confirm/{i}"]
+            ev = events_count(rec, "B")
+            prow = next(r["systems"]["B"] for r in doc["per_run"] if r["cond"] == cond and r["i"] == i)
+            harness = {"requests": prow["requests"], "delivered": prow["completed"], "spent": prow["spent"]}
+            out["B1_events"].append({"cond": cond, "i": i, "fingerprint_matches_published": fp_ok, "independent": ev,
+                                     "harness": harness,
+                                     "agree": all(abs(ev[k] - harness[k]) < 1e-9 for k in harness)})
+            out["C2_wear"].append({"cond": cond, "i": i, **wear_check(rec)})
+            out["C3_material"][cond].append(sum(1 for e in rec["physical_events"] if e["type"] == "transfer_failed"
+                                                and owners(rec).get(e["transfer"]) == "B"
+                                                and str(e.get("reason", "")).startswith("no material")))
+            if cond == "LS+":
+                out["wear_on_bay0_by_system"].append(wear_shares(rec))
             mine = recount(rec, "B")
             pubrow = next(r["systems"]["B"] for r in doc["per_run"] if r["cond"] == cond and r["i"] == i)
             same = all((math.isnan(mine[k]) and pubrow[k] is None) or (pubrow[k] is not None and abs(mine[k] - pubrow[k]) < 1e-9)
@@ -188,9 +291,29 @@ def main() -> None:
                      if lg["owner"] == "B" and lg["gantry"] == "0" and lg["start"] is not None]
                 waits0.append(float(np.mean(w)) if w else math.nan)
     out["C1_queue_model"] = c1(traces, waits0)
+    if len(sys.argv) > 4:  # M9-C: extinction and re-ignition recounted from raw records
+        docc = json.loads(Path(sys.argv[4]).read_text())
+        out["B1_extinction"] = []
+        for cond in ("X1", "X2", "X5", "X6", "X7", "X10"):
+            sid = M.M9C[cond]["extinction"]["system"]
+            for i in range(seeds):
+                rec, _ = run_cond(cond, i, "m9c")
+                mine_e = extinction_recount(rec, sid, M.T_EXT)
+                prow = next(r["systems"][sid] for r in docc["per_run"] if r["cond"] == cond and r["i"] == i)
+                same = all((math.isnan(v) and prow.get(k) is None) or (prow.get(k) is not None and abs(v - prow[k]) < 1e-9)
+                           for k, v in mine_e.items())
+                out["B1_extinction"].append({"cond": cond, "i": i, "independent": mine_e,
+                                             "published": {k: prow.get(k) for k in mine_e}, "agree": same})
     out["summary"] = {"B1_all_agree": all(x["agree"] for x in out["B1_recount"]),
-                      "B2_all_agree": all(v["agree"] for v in out["B2_statistics"].values())}
-    out_path.write_text(json.dumps(out, indent=1, default=lambda o: None if isinstance(o, float) and math.isnan(o) else str(o)))
+                      "B1_disagreements": [(x["cond"], x["i"]) for x in out["B1_recount"] if not x["agree"]],
+                      "B1_events_all_agree": all(x["agree"] for x in out["B1_events"]),
+                      "B1_extinction_all_agree": all(x["agree"] for x in out.get("B1_extinction", [])),
+                      "B2_all_agree": all(v["agree"] for v in out["B2_statistics"].values()),
+                      "C2_wear_inconsistencies": sum(x["inconsistent_with_wear_rules"] for x in out["C2_wear"]),
+                      "C3_B_no_material_failures": {k: sum(v) for k, v in out["C3_material"].items()},
+                      "fingerprints_match_published": all(x["fingerprint_matches_published"] for x in out["B1_events"])}
+    from xzr.hpo.experiments import clean
+    out_path.write_text(json.dumps(clean(out), indent=1, allow_nan=False, default=str))
     print(json.dumps(out["summary"]), json.dumps(out["C1_queue_model"]))
 
 
