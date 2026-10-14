@@ -414,6 +414,8 @@ class PhysicalLab:
         lg.phase_steps += 1
         tip = self.tip_xyz(g.key)
         if lg.phase == 2:  # grasp
+            if tr.sample not in self.contents[frm]:  # only with private carriages on shared material: taken meanwhile
+                return self._fail(g, lg, t, events, f"no material in {frm} (taken by another gantry)")
             p = self.sample_xyz(tr.sample)
             if np.linalg.norm(p[:2] - tip[:2]) > GRASP_TOL * 3 or abs(p[2] + HALF - tip[2]) > GRASP_TOL * 2:
                 return self._fail(g, lg, t, events, "grasp failed: tool not at the sample")

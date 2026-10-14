@@ -142,3 +142,10 @@ def test_resource_redistribution_starts_a_repair():
     assert lab.gantries["0"].failed and lab.gantries["0"].repair_left == 0
     lab.set_resources("0", 1.0, 2, ev)
     assert lab.gantries["0"].repair_left == P.REPAIR_STEPS and ev[-1]["type"] == "repair_started"
+
+
+def test_private_carriages_on_shared_material_cannot_take_the_same_sample():
+    """Two carriages in one bay racing for one sample: the second grasp fails as a recorded transfer failure."""
+    r = run([A, B, C], horizon=250, partition={"groups": G, "gantries": "private"}, gen_seed=8100, seed=81000)
+    taken = [e for e in r.physical if e["type"] == "transfer_failed" and "taken by another gantry" in e.get("reason", "")]
+    assert [(e["t"], e["src"]) for e in taken] == [(246, "0.1")]  # found by the M9 pilot (it crashed the run before)

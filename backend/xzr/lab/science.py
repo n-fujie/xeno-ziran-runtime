@@ -42,6 +42,21 @@ Causal pathway switches (M9, opt-in; defaults reproduce M4–M7 exactly):
     inert     the system decides and does all its physical work (gantries, material, queues, wear), but its transfers
               change nothing in the runtime: no extraction, no connection, no load, no isolation. It removes the
               system's runtime (environmental and communication) pathways and keeps its physical one.
+
+Further M9 variants (opt-in; defaults are the M4–M7 behaviour):
+
+    sensor_range     a local system's sensing radius (default SENSOR_RANGE)
+    relocation       "novelty" (M5: material seen, fewest tried targets), "outcome" (toward the chambers whose own
+                     observed outcomes were largest; unobserved chambers count as the system's mean observed outcome)
+                     or "none" (no relocation; window revision only)
+    revise_window    whether observation revision also changes the window (M5: yes)
+    variable_rule    "loo" (M5 criterion) or "random" (a matched control: at the same times, adopt one candidate drawn at
+                     random from those the criterion evaluated, whatever its evidence)
+    memory_delay     a memory entry becomes readable only this many steps after it was written
+    context_error    contextual memory computes its context from another chamber (a wrong context of the same form)
+    diagnose         count, at every model decision, whether the chosen experiment would differ without the memory,
+                     without the generated variables, or with the model's predictions ignored (exploration bonus
+                     only). Diagnostics only read; the choice made is unchanged.
 """
 
 from __future__ import annotations
@@ -91,6 +106,13 @@ class SystemSpec:
     comm_free: bool = False  # control: distributed readings reach the hub without runtime connections
     comm: str = "conduit"  # conduit | frozen | free (M9; comm_free=True is "free")
     inert: bool = False  # M9: physical work without any runtime effect
+    sensor_range: float = SENSOR_RANGE
+    relocation: str = "novelty"  # novelty | outcome | none
+    revise_window: bool = True
+    variable_rule: str = "loo"  # loo | random
+    memory_delay: int = 0
+    context_error: bool = False
+    diagnose: bool = False
     shared_memory_from: str | None = None  # read another system's memory store (M7 test 6)
     explore: float = 1.5
     ridge: float = 1.0
@@ -119,6 +141,8 @@ class SystemState:
     isolated: dict[str, int] = field(default_factory=dict)  # chamber → step to reopen
     seen_contents: dict[str, int] = field(default_factory=dict)  # material last seen in each chamber (own observation)
     obs_error: list[float] = field(default_factory=list)  # |prediction − own observed outcome| (no privileged truth)
+    observed: list[tuple[str, str, float]] = field(default_factory=list)  # (src, dst, own observed outcome), M9 measures
+    diag: dict[str, int] = field(default_factory=dict)  # M9 decision diagnostics (spec.diagnose)
     stats: dict[str, Any] = field(default_factory=lambda: {
         "requests": 0, "completed": 0, "failed": 0, "denied": 0, "true_gain": 0.0, "true_gain_post": 0.0,
         "observed_outcomes": 0, "unobserved_outcomes": 0, "relocations": 0, "window_changes": 0, "isolations": 0,
@@ -231,7 +255,7 @@ class Science:
             out = {c.cid: 0 for c in self.cs}
         elif sp.kind == "local":
             p = np.array(self.lab.pos[sys_.sensor])
-            out = {c.cid: 0 for c in self.cs if np.linalg.norm(np.array(self.lab.pos[c.cid]) - p) <= SENSOR_RANGE}
+            out = {c.cid: 0 for c in self.cs if np.linalg.norm(np.array(self.lab.pos[c.cid]) - p) <= sp.sensor_range}
         elif sp.kind == "history":
             out = {c.cid: 0 for c in self.cs if self.bay[c.cid] == self.bay[sp.home]}
         elif sp.comm_mode() == "free":
@@ -304,6 +328,11 @@ class Science:
         beta = ridge_fit(X, y, sys_.ridge)
         return float(self._X(sys_, [f])[0] @ beta)
 
+    def _wrong(self, b: str) -> str:
+        """A fixed other chamber (the next one in chamber order): a context of the same form, about the wrong place."""
+        i = self.idx[b]
+        return self.cs[(i + 1) % len(self.cs)].cid
+
     def context(self, b: str, f: dict) -> tuple:
         return (round(self.shutter(b), 1), int(f["load_a"] > 2.0))
 
@@ -318,6 +347,8 @@ class Science:
             sys_.stats["memory_unavailable"] += 1
             return None
         entries = store_sys.memory
+        if sp.memory_delay:
+            entries = [e for e in entries if t - e["t"] >= sp.memory_delay]
         sys_.stats["memory_reads"] += 1
         if mode == "shuffled" and entries:
             perm = np.random.default_rng([self.seed, t, len(entries)]).permutation(len(entries))
@@ -325,7 +356,7 @@ class Science:
             entries = [{**e, "outcome": o} for e, o in zip(entries, outs, strict=True)]
         rel = [e for e in entries if e["pair"] == (a, b)]
         if mode == "contextual":
-            ctx = self.context(b, f)
+            ctx = self.context(self._wrong(b) if sp.context_error else b, f)
             rel = [e for e in rel if e["ctx"] == ctx]
         return float(np.mean([e["outcome"] for e in rel])) if rel else None
 
@@ -374,7 +405,45 @@ class Science:
             score = pred + sys_.explore / math.sqrt(1 + sys_.tries.get(b, 0))
             if score > best_score:
                 best, best_score, best_pred, basis = (a, b), score, pred, src
+        if sp.diagnose and best is not None:
+            self._diagnose(sys_, cands, cov, t, best)
         return best, best_pred, basis
+
+    def _diagnose(self, sys_: SystemState, cands: list[tuple[str, str]], cov: dict[str, int], t: int, chosen) -> None:
+        """Would the choice differ without memory / without generated variables / with predictions ignored? Reads only
+        (memory reads here are not counted in the system's statistics)."""
+        sp, d = sys_.spec, sys_.diag
+        stats = dict(sys_.stats)
+        base = list(sys_.features)
+
+        def pick(use_mem: bool, feats: list[str], use_pred: bool):
+            sys_.features = feats
+            best, best_score = None, -math.inf
+            for a, b in cands:
+                f = self.features(sys_, a, b, cov)
+                pred = self.predict(sys_, f) if use_pred else 0.0
+                mem = (self.memory_value(sys_, a, b, f, t) if use_mem and (sp.memory != "none" or sp.shared_memory_from)
+                       else None)
+                if mem is not None and use_pred:
+                    pred = 0.5 * pred + 0.5 * mem if len(sys_.data) >= 4 else mem
+                score = pred + sys_.explore / math.sqrt(1 + sys_.tries.get(b, 0))
+                if score > best_score:
+                    best, best_score = (a, b), score
+            return best
+
+        d["decisions"] = d.get("decisions", 0) + 1
+        if len(sys_.data) >= 4 or sp.memory != "none":
+            d["model_decisions"] = d.get("model_decisions", 0) + 1
+            d["changed_without_prediction"] = d.get("changed_without_prediction", 0) + int(pick(False, base, False) != chosen)
+        if sp.memory != "none" or sp.shared_memory_from:
+            d["changed_without_memory"] = d.get("changed_without_memory", 0) + int(pick(False, base, True) != chosen)
+        if len(base) > len(BASE_FEATURES):
+            d["decisions_with_variables"] = d.get("decisions_with_variables", 0) + 1
+            d["changed_without_variables"] = d.get("changed_without_variables", 0) + int(
+                pick(True, list(BASE_FEATURES), True) != chosen)
+        sys_.features = base
+        for k in ("memory_reads", "memory_unavailable"):
+            sys_.stats[k] = stats[k]
 
     def _request(self, sys_: SystemState, pair: tuple[str, str], pred: float, basis: str, cov: dict[str, int], t: int):
         sp = sys_.spec
@@ -441,16 +510,29 @@ class Science:
         """Observation revision: move the sensor head to the chamber of the bay whose neighbourhood holds the most
         material and the fewest tried targets; widen the window when observed outcomes are noisy."""
         sp = sys_.spec
-        if sp.kind == "local" and sys_.budget >= sp.cost_relocate:
+        if sp.kind == "local" and sys_.budget >= sp.cost_relocate and sp.relocation != "none":
             bay = [c.cid for c in self.cs if self.bay[c.cid] == self.bay[sys_.sensor]]
+            seen_out: dict[str, list[float]] = {}
+            for _, d, o in sys_.observed:
+                seen_out.setdefault(d, []).append(o)
+            prior = float(np.mean([o for _, _, o in sys_.observed])) if sys_.observed else 0.0
+
+            def value_outcome(s: str) -> float:
+                """Own observed outcomes near s (M9 'outcome' relocation); unobserved chambers count as the mean."""
+                p = np.array(self.lab.pos[s])
+                near = [c for c in bay if np.linalg.norm(np.array(self.lab.pos[c]) - p) <= sp.sensor_range]
+                return float(np.mean([np.mean(seen_out[c]) if c in seen_out else prior for c in near])) if near else prior
 
             def value(s: str) -> float:
+                if sp.relocation == "outcome":
+                    return value_outcome(s)
                 p = np.array(self.lab.pos[s])
-                near = [c for c in bay if np.linalg.norm(np.array(self.lab.pos[c]) - p) <= SENSOR_RANGE]
+                near = [c for c in bay if np.linalg.norm(np.array(self.lab.pos[c]) - p) <= sp.sensor_range]
                 # what the system itself has seen (unseen chambers count as unknown, valued 1), never the true contents
                 return sum(sys_.seen_contents.get(c, 1) for c in near) - 0.5 * sum(sys_.tries.get(c, 0) for c in near)
             best = max(bay, key=lambda s: (value(s), -bay.index(s)))
-            if best != sys_.sensor and value(best) > value(sys_.sensor):
+            margin = 0.5 if sp.relocation == "outcome" else 0.0
+            if best != sys_.sensor and value(best) > value(sys_.sensor) + margin:
                 self.events.append({"t": t, "type": "sensor_relocated", "system": sp.sid, "from": sys_.sensor,
                                     "to": best})
                 sys_.sensor = best
@@ -458,7 +540,7 @@ class Science:
                 sys_.stats["spent"] += sp.cost_relocate
                 sys_.stats["relocations"] += 1
         errs = sys_.obs_error[-4:]
-        if len(errs) == 4:
+        if len(errs) == 4 and sp.revise_window:
             new = 12 if np.mean(errs) > 3 else 6
             if new != sys_.window:
                 self.events.append({"t": t, "type": "window_changed", "system": sp.sid, "from": sys_.window, "to": new})
@@ -500,6 +582,11 @@ class Science:
                 best, best_gain = c, gain
             elif not ok:
                 sys_.stats["variables_rejected"] += 1
+        if sys_.spec.variable_rule == "random":  # matched control: same times, a candidate regardless of evidence
+            evaluated = [e["variable"] for e in self.events if e["type"] == "variable_candidate" and e["t"] == t
+                         and e["system"] == sys_.spec.sid]
+            best = (evaluated[int(np.random.default_rng([self.seed, t, 77]).integers(len(evaluated)))]
+                    if best is not None and evaluated else None)
         if best is not None:
             sys_.features.append(best)
             sys_.stats["variables_adopted"].append(best)
@@ -596,6 +683,7 @@ class Science:
                     obs = (self._act(a["dst"], sys_.window, cov[a["dst"]]) - a["before"]) * len(nb) * sys_.window
                     sys_.data.append((a["features"], obs))
                     sys_.obs_error.append(abs(a["pred"] - obs))
+                    sys_.observed.append((a["src"], a["dst"], float(obs)))
                     sys_.stats["observed_outcomes"] += 1
                     if sys_.spec.memory != "none":
                         sys_.memory.append({"pair": (a["src"], a["dst"]), "outcome": obs, "t": t,

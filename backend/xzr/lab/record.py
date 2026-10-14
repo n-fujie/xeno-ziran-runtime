@@ -36,7 +36,8 @@ DEFAULT_CONFIG: dict[str, Any] = {"n": 800, "gen_seed": 9100, "seed": 91000, "re
 # keys that only v2 (scientific systems) configurations carry; absent = v1 behaviour, unchanged
 V2_KEYS = ("systems", "config_change")
 V3_KEYS = ("partition", "harness", "physics_params")  # any of these (or a system with comm / inert) makes a v3 run
-V3_SYSTEM_KEYS = ("comm", "inert", "sensor_range", "relocation")
+V3_SYSTEM_KEYS = ("comm", "inert", "sensor_range", "relocation", "revise_window", "variable_rule", "memory_delay",
+                  "context_error", "diagnose")
 
 
 def is_v3(cfg: dict) -> bool:
@@ -169,6 +170,7 @@ class LabRun:
         self.applied_phys: list[tuple[int, int, str]] = []
         self.science_seen = 0
         self.harness = sorted(cfg.get("harness") or [], key=lambda h: h["at"])
+        self._view_closed: dict[str, list[str]] = {}
 
     @property
     def t(self) -> int:
@@ -249,6 +251,13 @@ class LabRun:
             lab.force_failure(h["gantry"], t, ev)
         elif do == "set_resources":
             lab.set_resources(h["gantry"], h["value"], t, ev)
+        elif do in ("close_view", "open_view"):  # the chambers a system observes now (closed) / those closed earlier
+            if do == "close_view":
+                chambers = sorted(sci.coverage(sci.systems[h["system"]]))
+                self._view_closed[h["system"]] = chambers
+            else:
+                chambers = self._view_closed.pop(h["system"], [])
+            return self._harness({**h, "do": do.split("_")[0], "chambers": chambers}, t)
         elif do in ("close", "open"):
             st = w.state
             for c in h["chambers"]:
