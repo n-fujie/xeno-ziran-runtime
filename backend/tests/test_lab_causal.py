@@ -149,3 +149,10 @@ def test_private_carriages_on_shared_material_cannot_take_the_same_sample():
     r = run([A, B, C], horizon=250, partition={"groups": G, "gantries": "private"}, gen_seed=8100, seed=81000)
     taken = [e for e in r.physical if e["type"] == "transfer_failed" and "taken by another gantry" in e.get("reason", "")]
     assert [(e["t"], e["src"]) for e in taken] == [(246, "0.1")]  # found by the M9 pilot (it crashed the run before)
+
+
+def test_legs_are_attributed_to_their_system_in_the_shared_laboratory():
+    r = run([A, B], horizon=160)
+    assert r.lab is not None and r.lab.trace["legs"]
+    assert {lg["owner"] for lg in r.lab.trace["legs"]} <= {"A", "B"}
+    assert None not in {lg["owner"] for lg in r.lab.trace["legs"]}

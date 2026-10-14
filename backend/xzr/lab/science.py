@@ -453,10 +453,8 @@ class Science:
         src = int(na[np.argmax(st.ignite_count[na])])
         dst = int(nb[np.argmin(st.theta_eff()[nb])])
         act = Connect(src, dst, 0.5)
-        if getattr(self.lab, "part", None) is not None:
-            ev = self.lab.request(act, lambda n: self.cs[int(self.owner[n])].cid, t, owner=sp.sid)
-        else:
-            ev = self.lab.request(act, lambda n: self.cs[int(self.owner[n])].cid, t)
+        # the owner only labels the leg trace and selects the group's resources in a partitioned laboratory
+        ev = self.lab.request(act, lambda n: self.cs[int(self.owner[n])].cid, t, owner=sp.sid)
         sys_.budget -= sp.cost_transfer
         sys_.stats["spent"] += sp.cost_transfer
         sys_.stats["requests"] += 1
