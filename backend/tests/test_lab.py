@@ -92,3 +92,19 @@ def test_records_are_never_overwritten(tmp_path):
     run({**SHORT, "horizon": 20}, p)
     with pytest.raises(FileExistsError):
         run({**SHORT, "horizon": 20}, p)
+
+
+def test_records_from_before_the_physical_layer_still_replay(rec):
+    """A record without the later optional fields (layout, physical_events) — the published m2 record's format."""
+    old = {k: v for k, v in json.loads(json.dumps(rec)).items() if k not in ("layout", "physical_events")}
+    old["config"] = {k: v for k, v in old["config"].items() if k not in ("physics", "resources")}
+    assert replay(old)["agreement"]
+
+
+def test_published_records_replay():
+    root = Path(__file__).resolve().parents[1] / "experiments" / "results" / "lab"
+    for p in sorted(root.glob("*.json")):
+        r = json.loads(p.read_text())
+        if r["config"].get("physics"):
+            pytest.importorskip("mujoco")
+        assert replay(r)["agreement"], p.name

@@ -26,7 +26,9 @@ def replay(record: dict) -> dict:
                 break
     if len(record["steps"]) != len(again["steps"]):
         mism.append({"t": None, "field": "length"})
-    ev_same = all(json.dumps(record.get(k), sort_keys=True) == json.dumps(again.get(k), sort_keys=True)
+    # records written before a field existed (e.g. physical_events, added with the physical laboratory) lack it: an
+    # absent optional list means "none recorded"
+    ev_same = all(json.dumps(record.get(k) or [], sort_keys=True) == json.dumps(again.get(k) or [], sort_keys=True)
                   for k in ("events", "physical_events"))
     return {"steps": len(record["steps"]), "mismatched_steps": len(mism), "first_mismatches": mism[:5],
             "events_identical": ev_same, "agreement": not mism and ev_same,
