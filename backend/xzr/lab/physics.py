@@ -320,7 +320,8 @@ class PhysicalLab:
 
     def _free_spot(self, cont: str, group: str | None | object = None) -> tuple[float, float] | None:
         x, y = self.pos[cont]
-        taken = [self.sample_xyz(s)[:2] for s in (self.contents[cont] if group is _ALL else self.material(cont, group if isinstance(group, str) else None))]
+        items = self.contents[cont] if group is _ALL else self.material(cont, group if isinstance(group, str) else None)
+        taken = [self.sample_xyz(s)[:2] for s in items]
         offs = ((0.0, 0.0), (0.65, 0.65), (-0.65, 0.65), (0.65, -0.65), (-0.65, -0.65)) if cont in self.bay_of else \
             ((0.0, 0.0), (0.4, 0.4), (-0.4, -0.4))
         for ox, oy in offs:
