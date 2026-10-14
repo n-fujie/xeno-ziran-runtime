@@ -19,7 +19,7 @@ ALLOWED = {
     # practice, interpret or reasonlab
     "hpo": {"hpo", "runtime", "lod", "experiments"},
     # laboratory layer: apparatus states derived from the runtime, observing an HPO field; never service or practice
-    "lab": {"lab", "hpo", "runtime", "lod"},
+    "lab": {"lab", "hpo", "runtime", "lod", "experiments"},
 }
 
 

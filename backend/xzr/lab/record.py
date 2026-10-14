@@ -16,6 +16,7 @@ Nothing here alters the run: the wrappers only read what the runtime and the fie
 from __future__ import annotations
 
 import json
+import math
 import time
 from pathlib import Path
 from typing import Any
@@ -26,10 +27,13 @@ from ..hpo.field import Field
 from ..hpo.world import build_world
 from . import apparatus
 
-SCHEMA = "xzr.labrun/1"
+SCHEMA = "xzr.labrun/1"  # runs without scientific systems (M2, M3)
+SCHEMA_V2 = "xzr.labrun/2"  # runs with scientific systems (M4–M7): adds science state per step and science events
 DEFAULT_CONFIG: dict[str, Any] = {"n": 800, "gen_seed": 9100, "seed": 91000, "regime": "intermittent", "warmup": 40,
                                   "horizon": 240, "settings": {"interaction": "all", "history": {"reinsert": True}},
                                   "physics": False, "resources": 3.0}
+# keys that only v2 (scientific systems) configurations carry; absent = v1 behaviour, unchanged
+V2_KEYS = ("systems", "config_change")
 
 
 def _settings(cfg: dict) -> dict:
@@ -113,64 +117,145 @@ def _conduit_causes(delta, st, owner: np.ndarray, pair: tuple[int, int], actions
     return out or ["runtime:unattributed"]
 
 
-def run(cfg: dict | None = None, out: Path | None = None) -> dict:
-    cfg = {**DEFAULT_CONFIG, **(cfg or {})}
-    t0 = time.time()
-    w = build_world(cfg["n"], cfg["gen_seed"], cfg["seed"], regime=cfg["regime"])
-    for _ in range(cfg["warmup"]):
-        w.step()
-    cs = apparatus.chambers(w.h)
-    owner = np.full(w.state.n, -1, np.int32)
-    for i, c in enumerate(cs):
-        owner[c.nodes] = i
-    idx = {c.cid: i for i, c in enumerate(cs)}
-    ch_records = [{"cid": c.cid, "position": list(c.position), "size": int(len(c.nodes))} for c in cs]
-    lab = None
-    if cfg["physics"]:
-        from .physics import PhysicalLab
-        lab = PhysicalLab(ch_records, resources=float(cfg["resources"]))
-    tap = _Tap(w, lab, lambda node: cs[int(owner[node])].cid if owner[node] >= 0 else None)
-    f = Field(w, _settings(cfg), cfg["seed"], keep_states=False)
-    tap.field = f
-    prev = apparatus.state(w.state, cs, np.zeros(0, np.int32))
-    steps, events, physical = [], [], []
-    applied_phys: list[tuple[int, int, str]] = []
-    for _ in range(cfg["horizon"]):
-        n_ev = len(f.history.events)
-        f.step()
-        delta, owners, actions = tap.take()
+class LabRun:
+    """One laboratory run, advanced step by step (recording, replay and live streaming share this path).
+
+    Without ``systems`` in the configuration the step order is exactly the v1 order (M2/M3 records replay unchanged).
+    With systems: HPO field step (if any) → harness configuration change → systems decide (requests go to the physical
+    laboratory) → physics → physical events to the systems → completed transfers released into the runtime →
+    outcome observations → apparatus state.
+    """
+
+    def __init__(self, cfg: dict | None = None):
+        cfg = {**DEFAULT_CONFIG, **(cfg or {})}
+        self.cfg = cfg
+        self.t_start = time.time()
+        w = build_world(cfg["n"], cfg["gen_seed"], cfg["seed"], regime=cfg["regime"])
+        for _ in range(cfg["warmup"]):
+            w.step()
+        self.w = w
+        self.cs = cs = apparatus.chambers(w.h)
+        self.owner = owner = np.full(w.state.n, -1, np.int32)
+        for i, c in enumerate(cs):
+            owner[c.nodes] = i
+        self.idx = {c.cid: i for i, c in enumerate(cs)}
+        self.ch_records = [{"cid": c.cid, "position": list(c.position), "size": int(len(c.nodes))} for c in cs]
+        self.lab = None
+        if cfg["physics"] or cfg.get("systems"):
+            from .physics import PhysicalLab
+            self.lab = PhysicalLab(self.ch_records, resources=float(cfg["resources"]))
+        self.tap = _Tap(w, self.lab, lambda node: cs[int(owner[node])].cid if owner[node] >= 0 else None)
+        self.t0 = w.t
+        self.f = Field(w, _settings(cfg), cfg["seed"], keep_states=False) if cfg["settings"] is not None else None
+        self.tap.field = self.f
+        self.science = None
+        if cfg.get("systems"):
+            from .science import Science, SystemSpec
+            self.science = Science(w, cs, self.lab, [SystemSpec(**s) for s in cfg["systems"]], cfg["seed"], self.t0,
+                                   cfg.get("config_change"))
+        self.prev = apparatus.state(w.state, cs, np.zeros(0, np.int32))
+        self.steps: list[dict] = []
+        self.events: list[dict] = []
+        self.physical: list[dict] = []
+        self.applied_phys: list[tuple[int, int, str]] = []
+        self.science_seen = 0
+
+    @property
+    def t(self) -> int:
+        return self.w.t - self.t0
+
+    @property
+    def done(self) -> bool:
+        return self.t >= self.cfg["horizon"]
+
+    def step(self) -> dict:
+        """Advance one runtime step; returns the recorded step plus the events it produced."""
+        w, cs, owner, lab, f, sci = self.w, self.cs, self.owner, self.lab, self.f, self.science
+        n_ev = len(f.history.events) if f else 0
+        if f is not None:
+            f.step()
+        else:
+            w.step()
+        delta, owners, actions = self.tap.take()
         st = w.state
-        t = w.t - f.t0
+        t = self.t
+        pending_phys: list[tuple[int, int, str]] = []
+        new_phys: list[dict] = []
         if lab is not None:
-            physical += tap.take_requests()
+            if sci is not None:
+                sci.apply_config_change(t)
+                sci.decide(t)
+            new_phys += self.tap.take_requests()
             pev, done = lab.step(t)
-            physical += pev
+            new_phys += pev
+            if sci is not None:
+                sci.on_physical(pev, t)
             if done:  # completed transfers: the requested connections now exist in the runtime (next step's record)
-                w.engine.apply([a for a, _ in done])
+                acts = [x for a, _ in done for x in (sci.release(a, t) if sci is not None else [a])]
+                if acts:
+                    w.engine.apply(acts)
             pending_phys = [(int(owner[a.src]), int(owner[a.dst]), bay) for a, bay in done]
+            if sci is not None:
+                sci.observe_outcomes(t)
+        self.physical += new_phys
         cur = apparatus.state(st, cs, delta.ignitions)
-        acts = {e["source"]: e["id"] for e in f.history.events[n_ev:] if e["type"] == "act"}
-        for ev in apparatus.events(prev, cur, cs, t):
+        acts_ev = {e["source"]: e["id"] for e in f.history.events[n_ev:] if e["type"] == "act"} if f else {}
+        new_events = []
+        for ev in apparatus.events(self.prev, cur, cs, t):
             if ev["type"].startswith("containment"):
                 ops = sorted(set(owners))
-                ev["cause"] = ([f"operation:{o}" for o in ops] + [f"causal_event:{acts[o]}" for o in ops if o in acts]
+                ev["cause"] = ([f"operation:{o}" for o in ops] + [f"causal_event:{acts_ev[o]}" for o in ops if o in acts_ev]
                                if ops else ["runtime:connection_turnover"])
             else:
-                a, b = (idx[x] for x in ev["pair"].split("|"))
-                ev["cause"] = _conduit_causes(delta, st, owner, (min(a, b), max(a, b)), actions, applied_phys)
-            events.append(ev)
+                a, b = (self.idx[x] for x in ev["pair"].split("|"))
+                ev["cause"] = _conduit_causes(delta, st, owner, (min(a, b), max(a, b)), actions, self.applied_phys)
+            new_events.append(ev)
+        self.events += new_events
         rec_step = {"t": t, "fingerprint": w.engine.fingerprint(), "digest": apparatus.digest(cur), **cur}
         if lab is not None:
             rec_step["physics"] = {"fingerprint": lab.fingerprint(), **lab.state()}
-            applied_phys = pending_phys
-        steps.append(rec_step)
-        prev = cur
-    rec = {"schema": SCHEMA, "config": cfg, "chambers": ch_records, "layout": lab.layout() if lab is not None else None,
-           "steps": steps, "events": events, "physical_events": physical,
-           "operations": sorted({o.label for o in f.ops.values()}),
-           "elapsed_s": round(time.time() - t0, 2),
-           "note": "Apparatus states are derived from the runtime state (xzr/lab/apparatus.py); the renderer draws "
-                   "these values only. Simulation-internal; no physical apparatus exists."}
+            self.applied_phys = pending_phys
+        new_sci: list[dict] = []
+        if sci is not None:
+            rec_step["science"] = sci.state()
+            new_sci = sci.events[self.science_seen:]
+            self.science_seen = len(sci.events)
+        self.steps.append(rec_step)
+        self.prev = cur
+        return {"step": rec_step, "events": new_events, "physical_events": new_phys, "science_events": new_sci}
+
+    def record(self) -> dict:
+        cfg, lab, f, sci = self.cfg, self.lab, self.f, self.science
+        rec = {"schema": SCHEMA_V2 if sci is not None else SCHEMA, "config": cfg, "chambers": self.ch_records,
+               "layout": lab.layout() if lab is not None else None,
+               "steps": self.steps, "events": self.events, "physical_events": self.physical,
+               "operations": sorted({o.label for o in f.ops.values()}) if f else [],
+               "elapsed_s": round(time.time() - self.t_start, 2),
+               "note": "Apparatus states are derived from the runtime state (xzr/lab/apparatus.py); the renderer draws "
+                       "these values only. Simulation-internal; no physical apparatus exists."}
+        if sci is not None:
+            rec["science_events"] = sci.events
+            rec["summary"] = _plain(sci.summary())
+        return rec
+
+
+def _plain(x: Any) -> Any:
+    if isinstance(x, dict):
+        return {str(k): _plain(v) for k, v in x.items()}
+    if isinstance(x, list | tuple | set):
+        return [_plain(v) for v in (sorted(x, key=str) if isinstance(x, set) else x)]
+    if isinstance(x, np.generic):
+        return x.item()
+    if isinstance(x, float) and not math.isfinite(x):
+        return None
+    return x
+
+
+def run(cfg: dict | None = None, out: Path | None = None) -> dict:
+    r = LabRun(cfg)
+    while not r.done:
+        r.step()
+    rec = r.record()
     if out is not None:
         out.parent.mkdir(parents=True, exist_ok=True)
         if out.exists():

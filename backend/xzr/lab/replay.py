@@ -11,16 +11,16 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from .record import SCHEMA, run
+from .record import SCHEMA, SCHEMA_V2, run
 
 
 def replay(record: dict) -> dict:
-    if record.get("schema") != SCHEMA:
-        raise ValueError(f"not an {SCHEMA} record")
+    if record.get("schema") not in (SCHEMA, SCHEMA_V2):
+        raise ValueError(f"not an {SCHEMA} / {SCHEMA_V2} record")
     again = run(record["config"])
     mism = []
     for a, b in zip(record["steps"], again["steps"], strict=False):
-        for k in ("fingerprint", "digest", "shutter", "activity", "memory", "conduits", "physics"):
+        for k in ("fingerprint", "digest", "shutter", "activity", "memory", "conduits", "physics", "science"):
             if a.get(k) != b.get(k):
                 mism.append({"t": a["t"], "field": k})
                 break
@@ -29,7 +29,7 @@ def replay(record: dict) -> dict:
     # records written before a field existed (e.g. physical_events, added with the physical laboratory) lack it: an
     # absent optional list means "none recorded"
     ev_same = all(json.dumps(record.get(k) or [], sort_keys=True) == json.dumps(again.get(k) or [], sort_keys=True)
-                  for k in ("events", "physical_events"))
+                  for k in ("events", "physical_events", "science_events"))
     return {"steps": len(record["steps"]), "mismatched_steps": len(mism), "first_mismatches": mism[:5],
             "events_identical": ev_same, "agreement": not mism and ev_same,
             "condition": "same machine and software versions"}
