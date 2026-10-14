@@ -3,7 +3,9 @@
 At every decision of system A during the outage [T+30, T+190) after the bay-0 gantry failed without repair resources:
 
     available    experiments the laboratory can execute: material in the source, a source the system's reach rule
-                 allows, an open target containment, and a working gantry in the source's bay (observation ignored)
+                 allows, an open target containment, and a working gantry in every bay of the transfer's route
+                 (observation ignored). A first version checked only the source's bay; a substitute whose target is in
+                 bay 0 still needs the failed bay-0 gantry for its last leg, so that version over-counted.
     detectable   the experiments the system itself knows as candidates (its observation)
     selectable   detectable and executable
     selected     the experiment the system chose, and whether it was executable
@@ -43,13 +45,15 @@ def one(args: tuple) -> dict:
         out = orig(self, sys_, cands, cov, t)
         if T + 30 <= t < T + 190 and sys_.spec.sid == "A":
             sp = sys_.spec
-            works = lambda a: not lab.gantries[lab.bay_of[a]].failed  # noqa: E731
-            avail = [(a, b) for a in (c.cid for c in self.cs) if lab.contents.get(a) and works(a)
-                     for b in (c.cid for c in self.cs) if b != a and self._reach_ok(sp, a, b) and self.shutter(b) >= 0.5]
-            sel = [(a, b) for a, b in cands if works(a)]
+            def works(a: str, b: str) -> bool:  # every gantry on the transfer's route (source bay ... target bay)
+                return all(not lab.gantries[bay].failed for bay in lab._route(lab.bay_of[a], lab.bay_of[b]))
+            avail = [(a, b) for a in (c.cid for c in self.cs) if lab.contents.get(a)
+                     for b in (c.cid for c in self.cs) if b != a and self._reach_ok(sp, a, b) and self.shutter(b) >= 0.5
+                     and works(a, b)]
+            sel = [(a, b) for a, b in cands if works(a, b)]
             ch = out[0]
             rows.append({"t": t, "available": len(avail), "detectable": len(cands), "selectable": len(sel),
-                         "selected_executable": None if ch is None else bool(works(ch[0]))})
+                         "selected_executable": None if ch is None else bool(works(*ch))})
         return out
 
     Science._choose = probe  # type: ignore[method-assign]
