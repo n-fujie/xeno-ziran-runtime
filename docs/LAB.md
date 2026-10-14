@@ -4,7 +4,7 @@ This is the 3D laboratory layer (`backend/xzr/lab/`, viewer `?view=laboratory`).
 source of scientific state transitions. The lab layer derives apparatus states from it, couples a rigid-body physical
 model to it, records runs and replays them independently. The renderer draws recorded values only.
 
-## Milestone status (2026-10-14, branch `lab-3d`)
+## Milestone status (2026-10-15, branch `lab-m9`)
 
 | milestone | status | evidence |
 |---|---|---|
@@ -17,14 +17,18 @@ model to it, records runs and replays them independently. The renderer draws rec
 | M7 cross-system reconfiguration | **T2, T4, T5 hold; T3, T6, T7 not met** | `results/labx/m7.json`, 24 paired seeds |
 | live runtime→3D streaming | done | `xzr/lab/live.py`, `/ws/lab/{id}`; tested and checked in the browser |
 | M8 high-fidelity environment | not started | — |
-| M9 independent verification | partial (tests, replay, re-execution of sampled confirmatory runs on this machine) | — |
+| M9 causal pathways, extinction, revision, history, cross-world, verification | **done** (frozen protocol; results below) | `results/lab9/`, 2,036 confirmatory runs; Level A re-execution of all 736 M4–M7 runs |
 
 ## Completion level
 
 * **Level 1 (interactive 3D environment driven by the runtime): reached.** Recorded runs replay with full agreement,
   and live runs stream to the viewer while the runtime steps independently of it. The renderer draws recorded or
   streamed values only.
-* **Level 2 (autonomous scientific operations research environment): not claimed.** The frozen protocol
+* **Level 2 under the M9 protocol (§9 of `docs/LAB_PROTOCOL_M9.md`): not achieved — partially demonstrated.** Six of
+  its seven frozen conditions hold. Condition 6 (the independent recount agrees on every re-run seed) does not: the
+  recount disagrees with the frozen latency endpoint (a measurement-definition defect, below). The condition is not
+  reinterpreted.
+* **Level 2 under the M4–M7 protocol: not claimed (unchanged).** The frozen protocol
   (`docs/LAB_PROTOCOL.md` §5) requires M4 DEMONSTRATED, M5-A or M5-B consequential, and T2 and T7. M4, M5-A and T2
   hold; **T7 fails**. B's dependence on A persists when B's readings no longer travel along runtime connections, so
   the protocol's mediator (communication through the runtime) is not shown. The criterion was not changed after the
@@ -166,6 +170,86 @@ B's transfer latency is 141 vs 119 steps with A present. Script and output:
 * **One world class.** One world class was used (n = 800, intermittent) with one laboratory layout. Held-out worlds
   were used only for M5.
 * **Simulation only.** Systems, materials and physics are simulated. Nothing here is a physical discovery.
+
+## M9 — causal pathways, extinction, revision and history (2026-10-14/15)
+
+Protocol `docs/LAB_PROTOCOL_M9.md`, frozen before any confirmatory seed (SHA-256 `4757ee7d…`, pinned in
+`xzr/lab/m9.py`). Code `xzr/lab/m9.py`, `xzr/lab/causal.py`; pathway switches in `physics.py` (resource partition),
+`science.py` (communication modes, inert systems, revision/memory/variable variants, read-only diagnostics) and
+`record.py` (declared harness interventions, schema `xzr.labrun/3`). Defaults reproduce M4–M7 bit for bit.
+
+**Baseline (verification A).** All 736 M4–M7 runs were re-executed from tag `m7-verified` (`dd2ec81`). Fingerprints,
+contrasts, verdicts and means are identical (`results/labx/verification/level_a_reproduction.json`).
+
+**Execution.** The confirmatory runs used commit `419aafe`, from a separate worktree, on 7 processes:
+
+| experiment | runs |
+|---|---|
+| M9-A/B | 456 |
+| M9-C | 312 |
+| M9-D | 240 |
+| M9-E | 168 |
+| M9-F | 240 |
+| cross-world | 560 |
+| alternative physics | 60 |
+| **total** | **2,036** |
+
+Seeds are confirmatory 7000+i, held-out 7500+i and cross-world 7700+i, none used before. Hashes, log and notes are in
+`results/lab9/history/`. No run was repeated or set aside, and the protocol was not amended.
+
+| | result |
+|---|---|
+| **M9-A** communication × resources | Instrument valid: idle A == no A and inert A with every pathway cut == no A, bit for bit on 24/24 seeds; no noise flagged. B depends on A with shared resources (completed −21 %, distinct experiments −27 %, latency +19 %), equally with communication frozen. **Resource mediation holds; communication mediation does not; no residual dependence.** An inert A (physical work only) reproduces the whole dependence. |
+| **M9-B** physical mediators | Private carriages remove the dependence (pairs, latency). A's wear exemption halves the latency effect (definition-sensitive, below). Private material removes the loss of distinct experiments but raises B's latency dependence. Queue capacity and priority are IDENTICAL (one pending transfer per system; stated before confirmation). Ports are not a pathway (A never relays). |
+| **M9-C** extinction / re-ignition | **Hold:** C1 (failure without substitute: 24/24 extinct), C2 (repaired failure: 2/24; natural failures in 24/24 X0 seeds, no extinction), C5 (observation loss: 24/24 extinct, 24/24 re-ignite). **Not met:** C3 (budget spent on refused requests before the resource arrives), C4, C4b (no substitute detectable as executable, below), C6 (relocation does not prevent extinction but makes re-ignition a new dependency: reuse 0.49 vs 0.92; new in 23/24 vs 9/24), C7 (severed conduits: B's paths 10.3 → 0.04, later completions −76 %, but one in-flight transfer lands in the window), C8 (evidence loss not exercised in 1/24 seeds), C9. |
+| **M9-D** observation revision | D1 not met. D2 not replicated (the M5 revision is +23 % on true gain here, UNRESOLVED; M5 had −28 %). Relocation is the whole effect and window revision is EQUIVALENT to fixed: distinct observed pairs +40 %, redundant observations −51 %, reachable experiments +13 % (held-out +15 %), completed −5 %. **What can be observed and reached changes; effectiveness is not shown to change.** |
+| **M9-E** variable generation | E0: the M5 negative replicates. E1 and E2 not met: variables adopted by the criterion are no better than random adoption. Adopted variables change 10–13 % of decisions. The systems' observed outcome correlates with the true effect at r ≈ 0.09–0.19. |
+| **M9-F** historical reinsertion | F1–F6 not supported: contextual memory is no better than ordinary, shuffled, disabled, delayed or wrong-context memory, nor at low exploration. The M6 negative replicates. Memory changes 30–54 % of decisions. |
+| **Cross-world** (16 seeds each) | The physical-resource dependence persists (transport, dynamic), is amplified (scarce: completed −45 %), persists in part (fractured: pairs, latency) and is not detected (sensor-restricted: inconclusive). No residual dependence anywhere. Revision's gain in distinct experiments: sensor, fractured, dynamic. |
+| **Alternative physics** (dt 2 ms × 100, 12 seeds) | The dependence persists in direction and detection. The physical-only pathway is detected on latency only. |
+
+**Verification** (`results/lab9/verification/`):
+
+* **Independent statistics (B2):** all five primary M9-A verdicts agree.
+* **Event recount (B1):** attempted, physically completed and delivered transfers, blocked deliveries, failures,
+  repairs and budget all agree. M9-C extinction and re-ignition, recounted from the protocol text, agree. All recorded
+  gantry health values fit the declared wear rules. A causes 70–80 % of the wear on the bay-0 gantry B uses (6 re-run seeds).
+* **Queue model (C1):** removing A's legs from the recorded bay-0 queue predicts B's wait 0.0, against 0.48 observed
+  without A.
+* **Replay (D):** two schema-3 records equal their confirmatory runs and replay with full agreement:
+  `results/lab/m9-separated-resources-7000.json` and `m9-extinction-relocation-7000.json`.
+
+**Measurement-definition defect (latency).** The protocol states the endpoint as request-to-**delivery** latency. The
+harness measured request-to-**physical-completion** latency, which includes transfers whose delivery was then blocked
+at a closed containment. The independent recount disagreed on 5 of 12 runs. The frozen results are unchanged; the
+original endpoint is to be read as physical-completion latency.
+
+An exploratory sensitivity analysis (`results/lab9/exploratory/latency_sensitivity.json`) re-executed 360 runs:
+
+* **Cause:** every one of the 85 blocked deliveries was blocked by B's own isolation.
+* **Verdicts:** under the delivery definition every latency verdict keeps its status and direction, except the
+  wear-mediation latency effect, which becomes UNRESOLVED.
+
+**Correction: substitute paths.** The frozen protocol's pilot section (§8) and the M9-C commit message say that A
+"saw" substitute experiments during the outage and did not use them. That is wrong. The route-aware exploratory
+analysis (`results/lab9/exploratory/substitutes.json`) shows:
+
+* **Available:** executable substitutes existed in the laboratory, about 273 per decision.
+* **Detectable:** A detected about 10 experiments per decision in X4b.
+* **Executable among the detectable:** none. Every one needed the failed bay-0 gantry.
+* **Selected and executed:** none.
+
+The failure was inaccessibility of the alternatives to the system, compounded by budget exhaustion. A first version of
+that analysis, which checked only the source's gantry, is kept as `…_SUPERSEDED.json`.
+
+**Heterogeneity.** As in M4, heterogeneity here is configuration-dependent (observation, reach, memory, isolation,
+resources). The systems share one decision rule. No diversity of scientific decision procedures is claimed;
+investigating one would be a separate project.
+
+**Manuscript.** `docs/publication/XENO-ZIRAN-3D-research-record.docx` is one cumulative English document. It contains
+the argument, methods, results, verification, negative-results register, figures, protocols, complete source
+listings, configurations and every result file. Rebuild it with `backend/scripts/m9_figures.py` and
+`backend/scripts/build_m9_manuscript.py`, which need python-docx and matplotlib (not runtime dependencies).
 
 ## Live streaming
 
