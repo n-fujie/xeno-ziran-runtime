@@ -6,14 +6,33 @@ export type LabEvent = {
   t: number; type: 'containment_close' | 'containment_open' | 'conduit_established' | 'conduit_severed';
   chamber?: string; pair?: string; before: number; after: number; cause: string[];
 };
+export type PhysState = {
+  fingerprint: string;
+  gantries: Record<string, { tip: [number, number, number]; health: number; failed: boolean; carrying: string | null;
+    resources: number; queue: number }>;
+  samples: Record<string, [number, number, number]>;
+  contents: Record<string, string[]>;
+};
 export type LabStep = {
   t: number; fingerprint: string; digest: string; shutter: number[]; activity: number[]; memory: number[];
-  conduits: Record<string, number>;
+  conduits: Record<string, number>; physics?: PhysState;
 };
+export type PhysEvent = { t: number; type: string; [k: string]: unknown };
+export type Layout = { bays: Record<string, [number, number]>; ports: Record<string, [number, number]>; chamber_half: number;
+  wall_height: number; sample_half: number; port_half: number; safe_z: number };
 export type LabRecord = {
   schema: string; config: Record<string, unknown>; chambers: { cid: string; position: [number, number, number]; size: number }[];
   steps: LabStep[]; events: LabEvent[]; operations: string[]; note: string;
+  layout?: Layout | null; physical_events?: PhysEvent[];
 };
+
+/** Physics plane (x, y, z-up; chamber floor top at z = 0.05) → 3D view (x, height, z; chamber floor top at 0.3). */
+export const PHYS_Y0 = 0.25;
+export function physToView(p: [number, number, number]): [number, number, number] {
+  return [p[0], p[2] + PHYS_Y0, p[1]];
+}
+export type GantryVisual = { bay: string; tip: [number, number, number]; health: number; failed: boolean; carrying: string | null };
+export type SampleVisual = { sid: string; position: [number, number, number]; carried: boolean };
 
 /** How long (in steps) a recorded event stays highlighted after it occurred. */
 export const HIGHLIGHT_STEPS = 12;
@@ -26,7 +45,10 @@ export type ChamberVisual = {
   highlight: LabEvent | null;  // most recent containment event within HIGHLIGHT_STEPS, if any
 };
 export type ConduitVisual = { a: string; b: string; count: number; highlight: LabEvent | null };
-export type Frame = { t: number; index: number; chambers: ChamberVisual[]; conduits: ConduitVisual[]; events: LabEvent[] };
+export type Frame = {
+  t: number; index: number; chambers: ChamberVisual[]; conduits: ConduitVisual[]; events: LabEvent[];
+  gantries: GantryVisual[]; samples: SampleVisual[]; physicalEvents: PhysEvent[];
+};
 
 export function validate(r: unknown): LabRecord {
   const x = r as LabRecord;
@@ -51,5 +73,13 @@ export function frameAt(r: LabRecord, index: number): Frame {
     const [a, b] = p.split('|');
     return { a, b, count: s.conduits[p] ?? 0, highlight: lastFor((e) => e.pair === p) };
   });
-  return { t: s.t, index: i, chambers, conduits, events: r.events.filter((e) => e.t <= s.t) };
+  const ph = s.physics;
+  const carried = new Set(ph ? Object.values(ph.gantries).map((g) => g.carrying).filter(Boolean) : []);
+  return {
+    t: s.t, index: i, chambers, conduits, events: r.events.filter((e) => e.t <= s.t),
+    gantries: ph ? Object.entries(ph.gantries).map(([bay, g]) => ({ bay, tip: physToView(g.tip), health: g.health,
+      failed: g.failed, carrying: g.carrying })) : [],
+    samples: ph ? Object.entries(ph.samples).map(([sid, p]) => ({ sid, position: physToView(p), carried: carried.has(sid) })) : [],
+    physicalEvents: (r.physical_events ?? []).filter((e) => e.t <= s.t),
+  };
 }

@@ -19,6 +19,7 @@ xzr = "xzr.cli:main"
 
 [project.optional-dependencies]
 dev = ["pytest>=8", "httpx>=0.27", "ruff>=0.8", "mypy>=1.13", "websockets>=13"]
+physics = ["mujoco==3.14.0"]  # xzr.lab.physics (physical laboratory runs); pinned like ziran-xeno-simulator/embodied
 
 [build-system]
 requires = ["setuptools>=69"]

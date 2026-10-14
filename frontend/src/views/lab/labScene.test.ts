@@ -39,6 +39,19 @@ describe('every drawn quantity is a recorded runtime-derived value', () => {
     for (const e of rec.events) expect(e.cause.length).toBeGreaterThan(0);
   });
 
+  it('physical bodies are drawn at their recorded physical positions', () => {
+    const phys = validate(JSON.parse(readFileSync(join(root, 'backend/experiments/results/lab/m3-physical-9100.json'), 'utf8')));
+    expect(phys.layout).toBeTruthy();
+    phys.steps.forEach((s, i) => {
+      const f = frameAt(phys, i);
+      for (const smp of f.samples) {
+        const p = s.physics!.samples[smp.sid];
+        expect(smp.position).toEqual([p[0], p[2] + 0.25, p[1]]);
+      }
+      for (const g of f.gantries) expect(g.tip[1]).toBeCloseTo(s.physics!.gantries[g.bay].tip[2] + 0.25, 12);
+    });
+  });
+
   it('rejects anything that is not a laboratory record', () => {
     expect(() => validate({ schema: 'other', steps: [] })).toThrow();
   });

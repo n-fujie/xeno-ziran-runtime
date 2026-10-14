@@ -48,7 +48,7 @@ def chambers(h) -> list[Chamber]:
         ang = 2 * math.pi * macro / n_macro
         bay = (math.cos(ang) * 14.0, math.sin(ang) * 14.0)
         dx, dz = (sub % 2) * 3.4 - 1.7, (sub // 2) * 3.4 - 1.7
-        y = 1.6 + 3.2 * (sub // 2)
+        y = 1.6  # every chamber stands on the laboratory floor (the physical model has no stacked chambers)
         out.append(Chamber(addr, np.flatnonzero(labels == k).astype(np.int32),
                            (round(bay[0] + dx, 3), round(y, 3), round(bay[1] + dz, 3))))
     return out

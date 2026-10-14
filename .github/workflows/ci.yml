@@ -13,7 +13,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: install
-        run: pip install -e "backend[dev]"
+        run: pip install -e "backend[dev,physics]"
       - name: lint
         run: cd backend && ruff check xzr tests bench scripts && mypy xzr
       - name: tests

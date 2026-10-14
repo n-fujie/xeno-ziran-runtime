@@ -20,13 +20,14 @@ def replay(record: dict) -> dict:
     again = run(record["config"])
     mism = []
     for a, b in zip(record["steps"], again["steps"], strict=False):
-        for k in ("fingerprint", "digest", "shutter", "activity", "memory", "conduits"):
-            if a[k] != b[k]:
+        for k in ("fingerprint", "digest", "shutter", "activity", "memory", "conduits", "physics"):
+            if a.get(k) != b.get(k):
                 mism.append({"t": a["t"], "field": k})
                 break
     if len(record["steps"]) != len(again["steps"]):
         mism.append({"t": None, "field": "length"})
-    ev_same = json.dumps(record["events"], sort_keys=True) == json.dumps(again["events"], sort_keys=True)
+    ev_same = all(json.dumps(record.get(k), sort_keys=True) == json.dumps(again.get(k), sort_keys=True)
+                  for k in ("events", "physical_events"))
     return {"steps": len(record["steps"]), "mismatched_steps": len(mism), "first_mismatches": mism[:5],
             "events_identical": ev_same, "agreement": not mism and ev_same,
             "condition": "same machine and software versions"}
