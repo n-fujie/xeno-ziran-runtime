@@ -160,9 +160,14 @@ def in_world(cond: dict[str, Any], w: dict[str, Any]) -> dict[str, Any]:
 
 M9W = {f"{wn}/{cn}": in_world(c, w) for wn, w in WORLDS.items() for cn, c in WORLD_CONDS.items()}
 
+# Level C verification: the M9-A pathway cells under another physical integration arrangement (same 0.2 s per step)
+ALT = {"dt": 0.002, "substeps": 100}
+M9ALT = {k: {**M9A[k], "physics_params": ALT} for k in ("LS+", "LS0", "LSi", "FP+", "FP0")}
+
 EXPERIMENTS: dict[str, dict[str, dict[str, Any]]] = {"m9ab": {**M9A, **M9B}, "m9c": M9C, "m9d": M9D, "m9e": M9E,
-                                                     "m9f": M9F, "m9w": M9W}
-SEEDS: dict[str, int] = {"m9ab": 24, "m9c": 24, "m9d": 24, "m9e": 24, "m9f": 24, "m9w": 16, "m9d_heldout": 16}
+                                                     "m9f": M9F, "m9w": M9W, "m9alt": M9ALT}
+SEEDS: dict[str, int] = {"m9ab": 24, "m9c": 24, "m9d": 24, "m9e": 24, "m9f": 24, "m9w": 16, "m9d_heldout": 16,
+                         "m9alt": 12}
 PRIMARY_B = ("completed", "pairs", "latency_mean")
 SECONDARY_B = ("failed", "coverage", "paths", "true_gain", "queue_wait_mean", "contended_legs", "waits_behind_other",
                "fail_gantry", "fail_material", "fail_spot", "gantry_failures_hit", "recovery_steps", "completed_late",
@@ -429,7 +434,18 @@ def analyse_m9w(jobs: list[dict]) -> dict[str, Any]:
     return out
 
 
-ANALYSES = {"m9ab": analyse_m9ab, "m9c": analyse_m9c, "m9e": analyse_m9e, "m9f": analyse_m9f, "m9w": analyse_m9w}
+def analyse_m9alt(jobs: list[dict]) -> dict[str, Any]:
+    R = {c: rows(jobs, c, "B") for c in M9ALT}
+    c = {"dependence (shared, live)": con(R["LS+"], R["LS0"], PRIMARY_B, SECONDARY_B, None, 9950),
+         "residual dependence (separated, frozen)": con(R["FP+"], R["FP0"], PRIMARY_B, SECONDARY_B, None, 9951),
+         "physical-only pathway": con(R["LSi"], R["LS0"], PRIMARY_B, SECONDARY_B, None, 9952)}
+    return {"contrasts": c, "arrangement": ALT,
+            "verdicts": {k: {m: v[m]["status"] + (f" ({v[m]['relative']:+.2f})" if "relative" in v[m] else "")
+                             for m in PRIMARY_B} for k, v in c.items()}}
+
+
+ANALYSES = {"m9alt": analyse_m9alt, "m9ab": analyse_m9ab, "m9c": analyse_m9c, "m9e": analyse_m9e, "m9f": analyse_m9f,
+            "m9w": analyse_m9w}
 
 
 def run_experiment(name: str, procs: int, confirmatory: bool = True, range_name: str = "confirm",

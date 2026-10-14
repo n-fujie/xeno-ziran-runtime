@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { api } from '../../api/client';
 import { useExperiment } from '../research/common';
-import { frameAt, PHYS_Y0, validate, type Frame, type LabRecord } from './labScene';
+import { frameAt, pathways, PHYS_Y0, validate, type Frame, type LabRecord } from './labScene';
 import { NATIVE } from '../../api/native';
 
 // XENO–ZIRAN 3D laboratory (Level 1 component): replays a recorded runtime execution.
@@ -112,7 +112,8 @@ function drawSystems(f: Frame, group: THREE.Group, objs: Map<string, ChamberObj>
 }
 
 function applyFrame(f: Frame, objs: Map<string, ChamberObj>, conduitGroup: THREE.Group, pos: Map<string, THREE.Vector3>,
-  gantries: Map<string, GantryObj>, samples: Map<string, THREE.Mesh>, sysGroup: THREE.Group, half: number) {
+  gantries: Map<string, GantryObj>, samples: Map<string, THREE.Mesh>, sysGroup: THREE.Group, half: number,
+  make: { gantry: (key: string, group: string | null) => GantryObj; sample: (sid: string) => THREE.Mesh }) {
   for (const c of f.chambers) {
     const o = objs.get(c.cid);
     if (!o) continue;
@@ -142,20 +143,26 @@ function applyFrame(f: Frame, objs: Map<string, ChamberObj>, conduitGroup: THREE
     conduitGroup.add(new THREE.Mesh(new THREE.TubeGeometry(curve, 20, hl > 0 ? 0.06 : 0.012 + 0.004 * Math.min(6, k.count), 5, false), mat));
   }
   for (const g of f.gantries) {  // recorded tool-tip position; the rod hangs from the overhead frame
-    const o = gantries.get(g.bay);
-    if (!o) continue;
+    let o = gantries.get(g.key);
+    if (!o) {  // carriages exist as recorded: one per bay, or one per bay and group (private carriages)
+      o = make.gantry(g.key, g.group);
+      gantries.set(g.key, o);
+    }
     const [x, y, z] = g.tip;
     o.carriage.position.set(x, y + 0.18, z);
     const top = 6.2;
     o.rod.scale.y = Math.max(0.01, top - (y + 0.3));
     o.rod.position.set(x, (top + y + 0.3) / 2, z);
-    (o.carriage.material as THREE.MeshStandardMaterial).color.setHex(g.failed ? 0x2a2a2e : 0xd8d8de);
+    (o.carriage.material as THREE.MeshStandardMaterial).color.setHex(g.failed ? 0x2a2a2e : g.group === 'a' ? 0xd9c49a : 0xd8d8de);
     (o.lamp.material as THREE.MeshBasicMaterial).opacity = g.failed ? 0.05 : 0.25 + 0.75 * g.health;
     o.lamp.position.set(x, y + 0.42, z);
   }
   for (const s of f.samples) {
-    const m = samples.get(s.sid);
-    if (!m) continue;
+    let m = samples.get(s.sid);
+    if (!m) {
+      m = make.sample(s.sid);
+      samples.set(s.sid, m);
+    }
     m.position.set(...s.position);
     (m.material as THREE.MeshStandardMaterial).emissiveIntensity = s.carried ? 0.35 : 0;
   }
@@ -207,7 +214,8 @@ export default function LabView() {
     ws.onmessage = (ev) => {
       const m = JSON.parse(ev.data as string);
       if (m.type === 'hello') {
-        const r: LabRecord = { schema: (m.config.systems ? 'xzr.labrun/2' : 'xzr.labrun/1'), config: m.config, chambers: m.chambers,
+        const r: LabRecord = { schema: (m.config.partition || m.config.harness?.length ? 'xzr.labrun/3' : m.config.systems ? 'xzr.labrun/2' : 'xzr.labrun/1'),
+          config: m.config, chambers: m.chambers,
           layout: m.layout, steps: m.latest ? [m.latest.step] : [], events: m.history.events, physical_events: m.history.physical_events,
           science_events: m.history.science_events, operations: [], note: 'live' };
         liveRec.current = r;
@@ -290,7 +298,7 @@ export default function LabView() {
         leg.position.set(x, PHYS_Y0 - 0.3, y);
         scene.add(port, leg);
       }
-      for (const [bay, [x, y]] of Object.entries(L.bays)) {  // overhead frame (static) + gantry (recorded)
+      for (const [, [x, y]] of Object.entries(L.bays)) {  // overhead frame (static); carriages are drawn as recorded
         const frame = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(11, 0.2, 11)), new THREE.LineBasicMaterial({ color: 0x3a3a40 }));
         frame.position.set(x, 6.3, y);
         scene.add(frame);
@@ -299,23 +307,29 @@ export default function LabView() {
           post.position.set(x + dx, 3.0, y + dz);
           scene.add(post);
         }
+      }
+    }
+    const L0 = rec.layout;
+    const make = {
+      gantry: () => {
         const carriage = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.36, 0.34), metal(0xd8d8de, 0.85, 0.25));
         const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 1, 8), metal(0x9a9aa0));
         const lamp = new THREE.Mesh(new THREE.SphereGeometry(0.08, 10, 10), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 1 }));
-        gantries.set(bay, { carriage, rod, lamp });
         scene.add(carriage, rod, lamp);
-      }
-      for (const c of rec.chambers) {
-        const s = new THREE.Mesh(new THREE.BoxGeometry(2 * L.sample_half, 2 * L.sample_half, 2 * L.sample_half),
+        return { carriage, rod, lamp };
+      },
+      sample: () => {
+        const h = L0?.sample_half ?? 0.15;
+        const s = new THREE.Mesh(new THREE.BoxGeometry(2 * h, 2 * h, 2 * h),
           new THREE.MeshStandardMaterial({ color: 0x3c3c40, emissive: 0xffffff, emissiveIntensity: 0, metalness: 0.2, roughness: 0.85 }));
-        samples.set(c.cid, s);
         scene.add(s);
-      }
-    }
+        return s;
+      },
+    };
     const conduitGroup = new THREE.Group();
     const sysGroup = new THREE.Group();
     scene.add(conduitGroup, sysGroup);
-    state.current = { apply: (f) => applyFrame(f, objs, conduitGroup, pos, gantries, samples, sysGroup, half) };
+    state.current = { apply: (f) => applyFrame(f, objs, conduitGroup, pos, gantries, samples, sysGroup, half, make) };
     const ray = new THREE.Raycaster();
     const onClick = (ev: MouseEvent) => {
       const r = renderer.domElement.getBoundingClientRect();
@@ -424,6 +438,7 @@ export default function LabView() {
         <div className="mono dim">step {frame.t} / {rec.steps.length} · {fps} fps · runtime {s.fingerprint.slice(0, 12)}{phys ? ` · physics ${phys.fingerprint}` : ''}</div>
         <div className="mono dim">config gen {str(rec.config.gen_seed)} · seed {str(rec.config.seed)} · n {str(rec.config.n)} · physics {String(!!rec.layout)}</div>
         {phys && <div className="mono dim">gantries: {Object.entries(phys.gantries).map(([b, g]) => `${b}:${g.failed ? 'FAILED' : g.health.toFixed(2)}`).join(' ')}</div>}
+        {base && pathways(base).map((p) => <div key={p} className="mono dim">pathways · {p}</div>)}
         {frame.systems.length > 0 && (
           <ul className="hpo-rows mono">
             {frame.systems.map((sy, k) => (

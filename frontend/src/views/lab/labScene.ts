@@ -1,4 +1,4 @@
-// Pure mapping from a recorded laboratory run (schema xzr.labrun/1, written by backend/xzr/lab/record.py) to what the
+// Pure mapping from a recorded laboratory run (schema xzr.labrun/1–3, written by backend/xzr/lab/record.py) to what the
 // 3D view draws. The renderer draws these values and nothing else: every visual quantity is a recorded runtime-derived
 // apparatus value, and every highlight is a recorded apparatus event. Nothing here can change the run.
 
@@ -9,7 +9,7 @@ export type LabEvent = {
 export type PhysState = {
   fingerprint: string;
   gantries: Record<string, { tip: [number, number, number]; health: number; failed: boolean; carrying: string | null;
-    resources: number; queue: number }>;
+    resources: number; queue: number; bay?: string; group?: string | null }>;
   samples: Record<string, [number, number, number]>;
   contents: Record<string, string[]>;
 };
@@ -35,7 +35,9 @@ export const PHYS_Y0 = 0.25;
 export function physToView(p: [number, number, number]): [number, number, number] {
   return [p[0], p[2] + PHYS_Y0, p[1]];
 }
-export type GantryVisual = { bay: string; tip: [number, number, number]; health: number; failed: boolean; carrying: string | null };
+/** key = bay (shared laboratory) or bay#group (a group's private carriage, schema 3 resource partition). */
+export type GantryVisual = { key: string; bay: string; group: string | null; tip: [number, number, number]; health: number;
+  failed: boolean; carrying: string | null };
 export type SampleVisual = { sid: string; position: [number, number, number]; carried: boolean };
 
 /** How long (in steps) a recorded event stays highlighted after it occurred. */
@@ -57,10 +59,30 @@ export type Frame = {
 
 export function validate(r: unknown): LabRecord {
   const x = r as LabRecord;
-  if (!x || !['xzr.labrun/1', 'xzr.labrun/2'].includes(x.schema) || !Array.isArray(x.steps) || !x.steps.length) {
-    throw new Error('not an xzr.labrun/1 or /2 record');
+  if (!x || !SCHEMAS.includes(x.schema) || !Array.isArray(x.steps) || !x.steps.length) {
+    throw new Error('not an xzr.labrun/1, /2 or /3 record');
   }
   return x;
+}
+export const SCHEMAS = ['xzr.labrun/1', 'xzr.labrun/2', 'xzr.labrun/3'];
+
+/** The recorded causal-pathway configuration of a run (schema 3), as text; empty for earlier records. */
+export function pathways(r: LabRecord): string[] {
+  const c = r.config as { partition?: Record<string, unknown>; systems?: Record<string, unknown>[]; harness?: Record<string, unknown>[] };
+  const out: string[] = [];
+  if (c.partition) {
+    const p = c.partition;
+    const priv = ['gantries', 'material', 'queues'].filter((k) => p[k] === 'private');
+    out.push(`resources: ${priv.length ? priv.join(', ') + ' private per group' : 'shared'}`
+      + (p.priority ? `; priority ${String(p.priority)}` : '') + ((p.wear_exempt as string[] | undefined)?.length ? `; wear exempt ${String(p.wear_exempt)}` : ''));
+  }
+  for (const s of c.systems ?? []) {
+    const bits = [s.comm && s.comm !== 'conduit' ? `communication ${String(s.comm)}` : '', s.comm_free ? 'communication free' : '',
+      s.inert ? 'inert (no runtime effect)' : ''].filter(Boolean);
+    if (bits.length) out.push(`${String(s.sid)}: ${bits.join(', ')}`);
+  }
+  if (c.harness?.length) out.push(`harness: ${c.harness.map((h) => `${String(h.do)}@${String(h.at)}`).join(' ')}`);
+  return out;
 }
 
 export function frameAt(r: LabRecord, index: number): Frame {
@@ -84,8 +106,8 @@ export function frameAt(r: LabRecord, index: number): Frame {
   const carried = new Set(ph ? Object.values(ph.gantries).map((g) => g.carrying).filter(Boolean) : []);
   return {
     t: s.t, index: i, chambers, conduits, events: r.events.filter((e) => e.t <= s.t),
-    gantries: ph ? Object.entries(ph.gantries).map(([bay, g]) => ({ bay, tip: physToView(g.tip), health: g.health,
-      failed: g.failed, carrying: g.carrying })) : [],
+    gantries: ph ? Object.entries(ph.gantries).map(([key, g]) => ({ key, bay: g.bay ?? key, group: g.group ?? null,
+      tip: physToView(g.tip), health: g.health, failed: g.failed, carrying: g.carrying })) : [],
     samples: ph ? Object.entries(ph.samples).map(([sid, p]) => ({ sid, position: physToView(p), carried: carried.has(sid) })) : [],
     physicalEvents: (r.physical_events ?? []).filter((e) => e.t <= s.t),
     systems: s.science ? Object.entries(s.science).map(([sid, st]) => {
