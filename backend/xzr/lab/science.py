@@ -386,7 +386,8 @@ class Science:
             if c == sys_.sensor or c in sys_.isolated:
                 continue
             a = self._act(c, sys_.window, cov[c])
-            if a > (sp.isolate_above or math.inf) and sys_.budget >= sp.cost_isolate:
+            limit = sp.isolate_above if sp.isolate_above is not None else math.inf  # 0.0 is a valid threshold
+            if a > limit and sys_.budget >= sp.cost_isolate:
                 n = self.cs[self.idx[c]].nodes
                 stt = self.w.state
                 inside = np.zeros(stt.n, bool)
