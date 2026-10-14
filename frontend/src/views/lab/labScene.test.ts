@@ -67,4 +67,14 @@ describe('scientific systems are drawn from the recorded science state', () => {
     expect(f.systems).toEqual([{ ...steps[0].science.A, sid: 'A', kind: 'local', store: null }]);
     expect(f.scienceEvents.length).toBe(1);
   });
+
+  it('the published schema-2 record (M7 ALL, seed 6000) validates and draws every system from its recorded state', () => {
+    const v2 = validate(JSON.parse(readFileSync(join(root, 'backend/experiments/results/lab/m7-systems-6000.json'), 'utf8')));
+    expect(v2.schema).toBe('xzr.labrun/2');
+    const last = v2.steps.length - 1;
+    const f = frameAt(v2, last);
+    expect(f.systems.map((x) => x.sid)).toEqual(['A', 'B', 'C']);
+    f.systems.forEach((x) => expect(x.coverage).toEqual(v2.steps[last].science![x.sid].coverage));
+    expect(f.scienceEvents.length).toBeGreaterThan(0);
+  });
 });

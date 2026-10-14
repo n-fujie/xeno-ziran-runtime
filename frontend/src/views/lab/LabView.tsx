@@ -14,7 +14,7 @@ import { NATIVE } from '../../api/native';
 // Highlights mark recorded events only. Nothing drawn here feeds back into the run.
 
 const FLOOR_Y = 0.3;  // chamber floor top in the view
-const RECORDS = ['lab-m3-physical-9100', 'lab-m2-run-9100'];
+const RECORDS = ['lab-m7-systems-6000', 'lab-m3-physical-9100', 'lab-m2-run-9100'];
 
 type ChamberObj = { group: THREE.Group; lamp: THREE.Mesh; shutters: THREE.Mesh[]; ring: THREE.Mesh; h: number };
 type GantryObj = { carriage: THREE.Mesh; rod: THREE.Mesh; lamp: THREE.Mesh };
