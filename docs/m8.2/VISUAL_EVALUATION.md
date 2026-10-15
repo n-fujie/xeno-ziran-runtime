@@ -281,3 +281,25 @@ image, and the far bay recedes.
 the idle shade is monotone in the recorded count and below 1.
 
 **Performance.** Draw calls are unchanged, and every captured scene renders at 60 fps.
+
+### Change 4: structural core (P4)
+
+- **Before:** `03-connections-depth/1200x866@1/01-overview.png`, `02-oblique.png`.
+- **After:** `04-core/1200x866@1/01-overview.png`, `02-oblique.png`, `13-system-comparison.png`.
+
+**Correction.** The central core is architecture (category 4, no function). It was rebuilt from a featureless prism with
+thin rings as structure, merged into one static mesh per material:
+
+- a recessed hexagonal shaft;
+- six corner columns;
+- three box-section ring girders;
+- diagonal bracing on alternate faces, and service panels with vents on the others;
+- a service gallery at the walkway level (deck, railing, knee brackets).
+
+**Inspection.** In the overview, the core reads as a braced structure with a gallery instead of a placeholder volume.
+Up close (oblique crop), the columns, a brace, the deck and the brackets are legible. The first capture's deck had no
+visible support, so knee brackets were added before acceptance.
+
+**Fidelity.** The core is outside every reach hull (radius ≤ 3.3 m, hulls ≥ 11.6 m) and draws no claim.
+
+**Performance.** Overview draw calls are unchanged (713), and the scene renders at 60 fps.

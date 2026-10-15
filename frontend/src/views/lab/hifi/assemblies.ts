@@ -751,12 +751,48 @@ export function architecture(r: LabRecord, p: Palette, q: Quality): THREE.Group 
   tag(services, 'C', 4, 'domain service housings');
   root.add(services);
   // central structural core and roof structure (no function)
+  // (M8.2: articulated as structure — recessed shaft, corner columns, ring girders, alternating bracing, service gallery)
   const core = new THREE.Group();
-  core.add(new THREE.Mesh(new THREE.CylinderGeometry(2.2, 2.6, 9.4, 6), p.composite));
-  core.children[0].position.y = 4.7;
-  for (let k = 0; k < 6; k++) core.add(new THREE.Mesh(new THREE.TorusGeometry(2.45 - k * 0.04, 0.05, 4, 6), p.darkSteel));
-  core.children.slice(1).forEach((c, k) => { c.rotation.x = Math.PI / 2; c.position.y = 1 + k * 1.5; });
-  arch.add(core);
+  const CORE_H = 9.4, CR = 2.35, AP = CR * Math.cos(Math.PI / 6);  // vertex radius and apothem of the hexagon
+  const shaft = new THREE.Mesh(new THREE.CylinderGeometry(1.95, 2.05, CORE_H, 6), p.composite);
+  shaft.position.y = CORE_H / 2;
+  core.add(shaft);
+  const face = (k: number, add: (g: THREE.Group) => void) => {  // a group in face k's plane: local x along the face, z out
+    const g = new THREE.Group();
+    add(g);
+    g.rotation.y = (k + 0.5) * (Math.PI / 3);
+    g.position.set(Math.sin((k + 0.5) * (Math.PI / 3)) * AP, 0, Math.cos((k + 0.5) * (Math.PI / 3)) * AP);
+    core.add(g);
+  };
+  const levels = [1.2, 4.2, 7.4];
+  for (let k = 0; k < 6; k++) {
+    const a = k * (Math.PI / 3);
+    core.add(box(0.3, CORE_H, 0.3, p.darkSteel, Math.sin(a) * CR, CORE_H / 2, Math.cos(a) * CR));  // corner columns
+    face(k, (g) => {
+      for (const y of levels) g.add(box(CR, 0.28, 0.22, p.darkSteel, 0, y, 0));  // ring girders
+      if (k % 2 === 0) {  // diagonal bracing on alternate faces, between girders
+        for (let i = 0; i < levels.length - 1; i++) {
+          const dy = levels[i + 1] - levels[i], L = Math.hypot(CR - 0.3, dy);
+          const d = box(0.09, L, 0.09, p.graphite, 0, (levels[i] + levels[i + 1]) / 2, 0.02);
+          d.rotation.z = (i % 2 ? 1 : -1) * Math.atan2(CR - 0.3, dy);
+          g.add(d);
+        }
+      } else {  // service panels with louvred vents on the other faces
+        g.add(box(CR - 0.4, 2.2, 0.06, p.graphite, 0, 2.7, 0.04));
+        for (let v = 0; v < 5; v++) g.add(box(CR - 0.7, 0.05, 0.08, p.darkSteel, 0, 2.0 + v * 0.35, 0.09));
+      }
+      // service gallery at the walkway level: deck, toe plate and railing
+      g.add(box(CR + 0.9, 0.08, 0.85, p.graphite, 0, 4.2 + 0.18, 0.55), box(CR + 1.0, 0.04, 0.04, p.steel, 0, 5.25, 0.95),
+        box(CR + 1.0, 0.04, 0.04, p.steel, 0, 4.8, 0.95), box(0.04, 0.85, 0.04, p.steel, -CR / 2, 4.8, 0.95));
+      for (const bx of [-CR / 2 + 0.25, CR / 2 - 0.25]) {  // knee brackets carrying the deck from the girder below it
+        const kb = box(0.06, 1.0, 0.06, p.darkSteel, bx, 4.2 - 0.2, 0.42);
+        kb.rotation.x = Math.PI / 4;
+        g.add(kb);
+      }
+    });
+  }
+  core.add(box(0.5, 0.06, 0.5, p.darkSteel, 0, CORE_H + 0.03, 0));
+  arch.add(mergeStatic(core));
   if (q !== 'performance') {
     const members: THREE.Matrix4[] = [];
     const n = q === 'high' ? 32 : 16;
