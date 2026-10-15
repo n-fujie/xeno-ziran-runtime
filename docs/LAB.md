@@ -16,7 +16,7 @@ model to it, records runs and replays them independently. The renderer draws rec
 | M6 historical reinsertion with matched ablations | **primary hypothesis NOT SUPPORTED** | `results/labx/m6.json`, 24 paired seeds |
 | M7 cross-system reconfiguration | **T2, T4, T5 hold; T3, T6, T7 not met** | `results/labx/m7.json`, 24 paired seeds |
 | live runtime→3D streaming | done | `xzr/lab/live.py`, `/ws/lab/{id}`; tested and checked in the browser |
-| M8 high-fidelity environment | not started | — |
+| M8 high-fidelity environment | **done** (branch `lab-m8-high-fidelity`) | Real-time high-fidelity view of recorded and live runs; rendered positions equal recorded MuJoCo positions (browser self-test, 11 scenes); a run streamed to the view equals the headless run (137/137 steps). See `docs/m8/`. |
 | M9 causal pathways, extinction, revision, history, cross-world, verification | **done** (frozen protocol; results below) | `results/lab9/`, 2,036 confirmatory runs; Level A re-execution of all 736 M4–M7 runs |
 
 ## Completion level
@@ -250,6 +250,40 @@ investigating one would be a separate project.
 the argument, methods, results, verification, negative-results register, figures, protocols, complete source
 listings, configurations and every result file. Rebuild it with `backend/scripts/m9_figures.py` and
 `backend/scripts/build_m9_manuscript.py`, which need python-docx and matplotlib (not runtime dependencies).
+
+## M8 — high-fidelity real-time laboratory (2026-10-15)
+
+A second view of the same runs: the **High fidelity (M8)** toggle in the 3D Laboratory, or `?view=laboratory&hifi=1`.
+The standard view is unchanged. Code is in `frontend/src/views/lab/hifi/` (see its README); verification and
+performance are in `docs/m8/`.
+
+* **Three layers, four categories.** Every drawn object is classified:
+  * layer A, physical: MuJoCo floors, walls, ports and samples, carriages and tools at recorded positions; rails, bridge
+    and mast represent the slide joints;
+  * layer B, scientific: containment louvres, activity and memory instruments, sensors, memory stores, runtime
+    connections, pending experiments, observed chambers;
+  * layer C, architecture with no scientific claim.
+
+  Each layer can be shown alone.
+* **Physics-to-render mapping** (`coords.ts`): `view = (x, z + 0.25, y)`, with no scaling. Tests and the in-browser
+  self-test show the rendered positions of every carriage and sample equal the transformed recorded positions (worst
+  error 5×10⁻⁷ m, float32). Chamber floors and walls equal the MuJoCo geoms.
+* **What a system can do.** The view separates what exists, what a system observes, what it can experimentally access,
+  what it selects and what it executes. "Accessible" applies `science.py candidates()` to recorded state; it equals the
+  backend at every decision step of both M9 records.
+* **Delivery.** It is shown only from a recorded `material_delivered` event. A refused transfer is "delivery blocked",
+  matching the M9 measurement-definition finding.
+* **Mediation and provenance.** Physical-resource mediation shows gantry wear, queues and legs by system. Recorded and
+  derived transitions are listed; derived ones state their rule. Provenance uses recorded links only, with
+  "unresolved" otherwise. Unrecorded quantities show an availability status, not zero.
+* **Camera modes:** overview, domain, apparatus, operation, transfer, sensor and free.
+* **Quality levels:** performance, balanced and high. They give identical layer-A/B state (tested).
+* **Rendering cannot change a run.** The runtime steps in its own thread. A run streamed to the high-fidelity view equals
+  a headless batch run of the same configuration at 137 of 137 steps, and its record replays.
+* **Performance** (Apple M1, headless Chromium with GPU, 1200×866): mean / p95 frame cost of 5.0 / 8.8 ms
+  (performance), 10.0 / 15.5 ms (balanced) and 13.5 / 19.4 ms (high), at about 60 displayed fps.
+* **Not a scientific result.** M8 changes no scientific result or achievement level. The research manuscript
+  (`docs/publication/`) is unchanged.
 
 ## Live streaming
 
