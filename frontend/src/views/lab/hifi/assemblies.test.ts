@@ -166,3 +166,98 @@ describe('a failed gantry is drawn dark without changing any other part (shared-
     expect(carriages.filter((c) => c.hex === 0x26262a).map((c) => c.id).sort()).toEqual(failed.sort());
   });
 });
+
+describe('full reachable envelope of every gantry', () => {
+  const statics = (lab: ReturnType<typeof buildLab>) => {  // apparatus that never moves with a gantry
+    const out: { what: string; box: THREE.Box3 }[] = [];
+    lab.root.updateMatrixWorld(true);
+    lab.root.traverse((o) => {
+      const s = o.userData.sel as { kind: string; id: string } | undefined;
+      if (s && (s.kind === 'sensor' || s.kind === 'store') && o.parent?.userData.sel?.id !== s.id) out.push({ what: s.id, box: new THREE.Box3().setFromObject(o) });
+      if (o.userData.kind === 'chamber instrument (activity, memory)' && o.parent?.userData.kind !== o.userData.kind) out.push({ what: `instrument ${o.userData.sel?.id}`, box: new THREE.Box3().setFromObject(o) });
+    });
+    return out;
+  };
+  it('every recorded tool tip of every published record lies within its gantry\'s drawn rail envelope', async () => {
+    const { bayEnvelope } = await import('./assemblies');
+    for (const name of ['m3-physical-9100', 'm7-systems-6000', 'm9-separated-resources-7000', 'm9-extinction-relocation-7000']) {
+      const rec = load(name);
+      const env = new Map(Object.keys(rec.layout!.bays).map((b) => [b, bayEnvelope(rec, b)]));
+      for (const s of rec.steps) {
+        for (const [key, g] of Object.entries(s.physics!.gantries)) {
+          const e = env.get(g.bay ?? key)!;
+          const [x, , z] = physToView(g.tip as V3);
+          expect(x >= e.x0 && x <= e.x1 && z >= e.y0 && z <= e.y1, `${name} t${s.t} ${key} at (${x}, ${z})`).toBe(true);
+        }
+      }
+    }
+  });
+  it('no recorded carriage, tool or mast position intersects a sensor, hub, store or chamber instrument', () => {
+    for (const name of ['m7-systems-6000', 'm9-separated-resources-7000', 'm9-extinction-relocation-7000']) {
+      const rec = load(name);
+      const lab = buildLab(rec, 'high');
+      for (let i = 0; i < rec.steps.length; i += 3) {
+        lab.apply(i, 0, { coverage: false, conduits: false, events: new Set() });
+        const fixed = statics(lab);
+        lab.root.traverse((o) => {
+          if (o.userData.sel?.kind !== 'gantry' || !['carriage and tool (recorded tool tip)', 'z slide (mast)'].includes(o.userData.kind)) return;
+          if (o.parent?.userData.kind === o.userData.kind) return;
+          const b = new THREE.Box3().setFromObject(o);
+          for (const f of fixed) expect(b.intersectsBox(f.box), `${name} t${rec.steps[i].t} ${o.userData.sel.id} ${o.userData.kind} vs ${f.what}`).toBe(false);
+        });
+      }
+    }
+  });
+});
+
+describe('synthetic sweep of every gantry over its whole reachable envelope at travel height', () => {
+  // A carriage moves in straight lines between its targets (assemblies.ts reachHull).
+  it('a carriage and its mast anywhere in the reachable envelope meet no static apparatus, service housing or other gantry\'s column', async () => {
+    const { bayEnvelope, reachHull, hullDistance, TRAVEL_TOP } = await import('./assemblies');
+    const rec = load('m7-systems-6000');
+    const lab = buildLab(rec, 'high');
+    lab.apply(0, 0, { coverage: false, conduits: false, events: new Set() });
+    lab.root.updateMatrixWorld(true);
+    const fixed: { what: string; box: THREE.Box3 }[] = [];
+    lab.root.traverse((o) => {
+      const s = o.userData.sel as { kind: string; id: string } | undefined;
+      const k = o.userData.kind as string | undefined;
+      const top = o.parent?.userData.kind !== k;
+      if (s && (s.kind === 'sensor' || s.kind === 'store') && o.parent?.userData.sel?.id !== s.id) fixed.push({ what: s.id, box: new THREE.Box3().setFromObject(o) });
+      if (k === 'chamber instrument (activity, memory)' && top) fixed.push({ what: `instrument ${s?.id}`, box: new THREE.Box3().setFromObject(o) });
+      if (k === 'domain service housing' && top) fixed.push({ what: 'service housing', box: new THREE.Box3().setFromObject(o) });
+    });
+    for (const f of fixed.filter((x) => x.what !== 'service housing')) expect(f.box.max.y, f.what).toBeLessThanOrEqual(TRAVEL_TOP + 1e-6);
+    const bays = Object.keys(rec.layout!.bays);
+    const envs = new Map(bays.map((b) => [b, bayEnvelope(rec, b)]));
+    let checked = 0;
+    for (const bay of bays) {
+      const h = reachHull(rec, bay);
+      const cols: { what: string; box: THREE.Box3 }[] = [];
+      for (const [ob, e] of envs) {
+        if (ob === bay) continue;  // other gantries' columns and knee braces
+        const others = bays.filter((b2) => b2 !== ob).map((b2) => reachHull(rec, b2));
+        for (const [cx, cz] of [[e.x0, e.y0], [e.x0, e.y1], [e.x1, e.y0], [e.x1, e.y1]]) {
+          if (others.some((h2) => hullDistance(h2, cx, cz) < 1.1)) {  // drawn as a ceiling hanger above the rail
+            cols.push({ what: `bay ${ob} rail hanger`, box: new THREE.Box3(new THREE.Vector3(cx - 0.18, 3.45, cz - 0.18), new THREE.Vector3(cx + 0.18, 7.85, cz + 0.18)) });
+            continue;
+          }
+          cols.push({ what: `bay ${ob} column`, box: new THREE.Box3(new THREE.Vector3(cx - 0.25, 0, cz - 0.25), new THREE.Vector3(cx + 0.25, 3.9, cz + 0.25)) });
+          const sx = cx === e.x0 ? 1 : -1;
+          cols.push({ what: `bay ${ob} knee brace`, box: new THREE.Box3(new THREE.Vector3(Math.min(cx, cx + sx * 0.8), 2.9, cz - 0.04), new THREE.Vector3(Math.max(cx, cx + sx * 0.8), 3.5, cz + 0.04)) });
+        }
+      }
+      const e = envs.get(bay)!;
+      for (let x = e.x0; x <= e.x1; x += 0.2) for (let z = e.y0; z <= e.y1; z += 0.2) {
+        if (hullDistance(h, x, z) > 0) continue;
+        const carriage = new THREE.Box3(new THREE.Vector3(x - 0.12, 1.65, z - 0.12), new THREE.Vector3(x + 0.12, 2.03, z + 0.12));
+        const mast = new THREE.Box3(new THREE.Vector3(x - 0.05, 2.03, z - 0.05), new THREE.Vector3(x + 0.05, 3.35, z + 0.05));
+        for (const f of [...fixed, ...cols]) {
+          expect(carriage.intersectsBox(f.box) || mast.intersectsBox(f.box), `bay ${bay} at (${x.toFixed(2)}, ${z.toFixed(2)}) vs ${f.what}`).toBe(false);
+        }
+        checked++;
+      }
+    }
+    expect(checked).toBeGreaterThan(3000);
+  });
+});

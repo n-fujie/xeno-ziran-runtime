@@ -10,6 +10,9 @@ import { FLOOR_Y, PHYS, chamberFloor, lerp3, physToView, planeToView, type V3 } 
 import { bayOf, ring, specs, type Category, type Layer, type Selection } from './model';
 
 export type Quality = 'performance' | 'balanced' | 'high';
+/** Highest point a static instrument inside a gantry envelope may reach: the tool travels with its tip at 1.65 m. */
+export const TRAVEL_TOP = 1.55;
+const SERVICE_X = 6.3;  // radial position of the domain service housings (outside every gantry envelope; tested)
 
 // ------------------------------------------------------------------------------------------------------ materials
 export function palette(q: Quality) {
@@ -101,12 +104,15 @@ export function mergeStatic<T extends THREE.Object3D>(g: T): T {
 export const SPOTS_CHAMBER: [number, number][] = [[0, 0], [0.65, 0.65], [-0.65, 0.65], [0.65, -0.65], [-0.65, -0.65]];
 export const SPOTS_PORT: [number, number][] = [[0, 0], [0.4, 0.4], [-0.4, -0.4]];
 
-function spotMarkers(spots: [number, number][], y: number, p: Palette, kind: 'chamber' | 'port', id: string, at: [number, number] = [0, 0]): THREE.Object3D {
-  const mats = spots.map(([dx, dz]) => new THREE.Matrix4().compose(new THREE.Vector3(at[0] + dx, y + 0.003, at[1] + dz),
-    new THREE.Quaternion().setFromEuler(new THREE.Euler(-Math.PI / 2, 0, Math.PI / 4)), new THREE.Vector3(1, 1, 1)));
+/** Every placement spot of the laboratory (chambers and ports) as one instanced mesh. */
+function spotMarkers(r: LabRecord, p: Palette): THREE.Object3D {
+  const rot = new THREE.Quaternion().setFromEuler(new THREE.Euler(-Math.PI / 2, 0, Math.PI / 4)), one = new THREE.Vector3(1, 1, 1);
+  const mats: THREE.Matrix4[] = [];
+  for (const c of r.chambers) for (const [dx, dz] of SPOTS_CHAMBER) mats.push(new THREE.Matrix4().compose(new THREE.Vector3(c.position[0] + dx, FLOOR_Y + 0.003, c.position[2] + dz), rot, one));
+  for (const [x, z] of Object.values(r.layout?.ports ?? {})) for (const [dx, dz] of SPOTS_PORT) mats.push(new THREE.Matrix4().compose(new THREE.Vector3(x + dx, FLOOR_Y + 0.003, z + dz), rot, one));
   const m = instanced(new THREE.RingGeometry(0.2, 0.225, 4), p.darkSteel, mats);
+  tag(m, 'A', 3, 'sample placement spots (physics.py _free_spot)');
   m.castShadow = false;
-  tag(m, 'A', 3, 'sample placement spots (physics.py _free_spot)', { kind, id });
   return m;
 }
 
@@ -132,7 +138,6 @@ export function chamberAssembly(cid: string, position: V3, p: Palette, q: Qualit
   }
   tag(phys, 'A', 1, 'chamber collision geometry', { kind: 'chamber', id: cid });
   g.add(mergeStatic(phys));
-  g.add(spotMarkers(SPOTS_CHAMBER, y, p, 'chamber', cid));
   // layer B — containment louvres in the rim: blade angle = recorded closure (1 − mean gate of entering connections)
   const blade = new THREE.BoxGeometry(W / LOUVRES_PER_SIDE - 0.03, RIM_H - 0.04, 0.025);
   const mats: THREE.Matrix4[] = [];
@@ -161,8 +166,9 @@ export function chamberAssembly(cid: string, position: V3, p: Palette, q: Qualit
   g.add(mergeStatic(rim));
   // layer B — corner instrument column: glow = activity (share ignited), fill height = retained memory
   const col = new THREE.Group();
-  col.add(box(0.16, 1.5, 0.16, p.graphite, PHYS.CH + 0.18, FLOOR_Y + 0.75, PHYS.CH + 0.18));
-  const activity = box(0.06, 1.2, 0.17, p.glow.clone(), PHYS.CH + 0.18, FLOOR_Y + 0.75, PHYS.CH + 0.18 - 0.005);
+  // every static instrument inside a gantry envelope stays below TRAVEL_TOP (the tool travels at 1.65 m)
+  col.add(box(0.16, 1.15, 0.16, p.graphite, PHYS.CH + 0.18, FLOOR_Y + 0.575, PHYS.CH + 0.18));
+  const activity = box(0.06, 0.9, 0.17, p.glow.clone(), PHYS.CH + 0.18, FLOOR_Y + 0.575, PHYS.CH + 0.18 - 0.005);
   activity.position.x += 0.06;
   const memory = box(0.07, 1, 0.07, p.steel, PHYS.CH + 0.18, FLOOR_Y + 0.15, PHYS.CH + 0.31);
   col.add(activity, memory);
@@ -217,7 +223,7 @@ export function applyChamber(c: ChamberParts, closure: number, activity: number,
   });
   c.louvres.instanceMatrix.needsUpdate = true;
   (c.activity.material as THREE.MeshStandardMaterial).emissiveIntensity = 0.15 + 2.4 * Math.min(1, Math.max(0, activity));
-  const h = Math.max(0.02, Math.min(1.3, memory * 1.3));
+  const h = Math.max(0.02, Math.min(1.0, memory * 1.0));
   c.memory.scale.y = h;
   c.memory.position.y = FLOOR_Y + h / 2;
 }
@@ -237,11 +243,38 @@ export function bayEnvelope(r: LabRecord, bay: string): { x0: number; x1: number
     y0: Math.min(...box_.map((p) => p[1] - p[2])), y1: Math.max(...box_.map((p) => p[1] + p[2])) };
 }
 
+/** The reachable envelope of a bay's carriage: the convex hull of its targets — the placement spots of its chambers and
+ *  ports and its start over the bay centre (it moves in straight lines between them). */
+export function reachHull(r: LabRecord, bay: string): [number, number][] {
+  const pts: [number, number][] = [r.layout!.bays[bay] as [number, number]];
+  for (const c of r.chambers.filter((c) => bayOf(c.cid) === bay)) for (const [dx, dz] of SPOTS_CHAMBER) pts.push([c.position[0] + dx, c.position[2] + dz]);
+  for (const [k, xy] of Object.entries(r.layout!.ports)) if (k.slice(5).split('-').includes(bay)) for (const [dx, dz] of SPOTS_PORT) pts.push([xy[0] + dx, xy[1] + dz]);
+  const q = [...pts].sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+  const cross = (o: number[], a: number[], b: number[]) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+  const lo: [number, number][] = [], up: [number, number][] = [];
+  for (const v of q) { while (lo.length >= 2 && cross(lo[lo.length - 2], lo[lo.length - 1], v) <= 0) lo.pop(); lo.push(v); }
+  for (const v of [...q].reverse()) { while (up.length >= 2 && cross(up[up.length - 2], up[up.length - 1], v) <= 0) up.pop(); up.push(v); }
+  return lo.slice(0, -1).concat(up.slice(0, -1));
+}
+
+/** Distance from a point to a convex hull (0 inside). */
+export function hullDistance(h: [number, number][], x: number, z: number): number {
+  let inside = true, best = Infinity;
+  h.forEach((a, i) => {
+    const b = h[(i + 1) % h.length];
+    if ((b[0] - a[0]) * (z - a[1]) - (b[1] - a[1]) * (x - a[0]) < 0) inside = false;
+    const dx = b[0] - a[0], dz = b[1] - a[1], L = dx * dx + dz * dz || 1;
+    const t = Math.max(0, Math.min(1, ((x - a[0]) * dx + (z - a[1]) * dz) / L));
+    best = Math.min(best, Math.hypot(x - (a[0] + t * dx), z - (a[1] + t * dz)));
+  });
+  return inside ? 0 : best;
+}
+
 /** Cartesian gantry: the carriage and tool are drawn at the recorded tool tip (layer A, executable); rails, bridge and
  *  mast represent the x, y and z slide joints (layer A, category 3); columns are structure (layer C). With private
  *  carriages each group's rails are drawn at their own height (a visual offset only). */
 export function gantryAssembly(key: string, env: { x0: number; x1: number; y0: number; y1: number }, level: number, p: Palette,
-  q: Quality): GantryParts {
+  q: Quality, blocked: (x: number, z: number) => boolean = () => false): GantryParts {
   const g = new THREE.Group();
   const railY = RAIL_Y + level * 0.5;
   const { x0, x1, y0, y1 } = env;
@@ -254,12 +287,18 @@ export function gantryAssembly(key: string, env: { x0: number; x1: number; y0: n
   g.add(mergeStatic(rails));
   if (level === 0) {
     const cols = new THREE.Group();
-    for (const [xx, yy] of [[x0, y0], [x0, y1], [x1, y0], [x1, y1]]) {
+    // a corner inside another gantry's reach gets no floor column: the rail is hung from the ceiling there instead
+    const corners = [[x0, y0], [x0, y1], [x1, y0], [x1, y1]] as [number, number][];
+    for (const [xx, yy] of corners) {
+      if (blocked(xx, yy)) {
+        cols.add(box(0.14, 7.85 - railY, 0.14, p.darkSteel, xx, (railY + 7.85) / 2, yy), box(0.36, 0.08, 0.36, p.graphite, xx, railY + 0.08, yy));
+        continue;
+      }
       cols.add(box(0.22, railY + 0.4, 0.22, p.darkSteel, xx, (railY + 0.4) / 2 - 0.05, yy));
       if (q !== 'performance') cols.add(box(0.5, 0.06, 0.5, p.graphite, xx, 0.03, yy));
     }
     if (q !== 'performance') {  // knee braces at the column heads and a header beam between columns (structure)
-      for (const [xx, yy] of [[x0, y0], [x0, y1], [x1, y0], [x1, y1]]) {
+      for (const [xx, yy] of corners.filter(([xx, yy]) => !blocked(xx, yy))) {
         const sx = xx === x0 ? 1 : -1;
         const br = box(0.05, 1.1, 0.05, p.darkSteel, xx + sx * 0.38, railY - 0.38, yy);
         br.rotation.z = sx * Math.PI / 4;
@@ -274,6 +313,7 @@ export function gantryAssembly(key: string, env: { x0: number; x1: number; y0: n
   bridge.add(box(0.24, 0.16, y1 - y0, p.graphite, 0, railY + 0.14, (y0 + y1) / 2));
   for (const yy of [y0, y1]) bridge.add(box(0.46, 0.14, 0.32, p.darkSteel, 0, railY + 0.13, yy));
   tag(bridge, 'A', 3, 'y slide (bridge on end trucks)', { kind: 'gantry', id: key });
+  mergeStatic(bridge);
   const trolley = new THREE.Group();
   trolley.add(box(0.42, 0.22, 0.42, p.darkSteel, 0, railY + 0.02, 0));
   if (q !== 'performance') for (const sx of [-1, 1]) trolley.add(box(0.13, 0.16, 0.13, p.graphite, sx * 0.13, railY + 0.21, 0));  // drive housings
@@ -319,7 +359,7 @@ export function portAssembly(key: string, xy: [number, number], p: Palette, q: Q
   const [x, y, z] = planeToView(xy);
   const table = box(2 * PHYS.PORT, 0.1, 2 * PHYS.PORT, p.ceramic, x, y - 0.05, z);  // MuJoCo port geom (top at z = 0.05)
   tag(table, 'A', 1, 'handoff port', { kind: 'port', id: key });
-  g.add(table, spotMarkers(SPOTS_PORT, y, p, 'port', key, [x, z]));
+  g.add(table);
   const ped = new THREE.Group();
   ped.add(cyl(0.38, y - 0.1, p.darkSteel, x, (y - 0.1) / 2, z, 6));
   if (q !== 'performance') {
@@ -353,8 +393,8 @@ export function systemAssembly(sid: string, kind: string, k: number, p: Palette,
   const head = new THREE.Group();
   if (kind === 'distributed') {  // hub: receiver tower — base cabinet, mast, stacked receiver rings, cap
     head.add(box(0.34, 0.42, 0.34, p.graphite, 0, 0.21, 0), box(0.36, 0.03, 0.36, p.darkSteel, 0, 0.43, 0));
-    head.add(cyl(0.05, 1.5, p.darkSteel, 0, 1.15, 0, 10));
-    for (const [y, r] of [[1.05, 0.2], [1.32, 0.17], [1.59, 0.14]] as [number, number][]) {
+    head.add(cyl(0.05, 0.75, p.darkSteel, 0, 0.8, 0, 10));
+    for (const [y, r] of [[0.75, 0.2], [0.93, 0.17], [1.1, 0.14]] as [number, number][]) {
       const ring = new THREE.Mesh(new THREE.TorusGeometry(r, 0.022, 6, 24), p.steel);
       ring.rotation.x = Math.PI / 2;
       ring.position.y = y;
@@ -365,10 +405,10 @@ export function systemAssembly(sid: string, kind: string, k: number, p: Palette,
         head.add(sp);
       }
     }
-    head.add(cyl(0.07, 0.06, p.steel, 0, 1.93, 0, 12));
+    head.add(cyl(0.07, 0.06, p.steel, 0, 1.2, 0, 12));
   } else {  // sensor post on the chamber corner with a short inward boom; the pod stays outside the sample spots the
     // tool visits (spots at ±0.65 m from the centre), above the walls, so it never stands where the carriage moves
-    const post = box(0.08, 1.75, 0.08, p.darkSteel, 0, 0.875, 0);
+    const post = box(0.08, 1.22, 0.08, p.darkSteel, 0, 0.61, 0);
     const base = box(0.2, 0.08, 0.2, p.graphite, 0, 0.04, 0);
     const boom = new THREE.Group();  // two-segment articulated boom with joints, hooded optical pod at its end
     const j1 = new THREE.Mesh(new THREE.SphereGeometry(0.055, 12, 8), p.steel);
@@ -388,7 +428,7 @@ export function systemAssembly(sid: string, kind: string, k: number, p: Palette,
     lens.rotation.set(0, Math.PI / 2, 0.9 - Math.PI / 2);
     (lens.material as THREE.MeshStandardMaterial).emissiveIntensity = 0.9;
     boom.add(j1, seg1, j2, seg2, pod, hood, lens);
-    boom.position.y = 1.74;
+    boom.position.y = 1.2;
     boom.rotation.y = -Math.PI / 4;  // pointing into the chamber from its (+x, −z) corner
     head.add(base, post, boom);
   }
@@ -402,13 +442,13 @@ export function systemAssembly(sid: string, kind: string, k: number, p: Palette,
     store = new THREE.Group();
     const [x, , z] = chamberFloor(storePos);
     store.position.set(x - PHYS.CH - 0.36, 0, z);
-    store.add(box(0.32, 1.9, 1.2, p.graphite, 0, FLOOR_Y + 0.95, 0));
-    for (const z of [-0.6, 0.6]) store.add(box(0.36, 1.96, 0.04, p.darkSteel, 0, FLOOR_Y + 0.98, z));  // frame
-    store.add(box(0.36, 0.05, 1.24, p.darkSteel, 0, FLOOR_Y + 1.93, 0), box(0.36, 0.08, 1.24, p.darkSteel, 0, FLOOR_Y + 0.04, 0));
+    store.add(box(0.32, 1.16, 1.2, p.graphite, 0, FLOOR_Y + 0.58, 0));
+    for (const z of [-0.6, 0.6]) store.add(box(0.36, 1.2, 0.04, p.darkSteel, 0, FLOOR_Y + 0.6, z));  // frame
+    store.add(box(0.36, 0.05, 1.24, p.darkSteel, 0, FLOOR_Y + 1.2, 0), box(0.36, 0.08, 1.24, p.darkSteel, 0, FLOOR_Y + 0.04, 0));
     const mats: THREE.Matrix4[] = [];
     // outward face; filled from the top row down, so the recorded entries stay visible above the neighbouring walls
-    for (let i = 0; i < SLOTS; i++) mats.push(M(-0.17, FLOOR_Y + 1.78 - Math.floor(i / 6) * 0.21, -0.45 + (i % 6) * 0.18, 0, 1, 1, 1));
-    slots = instanced(new THREE.BoxGeometry(0.02, 0.15, 0.13), p.glow.clone(), mats);
+    for (let i = 0; i < SLOTS; i++) mats.push(M(-0.17, FLOOR_Y + 1.08 - Math.floor(i / 6) * 0.135, -0.45 + (i % 6) * 0.18, 0, 1, 1, 1));
+    slots = instanced(new THREE.BoxGeometry(0.02, 0.1, 0.13), p.glow.clone(), mats);
     (slots.material as THREE.MeshStandardMaterial).emissiveIntensity = 1.2;
     store.add(slots);
     tag(store, 'B', 2, `system ${sid} memory store (filled slots: recorded entries)`, { kind: 'store', id: `${sid}:store` });
@@ -585,6 +625,7 @@ export function architecture(r: LabRecord, p: Palette, q: Quality): THREE.Group 
   }
   const roofY = 9.4;
   const roof = new THREE.Group();  // hidden while the camera is above it (cutaway; layer C only)
+  const services = new THREE.Group();
   // per domain: service trench round the platform, closed service housings (no indicators: housing only), linear
   // luminaires and a hexagonal ceiling lattice under the roof
   for (const [, [bx, by]] of Object.entries(L.bays)) {
@@ -598,12 +639,15 @@ export function architecture(r: LabRecord, p: Palette, q: Quality): THREE.Group 
     trench.position.y = 0.02;
     dom.add(trench);
     if (q !== 'performance') {
-      for (const s of [-1, 1]) {  // two service housings on the outer side of the domain
+      for (const s of [-1, 1]) {  // two service housings beyond the outer side of the domain, outside every gantry envelope
         const h = new THREE.Group();
         h.add(box(0.7, 2.2, 1.4, p.composite, 0, 1.1, 0), box(0.72, 0.06, 1.42, p.darkSteel, 0, 2.23, 0), box(0.72, 0.12, 1.42, p.darkSteel, 0, 0.06, 0));
         for (let k = 0; k < 5; k++) h.add(box(0.012, 1.8, 0.02, p.graphite, 0.36, 1.1, -0.56 + k * 0.28));
-        h.position.set(4.35, 0, s * 1.6);
-        dom.add(h);
+        h.position.set(SERVICE_X, 0, s * 1.6);
+        h.position.applyEuler(new THREE.Euler(0, -ang, 0)).add(new THREE.Vector3(bx, 0, by));
+        h.rotation.y = -ang;
+        tag(h, 'C', 4, 'domain service housing');
+        services.add(mergeStatic(h));
       }
       for (let k = -1; k <= 1; k++) {  // linear luminaires (they light the scene; no scientific claim)
         const lum = box(0.12, 0.06, 5.2, p.darkSteel, k * 1.7, 7.4, 0);
@@ -633,6 +677,8 @@ export function architecture(r: LabRecord, p: Palette, q: Quality): THREE.Group 
     for (let k = 0; k < 48; k++) { const a = (k / 48) * 2 * Math.PI; hangers.push(M(Math.cos(a) * 14, 7.0, Math.sin(a) * 14)); }
     arch.add(instanced(new THREE.BoxGeometry(0.03, 4.9, 0.03), p.darkSteel, hangers));
   }
+  tag(services, 'C', 4, 'domain service housings');
+  root.add(services);
   // central structural core and roof structure (no function)
   const core = new THREE.Group();
   core.add(new THREE.Mesh(new THREE.CylinderGeometry(2.2, 2.6, 9.4, 6), p.composite));
@@ -738,15 +784,22 @@ export function buildLab(r: LabRecord, q: Quality): Lab {
   const pickables: THREE.Object3D[] = [];
   const chamberPos = new Map(r.chambers.map((c) => [c.cid, c.position as V3]));
   const chambers = new Map<string, ChamberParts>();
+  const chamberStatics = new THREE.Group();  // every chamber's rim frame and housing, merged once by material
   for (const c of r.chambers) {
     const parts = chamberAssembly(c.cid, c.position as V3, p, q);
     chambers.set(c.cid, parts);
     root.add(parts.group);
     pickables.push(parts.group);
+    parts.group.updateMatrixWorld(true);
+    for (const child of [...parts.group.children]) {
+      if (child.userData.kind === 'instrument rim frame' || child.userData.kind === 'chamber housing') chamberStatics.attach(child);
+    }
   }
+  tag(chamberStatics, 'C', 4, 'chamber housings and rim frames');
+  root.add(mergeStatic(chamberStatics));
   if (r.layout) {
     const arch = architecture(r, p, q);
-    root.add(arch);
+    root.add(arch, spotMarkers(r, p));
     for (const [k, xy] of Object.entries(r.layout.ports)) {
       const pg = portAssembly(k, xy, p, q);
       root.add(pg);
@@ -765,7 +818,8 @@ export function buildLab(r: LabRecord, q: Quality): Lab {
     if (!gp) {
       const groups = [...new Set(Object.values(((r.config.partition as { groups?: Record<string, string> } | undefined)?.groups) ?? {}))].sort();
       const level = group ? Math.max(0, groups.indexOf(group)) : 0;
-      gp = gantryAssembly(key, bayEnvelope(r, bay), level, p, q);
+      const others = Object.keys(r.layout!.bays).filter((b) => b !== bay).map((b) => reachHull(r, b));
+      gp = gantryAssembly(key, bayEnvelope(r, bay), level, p, q, (x, z) => others.some((h) => hullDistance(h, x, z) < 1.1));
       gantries.set(key, gp);
       root.add(gp.group);
       pickables.push(gp.group);
@@ -789,8 +843,8 @@ export function buildLab(r: LabRecord, q: Quality): Lab {
         const [x, , z] = chamberFloor(pos);
         const pod = new THREE.Group();
         const dome = new THREE.Mesh(new THREE.SphereGeometry(0.11, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2), p.steel);
-        dome.position.set(0, FLOOR_Y + 1.2, 0);
-        pod.add(box(0.07, 1.1, 0.07, p.darkSteel, 0, FLOOR_Y + 0.55, 0), cyl(0.13, 0.05, p.graphite, 0, FLOOR_Y + 1.17, 0, 16), dome,
+        dome.position.set(0, FLOOR_Y + 1.0, 0);
+        pod.add(box(0.07, 0.95, 0.07, p.darkSteel, 0, FLOOR_Y + 0.475, 0), cyl(0.13, 0.05, p.graphite, 0, FLOOR_Y + 0.97, 0, 16), dome,
           box(0.16, 0.06, 0.16, p.graphite, 0, FLOOR_Y + 0.03, 0));
         pod.position.set(x + 0.5, 0, z + PHYS.CH + 0.4);  // middle of the +z side: clear of corner apparatus and the neighbour's manifold
         tag(pod, 'B', 2, `system ${s.sid} remote sensor at ${c}`, { kind: 'sensor', id: `${s.sid}:sensor:${c}` });
