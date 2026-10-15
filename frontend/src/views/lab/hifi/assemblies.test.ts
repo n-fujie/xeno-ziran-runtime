@@ -89,3 +89,20 @@ describe('mechanical coherence', () => {
     }
   });
 });
+
+describe('backward compatibility with earlier record schemas', () => {
+  it('a schema-1 record without physics (M2) and one with physics but no systems (M3) build and draw', async () => {
+    const { inspect, levels, transfers } = await import('./model');
+    for (const [name, physics] of [['m2-run-9100', false], ['m3-physical-9100', true]] as [string, boolean][]) {
+      const rec = load(name);
+      expect(rec.schema).toBe('xzr.labrun/1');
+      const lab = buildLab(rec, 'balanced');
+      const sig = lab.signature(rec.steps.length - 1);
+      expect(Object.keys(sig).some((k) => k.startsWith('gantry:'))).toBe(physics);
+      expect(levels(rec, 0, 'A')).toBeNull();  // no scientific systems in these records: reported as absent, not zero
+      const f = inspect(rec, 0, { kind: 'chamber', id: rec.chambers[0].cid });
+      if (!physics) expect(f.fields.some((x) => x.status === 'unmeasured')).toBe(true);
+      expect(Array.isArray(transfers(rec, rec.steps[rec.steps.length - 1].t))).toBe(true);
+    }
+  });
+});
