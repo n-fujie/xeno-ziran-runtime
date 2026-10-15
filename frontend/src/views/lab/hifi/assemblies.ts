@@ -23,7 +23,7 @@ export function palette(q: Quality) {
   return {
     floor: std(0x121214, 0.3, 0.8),
     plinth: std(0x26262a, 0.55, 0.55),
-    ceramic: std(0xd9d9d4, 0.05, 0.55),  // industrial ceramic: chamber floors and walls (executable geometry)
+    ceramic: std(0xc6c6c1, 0.05, 0.6),  // industrial ceramic: chamber floors and walls (executable geometry)
     graphite: std(0x47474c, 0.6, 0.42),
     steel: std(0x77777c, 0.9, q === 'performance' ? 0.45 : 0.32),  // brushed metal
     darkSteel: std(0x5c5c62, 0.8, 0.36),
@@ -203,6 +203,18 @@ export function chamberAssembly(cid: string, position: V3, p: Palette, q: Qualit
     const vents: THREE.Matrix4[] = [];
     for (let k = 0; k < 6; k++) vents.push(M(-PHYS.CH + 0.4 + k * 0.36, FLOOR_Y - 0.18, -PHYS.CH - 0.155));
     housing.add(instanced(new THREE.BoxGeometry(0.22, 0.06, 0.012), p.graphite, vents));
+  }
+  if (q !== 'performance') {  // wall stiffeners on the outer faces below the shutter band, and a base flange (vessel structure)
+    const o = PHYS.CH + PHYS.WALL_T, n = 7;
+    for (let side = 0; side < 4; side++) {
+      for (let k = 0; k < n; k++) {
+        const u = -PHYS.CH + 0.2 + k * ((W - 0.4) / (n - 1));
+        const [rx, rz, sx, sz] = side === 0 ? [u, o + 0.02, 0.035, 0.04] : side === 1 ? [u, -o - 0.02, 0.035, 0.04] : side === 2 ? [o + 0.02, u, 0.04, 0.035] : [-o - 0.02, u, 0.04, 0.035];
+        housing.add(box(sx, RIM_Y0 - 0.04 - (FLOOR_Y - 0.05), sz, p.graphite, rx, (RIM_Y0 - 0.04 + FLOOR_Y - 0.05) / 2, rz));
+      }
+      const [fx, fz, fsx, fsz] = side === 0 ? [0, o + 0.03, W + 0.12, 0.06] : side === 1 ? [0, -o - 0.03, W + 0.12, 0.06] : side === 2 ? [o + 0.03, 0, 0.06, W + 0.12] : [-o - 0.03, 0, 0.06, W + 0.12];
+      housing.add(box(fsx, 0.05, fsz, p.darkSteel, fx, FLOOR_Y - 0.02, fz));
+    }
   }
   if (q !== 'performance') {  // service manifold on the outer face (housing only; no instrument)
     housing.add(box(0.9, 0.34, 0.16, p.composite, -0.4, FLOOR_Y + 0.2, -PHYS.CH - 0.24), box(0.12, 0.5, 0.12, p.darkSteel, 0.25, FLOOR_Y + 0.25, -PHYS.CH - 0.24));

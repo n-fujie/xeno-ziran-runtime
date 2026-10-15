@@ -238,3 +238,21 @@ relabelled, and the count is back to 80.
 share tool positions at all 960 steps (4 799 same-bay pair-steps within 0.3 m). In `m7` there are 6 relay hand-overs
 where two bays' carriages meet at a port. The model declares that "carriages never collide with anything". The view
 draws the recorded positions, so such carriages coincide on screen.
+
+### Change 2: engineered vessel exteriors (P2)
+
+- **Before:** `01-transport-envelope/1200x866@1/09-shared-resource.png`, `03-domain.png`.
+- **After:** `02-vessels/1200x866@1/` (scenes 01, 03, 05, 09, 16, 17, 18).
+
+**Correction.** The MuJoCo floor and walls are unchanged in geometry. Additions:
+
+- seven vertical stiffener ribs per side on the outer faces, between the base and the shutter band;
+- a base flange (category 4, merged into the global chamber statics);
+- the ceramic albedo lowered from 0xd9d9d4 to 0xc6c6c1 (roughness 0.6).
+
+**Inspection.** In 09, the distant vessels now show ribbed exteriors under the shutter band, where the baseline showed
+blank white boxes. The near interior walls keep their shading instead of clipping to white. No new intersections:
+the ribs are 2–6 cm from the wall face, below the band; the vessel-clearance and envelope tests pass.
+
+**Performance.** Draw calls are unchanged (229 in the domain view, 713 in the overview). Triangles in the domain view
+rose from 51k to 63k. Every captured scene renders at 60 fps.
