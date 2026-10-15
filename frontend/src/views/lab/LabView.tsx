@@ -5,6 +5,7 @@ import { api } from '../../api/client';
 import { useExperiment } from '../research/common';
 import { frameAt, pathways, PHYS_Y0, validate, type Frame, type LabRecord } from './labScene';
 import { NATIVE } from '../../api/native';
+import HiFiLab from './hifi/HiFiLab';
 
 // XENO–ZIRAN 3D laboratory (Level 1 component): replays a recorded runtime execution.
 //   runtime-derived (drawn from xzr/lab/apparatus.py values): containment shutters (gates entering a chamber), state lamp
@@ -174,15 +175,16 @@ type Live = { id: string; state: string; t: number; horizon: number; coalesced: 
 const PRESETS = ['systems', 'physical', 'apparatus'];
 
 export default function LabView() {
-  const [name, setName] = useState(RECORDS[0]);
+  const [name, setName] = useState(() => { const r = new URLSearchParams(location.search).get('rec'); return r ? `lab-${r}` : RECORDS[0]; });
   const [available, setAvailable] = useState<string[]>(RECORDS);
   const { data, error } = useExperiment<LabRecord>(name);
   const replayRec = useMemo(() => (data ? validate(data) : null), [data]);
   const mount = useRef<HTMLDivElement>(null);
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(() => Math.max(0, Number(new URLSearchParams(location.search).get('step') ?? 0) || 0));
   const [playing, setPlaying] = useState(false);
   const [rate, setRate] = useState(8);
   const [fps, setFps] = useState(0);
+  const [hifi, setHifi] = useState(() => new URLSearchParams(location.search).get('hifi') === '1');
   const [sel, setSel] = useState<string | null>(null);
   const state = useRef<{ apply: (f: Frame) => void } | null>(null);
   // live mode: the record grows from the stream; the scene is built once from the hello message
@@ -366,7 +368,7 @@ export default function LabView() {
       el.removeChild(renderer.domElement);
       state.current = null;
     };
-  }, [base]);
+  }, [base, hifi]);
 
   useEffect(() => { if (frame) state.current?.apply(frame); }, [frame]);
 
@@ -395,6 +397,34 @@ export default function LabView() {
       </>)}
     </div>
   );
+  const modeToggle = (
+    <div className="lab-controls">
+      <button className={hifi ? '' : 'on'} onClick={() => setHifi(false)}>Standard</button>
+      <button className={hifi ? 'on' : ''} onClick={() => setHifi(true)}>High fidelity (M8)</button>
+    </div>
+  );
+  if (hifi && base && frame) {
+    const rec = (live ? liveRec.current : base) as LabRecord;
+    return (
+      <HiFiLab rec={rec} index={frame.index} tick={tick} playing={playing} rate={rate} live={!!live}
+        onSeek={(i) => { setPlaying(false); setIndex(Math.max(0, i)); }}
+        status={<><b>{live ? 'Live runtime execution (streamed as it runs).' : 'Recorded runtime execution, replayed.'}</b> Level 1
+          component. Simulation-internal (rigid-body physics within declared approximations): not a physical laboratory; not
+          evidence of autonomous science. Step {frame.t} / {rec.steps.length}.</>}
+        controls={<>{modeToggle}{liveControls}{!live && <>
+          <div className="lab-controls">
+            {picker}
+            <button onClick={() => setPlaying(!playing)}>{playing ? 'Pause' : 'Run'}</button>
+            <button onClick={() => setIndex(Math.max(0, frame.index - 1))}>−1</button>
+            <button onClick={() => setIndex(Math.min(rec.steps.length - 1, frame.index + 1))}>+1</button>
+            <button onClick={() => { setPlaying(false); setIndex(0); }}>Reset</button>
+            <select value={rate} onChange={(e) => setRate(Number(e.target.value))}>
+              {[2, 8, 24].map((r) => <option key={r} value={r}>{r} steps/s</option>)}</select>
+          </div>
+          <input type="range" min={0} max={rec.steps.length - 1} value={frame.index} onChange={(e) => setIndex(Number(e.target.value))} />
+        </>}</>} />
+    );
+  }
   if (!base || !frame) {
     return (<div className="lab"><div className="lab-stage" ref={mount} /><aside className="lab-side small">{liveControls}
       <div className="dim">{picker} {live ? 'waiting for the first live step…' : error ? `No laboratory record (${error}).` : 'loading…'}</div></aside></div>);
@@ -422,6 +452,7 @@ export default function LabView() {
     <div className="lab">
       <div className="lab-stage" ref={mount} />
       <aside className="lab-side small">
+        {modeToggle}
         {liveControls}
         <div className="lab-status"><b>{live ? 'Live runtime execution (streamed as it runs).' : 'Recorded runtime execution, replayed.'}</b> Level 1 component. Simulation-internal
           {rec.layout ? ' (rigid-body physics within declared approximations)' : ''}: not a physical laboratory; not evidence of

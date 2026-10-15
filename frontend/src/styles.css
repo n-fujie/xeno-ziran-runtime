@@ -281,3 +281,21 @@ svg.hpo-tl { display: block; width: 100%; height: 12px; }
 @media (max-width: 900px) { .lab { grid-template-columns: 1fr; grid-template-rows: 60vh auto; } .lab-side { border-left: none; border-top: 1px solid var(--line); } }
 .lab-live { color: #fff; border: 1px solid var(--line2); padding: 2px 6px; }
 .lab-side input[type='number'] { width: 80px; }
+/* M8 high-fidelity laboratory */
+.lab.hifi { grid-template-columns: 1fr 400px; }
+.hifi-side h4 { margin: 6px 0 2px; font-weight: 600; letter-spacing: 0.02em; }
+.hifi-row { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+.hifi-row > .dim { min-width: 58px; }
+.hifi-row button.on, .lab-controls button.on { background: #e8e8ea; color: #0b0b0c; }
+.hifi-row label { display: inline-flex; gap: 3px; align-items: center; margin-right: 6px; }
+.hifi-levels, .hifi-fields, .hifi-med { width: 100%; border-collapse: collapse; }
+.hifi-levels td, .hifi-fields td, .hifi-med td, .hifi-med th { padding: 2px 4px; border-bottom: 1px solid #16161a; vertical-align: top; text-align: left; }
+.hifi-levels td:last-child { text-align: right; color: #fff; }
+.hifi-fields td:first-child { color: var(--dim, #8a8a90); width: 42%; }
+.hifi-med tr { cursor: pointer; }
+.hifi-med tr.failed td { color: #fff; text-decoration: underline; }
+.avail { border: 1px dashed #55555c; padding: 0 4px; color: #b8b8be; }
+.avail.derived { border-style: dotted; }
+.tr.delivered b { color: #fff; }
+.tr.delivery-blocked b { text-decoration: line-through; }
+.tr.transport-complete b, .tr.failed b { color: #9a9aa0; }
