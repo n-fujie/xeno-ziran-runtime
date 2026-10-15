@@ -301,6 +301,28 @@ by stage and capture metadata: `docs/m8.1/REPORT.md`. No scientific result, reco
   execution through step ≈860 (p95 / p99 16.8 / 16.8 ms; before: p99 32.7 ms late in the run). Draw calls 828 → 681 in
   the overview. `high` at DPR 2 does not hold 60 fps on this machine.
 
+## M8.2 — independent visual evaluation and refinement (2026-10-15)
+
+Branch `lab-m8-visual-refinement`. The work started from an inspection of the M8.1 screenshots at full resolution,
+followed by scored evaluation, ranked defects, and one bounded change at a time, each with before and after
+screenshots. The full report is `docs/m8.2/VISUAL_EVALUATION.md`. No scientific result, record or level status
+changed.
+
+* **Mechanical fidelity.** M8's drawn apparatus stood in the path of recorded carried samples. A carried sample hangs
+  0.255 m below the tool, and worn gantries sag to 7.6 cm above the chamber walls. Fixes:
+  * the containment louvres moved to a shutter band below the wall top;
+  * the chamber instruments were lowered;
+  * the system instruments moved to mounts outside every reach envelope;
+  * tests now check every recorded carrying step.
+* **Gripper.** Parallel jaws, closed exactly while a grasp is recorded.
+* **Vessels and architecture.** Engineered vessel exteriors, a structural central core, and dimmer idle connections
+  with exponential depth fog.
+* **System roles.** System B's receiver points one pickup at each configured remote sensor. System C's store shows its
+  capacity and one cartridge per recorded entry.
+* **Live defect fixed.** Since M8, a hidden standard-view renderer kept running under the hi-fi live view and leaked
+  geometry. Under the same load, the late-run live view went from 18 fps to 57–60 fps. The M8.1 claim of 60 fps
+  through a run held only on a lightly loaded machine.
+
 ## Live streaming
 
 `backend/xzr/lab/live.py`, endpoints in `backend/xzr/service/app.py`, and the viewer's "Start live run":

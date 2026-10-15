@@ -79,7 +79,7 @@ export default function HiFiLab({ rec, index, tick, playing, rate, live, control
     if (!el || !rec.steps.length) return;
     const q = quality;
     const renderer = new THREE.WebGLRenderer({ antialias: q !== 'performance', powerPreference: 'high-performance' });
-    renderer.setPixelRatio(q === 'high' ? Math.min(2, window.devicePixelRatio) : q === 'balanced' ? Math.min(1.5, window.devicePixelRatio) : 1);
+    renderer.setPixelRatio(pixelRatioFor(q, el.clientWidth, el.clientHeight));
     renderer.setSize(el.clientWidth, el.clientHeight);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.3;
@@ -191,6 +191,7 @@ export default function HiFiLab({ rec, index, tick, playing, rate, live, control
     const onResize = () => {
       camera.aspect = el.clientWidth / Math.max(1, el.clientHeight);
       camera.updateProjectionMatrix();
+      renderer.setPixelRatio(pixelRatioFor(q, el.clientWidth, el.clientHeight));
       renderer.setSize(el.clientWidth, el.clientHeight);
     };
     const ro = new ResizeObserver(onResize);
@@ -398,6 +399,17 @@ export default function HiFiLab({ rec, index, tick, playing, rate, live, control
 // ---------------------------------------------------------------------------------------------------- camera modes
 /** A close-up camera position for a target: tries viewing directions starting radially outward from the installation
  *  centre and keeps the first that is not inside any chamber housing (so the view is never blocked by a wall). */
+/** Drawing-buffer pixel ratio per quality level. Balanced keeps its 1.5 cap but also a pixel budget (M8.2: at
+ *  1920×1080 with DPR 2 its 2280×1371 buffer missed the frame budget, and a 1.8 Mpx budget still did), never below 1, so DPR-1 displays are unchanged.
+ *  High keeps the full ratio up to 2; its DPR-2 limit is documented, not hidden. */
+export const BALANCED_PIXELS = 1.4e6;  // about the 1920×1080 DPR-1 canvas, measured at 54–60 fps
+export function pixelRatioFor(q: Quality, cssW: number, cssH: number, dpr = window.devicePixelRatio): number {
+  if (q === 'high') return Math.min(2, dpr);
+  if (q === 'performance') return 1;
+  const budget = Math.sqrt(BALANCED_PIXELS / Math.max(1, cssW * cssH));
+  return Math.min(1.5, dpr, Math.max(1, budget));
+}
+
 export function closeView(rec: LabRecord, target: THREE.Vector3, dist: number, height: number, prefer?: number,
   blocked: (p: THREE.Vector3) => boolean = () => false): THREE.Vector3 {
   const out = new THREE.Vector3(target.x, 0, target.z);

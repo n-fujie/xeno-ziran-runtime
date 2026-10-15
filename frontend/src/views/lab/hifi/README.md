@@ -76,10 +76,17 @@ Every object carries a layer and a category in `userData`:
   never interpenetrate; a failed gantry darkens only its own carriage; recorded tool tips lie inside the drawn
   envelope; recorded carriage and mast positions miss every static instrument; a synthetic sweep of each bay's
   reachable envelope (`reachHull`) at travel height hits nothing, and no static part inside it rises above
-  `TRAVEL_TOP`.
+  `TRAVEL_TOP`. Since M8.2, `TRAVEL_TOP` is 0.98 m: a carried sample hangs 0.255 m below the tool and, under a worn
+  gantry, passes 7.6 cm above the chamber walls. Inside a reach envelope, nothing static rises above the walls. Carried
+  samples and the gripper jaws are tested at every recorded carrying step. System instruments stand at
+  `instrumentMount` positions outside every reach envelope, chamber vessel and floor column. The jaw state follows the
+  recorded `carrying`. System B's pickup arms point at its configured remote sensors. A pair in a recorded event is the
+  only connection drawn at full brightness.
 - **Browser test** (`frontend/scripts/m8-capture.mjs`): runs in a real Chromium against the running service. For each
   scene it runs the in-page self-test of the rendered scene graph (`window.__labHiFi.selfTest()`), measures frame times
   and saves a screenshot with full metadata, benchmarks every quality level (`--bench`) and profiles the live view over a
   run's lifetime (`--live-windows 400,800`). Options: `--stage`, `--res WxH` (browser viewport; the canvas is smaller),
-  `--dpr`, `--scenes all|01,05`, `--no-live`. Results are in `docs/m8/` (M8) and `docs/m8.1/<stage>/` (M8.1).
+  `--dpr`, `--scenes all|01,05`, `--no-live`. Results are in `docs/m8/` (M8), `docs/m8.1/<stage>/` (M8.1) and `docs/m8.2/<stage>/` (M8.2, with
+  `--out docs/m8.2`). The live profile also picks a carriage through real pointer events during execution and profiles
+  a dense domain view; `--cpu-profile` writes a sampled CPU profile of the live view.
 - `window.__labHiFi.prof` holds panel / apply / render / frame timings for profiling.

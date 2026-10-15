@@ -1,0 +1,300 @@
+{
+ "stage": "09-dpr-budget",
+ "commit": "5b01c9d+uncommitted",
+ "browser": "Chrome/151.0.7922.34",
+ "base": "http://127.0.0.1:3011",
+ "viewport": [
+  1920,
+  1080
+ ],
+ "devicePixelRatio": 2,
+ "scenes": [
+  {
+   "name": "01-overview",
+   "record": "m9-separated-resources-7000",
+   "recordSha256": "6341ea1150a02cf9",
+   "stepIndex": 480,
+   "note": "complete installation",
+   "url": "/?view=laboratory&hifi=1&rec=m9-separated-resources-7000&step=480&cam=overview&quality=balanced",
+   "commit": "5b01c9d+uncommitted",
+   "viewport": [
+    1920,
+    1080
+   ],
+   "devicePixelRatio": 2,
+   "browser": "Chrome/151.0.7922.34",
+   "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified Version)",
+   "state": {
+    "cam": "overview",
+    "sel": null,
+    "sys": null,
+    "domain": "0",
+    "layers": {
+     "A": true,
+     "B": true,
+     "C": true
+    },
+    "quality": "balanced",
+    "step": 481,
+    "index": 480,
+    "camera": [
+     30,
+     27.453,
+     34
+    ],
+    "target": [
+     0,
+     1.5,
+     0
+    ],
+    "pixelRatio": 1.003850699611474,
+    "canvas": [
+     1525,
+     917
+    ]
+   },
+   "selfTest": {
+    "step": 481,
+    "positionsChecked": 80,
+    "worstPositionError": 5.072509780052955e-7,
+    "layers": {
+     "A": 43,
+     "B": 113,
+     "C": 12
+    },
+    "drawCalls": 712,
+    "triangles": 115776,
+    "quality": "balanced"
+   },
+   "frames": {
+    "n": 107,
+    "mean": 23.52,
+    "p50": 17,
+    "p95": 50,
+    "p99": 66.2,
+    "max": 83.3
+   },
+   "longTasks": 3
+  },
+  {
+   "name": "05-transport",
+   "record": "m9-separated-resources-7000",
+   "recordSha256": "6341ea1150a02cf9",
+   "stepIndex": 121,
+   "note": "sample 0.2#a carried (recorded) at index 121",
+   "url": "/?view=laboratory&hifi=1&rec=m9-separated-resources-7000&step=121&cam=transfer&quality=balanced&sel=sample%3A0.2%23a",
+   "commit": "5b01c9d+uncommitted",
+   "viewport": [
+    1920,
+    1080
+   ],
+   "devicePixelRatio": 2,
+   "browser": "Chrome/151.0.7922.34",
+   "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified Version)",
+   "state": {
+    "cam": "transfer",
+    "sel": {
+     "kind": "sample",
+     "id": "0.2#a"
+    },
+    "sys": null,
+    "domain": "0",
+    "layers": {
+     "A": true,
+     "B": true,
+     "C": true
+    },
+    "quality": "balanced",
+    "step": 122,
+    "index": 121,
+    "camera": [
+     14.928,
+     2.588,
+     3.857
+    ],
+    "target": [
+     12.3,
+     1.388,
+     1.7
+    ],
+    "pixelRatio": 1.003850699611474,
+    "canvas": [
+     1525,
+     917
+    ]
+   },
+   "selfTest": {
+    "step": 122,
+    "positionsChecked": 80,
+    "worstPositionError": 5.072509780052955e-7,
+    "layers": {
+     "A": 43,
+     "B": 113,
+     "C": 12
+    },
+    "drawCalls": 324,
+    "triangles": 83332,
+    "quality": "balanced"
+   },
+   "frames": {
+    "n": 149,
+    "mean": 17,
+    "p50": 16.7,
+    "p95": 17.7,
+    "p99": 33.4,
+    "max": 33.4
+   },
+   "longTasks": 0
+  },
+  {
+   "name": "16-memory-store",
+   "record": "m7-systems-6000",
+   "recordSha256": "5a70291ada0f15a6",
+   "stepIndex": 480,
+   "note": "system C memory store; filled slots = recorded memory entries",
+   "url": "/?view=laboratory&hifi=1&rec=m7-systems-6000&step=480&cam=apparatus&quality=balanced&sel=store%3AC%3Astore&sys=C",
+   "commit": "5b01c9d+uncommitted",
+   "viewport": [
+    1920,
+    1080
+   ],
+   "devicePixelRatio": 2,
+   "browser": "Chrome/151.0.7922.34",
+   "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified Version)",
+   "state": {
+    "cam": "apparatus",
+    "sel": {
+     "kind": "store",
+     "id": "C:store"
+    },
+    "sys": "C",
+    "domain": "0",
+    "layers": {
+     "A": true,
+     "B": true,
+     "C": true
+    },
+    "quality": "balanced",
+    "step": 481,
+    "index": 480,
+    "camera": [
+     14.373,
+     2.845,
+     12.46
+    ],
+    "target": [
+     14.937,
+     0.913,
+     14.937
+    ],
+    "pixelRatio": 1.003850699611474,
+    "canvas": [
+     1525,
+     917
+    ]
+   },
+   "selfTest": {
+    "step": 481,
+    "positionsChecked": 40,
+    "worstPositionError": 5.072509780052955e-7,
+    "layers": {
+     "A": 43,
+     "B": 113,
+     "C": 12
+    },
+    "drawCalls": 53,
+    "triangles": 32828,
+    "quality": "balanced"
+   },
+   "frames": {
+    "n": 151,
+    "mean": 16.82,
+    "p50": 16.7,
+    "p95": 16.8,
+    "p99": 16.8,
+    "max": 39.2
+   },
+   "longTasks": 0
+  }
+ ],
+ "benchmark": [
+  {
+   "quality": "performance",
+   "gpuSyncedFrameMs": {
+    "n": 480,
+    "mean": 4.87,
+    "p50": 4.5,
+    "p95": 9.6,
+    "p99": 15.1,
+    "max": 17.7
+   },
+   "displayed": {
+    "n": 241,
+    "mean": 16.67,
+    "p50": 16.7,
+    "p95": 16.8,
+    "p99": 16.8,
+    "max": 16.8
+   },
+   "draws": 469,
+   "tris": 61792,
+   "canvas": [
+    1520,
+    914
+   ],
+   "ratio": 1
+  },
+  {
+   "quality": "balanced",
+   "gpuSyncedFrameMs": {
+    "n": 480,
+    "mean": 14.05,
+    "p50": 12.7,
+    "p95": 22.7,
+    "p99": 34.3,
+    "max": 49.2
+   },
+   "displayed": {
+    "n": 237,
+    "mean": 16.95,
+    "p50": 16.7,
+    "p95": 16.8,
+    "p99": 33.3,
+    "max": 37.9
+   },
+   "draws": 713,
+   "tris": 115776,
+   "canvas": [
+    1525,
+    917
+   ],
+   "ratio": 1.003850699611474
+  },
+  {
+   "quality": "high",
+   "gpuSyncedFrameMs": {
+    "n": 480,
+    "mean": 31.87,
+    "p50": 29.2,
+    "p95": 49.9,
+    "p99": 212.8,
+    "max": 263.8
+   },
+   "displayed": {
+    "n": 46,
+    "mean": 65.22,
+    "p50": 33.4,
+    "p95": 50.1,
+    "p99": 1250,
+    "max": 1250
+   },
+   "draws": 713,
+   "tris": 115776,
+   "canvas": [
+    3040,
+    1828
+   ],
+   "ratio": 2
+  }
+ ]
+}

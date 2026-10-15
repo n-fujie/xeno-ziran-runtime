@@ -1,5 +1,16 @@
 # M8.1 — Continuous visual verification, screenshot-driven improvement, real-time performance
 
+> **M8.2 corrections (2026-10-15).** Two findings change how parts of this report should be read; the report itself is
+> left as written.
+>
+> * The live result of 60 fps through step ≈860 was measured on a lightly loaded machine. A hidden standard-view
+>   renderer, present since M8, kept running under the hi-fi live view and grew in cost through the run. Under moderate
+>   load, the M8.1 build falls to 18 fps late in a run.
+> * `TRAVEL_TOP` = 1.55 m considered the tool but not a carried sample. Recorded carried samples passed through drawn
+>   instruments.
+>
+> Both are fixed in M8.2; see `docs/m8.2/VISUAL_EVALUATION.md`.
+
 Branch `lab-m8-visual-verification`, from `lab-m8-high-fidelity` at `77c9a38`. The M8 branch is preserved. No frozen
 M1–M9 scientific result, record or protocol was modified. The level statuses are unchanged:
 

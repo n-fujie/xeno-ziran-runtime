@@ -402,3 +402,30 @@ hid the growing cost of the hidden renderer. It does not hold under moderate loa
 - a domain view with every overlay on.
 
 The script also gained an optional `--cpu-profile` flag.
+
+### Change 8: high-DPI rendering (section XI)
+
+**Measurement before the change** (`08-final/1920x1080@2/`; load average about 7 from other applications):
+
+- At 1920×1080 with DPR 2, *balanced* drew a 2280×1371 buffer (ratio 1.5). The bench showed a displayed p95 of 50 ms
+  and a p99 of 783 ms, and the scenes ran at 40–47 fps.
+- *High* drew 3040×1828 (ratio 2), with a p99 above 1 s.
+- At 1200×866 with DPR 2, balanced (1200×1084 at ratio 1.5) held 60 fps, and high (1600×1446) did not (p99 567 ms).
+
+**Correction.** *Balanced* keeps its 1.5 ratio cap and also gets a drawing-buffer budget of 1.4 Mpx. That is about the
+size of the 1920×1080 DPR-1 canvas, which the final DPR-1 capture measured at 54–60 fps. The ratio never goes below 1,
+so DPR-1 displays and small canvases are unchanged; `quality.test.ts` checks this. *High* is unchanged: the full ratio
+up to 2.
+
+**After** (`09-dpr-budget/`). Balanced at 1920×1080 with DPR 2 now draws 1525×917. The load average reached 13–14
+because of Spotlight indexing and other applications; this was not controllable, and the numbers were repeated twice.
+
+| scene | before | after |
+|---|---|---|
+| overview | 39.7 fps | 50.9–55.6 fps |
+| transport | 42.1 fps | 57.2–58.8 fps |
+| memory store | 47.4 fps | 59.5–60 fps |
+
+**Limits kept and documented.**
+- High at DPR 2 does not sustain 60 fps on this Apple M1 at either size.
+- Under heavy background load, the full-hall overview at 1920×1080 runs at 51–56 fps.
