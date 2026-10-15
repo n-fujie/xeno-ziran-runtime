@@ -429,3 +429,167 @@ because of Spotlight indexing and other applications; this was not controllable,
 **Limits kept and documented.**
 - High at DPR 2 does not sustain 60 fps on this Apple M1 at either size.
 - Under heavy background load, the full-hall overview at 1920×1080 runs at 51–56 fps.
+
+## 5. Final evaluation (after M8.2)
+
+Images: `08-final/1200x866@1/`, `08-final/1920x1080@1/` and `08-final/1200x866@2/`. The 1920×1080 DPR-2 values are
+superseded by `09-dpr-budget/`. Every final image listed here was opened and inspected. The scores stay conservative
+and use the same scale as §2.
+
+| scene | A | B | C | D | E | F | G | H | I | J | before J |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 01 overview | 48 | 56 | 50 | 75 | 58 | 42 | 55 | 62 | 88 | 55 | 48 |
+| 02 oblique | 50 | 52 | 40 | 72 | 60 | 35 | 52 | 48 | 88 | 48 | 40 |
+| 03 domain | 58 | 52 | 58 | 78 | 60 | 45 | 56 | 60 | 88 | 57 | 50 |
+| 05 transport | 55 | 35 | 62 | 78 | 45 | 32 | 52 | 58 | 88 | 55 | 40 |
+| 06 / 18 grasp, gantry close-up | 55 | 35 | 60 | 78 | 45 | 38 | 52 | 55 | 88 | 53 | 38 |
+| 07 system A sensor | 55 | 40 | 52 | 78 | 42 | 58 | 52 | 52 | 88 | 52 | 50 |
+| 15 system B receiver | 55 | 45 | 55 | 75 | 40 | 65 | 50 | 55 | 88 | 55 | 42 |
+| 17 system B remote sensor | 45 | 40 | 50 | 75 | 45 | 55 | 52 | 55 | 88 | 50 | — |
+| 16 system C store | 50 | 40 | 65 | 75 | 45 | 65 | 50 | 52 | 88 | 55 | 40 |
+| 08 observation restricted | 48 | 45 | 55 | 75 | 55 | 40 | 55 | 58 | 88 | 53 | 50 |
+| 09 shared resource | 50 | 38 | 35 | 75 | 48 | 32 | 55 | 52 | 85 | 48 | 38 |
+| 10 extinction | 50 | 50 | 52 | 78 | 58 | 40 | 55 | 60 | 88 | 55 | 50 |
+| 11 re-ignition | 50 | 50 | 50 | 78 | 58 | 40 | 55 | 60 | 88 | 54 | 48 |
+| 19 delivery refusal | 50 | 40 | 55 | 78 | 50 | 35 | 55 | 60 | 88 | 52 | — |
+| 20 observation revision | 50 | 42 | 50 | 75 | 55 | 45 | 55 | 55 | 88 | 50 | — |
+| 14 live operation | 48 | 56 | 45 | 75 | 58 | 42 | 55 | 58 | 88 | 53 | 45 |
+
+### Evidence for the changes
+
+**D, structural coherence (+10 to +23).**
+- The largest gains are in transport and the gantry, and they rest on tests, not on appearance.
+- No drawn part stands where a recorded carried sample passes, at any recorded step.
+- The jaws close on the recorded sample.
+- Instruments stand outside every reach envelope, chamber vessel and floor column.
+
+**I, scientific fidelity (85–88).**
+- The jaws now agree with the recorded grasp, and the remote-sensor camera frames the right object.
+- It is not higher because two carriages that the model lets overlap are drawn as one, and some event consequences
+  (refusal versus acceptance, the basis of a selection) still need the panel.
+
+**A and E, mechanism and density (+5 to +20).** The gripper, vessel stiffeners and the structural core add visible
+mechanism with a stated role. The sensor close-up (07) lost some density because the instruments now stand on the
+bays' outer sides, against a dark hall.
+
+**F, distinctiveness (+5 to +15).** B's pickups point at its own remote sensors, and C's rack shows capacity against
+recorded entries. A, B and C remain differences of apparatus only; they share one decision rule.
+
+**B, originality (modest).** The installation remains function-led and austere. Nothing was added for silhouette.
+
+**C, legibility.**
+- Shared-resource interference (09) is still not visible in 3D: the score did not move.
+- The oblique view is less dominated by lines, but it is still busy.
+
+**J, overall (+2 to +17).** The laboratory reads more as a coherent unmanned installation. It is not yet "sophisticated"
+in the sense of the design brief: surfaces are untextured, and several views are sparse or dark.
+
+## 6. Changes accepted, rejected or revised
+
+**Accepted:** changes 1–8 above. Every one of them was revised at least once on the evidence of a screenshot or a test
+before acceptance:
+- the label that made the self-test count carriages twice;
+- the close-up camera inside the housing ring;
+- the occluded hub;
+- the floating gallery deck;
+- the low chamber camera;
+- the balanced pixel budget, first 1.8 Mpx and then 1.4 Mpx.
+
+**Rejected:**
+- *Lowering the louvre crown to clear the nominal travel height.* Recorded worn-gantry sag put loads 7.6 cm above the
+  walls, so any crown on the walls is crossed. The crown was redesigned into a band below the wall top.
+- *Separating co-located private carriages on screen.* That would draw positions that were not recorded.
+- *Added texture or emissive accents.* They were not justified by any defect.
+
+## 7. Remaining limitations
+
+- **Machine.** Measurements come from one machine (Apple M1, 8 GB, headless Chrome for Testing with GPU) under a
+  background load average of 4–15 (Spotlight, other applications). They vary from run to run; the variation is
+  reported with each measurement.
+- **High at DPR 2.** It misses 60 fps.
+- **1920×1080 at DPR 1.** The full-hall overview runs at 51–56 fps under heavy load.
+- **Memory in long live runs.** In the final live capture the JS heap rose from 339 MB to 458 MB over steps 122–960. In
+  the A/B run on a fresh page it rose from 40 MB to 77 MB. The live record retains every step by design. This
+  measurement does not separate record growth from any remaining leak.
+- **Carriage overlaps.** Two carriages that the physics model lets overlap (private carriages, relay hand-overs) are
+  drawn as one.
+- **Shared-resource interference.** It is not visible in the 3D view.
+- **Instrument close-ups.** These are composed against the dark outer hall.
+- **Surfaces.** They are untextured.
+- **Envelope sweep.** It covers the commandable placement envelope, not the slide joints' travel to their limits.
+- **Browser pane.** The visible in-app browser pane was not used; all rendering was headless with the GPU.
+
+## 8. Regression
+
+These checks were run on the final code:
+
+* **Backend.** pytest: 340 passed. ruff: clean. mypy: no issues in 105 files.
+* **Research.** `research/post_active_inference` tests: 59 passed.
+* **Frontend.** vitest: 76 passed, up from 68 in M8.1. ESLint, tsc and the production build all exit 0.
+* **Replays.** `xzr.lab.replay` gives full agreement, with 0 mismatched steps and identical events, for:
+  * `m2-run-9100` (240 steps);
+  * `m3-physical-9100` (240 steps);
+  * `m7-systems-6000` (960 steps);
+  * `m9-extinction-relocation-7000` (960 steps);
+  * `m9-separated-resources-7000` (960 steps).
+* **Frozen files.** `git diff 705288c HEAD` outside `frontend/` and `docs/` is empty. Since the M8 commit `77c9a38`,
+  no file has changed under `backend/experiments`, the research configs, `docs/publication` or
+  `docs/LAB_PROTOCOL_M9.md`.
+* **Research DOCX.** sha256 `f00dc9db01f51310…`, unchanged.
+* **Rendering cannot change outcomes.** The runtime runs headless in its own thread, and the replays above agree. Every
+  M8.2 change is in `frontend/`; the rest are capture scripts and documents.
+
+The level statuses are unchanged:
+
+- **Level 1:** achieved.
+- **Level 2:** partially demonstrated, not achieved under the frozen criteria (the transfer-latency verification
+  discrepancy).
+- **Level 3:** not achieved.
+
+The negative M9 results stand: physical-resource mediation, observation revision, variable generation, and historical
+reinsertion. No claim of strong Xenoscience is made.
+
+## 9. Reproduction
+
+Start the local service:
+
+```bash
+.venv/bin/uvicorn xzr.service.app:app --app-dir backend --host 127.0.0.1 --port 3011
+```
+
+Build the frontend:
+
+```bash
+npm --prefix frontend run build
+```
+
+Run the final captures:
+
+```bash
+node frontend/scripts/m8-capture.mjs --out docs/m8.2 --stage 08-final --res 1200x866 --bench --live-windows 400,800
+```
+
+```bash
+node frontend/scripts/m8-capture.mjs --out docs/m8.2 --stage 08-final --res 1920x1080 --bench --no-live
+```
+
+```bash
+node frontend/scripts/m8-capture.mjs --out docs/m8.2 --stage 08-final --res 1200x866 --dpr 2 --scenes 01,02,05,07,15,16 --bench --no-live
+```
+
+```bash
+node frontend/scripts/m8-capture.mjs --out docs/m8.2 --stage 09-dpr-budget --res 1920x1080 --dpr 2 --scenes 01,05,16 --bench --no-live
+```
+
+Record a sampled CPU profile of the live view:
+
+```bash
+node frontend/scripts/m8-capture.mjs --out docs/m8.2 --stage live-profile --scenes none --cpu-profile
+```
+
+**Before measuring:**
+
+- Make sure no orphaned Chrome for Testing processes remain from interrupted runs:
+  `pkill -f "Google Chrome for Testing"`.
+- Record the load average.
+- In zsh, a loop variable holding several flags must be split with `${=args}`.
