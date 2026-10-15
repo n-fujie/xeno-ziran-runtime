@@ -11,7 +11,10 @@ import { bayOf, ring, specs, type Category, type Layer, type Selection } from '.
 
 export type Quality = 'performance' | 'balanced' | 'high';
 /** Highest point a static instrument inside a gantry envelope may reach: the tool travels with its tip at 1.65 m. */
-export const TRAVEL_TOP = 1.55;
+// The tool travels at SAFE_Z (view 1.65 m) and a carried sample hangs 0.255 m below the tip (recorded weld offset), so
+// its bottom nominally passes at 1.245 m; a worn gantry sags, and the lowest recorded load bottom is 1.026 m, 7.6 cm
+// above the chamber walls (0.95 m). Static parts inside a reach envelope therefore never rise above the walls.
+export const TRAVEL_TOP = 0.98;
 const SERVICE_X = 6.3;  // radial position of the domain service housings (outside every gantry envelope; tested)
 
 // ------------------------------------------------------------------------------------------------------ materials
@@ -120,8 +123,12 @@ function spotMarkers(r: LabRecord, p: Palette): THREE.Object3D {
 export type ChamberParts = { group: THREE.Group; louvres: THREE.InstancedMesh; activity: THREE.Mesh; memory: THREE.Mesh;
   ring: THREE.Mesh; base: V3 };
 const LOUVRES_PER_SIDE = 7;
-const RIM_Y0 = FLOOR_Y + PHYS.WALL_H + 0.04;  // the instrument rim sits on the walls, below the tool's travel height
-const RIM_H = 0.22;
+// containment shutter band on the outer face of the upper wall, below the wall top (loads pass just above the walls)
+export const RIM_Y0 = 0.7;
+const RIM_H = 0.2;
+const RIM_OUT = PHYS.CH + PHYS.WALL_T + 0.09;  // blade axis: open blades (edge-on) clear the wall face
+const COL_H = 0.65, MEM_H = 0.6;  // chamber instrument column and full-scale memory bar
+export const RIM_TOP = RIM_Y0 + RIM_H + 0.0375;  // top of the shutter frame
 
 /** Experimental chamber: executable floor and walls exactly as in MuJoCo (layer A), containment louvres and
  *  instruments driven by recorded runtime state (layer B), housing details (layer C). */
@@ -144,7 +151,7 @@ export function chamberAssembly(cid: string, position: V3, p: Palette, q: Qualit
   for (let side = 0; side < 4; side++) {
     for (let k = 0; k < LOUVRES_PER_SIDE; k++) {
       const u = -PHYS.CH + (k + 0.5) * (W / LOUVRES_PER_SIDE);
-      const [bx, bz] = side === 0 ? [u, PHYS.CH] : side === 1 ? [u, -PHYS.CH] : side === 2 ? [PHYS.CH, u] : [-PHYS.CH, u];
+      const [bx, bz] = side === 0 ? [u, RIM_OUT] : side === 1 ? [u, -RIM_OUT] : side === 2 ? [RIM_OUT, u] : [-RIM_OUT, u];
       mats.push(M(bx, RIM_Y0 + RIM_H / 2, bz, side < 2 ? 0 : Math.PI / 2));
     }
   }
@@ -154,11 +161,13 @@ export function chamberAssembly(cid: string, position: V3, p: Palette, q: Qualit
   g.add(louvres);
   // rim frame carrying the louvres (structure of the instrument; no claim of its own)
   const rim = new THREE.Group();
-  for (const [dx, dz, sx, sz] of [[0, PHYS.CH, W + 0.12, 0.06], [0, -PHYS.CH, W + 0.12, 0.06], [PHYS.CH, 0, 0.06, W + 0.12], [-PHYS.CH, 0, 0.06, W + 0.12]]) {
+  const L = W + 0.2, D = RIM_OUT - PHYS.CH - PHYS.WALL_T + 0.05;  // frame from the wall face out past the blades
+  for (const [dx, dz, sx, sz] of [[0, PHYS.CH + PHYS.WALL_T + D / 2, L, D], [0, -PHYS.CH - PHYS.WALL_T - D / 2, L, D], [PHYS.CH + PHYS.WALL_T + D / 2, 0, D, L], [-PHYS.CH - PHYS.WALL_T - D / 2, 0, D, L]]) {
     rim.add(box(sx, 0.035, sz, p.darkSteel, dx, RIM_Y0 + RIM_H + 0.02, dz), box(sx, 0.035, sz, p.darkSteel, dx, RIM_Y0 - 0.005, dz));
   }
-  if (q !== 'performance') {  // louvre actuator housings at the middle of each rim side (housing only)
-    for (const [dx, dz, sx, sz] of [[0, PHYS.CH + 0.07, 0.3, 0.08], [0, -PHYS.CH - 0.07, 0.3, 0.08], [PHYS.CH + 0.07, 0, 0.08, 0.3], [-PHYS.CH - 0.07, 0, 0.08, 0.3]]) {
+  if (q !== 'performance') {  // louvre actuator housings at the middle of each side (housing only)
+    const o = RIM_OUT + 0.08;
+    for (const [dx, dz, sx, sz] of [[0, o, 0.3, 0.08], [0, -o, 0.3, 0.08], [o, 0, 0.08, 0.3], [-o, 0, 0.08, 0.3]]) {
       rim.add(box(sx, RIM_H + 0.04, sz, p.graphite, dx, RIM_Y0 + RIM_H / 2, dz));
     }
   }
@@ -166,9 +175,9 @@ export function chamberAssembly(cid: string, position: V3, p: Palette, q: Qualit
   g.add(mergeStatic(rim));
   // layer B — corner instrument column: glow = activity (share ignited), fill height = retained memory
   const col = new THREE.Group();
-  // every static instrument inside a gantry envelope stays below TRAVEL_TOP (the tool travels at 1.65 m)
-  col.add(box(0.16, 1.15, 0.16, p.graphite, PHYS.CH + 0.18, FLOOR_Y + 0.575, PHYS.CH + 0.18));
-  const activity = box(0.06, 0.9, 0.17, p.glow.clone(), PHYS.CH + 0.18, FLOOR_Y + 0.575, PHYS.CH + 0.18 - 0.005);
+  // every static instrument inside a gantry envelope stays below TRAVEL_TOP (loads pass just above the walls)
+  col.add(box(0.16, COL_H, 0.16, p.graphite, PHYS.CH + 0.18, FLOOR_Y + COL_H / 2, PHYS.CH + 0.18));
+  const activity = box(0.06, COL_H - 0.18, 0.17, p.glow.clone(), PHYS.CH + 0.18, FLOOR_Y + COL_H / 2, PHYS.CH + 0.18 - 0.005);
   activity.position.x += 0.06;
   const memory = box(0.07, 1, 0.07, p.steel, PHYS.CH + 0.18, FLOOR_Y + 0.15, PHYS.CH + 0.31);
   col.add(activity, memory);
@@ -179,7 +188,7 @@ export function chamberAssembly(cid: string, position: V3, p: Palette, q: Qualit
   housing.add(box(W + 0.3, 0.16, W + 0.3, p.plinth, 0, FLOOR_Y - 0.18, 0));
   for (const [cx, cz] of [[1, 1], [1, -1], [-1, 1], [-1, -1]]) {
     if (cx === 1 && cz === 1) continue;  // that corner carries the instrument column
-    housing.add(box(0.1, PHYS.WALL_H + RIM_H + 0.1, 0.1, p.darkSteel, cx * (PHYS.CH + 0.08), FLOOR_Y + (PHYS.WALL_H + RIM_H) / 2, cz * (PHYS.CH + 0.08)));
+    housing.add(box(0.1, RIM_TOP - FLOOR_Y + 0.18, 0.1, p.darkSteel, cx * (PHYS.CH + 0.08), (RIM_TOP + FLOOR_Y - 0.18) / 2, cz * (PHYS.CH + 0.08)));
   }
   if (q !== 'performance') {
     const bolts: THREE.Matrix4[] = [];
@@ -223,7 +232,7 @@ export function applyChamber(c: ChamberParts, closure: number, activity: number,
   });
   c.louvres.instanceMatrix.needsUpdate = true;
   (c.activity.material as THREE.MeshStandardMaterial).emissiveIntensity = 0.15 + 2.4 * Math.min(1, Math.max(0, activity));
-  const h = Math.max(0.02, Math.min(1.0, memory * 1.0));
+  const h = Math.max(0.02, Math.min(1.0, memory) * MEM_H);
   c.memory.scale.y = h;
   c.memory.position.y = FLOOR_Y + h / 2;
 }
@@ -268,6 +277,28 @@ export function hullDistance(h: [number, number][], x: number, z: number): numbe
     best = Math.min(best, Math.hypot(x - (a[0] + t * dx), z - (a[1] + t * dz)));
   });
   return inside ? 0 : best;
+}
+
+export type Mount = { x: number; z: number; face: number };
+/** Where a system instrument serving a chamber stands (found in M8.2: instruments inside the reach envelopes were crossed
+ *  by recorded carried samples). On the chamber's bay's outer side, aligned with the chamber (plus a tangential offset),
+ *  at the first radial distance where a footprint of radius `rad` clears every reach hull by a carried load (0.15 m) and
+ *  5 cm. `face` turns local −x towards the chamber. Records without a bay layout get null (the M3 corner placement). */
+export function instrumentMount(r: LabRecord, hulls: [number, number][][], cid: string, tangential: number, rad: number): Mount | null {
+  const c = r.chambers.find((x) => x.cid === cid);
+  const b = r.layout?.bays[bayOf(cid)];
+  if (!c || !b) return null;
+  const [cx, , cz] = chamberFloor(c.position as V3);
+  const n = Math.hypot(b[0], b[1]) || 1;
+  const u = [b[0] / n, b[1] / n], t = [-u[1], u[0]];
+  const vessels = r.chambers.map((v) => chamberFloor(v.position as V3));
+  const vh = PHYS.CH + 0.4;  // vessel with its shutter band and actuator housings
+  const clearOfVessels = (x: number, z: number) => vessels.every(([vx, , vz]) => Math.hypot(Math.max(Math.abs(x - vx) - vh, 0), Math.max(Math.abs(z - vz) - vh, 0)) >= rad + 0.05);
+  for (let s = 0; s < 14; s += 0.05) {
+    const x = cx + t[0] * tangential + u[0] * s, z = cz + t[1] * tangential + u[1] * s;
+    if (hulls.every((h) => hullDistance(h, x, z) >= rad + 0.2) && clearOfVessels(x, z)) return { x, z, face: Math.atan2(cz - z, -(cx - x)) };
+  }
+  return null;
 }
 
 /** Cartesian gantry: the carriage and tool are drawn at the recorded tool tip (layer A, executable); rails, bridge and
@@ -325,11 +356,27 @@ export function gantryAssembly(key: string, env: { x0: number; x1: number; y0: n
   tag(mast, 'A', 3, 'z slide (mast)', { kind: 'gantry', id: key });
   const carriage = new THREE.Group();  // MuJoCo carriage box (0.12 × 0.12 × 0.08 half) and tool (0.05 × 0.05 × 0.1 half)
   // its own material: a failed gantry is drawn dark without touching any other steel part
-  carriage.add(box(0.24, 0.16, 0.24, p.steel.clone(), 0, PHYS.TIP_OFFSET, 0), box(0.1, 0.2, 0.1, p.darkSteel, 0, 0.1, 0));
-  if (q !== 'performance') {  // gripper fingers (the weld grasp is modelled; the fingers are visual)
-    for (const s of [-1, 1]) carriage.add(box(0.025, 0.12, 0.09, p.steel, s * 0.07, -0.02, 0));
+  carriage.add(box(0.24, 0.16, 0.24, p.steel.clone(), 0, PHYS.TIP_OFFSET, 0));
+  // tool (MuJoCo box, exact) with its wrist flange and jaw guide merged: drawn, not modelled
+  const tool = new THREE.Group();
+  tool.add(box(0.1, 0.2, 0.1, p.darkSteel, 0, 0.1, 0), box(2 * JAW_OPEN + 0.08, 0.04, 0.1, p.darkSteel, 0, 0.0, 0));
+  if (q !== 'performance') tool.add(box(0.14, 0.05, 0.14, p.graphite, 0, 0.21, 0), box(2 * JAW_OPEN + 0.04, 0.018, 0.03, p.louvre, 0, 0.029, 0));
+  carriage.add(mergeStatic(tool));
+  // parallel jaws reaching down both sides of the sample. The grasp is a weld (MuJoCo); the jaws only represent it:
+  // closed exactly while a grasp is recorded (`carrying`), open otherwise
+  const jawGeo = mergeGeometries([new THREE.BoxGeometry(JAW_T, JAW_H, 0.12).translate(0, -JAW_H / 2 + 0.02, 0),
+    new THREE.BoxGeometry(0.05, 0.05, 0.12)])!;
+  const jaws: THREE.Mesh[] = [];
+  for (const s of [-1, 1]) {
+    const jaw = new THREE.Mesh(jawGeo, p.steel);
+    jaw.position.set(s * JAW_OPEN, 0, 0);
+    jaw.userData.side = s;
+    jaws.push(jaw);
+    carriage.add(jaw);
   }
   tag(carriage, 'A', 1, 'carriage and tool (recorded tool tip)', { kind: 'gantry', id: key });
+  for (const j of jaws) tag(j, 'A', 3, 'gripper jaws (closed while a grasp is recorded; the grasp itself is a weld)', { kind: 'gantry', id: key });
+  tag(tool, 'A', 1, 'tool (MuJoCo box) with drawn wrist flange and jaw guide', { kind: 'gantry', id: key });
   const carrier = box(0.1, 0.07, 1, p.composite, 0.2, railY + 0.27, 0);  // cable carrier along the bridge to the trolley
   tag(carrier, 'C', 4, 'cable carrier (drawn, not modelled)');
   carrier.visible = q !== 'performance';
@@ -337,7 +384,12 @@ export function gantryAssembly(key: string, env: { x0: number; x1: number; y0: n
   return { key, group: g, bridge, trolley, mast, carrier, carriage, lamp, env, railY };
 }
 
-export function applyGantry(gp: GantryParts, tipView: V3, health: number, failed: boolean): void {
+/** Gripper jaws (drawn): closed, the inner faces meet the sample's sides (half 0.15 m); open, they clear it by 8 cm. */
+export const JAW_T = 0.03, JAW_H = 0.34;
+export const JAW_CLOSED = PHYS.HALF + JAW_T / 2 + 0.004, JAW_OPEN = JAW_CLOSED + 0.08;
+
+export function applyGantry(gp: GantryParts, tipView: V3, health: number, failed: boolean, carrying = false): void {
+  for (const c of gp.carriage.children) if (c.userData.side) c.position.x = c.userData.side * (carrying ? JAW_CLOSED : JAW_OPEN);
   const [x, y, z] = tipView;
   gp.bridge.position.x = x;
   gp.trolley.position.set(x, 0, z);
@@ -481,13 +533,17 @@ function outline(cx: number, cz: number, r: number, k: number, opacity: number):
 }
 
 export function applySystem(sp: SystemParts, st: SystemState, k: number, chamberPos: Map<string, V3>, storeReadable: boolean,
-  showCoverage: boolean, kind: string): void {
+  showCoverage: boolean, kind: string, mount: (cid: string, what: 'head' | 'hub') => Mount | null = () => null): void {
   const s = chamberPos.get(st.sensor);
   if (s) {
     const [x, , z] = chamberFloor(s);
-    if (kind === 'distributed') sp.head.position.set(x - PHYS.CH - 0.3, FLOOR_Y, z + PHYS.CH + 0.3);
+    const m = mount(st.sensor, kind === 'distributed' ? 'hub' : 'head');
+    if (m) {  // outside every reach envelope, facing the recorded sensor chamber (the boom is built at −45°)
+      sp.head.position.set(m.x, kind === 'distributed' ? FLOOR_Y : FLOOR_Y - 0.1, m.z);
+      sp.head.rotation.y = kind === 'distributed' ? 0 : m.face + Math.PI / 4;
+    } else if (kind === 'distributed') sp.head.position.set(x - PHYS.CH - 0.3, FLOOR_Y, z + PHYS.CH + 0.3);
     else sp.head.position.set(x + PHYS.CH + 0.12, FLOOR_Y - 0.1, z - PHYS.CH - 0.12);
-    if (sp.rangeRing) sp.rangeRing.position.set(x, FLOOR_Y - 0.07, z);
+    if (sp.rangeRing) sp.rangeRing.position.set(x, FLOOR_Y - 0.07, z);  // the configured radius is about the chamber
   }
   // observed-chamber outlines: one cached outline per chamber, shown when the chamber is in the recorded coverage
   const cache = (sp.coverage.userData.byChamber ??= new Map<string, THREE.LineLoop>()) as Map<string, THREE.LineLoop>;
@@ -828,8 +884,18 @@ export function buildLab(r: LabRecord, q: Quality): Lab {
   };
   const sps = specs(r);
   const systems = new Map<string, SystemParts>();
+  const allHulls = r.layout ? Object.keys(r.layout.bays).map((b) => reachHull(r, b)) : [];
+  const MOUNT = { head: [-0.55, 0.8], hub: [0.5, 0.32], pod: [0.5, 0.22], store: [0, 1.75] } as const;  // tangential, footprint
+  const mountCache = new Map<string, Mount | null>();
+  const mount = (cid: string, what: keyof typeof MOUNT): Mount | null => {
+    const k = `${cid}|${what}`;
+    if (!mountCache.has(k)) mountCache.set(k, instrumentMount(r, allHulls, cid, MOUNT[what][0], MOUNT[what][1]));
+    return mountCache.get(k)!;
+  };
   sps.forEach((s, k) => {
     const sp = systemAssembly(s.sid, s.kind, k, p, s.store ?? null, s.store ? chamberPos.get(s.store) ?? null : null);
+    const sm = s.store ? mount(s.store, 'store') : null;
+    if (sp.store && sm) { sp.store.position.set(sm.x, 0, sm.z); sp.store.rotation.y = sm.face; }
     systems.set(s.sid, sp);
     root.add(sp.group);
     pickables.push(sp.head);
@@ -846,7 +912,9 @@ export function buildLab(r: LabRecord, q: Quality): Lab {
         dome.position.set(0, FLOOR_Y + 1.0, 0);
         pod.add(box(0.07, 0.95, 0.07, p.darkSteel, 0, FLOOR_Y + 0.475, 0), cyl(0.13, 0.05, p.graphite, 0, FLOOR_Y + 0.97, 0, 16), dome,
           box(0.16, 0.06, 0.16, p.graphite, 0, FLOOR_Y + 0.03, 0));
-        pod.position.set(x + 0.5, 0, z + PHYS.CH + 0.4);  // middle of the +z side: clear of corner apparatus and the neighbour's manifold
+        const pm = mount(c, 'pod');
+        if (pm) pod.position.set(pm.x, 0, pm.z);  // outside every reach envelope, on the bay's outer side of its chamber
+        else pod.position.set(x + 0.5, 0, z + PHYS.CH + 0.4);
         tag(pod, 'B', 2, `system ${s.sid} remote sensor at ${c}`, { kind: 'sensor', id: `${s.sid}:sensor:${c}` });
         root.add(pod);
         pickables.push(pod);
@@ -875,7 +943,7 @@ export function buildLab(r: LabRecord, q: Quality): Lab {
       for (const [key, g] of Object.entries(ph.gantries)) {
         const gp = ensureGantry(key, g.bay ?? key, g.group ?? null);
         const tip = phn?.gantries[key] ? lerp3(g.tip as V3, phn.gantries[key].tip as V3, frac) : (g.tip as V3);
-        applyGantry(gp, physToView(tip), g.health, g.failed);
+        applyGantry(gp, physToView(tip), g.health, g.failed, !!g.carrying);
       }
       const carried = new Set(Object.values(ph.gantries).map((g) => g.carrying).filter(Boolean));
       if (samplesIM) {
@@ -898,7 +966,7 @@ export function buildLab(r: LabRecord, q: Quality): Lab {
         const sp = systems.get(spec.sid);
         if (!st || !sp) return;
         const storeOpen = spec.store ? (s.shutter[cidIdx.get(spec.store) ?? -1] ?? 1) >= 0.5 : true;
-        applySystem(sp, st, k, chamberPos, storeOpen, opts.coverage, spec.kind);
+        applySystem(sp, st, k, chamberPos, storeOpen, opts.coverage, spec.kind, mount);
       });
     }
     conduitGroup.visible = opts.conduits;
@@ -913,7 +981,9 @@ export function buildLab(r: LabRecord, q: Quality): Lab {
     const [sid] = sel.id.split(':');
     const sp = systems.get(sid);
     if (!sp) return null;  // the visual centre of the sensor head / store, not its floor-level origin
-    const o = sel.kind === 'store' && sp.store ? sp.store : sp.head;
+    const pod = sel.kind === 'sensor' && sel.id.includes(':sensor:')  // a remote sensor pod, not the system's hub
+      ? pickables.find((x) => x.userData.sel?.kind === 'sensor' && x.userData.sel.id === sel.id) : undefined;
+    const o = pod ?? (sel.kind === 'store' && sp.store ? sp.store : sp.head);
     o.updateMatrixWorld(true);
     return new THREE.Box3().setFromObject(o).getCenter(new THREE.Vector3());
   };

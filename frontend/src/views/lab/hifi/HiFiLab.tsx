@@ -400,9 +400,15 @@ export default function HiFiLab({ rec, index, tick, playing, rate, live, control
  *  centre and keeps the first that is not inside any chamber housing (so the view is never blocked by a wall). */
 export function closeView(rec: LabRecord, target: THREE.Vector3, dist: number, height: number, prefer?: number): THREE.Vector3 {
   const out = new THREE.Vector3(target.x, 0, target.z);
-  const base = prefer ?? (out.lengthSq() > 1e-6 ? Math.atan2(out.z, out.x) : 0);
-  const inside = (p: THREE.Vector3) => rec.chambers.some((c) => Math.abs(p.x - c.position[0]) < 1.75 && Math.abs(p.z - c.position[2]) < 1.75)
-    && p.y < 1.4;
+  const r = out.length();
+  // instruments stand outside the gantry envelopes (M8.2), on the bays' outer sides: look at them from the hall side
+  const radial = r > 1e-3 ? Math.atan2(out.z, out.x) : 0;
+  const base = prefer ?? (r > 16.5 ? radial + Math.PI : radial);
+  const inside = (p: THREE.Vector3) => {
+    const pr = Math.hypot(p.x, p.z);
+    if (pr > 22 || (Math.abs(pr - 20.3) < 0.7 && p.y < 2.6)) return true;  // beyond the walkway / in the service housing ring
+    return rec.chambers.some((c) => Math.abs(p.x - c.position[0]) < 1.75 && Math.abs(p.z - c.position[2]) < 1.75) && p.y < 1.4;
+  };
   for (const da of [0.55, -0.55, 0, 1.1, -1.1, 1.7, -1.7, Math.PI]) {
     for (const k of [1, 1.35, 1.7]) {
       const a = base + da;
@@ -428,7 +434,7 @@ function cameraGoal(lab: Lab, rec: LabRecord, i: number, mode: CamMode, sel: Sel
   if (mode === 'apparatus') {
     const p = sel ? lab.focus(sel) : null;
     // a memory store is viewed along its slot face (world −x), from above the neighbouring walls; others radially
-    if (p) e.goal = { pos: sel?.kind === 'store' ? closeView(rec, p, 2.6, 1.9, Math.PI) : closeView(rec, p, 3.2, 1.1), target: p };
+    if (p) e.goal = { pos: sel?.kind === 'store' ? closeView(rec, p, 2.6, 1.9) : closeView(rec, p, 3.2, 1.1), target: p };
     return;
   }
   const s = rec.steps[i];

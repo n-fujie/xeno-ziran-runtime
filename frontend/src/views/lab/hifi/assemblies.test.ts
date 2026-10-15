@@ -3,9 +3,9 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as THREE from 'three';
 import { describe, expect, it } from 'vitest';
-import { validate } from '../labScene';
-import { buildLab, type Quality } from './assemblies';
-import { PHYS, physToView, type V3 } from './coords';
+import { validate, type LabRecord } from '../labScene';
+import { JAW_CLOSED, JAW_H, JAW_OPEN, JAW_T, RIM_TOP, RIM_Y0, buildLab, type Quality } from './assemblies';
+import { FLOOR_Y, PHYS, chamberFloor, physToView, type V3 } from './coords';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..', '..');
 const load = (n: string) => validate(JSON.parse(readFileSync(join(root, `backend/experiments/results/lab/${n}.json`), 'utf8')));
@@ -200,7 +200,7 @@ describe('full reachable envelope of every gantry', () => {
         lab.apply(i, 0, { coverage: false, conduits: false, events: new Set() });
         const fixed = statics(lab);
         lab.root.traverse((o) => {
-          if (o.userData.sel?.kind !== 'gantry' || !['carriage and tool (recorded tool tip)', 'z slide (mast)'].includes(o.userData.kind)) return;
+          if (o.userData.sel?.kind !== 'gantry' || !(String(o.userData.kind).startsWith('carriage and tool') || o.userData.kind === 'z slide (mast)')) return;
           if (o.parent?.userData.kind === o.userData.kind) return;
           const b = new THREE.Box3().setFromObject(o);
           for (const f of fixed) expect(b.intersectsBox(f.box), `${name} t${rec.steps[i].t} ${o.userData.sel.id} ${o.userData.kind} vs ${f.what}`).toBe(false);
@@ -227,7 +227,12 @@ describe('synthetic sweep of every gantry over its whole reachable envelope at t
       if (k === 'chamber instrument (activity, memory)' && top) fixed.push({ what: `instrument ${s?.id}`, box: new THREE.Box3().setFromObject(o) });
       if (k === 'domain service housing' && top) fixed.push({ what: 'service housing', box: new THREE.Box3().setFromObject(o) });
     });
-    for (const f of fixed.filter((x) => x.what !== 'service housing')) expect(f.box.max.y, f.what).toBeLessThanOrEqual(TRAVEL_TOP + 1e-6);
+    for (const f of fixed.filter((x) => x.what.startsWith('instrument'))) expect(f.box.max.y, f.what).toBeLessThanOrEqual(TRAVEL_TOP + 1e-6);
+    const rimBoxes = rec.chambers.map((c) => {
+      const [cx, , cz] = chamberFloor(c.position as V3);
+      return { what: `rim ${c.cid}`, box: new THREE.Box3(new THREE.Vector3(cx - PHYS.CH - 0.12, RIM_Y0 - 0.03, cz - PHYS.CH - 0.12), new THREE.Vector3(cx + PHYS.CH + 0.12, RIM_TOP, cz + PHYS.CH + 0.12)) };
+    });
+    expect(RIM_TOP).toBeLessThan(TRAVEL_TOP);
     const bays = Object.keys(rec.layout!.bays);
     const envs = new Map(bays.map((b) => [b, bayEnvelope(rec, b)]));
     let checked = 0;
@@ -252,12 +257,128 @@ describe('synthetic sweep of every gantry over its whole reachable envelope at t
         if (hullDistance(h, x, z) > 0) continue;
         const carriage = new THREE.Box3(new THREE.Vector3(x - 0.12, 1.65, z - 0.12), new THREE.Vector3(x + 0.12, 2.03, z + 0.12));
         const mast = new THREE.Box3(new THREE.Vector3(x - 0.05, 2.03, z - 0.05), new THREE.Vector3(x + 0.05, 3.35, z + 0.05));
-        for (const f of [...fixed, ...cols]) {
-          expect(carriage.intersectsBox(f.box) || mast.intersectsBox(f.box), `bay ${bay} at (${x.toFixed(2)}, ${z.toFixed(2)}) vs ${f.what}`).toBe(false);
+        // a carried sample (centre 0.255 m below the tip) and the jaws, open or closed
+        // a carried sample anywhere from just above the walls (worn-gantry sag) to its nominal height
+        const load = new THREE.Box3(new THREE.Vector3(x - 0.15, TRAVEL_TOP + 1e-3, z - 0.15), new THREE.Vector3(x + 0.15, 1.65 - 0.255 + 0.15, z + 0.15));
+        const jaws = new THREE.Box3(new THREE.Vector3(x - JAW_OPEN - JAW_T / 2, 1.65 - JAW_H + 0.02, z - 0.06), new THREE.Vector3(x + JAW_OPEN + JAW_T / 2, 1.65 + 0.025, z + 0.06));
+        for (const f of [...fixed, ...cols, ...rimBoxes]) {
+          for (const [what, b] of [['carriage', carriage], ['mast', mast], ['carried sample', load], ['jaws', jaws]] as const) {
+            expect(b.intersectsBox(f.box), `bay ${bay} ${what} at (${x.toFixed(2)}, ${z.toFixed(2)}) vs ${f.what}`).toBe(false);
+          }
         }
         checked++;
       }
     }
     expect(checked).toBeGreaterThan(3000);
+  }, 60_000);
+});
+
+describe('a carried sample and the gripper jaws clear every static part (found in M8.2: the travel plane ignored the load)', () => {
+  // The rim (louvre band and frame) of every chamber, as boxes along its four walls.
+  const rims = (rec: LabRecord) => {
+    const out: { what: string; box: THREE.Box3 }[] = [];
+    for (const c of rec.chambers) {
+      const [x, , z] = chamberFloor(c.position as V3);
+      const e = PHYS.CH + 0.12;
+      for (const [x0, x1, z0, z1] of [[-e, e, PHYS.CH - 0.06, e], [-e, e, -e, -PHYS.CH + 0.06], [PHYS.CH - 0.06, e, -e, e], [-e, -PHYS.CH + 0.06, -e, e]]) {
+        out.push({ what: `rim ${c.cid}`, box: new THREE.Box3(new THREE.Vector3(x + x0, RIM_Y0 - 0.03, z + z0), new THREE.Vector3(x + x1, RIM_TOP, z + z1)) });
+      }
+    }
+    return out;
+  };
+  it('at every recorded step, a carried sample and closed jaws meet no rim, instrument, sensor or store', () => {
+    for (const name of ['m7-systems-6000', 'm9-separated-resources-7000', 'm9-extinction-relocation-7000']) {
+      const rec = load(name);
+      const lab = buildLab(rec, 'high');
+      lab.apply(0, 0, { coverage: false, conduits: false, events: new Set() });
+      lab.root.updateMatrixWorld(true);
+      const fixed = [...rims(rec)];
+      lab.root.traverse((o) => {
+        const s = o.userData.sel as { kind: string; id: string } | undefined;
+        if (s && (s.kind === 'sensor' || s.kind === 'store') && o.parent?.userData.sel?.id !== s.id) fixed.push({ what: s.id, box: new THREE.Box3().setFromObject(o) });
+        if (o.userData.kind === 'chamber instrument (activity, memory)' && o.parent?.userData.kind !== o.userData.kind) fixed.push({ what: `instrument ${s?.id}`, box: new THREE.Box3().setFromObject(o) });
+      });
+      let carried = 0;
+      for (const st of rec.steps) {
+        for (const g of Object.values(st.physics!.gantries)) {
+          if (!g.carrying) continue;
+          const [sx, sy, sz] = physToView(st.physics!.samples[g.carrying] as V3);
+          const [tx, ty, tz] = physToView(g.tip as V3);
+          const sample = new THREE.Box3(new THREE.Vector3(sx - PHYS.HALF, sy - PHYS.HALF, sz - PHYS.HALF), new THREE.Vector3(sx + PHYS.HALF, sy + PHYS.HALF, sz + PHYS.HALF));
+          const jaws = new THREE.Box3(new THREE.Vector3(tx - JAW_CLOSED - JAW_T / 2, ty - JAW_H + 0.02, tz - 0.06), new THREE.Vector3(tx + JAW_CLOSED + JAW_T / 2, ty + 0.025, tz + 0.06));
+          // the sample is still inside its own chamber while it is lifted: only travel above the walls is checked
+          if (sy - PHYS.HALF < FLOOR_Y + PHYS.WALL_H + 0.05) continue;
+          carried++;
+          for (const f of fixed) {
+            expect(sample.intersectsBox(f.box), `${name} t${st.t} sample ${g.carrying} vs ${f.what}`).toBe(false);
+            expect(jaws.intersectsBox(f.box), `${name} t${st.t} jaws vs ${f.what}`).toBe(false);
+          }
+        }
+      }
+      expect(carried, name).toBeGreaterThan(20);
+    }
+  });
+  it('closed jaws meet the recorded sample faces at every carrying step; open jaws clear every resting sample', () => {
+    for (const name of ['m7-systems-6000', 'm9-separated-resources-7000']) {
+      const rec = load(name);
+      for (const st of rec.steps) {
+        for (const g of Object.values(st.physics!.gantries)) {
+          const [tx, ty, tz] = physToView(g.tip as V3);
+          if (g.carrying) {
+            const [sx, , sz] = physToView(st.physics!.samples[g.carrying] as V3);
+            expect(Math.abs(tx - sx) + Math.abs(tz - sz), `${name} t${st.t}`).toBeLessThan(0.02);  // carried centred under the tool
+            expect(JAW_CLOSED - JAW_T / 2 - PHYS.HALF).toBeGreaterThan(0);
+            expect(JAW_CLOSED - JAW_T / 2 - PHYS.HALF).toBeLessThan(0.01);
+            continue;
+          }
+          const jaws = [-1, 1].map((sd) => new THREE.Box3(new THREE.Vector3(tx + sd * JAW_OPEN - JAW_T / 2, ty - JAW_H + 0.02, tz - 0.06), new THREE.Vector3(tx + sd * JAW_OPEN + JAW_T / 2, ty + 0.025, tz + 0.06)));
+          const held = new Set(Object.values(st.physics!.gantries).map((x) => x.carrying).filter(Boolean));
+          for (const [sid, pos] of Object.entries(st.physics!.samples)) {
+            if (held.has(sid)) continue;  // carriages never collide in the model: a relay hand-over co-locates two carriages
+            const [sx, sy, sz] = physToView(pos as V3);
+            const b = new THREE.Box3(new THREE.Vector3(sx - PHYS.HALF, sy - PHYS.HALF, sz - PHYS.HALF), new THREE.Vector3(sx + PHYS.HALF, sy + PHYS.HALF, sz + PHYS.HALF));
+            for (const j of jaws) expect(j.intersectsBox(b), `${name} t${st.t} open jaw vs ${sid}`).toBe(false);
+          }
+        }
+      }
+    }
+  }, 60_000);
+});
+
+describe('relocated system apparatus stand clear of the static installation (M8.2: moved outside the reach envelopes)', () => {
+  it('no sensor head, hub, remote sensor or store meets a chamber vessel, a gantry column or a service housing', async () => {
+    const { bayEnvelope, reachHull, hullDistance } = await import('./assemblies');
+    for (const name of ['m7-systems-6000', 'm9-separated-resources-7000', 'm9-extinction-relocation-7000']) {
+      const rec = load(name);
+      const lab = buildLab(rec, 'high');
+      const bays = Object.keys(rec.layout!.bays);
+      const fixed: { what: string; box: THREE.Box3 }[] = rec.chambers.map((c) => {
+        const [x, , z] = chamberFloor(c.position as V3);
+        const e = PHYS.CH + 0.36;  // vessel, shutter band, actuator housings and corner instrument
+        return { what: `chamber ${c.cid}`, box: new THREE.Box3(new THREE.Vector3(x - e, 0, z - e), new THREE.Vector3(x + e, 1.2, z + e)) };
+      });
+      for (const b of bays) {
+        const e = bayEnvelope(rec, b);
+        const others = bays.filter((b2) => b2 !== b).map((b2) => reachHull(rec, b2));
+        for (const [cx, cz] of [[e.x0, e.y0], [e.x0, e.y1], [e.x1, e.y0], [e.x1, e.y1]]) {
+          if (others.some((h2) => hullDistance(h2, cx, cz) < 1.1)) continue;  // hung from the ceiling: nothing at floor level
+          fixed.push({ what: `bay ${b} column`, box: new THREE.Box3(new THREE.Vector3(cx - 0.25, 0, cz - 0.25), new THREE.Vector3(cx + 0.25, 3.9, cz + 0.25)) });
+        }
+      }
+      for (let i = 0; i < rec.steps.length; i += 60) {
+        lab.apply(i, 0, { coverage: false, conduits: false, events: new Set() });
+        lab.root.updateMatrixWorld(true);
+        const parts: { id: string; box: THREE.Box3 }[] = [], housings: THREE.Box3[] = [];
+        lab.root.traverse((o) => {
+          const sel = o.userData.sel as { kind: string; id: string } | undefined;
+          if (sel && (sel.kind === 'sensor' || sel.kind === 'store') && o.parent?.userData.sel?.id !== sel.id) parts.push({ id: sel.id, box: new THREE.Box3().setFromObject(o) });
+          if (o.userData.kind === 'domain service housing' && o.parent?.userData.kind !== o.userData.kind) housings.push(new THREE.Box3().setFromObject(o));
+        });
+        for (const a of parts) {
+          for (const f of fixed) expect(a.box.intersectsBox(f.box), `${name} step ${i}: ${a.id} vs ${f.what}`).toBe(false);
+          for (const h of housings) expect(a.box.intersectsBox(h), `${name} step ${i}: ${a.id} vs service housing`).toBe(false);
+        }
+      }
+    }
   });
 });

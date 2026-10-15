@@ -71,6 +71,8 @@ const SCENES = [
   { name: '12-history-provenance', rec: 'm7-systems-6000', step: idx(M7, memEv.t), cam: 'apparatus', sel: `chamber:${memEv.dst}`, sys: memEv.system, ev: `science:${memSel}`, note: `selection with basis = memory (recorded), science:${memSel}, t${memEv.t}` },
   { name: '15-hub', rec: 'm7-systems-6000', step: 480, cam: 'apparatus', sel: 'sensor:B:head', sys: 'B', note: 'system B hub (distributed system)' },
   { name: '16-memory-store', rec: 'm7-systems-6000', step: 480, cam: 'apparatus', sel: 'store:C:store', sys: 'C', note: 'system C memory store; filled slots = recorded memory entries' },
+  { name: '17-distributed-sensor', rec: 'm7-systems-6000', step: 480, cam: 'apparatus', sel: `sensor:B:sensor:${M7.config.systems.find((x) => x.sid === 'B').sensors[0]}`, sys: 'B', note: 'one of system B\'s remote sensors (recorded configuration)' },
+  { name: '18-gantry-closeup', rec: 'm9-separated-resources-7000', step: carryI, cam: 'apparatus', sel: `gantry:${Object.entries(SEP.steps[carryI].physics.gantries).find(([, g]) => g.carrying)[0]}`, note: `carriage carrying ${carried} (recorded) at index ${carryI}` },
   { name: '13-system-comparison', rec: 'm7-systems-6000', step: 480, cam: 'free', campos: [b0[0] + 9, 9, b0[1] + 13], target: [b0[0] - 3, 0.8, b0[1] + 5], note: 'systems A, B, C with their observed chambers (comparison table in the panel)' },
 ];
 
