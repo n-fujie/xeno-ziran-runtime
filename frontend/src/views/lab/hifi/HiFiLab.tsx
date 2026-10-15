@@ -89,10 +89,10 @@ export default function HiFiLab({ rec, index, tick, playing, rate, live, control
     scene.background = new THREE.Color(0x050506);
     scene.fog = new THREE.Fog(0x050506, 45, 95);
     let pmrem: THREE.PMREMGenerator | null = null;
-    if (q === 'high') {
+    if (q !== 'performance') {  // soft studio reflections so brushed metal shows its form (computed once)
       pmrem = new THREE.PMREMGenerator(renderer);
       scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-      scene.environmentIntensity = 0.35;
+      scene.environmentIntensity = q === 'high' ? 0.4 : 0.3;
     }
     scene.add(new THREE.HemisphereLight(0xdcdce0, 0x141416, 0.55));
     const key = new THREE.DirectionalLight(0xffffff, 1.7);
@@ -102,9 +102,11 @@ export default function HiFiLab({ rec, index, tick, playing, rate, live, control
     Object.assign(key.shadow.camera, { left: -30, right: 30, top: 30, bottom: -30, near: 5, far: 80 });
     key.shadow.bias = -0.0004;
     scene.add(key);
-    const fill = new THREE.DirectionalLight(0xbfc2c8, 0.35);
+    const fill = new THREE.DirectionalLight(0xbfc2c8, 0.45);
     fill.position.set(-20, 12, -16);
-    scene.add(fill);
+    const counter = new THREE.DirectionalLight(0xe6e6ea, 0.35);  // low counter-light from the opposite side, no shadows
+    counter.position.set(-6, 5, 24);
+    scene.add(fill, counter);
     for (const [, [x, y]] of Object.entries(rec.layout?.bays ?? {})) {  // localized instrument lighting over each domain
       const l = new THREE.PointLight(0xf2f2f0, q === 'performance' ? 9 : 14, 11, 2);
       l.position.set(x, 6.2, y);
@@ -375,6 +377,24 @@ export default function HiFiLab({ rec, index, tick, playing, rate, live, control
 }
 
 // ---------------------------------------------------------------------------------------------------- camera modes
+/** A close-up camera position for a target: tries viewing directions starting radially outward from the installation
+ *  centre and keeps the first that is not inside any chamber housing (so the view is never blocked by a wall). */
+export function closeView(rec: LabRecord, target: THREE.Vector3, dist: number, height: number): THREE.Vector3 {
+  const out = new THREE.Vector3(target.x, 0, target.z);
+  const base = out.lengthSq() > 1e-6 ? Math.atan2(out.z, out.x) : 0;
+  const inside = (p: THREE.Vector3) => rec.chambers.some((c) => Math.abs(p.x - c.position[0]) < 1.75 && Math.abs(p.z - c.position[2]) < 1.75)
+    && p.y < 1.4;
+  for (const da of [0.55, -0.55, 0, 1.1, -1.1, 1.7, -1.7, Math.PI]) {
+    for (const k of [1, 1.35, 1.7]) {
+      const a = base + da;
+      const p = new THREE.Vector3(target.x + Math.cos(a) * dist * k, target.y + height * k, target.z + Math.sin(a) * dist * k);
+      if (!inside(p)) return p;
+    }
+  }
+  return target.clone().add(new THREE.Vector3(0, dist + height, 0));
+}
+
+
 function cameraGoal(lab: Lab, rec: LabRecord, i: number, mode: CamMode, sel: Selection | null, sysSel: string | null, domain: string,
   e: { goal: { pos: THREE.Vector3; target: THREE.Vector3 } | null; camera: THREE.PerspectiveCamera }, prime = false): void {
   const set = (target: THREE.Vector3, offset: THREE.Vector3) => { e.goal = { pos: target.clone().add(offset), target }; };
@@ -388,7 +408,7 @@ function cameraGoal(lab: Lab, rec: LabRecord, i: number, mode: CamMode, sel: Sel
   }
   if (mode === 'apparatus') {
     const p = sel ? lab.focus(sel) : null;
-    if (p) set(p, new THREE.Vector3(2.4, 0.9, 2.8));  // below the gantry rails (3.45 m), so they never occlude the apparatus
+    if (p) e.goal = { pos: closeView(rec, p, 3.2, 1.1), target: p };  // below the gantry rails (3.45 m)
     return;
   }
   const s = rec.steps[i];
@@ -398,9 +418,13 @@ function cameraGoal(lab: Lab, rec: LabRecord, i: number, mode: CamMode, sel: Sel
     if (!st || !sid) return;
     const head = lab.focus({ kind: 'sensor', id: `${sid}:head` });
     const pts = st.coverage.map((c) => rec.chambers.find((x) => x.cid === c)).filter(Boolean).map((c) => new THREE.Vector3(...chamberFloor(c!.position as V3)));
-    if (!head || !pts.length) return;
-    const centre = pts.reduce((a, b) => a.add(b), new THREE.Vector3()).multiplyScalar(1 / pts.length);
-    e.goal = { pos: head.clone().add(new THREE.Vector3(0, 1.6, 0)), target: centre };
+    if (!head) return;
+    // nothing observed (e.g. every observed chamber closed): look from the sensor across its own domain
+    const own = rec.layout?.bays[bayOf(st.sensor)];
+    const centre = pts.length ? pts.reduce((a, b) => a.add(b), new THREE.Vector3()).multiplyScalar(1 / pts.length)
+      : own ? new THREE.Vector3(own[0], 0.8, own[1]) : head.clone();
+    const back = head.clone().sub(centre).setY(0).normalize().multiplyScalar(2.2);
+    e.goal = { pos: head.clone().add(back).add(new THREE.Vector3(0, 2.2, 0)), target: centre };
     return;
   }
   // operation / transfer tracking: follow the carried sample (recorded), else the pending experiment's target chamber
@@ -417,6 +441,5 @@ function cameraGoal(lab: Lab, rec: LabRecord, i: number, mode: CamMode, sel: Sel
     const c = rec.chambers.find((x) => x.cid === pend[1]);
     if (c) target = new THREE.Vector3(...chamberFloor(c.position as V3));
   }
-  if (target) set(target, new THREE.Vector3(2.8, 1.1, 3.4));
-  void bayOf;
+  if (target) e.goal = { pos: closeView(rec, target, 3.4, 1.2), target };
 }

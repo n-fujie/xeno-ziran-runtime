@@ -15,13 +15,13 @@ export type Quality = 'performance' | 'balanced' | 'high';
 export function palette(q: Quality) {
   const std = (color: number, metalness: number, roughness: number) => new THREE.MeshStandardMaterial({ color, metalness, roughness });
   return {
-    floor: std(0x0b0b0c, 0.3, 0.85),
-    plinth: std(0x161618, 0.55, 0.6),
+    floor: std(0x121214, 0.3, 0.8),
+    plinth: std(0x26262a, 0.55, 0.55),
     ceramic: std(0xd9d9d4, 0.05, 0.55),  // industrial ceramic: chamber floors and walls (executable geometry)
-    graphite: std(0x2a2a2d, 0.65, 0.45),
+    graphite: std(0x47474c, 0.6, 0.42),
     steel: std(0x77777c, 0.9, q === 'performance' ? 0.45 : 0.32),  // brushed metal
-    darkSteel: std(0x3c3c40, 0.85, 0.4),
-    composite: std(0x1d1d20, 0.2, 0.8),  // matte composite (architecture)
+    darkSteel: std(0x5c5c62, 0.8, 0.36),
+    composite: std(0x303035, 0.2, 0.75),  // matte composite (architecture)
     louvre: std(0xb9b9be, 0.85, 0.3),
     sample: new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 0.25, roughness: 0.7 }),
     glow: new THREE.MeshStandardMaterial({ color: 0x101012, emissive: 0xffffff, emissiveIntensity: 0, metalness: 0.2, roughness: 0.4 }),
@@ -803,7 +803,10 @@ export function buildLab(r: LabRecord, q: Quality): Lab {
     if (sel.kind === 'port') { const xy = r.layout?.ports[sel.id]; return xy ? new THREE.Vector3(...planeToView(xy)) : null; }
     const [sid] = sel.id.split(':');
     const sp = systems.get(sid);
-    return sp ? new THREE.Vector3().setFromMatrixPosition((sel.kind === 'store' && sp.store ? sp.store : sp.head).matrixWorld) : null;
+    if (!sp) return null;  // the visual centre of the sensor head / store, not its floor-level origin
+    const o = sel.kind === 'store' && sp.store ? sp.store : sp.head;
+    o.updateMatrixWorld(true);
+    return new THREE.Box3().setFromObject(o).getCenter(new THREE.Vector3());
   };
 
   root.traverse((o) => { const L = o.userData.layer as Layer | undefined; if (L && o.parent && o.parent.userData.layer !== L) layers[L].push(o); });
