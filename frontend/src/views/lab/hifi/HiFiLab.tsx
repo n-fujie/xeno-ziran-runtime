@@ -88,7 +88,7 @@ export default function HiFiLab({ rec, index, tick, playing, rate, live, control
     el.appendChild(renderer.domElement);
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x050506);
-    scene.fog = new THREE.Fog(0x050506, 45, 95);
+    scene.fog = new THREE.FogExp2(0x050506, 0.012);  // atmospheric depth: ~4 % at 15 m, ~30 % at 50 m (no scientific claim)
     let pmrem: THREE.PMREMGenerator | null = null;
     if (q !== 'performance') {  // soft studio reflections so brushed metal shows its form (computed once)
       pmrem = new THREE.PMREMGenerator(renderer);

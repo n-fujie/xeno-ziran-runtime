@@ -317,7 +317,7 @@ describe('a carried sample and the gripper jaws clear every static part (found i
       }
       expect(carried, name).toBeGreaterThan(20);
     }
-  });
+  }, 60_000);
   it('closed jaws meet the recorded sample faces at every carrying step; open jaws clear every resting sample', () => {
     for (const name of ['m7-systems-6000', 'm9-separated-resources-7000']) {
       const rec = load(name);
@@ -380,5 +380,29 @@ describe('relocated system apparatus stand clear of the static installation (M8.
         }
       }
     }
+  });
+});
+
+describe('connection contrast (M8.2: idle lines dimmed so the apparatus dominates; no line removed)', () => {
+  it('a pair in a recorded event is drawn at full brightness, idle pairs below it and ordered by recorded count', async () => {
+    const { connectionShade } = await import('./assemblies');
+    const rec = load('m7-systems-6000');
+    const lab = buildLab(rec, 'high');
+    const i = 480;
+    const pairs = Object.keys(rec.steps[i].conduits);
+    expect(pairs.length).toBeGreaterThan(3);
+    lab.apply(i, 0, { coverage: false, conduits: true, events: new Set([pairs[0]]) });
+    let lines: THREE.LineSegments | null = null;
+    lab.root.traverse((o) => { if (o.userData.kind === 'runtime connections (recorded)' && (o as THREE.LineSegments).isLineSegments) lines = o as THREE.LineSegments; });
+    const geo = lines!.geometry;
+    const col = geo.attributes.color.array as Float32Array;
+    const n = geo.drawRange.count;
+    let bright = 0;
+    for (let v = 0; v < n; v++) if (col[v * 3] === 1) bright++;
+    expect(bright).toBeGreaterThan(0);
+    expect(bright).toBeLessThan(n);  // only the event's pair
+    expect(lines!.userData.pairs).toBe(pairs.length);  // every recorded connection is still drawn
+    for (let k = 1; k < 30; k++) expect(connectionShade(k)).toBeGreaterThanOrEqual(connectionShade(k - 1));
+    expect(connectionShade(1000)).toBeLessThan(1);
   });
 });

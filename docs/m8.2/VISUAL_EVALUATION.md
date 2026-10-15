@@ -256,3 +256,28 @@ the ribs are 2–6 cm from the wall face, below the band; the vessel-clearance a
 
 **Performance.** Draw calls are unchanged (229 in the domain view, 713 in the overview). Triangles in the domain view
 rose from 51k to 63k. Every captured scene renders at 60 fps.
+
+### Change 3: connection contrast and atmospheric depth (P3)
+
+- **Before:** `01-transport-envelope/1200x866@1/02-oblique.png`, `01-overview.png`, `03-domain.png`.
+- **After:** `03-connections-depth/1200x866@1/` (scenes 01, 02, 03, 10, 11, 13).
+
+**Correction.**
+
+- **Idle connections.** Drawn at `min(0.30, 0.10 + 0.035 n)`, still ordered by recorded count, instead of
+  `min(0.46, 0.17 + 0.05 n)`.
+- **Event highlight.** A pair in a recorded event is still drawn at 1.0.
+- **No connection removed.** The `pairs` count is unchanged.
+- **Fog.** The linear fog (45–95 m), which never reached the hall, was replaced by exponential fog of density 0.012:
+  about 3 % at 15 m and 30 % at 50 m. It is a rendering choice with no claim.
+
+**Inspection.** In a side-by-side crop of the oblique view (upper half), the bright-line coverage (grey > 140) fell from
+7.0 % to 2.7 % of pixels, and the mean luminance went from 49 to 43. The rails, columns and terminals now carry the
+image, and the far bay recedes.
+
+**Trade-off accepted.** Distant chambers are slightly dimmer as well.
+
+**Test added.** A pair in a recorded event is drawn at full brightness and only it; every recorded pair is still drawn;
+the idle shade is monotone in the recorded count and below 1.
+
+**Performance.** Draw calls are unchanged, and every captured scene renders at 60 fps.

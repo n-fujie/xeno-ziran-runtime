@@ -606,6 +606,8 @@ const SEG = 10;
 
 export type ConduitParts = { terminals: THREE.Group; lines: THREE.LineSegments; update: (conduits: Record<string, number>, hot: Set<string>) => void };
 
+export const connectionShade = (n: number) => Math.min(0.3, 0.1 + 0.035 * n);
+
 export function conduitAssembly(chamberPos: Map<string, V3>, p: Palette): ConduitParts {
   const terminals = new THREE.Group();
   const ids = [...chamberPos.keys()];
@@ -641,7 +643,8 @@ export function conduitAssembly(chamberPos: Map<string, V3>, p: Palette): Condui
       const pa = top.get(ca), pb = top.get(cb);
       if (!pa || !pb || v + SEG * 2 > cap * SEG * 2) continue;
       const sag = Math.min(0.9, 0.035 * pa.distanceTo(pb));
-      const c = hot.has(pair) ? 1 : Math.min(0.46, 0.17 + 0.05 * n);
+      // idle connections stay below the apparatus in contrast (ordered by recorded count); a recorded event lights its pair
+      const c = hot.has(pair) ? 1 : connectionShade(n);
       for (let k2 = 0; k2 < SEG; k2++) {
         for (const [u, out] of [[k2 / SEG, a], [(k2 + 1) / SEG, b]] as [number, THREE.Vector3][]) {
           out.lerpVectors(pa, pb, u);
