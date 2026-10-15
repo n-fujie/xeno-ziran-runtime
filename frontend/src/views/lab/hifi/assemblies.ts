@@ -96,6 +96,20 @@ export function mergeStatic<T extends THREE.Object3D>(g: T): T {
   return g;
 }
 
+// ------------------------------------------------------------------------------------------------------ placement spots
+// The spots where physics.py `_free_spot` places a delivered sample (offsets from the container centre, metres).
+export const SPOTS_CHAMBER: [number, number][] = [[0, 0], [0.65, 0.65], [-0.65, 0.65], [0.65, -0.65], [-0.65, -0.65]];
+export const SPOTS_PORT: [number, number][] = [[0, 0], [0.4, 0.4], [-0.4, -0.4]];
+
+function spotMarkers(spots: [number, number][], y: number, p: Palette, kind: 'chamber' | 'port', id: string, at: [number, number] = [0, 0]): THREE.Object3D {
+  const mats = spots.map(([dx, dz]) => new THREE.Matrix4().compose(new THREE.Vector3(at[0] + dx, y + 0.003, at[1] + dz),
+    new THREE.Quaternion().setFromEuler(new THREE.Euler(-Math.PI / 2, 0, Math.PI / 4)), new THREE.Vector3(1, 1, 1)));
+  const m = instanced(new THREE.RingGeometry(0.2, 0.225, 4), p.darkSteel, mats);
+  m.castShadow = false;
+  tag(m, 'A', 3, 'sample placement spots (physics.py _free_spot)', { kind, id });
+  return m;
+}
+
 // ------------------------------------------------------------------------------------------------------ chamber
 export type ChamberParts = { group: THREE.Group; louvres: THREE.InstancedMesh; activity: THREE.Mesh; memory: THREE.Mesh;
   ring: THREE.Mesh; base: V3 };
@@ -118,6 +132,7 @@ export function chamberAssembly(cid: string, position: V3, p: Palette, q: Qualit
   }
   tag(phys, 'A', 1, 'chamber collision geometry', { kind: 'chamber', id: cid });
   g.add(mergeStatic(phys));
+  g.add(spotMarkers(SPOTS_CHAMBER, y, p, 'chamber', cid));
   // layer B — containment louvres in the rim: blade angle = recorded closure (1 − mean gate of entering connections)
   const blade = new THREE.BoxGeometry(W / LOUVRES_PER_SIDE - 0.03, RIM_H - 0.04, 0.025);
   const mats: THREE.Matrix4[] = [];
@@ -136,6 +151,11 @@ export function chamberAssembly(cid: string, position: V3, p: Palette, q: Qualit
   const rim = new THREE.Group();
   for (const [dx, dz, sx, sz] of [[0, PHYS.CH, W + 0.12, 0.06], [0, -PHYS.CH, W + 0.12, 0.06], [PHYS.CH, 0, 0.06, W + 0.12], [-PHYS.CH, 0, 0.06, W + 0.12]]) {
     rim.add(box(sx, 0.035, sz, p.darkSteel, dx, RIM_Y0 + RIM_H + 0.02, dz), box(sx, 0.035, sz, p.darkSteel, dx, RIM_Y0 - 0.005, dz));
+  }
+  if (q !== 'performance') {  // louvre actuator housings at the middle of each rim side (housing only)
+    for (const [dx, dz, sx, sz] of [[0, PHYS.CH + 0.07, 0.3, 0.08], [0, -PHYS.CH - 0.07, 0.3, 0.08], [PHYS.CH + 0.07, 0, 0.08, 0.3], [-PHYS.CH - 0.07, 0, 0.08, 0.3]]) {
+      rim.add(box(sx, RIM_H + 0.04, sz, p.graphite, dx, RIM_Y0 + RIM_H / 2, dz));
+    }
   }
   tag(rim, 'C', 4, 'instrument rim frame');
   g.add(mergeStatic(rim));
@@ -203,7 +223,7 @@ export function applyChamber(c: ChamberParts, closure: number, activity: number,
 }
 
 // ------------------------------------------------------------------------------------------------------ gantry
-export type GantryParts = { key: string; group: THREE.Group; bridge: THREE.Mesh; trolley: THREE.Group; mast: THREE.Mesh;
+export type GantryParts = { key: string; group: THREE.Group; bridge: THREE.Group; trolley: THREE.Group; mast: THREE.Mesh; carrier: THREE.Mesh;
   carriage: THREE.Group; lamp: THREE.Mesh; env: { x0: number; x1: number; y0: number; y1: number }; railY: number };
 const RAIL_Y = 3.45;
 
@@ -226,7 +246,10 @@ export function gantryAssembly(key: string, env: { x0: number; x1: number; y0: n
   const railY = RAIL_Y + level * 0.5;
   const { x0, x1, y0, y1 } = env;
   const rails = new THREE.Group();
-  for (const yy of [y0, y1]) rails.add(box(x1 - x0, 0.12, 0.18, p.steel, (x0 + x1) / 2, railY, yy));
+  for (const yy of [y0, y1]) {
+    rails.add(box(x1 - x0, 0.12, 0.18, p.steel, (x0 + x1) / 2, railY, yy));
+    if (q !== 'performance') rails.add(box(x1 - x0, 0.025, 0.05, p.louvre, (x0 + x1) / 2, railY + 0.072, yy));  // linear guide
+  }
   tag(rails, 'A', 3, 'x slide (rails)', { kind: 'gantry', id: key });
   g.add(mergeStatic(rails));
   if (level === 0) {
@@ -247,10 +270,13 @@ export function gantryAssembly(key: string, env: { x0: number; x1: number; y0: n
     tag(cols, 'C', 4, 'gantry columns');
     g.add(mergeStatic(cols));
   }
-  const bridge = box(0.24, 0.16, y1 - y0, p.graphite, 0, railY + 0.14, (y0 + y1) / 2);
-  tag(bridge, 'A', 3, 'y slide (bridge)', { kind: 'gantry', id: key });
+  const bridge = new THREE.Group();  // the bridge rides on both rails on end trucks (it is the x slide's moving part)
+  bridge.add(box(0.24, 0.16, y1 - y0, p.graphite, 0, railY + 0.14, (y0 + y1) / 2));
+  for (const yy of [y0, y1]) bridge.add(box(0.46, 0.14, 0.32, p.darkSteel, 0, railY + 0.13, yy));
+  tag(bridge, 'A', 3, 'y slide (bridge on end trucks)', { kind: 'gantry', id: key });
   const trolley = new THREE.Group();
   trolley.add(box(0.42, 0.22, 0.42, p.darkSteel, 0, railY + 0.02, 0));
+  if (q !== 'performance') for (const sx of [-1, 1]) trolley.add(box(0.13, 0.16, 0.13, p.graphite, sx * 0.13, railY + 0.21, 0));  // drive housings
   const lamp = new THREE.Mesh(new THREE.SphereGeometry(0.06, 10, 8), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 1 }));
   lamp.position.set(0.24, railY + 0.02, 0);
   trolley.add(lamp);
@@ -258,19 +284,26 @@ export function gantryAssembly(key: string, env: { x0: number; x1: number; y0: n
   const mast = box(0.1, 1, 0.1, p.steel);
   tag(mast, 'A', 3, 'z slide (mast)', { kind: 'gantry', id: key });
   const carriage = new THREE.Group();  // MuJoCo carriage box (0.12 × 0.12 × 0.08 half) and tool (0.05 × 0.05 × 0.1 half)
-  carriage.add(box(0.24, 0.16, 0.24, p.steel, 0, PHYS.TIP_OFFSET, 0), box(0.1, 0.2, 0.1, p.darkSteel, 0, 0.1, 0));
+  // its own material: a failed gantry is drawn dark without touching any other steel part
+  carriage.add(box(0.24, 0.16, 0.24, p.steel.clone(), 0, PHYS.TIP_OFFSET, 0), box(0.1, 0.2, 0.1, p.darkSteel, 0, 0.1, 0));
   if (q !== 'performance') {  // gripper fingers (the weld grasp is modelled; the fingers are visual)
     for (const s of [-1, 1]) carriage.add(box(0.025, 0.12, 0.09, p.steel, s * 0.07, -0.02, 0));
   }
   tag(carriage, 'A', 1, 'carriage and tool (recorded tool tip)', { kind: 'gantry', id: key });
-  g.add(bridge, trolley, mast, carriage);
-  return { key, group: g, bridge, trolley, mast, carriage, lamp, env, railY };
+  const carrier = box(0.1, 0.07, 1, p.composite, 0.2, railY + 0.27, 0);  // cable carrier along the bridge to the trolley
+  tag(carrier, 'C', 4, 'cable carrier (drawn, not modelled)');
+  carrier.visible = q !== 'performance';
+  g.add(bridge, trolley, mast, carriage, carrier);
+  return { key, group: g, bridge, trolley, mast, carrier, carriage, lamp, env, railY };
 }
 
 export function applyGantry(gp: GantryParts, tipView: V3, health: number, failed: boolean): void {
   const [x, y, z] = tipView;
   gp.bridge.position.x = x;
   gp.trolley.position.set(x, 0, z);
+  const len = Math.max(0.05, z - gp.env.y0);  // from the bridge's y0 end truck to the trolley
+  gp.carrier.scale.z = len;
+  gp.carrier.position.set(x + 0.2, gp.railY + 0.27, gp.env.y0 + len / 2);
   gp.carriage.position.set(x, y, z);
   const top = gp.railY - 0.1, bottom = y + PHYS.TIP_OFFSET + 0.08;
   gp.mast.scale.y = Math.max(0.01, top - bottom);
@@ -286,7 +319,7 @@ export function portAssembly(key: string, xy: [number, number], p: Palette, q: Q
   const [x, y, z] = planeToView(xy);
   const table = box(2 * PHYS.PORT, 0.1, 2 * PHYS.PORT, p.ceramic, x, y - 0.05, z);  // MuJoCo port geom (top at z = 0.05)
   tag(table, 'A', 1, 'handoff port', { kind: 'port', id: key });
-  g.add(table);
+  g.add(table, spotMarkers(SPOTS_PORT, y, p, 'port', key, [x, z]));
   const ped = new THREE.Group();
   ped.add(cyl(0.38, y - 0.1, p.darkSteel, x, (y - 0.1) / 2, z, 6));
   if (q !== 'performance') {

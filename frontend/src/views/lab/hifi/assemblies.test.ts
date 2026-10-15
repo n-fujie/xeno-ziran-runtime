@@ -145,3 +145,24 @@ describe('system apparatus never interpenetrate (found in screenshots: a remote 
     }
   });
 });
+
+describe('a failed gantry is drawn dark without changing any other part (shared-material bug found in review)', () => {
+  it('at a recorded failure, only that carriage darkens; every rail keeps the steel colour', () => {
+    const rec = load('m7-systems-6000');
+    const i = rec.steps.findIndex((s) => Object.values(s.physics!.gantries).some((g) => g.failed));
+    expect(i).toBeGreaterThan(0);
+    const lab = buildLab(rec, 'balanced');
+    lab.apply(i, 0, { coverage: false, conduits: false, events: new Set() });
+    const failed = Object.entries(rec.steps[i].physics!.gantries).filter(([, g]) => g.failed).map(([k]) => k);
+    const colours = (kind: string) => {
+      const out: { id: string; hex: number }[] = [];
+      lab.root.traverse((o) => {
+        if (o.userData.kind === kind && (o as THREE.Mesh).isMesh) out.push({ id: o.userData.sel?.id, hex: ((o as THREE.Mesh).material as THREE.MeshStandardMaterial).color.getHex() });
+      });
+      return out;
+    };
+    for (const r of colours('x slide (rails)')) expect([0x77777c, 0xb9b9be]).toContain(r.hex);  // steel rail, light linear guide
+    const carriages = colours('carriage and tool (recorded tool tip)').filter((c) => c.hex !== 0x5c5c62);
+    expect(carriages.filter((c) => c.hex === 0x26262a).map((c) => c.id).sort()).toEqual(failed.sort());
+  });
+});
