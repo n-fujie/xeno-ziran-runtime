@@ -358,3 +358,47 @@ shutter band, the gantry with its jaws open after the release, and the event rin
 
 No decorative animation was added. Indicators remain the recorded event ring, the shutter angle, the jaw state, the
 cartridges and the arcs.
+
+### Change 7: live rendering defect, a hidden second renderer (section X)
+
+**Found by the live profile, not by screenshots.** The first final capture showed the live view at 44 fps early and
+16 fps late (p99 583 ms). Two steps located the cause:
+
+1. **Bisecting** the M8.2 commits (early window) suggested change 1. Because of the noisy machine, this pointed in the
+   wrong direction.
+2. **A sampled CPU profile** of an unminified build (`07-live/cpu-profile-before-fix.txt`) showed `TubeGeometry`,
+   `generateSegment` and `computeFrenetFrames` in the hot list. The high-fidelity view creates no tubes per frame.
+
+**Cause (present since M8).** Starting a live run in hi-fi mode briefly mounted the *standard* view, because hi-fi
+waits for the first frame. The standard view's effect created its own WebGL renderer and render loop. Its
+dependencies (`base`, `hifi`) did not change when hi-fi took over, so the loop kept rendering a detached canvas. It
+also rebuilt its connection tubes at every step without disposing them, so the cost and the heap grew through the run.
+
+**Fix.**
+- The standard view's renderer is never created while hi-fi is on.
+- Its per-frame tubes are disposed before rebuilding, which fixes the leak in standard mode too.
+
+**Second finding.** The capture machine had 28 orphaned Chrome for Testing processes, left by interrupted capture runs
+(load average 18–22). They were stopped before every measurement below. The load average from other applications
+stayed at about 6–7 during the A/B runs.
+
+A/B under the same conditions, run back to back. The values are displayed fps with p99 in ms; heap is JS heap in MB:
+
+| window | M8.1 build (`705288c`) | M8.2 with the fix |
+|---|---|---|
+| early (t≈122) | 48.2 fps, p99 51, heap 120 | 59.5 fps, p99 17.7, heap 40 |
+| t ≥ 400 | 28.8 fps, p99 233, heap 196 | 60.0 fps, p99 17.7, heap 70 |
+| t ≥ 800 | 17.9 fps, p99 150, heap 318 | 57.0 fps, p99 34.2, heap 77 |
+| apparatus selected during execution | 8.4 fps, p99 1800 | 60.0 fps, p99 17.7 |
+| domain view, all overlays | 55.2 fps, p99 34.3 | 60.0 fps, p99 17.7 |
+
+Raw data: `07-live/ab-m8.1-build.json` and `07-live/ab-m8.2-fixed.json`.
+
+**Correction to M8.1.** M8.1 reported 60 fps through step ≈861. That was measured on a lightly loaded machine, which
+hid the growing cost of the hidden renderer. It does not hold under moderate load.
+
+**Capture script.** Two windows were added to the live profile:
+- a carriage picked through the real pointer path (CDP mouse events), followed in Apparatus mode;
+- a domain view with every overlay on.
+
+The script also gained an optional `--cpu-profile` flag.

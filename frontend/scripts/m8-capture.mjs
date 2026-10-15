@@ -205,11 +205,44 @@ async function main() {
         process.stdout.write(`live profile ${label} (t${t}): fps ${(1000 / p.displayed.mean).toFixed(1)} p95 ${p.displayed.p95} p99 ${p.displayed.p99} · panel ${p.panelMs.mean}/${p.panelMs.p95} ms ×${p.panelMs.n} · apply ${p.applyMs.mean} · render ${p.renderMs.mean}/${p.renderMs.p95} · ws ${p.wsMessageMs.mean} ms ×${p.wsMessages} · long tasks ${p.longTasks} · script ${p.browserSeconds.ScriptDuration}s · heap ${p.jsHeapMB} MB\n`);
         return p;
       };
+      if (flag('cpu-profile')) {  // sampled CPU profile of the live view: top self-time functions
+        await page.send('Profiler.enable');
+        await page.send('Profiler.start');
+        await sleep(5000);
+        const { profile: prof } = await page.send('Profiler.stop');
+        const self = new Map(), byId = new Map(prof.nodes.map((n) => [n.id, n]));
+        const dt = prof.timeDeltas, total = dt.reduce((a, b) => a + b, 0);
+        prof.samples.forEach((id, k) => { const n = byId.get(id); const key = `${n.callFrame.functionName || '(anon)'} ${n.callFrame.url.split('/').pop()}:${n.callFrame.lineNumber}`; self.set(key, (self.get(key) ?? 0) + (dt[k] ?? 0)); });
+        const top = [...self].sort((a, b) => b[1] - a[1]).slice(0, 25).map(([k, v]) => `${(100 * v / total).toFixed(1)}% ${k}`);
+        writeFileSync(join(OUT, 'cpu-profile-live.txt'), top.join('\n') + '\n');
+        process.stdout.write(top.slice(0, 15).join('\n') + '\n');
+      }
       const profiles = [await profileWindow('early')];
       for (const target of (arg('live-windows', '') || '').split(',').filter(Boolean).map(Number)) {
         await waitFor(page, `Number((document.querySelector('.lab-live').textContent.match(/t (\\d+)/) || [])[1]) >= ${target}`, 180000);
         profiles.push(await profileWindow(`t>=${target}`));
       }
+      // interaction during execution: pick a carriage through the real pointer path, follow it in Apparatus mode
+      const at = await page.evaluate(`(() => { const H = window.__labHiFi; let g = null;
+        H.scene.traverse((o) => { if (!g && o.userData.kind === 'carriage and tool (recorded tool tip)' && o.type === 'Group') g = o; });
+        const e = g.matrixWorld.elements, V = H.camera.matrixWorldInverse.elements, P = H.camera.projectionMatrix.elements;
+        const mul = (m, v) => [0, 1, 2, 3].map((r) => m[r] * v[0] + m[4 + r] * v[1] + m[8 + r] * v[2] + m[12 + r] * v[3]);
+        const c = mul(P, mul(V, [e[12], e[13], e[14], 1]));
+        const b = H.renderer.domElement.getBoundingClientRect();
+        return { x: b.left + (c[0] / c[3] + 1) / 2 * b.width, y: b.top + (1 - c[1] / c[3]) / 2 * b.height }; })()`);
+      for (const type of ['mousePressed', 'mouseReleased']) await page.send('Input.dispatchMouseEvent', { type, x: at.x, y: at.y, button: 'left', clickCount: 1 });
+      await page.evaluate(`[...document.querySelectorAll('button')].find((b) => b.textContent === 'Apparatus').click(), true`);
+      await sleep(1500);
+      const picked = await page.evaluate(`JSON.stringify(window.__labHiFi.state().sel)`);
+      const pw = await profileWindow(`apparatus selected during execution ${picked}`);
+      pw.selection = JSON.parse(picked);
+      profiles.push(pw);
+      // dense view with every overlay on (observation outlines, connections): a domain view
+      await page.evaluate(`[...document.querySelectorAll('button')].find((b) => b.textContent === 'Domain').click(), true`);
+      await sleep(1500);
+      profiles.push(await profileWindow('domain view, all overlays'));
+      await page.evaluate(`[...document.querySelectorAll('button')].find((b) => b.textContent === 'Overview').click(), true`);
+      await sleep(1500);
       const live = await page.evaluate(`document.querySelector('.lab-live').textContent`);
       const entry = await shoot('14-live-operation', { record: 'live', note: 'live run started from the viewer (preset systems)', liveStatus: live });
       entry.liveProfile = profiles;

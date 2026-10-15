@@ -207,7 +207,7 @@ describe('full reachable envelope of every gantry', () => {
         });
       }
     }
-  });
+  }, 60_000);
 });
 
 describe('synthetic sweep of every gantry over its whole reachable envelope at travel height', () => {

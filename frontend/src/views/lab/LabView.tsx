@@ -129,7 +129,8 @@ function applyFrame(f: Frame, objs: Map<string, ChamberObj>, conduitGroup: THREE
     o.lamp.scale.setScalar(c.coreScale);
     (o.ring.material as THREE.MeshBasicMaterial).opacity = c.highlight ? 0.9 * (1 - (f.t - c.highlight.t) / 12) : 0;
   }
-  conduitGroup.clear();
+  for (const o of conduitGroup.children) { (o as THREE.Mesh).geometry.dispose(); ((o as THREE.Mesh).material as THREE.Material).dispose(); }
+  conduitGroup.clear();  // rebuilt per frame: dispose the previous tubes (they leaked GPU buffers before M8.2)
   for (const k of f.conduits) {
     const a = pos.get(k.a), b = pos.get(k.b);
     const oa = objs.get(k.a), ob = objs.get(k.b);
@@ -262,7 +263,9 @@ export default function LabView() {
 
   useEffect(() => {
     const rec = base;
-    if (!rec || !mount.current) return;
+    // the standard view never runs under the high-fidelity view (M8.2: a live start in hi-fi briefly mounted it, and its
+    // renderer then kept rendering a detached canvas and rebuilding its conduit tubes at every step)
+    if (!rec || !mount.current || hifi) return;
     const el = mount.current;
     const physical = !!rec.layout;
     const half = rec.layout?.chamber_half ?? 1.3;

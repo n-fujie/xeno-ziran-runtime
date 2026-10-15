@@ -1,0 +1,25 @@
+7.6% (program) :-1
+5.4% WebGLRenderer.renderBufferDirect LabView-NGej3Ids.js:15545
+4.6% getProgram LabView-NGej3Ids.js:15921
+3.7% projectObject LabView-NGej3Ids.js:15776
+3.2% setProgram LabView-NGej3Ids.js:16008
+3.1% generateSegment LabView-NGej3Ids.js:18442
+2.9% (garbage collector) :-1
+2.8% multiplyMatrices LabView-NGej3Ids.js:3578
+2.7% bindVertexArray :-1
+2.7% getUtoTmapping LabView-NGej3Ids.js:16958
+2.5% (idle) :-1
+2.2% TubeGeometry LabView-NGej3Ids.js:18409
+2.1% copyArray LabView-NGej3Ids.js:9935
+2.0% renderObject LabView-NGej3Ids.js:12273
+1.8% setValue LabView-NGej3Ids.js:10384
+1.6% upload LabView-NGej3Ids.js:10436
+1.5% bindVertexArrayObject LabView-NGej3Ids.js:8243
+1.5% updateMatrixWorld LabView-NGej3Ids.js:4399
+1.4% setValueV3f LabView-NGej3Ids.js:9967
+1.4% uniformMatrix4fv :-1
+1.2% renderObjects LabView-NGej3Ids.js:15894
+1.1% computeFrenetFrames LabView-NGej3Ids.js:16999
+1.1% arraysEqual LabView-NGej3Ids.js:9930
+1.1% sort LabView-NGej3Ids.js:11592
+1.1% update LabView-NGej3Ids.js:9793

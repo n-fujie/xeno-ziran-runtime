@@ -1,0 +1,362 @@
+{
+ "stage": "ab-dist-m81",
+ "commit": "f5969bf+uncommitted",
+ "browser": "Chrome/151.0.7922.34",
+ "base": "http://127.0.0.1:3011",
+ "viewport": [
+  1200,
+  866
+ ],
+ "devicePixelRatio": 1,
+ "scenes": [
+  {
+   "name": "14-live-operation",
+   "record": "live",
+   "note": "live run started from the viewer (preset systems)",
+   "liveStatus": "LIVE finished · t 960/960 · seq 960 · coalesced frames 0",
+   "commit": "f5969bf+uncommitted",
+   "viewport": [
+    1200,
+    866
+   ],
+   "devicePixelRatio": 1,
+   "browser": "Chrome/151.0.7922.34",
+   "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified Version)",
+   "state": {
+    "cam": "overview",
+    "sel": {
+     "kind": "chamber",
+     "id": "0.2"
+    },
+    "sys": null,
+    "domain": "0",
+    "layers": {
+     "A": true,
+     "B": true,
+     "C": true
+    },
+    "quality": "balanced",
+    "step": 960,
+    "index": 959,
+    "camera": [
+     29.987,
+     27.466,
+     33.938
+    ],
+    "target": [
+     0.026,
+     1.499,
+     0
+    ],
+    "pixelRatio": 1,
+    "canvas": [
+     800,
+     723
+    ]
+   },
+   "selfTest": {
+    "step": 960,
+    "positionsChecked": 40,
+    "worstPositionError": 5.072509780052955e-7,
+    "layers": {
+     "A": 43,
+     "B": 113,
+     "C": 12
+    },
+    "drawCalls": 571,
+    "triangles": 98468,
+    "quality": "balanced"
+   },
+   "frames": {
+    "n": 129,
+    "mean": 19.51,
+    "p50": 16.7,
+    "p95": 34.1,
+    "p99": 49.8,
+    "max": 50
+   },
+   "longTasks": 0,
+   "liveProfile": [
+    {
+     "label": "early",
+     "liveStepAtEnd": 122,
+     "windowMs": 6000,
+     "displayed": {
+      "n": 290,
+      "mean": 20.74,
+      "p50": 16.7,
+      "p95": 49,
+      "p99": 51,
+      "max": 66.7
+     },
+     "longTasks": 0,
+     "longTaskMs": 0,
+     "panelMs": {
+      "n": 22,
+      "mean": 2.93,
+      "p50": 3,
+      "p95": 4,
+      "p99": 4.6,
+      "max": 4.6
+     },
+     "applyMs": {
+      "n": 291,
+      "mean": 0.77,
+      "p50": 0.6,
+      "p95": 1.5,
+      "p99": 2,
+      "max": 9.1
+     },
+     "renderMs": {
+      "n": 291,
+      "mean": 7.82,
+      "p50": 7.2,
+      "p95": 11.5,
+      "p99": 18.3,
+      "max": 20.6
+     },
+     "wsMessageMs": {
+      "n": 61,
+      "mean": 0.21,
+      "p50": 0.2,
+      "p95": 0.3,
+      "p99": 0.4,
+      "max": 0.4
+     },
+     "wsMessages": 61,
+     "browserSeconds": {
+      "ScriptDuration": 5.608,
+      "TaskDuration": 5.873,
+      "RecalcStyleDuration": 0.002,
+      "LayoutDuration": 0.058
+     },
+     "jsHeapMB": 119.6
+    },
+    {
+     "label": "t>=400",
+     "liveStepAtEnd": 463,
+     "windowMs": 6000,
+     "displayed": {
+      "n": 174,
+      "mean": 34.68,
+      "p50": 16.7,
+      "p95": 83.9,
+      "p99": 233.2,
+      "max": 700.7
+     },
+     "longTasks": 6,
+     "longTaskMs": 460,
+     "panelMs": {
+      "n": 21,
+      "mean": 4.2,
+      "p50": 3.2,
+      "p95": 8.1,
+      "p99": 20.1,
+      "max": 20.1
+     },
+     "applyMs": {
+      "n": 175,
+      "mean": 1.08,
+      "p50": 0.7,
+      "p95": 2.1,
+      "p99": 5.8,
+      "max": 12.8
+     },
+     "renderMs": {
+      "n": 175,
+      "mean": 8.71,
+      "p50": 7.9,
+      "p95": 14.6,
+      "p99": 22,
+      "max": 40.9
+     },
+     "wsMessageMs": {
+      "n": 60,
+      "mean": 0.34,
+      "p50": 0.3,
+      "p95": 0.9,
+      "p99": 2.1,
+      "max": 2.1
+     },
+     "wsMessages": 60,
+     "browserSeconds": {
+      "ScriptDuration": 4.913,
+      "TaskDuration": 5.306,
+      "RecalcStyleDuration": 0.002,
+      "LayoutDuration": 0.056
+     },
+     "jsHeapMB": 196.1
+    },
+    {
+     "label": "t>=800",
+     "liveStepAtEnd": 863,
+     "windowMs": 6000,
+     "displayed": {
+      "n": 108,
+      "mean": 55.86,
+      "p50": 49.1,
+      "p95": 132.3,
+      "p99": 150,
+      "max": 366.7
+     },
+     "longTasks": 15,
+     "longTaskMs": 1273,
+     "panelMs": {
+      "n": 20,
+      "mean": 4.82,
+      "p50": 3.5,
+      "p95": 18.1,
+      "p99": 18.1,
+      "max": 18.1
+     },
+     "applyMs": {
+      "n": 109,
+      "mean": 2.39,
+      "p50": 1.9,
+      "p95": 5.9,
+      "p99": 12.4,
+      "max": 13.8
+     },
+     "renderMs": {
+      "n": 109,
+      "mean": 10.54,
+      "p50": 10,
+      "p95": 15.5,
+      "p99": 19.4,
+      "max": 46.6
+     },
+     "wsMessageMs": {
+      "n": 60,
+      "mean": 0.33,
+      "p50": 0.3,
+      "p95": 0.5,
+      "p99": 0.8,
+      "max": 0.8
+     },
+     "wsMessages": 60,
+     "browserSeconds": {
+      "ScriptDuration": 5.59,
+      "TaskDuration": 5.939,
+      "RecalcStyleDuration": 0.005,
+      "LayoutDuration": 0.101
+     },
+     "jsHeapMB": 318
+    },
+    {
+     "label": "apparatus selected during execution {\"kind\":\"chamber\",\"id\":\"0.2\"}",
+     "liveStepAtEnd": 947,
+     "windowMs": 6000,
+     "displayed": {
+      "n": 51,
+      "mean": 119.61,
+      "p50": 34.4,
+      "p95": 499.3,
+      "p99": 1799.8,
+      "max": 1799.8
+     },
+     "longTasks": 12,
+     "longTaskMs": 1533,
+     "panelMs": {
+      "n": 21,
+      "mean": 5.99,
+      "p50": 4.4,
+      "p95": 16.8,
+      "p99": 17.4,
+      "max": 17.4
+     },
+     "applyMs": {
+      "n": 52,
+      "mean": 3.91,
+      "p50": 0.9,
+      "p95": 8,
+      "p99": 99.8,
+      "max": 99.8
+     },
+     "renderMs": {
+      "n": 52,
+      "mean": 6.65,
+      "p50": 4.1,
+      "p95": 15.2,
+      "p99": 62.4,
+      "max": 62.4
+     },
+     "wsMessageMs": {
+      "n": 61,
+      "mean": 0.28,
+      "p50": 0.3,
+      "p95": 0.6,
+      "p99": 0.9,
+      "max": 0.9
+     },
+     "wsMessages": 61,
+     "browserSeconds": {
+      "ScriptDuration": 3.843,
+      "TaskDuration": 4.701,
+      "RecalcStyleDuration": 0.003,
+      "LayoutDuration": 0.034
+     },
+     "jsHeapMB": 296.1,
+     "selection": {
+      "kind": "chamber",
+      "id": "0.2"
+     }
+    },
+    {
+     "label": "domain view, all overlays",
+     "liveStepAtEnd": 960,
+     "windowMs": 6000,
+     "displayed": {
+      "n": 329,
+      "mean": 18.13,
+      "p50": 16.7,
+      "p95": 17.7,
+      "p99": 34.3,
+      "max": 249
+     },
+     "longTasks": 0,
+     "longTaskMs": 0,
+     "panelMs": {
+      "n": 0,
+      "mean": null,
+      "p50": null,
+      "p95": null,
+      "p99": null,
+      "max": null
+     },
+     "applyMs": {
+      "n": 330,
+      "mean": 1.83,
+      "p50": 0.9,
+      "p95": 5.9,
+      "p99": 12.4,
+      "max": 17.7
+     },
+     "renderMs": {
+      "n": 330,
+      "mean": 4.24,
+      "p50": 3.8,
+      "p95": 9,
+      "p99": 11.2,
+      "max": 21.8
+     },
+     "wsMessageMs": {
+      "n": 1,
+      "mean": 1.2,
+      "p50": 1.2,
+      "p95": 1.2,
+      "p99": 1.2,
+      "max": 1.2
+     },
+     "wsMessages": 1,
+     "browserSeconds": {
+      "ScriptDuration": 3.906,
+      "TaskDuration": 4.204,
+      "RecalcStyleDuration": 0,
+      "LayoutDuration": 0.021
+     },
+     "jsHeapMB": 362.9
+    }
+   ]
+  }
+ ]
+}
