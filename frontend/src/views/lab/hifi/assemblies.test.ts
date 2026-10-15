@@ -406,3 +406,30 @@ describe('connection contrast (M8.2: idle lines dimmed so the apparatus dominate
     expect(connectionShade(1000)).toBeLessThan(1);
   });
 });
+
+describe('system B receiver points at its recorded remote sensors (M8.2)', () => {
+  it('one pickup arm per configured remote sensor, each aimed at that sensor within 1°', () => {
+    const rec = load('m7-systems-6000');
+    const spec = (rec.config as { systems: { sid: string; sensors?: string[] }[] }).systems.find((x) => x.sid === 'B')!;
+    const lab = buildLab(rec, 'high');
+    lab.apply(480, 0, { coverage: false, conduits: false, events: new Set() });
+    lab.root.updateMatrixWorld(true);
+    let hub: THREE.Object3D | null = null;
+    const pods: THREE.Vector3[] = [];
+    lab.root.traverse((o) => {
+      const sel = o.userData.sel as { kind: string; id: string } | undefined;
+      if (!sel || o.parent?.userData.sel?.id === sel.id) return;
+      if (sel.id === 'B:head') hub = o;
+      if (sel.id.startsWith('B:sensor:')) pods.push(o.getWorldPosition(new THREE.Vector3()));
+    });
+    const arms = (hub!.children.find((c) => c.userData.pickups) as THREE.Group).children;
+    expect(arms.length).toBe(spec.sensors!.length);
+    expect(pods.length).toBe(spec.sensors!.length);
+    const h = (hub as unknown as THREE.Object3D).position;
+    for (const pod of pods) {
+      const want = Math.atan2(pod.z - h.z, pod.x - h.x);
+      const best = Math.min(...arms.map((a) => { const d = Math.abs(((-a.rotation.y - want + 3 * Math.PI) % (2 * Math.PI)) - Math.PI); return d; }));
+      expect(best).toBeLessThan(Math.PI / 180);
+    }
+  });
+});

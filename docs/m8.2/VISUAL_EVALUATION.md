@@ -303,3 +303,33 @@ visible support, so knee brackets were added before acceptance.
 **Fidelity.** The core is outside every reach hull (radius ≤ 3.3 m, hulls ≥ 11.6 m) and draws no claim.
 
 **Performance.** Overview draw calls are unchanged (713), and the scene renders at 60 fps.
+
+### Change 5: system roles in the apparatus (P5, and the close-up camera)
+
+- **Before:** `01-transport-envelope/1200x866@1/15-hub.png` and `16-memory-store.png`.
+- **After:** `05-systems/1200x866@1/15-hub.png` and `16-memory-store.png`, plus 04, 07, 09, 13, 17 and 18.
+
+**System B receiver.** The three stacked rings read as a coil spring. They were replaced with one receiver ring. Its
+pickup arms are built by `aimReceiver`, one per *configured* remote sensor, each aimed at that sensor's drawn position.
+The arms are rebuilt only when the hub moves with the recorded sensor chamber. They draw no signal or activity.
+
+**System C store.** Every one of the 48 slots is now a recessed bay, which shows capacity. Each recorded memory entry is
+a cartridge seated in its bay. The cartridges are lit while the store is readable (recorded shutter) and grey
+otherwise. The filled count is still `st.memory`.
+
+**Close-up camera.** In the first capture, 15 showed the hub hidden behind a gantry column and the neighbouring store.
+`closeView` now rejects candidate positions whose line of sight to the target crosses solid geometry; the test is a
+raycast that ignores lines and transparent overlays. The chosen offset is cached per selection, so the cost is paid
+once and not on every frame. After the fix, 15 shows the mast, the ring and three of the four aimed pickups.
+
+**Mount footprint.** The hub's footprint grew, and a test caught it meeting a bay-1 floor column. Instrument mounts now
+also clear the floor-standing gantry columns.
+
+**Tests.**
+- New: the pickup-arm count equals the configured remote sensors, and each arm points at its sensor within 1°.
+- Kept: the relocation, envelope and interpenetration tests pass.
+
+**Inspection.** The store reads as an archive rack in which 7 of the 48 bays are occupied, the recorded count at m7 step
+481. The hub reads as a directional receiver.
+
+**Performance.** Every captured scene renders at 60 fps.

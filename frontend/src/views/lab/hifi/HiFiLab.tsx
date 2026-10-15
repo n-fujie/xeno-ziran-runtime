@@ -398,7 +398,8 @@ export default function HiFiLab({ rec, index, tick, playing, rate, live, control
 // ---------------------------------------------------------------------------------------------------- camera modes
 /** A close-up camera position for a target: tries viewing directions starting radially outward from the installation
  *  centre and keeps the first that is not inside any chamber housing (so the view is never blocked by a wall). */
-export function closeView(rec: LabRecord, target: THREE.Vector3, dist: number, height: number, prefer?: number): THREE.Vector3 {
+export function closeView(rec: LabRecord, target: THREE.Vector3, dist: number, height: number, prefer?: number,
+  blocked: (p: THREE.Vector3) => boolean = () => false): THREE.Vector3 {
   const out = new THREE.Vector3(target.x, 0, target.z);
   const r = out.length();
   // instruments stand outside the gantry envelopes (M8.2), on the bays' outer sides: look at them from the hall side
@@ -413,12 +414,34 @@ export function closeView(rec: LabRecord, target: THREE.Vector3, dist: number, h
     for (const k of [1, 1.35, 1.7]) {
       const a = base + da;
       const p = new THREE.Vector3(target.x + Math.cos(a) * dist * k, target.y + height * k, target.z + Math.sin(a) * dist * k);
-      if (!inside(p)) return p;
+      if (!inside(p) && !blocked(p)) return p;
     }
+  }
+  // every candidate occluded: fall back to the first one that is not inside a solid
+  for (const da of [0.55, -0.55, 0, 1.1, -1.1, 1.7, -1.7, Math.PI]) {
+    const a = base + da;
+    const p = new THREE.Vector3(target.x + Math.cos(a) * dist, target.y + height, target.z + Math.sin(a) * dist);
+    if (!inside(p)) return p;
   }
   return target.clone().add(new THREE.Vector3(0, dist + height, 0));
 }
 
+
+const viewCache = new WeakMap<Lab, Map<string, THREE.Vector3>>();
+/** True when solid geometry (not lines, not the selected object itself) lies between a camera position and the target. */
+function occluded(lab: Lab, target: THREE.Vector3): (p: THREE.Vector3) => boolean {
+  const ray = new THREE.Raycaster();
+  const shown = (o: THREE.Object3D | null): boolean => { for (let x = o; x; x = x.parent) if (!x.visible) return false; return true; };
+  return (p) => {
+    const d = target.clone().sub(p);
+    const len = d.length();
+    ray.set(p, d.normalize());
+    ray.far = len - 0.45;  // hits within 0.45 m of the target are the selected object itself
+    lab.root.updateMatrixWorld(true);
+    return ray.intersectObject(lab.root, true).some((h) => (h.object as THREE.Mesh).isMesh && shown(h.object)
+      && !((h.object as THREE.Mesh).material as THREE.Material).transparent);
+  };
+}
 
 function cameraGoal(lab: Lab, rec: LabRecord, i: number, mode: CamMode, sel: Selection | null, sysSel: string | null, domain: string,
   e: { goal: { pos: THREE.Vector3; target: THREE.Vector3 } | null; camera: THREE.PerspectiveCamera }, prime = false): void {
@@ -434,7 +457,17 @@ function cameraGoal(lab: Lab, rec: LabRecord, i: number, mode: CamMode, sel: Sel
   if (mode === 'apparatus') {
     const p = sel ? lab.focus(sel) : null;
     // a memory store is viewed along its slot face (world −x), from above the neighbouring walls; others radially
-    if (p) e.goal = { pos: sel?.kind === 'store' ? closeView(rec, p, 2.6, 1.9) : closeView(rec, p, 3.2, 1.1), target: p };
+    if (!p || !sel) return;
+    // the viewing offset is chosen once per selection (raycast occlusion test), then follows the object
+    const cache = (viewCache.get(lab) ?? viewCache.set(lab, new Map()).get(lab))!;
+    const key = `${sel.kind}:${sel.id}`;
+    let off = cache.get(key);
+    if (!off) {
+      const pos = sel.kind === 'store' ? closeView(rec, p, 2.6, 1.9, undefined, occluded(lab, p)) : closeView(rec, p, 3.2, 1.1, undefined, occluded(lab, p));
+      off = pos.sub(p);
+      cache.set(key, off);
+    }
+    e.goal = { pos: p.clone().add(off), target: p };
     return;
   }
   const s = rec.steps[i];

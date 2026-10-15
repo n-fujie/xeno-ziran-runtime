@@ -296,7 +296,8 @@ export type Mount = { x: number; z: number; face: number };
  *  by recorded carried samples). On the chamber's bay's outer side, aligned with the chamber (plus a tangential offset),
  *  at the first radial distance where a footprint of radius `rad` clears every reach hull by a carried load (0.15 m) and
  *  5 cm. `face` turns local −x towards the chamber. Records without a bay layout get null (the M3 corner placement). */
-export function instrumentMount(r: LabRecord, hulls: [number, number][][], cid: string, tangential: number, rad: number): Mount | null {
+export function instrumentMount(r: LabRecord, hulls: [number, number][][], cid: string, tangential: number, rad: number,
+  posts: [number, number][] = []): Mount | null {
   const c = r.chambers.find((x) => x.cid === cid);
   const b = r.layout?.bays[bayOf(cid)];
   if (!c || !b) return null;
@@ -308,7 +309,8 @@ export function instrumentMount(r: LabRecord, hulls: [number, number][][], cid: 
   const clearOfVessels = (x: number, z: number) => vessels.every(([vx, , vz]) => Math.hypot(Math.max(Math.abs(x - vx) - vh, 0), Math.max(Math.abs(z - vz) - vh, 0)) >= rad + 0.05);
   for (let s = 0; s < 14; s += 0.05) {
     const x = cx + t[0] * tangential + u[0] * s, z = cz + t[1] * tangential + u[1] * s;
-    if (hulls.every((h) => hullDistance(h, x, z) >= rad + 0.2) && clearOfVessels(x, z)) return { x, z, face: Math.atan2(cz - z, -(cx - x)) };
+    const clearOfPosts = posts.every(([px, pz]) => Math.hypot(x - px, z - pz) >= rad + 0.3);  // floor columns with base plates
+    if (hulls.every((h) => hullDistance(h, x, z) >= rad + 0.2) && clearOfVessels(x, z) && clearOfPosts) return { x, z, face: Math.atan2(cz - z, -(cx - x)) };
   }
   return null;
 }
@@ -452,24 +454,45 @@ const SLOTS = 48;
 
 /** Observation and memory apparatus of a scientific system (layer B): the sensor head / hub sits at the recorded sensor
  *  chamber; coverage is the recorded set of observed chambers; the store shows the recorded number of memory entries. */
+const RECEIVER_Y = 0.98;
+/** Point a distributed system's receiver pickups at its remote sensors (recorded configuration): one arm per sensor,
+ *  rebuilt only when the hub has moved. The arms show where its observations come from; they draw no signal. */
+export function aimReceiver(head: THREE.Object3D, targets: THREE.Vector3[], p: Palette): void {
+  const g = head.children.find((c) => c.userData.pickups) as THREE.Group | undefined;
+  if (!g) return;
+  const key = `${head.position.x.toFixed(3)},${head.position.z.toFixed(3)}`;
+  if (g.userData.key === key) return;
+  g.userData.key = key;
+  g.clear();
+  for (const t of targets) {
+    const a = Math.atan2(t.z - head.position.z, t.x - head.position.x);
+    const arm = new THREE.Group();
+    arm.add(box(0.2, 0.025, 0.025, p.darkSteel, 0.32, 0, 0));
+    const dish = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.035, 0.03, 16), p.louvre);
+    dish.rotation.z = -Math.PI / 2;
+    dish.position.x = 0.44;
+    arm.add(dish);
+    arm.rotation.y = -a;
+    arm.position.y = RECEIVER_Y;
+    g.add(arm);
+  }
+  g.traverse((o) => { o.userData = { ...head.userData, ...o.userData }; });
+}
+
 export function systemAssembly(sid: string, kind: string, k: number, p: Palette, storeCid: string | null, storePos: V3 | null): SystemParts {
   const group = new THREE.Group();
   const head = new THREE.Group();
   if (kind === 'distributed') {  // hub: receiver tower — base cabinet, mast, stacked receiver rings, cap
     head.add(box(0.34, 0.42, 0.34, p.graphite, 0, 0.21, 0), box(0.36, 0.03, 0.36, p.darkSteel, 0, 0.43, 0));
     head.add(cyl(0.05, 0.75, p.darkSteel, 0, 0.8, 0, 10));
-    for (const [y, r] of [[0.75, 0.2], [0.93, 0.17], [1.1, 0.14]] as [number, number][]) {
-      const ring = new THREE.Mesh(new THREE.TorusGeometry(r, 0.022, 6, 24), p.steel);
-      ring.rotation.x = Math.PI / 2;
-      ring.position.y = y;
-      head.add(ring);
-      for (let a = 0; a < 3; a++) {  // ring spokes
-        const sp = box(r, 0.012, 0.012, p.darkSteel, Math.cos((a * 2 * Math.PI) / 3) * r / 2, y, Math.sin((a * 2 * Math.PI) / 3) * r / 2);
-        sp.rotation.y = -(a * 2 * Math.PI) / 3;
-        head.add(sp);
-      }
-    }
-    head.add(cyl(0.07, 0.06, p.steel, 0, 1.2, 0, 12));
+    // one receiver ring; its pickup arms are aimed at the recorded remote sensors (aimReceiver), one arm per sensor
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(0.22, 0.025, 8, 32), p.steel);
+    ring.rotation.x = Math.PI / 2;
+    ring.position.y = RECEIVER_Y;
+    head.add(ring, cyl(0.09, 0.08, p.graphite, 0, RECEIVER_Y, 0, 12), cyl(0.07, 0.06, p.steel, 0, 1.2, 0, 12));
+    const pickups = new THREE.Group();
+    pickups.userData.pickups = true;
+    head.add(pickups);
   } else {  // sensor post on the chamber corner with a short inward boom; the pod stays outside the sample spots the
     // tool visits (spots at ±0.65 m from the centre), above the walls, so it never stands where the carriage moves
     const post = box(0.08, 1.22, 0.08, p.darkSteel, 0, 0.61, 0);
@@ -509,10 +532,17 @@ export function systemAssembly(sid: string, kind: string, k: number, p: Palette,
     store.add(box(0.32, 1.16, 1.2, p.graphite, 0, FLOOR_Y + 0.58, 0));
     for (const z of [-0.6, 0.6]) store.add(box(0.36, 1.2, 0.04, p.darkSteel, 0, FLOOR_Y + 0.6, z));  // frame
     store.add(box(0.36, 0.05, 1.24, p.darkSteel, 0, FLOOR_Y + 1.2, 0), box(0.36, 0.08, 1.24, p.darkSteel, 0, FLOOR_Y + 0.04, 0));
-    const mats: THREE.Matrix4[] = [];
-    // outward face; filled from the top row down, so the recorded entries stay visible above the neighbouring walls
-    for (let i = 0; i < SLOTS; i++) mats.push(M(-0.17, FLOOR_Y + 1.08 - Math.floor(i / 6) * 0.135, -0.45 + (i % 6) * 0.18, 0, 1, 1, 1));
-    slots = instanced(new THREE.BoxGeometry(0.02, 0.1, 0.13), p.glow.clone(), mats);
+    const mats: THREE.Matrix4[] = [], bays: THREE.Matrix4[] = [];
+    // slot face (local −x, turned towards the chamber); filled from the top row down. Every slot is a recessed bay
+    // (capacity); a recorded memory entry is a cartridge seated in its bay, lit while the store is readable
+    for (let i = 0; i < SLOTS; i++) {
+      const y = FLOOR_Y + 1.08 - Math.floor(i / 6) * 0.135, z = -0.45 + (i % 6) * 0.18;
+      bays.push(M(-0.162, y, z));
+      mats.push(M(-0.175, y, z));
+    }
+    store.add(instanced(new THREE.BoxGeometry(0.012, 0.112, 0.158), p.darkSteel, bays));
+    slots = instanced(new THREE.BoxGeometry(0.05, 0.085, 0.13), p.glow.clone(), mats);
+    (slots.material as THREE.MeshStandardMaterial).color.setHex(0x8a8a90);
     (slots.material as THREE.MeshStandardMaterial).emissiveIntensity = 1.2;
     store.add(slots);
     tag(store, 'B', 2, `system ${sid} memory store (filled slots: recorded entries)`, { kind: 'store', id: `${sid}:store` });
@@ -936,11 +966,19 @@ export function buildLab(r: LabRecord, q: Quality): Lab {
   const sps = specs(r);
   const systems = new Map<string, SystemParts>();
   const allHulls = r.layout ? Object.keys(r.layout.bays).map((b) => reachHull(r, b)) : [];
-  const MOUNT = { head: [-0.55, 0.8], hub: [0.5, 0.32], pod: [0.5, 0.22], store: [0, 1.75] } as const;  // tangential, footprint
+  const MOUNT = { head: [-0.55, 0.8], hub: [0.5, 0.55], pod: [0.5, 0.22], store: [0, 1.75] } as const;  // tangential, footprint
+  const posts: [number, number][] = [];  // floor-standing gantry columns (corners not hung from the ceiling)
+  for (const b of r.layout ? Object.keys(r.layout.bays) : []) {
+    const e = bayEnvelope(r, b);
+    const others = Object.keys(r.layout!.bays).filter((b2) => b2 !== b).map((b2) => reachHull(r, b2));
+    for (const [cx, cz] of [[e.x0, e.y0], [e.x0, e.y1], [e.x1, e.y0], [e.x1, e.y1]] as [number, number][]) {
+      if (!others.some((h) => hullDistance(h, cx, cz) < 1.1)) posts.push([cx, cz]);
+    }
+  }
   const mountCache = new Map<string, Mount | null>();
   const mount = (cid: string, what: keyof typeof MOUNT): Mount | null => {
     const k = `${cid}|${what}`;
-    if (!mountCache.has(k)) mountCache.set(k, instrumentMount(r, allHulls, cid, MOUNT[what][0], MOUNT[what][1]));
+    if (!mountCache.has(k)) mountCache.set(k, instrumentMount(r, allHulls, cid, MOUNT[what][0], MOUNT[what][1], posts));
     return mountCache.get(k)!;
   };
   sps.forEach((s, k) => {
@@ -952,6 +990,7 @@ export function buildLab(r: LabRecord, q: Quality): Lab {
     pickables.push(sp.head);
     if (sp.store) pickables.push(sp.store);
   });
+  const podPositions = new Map<string, THREE.Vector3[]>();
   if (sps.some((s) => s.kind === 'distributed')) {  // remote sensor pods of distributed systems at their sensor chambers
     for (const s of sps.filter((x) => x.kind === 'distributed')) {
       for (const c of s.sensors ?? []) {
@@ -967,6 +1006,9 @@ export function buildLab(r: LabRecord, q: Quality): Lab {
         if (pm) pod.position.set(pm.x, 0, pm.z);  // outside every reach envelope, on the bay's outer side of its chamber
         else pod.position.set(x + 0.5, 0, z + PHYS.CH + 0.4);
         tag(pod, 'B', 2, `system ${s.sid} remote sensor at ${c}`, { kind: 'sensor', id: `${s.sid}:sensor:${c}` });
+        const list = podPositions.get(s.sid) ?? [];
+        list.push(pod.position.clone());
+        podPositions.set(s.sid, list);
         root.add(pod);
         pickables.push(pod);
       }
@@ -1018,6 +1060,7 @@ export function buildLab(r: LabRecord, q: Quality): Lab {
         if (!st || !sp) return;
         const storeOpen = spec.store ? (s.shutter[cidIdx.get(spec.store) ?? -1] ?? 1) >= 0.5 : true;
         applySystem(sp, st, k, chamberPos, storeOpen, opts.coverage, spec.kind, mount);
+        if (spec.kind === 'distributed') aimReceiver(sp.head, podPositions.get(spec.sid) ?? [], p);
       });
     }
     conduitGroup.visible = opts.conduits;
