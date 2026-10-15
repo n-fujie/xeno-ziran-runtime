@@ -215,6 +215,14 @@ export default function LabView() {
     wsRef.current = ws;
     let coalesced = 0;
     ws.onmessage = (ev) => {
+      const t0 = performance.now();
+      try { handle(ev); } finally {  // message handling time (live profiling)
+        const w = window as unknown as { __labWs?: { ms: number }[] };
+        (w.__labWs ??= []).push({ ms: performance.now() - t0 });
+        if (w.__labWs.length > 5000) w.__labWs.splice(0, 2500);
+      }
+    };
+    const handle = (ev: MessageEvent) => {
       const m = JSON.parse(ev.data as string);
       if (m.type === 'hello') {
         const r: LabRecord = { schema: (m.config.partition || m.config.harness?.length ? 'xzr.labrun/3' : m.config.systems ? 'xzr.labrun/2' : 'xzr.labrun/1'),

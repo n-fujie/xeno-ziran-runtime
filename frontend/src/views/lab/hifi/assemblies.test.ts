@@ -106,3 +106,20 @@ describe('backward compatibility with earlier record schemas', () => {
     }
   });
 });
+
+describe('connection terminals stay clear of every gantry part over the whole record', () => {
+  it('the highest point any rail, bridge, trolley, mast or carriage reaches is below the terminals', async () => {
+    const { TERMINAL_Y } = await import('./assemblies');
+    const lab = buildLab(SEP, 'high');
+    let top = -Infinity;
+    for (let i = 0; i < SEP.steps.length; i += 7) {
+      lab.apply(i, 0, { coverage: false, conduits: false, events: new Set() });
+      lab.root.updateMatrixWorld(true);
+      for (const o of lab.layers.A) {
+        if (o.userData.sel?.kind !== 'gantry') continue;
+        top = Math.max(top, new THREE.Box3().setFromObject(o).max.y);
+      }
+    }
+    expect(top).toBeLessThan(TERMINAL_Y - 0.1);
+  });
+});

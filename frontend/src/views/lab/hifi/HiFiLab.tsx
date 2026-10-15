@@ -50,7 +50,7 @@ export default function HiFiLab({ rec, index, tick, playing, rate, live, control
     return { kind: kind as Selection['kind'], id: id.join(':') };
   });
   const [sysSel, setSysSel] = useState<string | null>(() => url.get('sys'));
-  const [evSel, setEvSel] = useState<string | null>(null);
+  const [evSel, setEvSel] = useState<string | null>(() => url.get('ev'));
   const [perf, setPerf] = useState<Perf | null>(null);
   const engine = useRef<{ lab: Lab; renderer: THREE.WebGLRenderer; camera: THREE.PerspectiveCamera; controls: OrbitControls;
     goal: { pos: THREE.Vector3; target: THREE.Vector3 } | null } | null>(null);
@@ -112,8 +112,12 @@ export default function HiFiLab({ rec, index, tick, playing, rate, live, control
     }
     const camera = new THREE.PerspectiveCamera(42, el.clientWidth / Math.max(1, el.clientHeight), 0.1, 300);
     camera.position.set(30, 26, 34);
+    const urlPos = (k: string) => { const v = new URLSearchParams(location.search).get(k)?.split(',').map(Number); return v?.length === 3 && v.every(Number.isFinite) ? v as [number, number, number] : null; };
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.target.set(0, 1.5, 0);
+    const cp = urlPos('campos'), ct = urlPos('target');
+    if (cp) camera.position.set(...cp);
+    if (ct) controls.target.set(...ct);
     controls.enableDamping = true;
     controls.dampingFactor = 0.08;
     controls.maxPolarAngle = Math.PI * 0.495;
@@ -124,6 +128,12 @@ export default function HiFiLab({ rec, index, tick, playing, rate, live, control
     engine.current = { lab, renderer, camera, controls, goal: null };
     (window as unknown as { __labHiFi?: unknown }).__labHiFi = { lab, rec, renderer, scene, camera,
       /** Browser-level check of the rendered scene graph against the record at the displayed step. */
+      prof: { panelMs: [] as number[], applyMs: [] as number[], renderMs: [] as number[], frameMs: [] as number[] },
+      state: () => ({ cam: live_.current.cam, sel: live_.current.sel, sys: live_.current.sysSel, domain: live_.current.domain,
+        layers: live_.current.layers, quality: q, step: rec.steps[Math.min(live_.current.index, rec.steps.length - 1)]?.t,
+        index: live_.current.index, camera: camera.position.toArray().map((v) => +v.toFixed(3)),
+        target: controls.target.toArray().map((v) => +v.toFixed(3)), pixelRatio: renderer.getPixelRatio(),
+        canvas: [renderer.domElement.width, renderer.domElement.height] }),
       selfTest: () => {
         const i = Math.min(live_.current.index, rec.steps.length - 1);
         lab.apply(i, 0, { coverage: true, conduits: true, events: new Set() });
@@ -188,14 +198,18 @@ export default function HiFiLab({ rec, index, tick, playing, rate, live, control
     let last = performance.now(), lastReport = last;
     const loop = () => {
       const now = performance.now();
-      frameMs.push(now - last);
+      const dt = now - last;
+      frameMs.push(dt);
       last = now;
       const L = live_.current;
       const n = rec.steps.length;
       const i = Math.min(L.index, n - 1);
       // rendering-only interpolation toward the next recorded step while a replay plays
       const frac = L.playing && !live && i + 1 < n ? Math.min(1, ((now - L.changedAt) / 1000) * L.rate) : 0;
+      const tA = performance.now();
       lab.apply(i, frac, { coverage: L.overlay.coverage && L.layers.B, conduits: L.overlay.conduits && L.layers.B, events: L.events });
+      const prof = (window as unknown as { __labHiFi?: { prof?: Record<string, number[]> } }).__labHiFi?.prof;
+      prof?.applyMs.push(performance.now() - tA);
       for (const k of ['A', 'B', 'C'] as Layer[]) for (const o of lab.layers[k]) o.visible = L.layers[k];
       for (const o of lab.layers.C) if (o.userData.cutawayAbove !== undefined && camera.position.y > o.userData.cutawayAbove) o.visible = false;
       cameraGoal(lab, rec, i, L.cam, L.sel, L.sysSel, L.domain, engine.current!);
@@ -207,7 +221,11 @@ export default function HiFiLab({ rec, index, tick, playing, rate, live, control
         if (camera.position.distanceTo(g.pos) < 0.05 && L.cam !== 'operation' && L.cam !== 'transfer') engine.current!.goal = null;
       }
       controls.update();
+      const tR = performance.now();
       renderer.render(scene, camera);
+      prof?.renderMs.push(performance.now() - tR);
+      prof?.frameMs.push(dt);
+      if (prof && prof.renderMs.length > 4000) for (const k of Object.keys(prof)) prof[k].splice(0, 2000);
       (window as unknown as { __labHiFiFrames?: number }).__labHiFiFrames = ((window as unknown as { __labHiFiFrames?: number }).__labHiFiFrames ?? 0) + 1;
       if (now - lastReport > 1000) {
         const ms = frameMs.splice(0).slice(1).sort((a, b) => a - b);
@@ -244,6 +262,7 @@ export default function HiFiLab({ rec, index, tick, playing, rate, live, control
   function primeGoal() { const e = engine.current; if (e) cameraGoal(e.lab, rec, index, cam, sel, sysSel, domain, e, true); }
 
   // ---------------------------------------------------------------------------------------------- panels
+  const tPanel = performance.now();
   const sysList = specs(rec);
   const activeSys = sysSel ?? sysList[0]?.sid ?? null;
   const lv = activeSys ? levels(rec, index, activeSys) : null;
@@ -255,6 +274,8 @@ export default function HiFiLab({ rec, index, tick, playing, rate, live, control
   const evs = allEvents(rec).filter((e) => e.t <= t && e.type !== 'leg_complete' && e.type !== 'variable_candidate').slice(-40).reverse();
   const prov = evSel ? provenance(rec, evSel) : null;
   const domains = Object.keys(rec.layout?.bays ?? {});
+  const compare = sysList.map((s) => ({ sid: s.sid, kind: s.kind, lv: levels(rec, index, s.sid) }));
+  (window as unknown as { __labHiFi?: { prof?: Record<string, number[]> } }).__labHiFi?.prof?.panelMs.push(performance.now() - tPanel);
 
   return (
     <div className="lab hifi">
@@ -296,6 +317,11 @@ export default function HiFiLab({ rec, index, tick, playing, rate, live, control
             <tr><td>executed: delivered (so far)</td><td>{lv.executed.length}</td></tr>
           </tbody></table>}
           {ign.length > 0 && <div className="mono dim">ignition (derived): {ign.join(', ')} became accessible at t{t}</div>}
+          {compare.length > 1 && <table className="hifi-levels mono" data-testid="hifi-compare"><tbody>
+            <tr><td>system</td><td>observes</td><td>accessible</td><td>selected</td><td>delivered</td></tr>
+            {compare.map((c) => <tr key={c.sid}><td>{c.sid} {c.kind}</td><td>{c.lv?.observed.length ?? '—'}</td><td>{c.lv?.accessible.length ?? '—'}</td>
+              <td>{c.lv?.selected.length ?? '—'}</td><td>{c.lv?.executed.length ?? '—'}</td></tr>)}
+          </tbody></table>}
           <div className="dim">The three systems share one decision rule; they differ in observation, reach, memory, isolation and
             resources (configuration-dependent heterogeneity, M4).</div>
         </>}

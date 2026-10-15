@@ -436,21 +436,71 @@ export function applySystem(sp: SystemParts, st: SystemState, k: number, chamber
 }
 
 // ------------------------------------------------------------------------------------------------------ conduits
-/** Runtime connections between chambers (layer B, category 3): one overhead cable per connected pair, thickness from
- *  the recorded count. The route is drawn high over the installation; only its end points carry meaning. */
-export function conduitMesh(a: V3, b: V3, p: Palette): THREE.Mesh {
-  // rises from the chamber's instrument corner to the cable level above the gantry rails, runs across, drops again
-  const off = new THREE.Vector3(-PHYS.CH - 0.1, 0, PHYS.CH + 0.1);
-  const pa = new THREE.Vector3(...chamberFloor(a)).add(off).setY(FLOOR_Y + PHYS.WALL_H + 0.25);
-  const pb = new THREE.Vector3(...chamberFloor(b)).add(off).setY(FLOOR_Y + PHYS.WALL_H + 0.25);
-  const d = pa.distanceTo(pb);
-  const lvl = 4.75 + Math.min(1.1, d * 0.035);
-  const mid = pa.clone().add(pb).multiplyScalar(0.5).setY(lvl + 0.25);
-  const up = (v: THREE.Vector3) => v.clone().setY(lvl);
-  const curve = new THREE.CatmullRomCurve3([pa, up(pa), mid, up(pb), pb], false, 'catmullrom', 0.2);
-  const m = new THREE.Mesh(new THREE.TubeGeometry(curve, 40, 0.014, 4, false), p.cable.clone());
-  tag(m, 'B', 3, 'runtime connection (recorded)');
-  return m;
+/** Runtime connections between chambers (layer B, category 3). Each chamber has one connection terminal hung from the
+ *  ceiling directly above it, at TERMINAL_Y — clear above every gantry part (rails 3.45 m, bridges up to 3.7 m), so no
+ *  representation crosses a moving apparatus. Connections are drawn between terminals as gently sagging lines (one
+ *  draw call); brightness encodes the recorded count, and a recorded event brightens its connection. Only the end
+ *  points carry meaning: the drawn route is a representation. */
+export const TERMINAL_Y = 4.85;
+const SEG = 10;
+
+export type ConduitParts = { terminals: THREE.Group; lines: THREE.LineSegments; update: (conduits: Record<string, number>, hot: Set<string>) => void };
+
+export function conduitAssembly(chamberPos: Map<string, V3>, p: Palette): ConduitParts {
+  const terminals = new THREE.Group();
+  const ids = [...chamberPos.keys()];
+  const disc: THREE.Matrix4[] = [], hang: THREE.Matrix4[] = [];
+  const top = new Map<string, THREE.Vector3>();
+  for (const cid of ids) {
+    const [x, , z] = chamberFloor(chamberPos.get(cid)!);
+    top.set(cid, new THREE.Vector3(x, TERMINAL_Y, z));
+    disc.push(M(x, TERMINAL_Y, z));
+    hang.push(M(x, (TERMINAL_Y + 7.85) / 2, z));
+  }
+  terminals.add(instanced(new THREE.CylinderGeometry(0.2, 0.24, 0.08, 6), p.darkSteel, disc));
+  terminals.add(instanced(new THREE.BoxGeometry(0.025, 7.85 - TERMINAL_Y, 0.025), p.darkSteel, hang));
+  tag(terminals, 'B', 3, 'connection terminals (one per chamber, above it)');
+  const cap = ids.length * ids.length / 2;
+  const pos = new Float32Array(cap * SEG * 2 * 3), col = new Float32Array(cap * SEG * 2 * 3);
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3).setUsage(THREE.DynamicDrawUsage));
+  geo.setAttribute('color', new THREE.BufferAttribute(col, 3).setUsage(THREE.DynamicDrawUsage));
+  geo.setDrawRange(0, 0);
+  const lines = new THREE.LineSegments(geo, new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.9 }));
+  lines.frustumCulled = false;
+  tag(lines, 'B', 3, 'runtime connections (recorded)');
+  let key = '';
+  const update = (conduits: Record<string, number>, hot: Set<string>) => {
+    const k = JSON.stringify(conduits) + [...hot].sort().join(',');
+    if (k === key) return;  // geometry only rebuilt when the recorded connections or highlights change
+    key = k;
+    let v = 0;
+    const a = new THREE.Vector3(), b = new THREE.Vector3(), q = new THREE.Vector3();
+    for (const [pair, n] of Object.entries(conduits)) {
+      const [ca, cb] = pair.split('|');
+      const pa = top.get(ca), pb = top.get(cb);
+      if (!pa || !pb || v + SEG * 2 > cap * SEG * 2) continue;
+      const sag = Math.min(0.9, 0.035 * pa.distanceTo(pb));
+      const c = hot.has(pair) ? 1 : Math.min(0.46, 0.17 + 0.05 * n);
+      for (let k2 = 0; k2 < SEG; k2++) {
+        for (const [u, out] of [[k2 / SEG, a], [(k2 + 1) / SEG, b]] as [number, THREE.Vector3][]) {
+          out.lerpVectors(pa, pb, u);
+          out.y -= sag * 4 * u * (1 - u);
+        }
+        for (const w of [a, b]) {
+          q.copy(w);
+          pos.set([q.x, q.y, q.z], v * 3);
+          col.set([c, c, c], v * 3);
+          v++;
+        }
+      }
+    }
+    geo.setDrawRange(0, v);
+    geo.attributes.position.needsUpdate = true;
+    geo.attributes.color.needsUpdate = true;
+    lines.userData.pairs = Object.keys(conduits).length;
+  };
+  return { terminals, lines, update };
 }
 
 // ------------------------------------------------------------------------------------------------------ architecture
@@ -695,8 +745,9 @@ export function buildLab(r: LabRecord, q: Quality): Lab {
     }
   }
   const conduitGroup = new THREE.Group();
+  const conduitParts = conduitAssembly(chamberPos, p);
+  conduitGroup.add(conduitParts.terminals, conduitParts.lines);
   root.add(conduitGroup);
-  const conduits = new Map<string, THREE.Mesh>();
   const cidIdx = new Map(r.chambers.map((c, k) => [c.cid, k]));
   const stepT = new Map(r.steps.map((s, k) => [s.t, k]));
   void stepT;
@@ -742,25 +793,7 @@ export function buildLab(r: LabRecord, q: Quality): Lab {
       });
     }
     conduitGroup.visible = opts.conduits;
-    if (opts.conduits) {
-      const live = new Set(Object.keys(s.conduits));
-      for (const [key, n] of Object.entries(s.conduits)) {
-        let m = conduits.get(key);
-        if (!m) {
-          const [a, b] = key.split('|');
-          const pa = chamberPos.get(a), pb = chamberPos.get(b);
-          if (!pa || !pb) continue;
-          m = conduitMesh(pa, pb, p);
-          m.userData.pair = key;
-          conduits.set(key, m);
-          conduitGroup.add(m);
-        }
-        m.visible = true;
-        m.scale.setScalar(1);
-        (m.material as THREE.MeshStandardMaterial).emissiveIntensity = opts.events.has(key) ? 1.4 : Math.min(0.12, 0.02 * n);
-      }
-      for (const [key, m] of conduits) if (!live.has(key)) m.visible = false;
-    }
+    if (opts.conduits) conduitParts.update(s.conduits, new Set(Object.keys(s.conduits).filter((k) => opts.events.has(k))));
   };
 
   const focus: Lab['focus'] = (sel) => {
@@ -786,7 +819,7 @@ export function buildLab(r: LabRecord, q: Quality): Lab {
       out[`activity:${k}`] = [(c.activity.material as THREE.MeshStandardMaterial).emissiveIntensity, c.memory.scale.y];
     }
     for (const [k, sp] of systems) out[`system:${k}`] = [...sp.head.position.toArray(), sp.coverage.children.length, sp.slots?.count ?? -1, sp.pending.children.length];
-    for (const [k, m] of conduits) if (m.visible) out[`conduit:${k}`] = [(m.material as THREE.MeshStandardMaterial).emissiveIntensity];
+    out.conduits = [conduitParts.lines.userData.pairs ?? 0, conduitParts.lines.geometry.drawRange.count];
     return out;
   };
 
