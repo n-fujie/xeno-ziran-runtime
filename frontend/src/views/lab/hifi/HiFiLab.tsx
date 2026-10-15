@@ -398,9 +398,9 @@ export default function HiFiLab({ rec, index, tick, playing, rate, live, control
 // ---------------------------------------------------------------------------------------------------- camera modes
 /** A close-up camera position for a target: tries viewing directions starting radially outward from the installation
  *  centre and keeps the first that is not inside any chamber housing (so the view is never blocked by a wall). */
-export function closeView(rec: LabRecord, target: THREE.Vector3, dist: number, height: number): THREE.Vector3 {
+export function closeView(rec: LabRecord, target: THREE.Vector3, dist: number, height: number, prefer?: number): THREE.Vector3 {
   const out = new THREE.Vector3(target.x, 0, target.z);
-  const base = out.lengthSq() > 1e-6 ? Math.atan2(out.z, out.x) : 0;
+  const base = prefer ?? (out.lengthSq() > 1e-6 ? Math.atan2(out.z, out.x) : 0);
   const inside = (p: THREE.Vector3) => rec.chambers.some((c) => Math.abs(p.x - c.position[0]) < 1.75 && Math.abs(p.z - c.position[2]) < 1.75)
     && p.y < 1.4;
   for (const da of [0.55, -0.55, 0, 1.1, -1.1, 1.7, -1.7, Math.PI]) {
@@ -427,7 +427,8 @@ function cameraGoal(lab: Lab, rec: LabRecord, i: number, mode: CamMode, sel: Sel
   }
   if (mode === 'apparatus') {
     const p = sel ? lab.focus(sel) : null;
-    if (p) e.goal = { pos: closeView(rec, p, 3.2, 1.1), target: p };  // below the gantry rails (3.45 m)
+    // a memory store is viewed along its slot face (world −x), from above the neighbouring walls; others radially
+    if (p) e.goal = { pos: sel?.kind === 'store' ? closeView(rec, p, 2.6, 1.9, Math.PI) : closeView(rec, p, 3.2, 1.1), target: p };
     return;
   }
   const s = rec.steps[i];

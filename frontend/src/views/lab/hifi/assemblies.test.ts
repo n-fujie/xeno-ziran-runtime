@@ -123,3 +123,25 @@ describe('connection terminals stay clear of every gantry part over the whole re
     expect(top).toBeLessThan(TERMINAL_Y - 0.1);
   });
 });
+
+describe('system apparatus never interpenetrate (found in screenshots: a remote sensor inside the hub)', () => {
+  it('no two sensor heads, hubs, remote sensors or stores overlap, at sampled steps of every published record', () => {
+    for (const name of ['m7-systems-6000', 'm9-separated-resources-7000', 'm9-extinction-relocation-7000']) {
+      const rec = load(name);
+      const lab = buildLab(rec, 'high');
+      for (let i = 0; i < rec.steps.length; i += 60) {
+        lab.apply(i, 0, { coverage: false, conduits: false, events: new Set() });
+        lab.root.updateMatrixWorld(true);
+        const parts: { id: string; box: THREE.Box3 }[] = [];
+        lab.root.traverse((o) => {
+          const s = o.userData.sel as { kind: string; id: string } | undefined;
+          if (s && (s.kind === 'sensor' || s.kind === 'store') && o.parent?.userData.sel?.id !== s.id) parts.push({ id: s.id, box: new THREE.Box3().setFromObject(o) });
+        });
+        expect(parts.length).toBeGreaterThan(0);
+        for (let a = 0; a < parts.length; a++) for (let b = a + 1; b < parts.length; b++) {
+          expect(parts[a].box.intersectsBox(parts[b].box), `${name} step ${i}: ${parts[a].id} vs ${parts[b].id}`).toBe(false);
+        }
+      }
+    }
+  });
+});

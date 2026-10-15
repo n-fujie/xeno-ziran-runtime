@@ -69,6 +69,8 @@ const SCENES = [
   { name: '10-extinction', rec: 'm9-extinction-relocation-7000', step: idx(EXT, ext.t + 120), cam: 'domain', domain: '0', note: 'inside the extinct interval (M9-C definition)' },
   { name: '11-reignition', rec: 'm9-extinction-relocation-7000', step: idx(EXT, reign), cam: 'domain', domain: '0', note: `first delivery after the extinct interval, t${reign}` },
   { name: '12-history-provenance', rec: 'm7-systems-6000', step: idx(M7, memEv.t), cam: 'apparatus', sel: `chamber:${memEv.dst}`, sys: memEv.system, ev: `science:${memSel}`, note: `selection with basis = memory (recorded), science:${memSel}, t${memEv.t}` },
+  { name: '15-hub', rec: 'm7-systems-6000', step: 480, cam: 'apparatus', sel: 'sensor:B:head', sys: 'B', note: 'system B hub (distributed system)' },
+  { name: '16-memory-store', rec: 'm7-systems-6000', step: 480, cam: 'apparatus', sel: 'store:C:store', sys: 'C', note: 'system C memory store; filled slots = recorded memory entries' },
   { name: '13-system-comparison', rec: 'm7-systems-6000', step: 480, cam: 'free', campos: [b0[0] + 9, 9, b0[1] + 13], target: [b0[0] - 3, 0.8, b0[1] + 5], note: 'systems A, B, C with their observed chambers (comparison table in the panel)' },
 ];
 

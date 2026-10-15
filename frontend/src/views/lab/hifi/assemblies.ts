@@ -318,30 +318,46 @@ const SLOTS = 48;
 export function systemAssembly(sid: string, kind: string, k: number, p: Palette, storeCid: string | null, storePos: V3 | null): SystemParts {
   const group = new THREE.Group();
   const head = new THREE.Group();
-  if (kind === 'distributed') {  // hub: mast with a receiver array
-    head.add(box(0.12, 1.6, 0.12, p.darkSteel, 0, 0.8, 0));
-    for (let a = 0; a < 6; a++) {
-      const arm = box(0.5, 0.04, 0.04, p.steel, Math.cos((a * Math.PI) / 3) * 0.25, 1.62, Math.sin((a * Math.PI) / 3) * 0.25);
-      arm.rotation.y = -(a * Math.PI) / 3;
-      head.add(arm);
+  if (kind === 'distributed') {  // hub: receiver tower — base cabinet, mast, stacked receiver rings, cap
+    head.add(box(0.34, 0.42, 0.34, p.graphite, 0, 0.21, 0), box(0.36, 0.03, 0.36, p.darkSteel, 0, 0.43, 0));
+    head.add(cyl(0.05, 1.5, p.darkSteel, 0, 1.15, 0, 10));
+    for (const [y, r] of [[1.05, 0.2], [1.32, 0.17], [1.59, 0.14]] as [number, number][]) {
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(r, 0.022, 6, 24), p.steel);
+      ring.rotation.x = Math.PI / 2;
+      ring.position.y = y;
+      head.add(ring);
+      for (let a = 0; a < 3; a++) {  // ring spokes
+        const sp = box(r, 0.012, 0.012, p.darkSteel, Math.cos((a * 2 * Math.PI) / 3) * r / 2, y, Math.sin((a * 2 * Math.PI) / 3) * r / 2);
+        sp.rotation.y = -(a * 2 * Math.PI) / 3;
+        head.add(sp);
+      }
     }
-    head.add(cyl(0.16, 0.08, p.steel, 0, 1.7, 0, 16));
+    head.add(cyl(0.07, 0.06, p.steel, 0, 1.93, 0, 12));
   } else {  // sensor post on the chamber corner with a short inward boom; the pod stays outside the sample spots the
     // tool visits (spots at ±0.65 m from the centre), above the walls, so it never stands where the carriage moves
     const post = box(0.08, 1.75, 0.08, p.darkSteel, 0, 0.875, 0);
-    const boom = new THREE.Group();
-    boom.add(box(0.5, 0.06, 0.06, p.darkSteel, -0.25, 0, 0));
-    const pod = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.13, 0.22, 12), p.steel);
-    pod.position.set(-0.5, -0.1, 0);
-    pod.rotation.z = -0.5;
-    const lens = new THREE.Mesh(new THREE.CircleGeometry(0.07, 16), p.glow.clone());
-    lens.position.set(-0.55, -0.2, 0);
-    lens.rotation.set(Math.PI / 2 + 0.5, 0, 0);
+    const base = box(0.2, 0.08, 0.2, p.graphite, 0, 0.04, 0);
+    const boom = new THREE.Group();  // two-segment articulated boom with joints, hooded optical pod at its end
+    const j1 = new THREE.Mesh(new THREE.SphereGeometry(0.055, 12, 8), p.steel);
+    const seg1 = box(0.34, 0.05, 0.05, p.darkSteel, -0.17, 0, 0);
+    const j2 = new THREE.Mesh(new THREE.SphereGeometry(0.045, 12, 8), p.steel);
+    j2.position.set(-0.34, 0, 0);
+    const seg2 = box(0.24, 0.045, 0.045, p.darkSteel, -0.44, -0.07, 0);
+    seg2.rotation.z = 0.55;
+    const pod = new THREE.Mesh(new THREE.CylinderGeometry(0.075, 0.075, 0.22, 16), p.steel);
+    pod.position.set(-0.56, -0.19, 0);
+    pod.rotation.z = 0.9;
+    const hood = new THREE.Mesh(new THREE.CylinderGeometry(0.095, 0.085, 0.06, 16, 1, true), p.graphite);
+    hood.position.set(-0.62, -0.26, 0);
+    hood.rotation.z = 0.9;
+    const lens = new THREE.Mesh(new THREE.CircleGeometry(0.06, 16), p.glow.clone());
+    lens.position.set(-0.64, -0.28, 0);
+    lens.rotation.set(0, Math.PI / 2, 0.9 - Math.PI / 2);
     (lens.material as THREE.MeshStandardMaterial).emissiveIntensity = 0.9;
-    boom.add(pod, lens);
-    boom.position.y = 1.72;
+    boom.add(j1, seg1, j2, seg2, pod, hood, lens);
+    boom.position.y = 1.74;
     boom.rotation.y = -Math.PI / 4;  // pointing into the chamber from its (+x, −z) corner
-    head.add(post, boom);
+    head.add(base, post, boom);
   }
   tag(head, 'B', 2, kind === 'distributed' ? `system ${sid} hub` : `system ${sid} sensor head`, { kind: 'sensor', id: `${sid}:head` });
   group.add(head);
@@ -354,8 +370,11 @@ export function systemAssembly(sid: string, kind: string, k: number, p: Palette,
     const [x, , z] = chamberFloor(storePos);
     store.position.set(x - PHYS.CH - 0.36, 0, z);
     store.add(box(0.32, 1.9, 1.2, p.graphite, 0, FLOOR_Y + 0.95, 0));
+    for (const z of [-0.6, 0.6]) store.add(box(0.36, 1.96, 0.04, p.darkSteel, 0, FLOOR_Y + 0.98, z));  // frame
+    store.add(box(0.36, 0.05, 1.24, p.darkSteel, 0, FLOOR_Y + 1.93, 0), box(0.36, 0.08, 1.24, p.darkSteel, 0, FLOOR_Y + 0.04, 0));
     const mats: THREE.Matrix4[] = [];
-    for (let i = 0; i < SLOTS; i++) mats.push(M(0.17, FLOOR_Y + 0.15 + Math.floor(i / 6) * 0.21, -0.45 + (i % 6) * 0.18, 0, 1, 1, 1));
+    // outward face; filled from the top row down, so the recorded entries stay visible above the neighbouring walls
+    for (let i = 0; i < SLOTS; i++) mats.push(M(-0.17, FLOOR_Y + 1.78 - Math.floor(i / 6) * 0.21, -0.45 + (i % 6) * 0.18, 0, 1, 1, 1));
     slots = instanced(new THREE.BoxGeometry(0.02, 0.15, 0.13), p.glow.clone(), mats);
     (slots.material as THREE.MeshStandardMaterial).emissiveIntensity = 1.2;
     store.add(slots);
@@ -736,8 +755,11 @@ export function buildLab(r: LabRecord, q: Quality): Lab {
         if (!pos) continue;
         const [x, , z] = chamberFloor(pos);
         const pod = new THREE.Group();
-        pod.add(box(0.07, 1.1, 0.07, p.darkSteel, 0, FLOOR_Y + 0.55, 0), cyl(0.12, 0.1, p.steel, 0, FLOOR_Y + 1.15, 0, 12));
-        pod.position.set(x - PHYS.CH - 0.22, 0, z - PHYS.CH - 0.22);
+        const dome = new THREE.Mesh(new THREE.SphereGeometry(0.11, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2), p.steel);
+        dome.position.set(0, FLOOR_Y + 1.2, 0);
+        pod.add(box(0.07, 1.1, 0.07, p.darkSteel, 0, FLOOR_Y + 0.55, 0), cyl(0.13, 0.05, p.graphite, 0, FLOOR_Y + 1.17, 0, 16), dome,
+          box(0.16, 0.06, 0.16, p.graphite, 0, FLOOR_Y + 0.03, 0));
+        pod.position.set(x + 0.5, 0, z + PHYS.CH + 0.4);  // middle of the +z side: clear of corner apparatus and the neighbour's manifold
         tag(pod, 'B', 2, `system ${s.sid} remote sensor at ${c}`, { kind: 'sensor', id: `${s.sid}:sensor:${c}` });
         root.add(pod);
         pickables.push(pod);
