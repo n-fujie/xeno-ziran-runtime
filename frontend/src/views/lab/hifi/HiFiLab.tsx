@@ -20,6 +20,7 @@ const CAM_MODES: [CamMode, string][] = [['overview', 'Overview'], ['domain', 'Do
   ['operation', 'Operation'], ['transfer', 'Transfer'], ['sensor', 'Sensor'], ['free', 'Free']];
 const QUALITY: Quality[] = ['performance', 'balanced', 'high'];
 const HIGHLIGHT = 12;
+const PANEL_MS = 250;  // live side-panel refresh period
 
 export type Perf = { quality: Quality; fps: number; frameMs: { mean: number; p95: number; max: number }; drawCalls: number;
   triangles: number; geometries: number; heapMB: number | null; frames: number };
@@ -264,20 +265,38 @@ export default function HiFiLab({ rec, index, tick, playing, rate, live, control
   function primeGoal() { const e = engine.current; if (e) cameraGoal(e.lab, rec, index, cam, sel, sysSel, domain, e, true); }
 
   // ---------------------------------------------------------------------------------------------- panels
-  const tPanel = performance.now();
-  const sysList = specs(rec);
-  const activeSys = sysSel ?? sysList[0]?.sid ?? null;
-  const lv = activeSys ? levels(rec, index, activeSys) : null;
-  const ign = activeSys && step?.t % 4 === 0 ? ignitions(rec, index, activeSys) : [];
-  const insp = sel ? inspect(rec, index, sel) : null;
-  const med = mediation(rec, index);
-  const trs = transfers(rec, t).slice(-8).reverse();
-  const trans = transitions(rec, t).slice(-14).reverse();
-  const evs = allEvents(rec).filter((e) => e.t <= t && e.type !== 'leg_complete' && e.type !== 'variable_candidate').slice(-40).reverse();
-  const prov = evSel ? provenance(rec, evSel) : null;
+  // The side panel is decoupled from the 3D frames: in a live run it recomputes at most every PANEL_MS and only when
+  // the step changed (the scene still follows every streamed step). Replays update it immediately.
+  const [panelIndex, setPanelIndex] = useState(index);
+  const lastPanel = useRef(0);
+  useEffect(() => {
+    if (!live) { setPanelIndex(index); return; }
+    const wait = Math.max(0, PANEL_MS - (performance.now() - lastPanel.current));
+    const id = setTimeout(() => { lastPanel.current = performance.now(); setPanelIndex(index); }, wait);
+    return () => clearTimeout(id);
+  }, [index, live]);
+  const pIndex = Math.min(panelIndex, rec.steps.length - 1);
+  const pT = rec.steps[pIndex]?.t ?? 0;
+  const panel = useMemo(() => {
+    const tPanel = performance.now();
+    const sysList = specs(rec);
+    const activeSys = sysSel ?? sysList[0]?.sid ?? null;
+    const compare = sysList.map((s) => ({ sid: s.sid, kind: s.kind, lv: levels(rec, pIndex, s.sid) }));  // once per system
+    const lv = compare.find((c) => c.sid === activeSys)?.lv ?? null;
+    const ign = activeSys && pT % 4 === 0 ? ignitions(rec, pIndex, activeSys) : [];
+    const allTrs = transfers(rec, pT);  // once; shared with the mediation table
+    const out = {
+      sysList, activeSys, compare, lv, ign, insp: sel ? inspect(rec, pIndex, sel) : null, med: mediation(rec, pIndex, allTrs),
+      trs: allTrs.slice(-8).reverse(), trans: transitions(rec, pT).slice(-14).reverse(),
+      evs: allEvents(rec).filter((e) => e.t <= pT && e.type !== 'leg_complete' && e.type !== 'variable_candidate').slice(-40).reverse(),
+      prov: evSel ? provenance(rec, evSel) : null,
+    };
+    (window as unknown as { __labHiFi?: { prof?: Record<string, number[]> } }).__labHiFi?.prof?.panelMs.push(performance.now() - tPanel);
+    return out;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rec, pIndex, pT, sysSel, sel, evSel, live ? panelIndex : tick]);
+  const { sysList, activeSys, compare, lv, ign, insp, med, trs, trans, evs, prov } = panel;
   const domains = Object.keys(rec.layout?.bays ?? {});
-  const compare = sysList.map((s) => ({ sid: s.sid, kind: s.kind, lv: levels(rec, index, s.sid) }));
-  (window as unknown as { __labHiFi?: { prof?: Record<string, number[]> } }).__labHiFi?.prof?.panelMs.push(performance.now() - tPanel);
 
   return (
     <div className="lab hifi">

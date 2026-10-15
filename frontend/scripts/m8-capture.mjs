@@ -183,30 +183,41 @@ async function main() {
       await waitFor(page, `!!window.__labHiFi && (window.__labHiFiFrames ?? 0) > 30`);
       await page.evaluate(`[...document.querySelectorAll('button')].find((b) => b.textContent === 'Start live run').click(), true`);
       await waitFor(page, `[...document.querySelectorAll('.lab-live')].some((x) => /LIVE running/.test(x.textContent) && Number((x.textContent.match(/t (\\d+)/) || [])[1]) > 60)`, 90000);
-      const m0 = await page.send('Performance.getMetrics');
-      const fr = await page.evaluate(FRAMES(6000));
-      const m1 = await page.send('Performance.getMetrics');
       const metric = (m, k) => m.metrics.find((x) => x.name === k)?.value ?? 0;
+      const profileWindow = async (label) => {
+        const m0 = await page.send('Performance.getMetrics');
+        const fr = await page.evaluate(FRAMES(6000));
+        const m1 = await page.send('Performance.getMetrics');
+        const t = await page.evaluate(`Number((document.querySelector('.lab-live').textContent.match(/t (\\d+)/) || [])[1])`);
+        const p = { label, liveStepAtEnd: t, windowMs: 6000, displayed: stats(fr.frames), longTasks: fr.longTasks, longTaskMs: fr.longTaskMs,
+          panelMs: stats(fr.prof?.panelMs ?? []), applyMs: stats(fr.prof?.applyMs ?? []), renderMs: stats(fr.prof?.renderMs ?? []),
+          wsMessageMs: stats(fr.ws.map((x) => x.ms)), wsMessages: fr.ws.length,
+          browserSeconds: Object.fromEntries(['ScriptDuration', 'TaskDuration', 'RecalcStyleDuration', 'LayoutDuration'].map((k) => [k, +(metric(m1, k) - metric(m0, k)).toFixed(3)])),
+          jsHeapMB: +(metric(m1, 'JSHeapUsedSize') / 1048576).toFixed(1) };
+        process.stdout.write(`live profile ${label} (t${t}): fps ${(1000 / p.displayed.mean).toFixed(1)} p95 ${p.displayed.p95} p99 ${p.displayed.p99} · panel ${p.panelMs.mean}/${p.panelMs.p95} ms ×${p.panelMs.n} · apply ${p.applyMs.mean} · render ${p.renderMs.mean}/${p.renderMs.p95} · ws ${p.wsMessageMs.mean} ms ×${p.wsMessages} · long tasks ${p.longTasks} · script ${p.browserSeconds.ScriptDuration}s · heap ${p.jsHeapMB} MB\n`);
+        return p;
+      };
+      const profiles = [await profileWindow('early')];
+      for (const target of (arg('live-windows', '') || '').split(',').filter(Boolean).map(Number)) {
+        await waitFor(page, `Number((document.querySelector('.lab-live').textContent.match(/t (\\d+)/) || [])[1]) >= ${target}`, 180000);
+        profiles.push(await profileWindow(`t>=${target}`));
+      }
       const live = await page.evaluate(`document.querySelector('.lab-live').textContent`);
       const entry = await shoot('14-live-operation', { record: 'live', note: 'live run started from the viewer (preset systems)', liveStatus: live });
-      entry.liveProfile = {
-        windowMs: 6000, displayed: stats(fr.frames), longTasks: fr.longTasks, longTaskMs: fr.longTaskMs,
-        panelMs: stats(fr.prof?.panelMs ?? []), applyMs: stats(fr.prof?.applyMs ?? []), renderMs: stats(fr.prof?.renderMs ?? []),
-        wsMessageMs: stats(fr.ws.map((x) => x.ms)), wsMessages: fr.ws.length,
-        browserSeconds: Object.fromEntries(['ScriptDuration', 'TaskDuration', 'RecalcStyleDuration', 'LayoutDuration'].map((k) => [k, +(metric(m1, k) - metric(m0, k)).toFixed(3)])),
-        jsHeapMB: +(metric(m1, 'JSHeapUsedSize') / 1048576).toFixed(1),
-      };
-      process.stdout.write(`live profile: ${JSON.stringify(entry.liveProfile)}\n`);
+      entry.liveProfile = profiles;
       await page.evaluate(`[...document.querySelectorAll('button')].find((b) => b.textContent === 'Stop').click(), true`);
       await sleep(1500);
       await closeSessions(page);
     }
     writeFileSync(join(OUT, 'capture.json'), JSON.stringify(report, null, 1));
+    await closeSessions(page);  // never leave a session behind (the service limits sessions per client)
     page.close();
   } finally {
     chrome.kill('SIGTERM');
     await sleep(500);
-    rmSync(profile, { recursive: true, force: true });
+    for (let k = 0; k < 5; k++) {  // Chrome may still be writing its profile while it exits
+      try { rmSync(profile, { recursive: true, force: true }); break; } catch { await sleep(500); }
+    }
   }
 }
 

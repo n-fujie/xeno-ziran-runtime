@@ -203,11 +203,11 @@ export type GantryMediation = { key: string; bay: string; group: string | null; 
 
 /** Physical-resource mediation at step index i: which systems' legs each gantry has served so far (from recorded leg
  *  events and their transfers), wear (recorded health), queue, failures. */
-export function mediation(r: LabRecord, i: number): GantryMediation[] {
+export function mediation(r: LabRecord, i: number, known?: Transfer[]): GantryMediation[] {
   const s = r.steps[i];
   const g = s.physics?.gantries;
   if (!g) return [];
-  const owner = new Map(transfers(r, s.t).map((tr) => [tr.tid, tr.system]));
+  const owner = new Map((known ?? transfers(r, s.t)).map((tr) => [tr.tid, tr.system]));
   const legs: Record<string, Record<string, number>> = {};
   const fails: Record<string, number> = {};
   for (const e of r.physical_events ?? []) {
