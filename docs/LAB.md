@@ -16,7 +16,7 @@ model to it, records runs and replays them independently. The renderer draws rec
 | M6 historical reinsertion with matched ablations | **primary hypothesis NOT SUPPORTED** | `results/labx/m6.json`, 24 paired seeds |
 | M7 cross-system reconfiguration | **T2, T4, T5 hold; T3, T6, T7 not met** | `results/labx/m7.json`, 24 paired seeds |
 | live runtime→3D streaming | done | `xzr/lab/live.py`, `/ws/lab/{id}`; tested and checked in the browser |
-| M8 high-fidelity environment | **done** (branch `lab-m8-high-fidelity`) | Real-time high-fidelity view of recorded and live runs; rendered positions equal recorded MuJoCo positions (browser self-test, 11 scenes); a run streamed to the view equals the headless run (137/137 steps). See `docs/m8/`. |
+| M8 high-fidelity environment | **done** (branch `lab-m8-high-fidelity`; M8.1 visual verification on `lab-m8-visual-verification`) | Real-time high-fidelity view of recorded and live runs; rendered positions equal recorded MuJoCo positions (browser self-test, 11 scenes); a run streamed to the view equals the headless run (137/137 steps). See `docs/m8/`. |
 | M9 causal pathways, extinction, revision, history, cross-world, verification | **done** (frozen protocol; results below) | `results/lab9/`, 2,036 confirmatory runs; Level A re-execution of all 736 M4–M7 runs |
 
 ## Completion level
@@ -284,6 +284,22 @@ performance are in `docs/m8/`.
   (performance), 10.0 / 15.5 ms (balanced) and 13.5 / 19.4 ms (high), at about 60 displayed fps.
 * **Not a scientific result.** M8 changes no scientific result or achievement level. The research manuscript
   (`docs/publication/`) is unchanged.
+
+## M8.1 — visual verification and real-time performance (2026-10-15)
+
+Branch `lab-m8-visual-verification`. The high-fidelity view was improved one subsystem at a time, each change rendered in
+a real Chromium, screenshotted, inspected and regression-tested before the next. Full report, before/after screenshots
+by stage and capture metadata: `docs/m8.1/REPORT.md`. No scientific result, record or level status changed.
+
+* **Visual:** legible monochrome materials and lighting; connections end at a ceiling terminal grid; cameras no longer
+  sit inside housings; distinct sensor, hub and memory-store apparatus; meaningful mechanical detail.
+* **Defects fixed:** a failed gantry was not shown as failed (shared material); remote pods inside the hub; instruments
+  inside the gantry travel envelope (a recorded collision at m7 step 4); a knee brace inside another bay's reach.
+* **New tests:** interpenetration of system apparatus; failure display; recorded tips inside the envelope; recorded
+  carriage and mast against statics; a synthetic sweep of every bay's reachable envelope at travel height.
+* **Performance** (Apple M1, 1200×866 viewport = 800×723 canvas, balanced): 60 fps in all 16 scenes and in live
+  execution through step ≈860 (p95 / p99 16.8 / 16.8 ms; before: p99 32.7 ms late in the run). Draw calls 828 → 681 in
+  the overview. `high` at DPR 2 does not hold 60 fps on this machine.
 
 ## Live streaming
 

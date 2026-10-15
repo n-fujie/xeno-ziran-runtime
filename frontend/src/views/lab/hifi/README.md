@@ -63,6 +63,8 @@ Every object carries a layer and a category in `userData`:
 | `sys` | system |
 | `layers` | e.g. `AB` |
 | `quality` | `performance`, `balanced` or `high` |
+| `ev` | selected event id |
+| `campos`, `target` | free-camera position and target, `x,y,z` |
 
 ## Tests
 
@@ -70,7 +72,14 @@ Every object carries a layer and a category in `userData`:
   event ids and transitions; agreement with the published M9-C run; provenance; availability statuses; live-grown
   versus replayed records.
 - `assemblies.test.ts`: rendered positions; MuJoCo geom sizes; layer and category tags; quality-level independence; no
-  gantry column or rail passes through a chamber housing.
+  gantry column or rail passes through a chamber housing; connection terminals clear every gantry part; system apparatus
+  never interpenetrate; a failed gantry darkens only its own carriage; recorded tool tips lie inside the drawn
+  envelope; recorded carriage and mast positions miss every static instrument; a synthetic sweep of each bay's
+  reachable envelope (`reachHull`) at travel height hits nothing, and no static part inside it rises above
+  `TRAVEL_TOP`.
 - **Browser test** (`frontend/scripts/m8-capture.mjs`): runs in a real Chromium against the running service. For each
   scene it runs the in-page self-test of the rendered scene graph (`window.__labHiFi.selfTest()`), measures frame times
-  and saves a screenshot, and it benchmarks every quality level. Results are in `docs/m8/`.
+  and saves a screenshot with full metadata, benchmarks every quality level (`--bench`) and profiles the live view over a
+  run's lifetime (`--live-windows 400,800`). Options: `--stage`, `--res WxH` (browser viewport; the canvas is smaller),
+  `--dpr`, `--scenes all|01,05`, `--no-live`. Results are in `docs/m8/` (M8) and `docs/m8.1/<stage>/` (M8.1).
+- `window.__labHiFi.prof` holds panel / apply / render / frame timings for profiling.

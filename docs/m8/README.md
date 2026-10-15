@@ -1,5 +1,10 @@
 # M8 browser verification and performance
 
+> **M8.1 correction (2026-10-15).** The canvas sizes below labelled "1200×866" are the 3D canvas of a 1600×1000 viewport;
+> a 1200×866 *viewport* gives an 800×723 canvas. The live-run p95 of 50 ms (46.8 fps) was not reproduced by M8.1's
+> profiler at the same step (60 fps); the real live degradation was a late-run panel tail, fixed in M8.1. See
+> `docs/m8.1/REPORT.md`. The figures here are left as recorded.
+
 Produced by `frontend/scripts/m8-capture.mjs` against the local service (`uvicorn xzr.service.app:app --app-dir backend
 --port 3011`), in **Chrome/151.0.7922.34** (headless, GPU: `ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified Version)`), viewport 1600×1000 at device scale 1, on
 an Apple M1 with 8 GB. Raw results are in `browser-verification.json` and the screenshots are in `screenshots/`. All
