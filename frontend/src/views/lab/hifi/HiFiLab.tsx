@@ -463,7 +463,9 @@ function cameraGoal(lab: Lab, rec: LabRecord, i: number, mode: CamMode, sel: Sel
     const key = `${sel.kind}:${sel.id}`;
     let off = cache.get(key);
     if (!off) {
-      const pos = sel.kind === 'store' ? closeView(rec, p, 2.6, 1.9, undefined, occluded(lab, p)) : closeView(rec, p, 3.2, 1.1, undefined, occluded(lab, p));
+      // a chamber is viewed from above its walls, so its contents (e.g. a refused sample) and its shutters are both visible
+      const [d, h] = sel.kind === 'store' ? [2.6, 1.9] : sel.kind === 'chamber' ? [3.0, 2.9] : [3.2, 1.1];
+      const pos = closeView(rec, p, d, h, undefined, occluded(lab, p));
       off = pos.sub(p);
       cache.set(key, off);
     }

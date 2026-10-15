@@ -56,6 +56,8 @@ const reign = EXT.science_events.filter((e) => e.type === 'material_delivered' &
 const memSel = M7.science_events.findIndex((e) => e.type === 'experiment_selected' && e.basis === 'memory');
 const memEv = M7.science_events[memSel];
 const b1 = SEP.layout.bays['1'], b0 = SEP.layout.bays['0'];
+const blkI = M7.science_events.findIndex((e) => e.type === 'delivery_blocked');
+const relI = EXT.science_events.findIndex((e) => e.type === 'sensor_relocated');
 const SCENES = [
   { name: '01-overview', rec: 'm9-separated-resources-7000', step: 480, cam: 'overview', note: 'complete installation' },
   { name: '02-oblique', rec: 'm9-separated-resources-7000', step: 480, cam: 'free', campos: [-6, 7.5, -24], target: [6, 1.2, 4], note: 'elevated oblique view across the installation, below the roof' },
@@ -73,6 +75,8 @@ const SCENES = [
   { name: '16-memory-store', rec: 'm7-systems-6000', step: 480, cam: 'apparatus', sel: 'store:C:store', sys: 'C', note: 'system C memory store; filled slots = recorded memory entries' },
   { name: '17-distributed-sensor', rec: 'm7-systems-6000', step: 480, cam: 'apparatus', sel: `sensor:B:sensor:${M7.config.systems.find((x) => x.sid === 'B').sensors[0]}`, sys: 'B', note: 'one of system B\'s remote sensors (recorded configuration)' },
   { name: '18-gantry-closeup', rec: 'm9-separated-resources-7000', step: carryI, cam: 'apparatus', sel: `gantry:${Object.entries(SEP.steps[carryI].physics.gantries).find(([, g]) => g.carrying)[0]}`, note: `carriage carrying ${carried} (recorded) at index ${carryI}` },
+  { name: '19-delivery-blocked', rec: 'm7-systems-6000', step: idx(M7, M7.science_events[blkI].t), cam: 'apparatus', sel: `chamber:${M7.science_events[blkI].dst}`, sys: M7.science_events[blkI].system, ev: `science:${blkI}`, note: `recorded delivery refusal at ${M7.science_events[blkI].dst}, t${M7.science_events[blkI].t} (containment closed)` },
+  { name: '20-observation-revision', rec: 'm9-extinction-relocation-7000', step: idx(EXT, EXT.science_events[relI].t), cam: 'sensor', sys: EXT.science_events[relI].system, ev: `science:${relI}`, note: `recorded sensor relocation ${EXT.science_events[relI].from} → ${EXT.science_events[relI].to}, t${EXT.science_events[relI].t}` },
   { name: '13-system-comparison', rec: 'm7-systems-6000', step: 480, cam: 'free', campos: [b0[0] + 9, 9, b0[1] + 13], target: [b0[0] - 3, 0.8, b0[1] + 5], note: 'systems A, B, C with their observed chambers (comparison table in the panel)' },
 ];
 

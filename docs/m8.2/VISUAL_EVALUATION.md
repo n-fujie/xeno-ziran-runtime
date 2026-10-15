@@ -333,3 +333,28 @@ also clear the floor-standing gantry columns.
 481. The hub reads as a directional receiver.
 
 **Performance.** Every captured scene renders at 60 fps.
+
+### Change 6: scientific event legibility (section IX)
+
+Two event scenes were added to the capture script: `19-delivery-blocked` (the first recorded `delivery_blocked` of m7)
+and `20-observation-revision` (the first recorded `sensor_relocated` of the extinction record). Evidence is in
+`06-events/1200x866@1/`.
+
+**Correction.** In the first capture, 19 showed only a wall and the shutter band from 1.4 m, and the refused sample in
+the vessel was invisible. A selected chamber is now viewed from 2.9 m above its floor. The vessel's contents, the closed
+shutter band, the gantry with its jaws open after the release, and the event ring are visible together.
+
+| event | recorded cause | apparatus | shown in 3D | legible from the 3D view alone? |
+|---|---|---|---|---|
+| material transfer | `sample_grasped`, `leg_complete`, `material_delivered` | gantry, jaws, sample, target chamber | carried sample in closed jaws (05, 18) | **yes** |
+| delivery refusal | `delivery_blocked` (containment closed) | target chamber, shutter band | sample inside, shutters closed, event ring (19) | **partly**: refusal versus acceptance needs the panel's transfer state |
+| shared-resource interference | `interference` transition (derived from a recorded isolation) | the shared gantry | gantry queue only in the panel (09) | **no**: the 3D view does not show contention |
+| observation revision | `sensor_relocated`, `window_changed` | A's sensor head | the head stands at the new chamber's mount; the sensor camera looks from it (20) | **partly**: the move is visible over time, and the panel names it |
+| experiment selection | `experiment_selected` | pending-experiment arc between chambers | dashed or solid arc above the chambers | **yes**, in domain views |
+| operational extinction | M9-C definition | the system's observed chambers | 0 observed outlines, closed shutters (10) | **yes**, with the panel count |
+| re-ignition | first delivery after the extinct interval | as above | delivery and outlines return (11) | **yes** |
+| historical reinsertion | `experiment_selected` with basis = memory | C store, selection arc | store cartridges; the arc lies outside the close-up (12) | **partly**: the basis is shown only in the panel |
+| variable adoption | `variable_candidate` with `adopted` | — | none: there is no such event in any published record (M9 negative result) | not applicable; nothing is drawn, which is correct |
+
+No decorative animation was added. Indicators remain the recorded event ring, the shutter angle, the jaw state, the
+cartridges and the arcs.
