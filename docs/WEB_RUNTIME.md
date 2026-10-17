@@ -102,7 +102,9 @@ ran numpy 2.5.3 and Pyodide ships 2.4.6.
   is the browser build's own golden (state fingerprints after warm-up, 50 steps, rewind and replay, save and load) and
   `node backend/scripts/web_conformance.mjs` checks the **published** files against it exactly (0 differences).
   WebAssembly's floating-point semantics are fixed by its specification and the math library is compiled into the module, so
-  other browsers are expected to give the same bits; **only Chromium was checked** (section 8).
+  other browsers are expected to give the same bits; **only Chromium was checked** (section 8). The same golden also
+  reproduced bit for bit under Node on a Linux x86-64 CI runner (generated on macOS arm64), i.e. across CPU architectures
+  for V8; it does not prove the same for other engines.
 * Against the desktop golden the observation metrics (detector series, comparison summaries) agree within 5 % (0
   differences) and 18 exact fingerprints differ, as expected.
 * The address hierarchy of a scenario is computed on the desktop (scipy ARPACK) and shipped as an exact reference for the
@@ -173,7 +175,7 @@ Retry button).
 | Firefox | **not verified** (not installed) |
 | Chrome (stable), Edge | not verified separately (Chromium engine verified through the built-in browser) |
 | real mobile devices | not verified |
-| production host (Vercel) | see the pull request |
+| production host (Vercel, https://ziran-xeno-simulator.vercel.app/app/) | **files, hashes and headers verified on the live URL** with `node backend/scripts/verify_published_runtime.mjs <url>`: all 10 runtime files, the engine zip, and the 6 wheels match their sha-256; the WebAssembly file is served as `application/wasm` (brotli, 3.5 MB); `/app/` sends the CSP and `nosniff`; `/app` redirects to `/app/`; the existing result and lab routes still work. **The live page was not exercised in a real browser** from the development environment: the built-in browser blocks every request to that origin (client-side policy, even the main site's own CSS) and Safari has WebAssembly disabled. The same bytes (hash-equal) pass `web_conformance.mjs` locally, and the identical build ran in the built-in browser from `localhost` |
 
 ## 9. Testing
 
