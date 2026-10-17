@@ -50,13 +50,13 @@ export default function Orientation({ views, onOpen }: {
           </div>
         </div>
         <div>
-          <h3>Interactive runtime — local server, not in this deployment</h3>
+          <h3>Interactive runtime — in your browser at /app/, or on a local server</h3>
           <p className="small">
-            The full simulator runs against its backend: configure a scenario → intervene (practice console,
+            The simulator runs in your browser tab at <a href="/app/">/app/</a> (smaller workloads, nothing is sent to a
+            server) or against a local backend for full-size runs: configure a scenario → intervene (practice console,
             intervention grammar) → run / step / rewind → compare baseline and intervention branches → inspect
             network, shape-space, address-space, map and globe projections and the timeline → save / load → export
-            CSV / JSON. These views need the backend and are not reachable on this site; this deployment exposes only
-            the research-result part of the simulator.
+            CSV / JSON. The research-result views on this page are read-only: no simulation runs here.
           </p>
         </div>
       </div>

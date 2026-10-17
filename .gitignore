@@ -26,3 +26,5 @@ backend/experiments/results/resolution/run_studies.sh
 # tables, pre-registration and frozen source archives are kept), and local ZIP exports
 research/post_active_inference/results/*/jobs/
 artifacts/zips/
+.cache/
+web-app-build/

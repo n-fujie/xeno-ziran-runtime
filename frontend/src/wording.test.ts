@@ -83,6 +83,9 @@ describe('identity', () => {
   it('the application is XENO ZIRAN SIMULATOR and the public site is described as part of it', () => {
     expect(read('frontend/src/i18n/strings.ts')).toMatch(/title: 'XENO ZIRAN SIMULATOR'/);
     expect(shell).toMatch(/<title>XENO ZIRAN SIMULATOR<\/title>/);
-    expect(orientation.replace(/\s+/g, ' ')).toContain('this deployment exposes only the research-result part of the simulator');
+    // the public site states what each part is: result views read-only, the simulator in the browser at /app/
+    const text = orientation.replace(/\s+/g, ' ');
+    expect(text).toContain('The research-result views on this page are read-only: no simulation runs here');
+    expect(text).toContain('The simulator runs in your browser tab at <a href="/app/">/app/</a>');
   });
 });

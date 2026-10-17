@@ -22,7 +22,7 @@ from typing import Any
 
 from ..scenario.io import load_sample
 from ..scenario.model import Scenario
-from ..service.session import JOBS, Session
+from ..service.session import COOPERATIVE, JOBS, Session, run_deferred
 
 STEPS = 50
 EXACT = ("fp_t0", "fp_50", "fp_60", "fp_rewind_60", "fp_load_t0", "fp_load_50", "hierarchy", "t0", "n", "edges")
@@ -34,7 +34,10 @@ def _wait(s: Session, t: int, timeout: float = 600) -> None:
         with s.lock:
             if s.engine.state.t >= t and s.pending_steps == 0:
                 return
-        time.sleep(0.005)
+        if COOPERATIVE:  # no simulation thread here: step it from this loop
+            s.pump(0.05)
+        else:
+            time.sleep(0.005)
     raise TimeoutError(f"session did not reach t={t}")
 
 
@@ -80,6 +83,8 @@ def scenario_snapshot(name: str, compare_horizon: int = 30) -> dict:
         jid = s.start_compare(compare_horizon)
         end = time.time() + 600
         while JOBS[jid]["status"] in ("queued", "running") and time.time() < end:
+            if COOPERATIVE:
+                run_deferred(1)
             time.sleep(0.02)
         out["observation"]["compare"] = JOBS[jid].get("summary")
         saved = json.loads(json.dumps(s.save()))  # what a Save file holds
@@ -170,6 +175,8 @@ def benchmark_json(name: str = "demo-3k", steps: int = 40) -> str:
         t0 = time.perf_counter()
         jid = s.start_compare(50)
         while jobs[jid]["status"] in ("queued", "running"):
+            if COOPERATIVE:
+                run_deferred(1)
             time.sleep(0.01)
         out["compare_50_s"] = time.perf_counter() - t0
         t0 = time.perf_counter()

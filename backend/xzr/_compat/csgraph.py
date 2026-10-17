@@ -19,9 +19,9 @@ def _expand(g: csr_matrix, frontier: np.ndarray) -> tuple[np.ndarray, np.ndarray
     lens = g.indptr[frontier + 1] - starts
     total = int(lens.sum())
     if total == 0:
-        return np.empty(0, dtype=np.int64), np.empty(0, dtype=np.int64)
+        return np.empty(0, dtype=np.intp), np.empty(0, dtype=np.intp)
     offs = np.repeat(starts - (np.cumsum(lens) - lens), lens) + np.arange(total)
-    return g.indices[offs].astype(np.int64), np.repeat(frontier, lens)
+    return g.indices[offs].astype(np.intp), np.repeat(frontier, lens)
 
 
 def _bfs(g: csr_matrix, source: int) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
@@ -29,10 +29,10 @@ def _bfs(g: csr_matrix, source: int) -> tuple[np.ndarray, np.ndarray, np.ndarray
     identical to a FIFO-queue search that takes each node's neighbours in CSR order: a node is reached from the
     first frontier node (in visit order) that has it as a neighbour, and is visited in order of that discovery."""
     n = g.shape[0]
-    dist = np.full(n, -1, dtype=np.int64)
-    pred = np.full(n, -9999, dtype=np.int64)
+    dist = np.full(n, -1, dtype=np.intp)
+    pred = np.full(n, -9999, dtype=np.intp)
     dist[source] = 0
-    frontier = np.array([source], dtype=np.int64)
+    frontier = np.array([source], dtype=np.intp)
     order = [frontier]
     level = 0
     while frontier.size:
@@ -63,8 +63,8 @@ def connected_components(g: csr_matrix, directed: bool = True, connection: str =
         # minimum-label propagation with pointer jumping: each node ends labelled with the smallest index in its
         # (undirected) component, as a union-find keeping the smaller root would
         r, c, _ = g._coo()
-        r, c = r.astype(np.int64), c.astype(np.int64)
-        labels = np.arange(n, dtype=np.int64)
+        r, c = r.astype(np.intp), c.astype(np.intp)
+        labels = np.arange(n, dtype=np.intp)
         while True:
             new = labels.copy()
             np.minimum.at(new, r, labels[c])
@@ -81,7 +81,7 @@ def connected_components(g: csr_matrix, directed: bool = True, connection: str =
         return int(out.max() + 1) if n else 0, out.astype(np.int32)
     # strong: iterative Tarjan
     index = np.full(n, -1)
-    low = np.zeros(n, dtype=np.int64)
+    low = np.zeros(n, dtype=np.intp)
     on = np.zeros(n, dtype=bool)
     labels = np.full(n, -1, dtype=np.int32)
     stack: list[int] = []

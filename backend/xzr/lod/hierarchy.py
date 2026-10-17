@@ -8,6 +8,7 @@ component 0–7 (3 bits) and each finer component 0–3 (2 bits).
 from __future__ import annotations
 
 import hashlib
+import os
 from dataclasses import dataclass
 
 import numpy as np
@@ -127,11 +128,29 @@ def adjacency_key(a) -> str:
     return h.hexdigest()
 
 
+class HierarchyTooLarge(ValueError):
+    """A graph with no exported reference hierarchy is above the host's limit for computing one (see build_hierarchy)."""
+
+    limit = "max_nodes_computed_hierarchy"
+
+    def __init__(self, n: int, cap: int):
+        super().__init__(f"this graph has {n:,} configurations and no precomputed address hierarchy; this runtime can "
+                         f"compute one for at most {cap:,} (its eigensolver is much slower than the desktop's). The bundled "
+                         "scenarios, and graphs up to that size, run here; larger ones run in the desktop runtime")
+
+
 def build_hierarchy(a: sp.csr_matrix) -> Hierarchy:
     if _COMPAT_PATH:  # no scipy (iOS): exact desktop reference where available, else the dense eigensolver
         cached = _reference_cache.load(adjacency_key(a))
         if cached is not None:
             return hierarchy_from(*cached, source="reference")
+    if _COMPAT_PATH:
+        # Without scipy the hierarchy of a graph that has no exported desktop reference is computed by a dense eigensolve,
+        # whose cost grows with n^3 (browser runtime, Pyodide: 1.5k nodes ~10 s, 2k ~23 s, 4k > 130 s). A host sets
+        # XZR_MAX_NODES_COMPUTED_HIERARCHY to refuse such graphs up front instead of letting the page hang (0 = no limit).
+        cap = int(os.environ.get("XZR_MAX_NODES_COMPUTED_HIERARCHY", "0") or 0)
+        if cap and a.shape[0] > cap:
+            raise HierarchyTooLarge(a.shape[0], cap)
     h = _build_hierarchy(a)
     if _COMPAT_PATH:
         h.source = "on-device eigensolver (may differ from the desktop's ARPACK hierarchy)"
