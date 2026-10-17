@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased — browser edition
+
+* The interactive simulator runs in a browser tab at `/app/` of the public site: the engine on Pyodide (CPython on
+  WebAssembly, numpy + pydantic) in a Web Worker, same in-process interface as the iOS app, no simulation server
+  (`docs/WEB_RUNTIME.md`; `backend/scripts/export_web_runtime.py`, `npm run build:web`).
+* Cooperative sessions for hosts without threads: `Session.pump`, `run_deferred`, `bridge.tick`; branch comparisons are
+  generators (`compare_steps`) advanced in time slices, so the live simulation keeps running during a comparison. The
+  threaded path (desktop, iOS) is unchanged; `compare()` drives the same generator straight through.
+* `_compat` index arrays use `np.intp` (32-bit on WebAssembly); `resource` is optional; reference hierarchies for the two
+  10,000-node benchmarks; `XZR_MAX_NODES_COMPUTED_HIERARCHY` refuses graphs whose hierarchy would need the cubic dense
+  eigensolver (browser: 1,500).
+* Measured and documented: the browser engine is structurally identical to the desktop and numerically equal to ~1e-13 over
+  1,000 steps, not bit-identical (WebAssembly math library, summation order); a browser-specific golden guards replay.
+
 ## Unreleased — Heterogeneous Philosophical Operations (HPO)
 
 * New experiment layer `backend/xzr/hpo/` (nothing in the runtime, shape, LOD, compare, scenario, practice, reasonlab

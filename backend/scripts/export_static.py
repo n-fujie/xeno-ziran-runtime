@@ -120,6 +120,13 @@ def write_sections(name: str, files: dict[str, bytes], manifest: dict, out: Path
     return f"/data/parts/{name}.json"
 
 
+# The browser simulator loads nothing from other origins; WebAssembly compilation needs 'wasm-unsafe-eval'.
+# (Same policy as the page's meta tag in frontend/vite.config.ts; sent as a header so the worker is bound too.)
+WEB_CSP = ("default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; "
+           "img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; worker-src 'self' blob:; "
+           "object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'")
+
+
 def vercel_config(views: list[str]) -> dict:
     """Route-aware hosting for the mirror (no SPA catch-all).
 
@@ -140,6 +147,12 @@ def vercel_config(views: list[str]) -> dict:
             {"src": "/data/parts/[^/]+/[0-9a-f]{16}\\.json",
              "headers": {"Cache-Control": "public, max-age=31536000, immutable"}, "continue": True},
             {"src": "/data/(.*)", "headers": {"Content-Type": "application/json"}, "continue": True},
+            # the in-browser simulator (export_web_runtime.py): /app/ is the app, /runtime/ its Pyodide runtime files
+            {"src": "/app", "status": 308, "headers": {"Location": "/app/"}},
+            {"src": "/runtime/engine-[0-9a-f]{12}\\.zip",
+             "headers": {"Cache-Control": "public, max-age=31536000, immutable"}, "continue": True},
+            {"src": "/app/(.*)", "headers": {"Content-Security-Policy": WEB_CSP, "X-Content-Type-Options": "nosniff",
+                                             "Referrer-Policy": "no-referrer"}, "continue": True},
             {"src": "/api/experiments", "dest": "/data/experiments.json"},
             {"src": "/api/experiments/primitives", "dest": "/data/primitives.json"},
             {"src": "/api/experiments/([^/]+)", "dest": "/data/$1.json"},

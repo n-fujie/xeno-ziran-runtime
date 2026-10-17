@@ -21,8 +21,10 @@ export function searchForView(search: string, view: View, fallback: View): strin
 
 // The part of the URL that names no view: an unknown path (where the host serves the app for it) or an unknown
 // `view` value. null when the URL addresses a view.
-export function unknownRoute(pathname: string, search: string, allowed: readonly View[]): string | null {
-  if (pathname !== '/' && pathname !== '/index.html') return pathname;
+export function unknownRoute(pathname: string, search: string, allowed: readonly View[], base = import.meta.env.BASE_URL): string | null {
+  // the app's own root: '/' on the host, or the sub-path it is served under (the browser build lives at /app/)
+  const root = base.startsWith('/') ? base : '/';
+  if (pathname !== root && pathname !== `${root}index.html`) return pathname;
   const v = new URLSearchParams(search).get('view');
   return v !== null && !find(v, allowed) ? `?view=${v}` : null;
 }

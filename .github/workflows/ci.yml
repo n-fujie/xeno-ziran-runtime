@@ -36,3 +36,21 @@ jobs:
         with:
           node-version: "22"
       - run: cd frontend && npm ci && npm run lint && npm run typecheck && npm test && npm run build
+  web-runtime:
+    # The browser edition: export the published runtime (Pyodide + wheels + engine zip), then check THOSE files under Node:
+    # observation metrics against the desktop golden, exact replay against the browser build's own golden, the in-process
+    # interface end to end (cooperative sessions, time-sliced comparison, save / load, limit refusal), and the build of the app.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - run: pip install -e "backend[dev]"
+      - run: cd frontend && npm ci
+      - run: mkdir site && python backend/scripts/export_web_runtime.py site
+      - run: node backend/scripts/web_conformance.mjs --site site
+      - run: python -c "import json; m = json.load(open('site/runtime/manifest.json')); print(m['pyodide'], m['python'], m['numpy'], m['sizeBytes'])"

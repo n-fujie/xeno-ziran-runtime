@@ -10,12 +10,12 @@ import numpy as np
 class csr_matrix:  # noqa: N801 — mirrors scipy's name
     def __init__(self, arg, shape: tuple[int, int] | None = None):
         if isinstance(arg, tuple) and len(arg) == 2 and isinstance(arg[0], int | np.integer):
-            shape, data, row, col = (int(arg[0]), int(arg[1])), np.zeros(0), np.zeros(0, np.int64), np.zeros(0, np.int64)
+            shape, data, row, col = (int(arg[0]), int(arg[1])), np.zeros(0), np.zeros(0, np.intp), np.zeros(0, np.intp)
         else:
             data, (row, col) = arg
             data = np.asarray(data, dtype=np.float64)
-            row = np.asarray(row, dtype=np.int64)
-            col = np.asarray(col, dtype=np.int64)
+            row = np.asarray(row, dtype=np.intp)
+            col = np.asarray(col, dtype=np.intp)
         assert shape is not None
         self.shape = (int(shape[0]), int(shape[1]))
         order = np.lexsort((col, row))
@@ -25,9 +25,9 @@ class csr_matrix:  # noqa: N801 — mirrors scipy's name
             uniq, start = np.unique(key, return_index=True)
             data = np.add.reduceat(data, start)
             row, col = uniq // self.shape[1], uniq % self.shape[1]
-        self.indices = col.astype(np.int64)
+        self.indices = col.astype(np.intp)
         self.data = data
-        self.indptr = np.concatenate([[0], np.cumsum(np.bincount(row, minlength=self.shape[0]))]).astype(np.int64)
+        self.indptr = np.concatenate([[0], np.cumsum(np.bincount(row, minlength=self.shape[0]))]).astype(np.intp)
 
     def _coo(self) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
         row = np.repeat(np.arange(self.shape[0]), np.diff(self.indptr))
@@ -40,13 +40,13 @@ class csr_matrix:  # noqa: N801 — mirrors scipy's name
             rows, cols = key
             if not (isinstance(rows, slice) and rows == slice(None)):
                 return self[rows][:, cols]
-            idx = np.asarray(cols, dtype=np.int64)
-            pos = np.full(self.shape[1], -1, dtype=np.int64)
+            idx = np.asarray(cols, dtype=np.intp)
+            pos = np.full(self.shape[1], -1, dtype=np.intp)
             pos[idx] = np.arange(len(idx))
             keep = pos[c] >= 0
             return csr_matrix((d[keep], (r[keep], pos[c[keep]])), shape=(self.shape[0], len(idx)))
-        idx = np.asarray(key, dtype=np.int64)
-        pos = np.full(self.shape[0], -1, dtype=np.int64)
+        idx = np.asarray(key, dtype=np.intp)
+        pos = np.full(self.shape[0], -1, dtype=np.intp)
         pos[idx] = np.arange(len(idx))
         keep = pos[r] >= 0
         return csr_matrix((d[keep], (pos[r[keep]], c[keep])), shape=(len(idx), self.shape[1]))
