@@ -13,7 +13,11 @@ import ipaddress
 import json
 import logging
 import re
-import resource
+
+try:
+    import resource
+except ImportError:  # WebAssembly (Pyodide) has no `resource`; the browser tab bounds memory instead
+    resource = None  # type: ignore[assignment]
 import secrets
 import sys
 import threading
@@ -258,7 +262,9 @@ METRICS = Metrics()
 
 
 def rss_bytes() -> int:
-    """Current resident memory (Linux /proc); elsewhere the peak, as getrusage reports it."""
+    """Current resident memory (Linux /proc); elsewhere the peak, as getrusage reports it (0 where neither exists)."""
+    if resource is None:
+        return 0
     try:
         with open("/proc/self/statm") as f:
             return int(f.read().split()[1]) * resource.getpagesize()

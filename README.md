@@ -107,8 +107,10 @@ runtime** (configuration, intervention, execution, comparison, replay), the **re
 structured interventions). The Philosophical Runtime is one region of the simulator, not its enclosing category.
 
 The public deployment (https://ziran-xeno-simulator.vercel.app, built by `backend/scripts/export_static.py`) exposes
-only the read-only research-result layer; the interactive runtime runs on the local server (or on the device, in
-the iOS app — [docs/IOS_APP.md](docs/IOS_APP.md)). The published result views are experimental and analytical
+the read-only research-result layer at `/`, and the interactive simulator at `/app/`, which runs entirely in the
+visitor's browser tab (Pyodide in a Web Worker, no simulation server — [docs/WEB_RUNTIME.md](docs/WEB_RUNTIME.md); smaller
+workloads, results not bit-identical to the desktop). Full-size runs use the local server, or the device itself in the
+iOS app — [docs/IOS_APP.md](docs/IOS_APP.md)). The published result views are experimental and analytical
 outputs and should not be interpreted as real-world forecasts or predictive claims.
 
 It does not start from domains (people, markets, institutions, states…). It simulates domain-neutral operations —
