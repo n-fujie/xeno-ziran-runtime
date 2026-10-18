@@ -1,0 +1,61 @@
+# record,xb-m-bea03229da51
+# experiment,M
+# model_version,xb-tro/1.0
+# digest,bea03229da5119bf1bcd3dc4abc5d931df70dbd7b69abcac7547490f3974b379
+# time_step_s,0.01
+# numerical_method,RK4 on the N-link planar Lagrangian equations with the muscle drive held over each step; batched seeds with common random numbers; first-order activation dynamics; digests over 6 significant digits
+# seeds,5000 5001 5002 5003 5004 5005 5006 5007 5008 5009 5010 5011
+# labels,reference = model reference state (not an observation of a real body); observation = simulated model output
+
+# table: policy_rounds,"Rounds: candidate, cost vector, expectation, measured result, decision"
+round,change,why,expected gain,set-up s,added mass kg,identified before,identified after,perturbs the body,decision
+1,"[{'op': 'set', 'model': 'posture', 'field': 'noise', 'value': 0.5}]","capable but below the noise: halve posture's noise (1 -> 0.5 of nominal; a better instrument, not a new one)",1.0,10.0,0.0,2,2,,"retracted: no measured gain, so the set-up and perturbation cost is not justified (the expected gain was wrong)"
+2,"[{'op': 'add', 'kind': 'respiration', 'id': 'respiration-added', 'settings': {}}]",deploy a respiration model (a different aspect is observed now),1.0,20.0,0.0,2,2,,"retracted: no measured gain, so the set-up and perturbation cost is not justified (the expected gain was wrong)"
+3,"[{'op': 'add', 'kind': 'contact', 'id': 'contact-added', 'settings': {'spatial': 'detailed'}}]",deploy a contact model (a different aspect is observed now),1.0,30.0,0.0,2,4,,kept
+4,"[{'op': 'add', 'kind': 'emg', 'id': 'emg-added', 'settings': {'spatial': 'joint'}}]",deploy a emg model (a different aspect is observed now),1.0,90.0,0.15,4,6,"track_rms, peak_dev",retracted: the apparatus changes the body it observes (measured)
+
+# table: reach,Observational reach before and after (a vector; unobserved regions stay listed)
+measure,before,after
+differences_existing,10,10
+differences_identified,2,4
+identifiability,0.2,0.4
+unobserved_by_reason,"{'unobserved:device-mismatch': 5, 'unobserved:unmeasured': 1}","{'unobserved:device-mismatch': 4, 'unobserved:unmeasured': 1}"
+instrumented_kinds,['posture'],"['contact', 'posture']"
+scales,{'posture': 'joint'},"{'posture': 'joint', 'contact-added': 'detailed'}"
+time_resolution_hz,"[50.0, 50.0]","[50.0, 100.0]"
+unobserved_regions,"['neural', 'internal']","['neural', 'internal']"
+observed_region_fraction,0.7142857142857143,0.7142857142857143
+
+# table: distributed_observation,Verdicts of every source per relation (never fused)
+relation,agreement,sources,exists in the model reference
+posture_sway,single-source,posture_sway_rms*,True
+com_excursion,conflict,peak_dev_obs; cop_range_obs*,True
+cop_activity,single-source,cop_rms_obs*,True
+correction_latency,conflict,cop_onset_push*; com_onset_push,True
+central_latency,no-source,,False
+cocontraction,no-source,,True
+muscle_activation,no-source,,True
+settling_turn,single-source,turn_error_obs*,True
+stability_loss,single-source,posture_peak_lean*,False
+energy_use,no-source,,True
+fatigue_state,no-source,,True
+adaptation_gain,single-source,posture_sway_rms*,False
+breath_amplitude,no-source,,True
+line_conflicts,no-source,,False
+visual_use,no-source,,False
+
+# table: negative_results
+statement,evidence
+"round 1: retracted: no measured gain, so the set-up and perturbation cost is not justified (the expected gain was wrong)","{""actual"": {""existing"": 10, ""gain"": 0, ""identified_after"": 2, ""identified_before"": 2}, ""change"": [{""field"": ""noise"", ""model"": ""posture"", ""op"": ""set"", ""value"": 0.5}], ""expected"": {""cost"": {""added_delay_s"": 0.0, ""added_mass_kg"": 0.0, ""added_noise"": 0.0, ""neg_gain"": -1.0, ""setup_s"": 10.0, ""tactile_gain_loss"": 0.0}, ""identifiability_gain"": 1.0}}"
+"round 2: retracted: no measured gain, so the set-up and perturbation cost is not justified (the expected gain was wrong)","{""actual"": {""existing"": 10, ""gain"": 0, ""identified_after"": 2, ""identified_before"": 2}, ""change"": [{""id"": ""respiration-added"", ""kind"": ""respiration"", ""op"": ""add"", ""settings"": {}}], ""expected"": {""cost"": {""added_delay_s"": 0.0, ""added_mass_kg"": 0.0, ""added_noise"": 0.0, ""neg_gain"": -1.0, ""setup_s"": 20.0, ""tactile_gain_loss"": 0.0}, ""identifiability_gain"": 1.0}}"
+round 4: retracted: the apparatus changes the body it observes (measured),"{""actual"": {""existing"": 10, ""gain"": 2, ""identified_after"": 6, ""identified_before"": 4}, ""change"": [{""id"": ""emg-added"", ""kind"": ""emg"", ""op"": ""add"", ""settings"": {""spatial"": ""joint""}}], ""expected"": {""cost"": {""added_delay_s"": 0.0, ""added_mass_kg"": 0.15, ""added_noise"": 0.0, ""neg_gain"": -1.0, ""setup_s"": 90.0, ""tactile_gain_loss"": 0.05}, ""identifiability_gain"": 1.0}}"
+"sources disagree on 'com_excursion': kept side by side, not merged",{}
+"sources disagree on 'correction_latency': kept side by side, not merged",{}
+
+# table: unobserved_differences
+difference,status,reason,observation_configuration
+cocontraction,unobserved,no source,final
+muscle_activation,unobserved,no source,final
+energy_use,unobserved,no source,final
+fatigue_state,unobserved,no source,final
+breath_amplitude,unobserved,no source,final

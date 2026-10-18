@@ -1,0 +1,1967 @@
+{
+ "digest": "bea03229da5119bf1bcd3dc4abc5d931df70dbd7b69abcac7547490f3974b379",
+ "experiment": "M",
+ "history": {
+  "reentry": []
+ },
+ "id": "xb-m-bea03229da51",
+ "initial_configuration": {
+  "adaptation": {
+   "cost": 0.0,
+   "enabled": true,
+   "error_target": 0.003,
+   "eta": 0.2,
+   "gain_max": 1.15,
+   "gain_min": 0.9
+  },
+  "environment": {
+   "compliance": 0.0,
+   "friction_mu": 0.8,
+   "gravity": 9.81,
+   "handrail": null,
+   "ledge": null,
+   "pushes": [
+    {
+     "dur": 0.12,
+     "force": 35.0,
+     "link": 2,
+     "point_frac": 0.8,
+     "t": 3.2
+    }
+   ]
+  },
+  "family": "human-like",
+  "foot": {
+   "heel": 0.07,
+   "toe": 0.17
+  },
+  "internal": {
+   "activation_cost": 0.004,
+   "basal_cost": 0.0004,
+   "breath_amp": 0.015,
+   "breath_period": 4.0,
+   "breath_variability": 0.05,
+   "capacity_floor": 0.45,
+   "energy0": 1.0,
+   "energy_floor": 0.3,
+   "fatigue_rate": 0.02,
+   "fatigue_recovery": 0.012,
+   "resources_enabled": true
+  },
+  "joints": [
+   {
+    "act_fall": 0.08,
+    "act_rise": 0.04,
+    "c_passive": 45.0,
+    "id": "ankle",
+    "k_passive": 720.0,
+    "label": "ankle",
+    "q_range": 0.6,
+    "tau_max": 120.0
+   },
+   {
+    "act_fall": 0.08,
+    "act_rise": 0.04,
+    "c_passive": 40.0,
+    "id": "knee",
+    "k_passive": 700.0,
+    "label": "knee",
+    "q_range": 0.6,
+    "tau_max": 150.0
+   },
+   {
+    "act_fall": 0.08,
+    "act_rise": 0.04,
+    "c_passive": 35.0,
+    "id": "hip",
+    "k_passive": 420.0,
+    "label": "hip",
+    "q_range": 0.8,
+    "tau_max": 180.0
+   },
+   {
+    "act_fall": 0.06,
+    "act_rise": 0.03,
+    "c_passive": 4.0,
+    "id": "neck",
+    "k_passive": 45.0,
+    "label": "neck",
+    "q_range": 0.8,
+    "tau_max": 25.0
+   }
+  ],
+  "lines": [
+   {
+    "enabled": true,
+    "id": "mech.passive",
+    "ignition": {
+     "hold_s": 0.0,
+     "signal": "always",
+     "threshold": 0.0
+    },
+    "kind": "mechanical",
+    "label": "viscoelastic joints (passive)",
+    "note": "always on; stiffness and damping per joint",
+    "observable_by": [
+     "posture",
+     "imu"
+    ],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 0.0
+   },
+   {
+    "enabled": true,
+    "id": "sens.proprio",
+    "ignition": {
+     "hold_s": 0.05,
+     "signal": "joint-velocity",
+     "threshold": 0.05
+    },
+    "kind": "sensory",
+    "label": "proprioceptive sensing",
+    "note": "timescale = sensory delay (s); ignites when a joint velocity exceeds the threshold (rad/s)",
+    "observable_by": [
+     "posture",
+     "emg"
+    ],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 0.03
+   },
+   {
+    "enabled": true,
+    "id": "sens.vestibular",
+    "ignition": {
+     "hold_s": 0.05,
+     "signal": "trunk-tilt-rate",
+     "threshold": 0.03
+    },
+    "kind": "sensory",
+    "label": "vestibular / head-motion sensing",
+    "note": "timescale = delay; ignites on trunk tilt rate (rad/s)",
+    "observable_by": [
+     "imu",
+     "eeg"
+    ],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 0.02
+   },
+   {
+    "enabled": true,
+    "id": "sens.visual",
+    "ignition": {
+     "hold_s": 0.1,
+     "signal": "com-offset",
+     "threshold": 0.004
+    },
+    "kind": "sensory",
+    "label": "visual feedback",
+    "note": "timescale = delay; ignites on a visible COM offset (m); can be blocked",
+    "observable_by": [
+     "posture",
+     "eeg"
+    ],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 0.1
+   },
+   {
+    "enabled": true,
+    "id": "sens.tactile",
+    "ignition": {
+     "hold_s": 0.05,
+     "signal": "cop-shift",
+     "threshold": 0.004
+    },
+    "kind": "sensory",
+    "label": "tactile / contact-pressure sensing",
+    "note": "timescale = delay; ignites on a centre-of-pressure shift (m)",
+    "observable_by": [
+     "contact",
+     "eeg"
+    ],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 0.04
+   },
+   {
+    "enabled": true,
+    "id": "sens.cue",
+    "ignition": {
+     "hold_s": 0.05,
+     "signal": "cue",
+     "threshold": 0.5
+    },
+    "kind": "sensory",
+    "label": "cue perception",
+    "note": "timescale = delay; the movement / direction-change cues are sensed through it",
+    "observable_by": [
+     "eeg",
+     "latency"
+    ],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 0.12
+   },
+   {
+    "enabled": true,
+    "id": "neural.reflex",
+    "ignition": {
+     "hold_s": 0.08,
+     "signal": "joint-velocity",
+     "threshold": 0.12
+    },
+    "kind": "neural",
+    "label": "local joint reflex",
+    "note": "timescale = loop latency; ignites on a fast sensed joint motion",
+    "observable_by": [
+     "emg",
+     "latency",
+     "eeg"
+    ],
+    "resource": {
+     "cost_per_s": 0.002,
+     "pool": "energy"
+    },
+    "timescale_s": 0.04
+   },
+   {
+    "enabled": true,
+    "id": "neural.central.ankle",
+    "ignition": {
+     "hold_s": 0.2,
+     "signal": "com-offset",
+     "threshold": 0.003
+    },
+    "kind": "neural",
+    "label": "central balance command (ankle)",
+    "note": "timescale = latency; ignites on a sensed COM offset from the reference",
+    "observable_by": [
+     "emg",
+     "eeg",
+     "latency"
+    ],
+    "resource": {
+     "cost_per_s": 0.004,
+     "pool": "energy"
+    },
+    "timescale_s": 0.1
+   },
+   {
+    "enabled": true,
+    "id": "neural.central.hip",
+    "ignition": {
+     "hold_s": 0.25,
+     "signal": "com-offset",
+     "threshold": 0.02
+    },
+    "kind": "neural",
+    "label": "central balance command (hip)",
+    "note": "timescale = latency; ignites on a large COM offset",
+    "observable_by": [
+     "emg",
+     "eeg",
+     "latency"
+    ],
+    "resource": {
+     "cost_per_s": 0.008,
+     "pool": "energy"
+    },
+    "timescale_s": 0.1
+   },
+   {
+    "enabled": true,
+    "id": "neural.central.cue",
+    "ignition": {
+     "hold_s": 0.3,
+     "signal": "cue",
+     "threshold": 0.5
+    },
+    "kind": "neural",
+    "label": "central movement command (feed-forward)",
+    "note": "timescale = latency; ignites on a sensed cue",
+    "observable_by": [
+     "emg",
+     "eeg",
+     "latency"
+    ],
+    "resource": {
+     "cost_per_s": 0.004,
+     "pool": "energy"
+    },
+    "timescale_s": 0.1
+   },
+   {
+    "enabled": true,
+    "id": "core.tonic",
+    "ignition": {
+     "hold_s": 0.0,
+     "signal": "always",
+     "threshold": 0.0
+    },
+    "kind": "internal",
+    "label": "tonic co-contraction (core)",
+    "note": "baseline co-contraction level; costs energy while on",
+    "observable_by": [
+     "emg"
+    ],
+    "resource": {
+     "cost_per_s": 0.003,
+     "pool": "energy"
+    },
+    "timescale_s": 0.0
+   },
+   {
+    "enabled": true,
+    "id": "breath.cycle",
+    "ignition": {
+     "hold_s": 0.0,
+     "signal": "always",
+     "threshold": 0.0
+    },
+    "kind": "internal",
+    "label": "breathing cycle",
+    "note": "timescale = period (s); modulates trunk drive and chest motion",
+    "observable_by": [
+     "respiration",
+     "imu",
+     "emg"
+    ],
+    "resource": {
+     "cost_per_s": 0.001,
+     "pool": "energy"
+    },
+    "timescale_s": 4.0
+   },
+   {
+    "enabled": true,
+    "id": "metabolic.supply",
+    "ignition": {
+     "hold_s": 0.0,
+     "signal": "always",
+     "threshold": 0.0
+    },
+    "kind": "internal",
+    "label": "energy supply / fatigue",
+    "note": "timescale = fatigue time constant (s); internal, no observation model sees it directly",
+    "observable_by": [],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 30.0
+   },
+   {
+    "enabled": true,
+    "id": "adapt.gain",
+    "ignition": {
+     "hold_s": 0.0,
+     "signal": "always",
+     "threshold": 0.0
+    },
+    "kind": "internal",
+    "label": "gain adaptation",
+    "note": "timescale = adaptation time constant (s); slow retained state",
+    "observable_by": [],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 20.0
+   }
+  ],
+  "links": [
+   {
+    "com_frac": 0.45,
+    "id": "shank",
+    "label": "shank + foot",
+    "length": 0.45,
+    "mass": 6.6,
+    "region": "shank"
+   },
+   {
+    "com_frac": 0.45,
+    "id": "thigh",
+    "label": "thigh",
+    "length": 0.45,
+    "mass": 14.0,
+    "region": "thigh"
+   },
+   {
+    "com_frac": 0.5,
+    "id": "trunk",
+    "label": "trunk + arms",
+    "length": 0.55,
+    "mass": 38.0,
+    "region": "trunk"
+   },
+   {
+    "com_frac": 0.5,
+    "id": "head",
+    "label": "head + neck",
+    "length": 0.3,
+    "mass": 4.8,
+    "region": "head"
+   }
+  ],
+  "model": "xb-tro/1.0",
+  "name": "human-like-planar",
+  "neural": {
+   "cocontraction_base": 0.06,
+   "cocontraction_gain": 2.0,
+   "gain_ankle_d": 3.5,
+   "gain_ankle_p": 3.0,
+   "gain_cop": 0.0,
+   "gain_cue_ff": 1.0,
+   "gain_hip_d": 0.8,
+   "gain_hip_p": 1.2,
+   "gain_reflex_d": 0.05,
+   "gain_reflex_p": 0.6,
+   "gravity_comp": 0.5,
+   "gravity_ff": -0.4,
+   "motor_noise": 0.01,
+   "proprio_weight": 2.0,
+   "strategy": "endpoint",
+   "tactile_weight": 0.6,
+   "vestibular_weight": 1.0,
+   "visual_weight": 1.0,
+   "windup_frac": 0.35,
+   "windup_s": 0.25
+  },
+  "sensors": {
+   "cue": {
+    "noise": 0.15
+   },
+   "proprio": {
+    "gain": 1.0,
+    "noise": 0.002
+   },
+   "tactile": {
+    "gain": 1.0,
+    "noise": 0.003
+   },
+   "vestibular": {
+    "gain": 1.0,
+    "noise": 0.004
+   },
+   "visual": {
+    "blocked_windows": [],
+    "gain": 1.0,
+    "noise": 0.004
+   }
+  },
+  "slow_state0": null,
+  "task": {
+   "dt": 0.01,
+   "horizon": 7.5,
+   "initial_lean": 0.0,
+   "integrator": "rk4",
+   "ramp_s": 0.3,
+   "substeps": 2,
+   "t_cue": 0.8,
+   "t_turn": 5.2,
+   "x_target": 0.035,
+   "x_turn": -0.02
+  },
+  "xeno14": []
+ },
+ "interventions": [
+  {
+   "alteration": "mixed"
+  }
+ ],
+ "labels": {
+  "estimate": "model-based estimate computed from observation outputs only",
+  "observation": "output of a simulated observation model applied to the reference (separate from it)",
+  "reference": "model reference state (simulator-internal; not an observation of a real body)"
+ },
+ "model_version": "xb-tro/1.0",
+ "negative_results": [
+  {
+   "evidence": {
+    "actual": {
+     "existing": 10,
+     "gain": 0,
+     "identified_after": 2,
+     "identified_before": 2
+    },
+    "change": [
+     {
+      "field": "noise",
+      "model": "posture",
+      "op": "set",
+      "value": 0.5
+     }
+    ],
+    "expected": {
+     "cost": {
+      "added_delay_s": 0.0,
+      "added_mass_kg": 0.0,
+      "added_noise": 0.0,
+      "neg_gain": -1.0,
+      "setup_s": 10.0,
+      "tactile_gain_loss": 0.0
+     },
+     "identifiability_gain": 1.0
+    }
+   },
+   "statement": "round 1: retracted: no measured gain, so the set-up and perturbation cost is not justified (the expected gain was wrong)"
+  },
+  {
+   "evidence": {
+    "actual": {
+     "existing": 10,
+     "gain": 0,
+     "identified_after": 2,
+     "identified_before": 2
+    },
+    "change": [
+     {
+      "id": "respiration-added",
+      "kind": "respiration",
+      "op": "add",
+      "settings": {}
+     }
+    ],
+    "expected": {
+     "cost": {
+      "added_delay_s": 0.0,
+      "added_mass_kg": 0.0,
+      "added_noise": 0.0,
+      "neg_gain": -1.0,
+      "setup_s": 20.0,
+      "tactile_gain_loss": 0.0
+     },
+     "identifiability_gain": 1.0
+    }
+   },
+   "statement": "round 2: retracted: no measured gain, so the set-up and perturbation cost is not justified (the expected gain was wrong)"
+  },
+  {
+   "evidence": {
+    "actual": {
+     "existing": 10,
+     "gain": 2,
+     "identified_after": 6,
+     "identified_before": 4
+    },
+    "change": [
+     {
+      "id": "emg-added",
+      "kind": "emg",
+      "op": "add",
+      "settings": {
+       "spatial": "joint"
+      }
+     }
+    ],
+    "expected": {
+     "cost": {
+      "added_delay_s": 0.0,
+      "added_mass_kg": 0.15,
+      "added_noise": 0.0,
+      "neg_gain": -1.0,
+      "setup_s": 90.0,
+      "tactile_gain_loss": 0.05
+     },
+     "identifiability_gain": 1.0
+    }
+   },
+   "statement": "round 4: retracted: the apparatus changes the body it observes (measured)"
+  },
+  {
+   "evidence": {},
+   "statement": "sources disagree on 'com_excursion': kept side by side, not merged"
+  },
+  {
+   "evidence": {},
+   "statement": "sources disagree on 'correction_latency': kept side by side, not merged"
+  }
+ ],
+ "numerical_method": "RK4 on the N-link planar Lagrangian equations with the muscle drive held over each step; batched seeds with common random numbers; first-order activation dynamics; digests over 6 significant digits",
+ "observation_configurations": [
+  {
+   "models": [
+    {
+     "blind_regions": [],
+     "blind_windows": [],
+     "delay_s": 0.02,
+     "dropout": 0.0,
+     "effects": {},
+     "effects_on": true,
+     "id": "posture",
+     "joints": "all",
+     "kind": "posture",
+     "noise": 1.0,
+     "sample_hz": 50.0,
+     "spatial": "joint"
+    }
+   ],
+   "name": "motion-only",
+   "window": null
+  },
+  {
+   "models": [
+    {
+     "blind_regions": [],
+     "blind_windows": [],
+     "delay_s": 0.02,
+     "dropout": 0.0,
+     "effects": {},
+     "effects_on": true,
+     "id": "posture",
+     "joints": "all",
+     "kind": "posture",
+     "noise": 1.0,
+     "sample_hz": 50.0,
+     "spatial": "joint"
+    },
+    {
+     "blind_regions": [],
+     "blind_windows": [],
+     "delay_s": 0.0,
+     "dropout": 0.0,
+     "effects": {
+      "tactile_gain_scale": 0.95
+     },
+     "effects_on": true,
+     "id": "contact-added",
+     "kind": "contact",
+     "noise": 1.0,
+     "sample_hz": 100.0,
+     "spatial": "detailed"
+    }
+   ],
+   "name": "motion-only",
+   "window": null
+  }
+ ],
+ "parameters": {
+  "n_seeds": 12,
+  "preset": "human-like-planar",
+  "rounds": 4
+ },
+ "provenance": {
+  "machine": "arm64",
+  "numpy": "2.5.3",
+  "platform": "darwin",
+  "python": "3.12.13"
+ },
+ "rerun": {
+  "experiment": "M",
+  "parameters": {
+   "n_seeds": 12,
+   "preset": "human-like-planar",
+   "rounds": 4
+  }
+ },
+ "results": {
+  "distributed": {
+   "conflicts": [
+    "com_excursion",
+    "correction_latency"
+   ],
+   "families": {
+    "contact": {
+     "excluded_in_advance": [],
+     "relations": 1,
+     "with_a_source": 1,
+     "without_any_source": []
+    },
+    "internal": {
+     "excluded_in_advance": [],
+     "relations": 3,
+     "with_a_source": 1,
+     "without_any_source": [
+      "energy_use",
+      "fatigue_state"
+     ]
+    },
+    "kinematic": {
+     "excluded_in_advance": [],
+     "relations": 4,
+     "with_a_source": 4,
+     "without_any_source": []
+    },
+    "latent": {
+     "excluded_in_advance": [],
+     "relations": 2,
+     "with_a_source": 0,
+     "without_any_source": [
+      "line_conflicts",
+      "visual_use"
+     ]
+    },
+    "muscular": {
+     "excluded_in_advance": [],
+     "relations": 3,
+     "with_a_source": 1,
+     "without_any_source": [
+      "cocontraction",
+      "muscle_activation"
+     ]
+    },
+    "neural": {
+     "excluded_in_advance": [],
+     "relations": 1,
+     "with_a_source": 0,
+     "without_any_source": [
+      "central_latency"
+     ]
+    },
+    "respiratory": {
+     "excluded_in_advance": [],
+     "relations": 1,
+     "with_a_source": 0,
+     "without_any_source": [
+      "breath_amplitude"
+     ]
+    }
+   },
+   "privileged_source": null,
+   "relations": [
+    {
+     "agreement": "single-source",
+     "capable": true,
+     "exists_in_model_reference": true,
+     "family": "kinematic",
+     "fused": null,
+     "label": "trunk sway in quiet standing",
+     "per_source": [
+      {
+       "d": 1.43705244223,
+       "identified": true,
+       "kind": "posture",
+       "n": 12,
+       "p": 0.00146484375,
+       "proxy": false,
+       "source_feature": "posture_sway_rms"
+      }
+     ],
+     "relation": "posture_sway",
+     "states": [
+      [
+       "posture_sway_rms",
+       "posture",
+       "ok"
+      ],
+      [
+       "sway_rms_imu",
+       "imu",
+       "absent"
+      ]
+     ]
+    },
+    {
+     "agreement": "conflict",
+     "capable": true,
+     "exists_in_model_reference": true,
+     "family": "kinematic",
+     "fused": null,
+     "label": "peak centre-of-mass deviation after a push",
+     "per_source": [
+      {
+       "d": -0.201978634089,
+       "identified": false,
+       "kind": "posture",
+       "n": 12,
+       "p": 0.4794921875,
+       "proxy": false,
+       "source_feature": "peak_dev_obs"
+      },
+      {
+       "d": 1.47117853028,
+       "identified": true,
+       "kind": "contact",
+       "n": 12,
+       "p": 0.001953125,
+       "proxy": true,
+       "source_feature": "cop_range_obs"
+      }
+     ],
+     "relation": "com_excursion",
+     "states": [
+      [
+       "peak_dev_obs",
+       "posture",
+       "ok"
+      ],
+      [
+       "imu_rate_peak",
+       "imu",
+       "absent"
+      ],
+      [
+       "cop_range_obs",
+       "contact",
+       "ok"
+      ]
+     ]
+    },
+    {
+     "agreement": "single-source",
+     "capable": true,
+     "exists_in_model_reference": true,
+     "family": "contact",
+     "fused": null,
+     "label": "centre-of-pressure activity",
+     "per_source": [
+      {
+       "d": 2.96258125391,
+       "identified": true,
+       "kind": "contact",
+       "n": 12,
+       "p": 0.00048828125,
+       "proxy": false,
+       "source_feature": "cop_rms_obs"
+      }
+     ],
+     "relation": "cop_activity",
+     "states": [
+      [
+       "cop_rms_obs",
+       "contact",
+       "ok"
+      ]
+     ]
+    },
+    {
+     "agreement": "conflict",
+     "capable": true,
+     "exists_in_model_reference": true,
+     "family": "muscular",
+     "fused": null,
+     "label": "movement-correction latency after a push",
+     "per_source": [
+      {
+       "d": 2.5357483632,
+       "identified": true,
+       "kind": "contact",
+       "n": 12,
+       "p": 0.00048828125,
+       "proxy": false,
+       "source_feature": "cop_onset_push"
+      },
+      {
+       "d": -0.854517392268,
+       "identified": false,
+       "kind": "posture",
+       "n": 11,
+       "p": 0.015625,
+       "proxy": true,
+       "source_feature": "com_onset_push"
+      }
+     ],
+     "relation": "correction_latency",
+     "states": [
+      [
+       "emg_onset_push",
+       "emg",
+       "absent"
+      ],
+      [
+       "cop_onset_push",
+       "contact",
+       "ok"
+      ],
+      [
+       "imu_onset_push",
+       "imu",
+       "absent"
+      ],
+      [
+       "com_onset_push",
+       "posture",
+       "ok"
+      ]
+     ]
+    },
+    {
+     "agreement": "no-source",
+     "capable": false,
+     "exists_in_model_reference": false,
+     "family": "neural",
+     "fused": null,
+     "label": "central command latency after a cue",
+     "per_source": [],
+     "relation": "central_latency",
+     "states": [
+      [
+       "neural_onset_cue",
+       "eeg",
+       "absent"
+      ],
+      [
+       "emg_onset_cue",
+       "emg",
+       "absent"
+      ]
+     ]
+    },
+    {
+     "agreement": "no-source",
+     "capable": false,
+     "exists_in_model_reference": true,
+     "family": "muscular",
+     "fused": null,
+     "label": "antagonist co-contraction",
+     "per_source": [],
+     "relation": "cocontraction",
+     "states": [
+      [
+       "emg_cc",
+       "emg",
+       "absent"
+      ],
+      [
+       "emg_mean",
+       "emg",
+       "absent"
+      ]
+     ]
+    },
+    {
+     "agreement": "no-source",
+     "capable": false,
+     "exists_in_model_reference": true,
+     "family": "muscular",
+     "fused": null,
+     "label": "mean muscle activation (effort)",
+     "per_source": [],
+     "relation": "muscle_activation",
+     "states": [
+      [
+       "emg_mean",
+       "emg",
+       "absent"
+      ]
+     ]
+    },
+    {
+     "agreement": "single-source",
+     "capable": true,
+     "exists_in_model_reference": true,
+     "family": "kinematic",
+     "fused": null,
+     "label": "settling after a direction change",
+     "per_source": [
+      {
+       "d": -2.69909078744,
+       "identified": true,
+       "kind": "posture",
+       "n": 12,
+       "p": 0.00048828125,
+       "proxy": false,
+       "source_feature": "turn_error_obs"
+      }
+     ],
+     "relation": "settling_turn",
+     "states": [
+      [
+       "turn_error_obs",
+       "posture",
+       "ok"
+      ]
+     ]
+    },
+    {
+     "agreement": "single-source",
+     "capable": true,
+     "exists_in_model_reference": false,
+     "family": "kinematic",
+     "fused": null,
+     "label": "loss of balance (falls)",
+     "per_source": [
+      {
+       "d": -1.1602440827,
+       "identified": true,
+       "kind": "posture",
+       "n": 12,
+       "p": 0.00341796875,
+       "proxy": false,
+       "source_feature": "posture_peak_lean"
+      }
+     ],
+     "relation": "stability_loss",
+     "states": [
+      [
+       "posture_peak_lean",
+       "posture",
+       "ok"
+      ]
+     ]
+    },
+    {
+     "agreement": "no-source",
+     "capable": false,
+     "exists_in_model_reference": true,
+     "family": "internal",
+     "fused": null,
+     "label": "energy used (internal resource)",
+     "per_source": [],
+     "relation": "energy_use",
+     "states": [
+      [
+       "breath_amp_obs",
+       "respiration",
+       "absent"
+      ],
+      [
+       "emg_mean",
+       "emg",
+       "absent"
+      ]
+     ]
+    },
+    {
+     "agreement": "no-source",
+     "capable": false,
+     "exists_in_model_reference": true,
+     "family": "internal",
+     "fused": null,
+     "label": "fatigue (internal state)",
+     "per_source": [],
+     "relation": "fatigue_state",
+     "states": [
+      [
+       "emg_drift",
+       "emg",
+       "absent"
+      ]
+     ]
+    },
+    {
+     "agreement": "single-source",
+     "capable": true,
+     "exists_in_model_reference": false,
+     "family": "internal",
+     "fused": null,
+     "label": "adapted control gain (retained state)",
+     "per_source": [
+      {
+       "d": 1.43705244223,
+       "identified": true,
+       "kind": "posture",
+       "n": 12,
+       "p": 0.00146484375,
+       "proxy": true,
+       "source_feature": "posture_sway_rms"
+      }
+     ],
+     "relation": "adaptation_gain",
+     "states": [
+      [
+       "posture_sway_rms",
+       "posture",
+       "ok"
+      ]
+     ]
+    },
+    {
+     "agreement": "no-source",
+     "capable": false,
+     "exists_in_model_reference": true,
+     "family": "respiratory",
+     "fused": null,
+     "label": "breathing-related drive",
+     "per_source": [],
+     "relation": "breath_amplitude",
+     "states": [
+      [
+       "breath_amp_obs",
+       "respiration",
+       "absent"
+      ]
+     ]
+    },
+    {
+     "agreement": "no-source",
+     "capable": false,
+     "exists_in_model_reference": false,
+     "family": "latent",
+     "fused": null,
+     "label": "conflicts between operation lines (model-internal events)",
+     "per_source": [],
+     "relation": "line_conflicts",
+     "states": []
+    },
+    {
+     "agreement": "no-source",
+     "capable": false,
+     "exists_in_model_reference": false,
+     "family": "latent",
+     "fused": null,
+     "label": "use of visual feedback (line activity)",
+     "per_source": [],
+     "relation": "visual_use",
+     "states": []
+    }
+   ],
+   "sources": [
+    {
+     "boundary": {
+      "blind_regions": [],
+      "blind_windows": [],
+      "regions": [
+       "ground",
+       "head",
+       "shank",
+       "thigh",
+       "trunk"
+      ]
+     },
+     "kind": "posture",
+     "provenance": {
+      "delay_s": 0.02,
+      "dropout": 0.0,
+      "noise": 1.0,
+      "sample_hz": 50.0
+     },
+     "scale": "joint",
+     "source": "posture",
+     "time_resolution_s": 0.02
+    },
+    {
+     "boundary": {
+      "blind_regions": [],
+      "blind_windows": [],
+      "regions": [
+       "ground"
+      ]
+     },
+     "kind": "contact",
+     "provenance": {
+      "delay_s": 0.0,
+      "dropout": 0.0,
+      "noise": 1.0,
+      "sample_hz": 100.0
+     },
+     "scale": "detailed",
+     "source": "contact-added",
+     "time_resolution_s": 0.01
+    }
+   ]
+  },
+  "final_observation": {
+   "models": [
+    {
+     "blind_regions": [],
+     "blind_windows": [],
+     "delay_s": 0.02,
+     "dropout": 0.0,
+     "effects": {},
+     "effects_on": true,
+     "id": "posture",
+     "joints": "all",
+     "kind": "posture",
+     "noise": 1.0,
+     "sample_hz": 50.0,
+     "spatial": "joint"
+    },
+    {
+     "blind_regions": [],
+     "blind_windows": [],
+     "delay_s": 0.0,
+     "dropout": 0.0,
+     "effects": {
+      "tactile_gain_scale": 0.95
+     },
+     "effects_on": true,
+     "id": "contact-added",
+     "kind": "contact",
+     "noise": 1.0,
+     "sample_hz": 100.0,
+     "spatial": "detailed"
+    }
+   ],
+   "name": "motion-only",
+   "window": null
+  },
+  "policy": {
+   "not_total_recording": "unobserved_regions and unobserved_by_reason remain in reach_after: the policy does not claim total reach",
+   "reach_after": {
+    "differences_existing": 10,
+    "differences_identified": 4,
+    "identifiability": 0.4,
+    "instrumented_kinds": [
+     "contact",
+     "posture"
+    ],
+    "observed_region_fraction": 0.714285714286,
+    "scales": {
+     "contact-added": "detailed",
+     "posture": "joint"
+    },
+    "time_resolution_hz": [
+     50.0,
+     100.0
+    ],
+    "unobserved_by_reason": {
+     "unobserved:device-mismatch": 4,
+     "unobserved:unmeasured": 1
+    },
+    "unobserved_regions": [
+     "neural",
+     "internal"
+    ]
+   },
+   "reach_before": {
+    "differences_existing": 10,
+    "differences_identified": 2,
+    "identifiability": 0.2,
+    "instrumented_kinds": [
+     "posture"
+    ],
+    "observed_region_fraction": 0.714285714286,
+    "scales": {
+     "posture": "joint"
+    },
+    "time_resolution_hz": [
+     50.0,
+     50.0
+    ],
+    "unobserved_by_reason": {
+     "unobserved:device-mismatch": 5,
+     "unobserved:unmeasured": 1
+    },
+    "unobserved_regions": [
+     "neural",
+     "internal"
+    ]
+   },
+   "rounds": [
+    {
+     "actual": {
+      "existing": 10,
+      "gain": 0,
+      "identified_after": 2,
+      "identified_before": 2
+     },
+     "changes": [
+      {
+       "field": "noise",
+       "model": "posture",
+       "op": "set",
+       "value": 0.5
+      }
+     ],
+     "cost": {
+      "added_delay_s": 0.0,
+      "added_mass_kg": 0.0,
+      "added_noise": 0.0,
+      "neg_gain": -1.0,
+      "setup_s": 10.0,
+      "tactile_gain_loss": 0.0
+     },
+     "decision": "retracted: no measured gain, so the set-up and perturbation cost is not justified (the expected gain was wrong)",
+     "expected": {
+      "cost": {
+       "added_delay_s": 0.0,
+       "added_mass_kg": 0.0,
+       "added_noise": 0.0,
+       "neg_gain": -1.0,
+       "setup_s": 10.0,
+       "tactile_gain_loss": 0.0
+      },
+      "identifiability_gain": 1.0
+     },
+     "induced_change": [
+      {
+       "changed": false,
+       "d": 0.0,
+       "id": "sway_rms",
+       "label": "trunk sway",
+       "mean_with": 0.00110520382552,
+       "mean_without": 0.00110520382552,
+       "p": 1.0
+      },
+      {
+       "changed": false,
+       "d": 0.0,
+       "id": "track_rms",
+       "label": "tracking error",
+       "mean_with": 0.022843979708,
+       "mean_without": 0.022843979708,
+       "p": 1.0
+      },
+      {
+       "changed": false,
+       "d": 0.0,
+       "id": "energy_used",
+       "label": "energy used",
+       "mean_with": 0.100115435093,
+       "mean_without": 0.100115435093,
+       "p": 1.0
+      },
+      {
+       "changed": false,
+       "d": 0.0,
+       "id": "cc_mean",
+       "label": "co-contraction",
+       "mean_with": 0.042,
+       "mean_without": 0.042,
+       "p": 1.0
+      },
+      {
+       "changed": false,
+       "d": 0.0,
+       "id": "peak_dev",
+       "label": "push deviation",
+       "mean_with": 0.01756012483,
+       "mean_without": 0.01756012483,
+       "p": 1.0
+      },
+      {
+       "changed": false,
+       "d": 0.0,
+       "id": "fall",
+       "label": "falls",
+       "mean_with": 0.0,
+       "mean_without": 0.0,
+       "p": 1.0
+      }
+     ],
+     "perturbs_the_body": [],
+     "round": 1,
+     "why": "capable but below the noise: halve posture's noise (1 -> 0.5 of nominal; a better instrument, not a new one)"
+    },
+    {
+     "actual": {
+      "existing": 10,
+      "gain": 0,
+      "identified_after": 2,
+      "identified_before": 2
+     },
+     "changes": [
+      {
+       "id": "respiration-added",
+       "kind": "respiration",
+       "op": "add",
+       "settings": {}
+      }
+     ],
+     "cost": {
+      "added_delay_s": 0.0,
+      "added_mass_kg": 0.0,
+      "added_noise": 0.0,
+      "neg_gain": -1.0,
+      "setup_s": 20.0,
+      "tactile_gain_loss": 0.0
+     },
+     "decision": "retracted: no measured gain, so the set-up and perturbation cost is not justified (the expected gain was wrong)",
+     "expected": {
+      "cost": {
+       "added_delay_s": 0.0,
+       "added_mass_kg": 0.0,
+       "added_noise": 0.0,
+       "neg_gain": -1.0,
+       "setup_s": 20.0,
+       "tactile_gain_loss": 0.0
+      },
+      "identifiability_gain": 1.0
+     },
+     "induced_change": [
+      {
+       "changed": true,
+       "d": -1.07383538051,
+       "id": "sway_rms",
+       "label": "trunk sway",
+       "mean_with": 0.00106842785322,
+       "mean_without": 0.00110520382552,
+       "p": 0.0234375
+      },
+      {
+       "changed": false,
+       "d": 0.119212098916,
+       "id": "track_rms",
+       "label": "tracking error",
+       "mean_with": 0.0228506124351,
+       "mean_without": 0.022843979708,
+       "p": 1.0
+      },
+      {
+       "changed": false,
+       "d": 0.278874258986,
+       "id": "energy_used",
+       "label": "energy used",
+       "mean_with": 0.100175087973,
+       "mean_without": 0.100115435093,
+       "p": 0.375
+      },
+      {
+       "changed": false,
+       "d": 0.0,
+       "id": "cc_mean",
+       "label": "co-contraction",
+       "mean_with": 0.042,
+       "mean_without": 0.042,
+       "p": 1.0
+      },
+      {
+       "changed": false,
+       "d": 0.715732559509,
+       "id": "peak_dev",
+       "label": "push deviation",
+       "mean_with": 0.0176478826539,
+       "mean_without": 0.01756012483,
+       "p": 0.0703125
+      },
+      {
+       "changed": false,
+       "d": 0.0,
+       "id": "fall",
+       "label": "falls",
+       "mean_with": 0.0,
+       "mean_without": 0.0,
+       "p": 1.0
+      }
+     ],
+     "perturbs_the_body": [],
+     "round": 2,
+     "why": "deploy a respiration model (a different aspect is observed now)"
+    },
+    {
+     "actual": {
+      "existing": 10,
+      "gain": 2,
+      "identified_after": 4,
+      "identified_before": 2
+     },
+     "changes": [
+      {
+       "id": "contact-added",
+       "kind": "contact",
+       "op": "add",
+       "settings": {
+        "spatial": "detailed"
+       }
+      }
+     ],
+     "cost": {
+      "added_delay_s": 0.0,
+      "added_mass_kg": 0.0,
+      "added_noise": 0.0,
+      "neg_gain": -1.0,
+      "setup_s": 30.0,
+      "tactile_gain_loss": 0.05
+     },
+     "decision": "kept",
+     "expected": {
+      "cost": {
+       "added_delay_s": 0.0,
+       "added_mass_kg": 0.0,
+       "added_noise": 0.0,
+       "neg_gain": -1.0,
+       "setup_s": 30.0,
+       "tactile_gain_loss": 0.05
+      },
+      "identifiability_gain": 1.0
+     },
+     "induced_change": [
+      {
+       "changed": false,
+       "d": 0.0,
+       "id": "sway_rms",
+       "label": "trunk sway",
+       "mean_with": 0.00110520382552,
+       "mean_without": 0.00110520382552,
+       "p": 1.0
+      },
+      {
+       "changed": false,
+       "d": 0.0,
+       "id": "track_rms",
+       "label": "tracking error",
+       "mean_with": 0.022843979708,
+       "mean_without": 0.022843979708,
+       "p": 1.0
+      },
+      {
+       "changed": false,
+       "d": 0.0,
+       "id": "energy_used",
+       "label": "energy used",
+       "mean_with": 0.100115435093,
+       "mean_without": 0.100115435093,
+       "p": 1.0
+      },
+      {
+       "changed": false,
+       "d": 0.0,
+       "id": "cc_mean",
+       "label": "co-contraction",
+       "mean_with": 0.042,
+       "mean_without": 0.042,
+       "p": 1.0
+      },
+      {
+       "changed": false,
+       "d": 0.0,
+       "id": "peak_dev",
+       "label": "push deviation",
+       "mean_with": 0.01756012483,
+       "mean_without": 0.01756012483,
+       "p": 1.0
+      },
+      {
+       "changed": false,
+       "d": 0.0,
+       "id": "fall",
+       "label": "falls",
+       "mean_with": 0.0,
+       "mean_without": 0.0,
+       "p": 1.0
+      }
+     ],
+     "perturbs_the_body": [],
+     "round": 3,
+     "why": "deploy a contact model (a different aspect is observed now)"
+    },
+    {
+     "actual": {
+      "existing": 10,
+      "gain": 2,
+      "identified_after": 6,
+      "identified_before": 4
+     },
+     "changes": [
+      {
+       "id": "emg-added",
+       "kind": "emg",
+       "op": "add",
+       "settings": {
+        "spatial": "joint"
+       }
+      }
+     ],
+     "cost": {
+      "added_delay_s": 0.0,
+      "added_mass_kg": 0.15,
+      "added_noise": 0.0,
+      "neg_gain": -1.0,
+      "setup_s": 90.0,
+      "tactile_gain_loss": 0.05
+     },
+     "decision": "retracted: the apparatus changes the body it observes (measured)",
+     "expected": {
+      "cost": {
+       "added_delay_s": 0.0,
+       "added_mass_kg": 0.15,
+       "added_noise": 0.0,
+       "neg_gain": -1.0,
+       "setup_s": 90.0,
+       "tactile_gain_loss": 0.05
+      },
+      "identifiability_gain": 1.0
+     },
+     "induced_change": [
+      {
+       "changed": false,
+       "d": 0.51525718175,
+       "id": "sway_rms",
+       "label": "trunk sway",
+       "mean_with": 0.00110586035334,
+       "mean_without": 0.00110520382552,
+       "p": 0.1875
+      },
+      {
+       "changed": true,
+       "d": 1.55164988982,
+       "id": "track_rms",
+       "label": "tracking error",
+       "mean_with": 0.0228842849846,
+       "mean_without": 0.022843979708,
+       "p": 0.0078125
+      },
+      {
+       "changed": false,
+       "d": -0.419865935951,
+       "id": "energy_used",
+       "label": "energy used",
+       "mean_with": 0.100024030076,
+       "mean_without": 0.100115435093,
+       "p": 0.2734375
+      },
+      {
+       "changed": false,
+       "d": 0.0,
+       "id": "cc_mean",
+       "label": "co-contraction",
+       "mean_with": 0.042,
+       "mean_without": 0.042,
+       "p": 1.0
+      },
+      {
+       "changed": true,
+       "d": -2.56897258563,
+       "id": "peak_dev",
+       "label": "push deviation",
+       "mean_with": 0.0174628284633,
+       "mean_without": 0.01756012483,
+       "p": 0.0078125
+      },
+      {
+       "changed": false,
+       "d": 0.0,
+       "id": "fall",
+       "label": "falls",
+       "mean_with": 0.0,
+       "mean_without": 0.0,
+       "p": 1.0
+      }
+     ],
+     "perturbs_the_body": [
+      "track_rms",
+      "peak_dev"
+     ],
+     "round": 4,
+     "why": "deploy a emg model (a different aspect is observed now)"
+    }
+   ],
+   "setup_time_s": 30.0,
+   "stopped_because": "round limit"
+  },
+  "reading": "A limited instance over a simulated body. The repository-level status of MO remains NOT IMPLEMENTED (specification section 2).",
+  "status": {
+   "sources": {
+    "definitions": "pa-philosophy-in-audit/data/ziran.ts",
+    "mo_readiness": "pa-simulation-environment/docs/ZIRAN_MO_READINESS_AUDIT.md",
+    "reconciliation": "pa-simulation-environment/docs/ZIRAN_CURRENT_SPECIFICATION.md (2026-09-05 baseline)",
+    "zca_type": "pa-simulation-environment/src/ziran/address/types.ts"
+   },
+   "spec": {
+    "DO": {
+     "definition": "The implementation architecture for heterogeneous distributed observation, privileging no single sensor, observer, scale, or computational system. \u201cTotal-relational\u201d means classes of relations are not excluded in advance.",
+     "name": "Total-Relational Distributed Observation",
+     "not_this": "Not a claim that every relation is already observed."
+    },
+    "MO": {
+     "definition": "The responsibility for maximizing revisable observational reach across potentially relevant relations, scales, boundaries, and time intervals.",
+     "name": "Maximal Observation Theory",
+     "not_this": "Not complete, total, or permanent recording. Actual observation stays selective and conditional, and observing can itself cost latency, perturbation, or trade-offs."
+    },
+    "MS": {
+     "definition": "Conditionally selects and reallocates executable transition paths under measured physical constraints \u2014 latency, energy, information gain, intervention reach time, reconstruction cost, recovery time \u2014 never collapsed into one speed score. Stopping can be the fastest path.",
+     "name": "Maximal-Speed Flow System",
+     "not_this": "Not \u201cModular Switching.\u201d"
+    },
+    "ZCA": {
+     "definition": "A transversal address / provenance layer, \u27e8N, ID, t, s, b, v, p\u27e9, giving stable reference across configuration, physical state, observation, intervention, model, gaish\u014d, concept, theory, and system layers \u2014 without identifying those layers with one another. A linked Concept Address Layer assigns relatively stable series addresses to concepts (life, subject, belief, AI) while tracking definition, application-condition, relation, counterexample, and version changes without erasing the concept.",
+     "name": "Ziran Configuration Address",
+     "not_this": "Not conditional activation. Address \u2260 reality \u2014 a shared address shape never implies two records are the same kind of thing."
+    }
+   },
+   "statement": "These are limited instances over a simulated body. The repository-level status of MO and MS in the Ziran System remains NOT IMPLEMENTED; DO and ZCA remain PARTIAL. Nothing here is evidence about the Ziran System itself.",
+   "status": {
+    "DO": {
+     "not_covered": "real observers and real sensors; computational systems other than the simulated models",
+     "repository_status": "PARTIAL",
+     "xbtro_instance": "distributed_observation(): every deployed observation model is a source with its own provenance, scale, boundary and time resolution; no source is privileged; where several sources can estimate the same quantity their verdicts are kept side by side, and disagreement is recorded as a conflict, never averaged away; classes of relations without any instrument are listed as unobserved, not as absent."
+    },
+    "MO": {
+     "not_covered": "relations, scales, boundaries and time intervals outside this body model; redirection into unrepresented territory (a new instrument is always one from the fixed inventory); anything outside the simulation. The cost model is nominal.",
+     "repository_status": "NOT IMPLEMENTED \u2014 Readiness Audited (PHASE M)",
+     "xbtro_instance": "mo_policy(): over the observation configuration of this body model, generate candidate changes, cost each (set-up time, apparatus perturbation as a vector), choose among the non-dominated ones, apply, measure the actual identifiability gain and the actual perturbation of the body, and retract a change that proves to perturb what it observes. Reach is reported as a vector."
+    },
+    "MS": {
+     "not_covered": "physical flows other than this body's; reallocation while running (paths are compared across runs); latency/energy of real hardware",
+     "repository_status": "NOT IMPLEMENTED",
+     "xbtro_instance": "ms_paths(): executable alternatives (sets of operation lines, Xeno-14 conditions, a stopped response) are run for one stated consequence; each is measured on latency, energy, information gain, intervention reach time, reconstruction cost and recovery time, kept as a vector; the non-dominated set is reported; a choice is made only under constraints stated by the caller. The stopped response is one of the paths."
+    },
+    "ZCA": {
+     "not_covered": "no global registry, no address equivalence (no 'same object' function), no content-hash identity, no address resolution, no Concept Address Layer",
+     "repository_status": "PARTIAL \u2014 Minimal Address Layer v1",
+     "xbtro_instance": "address(), address_record(), address_observation_configuration(), address_body_configuration(): addresses with the specification's fields (namespace, localId, time, scale, boundary, version, provenance), each optional field in one of the four states (known / unknown / not-recorded / not-applicable). The local id reuses the record's own id."
+    }
+   }
+  },
+  "tables": [
+   {
+    "columns": [
+     "round",
+     "change",
+     "why",
+     "expected gain",
+     "set-up s",
+     "added mass kg",
+     "identified before",
+     "identified after",
+     "perturbs the body",
+     "decision"
+    ],
+    "name": "policy_rounds",
+    "rows": [
+     [
+      1,
+      "[{'op': 'set', 'model': 'posture', 'field': 'noise', 'value': 0.5}]",
+      "capable but below the noise: halve posture's noise (1 -> 0.5 of nominal; a better instrument, not a new one)",
+      1.0,
+      10.0,
+      0.0,
+      2,
+      2,
+      "",
+      "retracted: no measured gain, so the set-up and perturbation cost is not justified (the expected gain was wrong)"
+     ],
+     [
+      2,
+      "[{'op': 'add', 'kind': 'respiration', 'id': 'respiration-added', 'settings': {}}]",
+      "deploy a respiration model (a different aspect is observed now)",
+      1.0,
+      20.0,
+      0.0,
+      2,
+      2,
+      "",
+      "retracted: no measured gain, so the set-up and perturbation cost is not justified (the expected gain was wrong)"
+     ],
+     [
+      3,
+      "[{'op': 'add', 'kind': 'contact', 'id': 'contact-added', 'settings': {'spatial': 'detailed'}}]",
+      "deploy a contact model (a different aspect is observed now)",
+      1.0,
+      30.0,
+      0.0,
+      2,
+      4,
+      "",
+      "kept"
+     ],
+     [
+      4,
+      "[{'op': 'add', 'kind': 'emg', 'id': 'emg-added', 'settings': {'spatial': 'joint'}}]",
+      "deploy a emg model (a different aspect is observed now)",
+      1.0,
+      90.0,
+      0.15,
+      4,
+      6,
+      "track_rms, peak_dev",
+      "retracted: the apparatus changes the body it observes (measured)"
+     ]
+    ],
+    "title": "Rounds: candidate, cost vector, expectation, measured result, decision"
+   },
+   {
+    "columns": [
+     "measure",
+     "before",
+     "after"
+    ],
+    "name": "reach",
+    "rows": [
+     [
+      "differences_existing",
+      "10",
+      "10"
+     ],
+     [
+      "differences_identified",
+      "2",
+      "4"
+     ],
+     [
+      "identifiability",
+      "0.2",
+      "0.4"
+     ],
+     [
+      "unobserved_by_reason",
+      "{'unobserved:device-mismatch': 5, 'unobserved:unmeasured': 1}",
+      "{'unobserved:device-mismatch': 4, 'unobserved:unmeasured': 1}"
+     ],
+     [
+      "instrumented_kinds",
+      "['posture']",
+      "['contact', 'posture']"
+     ],
+     [
+      "scales",
+      "{'posture': 'joint'}",
+      "{'posture': 'joint', 'contact-added': 'detailed'}"
+     ],
+     [
+      "time_resolution_hz",
+      "[50.0, 50.0]",
+      "[50.0, 100.0]"
+     ],
+     [
+      "unobserved_regions",
+      "['neural', 'internal']",
+      "['neural', 'internal']"
+     ],
+     [
+      "observed_region_fraction",
+      "0.7142857142857143",
+      "0.7142857142857143"
+     ]
+    ],
+    "title": "Observational reach before and after (a vector; unobserved regions stay listed)"
+   },
+   {
+    "columns": [
+     "relation",
+     "agreement",
+     "sources",
+     "exists in the model reference"
+    ],
+    "name": "distributed_observation",
+    "rows": [
+     [
+      "posture_sway",
+      "single-source",
+      "posture_sway_rms*",
+      true
+     ],
+     [
+      "com_excursion",
+      "conflict",
+      "peak_dev_obs; cop_range_obs*",
+      true
+     ],
+     [
+      "cop_activity",
+      "single-source",
+      "cop_rms_obs*",
+      true
+     ],
+     [
+      "correction_latency",
+      "conflict",
+      "cop_onset_push*; com_onset_push",
+      true
+     ],
+     [
+      "central_latency",
+      "no-source",
+      "",
+      false
+     ],
+     [
+      "cocontraction",
+      "no-source",
+      "",
+      true
+     ],
+     [
+      "muscle_activation",
+      "no-source",
+      "",
+      true
+     ],
+     [
+      "settling_turn",
+      "single-source",
+      "turn_error_obs*",
+      true
+     ],
+     [
+      "stability_loss",
+      "single-source",
+      "posture_peak_lean*",
+      false
+     ],
+     [
+      "energy_use",
+      "no-source",
+      "",
+      true
+     ],
+     [
+      "fatigue_state",
+      "no-source",
+      "",
+      true
+     ],
+     [
+      "adaptation_gain",
+      "single-source",
+      "posture_sway_rms*",
+      false
+     ],
+     [
+      "breath_amplitude",
+      "no-source",
+      "",
+      true
+     ],
+     [
+      "line_conflicts",
+      "no-source",
+      "",
+      false
+     ],
+     [
+      "visual_use",
+      "no-source",
+      "",
+      false
+     ]
+    ],
+    "title": "Verdicts of every source per relation (never fused)"
+   }
+  ]
+ },
+ "schema": "xbtro.record/1",
+ "seeds": [
+  5000,
+  5001,
+  5002,
+  5003,
+  5004,
+  5005,
+  5006,
+  5007,
+  5008,
+  5009,
+  5010,
+  5011
+ ],
+ "time_step_s": 0.01,
+ "unobserved_differences": [
+  {
+   "configuration": "final",
+   "id": "cocontraction",
+   "reason": "no source",
+   "status": "unobserved"
+  },
+  {
+   "configuration": "final",
+   "id": "muscle_activation",
+   "reason": "no source",
+   "status": "unobserved"
+  },
+  {
+   "configuration": "final",
+   "id": "energy_use",
+   "reason": "no source",
+   "status": "unobserved"
+  },
+  {
+   "configuration": "final",
+   "id": "fatigue_state",
+   "reason": "no source",
+   "status": "unobserved"
+  },
+  {
+   "configuration": "final",
+   "id": "breath_amplitude",
+   "reason": "no source",
+   "status": "unobserved"
+  }
+ ]
+}

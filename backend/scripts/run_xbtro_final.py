@@ -55,6 +55,7 @@ if __name__ == "__main__":
     out = Path(sys.argv[1])
     (out / "records").mkdir(parents=True, exist_ok=True)
     want = set(sys.argv[2:]) or set(SETS)
+    by_name = {n for items in SETS.values() for n, _, _ in items}
     index_path = out / "index.json"
     index = json.loads(index_path.read_text()) if index_path.exists() else {"runs": []}
     for set_name, items in SETS.items():

@@ -1,0 +1,88 @@
+# record,xb-v-d8bf067d22e3
+# experiment,V
+# model_version,xb-tro/1.0
+# digest,d8bf067d22e31e5e19609d316282ecddf730ec1a345b17f7ebde3a1ae63202aa
+# time_step_s,0.01
+# numerical_method,RK4 on the N-link planar Lagrangian equations with the muscle drive held over each step; batched seeds with common random numbers; first-order activation dynamics; digests over 6 significant digits
+# seeds,5000 5001 5002 5003 5004 5005 5006 5007 5008 5009 5010 5011
+# labels,reference = model reference state (not an observation of a real body); observation = simulated model output
+
+# table: stability_human-like-planar,A-priori stability of the passive plant (human-like-planar)
+preset,integrator,co-contraction,control dt s,plant substeps,spectral radius of the step matrix,passive plant,max |lambda| h,condition number of M
+human-like-planar,rk4,0.0,0.01,2,0.998968370526,stable,1.27783030001,227.394907819
+human-like-planar,rk4,0.3,0.01,2,0.998659094992,stable,1.66711410415,227.394907819
+human-like-planar,rk4,0.9,0.01,2,0.998040856906,stable,2.46399114068,227.394907819
+human-like-planar,semi-implicit-euler,0.0,0.01,2,0.99896732934,stable,1.27783030001,227.394907819
+human-like-planar,semi-implicit-euler,0.3,0.01,2,0.998657335198,stable,1.66711410415,227.394907819
+human-like-planar,semi-implicit-euler,0.9,0.01,2,1.76540995213,UNSTABLE,2.46399114068,227.394907819
+human-like-planar,explicit-euler,0.0,0.01,2,0.999049459501,stable,1.27783030001,227.394907819
+human-like-planar,explicit-euler,0.3,0.01,2,0.998788781015,stable,1.66711410415,227.394907819
+human-like-planar,explicit-euler,0.9,0.01,2,1.46399114068,UNSTABLE,2.46399114068,227.394907819
+
+# table: convergence_human-like-planar,"Time-step and integrator convergence, noiseless (human-like-planar)"
+preset,variant,plant step s,RMS COM difference to reference (m),max COM difference (m),state
+human-like-planar,"RK4, 1 plant sub-step(s)",0.01,,,refused: the explicit RK4 step is numerically unstable for the passive joint dynamics (pl
+human-like-planar,"RK4, 2 plant sub-step(s)",0.005,2.34531777884e-05,9.3220744109e-05,ok
+human-like-planar,"RK4, 4 plant sub-step(s)",0.0025,2.35341754474e-07,6.54140459296e-07,ok
+human-like-planar,"semi-implicit-euler, 2 plant sub-step(s)",0.005,,,refused by the stability check: the explicit RK4 step is numerically unstable for the passiv
+human-like-planar,"explicit-euler, 2 plant sub-step(s)",0.005,,,refused by the stability check: the explicit RK4 step is numerically unstable for the passiv
+human-like-planar,"RK4, control step halved",0.0025,0.00051764198272,0.00132063129732,ok
+human-like-planar,"RK4, 1 plant sub-step (refused by the check; forced to run, 4 seeds)",0.01,,,"check (cc up to 0.9): unstable, rho=12.84; nominal co-contraction run: diverged 0/4, fell 0/4; co-contraction 0.9 run: diverged 4/4, fell 0/4"
+human-like-planar,"semi-implicit Euler (refused by the check; forced to run, 4 seeds)",0.005,,,"check (cc up to 0.9): unstable, rho=1.77; nominal co-contraction run: diverged 0/4, fell 0/4; co-contraction 0.9 run: diverged 4/4, fell 0/4"
+human-like-planar,"explicit Euler (refused by the check; forced to run, 4 seeds)",0.005,,,"check (cc up to 0.9): unstable, rho=1.46; nominal co-contraction run: diverged 0/4, fell 0/4; co-contraction 0.9 run: diverged 0/4, fell 4/4"
+
+# table: stability_machine-like-planar,A-priori stability of the passive plant (machine-like-planar)
+preset,integrator,co-contraction,control dt s,plant substeps,spectral radius of the step matrix,passive plant,max |lambda| h,condition number of M
+machine-like-planar,rk4,0.0,0.005,2,0.999830223154,stable,0.220728805818,470.692532215
+machine-like-planar,rk4,0.3,0.005,2,0.999779292553,stable,0.278904560927,470.692532215
+machine-like-planar,rk4,0.9,0.005,2,0.999677424817,stable,0.367073697951,470.692532215
+machine-like-planar,semi-implicit-euler,0.0,0.005,2,0.999830195614,stable,0.220728805818,470.692532215
+machine-like-planar,semi-implicit-euler,0.3,0.005,2,0.999779246007,stable,0.278904560927,470.692532215
+machine-like-planar,semi-implicit-euler,0.9,0.005,2,0.999677325367,stable,0.367073697951,470.692532215
+machine-like-planar,explicit-euler,0.0,0.005,2,0.999834549265,stable,0.220728805818,470.692532215
+machine-like-planar,explicit-euler,0.3,0.005,2,0.999786212198,stable,0.278904560927,470.692532215
+machine-like-planar,explicit-euler,0.9,0.005,2,0.999689517429,stable,0.367073697951,470.692532215
+
+# table: convergence_machine-like-planar,"Time-step and integrator convergence, noiseless (machine-like-planar)"
+preset,variant,plant step s,RMS COM difference to reference (m),max COM difference (m),state
+machine-like-planar,"RK4, 1 plant sub-step(s)",0.005,2.83194837957e-08,6.4550940166e-08,ok
+machine-like-planar,"RK4, 2 plant sub-step(s)",0.0025,1.70288928302e-09,3.88244712074e-09,ok
+machine-like-planar,"RK4, 4 plant sub-step(s)",0.00125,9.75265647189e-11,2.22559793511e-10,ok
+machine-like-planar,"semi-implicit-euler, 2 plant sub-step(s)",0.0025,4.78662979644e-05,0.000113981569124,ok
+machine-like-planar,"explicit-euler, 2 plant sub-step(s)",0.0025,4.20586699928e-05,0.00016156477913,ok
+machine-like-planar,"RK4, control step halved",0.00125,3.87343710575e-05,0.000144191566523,ok
+
+# table: preset_matrix,Eight conditions x two presets x two protocols
+preset,protocol,condition,seeds,fall fraction (physical),numerical divergence fraction,max |COM| m,max |segment angle| rad,max |angular rate| rad/s,max |joint torque| Nm,min energy,"recovery time, restricted mean s",recovered in window (fraction),settled after the turn (fraction),late/early trunk sway growth,state
+human-like-planar,default,no disturbance,12,0.0,0.0,0.0488354634386,0.1092001001,0.821481749813,75.5678308471,0.899393513683,,0.0,1.0,0.488937879267,ok
+human-like-planar,default,"small disturbance (25 N, extra push)",12,0.0,0.0,0.0574300029194,0.141834034993,0.821481749813,75.5678308471,0.893542195171,,0.0,1.0,0.482462203575,ok
+human-like-planar,default,"large disturbance (120 N, extra push)",12,1.0,0.0,0.413694329508,0.498556429905,1.15751956608,105.73218,0.924597385628,,0.0,0.0,,ok
+human-like-planar,default,control delay +0.06 s,12,1.0,0.0,0.416009383583,0.480283076899,1.55718501107,110.884121064,0.868252200222,,0.0,0.0,,ok
+human-like-planar,default,resource constraint 0.7,12,0.0,0.0,0.0488712754397,0.108851054433,0.821159325553,75.5064199612,0.270474256162,,0.0,1.0,0.429731402093,ok
+human-like-planar,default,sensor noise x4,12,0.0,0.0,0.048829226571,0.134207172281,1.01332483802,88.3702894479,0.876907206908,,0.0,1.0,0.64027407683,ok
+human-like-planar,default,contact condition 0.5,12,0.0,0.0,0.0459281527444,0.113661150083,0.821481749813,56.2976158378,0.901064334979,,0.0,1.0,0.469627489014,ok
+human-like-planar,default,control time step halved,12,0.0,0.0,0.0523397801035,0.109614177471,0.763115739315,79.114866919,0.899702082821,,0.0,1.0,0.449375186785,ok
+human-like-planar,short,no disturbance,12,0.0,0.0,0.0618576074109,0.13961102753,0.75447948896,82.5210285165,0.897976031721,1.5825,0.583333333333,1.0,1.61691106211,ok
+human-like-planar,short,"small disturbance (25 N, extra push)",12,0.0,0.0,0.0661782343305,0.172131041923,0.75447948896,95.2419949727,0.892433964107,1.8575,0.333333333333,1.0,1.28906827434,ok
+human-like-planar,short,"large disturbance (120 N, extra push)",12,1.0,0.0,0.414645785607,0.494414560777,1.12961973622,105.73218,0.930942355748,2.0,0.0,0.0,,ok
+human-like-planar,short,control delay +0.06 s,12,0.0,0.0,0.337072605146,0.394585132823,1.13490884016,105.73218,0.877103620897,2.0,0.0,0.0,2.27289289999,ok
+human-like-planar,short,resource constraint 0.7,12,0.0,0.0,0.061858617525,0.139211002794,0.75422722955,80.5097362751,0.268924400531,1.58333333333,0.583333333333,1.0,1.62124749511,ok
+human-like-planar,short,sensor noise x4,12,0.0,0.0,0.0726760541416,0.183970281644,0.929451031783,105.73218,0.877866087957,1.90083333333,0.0833333333333,1.0,1.56435010578,ok
+human-like-planar,short,contact condition 0.5,12,0.0,0.0,0.0618544009966,0.136156809912,0.75447948896,78.8910612577,0.899402480641,1.49,0.75,1.0,1.77236915682,ok
+human-like-planar,short,control time step halved,12,0.0,0.0,0.0597411329044,0.131451568739,0.752412379921,77.3766870293,0.899309734416,1.58166666667,0.583333333333,1.0,1.57040560207,ok
+machine-like-planar,default,no disturbance,12,0.0,0.0,0.0393444725908,0.0809395794481,0.557097468787,32.8511008017,0.921232469215,,0.0,1.0,0.370048202222,ok
+machine-like-planar,default,"small disturbance (25 N, extra push)",12,0.0,0.0,0.0439407265829,0.0863020882961,0.557097468787,35.9171833998,0.920762451368,,0.0,1.0,0.336178281939,ok
+machine-like-planar,default,"large disturbance (120 N, extra push)",12,1.0,0.0,0.338741344772,0.473923281527,2.04256149129,134.042168097,0.944838101845,,0.0,0.0,,ok
+machine-like-planar,default,control delay +0.06 s,12,1.0,0.0,0.339063003223,0.919816958578,25.1337112201,232.07904604,0.887816813806,,0.0,0.0,,ok
+machine-like-planar,default,resource constraint 0.7,12,0.0,0.0,0.0393444725908,0.0809395794481,0.557097468787,32.8511008017,0.291232328427,,0.0,1.0,0.380663269088,ok
+machine-like-planar,default,sensor noise x4,12,0.0,0.0,0.0389810857653,0.0745574227438,0.584633888454,38.3725558897,0.909659794631,,0.0,1.0,0.343867341042,ok
+machine-like-planar,default,contact condition 0.5,12,0.0,0.0,0.0393444725908,0.0809395794481,0.557097468787,32.8511008017,0.921232469215,,0.0,1.0,0.370048202222,ok
+machine-like-planar,default,control time step halved,12,0.0,0.0,0.0389706620634,0.0795580829629,0.540948121623,31.8557348312,0.921327519417,,0.0,1.0,0.346675769314,ok
+machine-like-planar,short,no disturbance,12,0.0,0.0,0.0470694635815,0.0945671398936,0.757878466526,42.4609463469,0.923795925074,0.770833333333,1.0,1.0,2.680197401,ok
+machine-like-planar,short,"small disturbance (25 N, extra push)",12,0.0,0.0,0.0524649554495,0.102146913848,0.757878466526,46.0496696239,0.923056896614,0.911666666667,1.0,1.0,2.13309929138,ok
+machine-like-planar,short,"large disturbance (120 N, extra push)",12,1.0,0.0,0.33899921734,0.474194903613,2.03426170645,133.265594081,0.948117148018,2.0,0.0,0.0,,ok
+machine-like-planar,short,control delay +0.06 s,12,1.0,0.0,0.338177361184,0.902408814626,25.0609959973,185.553712686,0.93704668341,2.0,0.0,0.0,,ok
+machine-like-planar,short,resource constraint 0.7,12,0.0,0.0,0.0470694635815,0.0945671398936,0.757878466526,42.4609463469,0.29379588293,0.770833333333,1.0,1.0,2.68368805549,ok
+machine-like-planar,short,sensor noise x4,12,0.0,0.0,0.0466885469627,0.0915947931581,0.831289294315,45.2972430055,0.913512009241,0.67375,1.0,1.0,2.40679574267,ok
+machine-like-planar,short,contact condition 0.5,12,0.0,0.0,0.0470675607088,0.0945669801307,0.757878466526,42.4610310229,0.923795925074,0.770833333333,1.0,1.0,2.680197401,ok
+machine-like-planar,short,control time step halved,12,0.0,0.0,0.0471893805197,0.094737493076,0.728091670856,42.1530312265,0.923783736982,0.780208333333,1.0,1.0,2.6446792364,ok

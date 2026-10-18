@@ -1,0 +1,81 @@
+# record,xb-e-4a0fd16addbe
+# experiment,E
+# model_version,xb-tro/1.0
+# digest,4a0fd16addbea1123b379533afd507436d4b19c6a95277790ca24c837a8573d2
+# time_step_s,0.01
+# numerical_method,RK4 on the N-link planar Lagrangian equations with the muscle drive held over each step; batched seeds with common random numbers; first-order activation dynamics; digests over 6 significant digits
+# seeds,5000 5001 5002 5003 5004 5005 5006 5007 5008 5009 5010 5011
+# labels,reference = model reference state (not an observation of a real body); observation = simulated model output
+
+# table: adaptive_summary,Adaptive observation per hidden change
+hidden change,differences that exist,identified at the start (motion only),identified after revision,rounds that changed the configuration,set-up time s,"still unobserved, by reason"
+mixed,10,2,5,4,110.0,unobserved:device-mismatch=3
+delay-only,6,1,5,4,160.0,
+tone-only,5,2,4,4,120.0,
+fatigue-only,2,1,1,4,120.0,
+
+# table: adaptive_log,"Each round: change, reason, expectation, newly identified, total identified, set-up time"
+hidden change,round,changes,reason,expected gain,newly identified,identified after,set-up s
+mixed,1,"[{'op': 'set', 'model': 'posture', 'field': 'noise', 'value': 0.5}, {'op': 'add', 'kind': 'respiration', 'id': 'respiration-added', 'settings': {}}]","capable but below the noise: halve posture's noise (1 -> 0.5 of nominal; a better instrument, not a new one); deploy a respiration model (a different aspect is observed now)","[1.0, 1.0]",[],2,30.0
+mixed,2,"[{'op': 'set', 'model': 'posture', 'field': 'noise', 'value': 0.25}, {'op': 'set', 'model': 'respiration-added', 'field': 'noise', 'value': 0.5}]","capable but below the noise: halve posture's noise (0.5 -> 0.25 of nominal; a better instrument, not a new one); capable but below the noise: halve respiration-added's noise (1 -> 0.5 of nominal; a better instrument, not a new one)","[1.0, 1.0]",['correction_latency'],3,20.0
+mixed,3,"[{'op': 'set', 'model': 'posture', 'field': 'noise', 'value': 0.125}, {'op': 'set', 'model': 'respiration-added', 'field': 'noise', 'value': 0.25}]","capable but below the noise: halve posture's noise (0.25 -> 0.125 of nominal; a better instrument, not a new one); capable but below the noise: halve respiration-added's noise (0.5 -> 0.25 of nominal; a better instrument, not a new one)","[1.0, 1.0]",['com_excursion'],4,20.0
+mixed,4,"[{'op': 'set', 'model': 'respiration-added', 'field': 'noise', 'value': 0.125}, {'op': 'add', 'kind': 'contact', 'id': 'contact-added', 'settings': {'spatial': 'detailed'}}]","capable but below the noise: halve respiration-added's noise (0.25 -> 0.125 of nominal; a better instrument, not a new one); deploy a contact model (a different aspect is observed now)","[1.0, 1.0]",['cop_activity'],5,40.0
+delay-only,1,"[{'op': 'set', 'model': 'posture', 'field': 'noise', 'value': 0.5}, {'op': 'add', 'kind': 'contact', 'id': 'contact-added', 'settings': {'spatial': 'detailed'}}]","capable but below the noise: halve posture's noise (1 -> 0.5 of nominal; a better instrument, not a new one); deploy a contact model (a different aspect is observed now)","[1.0, 1.0]","['cop_activity', 'correction_latency']",3,40.0
+delay-only,2,"[{'op': 'set', 'model': 'posture', 'field': 'noise', 'value': 0.25}, {'op': 'add', 'kind': 'emg', 'id': 'emg-added', 'settings': {'spatial': 'joint'}}]","capable but below the noise: halve posture's noise (0.5 -> 0.25 of nominal; a better instrument, not a new one); deploy a emg model (a different aspect is observed now)","[1.0, 1.0]","['com_excursion', 'muscle_activation']",5,100.0
+delay-only,3,"[{'op': 'set', 'model': 'emg-added', 'field': 'noise', 'value': 0.5}]","capable but below the noise: halve emg-added's noise (1 -> 0.5 of nominal; a better instrument, not a new one)",[1.0],[],5,10.0
+delay-only,4,"[{'op': 'set', 'model': 'emg-added', 'field': 'noise', 'value': 0.25}]","capable but below the noise: halve emg-added's noise (0.5 -> 0.25 of nominal; a better instrument, not a new one)",[1.0],[],5,10.0
+tone-only,1,"[{'op': 'add', 'kind': 'emg', 'id': 'emg-added', 'settings': {'spatial': 'joint'}}]",deploy a emg model (a different aspect is observed now); deploy a emg model (a different aspect is observed now),"[1.0, 0.0]","['cocontraction', 'muscle_activation']",4,90.0
+tone-only,2,"[{'op': 'set', 'model': 'emg-added', 'field': 'noise', 'value': 0.5}]","capable but below the noise: halve emg-added's noise (1 -> 0.5 of nominal; a better instrument, not a new one)",[1.0],[],4,10.0
+tone-only,3,"[{'op': 'set', 'model': 'emg-added', 'field': 'noise', 'value': 0.25}]","capable but below the noise: halve emg-added's noise (0.5 -> 0.25 of nominal; a better instrument, not a new one)",[1.0],[],4,10.0
+tone-only,4,"[{'op': 'set', 'model': 'emg-added', 'field': 'noise', 'value': 0.125}]","capable but below the noise: halve emg-added's noise (0.25 -> 0.125 of nominal; a better instrument, not a new one)",[1.0],[],4,10.0
+fatigue-only,1,"[{'op': 'add', 'kind': 'emg', 'id': 'emg-added', 'settings': {'spatial': 'joint'}}]",deploy a emg model (a different aspect is observed now),[1.0],[],1,90.0
+fatigue-only,2,"[{'op': 'set', 'model': 'emg-added', 'field': 'noise', 'value': 0.5}]","capable but below the noise: halve emg-added's noise (1 -> 0.5 of nominal; a better instrument, not a new one)",[1.0],[],1,10.0
+fatigue-only,3,"[{'op': 'set', 'model': 'emg-added', 'field': 'noise', 'value': 0.25}]","capable but below the noise: halve emg-added's noise (0.5 -> 0.25 of nominal; a better instrument, not a new one)",[1.0],[],1,10.0
+fatigue-only,4,"[{'op': 'set', 'model': 'emg-added', 'field': 'noise', 'value': 0.125}]","capable but below the noise: halve emg-added's noise (0.25 -> 0.125 of nominal; a better instrument, not a new one)",[1.0],[],1,10.0
+
+# table: negative_results
+statement,evidence
+"mixed, round 1: the changes expected to help identified nothing new","{""actual"": {""existing"": 10, ""identified_after"": 2, ""identified_before"": 2, ""lost"": [], ""newly_identified"": []}, ""expected"": {""identifiability_gain"": [1.0, 1.0]}}"
+mixed: 'cocontraction' exists in the model reference but is not identified after the revision (unobserved: device-mismatch),"{""reference_d"": null}"
+mixed: 'muscle_activation' exists in the model reference but is not identified after the revision (unobserved: device-mismatch),"{""reference_d"": 44.68782479}"
+mixed: 'energy_use' exists in the model reference but is not identified after the revision (noise-limited),"{""reference_d"": -2.00934464067}"
+mixed: 'fatigue_state' exists in the model reference but is not identified after the revision (unobserved: device-mismatch),"{""reference_d"": 26.491722564}"
+mixed: 'breath_amplitude' exists in the model reference but is not identified after the revision (noise-limited),"{""reference_d"": 247252.985798}"
+"delay-only, round 3: the changes expected to help identified nothing new","{""actual"": {""existing"": 6, ""identified_after"": 5, ""identified_before"": 5, ""lost"": [], ""newly_identified"": []}, ""expected"": {""identifiability_gain"": [1.0]}}"
+"delay-only, round 4: the changes expected to help identified nothing new","{""actual"": {""existing"": 6, ""identified_after"": 5, ""identified_before"": 5, ""lost"": [], ""newly_identified"": []}, ""expected"": {""identifiability_gain"": [1.0]}}"
+delay-only: 'fatigue_state' exists in the model reference but is not identified after the revision (noise-limited),"{""reference_d"": 3.42077844961}"
+"tone-only, round 2: the changes expected to help identified nothing new","{""actual"": {""existing"": 5, ""identified_after"": 4, ""identified_before"": 4, ""lost"": [], ""newly_identified"": []}, ""expected"": {""identifiability_gain"": [1.0]}}"
+"tone-only, round 3: the changes expected to help identified nothing new","{""actual"": {""existing"": 5, ""identified_after"": 4, ""identified_before"": 4, ""lost"": [], ""newly_identified"": []}, ""expected"": {""identifiability_gain"": [1.0]}}"
+"tone-only, round 4: the changes expected to help identified nothing new","{""actual"": {""existing"": 5, ""identified_after"": 4, ""identified_before"": 4, ""lost"": [], ""newly_identified"": []}, ""expected"": {""identifiability_gain"": [1.0]}}"
+tone-only: 'fatigue_state' exists in the model reference but is not identified after the revision (noise-limited),"{""reference_d"": 26.9886974663}"
+"fatigue-only, round 1: the changes expected to help identified nothing new","{""actual"": {""existing"": 2, ""identified_after"": 1, ""identified_before"": 1, ""lost"": [], ""newly_identified"": []}, ""expected"": {""identifiability_gain"": [1.0]}}"
+"fatigue-only, round 2: the changes expected to help identified nothing new","{""actual"": {""existing"": 2, ""identified_after"": 1, ""identified_before"": 1, ""lost"": [], ""newly_identified"": []}, ""expected"": {""identifiability_gain"": [1.0]}}"
+"fatigue-only, round 3: the changes expected to help identified nothing new","{""actual"": {""existing"": 2, ""identified_after"": 1, ""identified_before"": 1, ""lost"": [], ""newly_identified"": []}, ""expected"": {""identifiability_gain"": [1.0]}}"
+"fatigue-only, round 4: the changes expected to help identified nothing new","{""actual"": {""existing"": 2, ""identified_after"": 1, ""identified_before"": 1, ""lost"": [], ""newly_identified"": []}, ""expected"": {""identifiability_gain"": [1.0]}}"
+fatigue-only: 'fatigue_state' exists in the model reference but is not identified after the revision (noise-limited),"{""reference_d"": 16.4931090266}"
+
+# table: unobserved_differences
+difference,status,reason,observation_configuration
+posture_sway,identified,,adaptive (mixed)
+com_excursion,identified,,adaptive (mixed)
+cop_activity,identified,,adaptive (mixed)
+correction_latency,identified,,adaptive (mixed)
+cocontraction,unobserved,device-mismatch,adaptive (mixed)
+muscle_activation,unobserved,device-mismatch,adaptive (mixed)
+settling_turn,identified,,adaptive (mixed)
+energy_use,noise-limited,,adaptive (mixed)
+fatigue_state,unobserved,device-mismatch,adaptive (mixed)
+breath_amplitude,noise-limited,,adaptive (mixed)
+com_excursion,identified,,adaptive (delay-only)
+cop_activity,identified,,adaptive (delay-only)
+correction_latency,identified,,adaptive (delay-only)
+muscle_activation,identified,,adaptive (delay-only)
+settling_turn,identified,,adaptive (delay-only)
+fatigue_state,noise-limited,,adaptive (delay-only)
+posture_sway,identified,,adaptive (tone-only)
+cocontraction,identified-by-proxy,,adaptive (tone-only)
+muscle_activation,identified,,adaptive (tone-only)
+settling_turn,identified,,adaptive (tone-only)
+fatigue_state,noise-limited,,adaptive (tone-only)
+posture_sway,identified,,adaptive (fatigue-only)
+fatigue_state,noise-limited,,adaptive (fatigue-only)
