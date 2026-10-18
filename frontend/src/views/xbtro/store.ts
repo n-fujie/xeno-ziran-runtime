@@ -58,6 +58,7 @@ interface XbState {
   exportHistory: () => Promise<void>;
   importText: (text: string) => Promise<void>;
   dismiss: () => void;
+  restart: () => Promise<void>;
 }
 
 const message = (e: unknown) => (e instanceof ApiError ? e.message : e instanceof Error ? e.message : String(e));
@@ -215,5 +216,14 @@ export const useXb = create<XbState>((set, get) => {
       } catch (e) { set({ error: message(e) }); }
     },
     dismiss: () => set({ error: null, notice: null }),
+    // the workspace or body no longer exists on the runtime (it was closed, expired or the runtime restarted): start again from nothing
+    restart: async () => {
+      get().pause();
+      frames.clear(); obsStore.clear();
+      for (const id of pollers.values()) clearInterval(id);
+      pollers.clear();
+      set({ wid: null, body: null, bid: null, status: null, selected: null, inspect: null, jobs: {}, history: null, record: null, compareWith: null, error: null, notice: 'Started a new workspace: earlier records of this workspace were not kept on the runtime (export the history to keep them).' });
+      await get().init();
+    },
   };
 });

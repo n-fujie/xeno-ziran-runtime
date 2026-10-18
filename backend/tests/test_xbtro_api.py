@@ -63,6 +63,16 @@ def test_catalog_states_scope_and_ziran_status(client):
     }
 
 
+def test_release_statement_says_what_was_and_was_not_checked(client):
+    r = client.get(f"{BASE}/catalog").json()["release"]
+    assert r["name"] == "XenoBody — Operational-Shape Robotics Simulator" and r["channel"] == "Research Beta"
+    topics = {s["topic"] for s in r["statements"]}
+    assert {"purpose", "scope", "real-world validation", "Xeno-14", "Ziran System", "results"} <= topics
+    assert "None." in next(s["text"] for s in r["statements"] if s["topic"] == "real-world validation")
+    assert r["platforms"]["ios_device"].startswith("NOT checked")
+    assert sum(r["xeno14_fidelity"].values()) == 14 and r["xeno14_fidelity"]["proxy-only"] == 3
+
+
 def test_experiment_job_record_exports_and_rerun(client, ws):
     j = run(client, ws, "B", {"n_seeds": 4})
     rid = j["record_id"]

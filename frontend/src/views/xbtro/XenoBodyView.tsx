@@ -24,18 +24,30 @@ export default function XenoBodyView() {
   const body = useXb((s) => s.body);
   const record = useXb((s) => s.record);
   const compare = useXb((s) => s.compareWith);
-  const { setTab, dismiss, pause } = useXb.getState();
+  const { setTab, dismiss, pause, restart } = useXb.getState();
 
   useEffect(() => { void init(); return () => pause(); }, [init, pause]);
 
   return (
     <div className="panel-view xb">
       <div className="xb-head">
-        <h2>XenoBody / Total Observation</h2>
-        <span className="small dim">a simplified planar body · nominal parameters · not a measurement of any real body</span>
+        <h2>{catalog?.release.name ?? 'XenoBody — Operational-Shape Robotics Simulator'}</h2>
+        <span className="xb-beta" title="Research Beta: a research environment, not a product">{catalog?.release.channel ?? 'Research Beta'}</span>
+        <span className="small dim">a simplified planar body · nominal parameters · no real-robot or human validation</span>
       </div>
+      {catalog && (
+        <details className="xb-card xb-release">
+          <summary>What this is, and what it is not</summary>
+          <dl className="small">{catalog.release.statements.map((s) => <div key={s.topic}><dt>{s.topic}</dt><dd>{s.text}</dd></div>)}
+            <div><dt>Xeno-14 fidelity</dt><dd>{Object.entries(catalog.release.xeno14_fidelity).map(([k, v]) => `${v} ${k}`).join(' · ')} (of 14)</dd></div>
+            <div><dt>Platforms</dt><dd>{Object.entries(catalog.release.platforms).map(([k, v]) => <div key={k}><span className="mono">{k}</span>: {v}</div>)}</dd></div></dl>
+        </details>
+      )}
       <nav className="xb-tabs" aria-label="XenoBody sections">{TABS.map((t) => <button key={t.id} className={tab === t.id ? 'on' : ''} onClick={() => setTab(t.id)}>{t.label}</button>)}</nav>
-      {error && <div className="error" role="alert">{error} <button className="ghost" onClick={dismiss}>dismiss</button></div>}
+      {error && (
+        <div className="error" role="alert">{error} <button className="ghost" onClick={dismiss}>dismiss</button>
+          {/no such (workspace|body)|not enabled|failed to fetch/i.test(error) && <button onClick={() => void restart()}>Start a new workspace</button>}</div>
+      )}
       {notice && <div className="notice small" role="status">{notice} <button className="ghost" onClick={dismiss}>dismiss</button></div>}
       {!catalog ? <div className="dim">starting the research environment…</div> : (
         <>

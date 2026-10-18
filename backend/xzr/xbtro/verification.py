@@ -22,6 +22,18 @@ from .experiments import base_config
 SUBSTEP_LEVELS = (1, 2, 4, 8)
 
 
+def sway_growth(run: engine.Run) -> float | None:
+    """Late-window over early-window trunk sway, median over the bodies that are still standing at the end and were not still at
+    the start (a body that fell, or has no sway to compare, gives no ratio: a ratio of two floating-point residues is meaningless
+    and differs between platforms). None if no body qualifies."""
+    T = run["com"].shape[1]
+    th = run["theta"][:, :, 2]
+    early = np.nanstd(th[:, int(0.2 * T) : int(0.45 * T)], axis=1)
+    late = np.nanstd(th[:, int(0.75 * T) :], axis=1)
+    ok = run["alive"][:, -1] & ~run.diverged & (early > 1e-6)
+    return float(np.median(late[ok] / early[ok])) if ok.any() else None
+
+
 def noiseless(cfg: dict[str, Any]) -> dict[str, Any]:
     """The same body without any random input (sensor and motor noise off) — for numerical studies, where the comparison must
     not be blurred by noise realisations that differ when the step changes."""
@@ -270,11 +282,7 @@ def preset_matrix(preset: str, seeds: list[int], protocol: str = "short") -> dic
             )
             continue
         m = metrics.summary(r)
-        T = r["com"].shape[1]
-        a, b = slice(int(0.2 * T), int(0.45 * T)), slice(int(0.75 * T), T)
-        early = np.nanstd(r["theta"][:, a, 2], axis=1)
-        late = np.nanstd(r["theta"][:, b, 2], axis=1)
-        growth = float(np.nanmedian(late / np.maximum(early, 1e-9)))
+        growth = sway_growth(r)
         st = m["recovery_status"]
         rows.append(
             [
@@ -338,10 +346,7 @@ def diagnose(cfg: dict[str, Any], seeds: list[int] | None = None) -> dict[str, A
     probe["task"]["t_cue"] = min(probe["task"]["t_cue"], 1.0)
     probe["task"]["t_turn"] = min(probe["task"]["t_turn"], 3.0)
     r = engine.simulate(probe, seeds or [1, 2, 3, 4])
-    T = r["com"].shape[1]
-    early = np.nanstd(r["theta"][:, int(0.2 * T) : int(0.45 * T), 2], axis=1)
-    late = np.nanstd(r["theta"][:, int(0.75 * T) :, 2], axis=1)
-    growth = float(np.nanmedian(late / np.maximum(early, 1e-9)))
+    growth = sway_growth(r)
     out["probe"] = {
         "seeds": len(r.seeds),
         "fall_fraction": float(r.fell.mean()),
@@ -353,7 +358,7 @@ def diagnose(cfg: dict[str, Any], seeds: list[int] | None = None) -> dict[str, A
         out["verdict"] = "numerical divergence in the probe"
     elif out["probe"]["fall_fraction"] > 0.5:
         out["verdict"] = "the body falls in the probe (physical fall or an unstable control loop; see sway growth)"
-    elif growth > 3.0:
+    elif growth is not None and growth > 3.0:
         out["verdict"] = "growing oscillation: the closed loop looks unstable"
     else:
         out["verdict"] = "no instability seen in the probe"
