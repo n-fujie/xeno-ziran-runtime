@@ -1,10 +1,10 @@
 {
- "digest": "1da4c7f8e5e260492c113b46744b4d20586de1ac586ed88160fa84549b970fe5",
+ "digest": "41c322db99904644233374640bfa50b94be36cc3158d461931bec34a547d4800",
  "experiment": "G",
  "history": {
   "reentry": []
  },
- "id": "xb-g-1da4c7f8e5e2",
+ "id": "xb-g-41c322db9990",
  "initial_configuration": {
   "adaptation": {
    "cost": 0.0,
@@ -5556,11 +5556,11 @@
     "group_pairs": [
      [
       "timing",
-      "posture"
+      "direction"
      ],
      [
       "timing",
-      "direction"
+      "posture"
      ],
      [
       "timing",

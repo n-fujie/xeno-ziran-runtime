@@ -14,8 +14,8 @@
     5011
    ],
    "negative_results": 6,
-   "seconds": 2.3,
-   "commit": "f10a53fd67364484de134841ebd0b03c0fbb870f",
+   "seconds": 1.9,
+   "commit": "d809a258e99410a71d0f107e090a3f1f01d15a9f",
    "python": "3.12.13",
    "tolerance_override": null
   },
@@ -33,8 +33,8 @@
     5011
    ],
    "negative_results": 20,
-   "seconds": 29.7,
-   "commit": "f10a53fd67364484de134841ebd0b03c0fbb870f",
+   "seconds": 15.2,
+   "commit": "d809a258e99410a71d0f107e090a3f1f01d15a9f",
    "python": "3.12.13",
    "tolerance_override": null
   },
@@ -52,8 +52,8 @@
     5011
    ],
    "negative_results": 14,
-   "seconds": 18.4,
-   "commit": "f10a53fd67364484de134841ebd0b03c0fbb870f",
+   "seconds": 16.1,
+   "commit": "d809a258e99410a71d0f107e090a3f1f01d15a9f",
    "python": "3.12.13",
    "tolerance_override": null
   },
@@ -71,8 +71,8 @@
     5011
    ],
    "negative_results": 13,
-   "seconds": 6.7,
-   "commit": "f10a53fd67364484de134841ebd0b03c0fbb870f",
+   "seconds": 7.5,
+   "commit": "d809a258e99410a71d0f107e090a3f1f01d15a9f",
    "python": "3.12.13",
    "tolerance_override": null
   },
@@ -90,8 +90,8 @@
     5011
    ],
    "negative_results": 18,
-   "seconds": 4.8,
-   "commit": "f10a53fd67364484de134841ebd0b03c0fbb870f",
+   "seconds": 5.3,
+   "commit": "d809a258e99410a71d0f107e090a3f1f01d15a9f",
    "python": "3.12.13",
    "tolerance_override": null
   },
@@ -109,8 +109,8 @@
     5011
    ],
    "negative_results": 1,
-   "seconds": 20.9,
-   "commit": "f10a53fd67364484de134841ebd0b03c0fbb870f",
+   "seconds": 24.4,
+   "commit": "d809a258e99410a71d0f107e090a3f1f01d15a9f",
    "python": "3.12.13",
    "tolerance_override": null
   },
@@ -121,15 +121,15 @@
    "params": {
     "n_seeds": 12
    },
-   "record": "xb-g-1da4c7f8e5e2",
-   "digest": "1da4c7f8e5e260492c113b46744b4d20586de1ac586ed88160fa84549b970fe5",
+   "record": "xb-g-41c322db9990",
+   "digest": "41c322db99904644233374640bfa50b94be36cc3158d461931bec34a547d4800",
    "seeds": [
     5000,
     5011
    ],
    "negative_results": 7,
-   "seconds": 126.3,
-   "commit": "f10a53fd67364484de134841ebd0b03c0fbb870f",
+   "seconds": 106.1,
+   "commit": "d809a258e99410a71d0f107e090a3f1f01d15a9f",
    "python": "3.12.13",
    "tolerance_override": null
   },
@@ -147,8 +147,8 @@
     5011
    ],
    "negative_results": 5,
-   "seconds": 11.8,
-   "commit": "f10a53fd67364484de134841ebd0b03c0fbb870f",
+   "seconds": 10.2,
+   "commit": "d809a258e99410a71d0f107e090a3f1f01d15a9f",
    "python": "3.12.13",
    "tolerance_override": null
   },
@@ -166,8 +166,8 @@
     5011
    ],
    "negative_results": 39,
-   "seconds": 88.5,
-   "commit": "f10a53fd67364484de134841ebd0b03c0fbb870f",
+   "seconds": 80.0,
+   "commit": "d809a258e99410a71d0f107e090a3f1f01d15a9f",
    "python": "3.12.13",
    "tolerance_override": null
   },
@@ -185,8 +185,8 @@
     5011
    ],
    "negative_results": 5,
-   "seconds": 13.9,
-   "commit": "f10a53fd67364484de134841ebd0b03c0fbb870f",
+   "seconds": 13.0,
+   "commit": "d809a258e99410a71d0f107e090a3f1f01d15a9f",
    "python": "3.12.13",
    "tolerance_override": null
   },
@@ -204,8 +204,8 @@
     5011
    ],
    "negative_results": 0,
-   "seconds": 71.7,
-   "commit": "f10a53fd67364484de134841ebd0b03c0fbb870f",
+   "seconds": 69.8,
+   "commit": "d809a258e99410a71d0f107e090a3f1f01d15a9f",
    "python": "3.12.13",
    "tolerance_override": null
   },
@@ -223,15 +223,15 @@
     ],
     "ablate": true
    },
-   "record": "xb-g-23f06737f018",
-   "digest": "23f06737f01833065b079e139dc3d9a47bc9ed974954ca5047d4475b3becf67a",
+   "record": "xb-g-c7d6bd9f83c6",
+   "digest": "c7d6bd9f83c6fcef48a3ad2c51381a17dc11059923a02ef8d09c9033b374dacc",
    "seeds": [
     5000,
     5007
    ],
    "negative_results": 2,
-   "seconds": 28.1,
-   "commit": "f10a53fd67364484de134841ebd0b03c0fbb870f",
+   "seconds": 27.8,
+   "commit": "d809a258e99410a71d0f107e090a3f1f01d15a9f",
    "python": "3.12.13",
    "tolerance_override": null
   },
@@ -250,8 +250,8 @@
     7015
    ],
    "negative_results": 6,
-   "seconds": 98.8,
-   "commit": "f10a53fd67364484de134841ebd0b03c0fbb870f",
+   "seconds": 95.9,
+   "commit": "d809a258e99410a71d0f107e090a3f1f01d15a9f",
    "python": "3.12.13",
    "tolerance_override": null
   },
@@ -269,8 +269,8 @@
     5011
    ],
    "negative_results": 18,
-   "seconds": 16.3,
-   "commit": "f10a53fd67364484de134841ebd0b03c0fbb870f",
+   "seconds": 15.2,
+   "commit": "d809a258e99410a71d0f107e090a3f1f01d15a9f",
    "python": "3.12.13",
    "tolerance_override": {
     "human-like": 0.013
@@ -290,8 +290,8 @@
     5011
    ],
    "negative_results": 13,
-   "seconds": 6.7,
-   "commit": "f10a53fd67364484de134841ebd0b03c0fbb870f",
+   "seconds": 7.0,
+   "commit": "d809a258e99410a71d0f107e090a3f1f01d15a9f",
    "python": "3.12.13",
    "tolerance_override": {
     "human-like": 0.013
