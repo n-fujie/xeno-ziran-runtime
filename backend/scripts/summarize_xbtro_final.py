@@ -121,7 +121,9 @@ def main(d: Path) -> str:
         "",
         "## Axis-maintenance: the first report and its independent re-verification",
         "",
-        "First report (8 seeds, seeds 5000.., four principles, ablation) and replication (16 seeds, seeds 7000.., all fourteen principles). Mean effects (condition minus control; lower is better) and the share due to the rule line (against the ablation).",
+        "First report (8 seeds, seeds 5000.., four principles, ablation) and replication (16 seeds, seeds 7000.., "
+        "all fourteen principles). Mean effects (condition minus control; lower is better) and the share due to "
+        "the rule line (against the ablation).",
         "",
     ]
     rows = []
@@ -165,7 +167,8 @@ def main(d: Path) -> str:
         "",
         "## R — sensitivity of the Fragility Transfer matrix",
         "",
-        f"cells: {r['cells']}; identical label in every variant: {r['cells_with_identical_label_in_all_variants']}; transfers in every variant: {r['transfers_in_every_variant']}; "
+        f"cells: {r['cells']}; identical label in every variant: {r['cells_with_identical_label_in_all_variants']}; "
+        f"transfers in every variant: {r['transfers_in_every_variant']}; "
         f"in some variants only: {r['transfers_in_some_variants']}",
     ]
     # D
@@ -224,7 +227,8 @@ def main(d: Path) -> str:
         "",
         "## M — MO-style policy",
         "",
-        f"stopped because: {m['policy']['stopped_because']}; rounds: {[(g['round'], g['decision'][:40]) for g in m['policy']['rounds']]}",
+        f"stopped because: {m['policy']['stopped_because']}; "
+        f"rounds: {[(g['round'], g['decision'][:40]) for g in m['policy']['rounds']]}",
     ]
     a = load(d, "A_standard")
     L += [

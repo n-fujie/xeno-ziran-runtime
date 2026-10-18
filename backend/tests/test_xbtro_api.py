@@ -206,3 +206,13 @@ def test_cooperative_mode_runs_the_same_job_in_time_slices(monkeypatch, client, 
     j = xb.job_view(workspace, job["id"])
     assert j["status"] == "done" and slices > 5, (j, slices)  # it really was advanced in many small slices
     assert workspace.history.get(j["record_id"])["digest"] == ref
+
+
+def test_a_part_can_be_inspected_before_the_first_step(client, ws):
+    """Regression: inspecting before any step was recorded raised IndexError (HTTP 500)."""
+    bid = client.post(f"{BASE}/workspaces/{ws}/bodies", json={"n_seeds": 1, "horizon_s": 3}).json()["id"]
+    for part in ("joint:knee", "link:trunk", "ground", "neural", "internal"):
+        r = client.get(f"{BASE}/workspaces/{ws}/bodies/{bid}/inspect", params={"part": part})
+        assert r.status_code == 200, (part, r.text)
+        assert r.json()["t"] == [] and all(v is None for v in r.json()["now"].values())
+    assert client.get(f"{BASE}/workspaces/{ws}/bodies/{bid}/inspect", params={"part": "nonsense"}).status_code == 422

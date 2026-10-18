@@ -576,8 +576,12 @@ def create_body(ws: Workspace, body: dict[str, Any] | None) -> dict[str, Any]:
     over = body.get("overrides") or {}
     if not isinstance(over, dict):
         raise OpError(422, "overrides must be an object")
-    task = over.get("task") if isinstance(over.get("task"), dict) else {}
-    dt = task.get("dt", xcfg.PRESETS[preset]()["task"]["dt"])
+    task_over = over.get("task")
+    dt = (
+        task_over.get("dt", xcfg.PRESETS[preset]()["task"]["dt"])
+        if isinstance(task_over, dict)
+        else xcfg.PRESETS[preset]()["task"]["dt"]
+    )
     if isinstance(dt, bool) or not isinstance(dt, (int, float)) or not 0.002 <= dt <= 0.02:
         raise OpError(422, "task.dt must be a number within 0.002..0.02")
     cells = n * math.ceil(horizon / dt)
