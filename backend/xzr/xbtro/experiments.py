@@ -51,6 +51,22 @@ EXPERIMENTS: dict[str, dict[str, Any]] = {
     "F": {"title": "Human-Machine Operational Comparison", "n_seeds": 10, "sims": 14,
           "question": "For one stated consequence, how do a human-like and a machine-like nominal body compare in speed, resources, correction and reachability?",
           "params": {}},
+    # Additional experiments, designed independently of A-F (which keep their own definitions)
+    "G": {"title": "Directional Fragility Transfer", "n_seeds": 12, "sims": 100,
+          "question": "Does strengthening one bodily operation (a Xeno-14 condition) weaken another — by direction of disturbance, recovery region, timing, resources, available lines or later reachability — and not only by falls?",
+          "params": {"principles": "list of principle ids (default all fourteen)", "ablate": [True, False]}},
+    "M": {"title": "MO-style reach policy (limited instance)", "n_seeds": 12, "sims": 40,
+          "question": "Can an observation configuration be revised by a cost-aware policy that keeps reach as a vector, measures its own perturbation, and retracts what does not pay?",
+          "params": {"rounds": [1, 6], "alteration": ["mixed", "delay-only", "tone-only", "fatigue-only"]}},
+    "S": {"title": "MS-style path comparison (limited instance)", "n_seeds": 10, "sims": 14,
+          "question": "For one stated consequence, how do executable alternatives compare on latency, energy, information gain, intervention reach time, reconstruction cost and recovery time, without one speed score?",
+          "params": {"consequences": "reach-target, stay-upright", "push_force": "N"}},
+    "R": {"title": "Sensitivity of the Fragility Transfer matrix", "n_seeds": 12, "sims": 90,
+          "question": "Do the labels and the transfers of Experiment C survive single changes of the nominal setting (seeds, mass, loop latency, sensor noise, disturbance strength)?",
+          "params": {"principles": "list of principle ids (default all fourteen)"}},
+    "V": {"title": "Numerical verification", "n_seeds": 12, "sims": 70,
+          "question": "Are both body presets numerically sound (a-priori stability, time-step and integrator convergence, eight conditions x two protocols), and are numerical divergence and physical falls kept apart?",
+          "params": {}},
 }
 
 
@@ -95,7 +111,7 @@ def seeds_for(params: dict[str, Any], default: int) -> list[int]:
     n = int(params.get("n_seeds", default))
     if not 4 <= n <= MAX_SEEDS:
         raise ExperimentError(f"n_seeds must be within 4..{MAX_SEEDS}")
-    base = int(params.get("seed", 1000))
+    base = int(params.get("seed", metrics.FINAL_SEED_BASE))
     return [base + i for i in range(n)]
 
 
@@ -339,12 +355,58 @@ def exp_B(params: dict[str, Any]):
 C_COMBOS = [("axis-maintenance", "anti-collapse-posture"), ("lower-abdominal-continuity", "tensegrity"), ("narrow-step-balance", "breathing-synchronization")]
 
 
-def _label_effect(e: dict[str, Any]) -> str:
-    if not (np.isfinite(e["p"]) and np.isfinite(e["d"])):
+EFFECT_Q, EFFECT_D = 0.05, 0.8      # an effect is labelled only when its BH q-value is below EFFECT_Q and |d| is at least EFFECT_D
+
+
+def _label_effect(e: dict[str, Any], q: float | None = None) -> str:
+    qq = e["p"] if q is None else q
+    if not (np.isfinite(qq) and np.isfinite(e["d"])):
         return "undefined"
-    if e["p"] < 0.05 and abs(e["d"]) >= 0.5:
+    if qq < EFFECT_Q and abs(e["d"]) >= EFFECT_D:
         return "improved" if e["d"] < 0 else "worsened"
     return "no detectable effect"
+
+
+def _ignition(run: engine.Run, pid: str) -> float | None:
+    lid = f"xeno.{pid}"
+    if lid not in run.line_ids:
+        return None            # the principle is a parameter condition without a rule line of its own
+    return float(run["line_active"][:, :, run.line_ids.index(lid)].any(axis=1).mean())
+
+
+def _v_mass(c):
+    for ln in c["links"]:
+        ln["mass"] *= 1.1
+    return config.validate(c)
+
+
+def _v_delay(c):
+    for ln in c["lines"]:
+        if ln["id"].startswith("neural.central"):
+            ln["timescale_s"] += 0.02
+    return config.validate(c)
+
+
+def _v_noise(c):
+    for k in ("proprio", "vestibular", "tactile"):
+        c["sensors"][k]["noise"] *= 2.0
+    return config.validate(c)
+
+
+def _v_push(c):
+    c["environment"]["pushes"][0]["force"] = 50.0
+    return config.validate(c)
+
+
+# Variants for the sensitivity analysis (Experiment R): each changes one nominal quantity of the body or the protocol
+VARIANTS: dict[str, tuple[str, Any, int]] = {
+    "reference": ("the reference setting", lambda c: c, 0),
+    "other seeds": ("a different block of seeds", lambda c: c, 1000),
+    "mass +10 %": ("all link masses x 1.1", _v_mass, 0),
+    "central loop +20 ms": ("central command latency +0.02 s", _v_delay, 0),
+    "sensor noise x2": ("proprioceptive, vestibular and tactile noise x 2", _v_noise, 0),
+    "stronger push 50 N": ("the protocol push at 50 N instead of 35 N", _v_push, 0),
+}
 
 
 def exp_C(params: dict[str, Any]):
@@ -357,6 +419,8 @@ def exp_C(params: dict[str, Any]):
     combos = [c for c in C_COMBOS if c[0] in ids or c[1] in ids] if params.get("combos", True) else []
     ctx = Ctx(1 + len(ids) + len(combos))
     base = base_config(preset)
+    if params.get("variant"):
+        base = VARIANTS[params["variant"]][1](base)
     ctrl = yield from ctx.sim(base, seeds, None, "matched control")
     cm = metrics.organization(ctrl)
     runs: dict[str, engine.Run] = {}
@@ -368,23 +432,43 @@ def exp_C(params: dict[str, Any]):
     orgs = list(metrics.ORGANIZATION)
     matrix: dict[str, dict[str, Any]] = {}
     rows = []
-    for pid, run in runs.items():
-        om = metrics.organization(run)
+    # one family of tests: every (principle, organization) cell. Labels use the Benjamini-Hochberg q-value over the whole family
+    # (not the raw p) and a minimum standardised effect, both fixed in advance (EFFECT_Q, EFFECT_D).
+    effs = {(pid, o): stats.paired_effect(cm[o], metrics.organization(run)[o]) for pid, run in runs.items() for o in orgs}
+    keys = list(effs)
+    qv = stats.bh_adjust(np.array([effs[k]["p"] for k in keys]))
+    qmap = dict(zip(keys, qv, strict=True))
+    ign = {pid: _ignition(run, pid) for pid, run in runs.items()}
+    for pid in runs:
         matrix[pid] = {}
         for o in orgs:
-            e = stats.paired_effect(cm[o], om[o])
-            lab = _label_effect(e)
-            matrix[pid][o] = {"d": _scalar(e["d"]), "p": _scalar(e["p"]), "label": lab, "mean_control": _scalar(e["mean_a"]), "mean": _scalar(e["mean_b"]), "n": e["n"]}
-            rows.append([pid, o, matrix[pid][o]["mean_control"], matrix[pid][o]["mean"], matrix[pid][o]["d"], matrix[pid][o]["p"], lab, "yes" if o in xeno14.BY_ID[pid]["acts_on"] else "no"])
+            e, q = effs[(pid, o)], qmap[(pid, o)]
+            lab = _label_effect(e, q)
+            matrix[pid][o] = {"d": _scalar(e["d"]), "p": _scalar(e["p"]), "q": _scalar(q), "label": lab, "mean_control": _scalar(e["mean_a"]), "mean": _scalar(e["mean_b"]), "n": e["n"]}
+            rows.append([pid, o, matrix[pid][o]["mean_control"], matrix[pid][o]["mean"], matrix[pid][o]["d"], matrix[pid][o]["p"], matrix[pid][o]["q"], lab,
+                         "yes" if o in xeno14.BY_ID[pid]["acts_on"] else "no", ign[pid]])
     transfers, negative = [], []
+    by_declared: dict[str, bool] = {}
+    for pid in ids:
+        extra = np.nanmean(metrics.organization(runs[pid])["fatigue_cost"] - cm["fatigue_cost"])
+        declared = float(np.mean(metrics.declared_line_cost(runs[pid]) - metrics.declared_line_cost(ctrl)))
+        by_declared[pid] = bool(extra > 0 and declared >= 0.8 * extra)
     for pid in ids:
         imp = [o for o in orgs if matrix[pid][o]["label"] == "improved"]
         wor = [o for o in orgs if matrix[pid][o]["label"] == "worsened"]
         touched = xeno14.BY_ID[pid]["acts_on"]
-        if imp and wor:
-            transfers.append({"principle": pid, "improved": imp, "worsened": wor})
+        wor_emergent = [o for o in wor if not (o == "fatigue_cost" and by_declared[pid])]     # energy use that is just the declared line cost does not count
+        if imp and wor_emergent:
+            transfers.append({"principle": pid, "improved": imp, "worsened": wor_emergent,
+                              "worsened_only_by_declared_cost": [o for o in wor if o not in wor_emergent],
+                              "predicted_by_definition": [o for o in wor_emergent if o in touched], "not_predicted_by_definition": [o for o in wor_emergent if o not in touched]})
         if not imp and not wor:
-            negative.append({"statement": f"{pid}: no detectable effect on any organization (paired, {len(seeds)} seeds)", "evidence": {o: matrix[pid][o]["d"] for o in orgs}})
+            if ign[pid] is not None and ign[pid] == 0.0:
+                negative.append({"statement": f"{pid}: its rule never ignited in the protocol (ignition condition not reached in any seed), so no effect could occur; "
+                                              "this says nothing about the principle when it does ignite", "evidence": {"ignition": 0.0}})
+            else:
+                negative.append({"statement": f"{pid}: no detectable effect on any organization (paired, {len(seeds)} seeds, BH q < {EFFECT_Q}, |d| >= {EFFECT_D})",
+                                 "evidence": {"d": {o: matrix[pid][o]["d"] for o in orgs}, "ignition": ign[pid]}})
         if [o for o in touched if matrix[pid][o]["label"] == "worsened"]:
             negative.append({"statement": f"{pid}: worsened an organization its own definition touches: {[o for o in touched if matrix[pid][o]['label'] == 'worsened']}",
                              "evidence": {o: matrix[pid][o] for o in touched}})
@@ -392,19 +476,22 @@ def exp_C(params: dict[str, Any]):
             negative.append({"statement": f"{pid}: improved none of the organizations its definition touches ({touched}); changes occurred elsewhere: improved {imp}, worsened {wor}",
                              "evidence": {}})
     combo_rows = []
+    combo_eff = {(name, o): stats.paired_effect(cm[o], metrics.organization(run)[o]) for name, run in combo_runs.items() for o in orgs}
+    ckeys = list(combo_eff)
+    cq = dict(zip(ckeys, stats.bh_adjust(np.array([combo_eff[k]["p"] for k in ckeys])), strict=True)) if ckeys else {}
     for name, run in combo_runs.items():
         a, b = name.split(" + ")
-        om = metrics.organization(run)
         conf = float(np.nanmean(tro._conflicts(run)))
         for o in orgs:
-            e = stats.paired_effect(cm[o], om[o])
+            e = combo_eff[(name, o)]
             da, db = matrix[a][o]["d"], matrix[b][o]["d"]
-            combo_rows.append([name, o, _scalar(e["d"]), _label_effect(e), da, db, None if None in (e["d"], da, db) or not np.isfinite(e["d"]) else float(e["d"] - (da + db)), conf])
+            combo_rows.append([name, o, _scalar(e["d"]), _label_effect(e, cq[(name, o)]), da, db, None if None in (e["d"], da, db) or not np.isfinite(e["d"]) else float(e["d"] - (da + db)), conf])
     mcm = metrics.summary(ctrl)
     tables = [table("transfer_matrix", "Paired effect of each Xeno-14 condition on each organization (all 'lower is better': negative d = improvement)",
-                    ["principle", "organization", "control mean", "condition mean", "d (paired)", "p", "label", "touched by the definition"], rows),
-              table("fragility_transfers", "Conditions that improved one organization and worsened another", ["principle", "improved", "worsened"],
-                    [[t["principle"], ", ".join(t["improved"]), ", ".join(t["worsened"])] for t in transfers]),
+                    ["principle", "organization", "control mean", "condition mean", "d (paired)", "p", "q (BH, whole matrix)", "label", "touched by the definition", "fraction of seeds in which its line ignited"], rows),
+              table("fragility_transfers", "Conditions that improved one organization and worsened another (energy use that equals the declared line cost does not count as a worsening)",
+                    ["principle", "improved", "worsened", "worsened organizations its definition does not name", "energy rise only the declared cost"],
+                    [[t["principle"], ", ".join(t["improved"]), ", ".join(t["worsened"]), ", ".join(t["not_predicted_by_definition"]), ", ".join(t["worsened_only_by_declared_cost"])] for t in transfers]),
               table("pairs", "Pairs of conditions active together: effect, the two single effects, interaction (pair minus sum of singles), line conflicts per second",
                     ["pair", "organization", "d pair", "label", "d first", "d second", "interaction", "conflict steps per s"], combo_rows)]
     series = {"control_com": decimated_series(ctrl, "com"), "xref": decimated_series(ctrl, "xref_true")}
@@ -413,6 +500,9 @@ def exp_C(params: dict[str, Any]):
     results = {"tables": tables, "series": series, "matrix": matrix, "organizations": {k: v[1] for k, v in metrics.ORGANIZATION.items()}, "transfers": transfers,
                "principles": {p["id"]: {k: p[k] for k in ("alias", "definition", "operationalization", "ignition", "acts_on")} for p in xeno14.PRINCIPLES if p["id"] in ids},
                "control_summary": {k: _scalar(float(np.nanmean(v))) if np.isfinite(v).any() else None for k, v in metrics.numeric_only(mcm).items()},
+               "energy_rise_equals_declared_line_cost": by_declared,
+               "design": {**stats.design_note(len(seeds)), "label_rule": f"BH q < {EFFECT_Q} over all {len(keys)} principle x organization tests and |d| >= {EFFECT_D}",
+                          "ignition": ign},
                "reading": f"Principles are experimental conditions (planar translations of {xeno14.SOURCE}); no sign of effect was assumed. Positive, negative and null results are all listed."}
     rec = records.make_record("C", {**params, "preset": preset, "principles": ids}, seeds, base, [], [{"xeno14": [i]} for i in ids], results, negative, [], {"reentry": []}, base["task"]["dt"])
     return rec, ctrl.slow_end
@@ -588,6 +678,141 @@ def exp_F(params: dict[str, Any]):
 
 # ------------------------------------------------------------------------------------------------ dispatch
 
+def exp_G(params: dict[str, Any]):
+    from . import fragility
+    return fragility.exp_G(params, base_config, seeds_for, Ctx, ExperimentError, table, decimated_series)
+
+
+def exp_R(params: dict[str, Any]):
+    """Sensitivity analysis of Experiment C: the same comparison under single changes of the nominal setting. Reports, per
+    (principle, organization) cell, whether the label survives, and which transfers are present in every variant."""
+    preset = params.get("preset", "human-like-planar")
+    n = int(params.get("n_seeds", 12))
+    ids = list(params.get("principles") or [p["id"] for p in xeno14.PRINCIPLES])
+    names = list(VARIANTS)
+    mats: dict[str, dict[str, Any]] = {}
+    trans: dict[str, set[str]] = {}
+    for k, v in enumerate(names):
+        gen = exp_C({"preset": preset, "n_seeds": n, "seed": metrics.FINAL_SEED_BASE + VARIANTS[v][2], "principles": ids, "combos": False, "variant": v})
+        while True:
+            try:
+                fr = next(gen)
+                yield {"stage": f"{v}: {fr['stage']}", "progress": (k + fr["progress"]) / len(names)}
+            except StopIteration as st:
+                rec_v = st.value[0]
+                break
+        mats[v] = rec_v["results"]["matrix"]
+        trans[v] = {t["principle"] for t in rec_v["results"]["transfers"]}
+    orgs = list(metrics.ORGANIZATION)
+    rows, flips, stable = [], [], 0
+    for pid in ids:
+        for o in orgs:
+            labs = [mats[v][pid][o]["label"] for v in names]
+            same = [l == labs[0] for l in labs]
+            agree = sum(same) / len(labs)
+            stable += agree == 1.0
+            rows.append([pid, o, labs[0], *labs[1:], agree])
+            if agree < 1.0:
+                flips.append({"principle": pid, "organization": o, "labels": dict(zip(names, labs, strict=True))})
+    in_all = sorted(set.intersection(*trans.values())) if trans else []
+    in_some = sorted(set.union(*trans.values()) - set(in_all)) if trans else []
+    tables = [table("label_agreement", "Label of each cell in each variant, and the share of variants that agree with the reference",
+                    ["principle", "organization", *names, "agreement with the reference"], rows),
+              table("transfer_robustness", "Fragility Transfers per variant", ["principle", *names],
+                    [[pid, *[pid in trans[v] for v in names]] for pid in ids])]
+    negative = [{"statement": f"{f['principle']} / {f['organization']}: the label depends on the setting", "evidence": f["labels"]} for f in flips[:40]]
+    res = {"tables": tables, "variants": {k: v[0] for k, v in VARIANTS.items()}, "cells": len(rows), "cells_with_identical_label_in_all_variants": int(stable),
+           "transfers_in_every_variant": in_all, "transfers_in_some_variants": in_some, "flips": flips,
+           "reading": "A transfer that appears only in some variants is a property of that setting, not of the principle. Labels use BH q and |d| thresholds fixed in advance."}
+    base = base_config(preset)
+    rec = records.make_record("R", {"preset": preset, "n_seeds": n, "principles": ids}, [metrics.FINAL_SEED_BASE + i for i in range(n)], base, [], [{"variant": v} for v in names], res, negative, [],
+                              {"reentry": []}, base["task"]["dt"])
+    return rec, {}
+
+
+def exp_M(params: dict[str, Any]):
+    from . import ziran
+    preset = params.get("preset", "human-like-planar")
+    seeds = seeds_for(params, EXPERIMENTS["M"]["n_seeds"])
+    rounds = int(params.get("rounds", 4))
+    if not 1 <= rounds <= 6:
+        raise ExperimentError("rounds must be within 1..6")
+    ctx = Ctx(3)
+    a_cfg = base_config(preset)
+    b_cfg = alteration(a_cfg, params.get("alteration", "mixed"))
+    ra = yield from ctx.sim(a_cfg, seeds, None, "baseline body")
+    rb = yield from ctx.sim(b_cfg, seeds, None, "altered body")
+    yield {"stage": "policy (rounds, each with a measured perturbation check)", "progress": 0.7}
+    obs0 = observation.validate(observation.config("motion-only"))
+    pol = ziran.mo_policy(ra, rb, obs0, rounds=rounds, seeds=seeds[:8])
+    do = ziran.distributed_observation(ra, rb, pol["final_observation"])
+    yield {"stage": "distributed observation", "progress": 1.0}
+    tables = [table("policy_rounds", "Rounds: candidate, cost vector, expectation, measured result, decision",
+                    ["round", "change", "why", "expected gain", "set-up s", "added mass kg", "identified before", "identified after", "perturbs the body", "decision"],
+                    [[g["round"], str(g["changes"]), g["why"], g["expected"].get("identifiability_gain"), g["cost"]["setup_s"], g["cost"]["added_mass_kg"],
+                      g["actual"]["identified_before"], g["actual"]["identified_after"], ", ".join(g["perturbs_the_body"]), g["decision"]] for g in pol["rounds"]]),
+              table("reach", "Observational reach before and after (a vector; unobserved regions stay listed)", ["measure", "before", "after"],
+                    [[k, str(pol["reach_before"][k]), str(pol["reach_after"][k])] for k in pol["reach_before"]]),
+              table("distributed_observation", "Verdicts of every source per relation (never fused)", ["relation", "agreement", "sources", "exists in the model reference"],
+                    [[r["relation"], r["agreement"], "; ".join(f"{p['source_feature']}{'*' if p['identified'] else ''}" for p in r["per_source"]), r["exists_in_model_reference"]] for r in do["relations"]])]
+    negative = [{"statement": f"round {g['round']}: {g['decision']}", "evidence": {"change": g["changes"], "expected": g["expected"], "actual": g["actual"]}}
+                for g in pol["rounds"] if g["decision"] != "kept"]
+    negative += [{"statement": f"sources disagree on '{c}': kept side by side, not merged", "evidence": {}} for c in do["conflicts"]]
+    res = {"tables": tables, "policy": {k: v for k, v in pol.items() if k != "final_observation"}, "final_observation": pol["final_observation"], "distributed": do,
+           "status": ziran.status(), "reading": "A limited instance over a simulated body. The repository-level status of MO remains NOT IMPLEMENTED (specification section 2)."}
+    unobs = [{"id": r["relation"], "status": "unobserved", "reason": "no source", "configuration": "final"} for r in do["relations"] if r["exists_in_model_reference"] and not r["per_source"]]
+    rec = records.make_record("M", {**params, "preset": preset, "rounds": rounds}, seeds, a_cfg, [obs0, pol["final_observation"]], [{"alteration": params.get("alteration", "mixed")}], res,
+                              negative, unobs, {"reentry": []}, a_cfg["task"]["dt"])
+    return rec, ra.slow_end
+
+
+def exp_S(params: dict[str, Any]):
+    from . import ziran
+    preset = params.get("preset", "human-like-planar")
+    seeds = seeds_for(params, EXPERIMENTS["S"]["n_seeds"])
+    force = float(params.get("push_force", 60.0))
+    outs = {}
+    for k, cons in enumerate(("reach-target", "stay-upright")):
+        gen = ziran.ms_paths(preset, cons, seeds, push_force=force)
+        while True:
+            try:
+                fr = next(gen)
+                yield {"stage": f"{cons}: {fr['stage']}", "progress": (k + fr["progress"]) / 2}
+            except StopIteration as st:
+                outs[cons] = st.value
+                break
+    tables, negative = [], []
+    for cons, o in outs.items():
+        tables.append(table(f"paths_{cons}", f"Paths for the consequence '{cons}' (vector of measures; no score)",
+                            ["path", "stop path", "latency s", "energy", "information gain", "intervention reach s", "lines changed", "slow-state distance", "recovery (restricted mean) s",
+                             "recovered fraction", "fall rate", "non-dominated"],
+                            [[p["path"], p["is_stop_path"], p["latency_s"], p["energy"], p["information_gain"], p["intervention_reach_s"], p["lines_changed"], p["slow_state_distance"],
+                              p["recovery_rmst_s"], p["recovered_fraction"], p["fall_rate"], p["non_dominated"]] for p in o["paths"]]))
+        for p in o["paths"]:
+            if not p["non_dominated"]:
+                negative.append({"statement": f"'{p['path']}' is dominated for '{cons}': another path is at least as good on every measure and better on one", "evidence": {}})
+            if p["latency_s"] is None:
+                negative.append({"statement": f"'{p['path']}': the consequence '{cons}' was not established in any seed (latency undefined)", "evidence": {"defined": p["latency_defined"]}})
+    vecs = {c: o["paths"] for c, o in outs.items()}
+    sel = {c: ziran.select(v, {"fall_rate": 0.0}, ["latency_s", "energy"]) for c, v in vecs.items()}
+    res = {"tables": tables, "consequences": outs, "selection_under_stated_constraints": {c: (vecs[c][i]["path"] if i is not None else None) for c, i in sel.items()},
+           "selection_rule": "no fall; then the smallest latency, then the smallest energy. A choice exists only under constraints the caller states.", "status": ziran.status(),
+           "reading": "A limited instance over a simulated body. The repository-level status of MS remains NOT IMPLEMENTED (specification section 2)."}
+    base = base_config(preset)
+    rec = records.make_record("S", {**params, "preset": preset, "push_force": force}, seeds, base, [], [{"path": p["path"]} for p in outs["reach-target"]["paths"]], res, negative, [],
+                              {"reentry": []}, base["task"]["dt"])
+    return rec, {}
+
+
+def exp_V(params: dict[str, Any]):
+    from . import verification
+    seeds = [metrics.FINAL_SEED_BASE + i for i in range(int(params.get("n_seeds", 12)))]
+    yield {"stage": "numerical verification", "progress": 0.1}
+    rec = verification.make_record(seeds)
+    yield {"stage": "done", "progress": 1.0}
+    return rec, {}
+
+
 def run(exp_id: str, params: dict[str, Any] | None = None):
     """Generator: yields progress dicts, returns (record, slow_state). Raises ExperimentError / config errors for bad input."""
     params = dict(params or {})
@@ -595,7 +820,7 @@ def run(exp_id: str, params: dict[str, Any] | None = None):
         raise ExperimentError(f"unknown experiment {exp_id!r}; known: {sorted(EXPERIMENTS)}")
     if exp_id in ("A", "E"):
         return exp_AE(exp_id, params)
-    return {"B": exp_B, "C": exp_C, "D": exp_D, "F": exp_F}[exp_id](params)
+    return {"B": exp_B, "C": exp_C, "D": exp_D, "F": exp_F, "G": exp_G, "M": exp_M, "R": exp_R, "S": exp_S, "V": exp_V}[exp_id](params)
 
 
 def run_to_end(exp_id: str, params: dict[str, Any] | None = None) -> tuple[dict[str, Any], dict[str, Any]]:

@@ -101,3 +101,32 @@ def predictive_gain(x: np.ndarray, y: np.ndarray, lag: int, order: int = 3) -> f
     rf = target - full @ np.linalg.lstsq(full, target, rcond=None)[0]
     vb = float((rb ** 2).sum())
     return float(max(0.0, (vb - float((rf ** 2).sum())) / vb)) if vb > 1e-18 else 0.0
+
+
+def bh_adjust(p: np.ndarray) -> np.ndarray:
+    """Benjamini-Hochberg adjusted p-values (q-values) of a family of tests; NaN p-values stay NaN and are not counted."""
+    p = np.asarray(p, dtype=float)
+    q = np.full(p.shape, np.nan)
+    ok = np.isfinite(p)
+    if not ok.any():
+        return q
+    idx = np.where(ok)[0]
+    order = idx[np.argsort(p[idx])]
+    m = len(order)
+    adj = p[order] * m / (np.arange(m) + 1)
+    adj = np.minimum.accumulate(adj[::-1])[::-1]
+    q[order] = np.clip(adj, 0.0, 1.0)
+    return q
+
+
+def design_note(n_pairs: int, alpha: float = 0.05, power: float = 0.8) -> dict[str, Any]:
+    """What a paired design with ``n_pairs`` seeds can resolve: the smallest p-value the sign-flip permutation test can give, and
+    the smallest standardised paired effect (d_z) detectable with the given power at the given (two-sided) level, by the normal
+    approximation (d = (z_{1-alpha/2} + z_power) / sqrt(n)). Used to state why a number of seeds was chosen."""
+    from statistics import NormalDist
+    nd = NormalDist()
+    d_min = (nd.inv_cdf(1 - alpha / 2) + nd.inv_cdf(power)) / math.sqrt(max(n_pairs, 1))
+    min_p = 2.0 / (2 ** n_pairs) if n_pairs <= 12 else 1.0 / 4097.0
+    return {"n_pairs": n_pairs, "min_attainable_p": min_p, "min_detectable_dz": d_min, "alpha": alpha, "power": power,
+            "reading": f"with {n_pairs} paired seeds an effect of about {d_min:.2f} (standardised, paired) is detectable with {power:.0%} power at the {alpha:g} level; "
+                       "smaller true effects are expected to be missed, so 'no detectable effect' is not 'no effect'"}

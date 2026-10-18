@@ -187,6 +187,20 @@ def summary(run: Run) -> dict[str, np.ndarray]:
     return out
 
 
+def declared_line_cost(run: Run, prefix: str = "xeno.") -> np.ndarray:
+    """Per seed: the energy the operation lines whose id starts with ``prefix`` (the condition's own rule lines) were declared to cost
+    while active (cost_per_s x active time, summed over those lines). Extra activity of the body's own lines is NOT counted: it is emergent.
+    Part of ``energy_used`` by construction — a rise in energy use that equals it is the price written into the condition, not an
+    emergent weakness."""
+    out = np.zeros(run["com"].shape[0])
+    for j, lid in enumerate(run.line_ids):
+        ln = next(x for x in run.cfg["lines"] if x["id"] == lid)
+        c = float((ln.get("resource") or {}).get("cost_per_s", 0.0))
+        if c and lid.startswith(prefix):
+            out += c * run["line_active"][:, :, j].sum(axis=1) * run.dt
+    return out
+
+
 def numeric_only(m: dict[str, np.ndarray]) -> dict[str, np.ndarray]:
     """The numeric entries of a summary (the ``*_status`` entries are text)."""
     return {k: v for k, v in m.items() if np.issubdtype(np.asarray(v).dtype, np.number)}

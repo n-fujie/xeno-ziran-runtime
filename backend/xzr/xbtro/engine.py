@@ -452,7 +452,7 @@ class Sim:
         for name, (xu, xon) in extra["lines"].items():
             j = li(name)
             if j >= 0:
-                on = xon & alive & (energy_ok | ~costly[j])
+                on = xon & alive & (energy_ok | ~costly[j]) & bool(p.lines[name]["enabled"])      # a switched-off line contributes nothing
                 contrib[:, j, :] = np.where(on[:, None], xu, 0.0)
                 active[:, j] = on
         # breath: slow modulation of trunk / neck drive, and a small COM sway
