@@ -1,0 +1,36 @@
+# record,xb-s-eb2910e1593f
+# experiment,S
+# model_version,xb-tro/1.0
+# digest,eb2910e1593fac74da9e4ea7b7a7fc141ae5629f025dca01e8772116dd019216
+# time_step_s,0.01
+# numerical_method,RK4 on the N-link planar Lagrangian equations with the muscle drive held over each step; batched seeds with common random numbers; first-order activation dynamics; digests over 6 significant digits
+# seeds,5000 5001 5002 5003 5004 5005 5006 5007 5008 5009 5010 5011
+# labels,reference = model reference state (not an observation of a real body); observation = simulated model output
+
+# table: paths_reach-target,Paths for the consequence 'reach-target' (vector of measures; no score)
+path,stop path,latency s,energy,information gain,intervention reach s,lines changed,slow-state distance,recovery (restricted mean) s,recovered fraction,fall rate,non-dominated
+all lines (baseline),False,0.880833333333,0.10200783687,0.0,0.124166666667,0.0,0.0,1.89666666667,0.25,0.0,True
+without the hip balance line,False,0.870833333333,0.0881853753932,5.0,0.124166666667,1.0,0.000708793202519,2.0,0.0,0.0,True
+without the reflex line,False,0.863333333333,0.100857376191,6.0,0.124166666667,1.0,0.000103556149992,2.0,0.0,0.0,True
+Xeno-14: zero-run-up transition,False,0.491666666667,0.106164147573,6.0,0.126666666667,2.0,7.09342604696e-05,1.82333333333,0.416666666667,0.0,True
+Xeno-14: endpoint removal,False,0.51,0.106735632732,3.0,0.1275,2.0,5.50529089226e-05,1.85666666667,0.333333333333,0.0,False
+Xeno-14: slow movement,False,0.91,0.104410872894,5.0,0.124166666667,2.0,8.32762027174e-05,1.855,0.333333333333,0.0,True
+stop: the response to the cue is switched off,True,,0.0708468735875,5.0,0.1875,2.0,0.0177110384007,2.0,0.0,0.0,True
+
+# table: paths_stay-upright,Paths for the consequence 'stay-upright' (vector of measures; no score)
+path,stop path,latency s,energy,information gain,intervention reach s,lines changed,slow-state distance,recovery (restricted mean) s,recovered fraction,fall rate,non-dominated
+all lines (baseline),False,1.58666666667,0.10200783687,0.0,0.2225,0.0,0.0,1.89666666667,0.25,0.0,True
+without the hip balance line,False,,0.0881853753932,5.0,0.269166666667,1.0,0.000708793202519,2.0,0.0,0.0,True
+without the reflex line,False,,0.100857376191,6.0,0.256666666667,1.0,0.000103556149992,2.0,0.0,0.0,True
+Xeno-14: zero-run-up transition,False,1.576,0.106164147573,6.0,0.108333333333,2.0,7.09342604696e-05,1.82333333333,0.416666666667,0.0,True
+Xeno-14: endpoint removal,False,1.57,0.106735632732,3.0,0.125833333333,2.0,5.50529089226e-05,1.85666666667,0.333333333333,0.0,True
+Xeno-14: slow movement,False,1.565,0.104410872894,5.0,0.231666666667,2.0,8.32762027174e-05,1.855,0.333333333333,0.0,True
+stop: the response to the cue is switched off,True,,0.0708468735875,5.0,0.145833333333,2.0,0.0177110384007,2.0,0.0,0.0,True
+
+# table: negative_results
+statement,evidence
+'Xeno-14: endpoint removal' is dominated for 'reach-target': another path is at least as good on every measure and better on one,{}
+'stop: the response to the cue is switched off': the consequence 'reach-target' was not established in any seed (latency undefined),"{""defined"": 0.0}"
+'without the hip balance line': the consequence 'stay-upright' was not established in any seed (latency undefined),"{""defined"": 0.0}"
+'without the reflex line': the consequence 'stay-upright' was not established in any seed (latency undefined),"{""defined"": 0.0}"
+'stop: the response to the cue is switched off': the consequence 'stay-upright' was not established in any seed (latency undefined),"{""defined"": 0.0}"

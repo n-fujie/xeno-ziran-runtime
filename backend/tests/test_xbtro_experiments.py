@@ -150,3 +150,25 @@ def test_a_model_that_is_already_deployed_is_not_proposed_again():
         assert not any(ch["op"] == "add" and (ch.get("id") or ch.get("kind")) == "emg-added" for ch in c["changes"])
     for kind in ("delay-only", "tone-only", "fatigue-only", "mixed"):
         experiments.run_to_end("E", {"n_seeds": 12, "rounds": 3, "alteration": kind})  # used to raise 'duplicate model id'
+
+
+def test_records_do_not_depend_on_the_hash_seed_of_the_process():
+    """Regression: a set of strings was iterated into a stored list, so the same experiment gave different digests in different
+    processes (Python randomises string hashing per process, and so does the in-browser runtime). This configuration is the one
+    in which it showed (hash seeds 1 and 2 gave different `group_pairs` orders before the fix)."""
+    import os
+    import subprocess
+    import sys
+
+    code = (
+        "from xzr.xbtro import experiments as E\n"
+        "r,_=E.run_to_end('G',{'n_seeds':8,'principles':['axis-maintenance','zero-run-up-transition','slow-movement','tensegrity'],'ablate':True})\n"
+        "print(r['digest'])"
+    )
+    digests = set()
+    for seed in ("1", "2"):
+        out = subprocess.run(
+            [sys.executable, "-c", code], capture_output=True, text=True, env={**os.environ, "PYTHONHASHSEED": seed}, check=True
+        )
+        digests.add(out.stdout.strip())
+    assert len(digests) == 1, digests

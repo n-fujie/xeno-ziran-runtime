@@ -237,7 +237,7 @@ def exp_G(params: dict[str, Any], base_config, seeds_for, Ctx, ExperimentError, 
         imp = {k: matrix[pid][k] for k in names if matrix[pid][k]["label"] == "improved"}
         wor = {k: matrix[pid][k] for k in names if matrix[pid][k]["label"] == "worsened"}
         gi, gw = {METRIC_GROUP[k] for k in imp}, {METRIC_GROUP[k] for k in wor}
-        cross = [(a, b) for a in gi for b in gw if a != b]
+        cross = [(a, b) for a in sorted(gi) for b in sorted(gw) if a != b]   # sorted: set order differs between processes
         directional = ("tolerance_forward" in imp and "tolerance_backward" in wor) or (
             "tolerance_backward" in imp and "tolerance_forward" in wor
         )

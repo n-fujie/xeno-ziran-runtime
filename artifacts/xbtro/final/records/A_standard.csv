@@ -1,0 +1,111 @@
+# record,xb-a-bcea40306ec6
+# experiment,A
+# model_version,xb-tro/1.0
+# digest,bcea40306ec6571c96133efeaeac2485425df33d823fc1d7ae7dde0bd984418c
+# time_step_s,0.01
+# numerical_method,RK4 on the N-link planar Lagrangian equations with the muscle drive held over each step; batched seeds with common random numbers; first-order activation dynamics; digests over 6 significant digits
+# seeds,5000 5001 5002 5003 5004 5005 5006 5007 5008 5009 5010 5011
+# labels,reference = model reference state (not an observation of a real body); observation = simulated model output
+
+# table: identifiability_by_configuration,Identifiability of each difference under each observation configuration
+configuration,difference,label,exists in model reference,reference d,status,reason unobserved,identified by feature,observed d,observed p
+motion only,posture_sway,trunk sway in quiet standing,yes,3.58474822257,identified,,posture_sway_rms,1.43705244223,0.00146484375
+motion only,com_excursion,peak centre-of-mass deviation after a push,yes,-2.80282381276,noise-limited,,,-0.201978634089,0.4794921875
+motion only,cop_activity,centre-of-pressure activity,yes,2.99785208717,unobserved,device-mismatch,,,
+motion only,correction_latency,movement-correction latency after a push,yes,9.7228418606,noise-limited,,,-0.854517392268,0.015625
+motion only,central_latency,central command latency after a cue,no,0.0,no-difference-in-model,,,,
+motion only,cocontraction,antagonist co-contraction,yes,,unobserved,device-mismatch,,,
+motion only,muscle_activation,mean muscle activation (effort),yes,44.68782479,unobserved,device-mismatch,,,
+motion only,settling_turn,settling after a direction change,yes,-5.42989674174,identified,,turn_error_obs,-2.69909078744,0.00048828125
+motion only,stability_loss,loss of balance (falls),no,0.0,no-difference-in-model,,,-1.1602440827,0.00341796875
+motion only,energy_use,energy used (internal resource),yes,-2.00934464067,unobserved,unmeasured,,,
+motion only,fatigue_state,fatigue (internal state),yes,26.491722564,unobserved,device-mismatch,,,
+motion only,adaptation_gain,adapted control gain (retained state),no,0.0,no-difference-in-model,,,1.43705244223,0.00146484375
+motion only,breath_amplitude,breathing-related drive,yes,247252.985798,unobserved,device-mismatch,,,
+motion only,line_conflicts,conflicts between operation lines (model-internal events),no,0.373939177507,no-difference-in-model,,,,
+motion only,visual_use,use of visual feedback (line activity),no,-0.288675134595,no-difference-in-model,,,,
+motion + EMG-like + contact,posture_sway,trunk sway in quiet standing,yes,3.58474822257,identified,,posture_sway_rms,1.43705244223,0.00146484375
+motion + EMG-like + contact,com_excursion,peak centre-of-mass deviation after a push,yes,-2.80282381276,noise-limited,,,1.93814722791,0.00048828125
+motion + EMG-like + contact,cop_activity,centre-of-pressure activity,yes,2.99785208717,identified,,cop_rms_obs,3.01709084678,0.00048828125
+motion + EMG-like + contact,correction_latency,movement-correction latency after a push,yes,9.7228418606,identified,,emg_onset_push,32.8506883982,0.00048828125
+motion + EMG-like + contact,central_latency,central command latency after a cue,no,0.0,no-difference-in-model,,,1.1328430312,0.00390625
+motion + EMG-like + contact,cocontraction,antagonist co-contraction,yes,,identified-by-proxy,,emg_mean,46.4038346849,0.00048828125
+motion + EMG-like + contact,muscle_activation,mean muscle activation (effort),yes,44.68782479,identified,,emg_mean,46.4038346849,0.00048828125
+motion + EMG-like + contact,settling_turn,settling after a direction change,yes,-5.42989674174,identified,,turn_error_obs,-2.69909078744,0.00048828125
+motion + EMG-like + contact,stability_loss,loss of balance (falls),no,0.0,no-difference-in-model,,,-1.1602440827,0.00341796875
+motion + EMG-like + contact,energy_use,energy used (internal resource),yes,-2.00934464067,noise-limited,,,46.4038346849,0.00048828125
+motion + EMG-like + contact,fatigue_state,fatigue (internal state),yes,26.491722564,noise-limited,,,0.0781044570485,0.783203125
+motion + EMG-like + contact,adaptation_gain,adapted control gain (retained state),no,0.0,no-difference-in-model,,,1.43705244223,0.00146484375
+motion + EMG-like + contact,breath_amplitude,breathing-related drive,yes,247252.985798,unobserved,device-mismatch,,,
+motion + EMG-like + contact,line_conflicts,conflicts between operation lines (model-internal events),no,0.373939177507,no-difference-in-model,,,,
+motion + EMG-like + contact,visual_use,use of visual feedback (line activity),no,-0.288675134595,no-difference-in-model,,,,
+dynamic (after reconfiguration),posture_sway,trunk sway in quiet standing,yes,3.58474822257,identified,,posture_sway_rms,3.07517193857,0.00048828125
+dynamic (after reconfiguration),com_excursion,peak centre-of-mass deviation after a push,yes,-2.80282381276,identified,,peak_dev_obs,-1.16401259314,0.001953125
+dynamic (after reconfiguration),cop_activity,centre-of-pressure activity,yes,2.99785208717,identified,,cop_rms_obs,2.96258125391,0.00048828125
+dynamic (after reconfiguration),correction_latency,movement-correction latency after a push,yes,9.7228418606,identified,,cop_onset_push,2.5357483632,0.00048828125
+dynamic (after reconfiguration),central_latency,central command latency after a cue,no,0.0,no-difference-in-model,,,,
+dynamic (after reconfiguration),cocontraction,antagonist co-contraction,yes,,unobserved,device-mismatch,,,
+dynamic (after reconfiguration),muscle_activation,mean muscle activation (effort),yes,44.68782479,unobserved,device-mismatch,,,
+dynamic (after reconfiguration),settling_turn,settling after a direction change,yes,-5.42989674174,identified,,turn_error_obs,-7.68671677132,0.00048828125
+dynamic (after reconfiguration),stability_loss,loss of balance (falls),no,0.0,no-difference-in-model,,,-2.40675877919,0.00048828125
+dynamic (after reconfiguration),energy_use,energy used (internal resource),yes,-2.00934464067,noise-limited,,,-0.227743676471,0.44091796875
+dynamic (after reconfiguration),fatigue_state,fatigue (internal state),yes,26.491722564,unobserved,device-mismatch,,,
+dynamic (after reconfiguration),adaptation_gain,adapted control gain (retained state),no,0.0,no-difference-in-model,,,3.07517193857,0.00048828125
+dynamic (after reconfiguration),breath_amplitude,breathing-related drive,yes,247252.985798,noise-limited,,,-0.227743676471,0.44091796875
+dynamic (after reconfiguration),line_conflicts,conflicts between operation lines (model-internal events),no,0.373939177507,no-difference-in-model,,,,
+dynamic (after reconfiguration),visual_use,use of visual feedback (line activity),no,-0.288675134595,no-difference-in-model,,,,
+
+# table: summary,Counts per observation configuration
+configuration,existing differences,identified,identifiability,unobserved reasons
+motion only,10,2,0.2,unobserved:device-mismatch=5; unobserved:unmeasured=1
+motion + EMG-like + contact,10,6,0.6,unobserved:device-mismatch=1
+dynamic (after reconfiguration),10,5,0.5,unobserved:device-mismatch=3
+
+# table: reconfiguration_log,"Automatic observation reconfiguration (reason, information used, expected, actual)"
+round,changes,reason,differences targeted,expected gain,newly identified,lost,identified before,identified after,setup time s
+1,"[{'op': 'set', 'model': 'posture', 'field': 'noise', 'value': 0.5}, {'op': 'add', 'kind': 'respiration', 'id': 'respiration-added', 'settings': {}}]","capable but below the noise: halve posture's noise (1 -> 0.5 of nominal; a better instrument, not a new one); deploy a respiration model (a different aspect is observed now)","['com_excursion', 'breath_amplitude']","[1.0, 1.0]",[],[],2,2,30.0
+2,"[{'op': 'set', 'model': 'posture', 'field': 'noise', 'value': 0.25}, {'op': 'set', 'model': 'respiration-added', 'field': 'noise', 'value': 0.5}]","capable but below the noise: halve posture's noise (0.5 -> 0.25 of nominal; a better instrument, not a new one); capable but below the noise: halve respiration-added's noise (1 -> 0.5 of nominal; a better instrument, not a new one)","['com_excursion', 'energy_use']","[1.0, 1.0]",['correction_latency'],[],2,3,20.0
+3,"[{'op': 'set', 'model': 'posture', 'field': 'noise', 'value': 0.125}, {'op': 'set', 'model': 'respiration-added', 'field': 'noise', 'value': 0.25}]","capable but below the noise: halve posture's noise (0.25 -> 0.125 of nominal; a better instrument, not a new one); capable but below the noise: halve respiration-added's noise (0.5 -> 0.25 of nominal; a better instrument, not a new one)","['com_excursion', 'energy_use']","[1.0, 1.0]",['com_excursion'],[],3,4,20.0
+4,"[{'op': 'set', 'model': 'respiration-added', 'field': 'noise', 'value': 0.125}, {'op': 'add', 'kind': 'contact', 'id': 'contact-added', 'settings': {'spatial': 'detailed'}}]","capable but below the noise: halve respiration-added's noise (0.25 -> 0.125 of nominal; a better instrument, not a new one); deploy a contact model (a different aspect is observed now)","['energy_use', 'cop_activity']","[1.0, 1.0]",['cop_activity'],[],4,5,40.0
+
+# table: negative_results
+statement,evidence
+difference 'cocontraction' exists in the model reference but is not identified by the final observation configuration (unobserved: device-mismatch),"{""reference_d"": null, ""states"": [[""emg_cc"", ""emg"", ""absent""], [""emg_mean"", ""emg"", ""absent""]]}"
+difference 'muscle_activation' exists in the model reference but is not identified by the final observation configuration (unobserved: device-mismatch),"{""reference_d"": 44.68782479, ""states"": [[""emg_mean"", ""emg"", ""absent""]]}"
+difference 'energy_use' exists in the model reference but is not identified by the final observation configuration (noise-limited),"{""reference_d"": -2.00934464067, ""states"": [[""breath_amp_obs"", ""respiration"", ""ok""], [""emg_mean"", ""emg"", ""absent""]]}"
+difference 'fatigue_state' exists in the model reference but is not identified by the final observation configuration (unobserved: device-mismatch),"{""reference_d"": 26.491722564, ""states"": [[""emg_drift"", ""emg"", ""absent""]]}"
+difference 'breath_amplitude' exists in the model reference but is not identified by the final observation configuration (noise-limited),"{""reference_d"": 247252.985798, ""states"": [[""breath_amp_obs"", ""respiration"", ""ok""]]}"
+round 1: the changes expected to help identified nothing new,"{""actual"": {""existing"": 10, ""identified_after"": 2, ""identified_before"": 2, ""lost"": [], ""newly_identified"": []}, ""expected"": {""identifiability_gain"": [1.0, 1.0]}}"
+
+# table: unobserved_differences
+difference,status,reason,observation_configuration
+posture_sway,identified,,motion only
+com_excursion,noise-limited,,motion only
+cop_activity,unobserved,device-mismatch,motion only
+correction_latency,noise-limited,,motion only
+cocontraction,unobserved,device-mismatch,motion only
+muscle_activation,unobserved,device-mismatch,motion only
+settling_turn,identified,,motion only
+energy_use,unobserved,unmeasured,motion only
+fatigue_state,unobserved,device-mismatch,motion only
+breath_amplitude,unobserved,device-mismatch,motion only
+posture_sway,identified,,motion + EMG-like + contact
+com_excursion,noise-limited,,motion + EMG-like + contact
+cop_activity,identified,,motion + EMG-like + contact
+correction_latency,identified,,motion + EMG-like + contact
+cocontraction,identified-by-proxy,,motion + EMG-like + contact
+muscle_activation,identified,,motion + EMG-like + contact
+settling_turn,identified,,motion + EMG-like + contact
+energy_use,noise-limited,,motion + EMG-like + contact
+fatigue_state,noise-limited,,motion + EMG-like + contact
+breath_amplitude,unobserved,device-mismatch,motion + EMG-like + contact
+posture_sway,identified,,dynamic
+com_excursion,identified,,dynamic
+cop_activity,identified,,dynamic
+correction_latency,identified,,dynamic
+cocontraction,unobserved,device-mismatch,dynamic
+muscle_activation,unobserved,device-mismatch,dynamic
+settling_turn,identified,,dynamic
+energy_use,noise-limited,,dynamic
+fatigue_state,unobserved,device-mismatch,dynamic
+breath_amplitude,noise-limited,,dynamic

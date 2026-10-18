@@ -1,0 +1,2738 @@
+{
+ "digest": "4a0fd16addbea1123b379533afd507436d4b19c6a95277790ca24c837a8573d2",
+ "experiment": "E",
+ "history": {
+  "reentry": []
+ },
+ "id": "xb-e-4a0fd16addbe",
+ "initial_configuration": {
+  "adaptation": {
+   "cost": 0.0,
+   "enabled": true,
+   "error_target": 0.003,
+   "eta": 0.2,
+   "gain_max": 1.15,
+   "gain_min": 0.9
+  },
+  "environment": {
+   "compliance": 0.0,
+   "friction_mu": 0.8,
+   "gravity": 9.81,
+   "handrail": null,
+   "ledge": null,
+   "pushes": [
+    {
+     "dur": 0.12,
+     "force": 35.0,
+     "link": 2,
+     "point_frac": 0.8,
+     "t": 3.2
+    }
+   ]
+  },
+  "family": "human-like",
+  "foot": {
+   "heel": 0.07,
+   "toe": 0.17
+  },
+  "internal": {
+   "activation_cost": 0.004,
+   "basal_cost": 0.0004,
+   "breath_amp": 0.015,
+   "breath_period": 4.0,
+   "breath_variability": 0.05,
+   "capacity_floor": 0.45,
+   "energy0": 1.0,
+   "energy_floor": 0.3,
+   "fatigue_rate": 0.02,
+   "fatigue_recovery": 0.012,
+   "resources_enabled": true
+  },
+  "joints": [
+   {
+    "act_fall": 0.08,
+    "act_rise": 0.04,
+    "c_passive": 45.0,
+    "id": "ankle",
+    "k_passive": 720.0,
+    "label": "ankle",
+    "q_range": 0.6,
+    "tau_max": 120.0
+   },
+   {
+    "act_fall": 0.08,
+    "act_rise": 0.04,
+    "c_passive": 40.0,
+    "id": "knee",
+    "k_passive": 700.0,
+    "label": "knee",
+    "q_range": 0.6,
+    "tau_max": 150.0
+   },
+   {
+    "act_fall": 0.08,
+    "act_rise": 0.04,
+    "c_passive": 35.0,
+    "id": "hip",
+    "k_passive": 420.0,
+    "label": "hip",
+    "q_range": 0.8,
+    "tau_max": 180.0
+   },
+   {
+    "act_fall": 0.06,
+    "act_rise": 0.03,
+    "c_passive": 4.0,
+    "id": "neck",
+    "k_passive": 45.0,
+    "label": "neck",
+    "q_range": 0.8,
+    "tau_max": 25.0
+   }
+  ],
+  "lines": [
+   {
+    "enabled": true,
+    "id": "mech.passive",
+    "ignition": {
+     "hold_s": 0.0,
+     "signal": "always",
+     "threshold": 0.0
+    },
+    "kind": "mechanical",
+    "label": "viscoelastic joints (passive)",
+    "note": "always on; stiffness and damping per joint",
+    "observable_by": [
+     "posture",
+     "imu"
+    ],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 0.0
+   },
+   {
+    "enabled": true,
+    "id": "sens.proprio",
+    "ignition": {
+     "hold_s": 0.05,
+     "signal": "joint-velocity",
+     "threshold": 0.05
+    },
+    "kind": "sensory",
+    "label": "proprioceptive sensing",
+    "note": "timescale = sensory delay (s); ignites when a joint velocity exceeds the threshold (rad/s)",
+    "observable_by": [
+     "posture",
+     "emg"
+    ],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 0.03
+   },
+   {
+    "enabled": true,
+    "id": "sens.vestibular",
+    "ignition": {
+     "hold_s": 0.05,
+     "signal": "trunk-tilt-rate",
+     "threshold": 0.03
+    },
+    "kind": "sensory",
+    "label": "vestibular / head-motion sensing",
+    "note": "timescale = delay; ignites on trunk tilt rate (rad/s)",
+    "observable_by": [
+     "imu",
+     "eeg"
+    ],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 0.02
+   },
+   {
+    "enabled": true,
+    "id": "sens.visual",
+    "ignition": {
+     "hold_s": 0.1,
+     "signal": "com-offset",
+     "threshold": 0.004
+    },
+    "kind": "sensory",
+    "label": "visual feedback",
+    "note": "timescale = delay; ignites on a visible COM offset (m); can be blocked",
+    "observable_by": [
+     "posture",
+     "eeg"
+    ],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 0.1
+   },
+   {
+    "enabled": true,
+    "id": "sens.tactile",
+    "ignition": {
+     "hold_s": 0.05,
+     "signal": "cop-shift",
+     "threshold": 0.004
+    },
+    "kind": "sensory",
+    "label": "tactile / contact-pressure sensing",
+    "note": "timescale = delay; ignites on a centre-of-pressure shift (m)",
+    "observable_by": [
+     "contact",
+     "eeg"
+    ],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 0.04
+   },
+   {
+    "enabled": true,
+    "id": "sens.cue",
+    "ignition": {
+     "hold_s": 0.05,
+     "signal": "cue",
+     "threshold": 0.5
+    },
+    "kind": "sensory",
+    "label": "cue perception",
+    "note": "timescale = delay; the movement / direction-change cues are sensed through it",
+    "observable_by": [
+     "eeg",
+     "latency"
+    ],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 0.12
+   },
+   {
+    "enabled": true,
+    "id": "neural.reflex",
+    "ignition": {
+     "hold_s": 0.08,
+     "signal": "joint-velocity",
+     "threshold": 0.12
+    },
+    "kind": "neural",
+    "label": "local joint reflex",
+    "note": "timescale = loop latency; ignites on a fast sensed joint motion",
+    "observable_by": [
+     "emg",
+     "latency",
+     "eeg"
+    ],
+    "resource": {
+     "cost_per_s": 0.002,
+     "pool": "energy"
+    },
+    "timescale_s": 0.04
+   },
+   {
+    "enabled": true,
+    "id": "neural.central.ankle",
+    "ignition": {
+     "hold_s": 0.2,
+     "signal": "com-offset",
+     "threshold": 0.003
+    },
+    "kind": "neural",
+    "label": "central balance command (ankle)",
+    "note": "timescale = latency; ignites on a sensed COM offset from the reference",
+    "observable_by": [
+     "emg",
+     "eeg",
+     "latency"
+    ],
+    "resource": {
+     "cost_per_s": 0.004,
+     "pool": "energy"
+    },
+    "timescale_s": 0.1
+   },
+   {
+    "enabled": true,
+    "id": "neural.central.hip",
+    "ignition": {
+     "hold_s": 0.25,
+     "signal": "com-offset",
+     "threshold": 0.02
+    },
+    "kind": "neural",
+    "label": "central balance command (hip)",
+    "note": "timescale = latency; ignites on a large COM offset",
+    "observable_by": [
+     "emg",
+     "eeg",
+     "latency"
+    ],
+    "resource": {
+     "cost_per_s": 0.008,
+     "pool": "energy"
+    },
+    "timescale_s": 0.1
+   },
+   {
+    "enabled": true,
+    "id": "neural.central.cue",
+    "ignition": {
+     "hold_s": 0.3,
+     "signal": "cue",
+     "threshold": 0.5
+    },
+    "kind": "neural",
+    "label": "central movement command (feed-forward)",
+    "note": "timescale = latency; ignites on a sensed cue",
+    "observable_by": [
+     "emg",
+     "eeg",
+     "latency"
+    ],
+    "resource": {
+     "cost_per_s": 0.004,
+     "pool": "energy"
+    },
+    "timescale_s": 0.1
+   },
+   {
+    "enabled": true,
+    "id": "core.tonic",
+    "ignition": {
+     "hold_s": 0.0,
+     "signal": "always",
+     "threshold": 0.0
+    },
+    "kind": "internal",
+    "label": "tonic co-contraction (core)",
+    "note": "baseline co-contraction level; costs energy while on",
+    "observable_by": [
+     "emg"
+    ],
+    "resource": {
+     "cost_per_s": 0.003,
+     "pool": "energy"
+    },
+    "timescale_s": 0.0
+   },
+   {
+    "enabled": true,
+    "id": "breath.cycle",
+    "ignition": {
+     "hold_s": 0.0,
+     "signal": "always",
+     "threshold": 0.0
+    },
+    "kind": "internal",
+    "label": "breathing cycle",
+    "note": "timescale = period (s); modulates trunk drive and chest motion",
+    "observable_by": [
+     "respiration",
+     "imu",
+     "emg"
+    ],
+    "resource": {
+     "cost_per_s": 0.001,
+     "pool": "energy"
+    },
+    "timescale_s": 4.0
+   },
+   {
+    "enabled": true,
+    "id": "metabolic.supply",
+    "ignition": {
+     "hold_s": 0.0,
+     "signal": "always",
+     "threshold": 0.0
+    },
+    "kind": "internal",
+    "label": "energy supply / fatigue",
+    "note": "timescale = fatigue time constant (s); internal, no observation model sees it directly",
+    "observable_by": [],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 30.0
+   },
+   {
+    "enabled": true,
+    "id": "adapt.gain",
+    "ignition": {
+     "hold_s": 0.0,
+     "signal": "always",
+     "threshold": 0.0
+    },
+    "kind": "internal",
+    "label": "gain adaptation",
+    "note": "timescale = adaptation time constant (s); slow retained state",
+    "observable_by": [],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 20.0
+   }
+  ],
+  "links": [
+   {
+    "com_frac": 0.45,
+    "id": "shank",
+    "label": "shank + foot",
+    "length": 0.45,
+    "mass": 6.6,
+    "region": "shank"
+   },
+   {
+    "com_frac": 0.45,
+    "id": "thigh",
+    "label": "thigh",
+    "length": 0.45,
+    "mass": 14.0,
+    "region": "thigh"
+   },
+   {
+    "com_frac": 0.5,
+    "id": "trunk",
+    "label": "trunk + arms",
+    "length": 0.55,
+    "mass": 38.0,
+    "region": "trunk"
+   },
+   {
+    "com_frac": 0.5,
+    "id": "head",
+    "label": "head + neck",
+    "length": 0.3,
+    "mass": 4.8,
+    "region": "head"
+   }
+  ],
+  "model": "xb-tro/1.0",
+  "name": "human-like-planar",
+  "neural": {
+   "cocontraction_base": 0.06,
+   "cocontraction_gain": 2.0,
+   "gain_ankle_d": 3.5,
+   "gain_ankle_p": 3.0,
+   "gain_cop": 0.0,
+   "gain_cue_ff": 1.0,
+   "gain_hip_d": 0.8,
+   "gain_hip_p": 1.2,
+   "gain_reflex_d": 0.05,
+   "gain_reflex_p": 0.6,
+   "gravity_comp": 0.5,
+   "gravity_ff": -0.4,
+   "motor_noise": 0.01,
+   "proprio_weight": 2.0,
+   "strategy": "endpoint",
+   "tactile_weight": 0.6,
+   "vestibular_weight": 1.0,
+   "visual_weight": 1.0,
+   "windup_frac": 0.35,
+   "windup_s": 0.25
+  },
+  "sensors": {
+   "cue": {
+    "noise": 0.15
+   },
+   "proprio": {
+    "gain": 1.0,
+    "noise": 0.002
+   },
+   "tactile": {
+    "gain": 1.0,
+    "noise": 0.003
+   },
+   "vestibular": {
+    "gain": 1.0,
+    "noise": 0.004
+   },
+   "visual": {
+    "blocked_windows": [],
+    "gain": 1.0,
+    "noise": 0.004
+   }
+  },
+  "slow_state0": null,
+  "task": {
+   "dt": 0.01,
+   "horizon": 7.5,
+   "initial_lean": 0.0,
+   "integrator": "rk4",
+   "ramp_s": 0.3,
+   "substeps": 2,
+   "t_cue": 0.8,
+   "t_turn": 5.2,
+   "x_target": 0.035,
+   "x_turn": -0.02
+  },
+  "xeno14": []
+ },
+ "interventions": [
+  {
+   "alteration": "mixed"
+  },
+  {
+   "alteration": "delay-only"
+  },
+  {
+   "alteration": "tone-only"
+  },
+  {
+   "alteration": "fatigue-only"
+  }
+ ],
+ "labels": {
+  "estimate": "model-based estimate computed from observation outputs only",
+  "observation": "output of a simulated observation model applied to the reference (separate from it)",
+  "reference": "model reference state (simulator-internal; not an observation of a real body)"
+ },
+ "model_version": "xb-tro/1.0",
+ "negative_results": [
+  {
+   "evidence": {
+    "actual": {
+     "existing": 10,
+     "identified_after": 2,
+     "identified_before": 2,
+     "lost": [],
+     "newly_identified": []
+    },
+    "expected": {
+     "identifiability_gain": [
+      1.0,
+      1.0
+     ]
+    }
+   },
+   "statement": "mixed, round 1: the changes expected to help identified nothing new"
+  },
+  {
+   "evidence": {
+    "reference_d": null
+   },
+   "statement": "mixed: 'cocontraction' exists in the model reference but is not identified after the revision (unobserved: device-mismatch)"
+  },
+  {
+   "evidence": {
+    "reference_d": 44.68782479
+   },
+   "statement": "mixed: 'muscle_activation' exists in the model reference but is not identified after the revision (unobserved: device-mismatch)"
+  },
+  {
+   "evidence": {
+    "reference_d": -2.00934464067
+   },
+   "statement": "mixed: 'energy_use' exists in the model reference but is not identified after the revision (noise-limited)"
+  },
+  {
+   "evidence": {
+    "reference_d": 26.491722564
+   },
+   "statement": "mixed: 'fatigue_state' exists in the model reference but is not identified after the revision (unobserved: device-mismatch)"
+  },
+  {
+   "evidence": {
+    "reference_d": 247252.985798
+   },
+   "statement": "mixed: 'breath_amplitude' exists in the model reference but is not identified after the revision (noise-limited)"
+  },
+  {
+   "evidence": {
+    "actual": {
+     "existing": 6,
+     "identified_after": 5,
+     "identified_before": 5,
+     "lost": [],
+     "newly_identified": []
+    },
+    "expected": {
+     "identifiability_gain": [
+      1.0
+     ]
+    }
+   },
+   "statement": "delay-only, round 3: the changes expected to help identified nothing new"
+  },
+  {
+   "evidence": {
+    "actual": {
+     "existing": 6,
+     "identified_after": 5,
+     "identified_before": 5,
+     "lost": [],
+     "newly_identified": []
+    },
+    "expected": {
+     "identifiability_gain": [
+      1.0
+     ]
+    }
+   },
+   "statement": "delay-only, round 4: the changes expected to help identified nothing new"
+  },
+  {
+   "evidence": {
+    "reference_d": 3.42077844961
+   },
+   "statement": "delay-only: 'fatigue_state' exists in the model reference but is not identified after the revision (noise-limited)"
+  },
+  {
+   "evidence": {
+    "actual": {
+     "existing": 5,
+     "identified_after": 4,
+     "identified_before": 4,
+     "lost": [],
+     "newly_identified": []
+    },
+    "expected": {
+     "identifiability_gain": [
+      1.0
+     ]
+    }
+   },
+   "statement": "tone-only, round 2: the changes expected to help identified nothing new"
+  },
+  {
+   "evidence": {
+    "actual": {
+     "existing": 5,
+     "identified_after": 4,
+     "identified_before": 4,
+     "lost": [],
+     "newly_identified": []
+    },
+    "expected": {
+     "identifiability_gain": [
+      1.0
+     ]
+    }
+   },
+   "statement": "tone-only, round 3: the changes expected to help identified nothing new"
+  },
+  {
+   "evidence": {
+    "actual": {
+     "existing": 5,
+     "identified_after": 4,
+     "identified_before": 4,
+     "lost": [],
+     "newly_identified": []
+    },
+    "expected": {
+     "identifiability_gain": [
+      1.0
+     ]
+    }
+   },
+   "statement": "tone-only, round 4: the changes expected to help identified nothing new"
+  },
+  {
+   "evidence": {
+    "reference_d": 26.9886974663
+   },
+   "statement": "tone-only: 'fatigue_state' exists in the model reference but is not identified after the revision (noise-limited)"
+  },
+  {
+   "evidence": {
+    "actual": {
+     "existing": 2,
+     "identified_after": 1,
+     "identified_before": 1,
+     "lost": [],
+     "newly_identified": []
+    },
+    "expected": {
+     "identifiability_gain": [
+      1.0
+     ]
+    }
+   },
+   "statement": "fatigue-only, round 1: the changes expected to help identified nothing new"
+  },
+  {
+   "evidence": {
+    "actual": {
+     "existing": 2,
+     "identified_after": 1,
+     "identified_before": 1,
+     "lost": [],
+     "newly_identified": []
+    },
+    "expected": {
+     "identifiability_gain": [
+      1.0
+     ]
+    }
+   },
+   "statement": "fatigue-only, round 2: the changes expected to help identified nothing new"
+  },
+  {
+   "evidence": {
+    "actual": {
+     "existing": 2,
+     "identified_after": 1,
+     "identified_before": 1,
+     "lost": [],
+     "newly_identified": []
+    },
+    "expected": {
+     "identifiability_gain": [
+      1.0
+     ]
+    }
+   },
+   "statement": "fatigue-only, round 3: the changes expected to help identified nothing new"
+  },
+  {
+   "evidence": {
+    "actual": {
+     "existing": 2,
+     "identified_after": 1,
+     "identified_before": 1,
+     "lost": [],
+     "newly_identified": []
+    },
+    "expected": {
+     "identifiability_gain": [
+      1.0
+     ]
+    }
+   },
+   "statement": "fatigue-only, round 4: the changes expected to help identified nothing new"
+  },
+  {
+   "evidence": {
+    "reference_d": 16.4931090266
+   },
+   "statement": "fatigue-only: 'fatigue_state' exists in the model reference but is not identified after the revision (noise-limited)"
+  }
+ ],
+ "numerical_method": "RK4 on the N-link planar Lagrangian equations with the muscle drive held over each step; batched seeds with common random numbers; first-order activation dynamics; digests over 6 significant digits",
+ "observation_configurations": [
+  {
+   "models": [
+    {
+     "blind_regions": [],
+     "blind_windows": [],
+     "delay_s": 0.02,
+     "dropout": 0.0,
+     "effects": {},
+     "effects_on": true,
+     "id": "posture",
+     "joints": "all",
+     "kind": "posture",
+     "noise": 1.0,
+     "sample_hz": 50.0,
+     "spatial": "joint"
+    }
+   ],
+   "name": "motion-only",
+   "window": null
+  }
+ ],
+ "parameters": {
+  "n_seeds": 12,
+  "preset": "human-like-planar",
+  "rounds": 4
+ },
+ "provenance": {
+  "machine": "arm64",
+  "numpy": "2.5.3",
+  "platform": "darwin",
+  "python": "3.12.13"
+ },
+ "rerun": {
+  "experiment": "E",
+  "parameters": {
+   "n_seeds": 12,
+   "preset": "human-like-planar",
+   "rounds": 4
+  }
+ },
+ "results": {
+  "final_observations": {
+   "delay-only": {
+    "models": [
+     {
+      "blind_regions": [],
+      "blind_windows": [],
+      "delay_s": 0.02,
+      "dropout": 0.0,
+      "effects": {},
+      "effects_on": true,
+      "id": "posture",
+      "joints": "all",
+      "kind": "posture",
+      "noise": 0.25,
+      "sample_hz": 50.0,
+      "spatial": "joint"
+     },
+     {
+      "blind_regions": [],
+      "blind_windows": [],
+      "delay_s": 0.0,
+      "dropout": 0.0,
+      "effects": {
+       "tactile_gain_scale": 0.95
+      },
+      "effects_on": true,
+      "id": "contact-added",
+      "kind": "contact",
+      "noise": 1.0,
+      "sample_hz": 100.0,
+      "spatial": "detailed"
+     },
+     {
+      "blind_regions": [],
+      "blind_windows": [],
+      "delay_s": 0.0,
+      "dropout": 0.0,
+      "effects": {
+       "mass_kg": 0.05
+      },
+      "effects_on": true,
+      "id": "emg-added",
+      "joints": "all",
+      "kind": "emg",
+      "noise": 0.25,
+      "sample_hz": 100.0,
+      "spatial": "joint"
+     }
+    ],
+    "name": "motion-only",
+    "window": null
+   },
+   "fatigue-only": {
+    "models": [
+     {
+      "blind_regions": [],
+      "blind_windows": [],
+      "delay_s": 0.02,
+      "dropout": 0.0,
+      "effects": {},
+      "effects_on": true,
+      "id": "posture",
+      "joints": "all",
+      "kind": "posture",
+      "noise": 1.0,
+      "sample_hz": 50.0,
+      "spatial": "joint"
+     },
+     {
+      "blind_regions": [],
+      "blind_windows": [],
+      "delay_s": 0.0,
+      "dropout": 0.0,
+      "effects": {
+       "mass_kg": 0.05
+      },
+      "effects_on": true,
+      "id": "emg-added",
+      "joints": "all",
+      "kind": "emg",
+      "noise": 0.125,
+      "sample_hz": 100.0,
+      "spatial": "joint"
+     }
+    ],
+    "name": "motion-only",
+    "window": null
+   },
+   "mixed": {
+    "models": [
+     {
+      "blind_regions": [],
+      "blind_windows": [],
+      "delay_s": 0.02,
+      "dropout": 0.0,
+      "effects": {},
+      "effects_on": true,
+      "id": "posture",
+      "joints": "all",
+      "kind": "posture",
+      "noise": 0.125,
+      "sample_hz": 50.0,
+      "spatial": "joint"
+     },
+     {
+      "blind_regions": [],
+      "blind_windows": [],
+      "delay_s": 0.05,
+      "dropout": 0.0,
+      "effects": {
+       "breath_amp_scale": 0.95
+      },
+      "effects_on": true,
+      "id": "respiration-added",
+      "kind": "respiration",
+      "noise": 0.125,
+      "sample_hz": 20.0,
+      "spatial": "chest"
+     },
+     {
+      "blind_regions": [],
+      "blind_windows": [],
+      "delay_s": 0.0,
+      "dropout": 0.0,
+      "effects": {
+       "tactile_gain_scale": 0.95
+      },
+      "effects_on": true,
+      "id": "contact-added",
+      "kind": "contact",
+      "noise": 1.0,
+      "sample_hz": 100.0,
+      "spatial": "detailed"
+     }
+    ],
+    "name": "motion-only",
+    "window": null
+   },
+   "tone-only": {
+    "models": [
+     {
+      "blind_regions": [],
+      "blind_windows": [],
+      "delay_s": 0.02,
+      "dropout": 0.0,
+      "effects": {},
+      "effects_on": true,
+      "id": "posture",
+      "joints": "all",
+      "kind": "posture",
+      "noise": 1.0,
+      "sample_hz": 50.0,
+      "spatial": "joint"
+     },
+     {
+      "blind_regions": [],
+      "blind_windows": [],
+      "delay_s": 0.0,
+      "dropout": 0.0,
+      "effects": {
+       "mass_kg": 0.05
+      },
+      "effects_on": true,
+      "id": "emg-added",
+      "joints": "all",
+      "kind": "emg",
+      "noise": 0.125,
+      "sample_hz": 100.0,
+      "spatial": "joint"
+     }
+    ],
+    "name": "motion-only",
+    "window": null
+   }
+  },
+  "pair": {
+   "a": {
+    "adaptation": {
+     "cost": 0.0,
+     "enabled": true,
+     "error_target": 0.003,
+     "eta": 0.2,
+     "gain_max": 1.15,
+     "gain_min": 0.9
+    },
+    "environment": {
+     "compliance": 0.0,
+     "friction_mu": 0.8,
+     "gravity": 9.81,
+     "handrail": null,
+     "ledge": null,
+     "pushes": [
+      {
+       "dur": 0.12,
+       "force": 35.0,
+       "link": 2,
+       "point_frac": 0.8,
+       "t": 3.2
+      }
+     ]
+    },
+    "family": "human-like",
+    "foot": {
+     "heel": 0.07,
+     "toe": 0.17
+    },
+    "internal": {
+     "activation_cost": 0.004,
+     "basal_cost": 0.0004,
+     "breath_amp": 0.015,
+     "breath_period": 4.0,
+     "breath_variability": 0.05,
+     "capacity_floor": 0.45,
+     "energy0": 1.0,
+     "energy_floor": 0.3,
+     "fatigue_rate": 0.02,
+     "fatigue_recovery": 0.012,
+     "resources_enabled": true
+    },
+    "joints": [
+     {
+      "act_fall": 0.08,
+      "act_rise": 0.04,
+      "c_passive": 45.0,
+      "id": "ankle",
+      "k_passive": 720.0,
+      "label": "ankle",
+      "q_range": 0.6,
+      "tau_max": 120.0
+     },
+     {
+      "act_fall": 0.08,
+      "act_rise": 0.04,
+      "c_passive": 40.0,
+      "id": "knee",
+      "k_passive": 700.0,
+      "label": "knee",
+      "q_range": 0.6,
+      "tau_max": 150.0
+     },
+     {
+      "act_fall": 0.08,
+      "act_rise": 0.04,
+      "c_passive": 35.0,
+      "id": "hip",
+      "k_passive": 420.0,
+      "label": "hip",
+      "q_range": 0.8,
+      "tau_max": 180.0
+     },
+     {
+      "act_fall": 0.06,
+      "act_rise": 0.03,
+      "c_passive": 4.0,
+      "id": "neck",
+      "k_passive": 45.0,
+      "label": "neck",
+      "q_range": 0.8,
+      "tau_max": 25.0
+     }
+    ],
+    "lines": [
+     {
+      "enabled": true,
+      "id": "mech.passive",
+      "ignition": {
+       "hold_s": 0.0,
+       "signal": "always",
+       "threshold": 0.0
+      },
+      "kind": "mechanical",
+      "label": "viscoelastic joints (passive)",
+      "note": "always on; stiffness and damping per joint",
+      "observable_by": [
+       "posture",
+       "imu"
+      ],
+      "resource": {
+       "cost_per_s": 0.0,
+       "pool": "energy"
+      },
+      "timescale_s": 0.0
+     },
+     {
+      "enabled": true,
+      "id": "sens.proprio",
+      "ignition": {
+       "hold_s": 0.05,
+       "signal": "joint-velocity",
+       "threshold": 0.05
+      },
+      "kind": "sensory",
+      "label": "proprioceptive sensing",
+      "note": "timescale = sensory delay (s); ignites when a joint velocity exceeds the threshold (rad/s)",
+      "observable_by": [
+       "posture",
+       "emg"
+      ],
+      "resource": {
+       "cost_per_s": 0.0,
+       "pool": "energy"
+      },
+      "timescale_s": 0.03
+     },
+     {
+      "enabled": true,
+      "id": "sens.vestibular",
+      "ignition": {
+       "hold_s": 0.05,
+       "signal": "trunk-tilt-rate",
+       "threshold": 0.03
+      },
+      "kind": "sensory",
+      "label": "vestibular / head-motion sensing",
+      "note": "timescale = delay; ignites on trunk tilt rate (rad/s)",
+      "observable_by": [
+       "imu",
+       "eeg"
+      ],
+      "resource": {
+       "cost_per_s": 0.0,
+       "pool": "energy"
+      },
+      "timescale_s": 0.02
+     },
+     {
+      "enabled": true,
+      "id": "sens.visual",
+      "ignition": {
+       "hold_s": 0.1,
+       "signal": "com-offset",
+       "threshold": 0.004
+      },
+      "kind": "sensory",
+      "label": "visual feedback",
+      "note": "timescale = delay; ignites on a visible COM offset (m); can be blocked",
+      "observable_by": [
+       "posture",
+       "eeg"
+      ],
+      "resource": {
+       "cost_per_s": 0.0,
+       "pool": "energy"
+      },
+      "timescale_s": 0.1
+     },
+     {
+      "enabled": true,
+      "id": "sens.tactile",
+      "ignition": {
+       "hold_s": 0.05,
+       "signal": "cop-shift",
+       "threshold": 0.004
+      },
+      "kind": "sensory",
+      "label": "tactile / contact-pressure sensing",
+      "note": "timescale = delay; ignites on a centre-of-pressure shift (m)",
+      "observable_by": [
+       "contact",
+       "eeg"
+      ],
+      "resource": {
+       "cost_per_s": 0.0,
+       "pool": "energy"
+      },
+      "timescale_s": 0.04
+     },
+     {
+      "enabled": true,
+      "id": "sens.cue",
+      "ignition": {
+       "hold_s": 0.05,
+       "signal": "cue",
+       "threshold": 0.5
+      },
+      "kind": "sensory",
+      "label": "cue perception",
+      "note": "timescale = delay; the movement / direction-change cues are sensed through it",
+      "observable_by": [
+       "eeg",
+       "latency"
+      ],
+      "resource": {
+       "cost_per_s": 0.0,
+       "pool": "energy"
+      },
+      "timescale_s": 0.12
+     },
+     {
+      "enabled": true,
+      "id": "neural.reflex",
+      "ignition": {
+       "hold_s": 0.08,
+       "signal": "joint-velocity",
+       "threshold": 0.12
+      },
+      "kind": "neural",
+      "label": "local joint reflex",
+      "note": "timescale = loop latency; ignites on a fast sensed joint motion",
+      "observable_by": [
+       "emg",
+       "latency",
+       "eeg"
+      ],
+      "resource": {
+       "cost_per_s": 0.002,
+       "pool": "energy"
+      },
+      "timescale_s": 0.04
+     },
+     {
+      "enabled": true,
+      "id": "neural.central.ankle",
+      "ignition": {
+       "hold_s": 0.2,
+       "signal": "com-offset",
+       "threshold": 0.003
+      },
+      "kind": "neural",
+      "label": "central balance command (ankle)",
+      "note": "timescale = latency; ignites on a sensed COM offset from the reference",
+      "observable_by": [
+       "emg",
+       "eeg",
+       "latency"
+      ],
+      "resource": {
+       "cost_per_s": 0.004,
+       "pool": "energy"
+      },
+      "timescale_s": 0.1
+     },
+     {
+      "enabled": true,
+      "id": "neural.central.hip",
+      "ignition": {
+       "hold_s": 0.25,
+       "signal": "com-offset",
+       "threshold": 0.02
+      },
+      "kind": "neural",
+      "label": "central balance command (hip)",
+      "note": "timescale = latency; ignites on a large COM offset",
+      "observable_by": [
+       "emg",
+       "eeg",
+       "latency"
+      ],
+      "resource": {
+       "cost_per_s": 0.008,
+       "pool": "energy"
+      },
+      "timescale_s": 0.1
+     },
+     {
+      "enabled": true,
+      "id": "neural.central.cue",
+      "ignition": {
+       "hold_s": 0.3,
+       "signal": "cue",
+       "threshold": 0.5
+      },
+      "kind": "neural",
+      "label": "central movement command (feed-forward)",
+      "note": "timescale = latency; ignites on a sensed cue",
+      "observable_by": [
+       "emg",
+       "eeg",
+       "latency"
+      ],
+      "resource": {
+       "cost_per_s": 0.004,
+       "pool": "energy"
+      },
+      "timescale_s": 0.1
+     },
+     {
+      "enabled": true,
+      "id": "core.tonic",
+      "ignition": {
+       "hold_s": 0.0,
+       "signal": "always",
+       "threshold": 0.0
+      },
+      "kind": "internal",
+      "label": "tonic co-contraction (core)",
+      "note": "baseline co-contraction level; costs energy while on",
+      "observable_by": [
+       "emg"
+      ],
+      "resource": {
+       "cost_per_s": 0.003,
+       "pool": "energy"
+      },
+      "timescale_s": 0.0
+     },
+     {
+      "enabled": true,
+      "id": "breath.cycle",
+      "ignition": {
+       "hold_s": 0.0,
+       "signal": "always",
+       "threshold": 0.0
+      },
+      "kind": "internal",
+      "label": "breathing cycle",
+      "note": "timescale = period (s); modulates trunk drive and chest motion",
+      "observable_by": [
+       "respiration",
+       "imu",
+       "emg"
+      ],
+      "resource": {
+       "cost_per_s": 0.001,
+       "pool": "energy"
+      },
+      "timescale_s": 4.0
+     },
+     {
+      "enabled": true,
+      "id": "metabolic.supply",
+      "ignition": {
+       "hold_s": 0.0,
+       "signal": "always",
+       "threshold": 0.0
+      },
+      "kind": "internal",
+      "label": "energy supply / fatigue",
+      "note": "timescale = fatigue time constant (s); internal, no observation model sees it directly",
+      "observable_by": [],
+      "resource": {
+       "cost_per_s": 0.0,
+       "pool": "energy"
+      },
+      "timescale_s": 30.0
+     },
+     {
+      "enabled": true,
+      "id": "adapt.gain",
+      "ignition": {
+       "hold_s": 0.0,
+       "signal": "always",
+       "threshold": 0.0
+      },
+      "kind": "internal",
+      "label": "gain adaptation",
+      "note": "timescale = adaptation time constant (s); slow retained state",
+      "observable_by": [],
+      "resource": {
+       "cost_per_s": 0.0,
+       "pool": "energy"
+      },
+      "timescale_s": 20.0
+     }
+    ],
+    "links": [
+     {
+      "com_frac": 0.45,
+      "id": "shank",
+      "label": "shank + foot",
+      "length": 0.45,
+      "mass": 6.6,
+      "region": "shank"
+     },
+     {
+      "com_frac": 0.45,
+      "id": "thigh",
+      "label": "thigh",
+      "length": 0.45,
+      "mass": 14.0,
+      "region": "thigh"
+     },
+     {
+      "com_frac": 0.5,
+      "id": "trunk",
+      "label": "trunk + arms",
+      "length": 0.55,
+      "mass": 38.0,
+      "region": "trunk"
+     },
+     {
+      "com_frac": 0.5,
+      "id": "head",
+      "label": "head + neck",
+      "length": 0.3,
+      "mass": 4.8,
+      "region": "head"
+     }
+    ],
+    "model": "xb-tro/1.0",
+    "name": "human-like-planar",
+    "neural": {
+     "cocontraction_base": 0.06,
+     "cocontraction_gain": 2.0,
+     "gain_ankle_d": 3.5,
+     "gain_ankle_p": 3.0,
+     "gain_cop": 0.0,
+     "gain_cue_ff": 1.0,
+     "gain_hip_d": 0.8,
+     "gain_hip_p": 1.2,
+     "gain_reflex_d": 0.05,
+     "gain_reflex_p": 0.6,
+     "gravity_comp": 0.5,
+     "gravity_ff": -0.4,
+     "motor_noise": 0.01,
+     "proprio_weight": 2.0,
+     "strategy": "endpoint",
+     "tactile_weight": 0.6,
+     "vestibular_weight": 1.0,
+     "visual_weight": 1.0,
+     "windup_frac": 0.35,
+     "windup_s": 0.25
+    },
+    "sensors": {
+     "cue": {
+      "noise": 0.15
+     },
+     "proprio": {
+      "gain": 1.0,
+      "noise": 0.002
+     },
+     "tactile": {
+      "gain": 1.0,
+      "noise": 0.003
+     },
+     "vestibular": {
+      "gain": 1.0,
+      "noise": 0.004
+     },
+     "visual": {
+      "blocked_windows": [],
+      "gain": 1.0,
+      "noise": 0.004
+     }
+    },
+    "slow_state0": null,
+    "task": {
+     "dt": 0.01,
+     "horizon": 7.5,
+     "initial_lean": 0.0,
+     "integrator": "rk4",
+     "ramp_s": 0.3,
+     "substeps": 2,
+     "t_cue": 0.8,
+     "t_turn": 5.2,
+     "x_target": 0.035,
+     "x_turn": -0.02
+    },
+    "xeno14": []
+   },
+   "b": {
+    "adaptation": {
+     "cost": 0.0,
+     "enabled": true,
+     "error_target": 0.003,
+     "eta": 0.2,
+     "gain_max": 1.15,
+     "gain_min": 0.9
+    },
+    "environment": {
+     "compliance": 0.0,
+     "friction_mu": 0.8,
+     "gravity": 9.81,
+     "handrail": null,
+     "ledge": null,
+     "pushes": [
+      {
+       "dur": 0.12,
+       "force": 35.0,
+       "link": 2,
+       "point_frac": 0.8,
+       "t": 3.2
+      }
+     ]
+    },
+    "family": "human-like",
+    "foot": {
+     "heel": 0.07,
+     "toe": 0.17
+    },
+    "internal": {
+     "activation_cost": 0.004,
+     "basal_cost": 0.0004,
+     "breath_amp": 0.0375,
+     "breath_period": 4.0,
+     "breath_variability": 0.05,
+     "capacity_floor": 0.45,
+     "energy0": 1.0,
+     "energy_floor": 0.3,
+     "fatigue_rate": 0.06,
+     "fatigue_recovery": 0.012,
+     "resources_enabled": true
+    },
+    "joints": [
+     {
+      "act_fall": 0.08,
+      "act_rise": 0.04,
+      "c_passive": 45.0,
+      "id": "ankle",
+      "k_passive": 720.0,
+      "label": "ankle",
+      "q_range": 0.6,
+      "tau_max": 120.0
+     },
+     {
+      "act_fall": 0.08,
+      "act_rise": 0.04,
+      "c_passive": 40.0,
+      "id": "knee",
+      "k_passive": 700.0,
+      "label": "knee",
+      "q_range": 0.6,
+      "tau_max": 150.0
+     },
+     {
+      "act_fall": 0.08,
+      "act_rise": 0.04,
+      "c_passive": 35.0,
+      "id": "hip",
+      "k_passive": 420.0,
+      "label": "hip",
+      "q_range": 0.8,
+      "tau_max": 180.0
+     },
+     {
+      "act_fall": 0.06,
+      "act_rise": 0.03,
+      "c_passive": 4.0,
+      "id": "neck",
+      "k_passive": 45.0,
+      "label": "neck",
+      "q_range": 0.8,
+      "tau_max": 25.0
+     }
+    ],
+    "lines": [
+     {
+      "enabled": true,
+      "id": "mech.passive",
+      "ignition": {
+       "hold_s": 0.0,
+       "signal": "always",
+       "threshold": 0.0
+      },
+      "kind": "mechanical",
+      "label": "viscoelastic joints (passive)",
+      "note": "always on; stiffness and damping per joint",
+      "observable_by": [
+       "posture",
+       "imu"
+      ],
+      "resource": {
+       "cost_per_s": 0.0,
+       "pool": "energy"
+      },
+      "timescale_s": 0.0
+     },
+     {
+      "enabled": true,
+      "id": "sens.proprio",
+      "ignition": {
+       "hold_s": 0.05,
+       "signal": "joint-velocity",
+       "threshold": 0.05
+      },
+      "kind": "sensory",
+      "label": "proprioceptive sensing",
+      "note": "timescale = sensory delay (s); ignites when a joint velocity exceeds the threshold (rad/s)",
+      "observable_by": [
+       "posture",
+       "emg"
+      ],
+      "resource": {
+       "cost_per_s": 0.0,
+       "pool": "energy"
+      },
+      "timescale_s": 0.05
+     },
+     {
+      "enabled": true,
+      "id": "sens.vestibular",
+      "ignition": {
+       "hold_s": 0.05,
+       "signal": "trunk-tilt-rate",
+       "threshold": 0.03
+      },
+      "kind": "sensory",
+      "label": "vestibular / head-motion sensing",
+      "note": "timescale = delay; ignites on trunk tilt rate (rad/s)",
+      "observable_by": [
+       "imu",
+       "eeg"
+      ],
+      "resource": {
+       "cost_per_s": 0.0,
+       "pool": "energy"
+      },
+      "timescale_s": 0.04
+     },
+     {
+      "enabled": true,
+      "id": "sens.visual",
+      "ignition": {
+       "hold_s": 0.1,
+       "signal": "com-offset",
+       "threshold": 0.004
+      },
+      "kind": "sensory",
+      "label": "visual feedback",
+      "note": "timescale = delay; ignites on a visible COM offset (m); can be blocked",
+      "observable_by": [
+       "posture",
+       "eeg"
+      ],
+      "resource": {
+       "cost_per_s": 0.0,
+       "pool": "energy"
+      },
+      "timescale_s": 0.1
+     },
+     {
+      "enabled": true,
+      "id": "sens.tactile",
+      "ignition": {
+       "hold_s": 0.05,
+       "signal": "cop-shift",
+       "threshold": 0.004
+      },
+      "kind": "sensory",
+      "label": "tactile / contact-pressure sensing",
+      "note": "timescale = delay; ignites on a centre-of-pressure shift (m)",
+      "observable_by": [
+       "contact",
+       "eeg"
+      ],
+      "resource": {
+       "cost_per_s": 0.0,
+       "pool": "energy"
+      },
+      "timescale_s": 0.06
+     },
+     {
+      "enabled": true,
+      "id": "sens.cue",
+      "ignition": {
+       "hold_s": 0.05,
+       "signal": "cue",
+       "threshold": 0.5
+      },
+      "kind": "sensory",
+      "label": "cue perception",
+      "note": "timescale = delay; the movement / direction-change cues are sensed through it",
+      "observable_by": [
+       "eeg",
+       "latency"
+      ],
+      "resource": {
+       "cost_per_s": 0.0,
+       "pool": "energy"
+      },
+      "timescale_s": 0.12
+     },
+     {
+      "enabled": true,
+      "id": "neural.reflex",
+      "ignition": {
+       "hold_s": 0.08,
+       "signal": "joint-velocity",
+       "threshold": 0.12
+      },
+      "kind": "neural",
+      "label": "local joint reflex",
+      "note": "timescale = loop latency; ignites on a fast sensed joint motion",
+      "observable_by": [
+       "emg",
+       "latency",
+       "eeg"
+      ],
+      "resource": {
+       "cost_per_s": 0.002,
+       "pool": "energy"
+      },
+      "timescale_s": 0.04
+     },
+     {
+      "enabled": true,
+      "id": "neural.central.ankle",
+      "ignition": {
+       "hold_s": 0.2,
+       "signal": "com-offset",
+       "threshold": 0.003
+      },
+      "kind": "neural",
+      "label": "central balance command (ankle)",
+      "note": "timescale = latency; ignites on a sensed COM offset from the reference",
+      "observable_by": [
+       "emg",
+       "eeg",
+       "latency"
+      ],
+      "resource": {
+       "cost_per_s": 0.004,
+       "pool": "energy"
+      },
+      "timescale_s": 0.1
+     },
+     {
+      "enabled": true,
+      "id": "neural.central.hip",
+      "ignition": {
+       "hold_s": 0.25,
+       "signal": "com-offset",
+       "threshold": 0.02
+      },
+      "kind": "neural",
+      "label": "central balance command (hip)",
+      "note": "timescale = latency; ignites on a large COM offset",
+      "observable_by": [
+       "emg",
+       "eeg",
+       "latency"
+      ],
+      "resource": {
+       "cost_per_s": 0.008,
+       "pool": "energy"
+      },
+      "timescale_s": 0.1
+     },
+     {
+      "enabled": true,
+      "id": "neural.central.cue",
+      "ignition": {
+       "hold_s": 0.3,
+       "signal": "cue",
+       "threshold": 0.5
+      },
+      "kind": "neural",
+      "label": "central movement command (feed-forward)",
+      "note": "timescale = latency; ignites on a sensed cue",
+      "observable_by": [
+       "emg",
+       "eeg",
+       "latency"
+      ],
+      "resource": {
+       "cost_per_s": 0.004,
+       "pool": "energy"
+      },
+      "timescale_s": 0.1
+     },
+     {
+      "enabled": true,
+      "id": "core.tonic",
+      "ignition": {
+       "hold_s": 0.0,
+       "signal": "always",
+       "threshold": 0.0
+      },
+      "kind": "internal",
+      "label": "tonic co-contraction (core)",
+      "note": "baseline co-contraction level; costs energy while on",
+      "observable_by": [
+       "emg"
+      ],
+      "resource": {
+       "cost_per_s": 0.003,
+       "pool": "energy"
+      },
+      "timescale_s": 0.0
+     },
+     {
+      "enabled": true,
+      "id": "breath.cycle",
+      "ignition": {
+       "hold_s": 0.0,
+       "signal": "always",
+       "threshold": 0.0
+      },
+      "kind": "internal",
+      "label": "breathing cycle",
+      "note": "timescale = period (s); modulates trunk drive and chest motion",
+      "observable_by": [
+       "respiration",
+       "imu",
+       "emg"
+      ],
+      "resource": {
+       "cost_per_s": 0.001,
+       "pool": "energy"
+      },
+      "timescale_s": 4.0
+     },
+     {
+      "enabled": true,
+      "id": "metabolic.supply",
+      "ignition": {
+       "hold_s": 0.0,
+       "signal": "always",
+       "threshold": 0.0
+      },
+      "kind": "internal",
+      "label": "energy supply / fatigue",
+      "note": "timescale = fatigue time constant (s); internal, no observation model sees it directly",
+      "observable_by": [],
+      "resource": {
+       "cost_per_s": 0.0,
+       "pool": "energy"
+      },
+      "timescale_s": 30.0
+     },
+     {
+      "enabled": true,
+      "id": "adapt.gain",
+      "ignition": {
+       "hold_s": 0.0,
+       "signal": "always",
+       "threshold": 0.0
+      },
+      "kind": "internal",
+      "label": "gain adaptation",
+      "note": "timescale = adaptation time constant (s); slow retained state",
+      "observable_by": [],
+      "resource": {
+       "cost_per_s": 0.0,
+       "pool": "energy"
+      },
+      "timescale_s": 20.0
+     }
+    ],
+    "links": [
+     {
+      "com_frac": 0.45,
+      "id": "shank",
+      "label": "shank + foot",
+      "length": 0.45,
+      "mass": 6.6,
+      "region": "shank"
+     },
+     {
+      "com_frac": 0.45,
+      "id": "thigh",
+      "label": "thigh",
+      "length": 0.45,
+      "mass": 14.0,
+      "region": "thigh"
+     },
+     {
+      "com_frac": 0.5,
+      "id": "trunk",
+      "label": "trunk + arms",
+      "length": 0.55,
+      "mass": 38.0,
+      "region": "trunk"
+     },
+     {
+      "com_frac": 0.5,
+      "id": "head",
+      "label": "head + neck",
+      "length": 0.3,
+      "mass": 4.8,
+      "region": "head"
+     }
+    ],
+    "model": "xb-tro/1.0",
+    "name": "human-like-planar",
+    "neural": {
+     "cocontraction_base": 0.144,
+     "cocontraction_gain": 2.0,
+     "gain_ankle_d": 3.5,
+     "gain_ankle_p": 3.0,
+     "gain_cop": 0.0,
+     "gain_cue_ff": 1.0,
+     "gain_hip_d": 0.8,
+     "gain_hip_p": 1.2,
+     "gain_reflex_d": 0.05,
+     "gain_reflex_p": 0.6,
+     "gravity_comp": 0.5,
+     "gravity_ff": -0.4,
+     "motor_noise": 0.01,
+     "proprio_weight": 2.0,
+     "strategy": "endpoint",
+     "tactile_weight": 0.6,
+     "vestibular_weight": 1.0,
+     "visual_weight": 1.0,
+     "windup_frac": 0.35,
+     "windup_s": 0.25
+    },
+    "sensors": {
+     "cue": {
+      "noise": 0.15
+     },
+     "proprio": {
+      "gain": 1.0,
+      "noise": 0.002
+     },
+     "tactile": {
+      "gain": 1.0,
+      "noise": 0.003
+     },
+     "vestibular": {
+      "gain": 1.0,
+      "noise": 0.004
+     },
+     "visual": {
+      "blocked_windows": [],
+      "gain": 1.0,
+      "noise": 0.004
+     }
+    },
+    "slow_state0": null,
+    "task": {
+     "dt": 0.01,
+     "horizon": 7.5,
+     "initial_lean": 0.0,
+     "integrator": "rk4",
+     "ramp_s": 0.3,
+     "substeps": 2,
+     "t_cue": 0.8,
+     "t_turn": 5.2,
+     "x_target": 0.035,
+     "x_turn": -0.02
+    },
+    "xeno14": []
+   }
+  },
+  "reading": "The configuration is revised from motion-only by the same procedure for each hidden change. 'Unobserved' differences exist in the model reference; the expectation of a change is a heuristic and is compared with what actually happened.",
+  "series": {
+   "com_a": {
+    "mean": [
+     0.0,
+     7.01210005304e-07,
+     4.20394909922e-06,
+     9.53679803179e-06,
+     -1.67798521715e-06,
+     -4.03737239928e-05,
+     -0.000108793843213,
+     -0.000181072220835,
+     -0.000238181369662,
+     -0.000302167775194,
+     -0.000387201378138,
+     -0.000489939987761,
+     -0.000601923567525,
+     -0.000727906764747,
+     -0.000826335291553,
+     -0.000887147375956,
+     -0.000917199804598,
+     -0.000942924462933,
+     -0.000948719671994,
+     -0.000921867090251,
+     -0.000855017266756,
+     -0.000848334758342,
+     -0.00206871515339,
+     -0.00438808415372,
+     -0.00679568168036,
+     -0.00822677590483,
+     -0.00846189074016,
+     -0.00829825433296,
+     -0.00731745193111,
+     -0.00528096729319,
+     -0.00255967434082,
+     0.00116720287466,
+     0.00644358064006,
+     0.013260173012,
+     0.0203092968238,
+     0.0267015198996,
+     0.0321948619505,
+     0.0367835946579,
+     0.0403888334628,
+     0.0428515541095,
+     0.0441053999124,
+     0.0442844944651,
+     0.0436034007421,
+     0.0423313041446,
+     0.0408124493089,
+     0.0393292840827,
+     0.0380340197898,
+     0.0369779191709,
+     0.0361931796021,
+     0.03577041662,
+     0.0357929033199,
+     0.0362466928969,
+     0.03702957529,
+     0.0380579683177,
+     0.0392516175644,
+     0.0405035730008,
+     0.0416861732514,
+     0.0426727492226,
+     0.0433815176618,
+     0.0437529489456,
+     0.0437739485358,
+     0.0434465330017,
+     0.0427647285128,
+     0.0418115142402,
+     0.0407131234852,
+     0.0403426782669,
+     0.0416782293066,
+     0.0446006141228,
+     0.0480164609064,
+     0.05144000865,
+     0.0542673764944,
+     0.0562471618202,
+     0.05770212641,
+     0.058789513895,
+     0.0592161792391,
+     0.0587748473813,
+     0.0575722084561,
+     0.0555899058407,
+     0.0528780633851,
+     0.0496509764561,
+     0.0463838418162,
+     0.0435395907579,
+     0.0413663071483,
+     0.039964068721,
+     0.0393364620102,
+     0.0394706112687,
+     0.0402535520851,
+     0.0414507445347,
+     0.042766476242,
+     0.0439703600052,
+     0.0450109840212,
+     0.045813548048,
+     0.0462464759488,
+     0.0462126895004,
+     0.045717945049,
+     0.0448772365848,
+     0.0438320517975,
+     0.0426515304474,
+     0.0414167659271,
+     0.0402548007563,
+     0.0393110675527,
+     0.0387124299009,
+     0.0385143428826,
+     0.0387143903816,
+     0.0392787834324,
+     0.0401625357582,
+     0.0413450150408,
+     0.0427580307025,
+     0.0442360794172,
+     0.0455953090429,
+     0.0467016422882,
+     0.0474199440072,
+     0.0476746098277,
+     0.0471310731093,
+     0.0453828551345,
+     0.0422056394054,
+     0.0377819959448,
+     0.0324733999615,
+     0.0266696157345,
+     0.0207390390259,
+     0.0149973255336,
+     0.00972637111676,
+     0.00517483262403,
+     0.00147753781008,
+     -0.0013407257376,
+     -0.00329705463371,
+     -0.0044807591621,
+     -0.00502153148733,
+     -0.0051312871758,
+     -0.00505352984277,
+     -0.00496407142596,
+     -0.00500032976039,
+     -0.00531367059218,
+     -0.00598173634405,
+     -0.0070010738273,
+     -0.00830029880815,
+     -0.00981817613994,
+     -0.0115073179695,
+     -0.0133113747555,
+     -0.0151161384169,
+     -0.0167675009053,
+     -0.0181895380421,
+     -0.019359570929,
+     -0.0202564999598,
+     -0.020825182125,
+     -0.0209794524422,
+     -0.0207947069876,
+     -0.0204079719358,
+     -0.0199240342439,
+     -0.0193983911475
+    ],
+    "sd": [
+     0.0,
+     9.33665635462e-06,
+     2.65848703926e-05,
+     3.6763478086e-05,
+     7.6090392851e-05,
+     0.00014529208888,
+     0.000199924687834,
+     0.00024713021405,
+     0.000307342154902,
+     0.000362791170872,
+     0.000400238789256,
+     0.000440457822943,
+     0.000514823226125,
+     0.000591371458691,
+     0.000630041228421,
+     0.000636493735232,
+     0.000647934252414,
+     0.000671368583543,
+     0.000669567102071,
+     0.000676827903247,
+     0.000738157001867,
+     0.000818395523613,
+     0.000885918179366,
+     0.000955034408355,
+     0.000997383502677,
+     0.00101684952814,
+     0.00101462157123,
+     0.000984725705919,
+     0.00097447869977,
+     0.00107896489784,
+     0.0012539883603,
+     0.00146438237837,
+     0.001709355342,
+     0.00191050036306,
+     0.00201598031442,
+     0.00209227910116,
+     0.00217261324741,
+     0.00223960046223,
+     0.00224224569133,
+     0.00215951824972,
+     0.00201636447492,
+     0.00182568141386,
+     0.00161233959198,
+     0.00138788080234,
+     0.0012115040018,
+     0.00109288716506,
+     0.0010240285861,
+     0.000960039466843,
+     0.000879407247531,
+     0.000807141751397,
+     0.000763507045305,
+     0.000707203759314,
+     0.00065448139021,
+     0.000599467221946,
+     0.000573545062338,
+     0.000570490060865,
+     0.000569053089319,
+     0.000587997973849,
+     0.000610133772597,
+     0.000610939868319,
+     0.000605418059926,
+     0.000626146227177,
+     0.000662705374895,
+     0.000675731795023,
+     0.00067617480283,
+     0.000685559808936,
+     0.000709347116757,
+     0.000727274743324,
+     0.00074161183188,
+     0.000761659327079,
+     0.000788784679146,
+     0.000871502594943,
+     0.00101543846895,
+     0.00117681685622,
+     0.00132331140163,
+     0.00147219665089,
+     0.00159109507331,
+     0.00161219052404,
+     0.00153296413254,
+     0.00139421215165,
+     0.00123867443987,
+     0.00109498116515,
+     0.000993489449412,
+     0.000902964059954,
+     0.000812985318532,
+     0.000719478687254,
+     0.000628170132016,
+     0.000582309989235,
+     0.000574757038554,
+     0.000605046141608,
+     0.000665618147122,
+     0.000719658143873,
+     0.000764995835071,
+     0.000818024117606,
+     0.000877685575012,
+     0.000916427139078,
+     0.000971643129355,
+     0.00104300271257,
+     0.00111904686526,
+     0.001164270301,
+     0.00117498673492,
+     0.00118988869099,
+     0.0012225136429,
+     0.00121396167557,
+     0.00115985576431,
+     0.00109202593762,
+     0.00104669717535,
+     0.000998499918885,
+     0.000970587484969,
+     0.0010242918595,
+     0.00115282173618,
+     0.00127390341474,
+     0.00137337664185,
+     0.00146341113732,
+     0.00155051511423,
+     0.00163986789199,
+     0.00173548843857,
+     0.00184606637534,
+     0.00194082939323,
+     0.00202362511538,
+     0.00212293870249,
+     0.00218788493147,
+     0.00219027453237,
+     0.00212304893433,
+     0.00198870167933,
+     0.00178968705695,
+     0.00157468981593,
+     0.00135604495633,
+     0.00113520587893,
+     0.000932460806287,
+     0.000779013265492,
+     0.000684138842302,
+     0.000662272645986,
+     0.000731024215371,
+     0.00084390287651,
+     0.000949807551602,
+     0.00102076460195,
+     0.00105252889491,
+     0.00104274039173,
+     0.00099562496471,
+     0.000945119295772,
+     0.00093557094289,
+     0.000995446775447,
+     0.00107950160552,
+     0.00114234383225,
+     0.00118024015287,
+     0.00118584849106,
+     0.00114864344182,
+     0.00104118200197,
+     0.00090046726617
+    ],
+    "t": [
+     0.0,
+     0.05,
+     0.1,
+     0.15,
+     0.2,
+     0.25,
+     0.3,
+     0.35,
+     0.4,
+     0.45,
+     0.5,
+     0.55,
+     0.6,
+     0.65,
+     0.7,
+     0.75,
+     0.8,
+     0.85,
+     0.9,
+     0.95,
+     1.0,
+     1.05,
+     1.1,
+     1.15,
+     1.2,
+     1.25,
+     1.3,
+     1.35,
+     1.4,
+     1.45,
+     1.5,
+     1.55,
+     1.6,
+     1.65,
+     1.7,
+     1.75,
+     1.8,
+     1.85,
+     1.9,
+     1.95,
+     2.0,
+     2.05,
+     2.1,
+     2.15,
+     2.2,
+     2.25,
+     2.3,
+     2.35,
+     2.4,
+     2.45,
+     2.5,
+     2.55,
+     2.6,
+     2.65,
+     2.7,
+     2.75,
+     2.8,
+     2.85,
+     2.9,
+     2.95,
+     3.0,
+     3.05,
+     3.1,
+     3.15,
+     3.2,
+     3.25,
+     3.3,
+     3.35,
+     3.4,
+     3.45,
+     3.5,
+     3.55,
+     3.6,
+     3.65,
+     3.7,
+     3.75,
+     3.8,
+     3.85,
+     3.9,
+     3.95,
+     4.0,
+     4.05,
+     4.1,
+     4.15,
+     4.2,
+     4.25,
+     4.3,
+     4.35,
+     4.4,
+     4.45,
+     4.5,
+     4.55,
+     4.6,
+     4.65,
+     4.7,
+     4.75,
+     4.8,
+     4.85,
+     4.9,
+     4.95,
+     5.0,
+     5.05,
+     5.1,
+     5.15,
+     5.2,
+     5.25,
+     5.3,
+     5.35,
+     5.4,
+     5.45,
+     5.5,
+     5.55,
+     5.6,
+     5.65,
+     5.7,
+     5.75,
+     5.8,
+     5.85,
+     5.9,
+     5.95,
+     6.0,
+     6.05,
+     6.1,
+     6.15,
+     6.2,
+     6.25,
+     6.3,
+     6.35,
+     6.4,
+     6.45,
+     6.5,
+     6.55,
+     6.6,
+     6.65,
+     6.7,
+     6.75,
+     6.8,
+     6.85,
+     6.9,
+     6.95,
+     7.0,
+     7.05,
+     7.1,
+     7.15,
+     7.2,
+     7.25,
+     7.3,
+     7.35,
+     7.4,
+     7.45
+    ]
+   }
+  },
+  "tables": [
+   {
+    "columns": [
+     "hidden change",
+     "differences that exist",
+     "identified at the start (motion only)",
+     "identified after revision",
+     "rounds that changed the configuration",
+     "set-up time s",
+     "still unobserved, by reason"
+    ],
+    "name": "adaptive_summary",
+    "rows": [
+     [
+      "mixed",
+      10,
+      2,
+      5,
+      4,
+      110.0,
+      "unobserved:device-mismatch=3"
+     ],
+     [
+      "delay-only",
+      6,
+      1,
+      5,
+      4,
+      160.0,
+      ""
+     ],
+     [
+      "tone-only",
+      5,
+      2,
+      4,
+      4,
+      120.0,
+      ""
+     ],
+     [
+      "fatigue-only",
+      2,
+      1,
+      1,
+      4,
+      120.0,
+      ""
+     ]
+    ],
+    "title": "Adaptive observation per hidden change"
+   },
+   {
+    "columns": [
+     "hidden change",
+     "round",
+     "changes",
+     "reason",
+     "expected gain",
+     "newly identified",
+     "identified after",
+     "set-up s"
+    ],
+    "name": "adaptive_log",
+    "rows": [
+     [
+      "mixed",
+      1,
+      "[{'op': 'set', 'model': 'posture', 'field': 'noise', 'value': 0.5}, {'op': 'add', 'kind': 'respiration', 'id': 'respiration-added', 'settings': {}}]",
+      "capable but below the noise: halve posture's noise (1 -> 0.5 of nominal; a better instrument, not a new one); deploy a respiration model (a different aspect is observed now)",
+      "[1.0, 1.0]",
+      "[]",
+      2,
+      30.0
+     ],
+     [
+      "mixed",
+      2,
+      "[{'op': 'set', 'model': 'posture', 'field': 'noise', 'value': 0.25}, {'op': 'set', 'model': 'respiration-added', 'field': 'noise', 'value': 0.5}]",
+      "capable but below the noise: halve posture's noise (0.5 -> 0.25 of nominal; a better instrument, not a new one); capable but below the noise: halve respiration-added's noise (1 -> 0.5 of nominal; a better instrument, not a new one)",
+      "[1.0, 1.0]",
+      "['correction_latency']",
+      3,
+      20.0
+     ],
+     [
+      "mixed",
+      3,
+      "[{'op': 'set', 'model': 'posture', 'field': 'noise', 'value': 0.125}, {'op': 'set', 'model': 'respiration-added', 'field': 'noise', 'value': 0.25}]",
+      "capable but below the noise: halve posture's noise (0.25 -> 0.125 of nominal; a better instrument, not a new one); capable but below the noise: halve respiration-added's noise (0.5 -> 0.25 of nominal; a better instrument, not a new one)",
+      "[1.0, 1.0]",
+      "['com_excursion']",
+      4,
+      20.0
+     ],
+     [
+      "mixed",
+      4,
+      "[{'op': 'set', 'model': 'respiration-added', 'field': 'noise', 'value': 0.125}, {'op': 'add', 'kind': 'contact', 'id': 'contact-added', 'settings': {'spatial': 'detailed'}}]",
+      "capable but below the noise: halve respiration-added's noise (0.25 -> 0.125 of nominal; a better instrument, not a new one); deploy a contact model (a different aspect is observed now)",
+      "[1.0, 1.0]",
+      "['cop_activity']",
+      5,
+      40.0
+     ],
+     [
+      "delay-only",
+      1,
+      "[{'op': 'set', 'model': 'posture', 'field': 'noise', 'value': 0.5}, {'op': 'add', 'kind': 'contact', 'id': 'contact-added', 'settings': {'spatial': 'detailed'}}]",
+      "capable but below the noise: halve posture's noise (1 -> 0.5 of nominal; a better instrument, not a new one); deploy a contact model (a different aspect is observed now)",
+      "[1.0, 1.0]",
+      "['cop_activity', 'correction_latency']",
+      3,
+      40.0
+     ],
+     [
+      "delay-only",
+      2,
+      "[{'op': 'set', 'model': 'posture', 'field': 'noise', 'value': 0.25}, {'op': 'add', 'kind': 'emg', 'id': 'emg-added', 'settings': {'spatial': 'joint'}}]",
+      "capable but below the noise: halve posture's noise (0.5 -> 0.25 of nominal; a better instrument, not a new one); deploy a emg model (a different aspect is observed now)",
+      "[1.0, 1.0]",
+      "['com_excursion', 'muscle_activation']",
+      5,
+      100.0
+     ],
+     [
+      "delay-only",
+      3,
+      "[{'op': 'set', 'model': 'emg-added', 'field': 'noise', 'value': 0.5}]",
+      "capable but below the noise: halve emg-added's noise (1 -> 0.5 of nominal; a better instrument, not a new one)",
+      "[1.0]",
+      "[]",
+      5,
+      10.0
+     ],
+     [
+      "delay-only",
+      4,
+      "[{'op': 'set', 'model': 'emg-added', 'field': 'noise', 'value': 0.25}]",
+      "capable but below the noise: halve emg-added's noise (0.5 -> 0.25 of nominal; a better instrument, not a new one)",
+      "[1.0]",
+      "[]",
+      5,
+      10.0
+     ],
+     [
+      "tone-only",
+      1,
+      "[{'op': 'add', 'kind': 'emg', 'id': 'emg-added', 'settings': {'spatial': 'joint'}}]",
+      "deploy a emg model (a different aspect is observed now); deploy a emg model (a different aspect is observed now)",
+      "[1.0, 0.0]",
+      "['cocontraction', 'muscle_activation']",
+      4,
+      90.0
+     ],
+     [
+      "tone-only",
+      2,
+      "[{'op': 'set', 'model': 'emg-added', 'field': 'noise', 'value': 0.5}]",
+      "capable but below the noise: halve emg-added's noise (1 -> 0.5 of nominal; a better instrument, not a new one)",
+      "[1.0]",
+      "[]",
+      4,
+      10.0
+     ],
+     [
+      "tone-only",
+      3,
+      "[{'op': 'set', 'model': 'emg-added', 'field': 'noise', 'value': 0.25}]",
+      "capable but below the noise: halve emg-added's noise (0.5 -> 0.25 of nominal; a better instrument, not a new one)",
+      "[1.0]",
+      "[]",
+      4,
+      10.0
+     ],
+     [
+      "tone-only",
+      4,
+      "[{'op': 'set', 'model': 'emg-added', 'field': 'noise', 'value': 0.125}]",
+      "capable but below the noise: halve emg-added's noise (0.25 -> 0.125 of nominal; a better instrument, not a new one)",
+      "[1.0]",
+      "[]",
+      4,
+      10.0
+     ],
+     [
+      "fatigue-only",
+      1,
+      "[{'op': 'add', 'kind': 'emg', 'id': 'emg-added', 'settings': {'spatial': 'joint'}}]",
+      "deploy a emg model (a different aspect is observed now)",
+      "[1.0]",
+      "[]",
+      1,
+      90.0
+     ],
+     [
+      "fatigue-only",
+      2,
+      "[{'op': 'set', 'model': 'emg-added', 'field': 'noise', 'value': 0.5}]",
+      "capable but below the noise: halve emg-added's noise (1 -> 0.5 of nominal; a better instrument, not a new one)",
+      "[1.0]",
+      "[]",
+      1,
+      10.0
+     ],
+     [
+      "fatigue-only",
+      3,
+      "[{'op': 'set', 'model': 'emg-added', 'field': 'noise', 'value': 0.25}]",
+      "capable but below the noise: halve emg-added's noise (0.5 -> 0.25 of nominal; a better instrument, not a new one)",
+      "[1.0]",
+      "[]",
+      1,
+      10.0
+     ],
+     [
+      "fatigue-only",
+      4,
+      "[{'op': 'set', 'model': 'emg-added', 'field': 'noise', 'value': 0.125}]",
+      "capable but below the noise: halve emg-added's noise (0.25 -> 0.125 of nominal; a better instrument, not a new one)",
+      "[1.0]",
+      "[]",
+      1,
+      10.0
+     ]
+    ],
+    "title": "Each round: change, reason, expectation, newly identified, total identified, set-up time"
+   }
+  ]
+ },
+ "schema": "xbtro.record/1",
+ "seeds": [
+  5000,
+  5001,
+  5002,
+  5003,
+  5004,
+  5005,
+  5006,
+  5007,
+  5008,
+  5009,
+  5010,
+  5011
+ ],
+ "time_step_s": 0.01,
+ "unobserved_differences": [
+  {
+   "configuration": "adaptive (mixed)",
+   "id": "posture_sway",
+   "reason": null,
+   "status": "identified"
+  },
+  {
+   "configuration": "adaptive (mixed)",
+   "id": "com_excursion",
+   "reason": null,
+   "status": "identified"
+  },
+  {
+   "configuration": "adaptive (mixed)",
+   "id": "cop_activity",
+   "reason": null,
+   "status": "identified"
+  },
+  {
+   "configuration": "adaptive (mixed)",
+   "id": "correction_latency",
+   "reason": null,
+   "status": "identified"
+  },
+  {
+   "configuration": "adaptive (mixed)",
+   "id": "cocontraction",
+   "reason": "device-mismatch",
+   "status": "unobserved"
+  },
+  {
+   "configuration": "adaptive (mixed)",
+   "id": "muscle_activation",
+   "reason": "device-mismatch",
+   "status": "unobserved"
+  },
+  {
+   "configuration": "adaptive (mixed)",
+   "id": "settling_turn",
+   "reason": null,
+   "status": "identified"
+  },
+  {
+   "configuration": "adaptive (mixed)",
+   "id": "energy_use",
+   "reason": null,
+   "status": "noise-limited"
+  },
+  {
+   "configuration": "adaptive (mixed)",
+   "id": "fatigue_state",
+   "reason": "device-mismatch",
+   "status": "unobserved"
+  },
+  {
+   "configuration": "adaptive (mixed)",
+   "id": "breath_amplitude",
+   "reason": null,
+   "status": "noise-limited"
+  },
+  {
+   "configuration": "adaptive (delay-only)",
+   "id": "com_excursion",
+   "reason": null,
+   "status": "identified"
+  },
+  {
+   "configuration": "adaptive (delay-only)",
+   "id": "cop_activity",
+   "reason": null,
+   "status": "identified"
+  },
+  {
+   "configuration": "adaptive (delay-only)",
+   "id": "correction_latency",
+   "reason": null,
+   "status": "identified"
+  },
+  {
+   "configuration": "adaptive (delay-only)",
+   "id": "muscle_activation",
+   "reason": null,
+   "status": "identified"
+  },
+  {
+   "configuration": "adaptive (delay-only)",
+   "id": "settling_turn",
+   "reason": null,
+   "status": "identified"
+  },
+  {
+   "configuration": "adaptive (delay-only)",
+   "id": "fatigue_state",
+   "reason": null,
+   "status": "noise-limited"
+  },
+  {
+   "configuration": "adaptive (tone-only)",
+   "id": "posture_sway",
+   "reason": null,
+   "status": "identified"
+  },
+  {
+   "configuration": "adaptive (tone-only)",
+   "id": "cocontraction",
+   "reason": null,
+   "status": "identified-by-proxy"
+  },
+  {
+   "configuration": "adaptive (tone-only)",
+   "id": "muscle_activation",
+   "reason": null,
+   "status": "identified"
+  },
+  {
+   "configuration": "adaptive (tone-only)",
+   "id": "settling_turn",
+   "reason": null,
+   "status": "identified"
+  },
+  {
+   "configuration": "adaptive (tone-only)",
+   "id": "fatigue_state",
+   "reason": null,
+   "status": "noise-limited"
+  },
+  {
+   "configuration": "adaptive (fatigue-only)",
+   "id": "posture_sway",
+   "reason": null,
+   "status": "identified"
+  },
+  {
+   "configuration": "adaptive (fatigue-only)",
+   "id": "fatigue_state",
+   "reason": null,
+   "status": "noise-limited"
+  }
+ ]
+}

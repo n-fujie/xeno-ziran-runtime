@@ -1,0 +1,2743 @@
+{
+ "digest": "c21ef3036b7846e4227455c80ddc0ed87a5d3d4129c1aec13432d2a7c660f163",
+ "experiment": "R",
+ "history": {
+  "reentry": []
+ },
+ "id": "xb-r-c21ef3036b78",
+ "initial_configuration": {
+  "adaptation": {
+   "cost": 0.0,
+   "enabled": true,
+   "error_target": 0.003,
+   "eta": 0.2,
+   "gain_max": 1.15,
+   "gain_min": 0.9
+  },
+  "environment": {
+   "compliance": 0.0,
+   "friction_mu": 0.8,
+   "gravity": 9.81,
+   "handrail": null,
+   "ledge": null,
+   "pushes": [
+    {
+     "dur": 0.12,
+     "force": 35.0,
+     "link": 2,
+     "point_frac": 0.8,
+     "t": 3.2
+    }
+   ]
+  },
+  "family": "human-like",
+  "foot": {
+   "heel": 0.07,
+   "toe": 0.17
+  },
+  "internal": {
+   "activation_cost": 0.004,
+   "basal_cost": 0.0004,
+   "breath_amp": 0.015,
+   "breath_period": 4.0,
+   "breath_variability": 0.05,
+   "capacity_floor": 0.45,
+   "energy0": 1.0,
+   "energy_floor": 0.3,
+   "fatigue_rate": 0.02,
+   "fatigue_recovery": 0.012,
+   "resources_enabled": true
+  },
+  "joints": [
+   {
+    "act_fall": 0.08,
+    "act_rise": 0.04,
+    "c_passive": 45.0,
+    "id": "ankle",
+    "k_passive": 720.0,
+    "label": "ankle",
+    "q_range": 0.6,
+    "tau_max": 120.0
+   },
+   {
+    "act_fall": 0.08,
+    "act_rise": 0.04,
+    "c_passive": 40.0,
+    "id": "knee",
+    "k_passive": 700.0,
+    "label": "knee",
+    "q_range": 0.6,
+    "tau_max": 150.0
+   },
+   {
+    "act_fall": 0.08,
+    "act_rise": 0.04,
+    "c_passive": 35.0,
+    "id": "hip",
+    "k_passive": 420.0,
+    "label": "hip",
+    "q_range": 0.8,
+    "tau_max": 180.0
+   },
+   {
+    "act_fall": 0.06,
+    "act_rise": 0.03,
+    "c_passive": 4.0,
+    "id": "neck",
+    "k_passive": 45.0,
+    "label": "neck",
+    "q_range": 0.8,
+    "tau_max": 25.0
+   }
+  ],
+  "lines": [
+   {
+    "enabled": true,
+    "id": "mech.passive",
+    "ignition": {
+     "hold_s": 0.0,
+     "signal": "always",
+     "threshold": 0.0
+    },
+    "kind": "mechanical",
+    "label": "viscoelastic joints (passive)",
+    "note": "always on; stiffness and damping per joint",
+    "observable_by": [
+     "posture",
+     "imu"
+    ],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 0.0
+   },
+   {
+    "enabled": true,
+    "id": "sens.proprio",
+    "ignition": {
+     "hold_s": 0.05,
+     "signal": "joint-velocity",
+     "threshold": 0.05
+    },
+    "kind": "sensory",
+    "label": "proprioceptive sensing",
+    "note": "timescale = sensory delay (s); ignites when a joint velocity exceeds the threshold (rad/s)",
+    "observable_by": [
+     "posture",
+     "emg"
+    ],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 0.03
+   },
+   {
+    "enabled": true,
+    "id": "sens.vestibular",
+    "ignition": {
+     "hold_s": 0.05,
+     "signal": "trunk-tilt-rate",
+     "threshold": 0.03
+    },
+    "kind": "sensory",
+    "label": "vestibular / head-motion sensing",
+    "note": "timescale = delay; ignites on trunk tilt rate (rad/s)",
+    "observable_by": [
+     "imu",
+     "eeg"
+    ],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 0.02
+   },
+   {
+    "enabled": true,
+    "id": "sens.visual",
+    "ignition": {
+     "hold_s": 0.1,
+     "signal": "com-offset",
+     "threshold": 0.004
+    },
+    "kind": "sensory",
+    "label": "visual feedback",
+    "note": "timescale = delay; ignites on a visible COM offset (m); can be blocked",
+    "observable_by": [
+     "posture",
+     "eeg"
+    ],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 0.1
+   },
+   {
+    "enabled": true,
+    "id": "sens.tactile",
+    "ignition": {
+     "hold_s": 0.05,
+     "signal": "cop-shift",
+     "threshold": 0.004
+    },
+    "kind": "sensory",
+    "label": "tactile / contact-pressure sensing",
+    "note": "timescale = delay; ignites on a centre-of-pressure shift (m)",
+    "observable_by": [
+     "contact",
+     "eeg"
+    ],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 0.04
+   },
+   {
+    "enabled": true,
+    "id": "sens.cue",
+    "ignition": {
+     "hold_s": 0.05,
+     "signal": "cue",
+     "threshold": 0.5
+    },
+    "kind": "sensory",
+    "label": "cue perception",
+    "note": "timescale = delay; the movement / direction-change cues are sensed through it",
+    "observable_by": [
+     "eeg",
+     "latency"
+    ],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 0.12
+   },
+   {
+    "enabled": true,
+    "id": "neural.reflex",
+    "ignition": {
+     "hold_s": 0.08,
+     "signal": "joint-velocity",
+     "threshold": 0.12
+    },
+    "kind": "neural",
+    "label": "local joint reflex",
+    "note": "timescale = loop latency; ignites on a fast sensed joint motion",
+    "observable_by": [
+     "emg",
+     "latency",
+     "eeg"
+    ],
+    "resource": {
+     "cost_per_s": 0.002,
+     "pool": "energy"
+    },
+    "timescale_s": 0.04
+   },
+   {
+    "enabled": true,
+    "id": "neural.central.ankle",
+    "ignition": {
+     "hold_s": 0.2,
+     "signal": "com-offset",
+     "threshold": 0.003
+    },
+    "kind": "neural",
+    "label": "central balance command (ankle)",
+    "note": "timescale = latency; ignites on a sensed COM offset from the reference",
+    "observable_by": [
+     "emg",
+     "eeg",
+     "latency"
+    ],
+    "resource": {
+     "cost_per_s": 0.004,
+     "pool": "energy"
+    },
+    "timescale_s": 0.1
+   },
+   {
+    "enabled": true,
+    "id": "neural.central.hip",
+    "ignition": {
+     "hold_s": 0.25,
+     "signal": "com-offset",
+     "threshold": 0.02
+    },
+    "kind": "neural",
+    "label": "central balance command (hip)",
+    "note": "timescale = latency; ignites on a large COM offset",
+    "observable_by": [
+     "emg",
+     "eeg",
+     "latency"
+    ],
+    "resource": {
+     "cost_per_s": 0.008,
+     "pool": "energy"
+    },
+    "timescale_s": 0.1
+   },
+   {
+    "enabled": true,
+    "id": "neural.central.cue",
+    "ignition": {
+     "hold_s": 0.3,
+     "signal": "cue",
+     "threshold": 0.5
+    },
+    "kind": "neural",
+    "label": "central movement command (feed-forward)",
+    "note": "timescale = latency; ignites on a sensed cue",
+    "observable_by": [
+     "emg",
+     "eeg",
+     "latency"
+    ],
+    "resource": {
+     "cost_per_s": 0.004,
+     "pool": "energy"
+    },
+    "timescale_s": 0.1
+   },
+   {
+    "enabled": true,
+    "id": "core.tonic",
+    "ignition": {
+     "hold_s": 0.0,
+     "signal": "always",
+     "threshold": 0.0
+    },
+    "kind": "internal",
+    "label": "tonic co-contraction (core)",
+    "note": "baseline co-contraction level; costs energy while on",
+    "observable_by": [
+     "emg"
+    ],
+    "resource": {
+     "cost_per_s": 0.003,
+     "pool": "energy"
+    },
+    "timescale_s": 0.0
+   },
+   {
+    "enabled": true,
+    "id": "breath.cycle",
+    "ignition": {
+     "hold_s": 0.0,
+     "signal": "always",
+     "threshold": 0.0
+    },
+    "kind": "internal",
+    "label": "breathing cycle",
+    "note": "timescale = period (s); modulates trunk drive and chest motion",
+    "observable_by": [
+     "respiration",
+     "imu",
+     "emg"
+    ],
+    "resource": {
+     "cost_per_s": 0.001,
+     "pool": "energy"
+    },
+    "timescale_s": 4.0
+   },
+   {
+    "enabled": true,
+    "id": "metabolic.supply",
+    "ignition": {
+     "hold_s": 0.0,
+     "signal": "always",
+     "threshold": 0.0
+    },
+    "kind": "internal",
+    "label": "energy supply / fatigue",
+    "note": "timescale = fatigue time constant (s); internal, no observation model sees it directly",
+    "observable_by": [],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 30.0
+   },
+   {
+    "enabled": true,
+    "id": "adapt.gain",
+    "ignition": {
+     "hold_s": 0.0,
+     "signal": "always",
+     "threshold": 0.0
+    },
+    "kind": "internal",
+    "label": "gain adaptation",
+    "note": "timescale = adaptation time constant (s); slow retained state",
+    "observable_by": [],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 20.0
+   }
+  ],
+  "links": [
+   {
+    "com_frac": 0.45,
+    "id": "shank",
+    "label": "shank + foot",
+    "length": 0.45,
+    "mass": 6.6,
+    "region": "shank"
+   },
+   {
+    "com_frac": 0.45,
+    "id": "thigh",
+    "label": "thigh",
+    "length": 0.45,
+    "mass": 14.0,
+    "region": "thigh"
+   },
+   {
+    "com_frac": 0.5,
+    "id": "trunk",
+    "label": "trunk + arms",
+    "length": 0.55,
+    "mass": 38.0,
+    "region": "trunk"
+   },
+   {
+    "com_frac": 0.5,
+    "id": "head",
+    "label": "head + neck",
+    "length": 0.3,
+    "mass": 4.8,
+    "region": "head"
+   }
+  ],
+  "model": "xb-tro/1.0",
+  "name": "human-like-planar",
+  "neural": {
+   "cocontraction_base": 0.06,
+   "cocontraction_gain": 2.0,
+   "gain_ankle_d": 3.5,
+   "gain_ankle_p": 3.0,
+   "gain_cop": 0.0,
+   "gain_cue_ff": 1.0,
+   "gain_hip_d": 0.8,
+   "gain_hip_p": 1.2,
+   "gain_reflex_d": 0.05,
+   "gain_reflex_p": 0.6,
+   "gravity_comp": 0.5,
+   "gravity_ff": -0.4,
+   "motor_noise": 0.01,
+   "proprio_weight": 2.0,
+   "strategy": "endpoint",
+   "tactile_weight": 0.6,
+   "vestibular_weight": 1.0,
+   "visual_weight": 1.0,
+   "windup_frac": 0.35,
+   "windup_s": 0.25
+  },
+  "sensors": {
+   "cue": {
+    "noise": 0.15
+   },
+   "proprio": {
+    "gain": 1.0,
+    "noise": 0.002
+   },
+   "tactile": {
+    "gain": 1.0,
+    "noise": 0.003
+   },
+   "vestibular": {
+    "gain": 1.0,
+    "noise": 0.004
+   },
+   "visual": {
+    "blocked_windows": [],
+    "gain": 1.0,
+    "noise": 0.004
+   }
+  },
+  "slow_state0": null,
+  "task": {
+   "dt": 0.01,
+   "horizon": 7.5,
+   "initial_lean": 0.0,
+   "integrator": "rk4",
+   "ramp_s": 0.3,
+   "substeps": 2,
+   "t_cue": 0.8,
+   "t_turn": 5.2,
+   "x_target": 0.035,
+   "x_turn": -0.02
+  },
+  "xeno14": []
+ },
+ "interventions": [
+  {
+   "variant": "reference"
+  },
+  {
+   "variant": "other seeds"
+  },
+  {
+   "variant": "mass +10 %"
+  },
+  {
+   "variant": "central loop +20 ms"
+  },
+  {
+   "variant": "sensor noise x2"
+  },
+  {
+   "variant": "stronger push 50 N"
+  }
+ ],
+ "labels": {
+  "estimate": "model-based estimate computed from observation outputs only",
+  "observation": "output of a simulated observation model applied to the reference (separate from it)",
+  "reference": "model reference state (simulator-internal; not an observation of a real body)"
+ },
+ "model_version": "xb-tro/1.0",
+ "negative_results": [
+  {
+   "evidence": {
+    "central loop +20 ms": "worsened",
+    "mass +10 %": "improved",
+    "other seeds": "worsened",
+    "reference": "worsened",
+    "sensor noise x2": "worsened",
+    "stronger push 50 N": "no detectable effect"
+   },
+   "statement": "lower-abdominal-continuity / correction_quality: the label depends on the setting"
+  },
+  {
+   "evidence": {
+    "central loop +20 ms": "no detectable effect",
+    "mass +10 %": "improved",
+    "other seeds": "improved",
+    "reference": "improved",
+    "sensor noise x2": "improved",
+    "stronger push 50 N": "improved"
+   },
+   "statement": "lower-abdominal-continuity / turn_speed: the label depends on the setting"
+  },
+  {
+   "evidence": {
+    "central loop +20 ms": "no detectable effect",
+    "mass +10 %": "improved",
+    "other seeds": "no detectable effect",
+    "reference": "no detectable effect",
+    "sensor noise x2": "no detectable effect",
+    "stronger push 50 N": "no detectable effect"
+   },
+   "statement": "lower-abdominal-continuity / precision: the label depends on the setting"
+  },
+  {
+   "evidence": {
+    "central loop +20 ms": "worsened",
+    "mass +10 %": "improved",
+    "other seeds": "no detectable effect",
+    "reference": "worsened",
+    "sensor noise x2": "no detectable effect",
+    "stronger push 50 N": "no detectable effect"
+   },
+   "statement": "lower-abdominal-continuity / recovery_time: the label depends on the setting"
+  },
+  {
+   "evidence": {
+    "central loop +20 ms": "worsened",
+    "mass +10 %": "no detectable effect",
+    "other seeds": "worsened",
+    "reference": "worsened",
+    "sensor noise x2": "worsened",
+    "stronger push 50 N": "worsened"
+   },
+   "statement": "whole-skin-sensing / correction_quality: the label depends on the setting"
+  },
+  {
+   "evidence": {
+    "central loop +20 ms": "no detectable effect",
+    "mass +10 %": "improved",
+    "other seeds": "improved",
+    "reference": "improved",
+    "sensor noise x2": "improved",
+    "stronger push 50 N": "improved"
+   },
+   "statement": "whole-skin-sensing / turn_speed: the label depends on the setting"
+  },
+  {
+   "evidence": {
+    "central loop +20 ms": "no detectable effect",
+    "mass +10 %": "improved",
+    "other seeds": "improved",
+    "reference": "improved",
+    "sensor noise x2": "improved",
+    "stronger push 50 N": "improved"
+   },
+   "statement": "whole-skin-sensing / recovery_time: the label depends on the setting"
+  },
+  {
+   "evidence": {
+    "central loop +20 ms": "worsened",
+    "mass +10 %": "worsened",
+    "other seeds": "worsened",
+    "reference": "worsened",
+    "sensor noise x2": "no detectable effect",
+    "stronger push 50 N": "worsened"
+   },
+   "statement": "axis-maintenance / correction_quality: the label depends on the setting"
+  },
+  {
+   "evidence": {
+    "central loop +20 ms": "no detectable effect",
+    "mass +10 %": "improved",
+    "other seeds": "improved",
+    "reference": "improved",
+    "sensor noise x2": "no detectable effect",
+    "stronger push 50 N": "improved"
+   },
+   "statement": "axis-maintenance / turn_speed: the label depends on the setting"
+  },
+  {
+   "evidence": {
+    "central loop +20 ms": "no detectable effect",
+    "mass +10 %": "improved",
+    "other seeds": "no detectable effect",
+    "reference": "no detectable effect",
+    "sensor noise x2": "no detectable effect",
+    "stronger push 50 N": "no detectable effect"
+   },
+   "statement": "axis-maintenance / precision: the label depends on the setting"
+  },
+  {
+   "evidence": {
+    "central loop +20 ms": "worsened",
+    "mass +10 %": "no detectable effect",
+    "other seeds": "no detectable effect",
+    "reference": "worsened",
+    "sensor noise x2": "no detectable effect",
+    "stronger push 50 N": "no detectable effect"
+   },
+   "statement": "axis-maintenance / recovery_time: the label depends on the setting"
+  },
+  {
+   "evidence": {
+    "central loop +20 ms": "worsened",
+    "mass +10 %": "no detectable effect",
+    "other seeds": "no detectable effect",
+    "reference": "no detectable effect",
+    "sensor noise x2": "no detectable effect",
+    "stronger push 50 N": "no detectable effect"
+   },
+   "statement": "endpoint-removal / recovery_time: the label depends on the setting"
+  },
+  {
+   "evidence": {
+    "central loop +20 ms": "no detectable effect",
+    "mass +10 %": "no detectable effect",
+    "other seeds": "improved",
+    "reference": "no detectable effect",
+    "sensor noise x2": "no detectable effect",
+    "stronger push 50 N": "no detectable effect"
+   },
+   "statement": "low-noise-movement / posture_stability: the label depends on the setting"
+  },
+  {
+   "evidence": {
+    "central loop +20 ms": "worsened",
+    "mass +10 %": "no detectable effect",
+    "other seeds": "improved",
+    "reference": "improved",
+    "sensor noise x2": "improved",
+    "stronger push 50 N": "improved"
+   },
+   "statement": "low-noise-movement / correction_quality: the label depends on the setting"
+  },
+  {
+   "evidence": {
+    "central loop +20 ms": "no detectable effect",
+    "mass +10 %": "no detectable effect",
+    "other seeds": "no detectable effect",
+    "reference": "no detectable effect",
+    "sensor noise x2": "improved",
+    "stronger push 50 N": "no detectable effect"
+   },
+   "statement": "low-noise-movement / recovery_time: the label depends on the setting"
+  },
+  {
+   "evidence": {
+    "central loop +20 ms": "no detectable effect",
+    "mass +10 %": "improved",
+    "other seeds": "improved",
+    "reference": "improved",
+    "sensor noise x2": "improved",
+    "stronger push 50 N": "improved"
+   },
+   "statement": "minimal-approach-distance / turn_speed: the label depends on the setting"
+  },
+  {
+   "evidence": {
+    "central loop +20 ms": "no detectable effect",
+    "mass +10 %": "improved",
+    "other seeds": "improved",
+    "reference": "improved",
+    "sensor noise x2": "improved",
+    "stronger push 50 N": "improved"
+   },
+   "statement": "minimal-approach-distance / precision: the label depends on the setting"
+  },
+  {
+   "evidence": {
+    "central loop +20 ms": "worsened",
+    "mass +10 %": "no detectable effect",
+    "other seeds": "no detectable effect",
+    "reference": "worsened",
+    "sensor noise x2": "no detectable effect",
+    "stronger push 50 N": "no detectable effect"
+   },
+   "statement": "minimal-approach-distance / recovery_time: the label depends on the setting"
+  },
+  {
+   "evidence": {
+    "central loop +20 ms": "worsened",
+    "mass +10 %": "no detectable effect",
+    "other seeds": "no detectable effect",
+    "reference": "no detectable effect",
+    "sensor noise x2": "no detectable effect",
+    "stronger push 50 N": "no detectable effect"
+   },
+   "statement": "zero-run-up-transition / recovery_time: the label depends on the setting"
+  },
+  {
+   "evidence": {
+    "central loop +20 ms": "no detectable effect",
+    "mass +10 %": "worsened",
+    "other seeds": "worsened",
+    "reference": "no detectable effect",
+    "sensor noise x2": "no detectable effect",
+    "stronger push 50 N": "no detectable effect"
+   },
+   "statement": "tensegrity / posture_stability: the label depends on the setting"
+  },
+  {
+   "evidence": {
+    "central loop +20 ms": "worsened",
+    "mass +10 %": "worsened",
+    "other seeds": "no detectable effect",
+    "reference": "no detectable effect",
+    "sensor noise x2": "improved",
+    "stronger push 50 N": "no detectable effect"
+   },
+   "statement": "tensegrity / correction_quality: the label depends on the setting"
+  },
+  {
+   "evidence": {
+    "central loop +20 ms": "no detectable effect",
+    "mass +10 %": "no detectable effect",
+    "other seeds": "improved",
+    "reference": "improved",
+    "sensor noise x2": "improved",
+    "stronger push 50 N": "improved"
+   },
+   "statement": "tensegrity / precision: the label depends on the setting"
+  },
+  {
+   "evidence": {
+    "central loop +20 ms": "no detectable effect",
+    "mass +10 %": "improved",
+    "other seeds": "improved",
+    "reference": "improved",
+    "sensor noise x2": "improved",
+    "stronger push 50 N": "improved"
+   },
+   "statement": "slow-movement / correction_quality: the label depends on the setting"
+  },
+  {
+   "evidence": {
+    "central loop +20 ms": "no detectable effect",
+    "mass +10 %": "worsened",
+    "other seeds": "worsened",
+    "reference": "worsened",
+    "sensor noise x2": "worsened",
+    "stronger push 50 N": "worsened"
+   },
+   "statement": "slow-movement / turn_speed: the label depends on the setting"
+  },
+  {
+   "evidence": {
+    "central loop +20 ms": "worsened",
+    "mass +10 %": "worsened",
+    "other seeds": "worsened",
+    "reference": "worsened",
+    "sensor noise x2": "no detectable effect",
+    "stronger push 50 N": "worsened"
+   },
+   "statement": "slow-movement / fatigue_cost: the label depends on the setting"
+  },
+  {
+   "evidence": {
+    "central loop +20 ms": "worsened",
+    "mass +10 %": "no detectable effect",
+    "other seeds": "no detectable effect",
+    "reference": "no detectable effect",
+    "sensor noise x2": "no detectable effect",
+    "stronger push 50 N": "no detectable effect"
+   },
+   "statement": "slow-movement / recovery_time: the label depends on the setting"
+  },
+  {
+   "evidence": {
+    "central loop +20 ms": "worsened",
+    "mass +10 %": "worsened",
+    "other seeds": "no detectable effect",
+    "reference": "no detectable effect",
+    "sensor noise x2": "improved",
+    "stronger push 50 N": "worsened"
+   },
+   "statement": "narrow-step-balance / correction_quality: the label depends on the setting"
+  },
+  {
+   "evidence": {
+    "central loop +20 ms": "no detectable effect",
+    "mass +10 %": "improved",
+    "other seeds": "improved",
+    "reference": "improved",
+    "sensor noise x2": "no detectable effect",
+    "stronger push 50 N": "no detectable effect"
+   },
+   "statement": "narrow-step-balance / turn_speed: the label depends on the setting"
+  },
+  {
+   "evidence": {
+    "central loop +20 ms": "improved",
+    "mass +10 %": "no detectable effect",
+    "other seeds": "no detectable effect",
+    "reference": "no detectable effect",
+    "sensor noise x2": "no detectable effect",
+    "stronger push 50 N": "worsened"
+   },
+   "statement": "narrow-step-balance / precision: the label depends on the setting"
+  },
+  {
+   "evidence": {
+    "central loop +20 ms": "no detectable effect",
+    "mass +10 %": "no detectable effect",
+    "other seeds": "no detectable effect",
+    "reference": "no detectable effect",
+    "sensor noise x2": "improved",
+    "stronger push 50 N": "no detectable effect"
+   },
+   "statement": "narrow-step-balance / fatigue_cost: the label depends on the setting"
+  },
+  {
+   "evidence": {
+    "central loop +20 ms": "no detectable effect",
+    "mass +10 %": "improved",
+    "other seeds": "no detectable effect",
+    "reference": "no detectable effect",
+    "sensor noise x2": "no detectable effect",
+    "stronger push 50 N": "no detectable effect"
+   },
+   "statement": "fingertip-tension / correction_quality: the label depends on the setting"
+  },
+  {
+   "evidence": {
+    "central loop +20 ms": "no detectable effect",
+    "mass +10 %": "improved",
+    "other seeds": "no detectable effect",
+    "reference": "no detectable effect",
+    "sensor noise x2": "no detectable effect",
+    "stronger push 50 N": "improved"
+   },
+   "statement": "fingertip-tension / recovery_time: the label depends on the setting"
+  },
+  {
+   "evidence": {
+    "central loop +20 ms": "no detectable effect",
+    "mass +10 %": "improved",
+    "other seeds": "improved",
+    "reference": "improved",
+    "sensor noise x2": "no detectable effect",
+    "stronger push 50 N": "improved"
+   },
+   "statement": "breathing-synchronization / turn_speed: the label depends on the setting"
+  },
+  {
+   "evidence": {
+    "central loop +20 ms": "no detectable effect",
+    "mass +10 %": "improved",
+    "other seeds": "improved",
+    "reference": "improved",
+    "sensor noise x2": "improved",
+    "stronger push 50 N": "improved"
+   },
+   "statement": "breathing-synchronization / precision: the label depends on the setting"
+  },
+  {
+   "evidence": {
+    "central loop +20 ms": "worsened",
+    "mass +10 %": "improved",
+    "other seeds": "improved",
+    "reference": "improved",
+    "sensor noise x2": "improved",
+    "stronger push 50 N": "improved"
+   },
+   "statement": "breathing-synchronization / recovery_time: the label depends on the setting"
+  },
+  {
+   "evidence": {
+    "central loop +20 ms": "no detectable effect",
+    "mass +10 %": "improved",
+    "other seeds": "improved",
+    "reference": "improved",
+    "sensor noise x2": "improved",
+    "stronger push 50 N": "improved"
+   },
+   "statement": "long-duration-sedimentation / correction_quality: the label depends on the setting"
+  },
+  {
+   "evidence": {
+    "central loop +20 ms": "no detectable effect",
+    "mass +10 %": "improved",
+    "other seeds": "improved",
+    "reference": "improved",
+    "sensor noise x2": "improved",
+    "stronger push 50 N": "improved"
+   },
+   "statement": "long-duration-sedimentation / turn_speed: the label depends on the setting"
+  },
+  {
+   "evidence": {
+    "central loop +20 ms": "improved",
+    "mass +10 %": "improved",
+    "other seeds": "no detectable effect",
+    "reference": "no detectable effect",
+    "sensor noise x2": "no detectable effect",
+    "stronger push 50 N": "improved"
+   },
+   "statement": "long-duration-sedimentation / fatigue_cost: the label depends on the setting"
+  },
+  {
+   "evidence": {
+    "central loop +20 ms": "no detectable effect",
+    "mass +10 %": "no detectable effect",
+    "other seeds": "improved",
+    "reference": "improved",
+    "sensor noise x2": "no detectable effect",
+    "stronger push 50 N": "improved"
+   },
+   "statement": "long-duration-sedimentation / recovery_time: the label depends on the setting"
+  }
+ ],
+ "numerical_method": "RK4 on the N-link planar Lagrangian equations with the muscle drive held over each step; batched seeds with common random numbers; first-order activation dynamics; digests over 6 significant digits",
+ "observation_configurations": [],
+ "parameters": {
+  "n_seeds": 12,
+  "preset": "human-like-planar",
+  "principles": [
+   "lower-abdominal-continuity",
+   "whole-skin-sensing",
+   "axis-maintenance",
+   "endpoint-removal",
+   "low-noise-movement",
+   "minimal-approach-distance",
+   "zero-run-up-transition",
+   "tensegrity",
+   "slow-movement",
+   "narrow-step-balance",
+   "fingertip-tension",
+   "breathing-synchronization",
+   "anti-collapse-posture",
+   "long-duration-sedimentation"
+  ]
+ },
+ "provenance": {
+  "machine": "arm64",
+  "numpy": "2.5.3",
+  "platform": "darwin",
+  "python": "3.12.13"
+ },
+ "rerun": {
+  "experiment": "R",
+  "parameters": {
+   "n_seeds": 12,
+   "preset": "human-like-planar",
+   "principles": [
+    "lower-abdominal-continuity",
+    "whole-skin-sensing",
+    "axis-maintenance",
+    "endpoint-removal",
+    "low-noise-movement",
+    "minimal-approach-distance",
+    "zero-run-up-transition",
+    "tensegrity",
+    "slow-movement",
+    "narrow-step-balance",
+    "fingertip-tension",
+    "breathing-synchronization",
+    "anti-collapse-posture",
+    "long-duration-sedimentation"
+   ]
+  }
+ },
+ "results": {
+  "cells": 98,
+  "cells_with_identical_label_in_all_variants": 59,
+  "flips": [
+   {
+    "labels": {
+     "central loop +20 ms": "worsened",
+     "mass +10 %": "improved",
+     "other seeds": "worsened",
+     "reference": "worsened",
+     "sensor noise x2": "worsened",
+     "stronger push 50 N": "no detectable effect"
+    },
+    "organization": "correction_quality",
+    "principle": "lower-abdominal-continuity"
+   },
+   {
+    "labels": {
+     "central loop +20 ms": "no detectable effect",
+     "mass +10 %": "improved",
+     "other seeds": "improved",
+     "reference": "improved",
+     "sensor noise x2": "improved",
+     "stronger push 50 N": "improved"
+    },
+    "organization": "turn_speed",
+    "principle": "lower-abdominal-continuity"
+   },
+   {
+    "labels": {
+     "central loop +20 ms": "no detectable effect",
+     "mass +10 %": "improved",
+     "other seeds": "no detectable effect",
+     "reference": "no detectable effect",
+     "sensor noise x2": "no detectable effect",
+     "stronger push 50 N": "no detectable effect"
+    },
+    "organization": "precision",
+    "principle": "lower-abdominal-continuity"
+   },
+   {
+    "labels": {
+     "central loop +20 ms": "worsened",
+     "mass +10 %": "improved",
+     "other seeds": "no detectable effect",
+     "reference": "worsened",
+     "sensor noise x2": "no detectable effect",
+     "stronger push 50 N": "no detectable effect"
+    },
+    "organization": "recovery_time",
+    "principle": "lower-abdominal-continuity"
+   },
+   {
+    "labels": {
+     "central loop +20 ms": "worsened",
+     "mass +10 %": "no detectable effect",
+     "other seeds": "worsened",
+     "reference": "worsened",
+     "sensor noise x2": "worsened",
+     "stronger push 50 N": "worsened"
+    },
+    "organization": "correction_quality",
+    "principle": "whole-skin-sensing"
+   },
+   {
+    "labels": {
+     "central loop +20 ms": "no detectable effect",
+     "mass +10 %": "improved",
+     "other seeds": "improved",
+     "reference": "improved",
+     "sensor noise x2": "improved",
+     "stronger push 50 N": "improved"
+    },
+    "organization": "turn_speed",
+    "principle": "whole-skin-sensing"
+   },
+   {
+    "labels": {
+     "central loop +20 ms": "no detectable effect",
+     "mass +10 %": "improved",
+     "other seeds": "improved",
+     "reference": "improved",
+     "sensor noise x2": "improved",
+     "stronger push 50 N": "improved"
+    },
+    "organization": "recovery_time",
+    "principle": "whole-skin-sensing"
+   },
+   {
+    "labels": {
+     "central loop +20 ms": "worsened",
+     "mass +10 %": "worsened",
+     "other seeds": "worsened",
+     "reference": "worsened",
+     "sensor noise x2": "no detectable effect",
+     "stronger push 50 N": "worsened"
+    },
+    "organization": "correction_quality",
+    "principle": "axis-maintenance"
+   },
+   {
+    "labels": {
+     "central loop +20 ms": "no detectable effect",
+     "mass +10 %": "improved",
+     "other seeds": "improved",
+     "reference": "improved",
+     "sensor noise x2": "no detectable effect",
+     "stronger push 50 N": "improved"
+    },
+    "organization": "turn_speed",
+    "principle": "axis-maintenance"
+   },
+   {
+    "labels": {
+     "central loop +20 ms": "no detectable effect",
+     "mass +10 %": "improved",
+     "other seeds": "no detectable effect",
+     "reference": "no detectable effect",
+     "sensor noise x2": "no detectable effect",
+     "stronger push 50 N": "no detectable effect"
+    },
+    "organization": "precision",
+    "principle": "axis-maintenance"
+   },
+   {
+    "labels": {
+     "central loop +20 ms": "worsened",
+     "mass +10 %": "no detectable effect",
+     "other seeds": "no detectable effect",
+     "reference": "worsened",
+     "sensor noise x2": "no detectable effect",
+     "stronger push 50 N": "no detectable effect"
+    },
+    "organization": "recovery_time",
+    "principle": "axis-maintenance"
+   },
+   {
+    "labels": {
+     "central loop +20 ms": "worsened",
+     "mass +10 %": "no detectable effect",
+     "other seeds": "no detectable effect",
+     "reference": "no detectable effect",
+     "sensor noise x2": "no detectable effect",
+     "stronger push 50 N": "no detectable effect"
+    },
+    "organization": "recovery_time",
+    "principle": "endpoint-removal"
+   },
+   {
+    "labels": {
+     "central loop +20 ms": "no detectable effect",
+     "mass +10 %": "no detectable effect",
+     "other seeds": "improved",
+     "reference": "no detectable effect",
+     "sensor noise x2": "no detectable effect",
+     "stronger push 50 N": "no detectable effect"
+    },
+    "organization": "posture_stability",
+    "principle": "low-noise-movement"
+   },
+   {
+    "labels": {
+     "central loop +20 ms": "worsened",
+     "mass +10 %": "no detectable effect",
+     "other seeds": "improved",
+     "reference": "improved",
+     "sensor noise x2": "improved",
+     "stronger push 50 N": "improved"
+    },
+    "organization": "correction_quality",
+    "principle": "low-noise-movement"
+   },
+   {
+    "labels": {
+     "central loop +20 ms": "no detectable effect",
+     "mass +10 %": "no detectable effect",
+     "other seeds": "no detectable effect",
+     "reference": "no detectable effect",
+     "sensor noise x2": "improved",
+     "stronger push 50 N": "no detectable effect"
+    },
+    "organization": "recovery_time",
+    "principle": "low-noise-movement"
+   },
+   {
+    "labels": {
+     "central loop +20 ms": "no detectable effect",
+     "mass +10 %": "improved",
+     "other seeds": "improved",
+     "reference": "improved",
+     "sensor noise x2": "improved",
+     "stronger push 50 N": "improved"
+    },
+    "organization": "turn_speed",
+    "principle": "minimal-approach-distance"
+   },
+   {
+    "labels": {
+     "central loop +20 ms": "no detectable effect",
+     "mass +10 %": "improved",
+     "other seeds": "improved",
+     "reference": "improved",
+     "sensor noise x2": "improved",
+     "stronger push 50 N": "improved"
+    },
+    "organization": "precision",
+    "principle": "minimal-approach-distance"
+   },
+   {
+    "labels": {
+     "central loop +20 ms": "worsened",
+     "mass +10 %": "no detectable effect",
+     "other seeds": "no detectable effect",
+     "reference": "worsened",
+     "sensor noise x2": "no detectable effect",
+     "stronger push 50 N": "no detectable effect"
+    },
+    "organization": "recovery_time",
+    "principle": "minimal-approach-distance"
+   },
+   {
+    "labels": {
+     "central loop +20 ms": "worsened",
+     "mass +10 %": "no detectable effect",
+     "other seeds": "no detectable effect",
+     "reference": "no detectable effect",
+     "sensor noise x2": "no detectable effect",
+     "stronger push 50 N": "no detectable effect"
+    },
+    "organization": "recovery_time",
+    "principle": "zero-run-up-transition"
+   },
+   {
+    "labels": {
+     "central loop +20 ms": "no detectable effect",
+     "mass +10 %": "worsened",
+     "other seeds": "worsened",
+     "reference": "no detectable effect",
+     "sensor noise x2": "no detectable effect",
+     "stronger push 50 N": "no detectable effect"
+    },
+    "organization": "posture_stability",
+    "principle": "tensegrity"
+   },
+   {
+    "labels": {
+     "central loop +20 ms": "worsened",
+     "mass +10 %": "worsened",
+     "other seeds": "no detectable effect",
+     "reference": "no detectable effect",
+     "sensor noise x2": "improved",
+     "stronger push 50 N": "no detectable effect"
+    },
+    "organization": "correction_quality",
+    "principle": "tensegrity"
+   },
+   {
+    "labels": {
+     "central loop +20 ms": "no detectable effect",
+     "mass +10 %": "no detectable effect",
+     "other seeds": "improved",
+     "reference": "improved",
+     "sensor noise x2": "improved",
+     "stronger push 50 N": "improved"
+    },
+    "organization": "precision",
+    "principle": "tensegrity"
+   },
+   {
+    "labels": {
+     "central loop +20 ms": "no detectable effect",
+     "mass +10 %": "improved",
+     "other seeds": "improved",
+     "reference": "improved",
+     "sensor noise x2": "improved",
+     "stronger push 50 N": "improved"
+    },
+    "organization": "correction_quality",
+    "principle": "slow-movement"
+   },
+   {
+    "labels": {
+     "central loop +20 ms": "no detectable effect",
+     "mass +10 %": "worsened",
+     "other seeds": "worsened",
+     "reference": "worsened",
+     "sensor noise x2": "worsened",
+     "stronger push 50 N": "worsened"
+    },
+    "organization": "turn_speed",
+    "principle": "slow-movement"
+   },
+   {
+    "labels": {
+     "central loop +20 ms": "worsened",
+     "mass +10 %": "worsened",
+     "other seeds": "worsened",
+     "reference": "worsened",
+     "sensor noise x2": "no detectable effect",
+     "stronger push 50 N": "worsened"
+    },
+    "organization": "fatigue_cost",
+    "principle": "slow-movement"
+   },
+   {
+    "labels": {
+     "central loop +20 ms": "worsened",
+     "mass +10 %": "no detectable effect",
+     "other seeds": "no detectable effect",
+     "reference": "no detectable effect",
+     "sensor noise x2": "no detectable effect",
+     "stronger push 50 N": "no detectable effect"
+    },
+    "organization": "recovery_time",
+    "principle": "slow-movement"
+   },
+   {
+    "labels": {
+     "central loop +20 ms": "worsened",
+     "mass +10 %": "worsened",
+     "other seeds": "no detectable effect",
+     "reference": "no detectable effect",
+     "sensor noise x2": "improved",
+     "stronger push 50 N": "worsened"
+    },
+    "organization": "correction_quality",
+    "principle": "narrow-step-balance"
+   },
+   {
+    "labels": {
+     "central loop +20 ms": "no detectable effect",
+     "mass +10 %": "improved",
+     "other seeds": "improved",
+     "reference": "improved",
+     "sensor noise x2": "no detectable effect",
+     "stronger push 50 N": "no detectable effect"
+    },
+    "organization": "turn_speed",
+    "principle": "narrow-step-balance"
+   },
+   {
+    "labels": {
+     "central loop +20 ms": "improved",
+     "mass +10 %": "no detectable effect",
+     "other seeds": "no detectable effect",
+     "reference": "no detectable effect",
+     "sensor noise x2": "no detectable effect",
+     "stronger push 50 N": "worsened"
+    },
+    "organization": "precision",
+    "principle": "narrow-step-balance"
+   },
+   {
+    "labels": {
+     "central loop +20 ms": "no detectable effect",
+     "mass +10 %": "no detectable effect",
+     "other seeds": "no detectable effect",
+     "reference": "no detectable effect",
+     "sensor noise x2": "improved",
+     "stronger push 50 N": "no detectable effect"
+    },
+    "organization": "fatigue_cost",
+    "principle": "narrow-step-balance"
+   },
+   {
+    "labels": {
+     "central loop +20 ms": "no detectable effect",
+     "mass +10 %": "improved",
+     "other seeds": "no detectable effect",
+     "reference": "no detectable effect",
+     "sensor noise x2": "no detectable effect",
+     "stronger push 50 N": "no detectable effect"
+    },
+    "organization": "correction_quality",
+    "principle": "fingertip-tension"
+   },
+   {
+    "labels": {
+     "central loop +20 ms": "no detectable effect",
+     "mass +10 %": "improved",
+     "other seeds": "no detectable effect",
+     "reference": "no detectable effect",
+     "sensor noise x2": "no detectable effect",
+     "stronger push 50 N": "improved"
+    },
+    "organization": "recovery_time",
+    "principle": "fingertip-tension"
+   },
+   {
+    "labels": {
+     "central loop +20 ms": "no detectable effect",
+     "mass +10 %": "improved",
+     "other seeds": "improved",
+     "reference": "improved",
+     "sensor noise x2": "no detectable effect",
+     "stronger push 50 N": "improved"
+    },
+    "organization": "turn_speed",
+    "principle": "breathing-synchronization"
+   },
+   {
+    "labels": {
+     "central loop +20 ms": "no detectable effect",
+     "mass +10 %": "improved",
+     "other seeds": "improved",
+     "reference": "improved",
+     "sensor noise x2": "improved",
+     "stronger push 50 N": "improved"
+    },
+    "organization": "precision",
+    "principle": "breathing-synchronization"
+   },
+   {
+    "labels": {
+     "central loop +20 ms": "worsened",
+     "mass +10 %": "improved",
+     "other seeds": "improved",
+     "reference": "improved",
+     "sensor noise x2": "improved",
+     "stronger push 50 N": "improved"
+    },
+    "organization": "recovery_time",
+    "principle": "breathing-synchronization"
+   },
+   {
+    "labels": {
+     "central loop +20 ms": "no detectable effect",
+     "mass +10 %": "improved",
+     "other seeds": "improved",
+     "reference": "improved",
+     "sensor noise x2": "improved",
+     "stronger push 50 N": "improved"
+    },
+    "organization": "correction_quality",
+    "principle": "long-duration-sedimentation"
+   },
+   {
+    "labels": {
+     "central loop +20 ms": "no detectable effect",
+     "mass +10 %": "improved",
+     "other seeds": "improved",
+     "reference": "improved",
+     "sensor noise x2": "improved",
+     "stronger push 50 N": "improved"
+    },
+    "organization": "turn_speed",
+    "principle": "long-duration-sedimentation"
+   },
+   {
+    "labels": {
+     "central loop +20 ms": "improved",
+     "mass +10 %": "improved",
+     "other seeds": "no detectable effect",
+     "reference": "no detectable effect",
+     "sensor noise x2": "no detectable effect",
+     "stronger push 50 N": "improved"
+    },
+    "organization": "fatigue_cost",
+    "principle": "long-duration-sedimentation"
+   },
+   {
+    "labels": {
+     "central loop +20 ms": "no detectable effect",
+     "mass +10 %": "no detectable effect",
+     "other seeds": "improved",
+     "reference": "improved",
+     "sensor noise x2": "no detectable effect",
+     "stronger push 50 N": "improved"
+    },
+    "organization": "recovery_time",
+    "principle": "long-duration-sedimentation"
+   }
+  ],
+  "reading": "A transfer that appears only in some variants is a property of that setting, not of the principle. Labels use BH q and |d| thresholds fixed in advance.",
+  "tables": [
+   {
+    "columns": [
+     "principle",
+     "organization",
+     "reference",
+     "other seeds",
+     "mass +10 %",
+     "central loop +20 ms",
+     "sensor noise x2",
+     "stronger push 50 N",
+     "agreement with the reference"
+    ],
+    "name": "label_agreement",
+    "rows": [
+     [
+      "lower-abdominal-continuity",
+      "posture_stability",
+      "improved",
+      "improved",
+      "improved",
+      "improved",
+      "improved",
+      "improved",
+      1.0
+     ],
+     [
+      "lower-abdominal-continuity",
+      "correction_quality",
+      "worsened",
+      "worsened",
+      "improved",
+      "worsened",
+      "worsened",
+      "no detectable effect",
+      0.666666666667
+     ],
+     [
+      "lower-abdominal-continuity",
+      "turn_speed",
+      "improved",
+      "improved",
+      "improved",
+      "no detectable effect",
+      "improved",
+      "improved",
+      0.833333333333
+     ],
+     [
+      "lower-abdominal-continuity",
+      "precision",
+      "no detectable effect",
+      "no detectable effect",
+      "improved",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      0.833333333333
+     ],
+     [
+      "lower-abdominal-continuity",
+      "fatigue_cost",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      1.0
+     ],
+     [
+      "lower-abdominal-continuity",
+      "recovery_time",
+      "worsened",
+      "no detectable effect",
+      "improved",
+      "worsened",
+      "no detectable effect",
+      "no detectable effect",
+      0.333333333333
+     ],
+     [
+      "lower-abdominal-continuity",
+      "fall_rate",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      1.0
+     ],
+     [
+      "whole-skin-sensing",
+      "posture_stability",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      1.0
+     ],
+     [
+      "whole-skin-sensing",
+      "correction_quality",
+      "worsened",
+      "worsened",
+      "no detectable effect",
+      "worsened",
+      "worsened",
+      "worsened",
+      0.833333333333
+     ],
+     [
+      "whole-skin-sensing",
+      "turn_speed",
+      "improved",
+      "improved",
+      "improved",
+      "no detectable effect",
+      "improved",
+      "improved",
+      0.833333333333
+     ],
+     [
+      "whole-skin-sensing",
+      "precision",
+      "improved",
+      "improved",
+      "improved",
+      "improved",
+      "improved",
+      "improved",
+      1.0
+     ],
+     [
+      "whole-skin-sensing",
+      "fatigue_cost",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      1.0
+     ],
+     [
+      "whole-skin-sensing",
+      "recovery_time",
+      "improved",
+      "improved",
+      "improved",
+      "no detectable effect",
+      "improved",
+      "improved",
+      0.833333333333
+     ],
+     [
+      "whole-skin-sensing",
+      "fall_rate",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      1.0
+     ],
+     [
+      "axis-maintenance",
+      "posture_stability",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      1.0
+     ],
+     [
+      "axis-maintenance",
+      "correction_quality",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      "no detectable effect",
+      "worsened",
+      0.833333333333
+     ],
+     [
+      "axis-maintenance",
+      "turn_speed",
+      "improved",
+      "improved",
+      "improved",
+      "no detectable effect",
+      "no detectable effect",
+      "improved",
+      0.666666666667
+     ],
+     [
+      "axis-maintenance",
+      "precision",
+      "no detectable effect",
+      "no detectable effect",
+      "improved",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      0.833333333333
+     ],
+     [
+      "axis-maintenance",
+      "fatigue_cost",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      1.0
+     ],
+     [
+      "axis-maintenance",
+      "recovery_time",
+      "worsened",
+      "no detectable effect",
+      "no detectable effect",
+      "worsened",
+      "no detectable effect",
+      "no detectable effect",
+      0.333333333333
+     ],
+     [
+      "axis-maintenance",
+      "fall_rate",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      1.0
+     ],
+     [
+      "endpoint-removal",
+      "posture_stability",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      1.0
+     ],
+     [
+      "endpoint-removal",
+      "correction_quality",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      1.0
+     ],
+     [
+      "endpoint-removal",
+      "turn_speed",
+      "improved",
+      "improved",
+      "improved",
+      "improved",
+      "improved",
+      "improved",
+      1.0
+     ],
+     [
+      "endpoint-removal",
+      "precision",
+      "improved",
+      "improved",
+      "improved",
+      "improved",
+      "improved",
+      "improved",
+      1.0
+     ],
+     [
+      "endpoint-removal",
+      "fatigue_cost",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      1.0
+     ],
+     [
+      "endpoint-removal",
+      "recovery_time",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "worsened",
+      "no detectable effect",
+      "no detectable effect",
+      0.833333333333
+     ],
+     [
+      "endpoint-removal",
+      "fall_rate",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      1.0
+     ],
+     [
+      "low-noise-movement",
+      "posture_stability",
+      "no detectable effect",
+      "improved",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      0.833333333333
+     ],
+     [
+      "low-noise-movement",
+      "correction_quality",
+      "improved",
+      "improved",
+      "no detectable effect",
+      "worsened",
+      "improved",
+      "improved",
+      0.666666666667
+     ],
+     [
+      "low-noise-movement",
+      "turn_speed",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      1.0
+     ],
+     [
+      "low-noise-movement",
+      "precision",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      1.0
+     ],
+     [
+      "low-noise-movement",
+      "fatigue_cost",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      1.0
+     ],
+     [
+      "low-noise-movement",
+      "recovery_time",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "improved",
+      "no detectable effect",
+      0.833333333333
+     ],
+     [
+      "low-noise-movement",
+      "fall_rate",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      1.0
+     ],
+     [
+      "minimal-approach-distance",
+      "posture_stability",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      1.0
+     ],
+     [
+      "minimal-approach-distance",
+      "correction_quality",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      1.0
+     ],
+     [
+      "minimal-approach-distance",
+      "turn_speed",
+      "improved",
+      "improved",
+      "improved",
+      "no detectable effect",
+      "improved",
+      "improved",
+      0.833333333333
+     ],
+     [
+      "minimal-approach-distance",
+      "precision",
+      "improved",
+      "improved",
+      "improved",
+      "no detectable effect",
+      "improved",
+      "improved",
+      0.833333333333
+     ],
+     [
+      "minimal-approach-distance",
+      "fatigue_cost",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      1.0
+     ],
+     [
+      "minimal-approach-distance",
+      "recovery_time",
+      "worsened",
+      "no detectable effect",
+      "no detectable effect",
+      "worsened",
+      "no detectable effect",
+      "no detectable effect",
+      0.333333333333
+     ],
+     [
+      "minimal-approach-distance",
+      "fall_rate",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      1.0
+     ],
+     [
+      "zero-run-up-transition",
+      "posture_stability",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      1.0
+     ],
+     [
+      "zero-run-up-transition",
+      "correction_quality",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      1.0
+     ],
+     [
+      "zero-run-up-transition",
+      "turn_speed",
+      "improved",
+      "improved",
+      "improved",
+      "improved",
+      "improved",
+      "improved",
+      1.0
+     ],
+     [
+      "zero-run-up-transition",
+      "precision",
+      "improved",
+      "improved",
+      "improved",
+      "improved",
+      "improved",
+      "improved",
+      1.0
+     ],
+     [
+      "zero-run-up-transition",
+      "fatigue_cost",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      1.0
+     ],
+     [
+      "zero-run-up-transition",
+      "recovery_time",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "worsened",
+      "no detectable effect",
+      "no detectable effect",
+      0.833333333333
+     ],
+     [
+      "zero-run-up-transition",
+      "fall_rate",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      1.0
+     ],
+     [
+      "tensegrity",
+      "posture_stability",
+      "no detectable effect",
+      "worsened",
+      "worsened",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      0.666666666667
+     ],
+     [
+      "tensegrity",
+      "correction_quality",
+      "no detectable effect",
+      "no detectable effect",
+      "worsened",
+      "worsened",
+      "improved",
+      "no detectable effect",
+      0.5
+     ],
+     [
+      "tensegrity",
+      "turn_speed",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      1.0
+     ],
+     [
+      "tensegrity",
+      "precision",
+      "improved",
+      "improved",
+      "no detectable effect",
+      "no detectable effect",
+      "improved",
+      "improved",
+      0.666666666667
+     ],
+     [
+      "tensegrity",
+      "fatigue_cost",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      1.0
+     ],
+     [
+      "tensegrity",
+      "recovery_time",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      1.0
+     ],
+     [
+      "tensegrity",
+      "fall_rate",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      1.0
+     ],
+     [
+      "slow-movement",
+      "posture_stability",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      1.0
+     ],
+     [
+      "slow-movement",
+      "correction_quality",
+      "improved",
+      "improved",
+      "improved",
+      "no detectable effect",
+      "improved",
+      "improved",
+      0.833333333333
+     ],
+     [
+      "slow-movement",
+      "turn_speed",
+      "worsened",
+      "worsened",
+      "worsened",
+      "no detectable effect",
+      "worsened",
+      "worsened",
+      0.833333333333
+     ],
+     [
+      "slow-movement",
+      "precision",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      1.0
+     ],
+     [
+      "slow-movement",
+      "fatigue_cost",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      "no detectable effect",
+      "worsened",
+      0.833333333333
+     ],
+     [
+      "slow-movement",
+      "recovery_time",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "worsened",
+      "no detectable effect",
+      "no detectable effect",
+      0.833333333333
+     ],
+     [
+      "slow-movement",
+      "fall_rate",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      1.0
+     ],
+     [
+      "narrow-step-balance",
+      "posture_stability",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      1.0
+     ],
+     [
+      "narrow-step-balance",
+      "correction_quality",
+      "no detectable effect",
+      "no detectable effect",
+      "worsened",
+      "worsened",
+      "improved",
+      "worsened",
+      0.333333333333
+     ],
+     [
+      "narrow-step-balance",
+      "turn_speed",
+      "improved",
+      "improved",
+      "improved",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      0.5
+     ],
+     [
+      "narrow-step-balance",
+      "precision",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "improved",
+      "no detectable effect",
+      "worsened",
+      0.666666666667
+     ],
+     [
+      "narrow-step-balance",
+      "fatigue_cost",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "improved",
+      "no detectable effect",
+      0.833333333333
+     ],
+     [
+      "narrow-step-balance",
+      "recovery_time",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      1.0
+     ],
+     [
+      "narrow-step-balance",
+      "fall_rate",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      1.0
+     ],
+     [
+      "fingertip-tension",
+      "posture_stability",
+      "improved",
+      "improved",
+      "improved",
+      "improved",
+      "improved",
+      "improved",
+      1.0
+     ],
+     [
+      "fingertip-tension",
+      "correction_quality",
+      "no detectable effect",
+      "no detectable effect",
+      "improved",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      0.833333333333
+     ],
+     [
+      "fingertip-tension",
+      "turn_speed",
+      "improved",
+      "improved",
+      "improved",
+      "improved",
+      "improved",
+      "improved",
+      1.0
+     ],
+     [
+      "fingertip-tension",
+      "precision",
+      "improved",
+      "improved",
+      "improved",
+      "improved",
+      "improved",
+      "improved",
+      1.0
+     ],
+     [
+      "fingertip-tension",
+      "fatigue_cost",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      1.0
+     ],
+     [
+      "fingertip-tension",
+      "recovery_time",
+      "no detectable effect",
+      "no detectable effect",
+      "improved",
+      "no detectable effect",
+      "no detectable effect",
+      "improved",
+      0.666666666667
+     ],
+     [
+      "fingertip-tension",
+      "fall_rate",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      1.0
+     ],
+     [
+      "breathing-synchronization",
+      "posture_stability",
+      "improved",
+      "improved",
+      "improved",
+      "improved",
+      "improved",
+      "improved",
+      1.0
+     ],
+     [
+      "breathing-synchronization",
+      "correction_quality",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      1.0
+     ],
+     [
+      "breathing-synchronization",
+      "turn_speed",
+      "improved",
+      "improved",
+      "improved",
+      "no detectable effect",
+      "no detectable effect",
+      "improved",
+      0.666666666667
+     ],
+     [
+      "breathing-synchronization",
+      "precision",
+      "improved",
+      "improved",
+      "improved",
+      "no detectable effect",
+      "improved",
+      "improved",
+      0.833333333333
+     ],
+     [
+      "breathing-synchronization",
+      "fatigue_cost",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      "worsened",
+      1.0
+     ],
+     [
+      "breathing-synchronization",
+      "recovery_time",
+      "improved",
+      "improved",
+      "improved",
+      "worsened",
+      "improved",
+      "improved",
+      0.833333333333
+     ],
+     [
+      "breathing-synchronization",
+      "fall_rate",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      1.0
+     ],
+     [
+      "anti-collapse-posture",
+      "posture_stability",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      1.0
+     ],
+     [
+      "anti-collapse-posture",
+      "correction_quality",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      1.0
+     ],
+     [
+      "anti-collapse-posture",
+      "turn_speed",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      1.0
+     ],
+     [
+      "anti-collapse-posture",
+      "precision",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      1.0
+     ],
+     [
+      "anti-collapse-posture",
+      "fatigue_cost",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      1.0
+     ],
+     [
+      "anti-collapse-posture",
+      "recovery_time",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      1.0
+     ],
+     [
+      "anti-collapse-posture",
+      "fall_rate",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      1.0
+     ],
+     [
+      "long-duration-sedimentation",
+      "posture_stability",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      1.0
+     ],
+     [
+      "long-duration-sedimentation",
+      "correction_quality",
+      "improved",
+      "improved",
+      "improved",
+      "no detectable effect",
+      "improved",
+      "improved",
+      0.833333333333
+     ],
+     [
+      "long-duration-sedimentation",
+      "turn_speed",
+      "improved",
+      "improved",
+      "improved",
+      "no detectable effect",
+      "improved",
+      "improved",
+      0.833333333333
+     ],
+     [
+      "long-duration-sedimentation",
+      "precision",
+      "improved",
+      "improved",
+      "improved",
+      "improved",
+      "improved",
+      "improved",
+      1.0
+     ],
+     [
+      "long-duration-sedimentation",
+      "fatigue_cost",
+      "no detectable effect",
+      "no detectable effect",
+      "improved",
+      "improved",
+      "no detectable effect",
+      "improved",
+      0.5
+     ],
+     [
+      "long-duration-sedimentation",
+      "recovery_time",
+      "improved",
+      "improved",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "improved",
+      0.5
+     ],
+     [
+      "long-duration-sedimentation",
+      "fall_rate",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      "no detectable effect",
+      1.0
+     ]
+    ],
+    "title": "Label of each cell in each variant, and the share of variants that agree with the reference"
+   },
+   {
+    "columns": [
+     "principle",
+     "reference",
+     "other seeds",
+     "mass +10 %",
+     "central loop +20 ms",
+     "sensor noise x2",
+     "stronger push 50 N"
+    ],
+    "name": "transfer_robustness",
+    "rows": [
+     [
+      "lower-abdominal-continuity",
+      true,
+      true,
+      false,
+      true,
+      true,
+      false
+     ],
+     [
+      "whole-skin-sensing",
+      true,
+      true,
+      false,
+      true,
+      true,
+      true
+     ],
+     [
+      "axis-maintenance",
+      true,
+      true,
+      true,
+      false,
+      false,
+      true
+     ],
+     [
+      "endpoint-removal",
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+     ],
+     [
+      "low-noise-movement",
+      true,
+      true,
+      false,
+      false,
+      true,
+      true
+     ],
+     [
+      "minimal-approach-distance",
+      true,
+      true,
+      true,
+      false,
+      true,
+      true
+     ],
+     [
+      "zero-run-up-transition",
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+     ],
+     [
+      "tensegrity",
+      false,
+      true,
+      false,
+      false,
+      false,
+      false
+     ],
+     [
+      "slow-movement",
+      true,
+      true,
+      true,
+      false,
+      true,
+      true
+     ],
+     [
+      "narrow-step-balance",
+      false,
+      false,
+      true,
+      true,
+      false,
+      false
+     ],
+     [
+      "fingertip-tension",
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     [
+      "breathing-synchronization",
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+     ],
+     [
+      "anti-collapse-posture",
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ],
+     [
+      "long-duration-sedimentation",
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    ],
+    "title": "Fragility Transfers per variant"
+   }
+  ],
+  "transfers_in_every_variant": [
+   "breathing-synchronization",
+   "endpoint-removal",
+   "zero-run-up-transition"
+  ],
+  "transfers_in_some_variants": [
+   "axis-maintenance",
+   "low-noise-movement",
+   "lower-abdominal-continuity",
+   "minimal-approach-distance",
+   "narrow-step-balance",
+   "slow-movement",
+   "tensegrity",
+   "whole-skin-sensing"
+  ],
+  "variants": {
+   "central loop +20 ms": "central command latency +0.02 s",
+   "mass +10 %": "all link masses x 1.1",
+   "other seeds": "a different block of seeds",
+   "reference": "the reference setting",
+   "sensor noise x2": "proprioceptive, vestibular and tactile noise x 2",
+   "stronger push 50 N": "the protocol push at 50 N instead of 35 N"
+  }
+ },
+ "schema": "xbtro.record/1",
+ "seeds": [
+  5000,
+  5001,
+  5002,
+  5003,
+  5004,
+  5005,
+  5006,
+  5007,
+  5008,
+  5009,
+  5010,
+  5011
+ ],
+ "time_step_s": 0.01,
+ "unobserved_differences": []
+}

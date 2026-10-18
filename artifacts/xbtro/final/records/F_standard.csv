@@ -1,0 +1,50 @@
+# record,xb-f-9208dab23942
+# experiment,F
+# model_version,xb-tro/1.0
+# digest,9208dab23942922521f17fdcda12be94c5ffad80892d1df6ad1badcd88b3a1c8
+# time_step_s,0.01
+# numerical_method,RK4 on the N-link planar Lagrangian equations with the muscle drive held over each step; batched seeds with common random numbers; first-order activation dynamics; digests over 6 significant digits
+# seeds,5000 5001 5002 5003 5004 5005 5006 5007 5008 5009 5010 5011
+# labels,reference = model reference state (not an observation of a real body); observation = simulated model output
+
+# table: per_body,"Per body: the stated consequence, speed, resources, correction"
+body,measure,mean,sd,n
+human-like-planar,time to goal (s),0.880833333333,0.0144337567297,12
+human-like-planar,resource used (energy units),0.0998469852716,0.000983020203221,12
+human-like-planar,peak deviation after push (m),0.0174372156189,0.00178214502072,12
+human-like-planar,"recovery time (s), recovered seeds only",1.28428571429,0.375448937623,7
+human-like-planar,fraction recovered inside the window,0.583333333333,0.514928650544,12
+human-like-planar,corrective reversals after the push,62.5,8.28470661136,12
+human-like-planar,criterion met (fraction of seeds),0.25,,12
+human-like-planar,"strongest push recovered (N, 50 % of seeds)",40.0,,12
+machine-like-planar,time to goal (s),0.324166666667,0.00514928650544,12
+machine-like-planar,resource used (energy units),0.0758317514807,0.000280268842827,12
+machine-like-planar,peak deviation after push (m),0.0162585170304,0.000138724976707,12
+machine-like-planar,"recovery time (s), recovered seeds only",0.770833333333,0.0108362466945,12
+machine-like-planar,fraction recovered inside the window,1.0,0.0,12
+machine-like-planar,corrective reversals after the push,175.416666667,13.3584044593,12
+machine-like-planar,criterion met (fraction of seeds),1.0,,12
+machine-like-planar,"strongest push recovered (N, 50 % of seeds)",80.0,,12
+
+# table: comparison,"Human-like (first) vs machine-like (second), paired by seed (common random numbers)"
+measure,human-like mean,machine-like mean,d (paired),p,n
+time to goal,0.880833333333,0.324166666667,-36.4423876694,0.00048828125,12
+resource used,0.0998469852716,0.0758317514807,-23.5940653782,0.00048828125,12
+peak deviation,0.0174372156189,0.0162585170304,-0.653503653306,0.0458984375,12
+recovery time (restricted mean),1.5825,0.770833333333,-1.75768442838,0.00048828125,12
+fraction recovered,0.583333333333,1.0,0.809173593713,0.0625,12
+corrections,62.5,175.416666667,6.66112937148,0.00048828125,12
+
+# table: reachability,Fraction of seeds that stay up and recover after a push of the given force
+push (N),human-like-planar,machine-like-planar
+20.0,1.0,1.0
+40.0,0.666666666667,1.0
+60.0,0.25,1.0
+80.0,0.0,1.0
+100.0,0.0,0.166666666667
+130.0,0.0,0.0
+160.0,0.0,0.0
+
+# table: negative_results
+statement,evidence
+"no detectable difference between the bodies in fraction recovered (paired by seed, p=0.0625)","{""n"": 12}"
