@@ -69,8 +69,11 @@ def line_stats(run: Run) -> dict[str, dict[str, np.ndarray]]:
     for j, lid in enumerate(run.line_ids):
         a = run["line_active"][:, :, j]
         rise = (a[:, 1:] & ~a[:, :-1]).sum(axis=1)
-        res[lid] = {"active_frac": a.mean(axis=1), "ignitions_per_s": rise / (T * run.dt),
-                    "mean_u": np.abs(run["line_u"][:, :, j]).sum(axis=2).mean(axis=1)}
+        res[lid] = {
+            "active_frac": a.mean(axis=1),
+            "ignitions_per_s": rise / (T * run.dt),
+            "mean_u": np.abs(run["line_u"][:, :, j]).sum(axis=2).mean(axis=1),
+        }
     return res
 
 
@@ -87,7 +90,9 @@ def body_states(run: Run) -> np.ndarray:
     state[(err >= metrics.band(cfg) * 1.5) & (state == 0)] = 2
     for p in cfg["environment"].get("pushes", []):
         i0 = metrics.idx(p["t"], dt)
-        state[:, i0: i0 + metrics.idx(1.2, dt)] = np.where(state[:, i0: i0 + metrics.idx(1.2, dt)] > 0, 3, state[:, i0: i0 + metrics.idx(1.2, dt)])
+        state[:, i0 : i0 + metrics.idx(1.2, dt)] = np.where(
+            state[:, i0 : i0 + metrics.idx(1.2, dt)] > 0, 3, state[:, i0 : i0 + metrics.idx(1.2, dt)]
+        )
     state[~run["alive"]] = 4
     return state
 
@@ -154,8 +159,17 @@ def reconstruct(control: Run, interventions: dict[str, Run], max_lag_s: float = 
                 cls = "correlational-only"
             else:
                 cls = "untested"
-            edges.append({"source": x, "target": y, "correlation": corr, "lag_s": lag * dt * decimate, "predictive_gain": pred,
-                          "interventional": evidence, "class": cls})
+            edges.append(
+                {
+                    "source": x,
+                    "target": y,
+                    "correlation": corr,
+                    "lag_s": lag * dt * decimate,
+                    "predictive_gain": pred,
+                    "interventional": evidence,
+                    "class": cls,
+                }
+            )
     ctrl_states = body_states(control)
     tr0 = transitions(ctrl_states)
     effects = {}
@@ -166,16 +180,28 @@ def reconstruct(control: Run, interventions: dict[str, Run], max_lag_s: float = 
         tr1 = transitions(st)
         iv_stats = line_stats(run)
         iv_m = metrics.summary(run)
-        line_eff = []
+        line_eff: list[dict[str, Any]] = []
         for lid in ctrl_stats:
-            e = stats.paired_effect(ctrl_stats[lid]["mean_u"], iv_stats[lid]["mean_u"]) if lid in iv_stats else None
-            if e is not None and np.isfinite(e["d"]):
-                line_eff.append({"line": lid, "d": float(e["d"]), "p": float(e["p"]),
-                                 "ignitions_per_s": [float(np.nanmean(ctrl_stats[lid]["ignitions_per_s"])), float(np.nanmean(iv_stats[lid]["ignitions_per_s"]))]})
+            le = stats.paired_effect(ctrl_stats[lid]["mean_u"], iv_stats[lid]["mean_u"]) if lid in iv_stats else None
+            if le is not None and np.isfinite(le["d"]):
+                line_eff.append(
+                    {
+                        "line": lid,
+                        "d": float(le["d"]),
+                        "p": float(le["p"]),
+                        "ignitions_per_s": [
+                            float(np.nanmean(ctrl_stats[lid]["ignitions_per_s"])),
+                            float(np.nanmean(iv_stats[lid]["ignitions_per_s"])),
+                        ],
+                    }
+                )
         line_eff.sort(key=lambda r: -abs(r["d"]))
-        outcome = {k: stats.paired_effect(ctrl_m[k], iv_m[k]) for k in ("sway_rms", "peak_dev", "settle_turn_rmst", "recovery_rmst", "fall", "energy_used")}
+        outcome = {
+            k: stats.paired_effect(ctrl_m[k], iv_m[k])
+            for k in ("sway_rms", "peak_dev", "settle_turn_rmst", "recovery_rmst", "fall", "energy_used")
+        }
         # association across seeds between a line's change and the change of the outcome (observational; ranked, not causal)
-        assoc = []
+        assoc: list[dict[str, Any]] = []
         for lid in ctrl_stats:
             dl = iv_stats[lid]["mean_u"] - ctrl_stats[lid]["mean_u"]
             for k in ("peak_dev", "recovery_rmst", "sway_rms"):
@@ -183,14 +209,29 @@ def reconstruct(control: Run, interventions: dict[str, Run], max_lag_s: float = 
                 ok = np.isfinite(dl) & np.isfinite(do)
                 if ok.sum() >= 4 and np.std(dl[ok]) > 1e-12 and np.std(do[ok]) > 1e-12:
                     assoc.append({"line": lid, "outcome": k, "r": float(np.corrcoef(dl[ok], do[ok])[0, 1]), "n": int(ok.sum())})
-        assoc.sort(key=lambda r: -abs(r["r"]))
-        effects[iid] = {"lines": line_eff[:8], "outcome": {k: {"d": _f(v["d"]), "p": _f(v["p"]), "mean_control": _f(v["mean_a"]), "mean_intervention": _f(v["mean_b"])} for k, v in outcome.items()},
-                        "transition_change": (_norm(tr1) - _norm(tr0)).tolist(), "transitions": tr1.tolist(),
-                        "association_with_outcome": assoc[:6],
-                        "note": "line ranking is the paired effect of the intervention on each line's command magnitude; the association list is "
-                                "observational (across seeds) and is not evidence of causation by itself"}
-    return {"nodes": nodes, "edges": edges, "states": list(STATES), "control_transitions": tr0.tolist(), "effects": effects,
-            "classes": {c: sum(1 for e in edges if e["class"] == c) for c in ("interventionally-supported", "correlational-only", "untested")}}
+        assoc.sort(key=lambda r: -abs(float(r["r"])))
+        effects[iid] = {
+            "lines": line_eff[:8],
+            "outcome": {
+                k: {"d": _f(v["d"]), "p": _f(v["p"]), "mean_control": _f(v["mean_a"]), "mean_intervention": _f(v["mean_b"])}
+                for k, v in outcome.items()
+            },
+            "transition_change": (_norm(tr1) - _norm(tr0)).tolist(),
+            "transitions": tr1.tolist(),
+            "association_with_outcome": assoc[:6],
+            "note": "line ranking is the paired effect of the intervention on each line's command magnitude; the association list is "
+            "observational (across seeds) and is not evidence of causation by itself",
+        }
+    return {
+        "nodes": nodes,
+        "edges": edges,
+        "states": list(STATES),
+        "control_transitions": tr0.tolist(),
+        "effects": effects,
+        "classes": {
+            c: sum(1 for e in edges if e["class"] == c) for c in ("interventionally-supported", "correlational-only", "untested")
+        },
+    }
 
 
 def _norm(m: np.ndarray) -> np.ndarray:

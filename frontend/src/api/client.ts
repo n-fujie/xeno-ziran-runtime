@@ -47,7 +47,7 @@ export class ApiError extends Error {
   }
 }
 
-async function j<T>(path: string, init?: RequestInit): Promise<T> {
+export async function j<T>(path: string, init?: RequestInit): Promise<T> {
   const bound = sessionOf(path);
   if (bound && isGone(bound)) throw new SessionGoneError(bound);  // never re-request a session known to be gone
   const r = await send(path, { headers: { 'Content-Type': 'application/json' }, ...init });
@@ -64,7 +64,19 @@ async function j<T>(path: string, init?: RequestInit): Promise<T> {
   return body as T;
 }
 
-const post = <T>(path: string, body: unknown) => j<T>(path, { method: 'POST', body: JSON.stringify(body) });
+export const post = <T>(path: string, body: unknown) => j<T>(path, { method: 'POST', body: JSON.stringify(body) });
+
+/** A text download (a JSON or CSV export), exactly as the runtime sent it. */
+export async function rawText(path: string): Promise<string> {
+  const r = await send(path);
+  const body = await r.text();
+  if (!r.ok) {
+    let msg = body;
+    try { const b = JSON.parse(body) as { detail?: unknown; error?: string }; msg = b.error ?? (typeof b.detail === 'string' ? b.detail : JSON.stringify(b.detail ?? b)); } catch { /* not JSON */ }
+    throw new ApiError(msg, r.status, body);
+  }
+  return body;
+}
 
 export const api = {
   health: () => j<{ ok: boolean; public?: boolean; max_nodes?: number }>('/api/health'),

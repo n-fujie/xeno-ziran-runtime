@@ -6,7 +6,6 @@ import csv
 import io
 import json
 
-import numpy as np
 import pytest
 
 from xzr.xbtro import experiments, metrics, records
@@ -19,7 +18,9 @@ def recs():
     out = {}
     out["A"], _ = experiments.run_to_end("A", {**SMALL, "rounds": 2})
     out["B"], _ = experiments.run_to_end("B", SMALL)
-    out["C"], _ = experiments.run_to_end("C", {**SMALL, "principles": ["axis-maintenance", "anti-collapse-posture"], "combos": False})
+    out["C"], _ = experiments.run_to_end(
+        "C", {**SMALL, "principles": ["axis-maintenance", "anti-collapse-posture"], "combos": False}
+    )
     out["D"], _ = experiments.run_to_end("D", {**SMALL, "trials": 3})
     out["F"], _ = experiments.run_to_end("F", SMALL)
     return out
@@ -29,16 +30,41 @@ def test_catalog_keeps_the_original_experiments_and_their_questions():
     ids = [e["id"] for e in experiments.catalog()]
     assert ids[:6] == ["A", "B", "C", "D", "E", "F"]
     titles = {e["id"]: e["title"] for e in experiments.catalog()}
-    assert titles["A"] == "Observation-Cut Transformation" and titles["C"] == "Fragility Transfer" and titles["F"] == "Human-Machine Operational Comparison"
+    assert (
+        titles["A"] == "Observation-Cut Transformation"
+        and titles["C"] == "Fragility Transfer"
+        and titles["F"] == "Human-Machine Operational Comparison"
+    )
 
 
 @pytest.mark.parametrize("eid", ["A", "B", "C", "D", "F"])
 def test_record_stores_everything_needed_to_repeat_and_read_it(recs, eid):
     r = recs[eid]
-    for k in ("schema", "id", "experiment", "model_version", "seeds", "initial_configuration", "observation_configurations", "interventions", "time_step_s",
-              "numerical_method", "parameters", "results", "negative_results", "unobserved_differences", "history", "rerun", "digest", "provenance", "labels"):
+    for k in (
+        "schema",
+        "id",
+        "experiment",
+        "model_version",
+        "seeds",
+        "initial_configuration",
+        "observation_configurations",
+        "interventions",
+        "time_step_s",
+        "numerical_method",
+        "parameters",
+        "results",
+        "negative_results",
+        "unobserved_differences",
+        "history",
+        "rerun",
+        "digest",
+        "provenance",
+        "labels",
+    ):
         assert k in r, k
-    assert r["experiment"] == eid and r["seeds"] == [metrics.FINAL_SEED_BASE + i for i in range(4)]       # final seeds, disjoint from the exploration seeds
+    assert r["experiment"] == eid and r["seeds"] == [
+        metrics.FINAL_SEED_BASE + i for i in range(4)
+    ]  # final seeds, disjoint from the exploration seeds
     assert not set(r["seeds"]) & set(metrics.EXPLORATION_SEEDS)
     assert records.digest(r["results"]) == r["digest"]
     assert r["results"]["tables"] and all(t["rows"] for t in r["results"]["tables"][:1])
@@ -65,20 +91,20 @@ def test_json_and_csv_round_trip(recs):
 
 def test_negative_and_null_results_are_kept(recs):
     c = recs["C"]
-    assert any("never ignited" in n["statement"] for n in c["negative_results"])       # anti-collapse-posture: not ignited, said so
+    assert any("never ignited" in n["statement"] for n in c["negative_results"])  # anti-collapse-posture: not ignited, said so
     assert recs["F"]["negative_results"] is not None and recs["B"]["negative_results"]
 
 
 def test_experiment_c_reports_design_and_ignition(recs):
     d = recs["C"]["results"]["design"]
-    assert d["n_pairs"] == 4 and d["min_detectable_dz"] > 1.0       # four seeds can only resolve large effects: stated, not hidden
+    assert d["n_pairs"] == 4 and d["min_detectable_dz"] > 1.0  # four seeds can only resolve large effects: stated, not hidden
     assert recs["C"]["results"]["design"]["ignition"]["anti-collapse-posture"] == 0.0
 
 
 def test_recovery_in_experiment_b_is_not_saturated(recs):
     rows = [r for r in recs["B"]["results"]["tables"][0]["rows"] if "recovery" in r[1]]
     means = {round(r[3], 3) for r in rows if r[3] is not None}
-    assert len(means) > 2                                      # the earlier defect: every condition at the cap
+    assert len(means) > 2  # the earlier defect: every condition at the cap
 
 
 def test_history_store_registry_and_import_guard(recs):

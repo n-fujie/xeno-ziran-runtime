@@ -24,6 +24,7 @@ from pydantic import BaseModel, Field
 from .. import __version__
 from ..scenario.io import list_samples, load_sample
 from . import operations as ops
+from . import xbtro_ops as xb
 from .limits import LIMITS, LimitError
 from .protocol import encode_aggregates, encode_deltas, encode_snapshot
 from .security import (
@@ -131,7 +132,10 @@ async def _limit_error(_: Request, e: LimitError) -> JSONResponse:
 
 _SESSION_PATH = re.compile(r"^/api/sessions/([^/]+)")
 _JOB_PATH = re.compile(r"^/api/jobs/([^/]+)")
-_JOB_ROUTES = re.compile(r"^/api/sessions/[^/]+/(compare|practice/command)$")
+_JOB_ROUTES = re.compile(
+    r"^/api/sessions/[^/]+/(compare|practice/command)$"
+    r"|^/api/xbtro/workspaces/[^/]+/(experiments|records/[^/]+/(rerun|reanalyse|reenter))$"
+)
 
 
 def _owns(request_owner: str | None, s: Session | None) -> bool:
@@ -470,6 +474,45 @@ def job(jid: str) -> dict:
 def cancel(jid: str) -> dict:
     """Cancel a queued comparison; a running one completes within its horizon cap."""
     return {"cancelled": cancel_job(jid), "status": JOBS[jid]["status"] if jid in JOBS else "gone"}
+
+
+# ---------------------------------------------------------------------------------------------- XenoBody / Total Observation
+@app.api_route("/api/xbtro/{path:path}", methods=["GET", "POST", "DELETE"])
+async def xbtro(path: str, request: Request, response: Response) -> Response:
+    """The research environment (xbtro_ops.ROUTES, the table the native bridge serves too). Ownership: a workspace belongs to the
+    anonymous capability that created it; any other caller is answered as if it did not exist.
+    Off by default on a public server."""
+    token = request.cookies.get(OWNER_COOKIE)
+    owner = owner_of(token)
+    if request.method == "POST" and path == "workspaces" and xb.enabled():
+        issued = token_issued(token) if owner else None
+        if owner is None or issued is None or time.time() - issued > LIMITS.owner_max_age_s / 2:
+            previous = owner
+            token = new_owner_token()
+            owner = owner_of(token)
+            _set_owner_cookie(response, token)
+            if previous is not None:
+                for w in xb.WORKSPACES.values():
+                    if w.owner == previous:
+                        w.owner = owner
+    body = None
+    if request.method == "POST":
+        raw = await request.body()
+        if raw:
+            try:
+                body = json.loads(raw)
+            except ValueError as e:
+                raise ops.OpError(400, "the body is not valid JSON") from e
+            check_payload(body)
+    q = dict(request.query_params.items())
+    result = await asyncio.to_thread(xb.dispatch, request.method, "/" + path, q, body, owner)
+    if isinstance(result, xb.Raw):
+        disposition = f'attachment; filename="{result.filename}"'
+        return Response(result.text, media_type=result.mime, headers={"Content-Disposition": disposition})
+    out = JSONResponse(result)
+    if "set-cookie" in response.headers:
+        out.headers["set-cookie"] = response.headers["set-cookie"]
+    return out
 
 
 # ---------------------------------------------------------------------------------------------- operations

@@ -30,8 +30,10 @@ import numpy as np
 from . import MODEL_VERSION
 
 SCHEMA = "xbtro.record/1"
-NUMERICAL_METHOD = ("RK4 on the N-link planar Lagrangian equations with the muscle drive held over each step; "
-                    "batched seeds with common random numbers; first-order activation dynamics; digests over 6 significant digits")
+NUMERICAL_METHOD = (
+    "RK4 on the N-link planar Lagrangian equations with the muscle drive held over each step; "
+    "batched seeds with common random numbers; first-order activation dynamics; digests over 6 significant digits"
+)
 
 
 def _round(x: Any, sig: int = 6) -> Any:
@@ -68,26 +70,51 @@ def provenance() -> dict[str, Any]:
     return {"python": sys.version.split()[0], "numpy": np.__version__, "platform": sys.platform, "machine": platform.machine()}
 
 
-def make_record(experiment: str, params: dict[str, Any], seeds: list[int], body: dict[str, Any], observations: list[dict[str, Any]],
-                interventions: list[dict[str, Any]], results: dict[str, Any], negative: list[dict[str, Any]],
-                unobserved: list[dict[str, Any]], history: dict[str, Any], dt: float) -> dict[str, Any]:
+def make_record(
+    experiment: str,
+    params: dict[str, Any],
+    seeds: list[int],
+    body: dict[str, Any],
+    observations: list[dict[str, Any]],
+    interventions: list[dict[str, Any]],
+    results: dict[str, Any],
+    negative: list[dict[str, Any]],
+    unobserved: list[dict[str, Any]],
+    history: dict[str, Any],
+    dt: float,
+) -> dict[str, Any]:
     results = clean(results)
     d = digest(results)
     rec = {
-        "schema": SCHEMA, "id": f"xb-{experiment.lower()}-{d[:12]}", "experiment": experiment, "model_version": MODEL_VERSION,
-        "seeds": list(seeds), "initial_configuration": clean(body), "observation_configurations": clean(observations),
-        "interventions": clean(interventions), "time_step_s": dt, "numerical_method": NUMERICAL_METHOD,
-        "parameters": clean(params), "results": results, "negative_results": clean(negative),
-        "unobserved_differences": clean(unobserved), "history": clean(history),
-        "rerun": {"experiment": experiment, "parameters": clean(params)}, "digest": d, "provenance": provenance(),
-        "labels": {"reference": "model reference state (simulator-internal; not an observation of a real body)",
-                   "observation": "output of a simulated observation model applied to the reference (separate from it)",
-                   "estimate": "model-based estimate computed from observation outputs only"},
+        "schema": SCHEMA,
+        "id": f"xb-{experiment.lower()}-{d[:12]}",
+        "experiment": experiment,
+        "model_version": MODEL_VERSION,
+        "seeds": list(seeds),
+        "initial_configuration": clean(body),
+        "observation_configurations": clean(observations),
+        "interventions": clean(interventions),
+        "time_step_s": dt,
+        "numerical_method": NUMERICAL_METHOD,
+        "parameters": clean(params),
+        "results": results,
+        "negative_results": clean(negative),
+        "unobserved_differences": clean(unobserved),
+        "history": clean(history),
+        "rerun": {"experiment": experiment, "parameters": clean(params)},
+        "digest": d,
+        "provenance": provenance(),
+        "labels": {
+            "reference": "model reference state (simulator-internal; not an observation of a real body)",
+            "observation": "output of a simulated observation model applied to the reference (separate from it)",
+            "estimate": "model-based estimate computed from observation outputs only",
+        },
     }
     return rec
 
 
 # ------------------------------------------------------------------------------------------------ export
+
 
 def to_json(record: dict[str, Any]) -> str:
     return json.dumps(record, indent=1, sort_keys=True)
@@ -101,7 +128,12 @@ def to_csv(record: dict[str, Any]) -> str:
     for k in ("experiment", "model_version", "digest", "time_step_s", "numerical_method"):
         w.writerow([f"# {k}", record[k]])
     w.writerow(["# seeds", " ".join(str(s) for s in record["seeds"])])
-    w.writerow(["# labels", "reference = model reference state (not an observation of a real body); observation = simulated model output"])
+    w.writerow(
+        [
+            "# labels",
+            "reference = model reference state (not an observation of a real body); observation = simulated model output",
+        ]
+    )
     for t in record["results"].get("tables", []):
         w.writerow([])
         w.writerow([f"# table: {t['name']}", t.get("title", "")])
@@ -152,11 +184,17 @@ def compare(a: dict[str, Any], b: dict[str, Any], rtol: float = 1e-6) -> dict[st
             mismatches.append(f"{path}: {x!r} != {y!r}")
 
     walk(a["results"], b["results"], "results")
-    return {"numbers_compared": count, "max_relative_difference": worst, "structural_mismatches": mismatches[:20],
-            "equal_digest": a["digest"] == b["digest"], "within_tolerance": worst <= rtol and not mismatches}
+    return {
+        "numbers_compared": count,
+        "max_relative_difference": worst,
+        "structural_mismatches": mismatches[:20],
+        "equal_digest": a["digest"] == b["digest"],
+        "within_tolerance": worst <= rtol and not mismatches,
+    }
 
 
 # ------------------------------------------------------------------------------------------------ history
+
 
 class HistoryStore:
     """An ordered, exportable store of records with an accumulating registry of unobserved differences."""
@@ -164,7 +202,7 @@ class HistoryStore:
     def __init__(self) -> None:
         self.records: dict[str, dict[str, Any]] = {}
         self.order: list[str] = []
-        self.slow: dict[str, dict[str, list[float]]] = {}   # record id -> retained slow state per seed
+        self.slow: dict[str, dict[str, list[float]]] = {}  # record id -> retained slow state per seed
         self.log: list[dict[str, Any]] = []
 
     def add(self, record: dict[str, Any], slow_state: dict[str, Any] | None = None, parent: str | None = None) -> dict[str, Any]:
@@ -187,11 +225,19 @@ class HistoryStore:
         return self.records[rid]
 
     def listing(self) -> list[dict[str, Any]]:
-        return [{"id": rid, "experiment": self.records[rid]["experiment"], "digest": self.records[rid]["digest"][:12],
-                 "sequence": self.records[rid]["history"].get("sequence"), "parent": self.records[rid]["history"].get("parent"),
-                 "negative_results": len(self.records[rid].get("negative_results", [])),
-                 "unobserved": len(self.records[rid].get("unobserved_differences", [])), "seeds": len(self.records[rid]["seeds"])}
-                for rid in self.order]
+        return [
+            {
+                "id": rid,
+                "experiment": self.records[rid]["experiment"],
+                "digest": self.records[rid]["digest"][:12],
+                "sequence": self.records[rid]["history"].get("sequence"),
+                "parent": self.records[rid]["history"].get("parent"),
+                "negative_results": len(self.records[rid].get("negative_results", [])),
+                "unobserved": len(self.records[rid].get("unobserved_differences", [])),
+                "seeds": len(self.records[rid]["seeds"]),
+            }
+            for rid in self.order
+        ]
 
     def registry(self) -> list[dict[str, Any]]:
         """Unobserved differences accumulated over all records, with whether a later record identified them."""
@@ -199,7 +245,9 @@ class HistoryStore:
         for rid in self.order:
             for u in self.records[rid].get("unobserved_differences", []):
                 e = reg.setdefault(u["id"], {"id": u["id"], "first_record": rid, "history": [], "identified_later": False})
-                e["history"].append({"record": rid, "status": u.get("status"), "reason": u.get("reason"), "configuration": u.get("configuration")})
+                e["history"].append(
+                    {"record": rid, "status": u.get("status"), "reason": u.get("reason"), "configuration": u.get("configuration")}
+                )
                 if u.get("status", "").startswith("identified"):
                     e["identified_later"] = True
                     e["identified_in"] = rid
@@ -209,7 +257,12 @@ class HistoryStore:
         return self.slow.get(rid)
 
     def export(self) -> dict[str, Any]:
-        return {"schema": "xbtro.history/1", "records": [self.records[r] for r in self.order], "slow_state": self.slow, "log": self.log}
+        return {
+            "schema": "xbtro.history/1",
+            "records": [self.records[r] for r in self.order],
+            "slow_state": self.slow,
+            "log": self.log,
+        }
 
     def load(self, data: dict[str, Any]) -> int:
         if data.get("schema") != "xbtro.history/1":

@@ -334,7 +334,12 @@ def test_no_route_runs_experiments_or_touches_the_filesystem():
         ("POST", "/api/gaisho/run"), ("POST", "/api/gaisho/compare-observations"), ("POST", "/api/gaisho/compare-shapes"),
         ("POST", "/api/gaisho/figure"), ("POST", "/api/gaisho/restore"), ("POST", "/api/gaisho/construction"),
         ("POST", "/api/gaisho/comparators"), ("POST", "/api/gaisho/countermodels"),
-        ("POST", "/api/gaisho/body-snn")])
+        ("POST", "/api/gaisho/body-snn"),
+        # XenoBody research environment: reviewed against the boundary (see
+        # test_xbtro_is_off_on_a_public_server_and_bounded): the route family runs allowlisted, parameter-validated, size-bounded
+        # numpy simulations of the in-memory body model; it runs no subprocess, reads and writes no file, and is disabled by
+        # default under XZR_PUBLIC.
+        ("POST", "/api/xbtro/{path:path}"), ("DELETE", "/api/xbtro/{path:path}")])
     meos_src = Path(app_mod.__file__).with_name("meos.py").read_text()
     assert meos_src.count("local_only(request)") >= len([1 for r in routes if "/api/meos" in getattr(r, "path", "")])
     te_src = Path(app_mod.__file__).with_name("truth_error.py").read_text()
@@ -545,3 +550,29 @@ def test_unknown_api_paths_are_404_not_the_app(limits, tmp_path, monkeypatch):
     for p in ("/api/exec?cmd=ls", "/api/run", "/api", "/api/experiments/run/x", "/ws/x/y"):
         r = c.get(p)
         assert r.status_code == 404 and "text/html" not in r.headers.get("content-type", ""), p
+
+
+def test_xbtro_is_off_on_a_public_server_and_bounded(monkeypatch):
+    """The review the route test above asks for: the research environment is not part of a public server's surface, is
+    owner-scoped, rate-limited like the other job routes, and every parameter is validated and bounded before anything runs."""
+    import dataclasses
+
+    from fastapi.testclient import TestClient
+
+    from xzr.service import xbtro_ops as xb
+
+    monkeypatch.delenv("XZR_XBTRO", raising=False)
+    assert xb.enabled() is True                                   # local default
+    monkeypatch.setattr(xb, "LIMITS", dataclasses.replace(xb.LIMITS, public=True))
+    assert xb.enabled() is False                                  # public default
+    with TestClient(app_mod.app) as c:
+        r = c.post("/api/xbtro/workspaces")
+        assert r.status_code == 404 and "not enabled" in r.text
+        monkeypatch.setenv("XZR_XBTRO", "1")  # an operator may still turn it on, with the (smaller) public limits
+        assert xb.enabled() is True
+    monkeypatch.delenv("XZR_XBTRO")
+    assert app_mod._JOB_ROUTES.match("/api/xbtro/workspaces/abc/experiments")  # counted against the job rate limit
+    assert app_mod._JOB_ROUTES.match("/api/xbtro/workspaces/abc/records/xb-b-1/rerun")
+    src = Path(xb.__file__).read_text()
+    for forbidden in ("subprocess", "os.system", "open(", "eval(", "exec(", "pickle"):
+        assert forbidden not in src

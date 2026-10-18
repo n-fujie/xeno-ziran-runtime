@@ -40,6 +40,8 @@ import TimelineView from './views/TimelineView';
 // The WebGL projections (deck.gl, world atlas) load only when a graph or comparison view opens.
 const GraphView = lazy(() => import('./views/GraphView'));
 const CompareView = lazy(() => import('./views/CompareView'));
+// The XenoBody research environment (three.js) loads only when its view opens.
+const XenoBodyView = lazy(() => import('./views/xbtro/XenoBodyView'));
 
 // The in-tab runtime's start-up progress exists only in the browser build (the literal test removes it from the others).
 const WebBoot = import.meta.env.VITE_WEBRT === '1' ? lazy(() => import('./components/WebBoot')) : () => null;
@@ -71,6 +73,7 @@ const VIEWS: { id: View; label: () => string }[] = [
   { id: 'body', label: () => t('view_body') },
   { id: 'sbs', label: () => t('view_sbs') },
   { id: 'verification', label: () => t('view_verification') },
+  { id: 'xbtro', label: () => t('view_xbtro') },
   { id: 'study', label: () => t('view_study') },
 ];
 
@@ -267,6 +270,7 @@ export default function App() {
             {view === 'body' && BodyView && <BodyView />}
             {view === 'sbs' && SbsView && <SbsView />}
             {view === 'verification' && VerificationView && <VerificationView />}
+            {view === 'xbtro' && <XenoBodyView />}
             {view === 'study' && StudyView && <StudyView />}
             {view === 'overview' && (
               <div className="entry">

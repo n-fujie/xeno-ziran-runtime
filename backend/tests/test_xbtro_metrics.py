@@ -13,23 +13,35 @@ def _fake_run(inside: np.ndarray, fell=None, diverged=None, fall_time=None, dt=0
     cfg = base_config("human-like-planar")
     arrays = {"com": np.zeros((s, T))}
     fell = np.zeros(s, dtype=bool) if fell is None else fell
-    return engine.Run(cfg, list(range(s)), np.arange(T) * dt, dt, arrays, [], fell, np.full(s, np.inf) if fall_time is None else fall_time,
-                      np.zeros(s, dtype=bool) if diverged is None else diverged, np.full(s, np.inf), {}, {})
+    return engine.Run(
+        cfg,
+        list(range(s)),
+        np.arange(T) * dt,
+        dt,
+        arrays,
+        [],
+        fell,
+        np.full(s, np.inf) if fall_time is None else fall_time,
+        np.zeros(s, dtype=bool) if diverged is None else diverged,
+        np.full(s, np.inf),
+        {},
+        {},
+    )
 
 
 def test_not_achieved_is_censored_not_the_window_length():
     inside = np.zeros((2, 400), dtype=bool)
-    inside[0, 150:250] = True                         # holds for 1.0 s from 1.5 s on
+    inside[0, 150:250] = True  # holds for 1.0 s from 1.5 s on
     run = _fake_run(inside)
     res = metrics.time_to_hold(run, inside, 1.0, 3.0)
     assert res["time"][0] == 0.5 and res["status"][0] == "achieved"
     assert np.isnan(res["time"][1]) and res["status"][1] == "not-achieved-in-window"
-    assert res["rmst"][1] == 2.0 and res["window"][1] == 2.0      # the restricted mean uses the window; the time stays NaN
+    assert res["rmst"][1] == 2.0 and res["window"][1] == 2.0  # the restricted mean uses the window; the time stays NaN
 
 
 def test_the_hold_must_complete_inside_the_window():
     inside = np.zeros((1, 400), dtype=bool)
-    inside[0, 290:400] = True                         # enters at 2.9 s but the window ends at 3.0 s: hold (0.4 s) cannot finish
+    inside[0, 290:400] = True  # enters at 2.9 s but the window ends at 3.0 s: hold (0.4 s) cannot finish
     res = metrics.time_to_hold(_fake_run(inside), inside, 1.0, 3.0)
     assert res["status"][0] == "not-achieved-in-window"
 
@@ -47,10 +59,10 @@ def test_fall_and_divergence_are_separate_statuses():
 def test_search_starts_at_the_peak_not_at_the_push():
     """Regression: a body still inside the band just after the push (before it has moved) used to count as recovered."""
     inside = np.zeros((1, 700), dtype=bool)
-    inside[0, 320:380] = True                         # inside right after the push at 3.2 s ...
-    inside[0, 480:560] = True                         # ... and genuinely recovered from 4.8 s on
+    inside[0, 320:380] = True  # inside right after the push at 3.2 s ...
+    inside[0, 480:560] = True  # ... and genuinely recovered from 4.8 s on
     run = _fake_run(inside)
-    early = metrics.time_to_hold(run, inside, 3.2, 6.0)                       # naive start: finds the early stay
+    early = metrics.time_to_hold(run, inside, 3.2, 6.0)  # naive start: finds the early stay
     assert early["time"][0] < 0.5
     from_peak = metrics.time_to_hold(run, inside, 3.2, 6.0, start_idx=np.array([400]))
     assert abs(from_peak["time"][0] - 1.6) < 1e-9
@@ -70,7 +82,7 @@ def test_summary_has_status_columns_and_windows_are_bounded_by_protocol_events()
 def test_intervention_pushes_do_not_cut_the_protocol_windows():
     cfg = config.apply_intervention(base_config("human-like-planar"), "perturbation", 40.0)
     ev = metrics.events(cfg)
-    assert len(ev["pushes"]) == 1                     # only the protocol's own push defines windows
+    assert len(ev["pushes"]) == 1  # only the protocol's own push defines windows
     assert any(p.get("role") == "intervention" for p in cfg["environment"]["pushes"])
 
 

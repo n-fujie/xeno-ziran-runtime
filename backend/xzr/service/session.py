@@ -653,3 +653,34 @@ class Session:
         for jid in mine:
             cancel_job(jid)
         event("session_closed", session=self.id[:8], age_s=round(time.time() - self.created))
+
+
+# ------------------------------------------------------------------------------------------------ generic jobs
+def register_job(kind: str, owner_key: str, **fields: Any) -> dict:
+    """A job record in the shared table (pruning, limits, the cooperative loop and metrics of comparison jobs apply to it too)."""
+    prune_jobs()
+    if active_jobs() >= LIMITS.max_queued_jobs:
+        raise LimitError("max_queued_jobs", "the runtime's job queue is full; retry shortly", 503)
+    jid = uuid.uuid4().hex
+    job = {"id": jid, "kind": kind, "session": owner_key, "status": "queued", "created": time.time(), **fields}
+    with _JOBS_LOCK:
+        JOBS[jid] = job
+    METRICS.inc("jobs_started")
+    return job
+
+
+def schedule_job(jid: str, steps: Callable[[], Any]) -> None:
+    """Run a job body given as a generator factory: a pool thread drives it straight through; a host without threads advances it
+    in time slices (run_deferred), one yield per slice."""
+
+    def work() -> None:
+        for _ in steps():
+            pass
+
+    with _JOBS_LOCK:
+        if COOPERATIVE:
+            fut: Future = Future()
+            DEFERRED.append((fut, steps()))
+            FUTURES[jid] = fut
+        else:
+            FUTURES[jid] = _POOL.submit(work)

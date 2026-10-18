@@ -170,3 +170,37 @@ def test_save_load_round_trip_through_the_bridge_and_with_a_desktop_save():
     # and a bridge save loads in the desktop service
     r = http.post("/api/sessions", json={"scenario": saved["scenario"], "applied": saved["applied"]})
     assert r.status_code == 200
+
+
+def test_xbtro_routes_through_the_bridge():
+    """The research environment works through the in-process bridge (iOS / browser) exactly as over HTTP."""
+    import json as _json
+    import time as _time
+
+    from xzr.native import bridge
+
+    def call(method, path, body=None):
+        r = _json.loads(bridge.handle(_json.dumps({"method": method, "path": path, "body": body})))
+        return r["status"], r["body"]
+
+    st, cat = call("GET", "/api/xbtro/catalog")
+    assert st == 200 and len(cat["xeno14"]) == 14
+    st, ws = call("POST", "/api/xbtro/workspaces")
+    wid = ws["id"]
+    st, j = call("POST", f"/api/xbtro/workspaces/{wid}/experiments", {"experiment": "B", "params": {"n_seeds": 4}})
+    assert st == 200
+    end = _time.time() + 120
+    while _time.time() < end:
+        st, job = call("GET", f"/api/xbtro/workspaces/{wid}/jobs/{j['job']['id']}")
+        if job["status"] in ("done", "error"):
+            break
+        bridge.tick(5)
+        _time.sleep(0.05)
+    assert job["status"] == "done", job
+    st, text = call("GET", f"/api/xbtro/workspaces/{wid}/records/{job['record_id']}?format=csv")
+    assert st == 200 and "# table:" in text
+    st, b = call("POST", f"/api/xbtro/workspaces/{wid}/bodies", {"n_seeds": 1, "horizon_s": 5})
+    st, out = call("POST", f"/api/xbtro/workspaces/{wid}/bodies/{b['id']}/step", {"n": 10})
+    assert st == 200 and out["frames"]
+    assert call("GET", "/api/xbtro/nothing")[0] == 404
+    assert call("POST", f"/api/xbtro/workspaces/{wid}/experiments", {"experiment": "B", "params": {"n_seeds": 1}})[0] == 422

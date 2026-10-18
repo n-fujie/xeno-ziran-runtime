@@ -23,34 +23,101 @@ import numpy as np
 from . import metrics, stats
 from .engine import Run
 
-MEASURES = [
-    {"id": "sensory_detection", "label": "sensory detection latency", "unit": "s", "stimulus": "cue",
-     "definition": "time from a cue to the first ignition of the cue-perception line", "lines": ["sens.cue"]},
-    {"id": "neural_response", "label": "neural response latency", "unit": "s", "stimulus": "cue",
-     "definition": "time from a cue to the first ignition of the central movement command line", "lines": ["neural.central.cue"]},
-    {"id": "muscle_onset", "label": "muscle activation onset latency", "unit": "s", "stimulus": "cue",
-     "definition": "time from a cue until the ankle net activation deviates from its baseline by more than 0.03",
-     "lines": ["neural.central.ankle"]},
-    {"id": "movement_onset", "label": "movement onset latency", "unit": "s", "stimulus": "cue",
-     "definition": "time from a cue until the COM has moved 3 mm towards the target", "lines": ["neural.central.cue", "neural.central.ankle"]},
-    {"id": "correction", "label": "movement correction latency", "unit": "s", "stimulus": "push",
-     "definition": "time from a push until the ankle torque deviates by more than 5 Nm against the push", "lines": ["neural.central.ankle", "mech.passive"]},
-    {"id": "settling", "label": "settling time", "unit": "s", "stimulus": "turn",
-     "definition": "time after the direction change until the COM stays within the pre-registered tolerance band of the new target for 0.4 s", "lines": ["neural.central.ankle"]},
-    {"id": "adaptation", "label": "adaptation speed", "unit": "1/trial", "stimulus": "trials",
-     "definition": "rate at which the peak deviation after a push falls over repeated trials (slope of log deviation)", "lines": ["adapt.gain"]},
-    {"id": "recovery", "label": "recovery time", "unit": "s", "stimulus": "push",
-     "definition": "time after a push (from the largest deviation) until the COM is back within the pre-registered tolerance band of the reference and slow, for 0.4 s, inside the window that ends at the next protocol event", "lines": ["neural.central.ankle"]},
-    {"id": "reconfiguration", "label": "observation reconfiguration speed", "unit": "rounds / s", "stimulus": "observation",
-     "definition": "rounds and simulated set-up time needed until an unobserved difference becomes identified (Experiment E)", "lines": []},
-    {"id": "consequence", "label": "time to the consequence", "unit": "s", "stimulus": "cue / push",
-     "definition": "time from the stimulus until the consequence is established: the target reached, or a fall", "lines": []},
+MEASURES: list[dict[str, Any]] = [
+    {
+        "id": "sensory_detection",
+        "label": "sensory detection latency",
+        "unit": "s",
+        "stimulus": "cue",
+        "definition": "time from a cue to the first ignition of the cue-perception line",
+        "lines": ["sens.cue"],
+    },
+    {
+        "id": "neural_response",
+        "label": "neural response latency",
+        "unit": "s",
+        "stimulus": "cue",
+        "definition": "time from a cue to the first ignition of the central movement command line",
+        "lines": ["neural.central.cue"],
+    },
+    {
+        "id": "muscle_onset",
+        "label": "muscle activation onset latency",
+        "unit": "s",
+        "stimulus": "cue",
+        "definition": "time from a cue until the ankle net activation deviates from its baseline by more than 0.03",
+        "lines": ["neural.central.ankle"],
+    },
+    {
+        "id": "movement_onset",
+        "label": "movement onset latency",
+        "unit": "s",
+        "stimulus": "cue",
+        "definition": "time from a cue until the COM has moved 3 mm towards the target",
+        "lines": ["neural.central.cue", "neural.central.ankle"],
+    },
+    {
+        "id": "correction",
+        "label": "movement correction latency",
+        "unit": "s",
+        "stimulus": "push",
+        "definition": "time from a push until the ankle torque deviates by more than 5 Nm against the push",
+        "lines": ["neural.central.ankle", "mech.passive"],
+    },
+    {
+        "id": "settling",
+        "label": "settling time",
+        "unit": "s",
+        "stimulus": "turn",
+        "definition": "time after the direction change until the COM stays within the pre-registered tolerance band of the new target for 0.4 s",
+        "lines": ["neural.central.ankle"],
+    },
+    {
+        "id": "adaptation",
+        "label": "adaptation speed",
+        "unit": "1/trial",
+        "stimulus": "trials",
+        "definition": "rate at which the peak deviation after a push falls over repeated trials (slope of log deviation)",
+        "lines": ["adapt.gain"],
+    },
+    {
+        "id": "recovery",
+        "label": "recovery time",
+        "unit": "s",
+        "stimulus": "push",
+        "definition": "time after a push (from the largest deviation) until the COM is back within the pre-registered tolerance band of the reference and slow, for 0.4 s, inside the window that ends at the next protocol event",
+        "lines": ["neural.central.ankle"],
+    },
+    {
+        "id": "reconfiguration",
+        "label": "observation reconfiguration speed",
+        "unit": "rounds / s",
+        "stimulus": "observation",
+        "definition": "rounds and simulated set-up time needed until an unobserved difference becomes identified (Experiment E)",
+        "lines": [],
+    },
+    {
+        "id": "consequence",
+        "label": "time to the consequence",
+        "unit": "s",
+        "stimulus": "cue / push",
+        "definition": "time from the stimulus until the consequence is established: the target reached, or a fall",
+        "lines": [],
+    },
 ]
 BY_ID = {m["id"]: m for m in MEASURES}
 
 
-def onset(signal: np.ndarray, i0: int, dt: float, thr: float, direction: int = 0, base_steps: int = 20, hold: int = 2,
-          end: int | None = None) -> np.ndarray:
+def onset(
+    signal: np.ndarray,
+    i0: int,
+    dt: float,
+    thr: float,
+    direction: int = 0,
+    base_steps: int = 20,
+    hold: int = 2,
+    end: int | None = None,
+) -> np.ndarray:
     """Seconds from step ``i0`` until ``signal`` deviates from its pre-event mean by more than ``thr`` for ``hold`` steps.
     ``direction`` +1 / −1 requires the deviation to have that sign, 0 either. NaN if it never does."""
     s, t = signal.shape
@@ -63,7 +130,7 @@ def onset(signal: np.ndarray, i0: int, dt: float, thr: float, direction: int = 0
         ok = np.ones_like(hit)
         for h in range(hold):
             ok[:, : hit.shape[1] - h] &= hit[:, h:]
-            ok[:, hit.shape[1] - h:] = False
+            ok[:, hit.shape[1] - h :] = False
         hit = ok
     first = np.where(hit.any(axis=1), hit.argmax(axis=1), -1)
     return np.where(first >= 0, first * dt, np.nan)
@@ -78,7 +145,7 @@ def _line_first_active(run: Run, lid: str, i0: int) -> tuple[np.ndarray, str | N
         return np.full(run["com"].shape[0], np.nan), "line-stopped"
     act = run["line_active"][:, i0:, j]
     # ignition = a rising edge after the stimulus (a line already active before the stimulus does not "ignite" at it)
-    prev = run["line_active"][:, max(i0 - 1, 0): -1, j]
+    prev = run["line_active"][:, max(i0 - 1, 0) : -1, j]
     rise = act & ~prev[:, : act.shape[1]]
     first = np.where(rise.any(axis=1), rise.argmax(axis=1), -1)
     return np.where(first >= 0, first * run.dt, np.nan), None
@@ -137,7 +204,7 @@ def profile(run: Run) -> dict[str, dict[str, Any]]:
         co = onset(run["tau"][:, :, 0], i_push, dt, 5.0, direction=-sign, end=i_push + metrics.idx(1.5, dt))
         put("correction", co, classify_missing(co, ["neural.central.ankle"], i_push, None))
         m = metrics.summary(run)
-        rec_def = m["recovery"].copy()           # NaN where the body did not recover inside the window (censored, not a time)
+        rec_def = m["recovery"].copy()  # NaN where the body did not recover inside the window (censored, not a time)
         rr = classify_missing(rec_def, ["neural.central.ankle"], i_push, None)
         rr = np.where(m["recovery_status"] == "not-achieved-in-window", "not-achieved-in-window", rr)
         put("recovery", rec_def, rr)
@@ -153,7 +220,7 @@ def profile(run: Run) -> dict[str, dict[str, Any]]:
     # --- time to the consequence: the cue's target reached (within 2 bands) or a fall, whichever comes first
     tgt = cfg["task"]["x_target"]
     near = (np.abs(run["com"] - tgt) < 2 * metrics.band(run.cfg)) & alive
-    near[:, : i_cue] = False
+    near[:, :i_cue] = False
     first = np.where(near.any(axis=1), near.argmax(axis=1), -1)
     reached = np.where(first >= 0, (first - i_cue) * dt, np.nan)
     fell_t = np.where(run.fell, run.fall_time - ev["cue"], np.nan)
@@ -182,14 +249,22 @@ def adaptation_speed(peak_by_trial: np.ndarray) -> np.ndarray:
     return out
 
 
-def compare_status(base: dict[str, dict[str, Any]], cond: dict[str, dict[str, Any]], observed: set[str] | None = None) -> list[dict[str, Any]]:
+def compare_status(
+    base: dict[str, dict[str, Any]], cond: dict[str, dict[str, Any]], observed: set[str] | None = None
+) -> list[dict[str, Any]]:
     """For each measure: established / varied / lapsed (and the kind of lapse), comparing a condition with the baseline.
     ``observed`` is the set of measure ids the current observation configuration can estimate (None = not asked)."""
     rows = []
     for m in MEASURES:
         mid = m["id"]
         b, c = base[mid], cond[mid]
-        row: dict[str, Any] = {"id": mid, "label": m["label"], "unit": m["unit"], "baseline_defined": b["defined"], "condition_defined": c["defined"]}
+        row: dict[str, Any] = {
+            "id": mid,
+            "label": m["label"],
+            "unit": m["unit"],
+            "baseline_defined": b["defined"],
+            "condition_defined": c["defined"],
+        }
         if b["defined"] < 0.5:
             row.update(status="not-established-in-baseline", reason=None)
         elif c["defined"] < 0.5:

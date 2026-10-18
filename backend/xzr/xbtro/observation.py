@@ -25,43 +25,87 @@ REGIONS = ("shank", "thigh", "trunk", "head", "ground", "neural", "internal")
 
 # kind -> description, defaults, family (what aspect of the body it belongs to), signals it can carry
 KINDS: dict[str, dict[str, Any]] = {
-    "posture": {"label": "posture observation (marker / camera-like)", "family": "kinematic",
-                "defaults": {"sample_hz": 50.0, "noise": 1.0, "delay_s": 0.02, "dropout": 0.0, "spatial": "joint", "joints": "all"},
-                "spatial_choices": ["joint", "segment", "pooled"], "noise_unit": "0.012 rad",
-                "signals": ["joint angles (or segment angles, or one pooled lean)"],
-                "effects": {}},
-    "imu": {"label": "IMU-like motion observation", "family": "kinematic",
-            "defaults": {"sample_hz": 100.0, "noise": 1.0, "delay_s": 0.0, "dropout": 0.0, "spatial": "segment", "segments": [2]},
-            "spatial_choices": ["segment", "pooled"], "noise_unit": "0.01 rad tilt, 0.03 rad/s rate",
-            "signals": ["segment tilt and angular rate"], "effects": {"mass_kg": 0.4}},
-    "emg": {"label": "EMG-like muscle-activity observation", "family": "muscular",
-            "defaults": {"sample_hz": 100.0, "noise": 1.0, "delay_s": 0.0, "dropout": 0.0, "spatial": "joint", "joints": "all"},
-            "spatial_choices": ["joint-pair", "joint", "pooled"], "noise_unit": "20 % multiplicative + 0.01 additive",
-            "signals": ["activation envelope per joint (total), or extensor and flexor separately, or pooled"],
-            "effects": {"mass_kg": 0.05}},
-    "contact": {"label": "contact force / plantar pressure observation", "family": "contact",
-                "defaults": {"sample_hz": 100.0, "noise": 1.0, "delay_s": 0.0, "dropout": 0.0, "spatial": "detailed"},
-                "spatial_choices": ["detailed", "pooled"], "noise_unit": "0.004 m centre of pressure, 6 N force",
-                "signals": ["centre of pressure, vertical force, heel and toe pressure (detailed) or force only (pooled)"],
-                "effects": {"tactile_gain_scale": 0.95}},
-    "respiration": {"label": "respiration observation (chest-motion-like)", "family": "respiratory",
-                    "defaults": {"sample_hz": 20.0, "noise": 1.0, "delay_s": 0.05, "dropout": 0.0, "spatial": "chest"},
-                    "spatial_choices": ["chest"], "noise_unit": "1.5 mm", "signals": ["chest displacement"],
-                    "effects": {"breath_amp_scale": 0.95}},
-    "eeg": {"label": "EEG-like neural-activity observation (proxy of the neural lines)", "family": "neural",
-            "defaults": {"sample_hz": 100.0, "noise": 1.0, "delay_s": 0.0, "dropout": 0.0, "spatial": "pooled"},
-            "spatial_choices": ["pooled", "regional"], "noise_unit": "0.2 of the activity scale",
-            "signals": ["command activity of the central and reflex lines (pooled, or motor and sensory regions)"],
-            "effects": {"noise_add": 0.0002, "delay_add_s": 0.003}},
-    "latency": {"label": "movement-correction latency estimator", "family": "derived",
-                "defaults": {"sample_hz": 100.0, "noise": 1.0, "delay_s": 0.0, "dropout": 0.0, "spatial": "derived"},
-                "spatial_choices": ["derived"], "noise_unit": "inherits from the streams it uses",
-                "signals": ["an estimate of the correction latency from the other streams"], "effects": {}},
-    "threshold": {"label": "sensory detection threshold protocol", "family": "derived",
-                  "defaults": {"sample_hz": 100.0, "noise": 1.0, "delay_s": 0.0, "dropout": 0.0, "spatial": "derived",
-                               "trials": 6, "levels": 10, "report_error": 0.05},
-                  "spatial_choices": ["derived"], "noise_unit": "report error probability",
-                  "signals": ["push force detected 50 % of the time (report = a response of the central lines)"], "effects": {}},
+    "posture": {
+        "label": "posture observation (marker / camera-like)",
+        "family": "kinematic",
+        "defaults": {"sample_hz": 50.0, "noise": 1.0, "delay_s": 0.02, "dropout": 0.0, "spatial": "joint", "joints": "all"},
+        "spatial_choices": ["joint", "segment", "pooled"],
+        "noise_unit": "0.012 rad",
+        "signals": ["joint angles (or segment angles, or one pooled lean)"],
+        "effects": {},
+    },
+    "imu": {
+        "label": "IMU-like motion observation",
+        "family": "kinematic",
+        "defaults": {"sample_hz": 100.0, "noise": 1.0, "delay_s": 0.0, "dropout": 0.0, "spatial": "segment", "segments": [2]},
+        "spatial_choices": ["segment", "pooled"],
+        "noise_unit": "0.01 rad tilt, 0.03 rad/s rate",
+        "signals": ["segment tilt and angular rate"],
+        "effects": {"mass_kg": 0.4},
+    },
+    "emg": {
+        "label": "EMG-like muscle-activity observation",
+        "family": "muscular",
+        "defaults": {"sample_hz": 100.0, "noise": 1.0, "delay_s": 0.0, "dropout": 0.0, "spatial": "joint", "joints": "all"},
+        "spatial_choices": ["joint-pair", "joint", "pooled"],
+        "noise_unit": "20 % multiplicative + 0.01 additive",
+        "signals": ["activation envelope per joint (total), or extensor and flexor separately, or pooled"],
+        "effects": {"mass_kg": 0.05},
+    },
+    "contact": {
+        "label": "contact force / plantar pressure observation",
+        "family": "contact",
+        "defaults": {"sample_hz": 100.0, "noise": 1.0, "delay_s": 0.0, "dropout": 0.0, "spatial": "detailed"},
+        "spatial_choices": ["detailed", "pooled"],
+        "noise_unit": "0.004 m centre of pressure, 6 N force",
+        "signals": ["centre of pressure, vertical force, heel and toe pressure (detailed) or force only (pooled)"],
+        "effects": {"tactile_gain_scale": 0.95},
+    },
+    "respiration": {
+        "label": "respiration observation (chest-motion-like)",
+        "family": "respiratory",
+        "defaults": {"sample_hz": 20.0, "noise": 1.0, "delay_s": 0.05, "dropout": 0.0, "spatial": "chest"},
+        "spatial_choices": ["chest"],
+        "noise_unit": "1.5 mm",
+        "signals": ["chest displacement"],
+        "effects": {"breath_amp_scale": 0.95},
+    },
+    "eeg": {
+        "label": "EEG-like neural-activity observation (proxy of the neural lines)",
+        "family": "neural",
+        "defaults": {"sample_hz": 100.0, "noise": 1.0, "delay_s": 0.0, "dropout": 0.0, "spatial": "pooled"},
+        "spatial_choices": ["pooled", "regional"],
+        "noise_unit": "0.2 of the activity scale",
+        "signals": ["command activity of the central and reflex lines (pooled, or motor and sensory regions)"],
+        "effects": {"noise_add": 0.0002, "delay_add_s": 0.003},
+    },
+    "latency": {
+        "label": "movement-correction latency estimator",
+        "family": "derived",
+        "defaults": {"sample_hz": 100.0, "noise": 1.0, "delay_s": 0.0, "dropout": 0.0, "spatial": "derived"},
+        "spatial_choices": ["derived"],
+        "noise_unit": "inherits from the streams it uses",
+        "signals": ["an estimate of the correction latency from the other streams"],
+        "effects": {},
+    },
+    "threshold": {
+        "label": "sensory detection threshold protocol",
+        "family": "derived",
+        "defaults": {
+            "sample_hz": 100.0,
+            "noise": 1.0,
+            "delay_s": 0.0,
+            "dropout": 0.0,
+            "spatial": "derived",
+            "trials": 6,
+            "levels": 10,
+            "report_error": 0.05,
+        },
+        "spatial_choices": ["derived"],
+        "noise_unit": "report error probability",
+        "signals": ["push force detected 50 % of the time (report = a response of the central lines)"],
+        "effects": {},
+    },
 }
 
 PRESET_CONFIGS = {
@@ -79,14 +123,25 @@ def model(kind: str, mid: str | None = None, **over: Any) -> dict[str, Any]:
     if kind not in KINDS:
         raise ObservationError(f"unknown observation kind {kind!r}; known: {sorted(KINDS)}")
     spec = KINDS[kind]
-    m = {"id": mid or kind, "kind": kind, **copy.deepcopy(spec["defaults"]), "blind_windows": [], "blind_regions": [],
-         "effects": copy.deepcopy(spec["effects"]), "effects_on": True}
+    m = {
+        "id": mid or kind,
+        "kind": kind,
+        **copy.deepcopy(spec["defaults"]),
+        "blind_windows": [],
+        "blind_regions": [],
+        "effects": copy.deepcopy(spec["effects"]),
+        "effects_on": True,
+    }
     m.update(over)
     return m
 
 
-def config(name: str = "motion-only", kinds: list[str] | None = None, models: list[dict[str, Any]] | None = None,
-           window: list[float] | None = None) -> dict[str, Any]:
+def config(
+    name: str = "motion-only",
+    kinds: list[str] | None = None,
+    models: list[dict[str, Any]] | None = None,
+    window: list[float] | None = None,
+) -> dict[str, Any]:
     ms = models if models is not None else [model(k) for k in (kinds if kinds is not None else PRESET_CONFIGS[name])]
     return {"name": name, "models": ms, "window": window}
 
@@ -125,9 +180,15 @@ def validate(obs: dict[str, Any], n_links: int = 4) -> dict[str, Any]:
             if r not in REGIONS:
                 raise ObservationError(f"model {m['id']}: unknown region {r!r}")
         for key in ("segments",):
-            if key in m and (not isinstance(m[key], list) or any((not isinstance(i, int)) or not 0 <= i < n_links for i in m[key])):
+            if key in m and (
+                not isinstance(m[key], list) or any((not isinstance(i, int)) or not 0 <= i < n_links for i in m[key])
+            ):
                 raise ObservationError(f"model {m['id']}: {key} must be link indices 0..{n_links - 1}")
-        if "joints" in m and m["joints"] != "all" and (not isinstance(m["joints"], list) or any((not isinstance(i, int)) or not 0 <= i < n_links for i in m["joints"])):
+        if (
+            "joints" in m
+            and m["joints"] != "all"
+            and (not isinstance(m["joints"], list) or any((not isinstance(i, int)) or not 0 <= i < n_links for i in m["joints"]))
+        ):
             raise ObservationError(f"model {m['id']}: joints must be 'all' or joint indices 0..{n_links - 1}")
     if out.get("window") is not None:
         w = out["window"]
@@ -138,10 +199,17 @@ def validate(obs: dict[str, Any], n_links: int = 4) -> dict[str, Any]:
 
 # ------------------------------------------------------------------------------------------------ induced change
 
+
 def apparatus_effects(obs: dict[str, Any]) -> dict[str, Any]:
     """The explicit effects the observation apparatus has on the body (assumed, user-settable parameters)."""
-    eff = {"mass_add": {}, "tactile_gain_scale": 1.0, "noise_add": 0.0, "delay_add_s": 0.0, "breath_amp_scale": 1.0,
-           "feedback_gain": 0.0}
+    eff: dict[str, Any] = {
+        "mass_add": {},
+        "tactile_gain_scale": 1.0,
+        "noise_add": 0.0,
+        "delay_add_s": 0.0,
+        "breath_amp_scale": 1.0,
+        "feedback_gain": 0.0,
+    }
     for m in obs["models"]:
         if not m.get("effects_on", True):
             continue
@@ -168,12 +236,16 @@ def apply_apparatus(cfg: dict[str, Any], obs: dict[str, Any]) -> dict[str, Any]:
     out["sensors"]["tactile"]["gain"] *= eff["tactile_gain_scale"]
     out["internal"]["breath_amp"] *= eff["breath_amp_scale"]
     out["neural"]["gain_cop"] += eff["feedback_gain"]
-    out["apparatus"] = {"noise_add": eff["noise_add"], "delay_add": eff["delay_add_s"],
-                        "models": [m["id"] for m in obs["models"] if m.get("effects_on", True)]}
+    out["apparatus"] = {
+        "noise_add": eff["noise_add"],
+        "delay_add": eff["delay_add_s"],
+        "models": [m["id"] for m in obs["models"] if m.get("effects_on", True)],
+    }
     return out
 
 
 # ------------------------------------------------------------------------------------------------ coverage
+
 
 def model_regions(m: dict[str, Any], n_links: int, regions: list[str]) -> set[str]:
     """Body regions a model reaches (minus its blind regions)."""
@@ -219,12 +291,18 @@ def coverage(cfg: dict[str, Any], obs: dict[str, Any]) -> dict[str, Any]:
         seen = [m["id"] for m in obs["models"] if m["kind"] in ln.get("observable_by", [])]
         lines[ln["id"]] = seen
     all_regions = [*dict.fromkeys(regions), "ground", "neural", "internal"]
-    return {"models": per_model, "regions": {r: covered.get(r, []) for r in all_regions},
-            "unobserved_regions": [r for r in all_regions if not covered.get(r)],
-            "lines": lines, "unobserved_lines": [lid for lid, ms in lines.items() if not ms], "kinds": sorted(kinds_present)}
+    return {
+        "models": per_model,
+        "regions": {r: covered.get(r, []) for r in all_regions},
+        "unobserved_regions": [r for r in all_regions if not covered.get(r)],
+        "lines": lines,
+        "unobserved_lines": [lid for lid, ms in lines.items() if not ms],
+        "kinds": sorted(kinds_present),
+    }
 
 
 # ------------------------------------------------------------------------------------------------ signals
+
 
 def _rng(seed: int, m: dict[str, Any]) -> np.random.Generator:
     return np.random.default_rng([int(seed), 1, zlib.crc32(m["id"].encode()) & 0x7FFFFFFF])
@@ -281,7 +359,7 @@ def observe(run: Run, obs: dict[str, Any]) -> dict[str, dict[str, Any]]:
                 x = np.abs(run["theta"][:, :, trunk])[:, :, None]
                 ch = ["lean:pooled"]
             x = x[:, sd]
-            sd_noise = 0.012 * nz
+            sd_noise: Any = 0.012 * nz
         elif kind == "imu":
             segs = list(m.get("segments") or [trunk])
             if m["spatial"] == "pooled":
@@ -291,8 +369,13 @@ def observe(run: Run, obs: dict[str, Any]) -> dict[str, dict[str, Any]]:
             else:
                 tilt, rate = run["theta"][:, :, segs], run["omega"][:, :, segs]
                 ch = [f"{k}:{cfg['links'][j]['id']}" for j in segs for k in ("tilt", "rate")]
-            x = np.concatenate([tilt, rate], axis=2) if m["spatial"] == "pooled" else \
-                np.stack([v for pair in zip(np.moveaxis(tilt, 2, 0), np.moveaxis(rate, 2, 0), strict=True) for v in pair], axis=2)
+            x = (
+                np.concatenate([tilt, rate], axis=2)
+                if m["spatial"] == "pooled"
+                else np.stack(
+                    [v for pair in zip(np.moveaxis(tilt, 2, 0), np.moveaxis(rate, 2, 0), strict=True) for v in pair], axis=2
+                )
+            )
             x = x[:, sd]
             sd_noise = np.tile([0.01, 0.03], x.shape[2] // 2)[None, None, :] * nz
         elif kind == "emg":
@@ -302,7 +385,9 @@ def observe(run: Run, obs: dict[str, Any]) -> dict[str, dict[str, Any]]:
                 act = np.concatenate([act, np.repeat(act[:, -1:], T - act.shape[1], axis=1)], axis=1)
             if m["spatial"] == "joint-pair":
                 x = np.concatenate([act[:, :, joints, 0], act[:, :, joints, 1]], axis=2)
-                ch = [f"emg-ext:{cfg['joints'][j]['id']}" for j in joints] + [f"emg-flex:{cfg['joints'][j]['id']}" for j in joints]
+                ch = [f"emg-ext:{cfg['joints'][j]['id']}" for j in joints] + [
+                    f"emg-flex:{cfg['joints'][j]['id']}" for j in joints
+                ]
             elif m["spatial"] == "joint":
                 tot = act.sum(axis=3)
                 x = tot[:, :, joints] + 0.15 * (np.roll(tot, 1, axis=2) + np.roll(tot, -1, axis=2))[:, :, joints]
@@ -326,19 +411,27 @@ def observe(run: Run, obs: dict[str, Any]) -> dict[str, dict[str, Any]]:
                 sd_noise = np.array([0.004, 6.0, 6.0, 6.0])[None, None, :] * nz
             x = x[:, sd]
         elif kind == "respiration":
-            chest = 0.01 * np.sin(run["phi"]) * (1.0 if cfg["lines"][[ln["id"] for ln in cfg["lines"]].index("breath.cycle")]["enabled"] else 0.0) \
+            chest = (
+                0.01
+                * np.sin(run["phi"])
+                * (1.0 if cfg["lines"][[ln["id"] for ln in cfg["lines"]].index("breath.cycle")]["enabled"] else 0.0)
                 + 0.12 * run["theta"][:, :, trunk]
+            )
             x = chest[:, :, None][:, sd]
             ch = ["chest"]
             sd_noise = 0.0015 * nz
         else:  # eeg
             ids = run.line_ids
 
-            def mag(name: str) -> np.ndarray:
+            def mag(name: str, ids: list[str] = ids) -> np.ndarray:
                 return np.abs(run["line_u"][:, :, ids.index(name)]).sum(axis=2) if name in ids else np.zeros((S, T))
 
-            motor = mag("neural.central.ankle") + mag("neural.central.hip") + mag("neural.central.cue") + 0.5 * mag("neural.reflex")
-            sensory = sum((run["line_active"][:, :, ids.index(nm)].astype(float) for nm in ids if nm.startswith("sens.")), np.zeros((S, T)))
+            motor = (
+                mag("neural.central.ankle") + mag("neural.central.hip") + mag("neural.central.cue") + 0.5 * mag("neural.reflex")
+            )
+            sensory = sum(
+                (run["line_active"][:, :, ids.index(nm)].astype(float) for nm in ids if nm.startswith("sens.")), np.zeros((S, T))
+            )
             w = 8
             motor = _moving_avg(motor, w)
             sensory = _moving_avg(sensory, w) / 4.0
@@ -374,15 +467,32 @@ def observe(run: Run, obs: dict[str, Any]) -> dict[str, dict[str, Any]]:
             for i in range(S):
                 drop[i] = rngs[i].random(len(si)) < float(m["dropout"])
         xn = np.where((drop | blind[None])[:, :, None], np.nan, xn)
-        out[m["id"]] = {"t": t, "x": xn, "channels": ch, "kind": kind, "sample_hz": float(m["sample_hz"]),
-                        "delay_s": float(m["delay_s"]), "spatial": m["spatial"], "model": m}
+        out[m["id"]] = {
+            "t": t,
+            "x": xn,
+            "channels": ch,
+            "kind": kind,
+            "sample_hz": float(m["sample_hz"]),
+            "delay_s": float(m["delay_s"]),
+            "spatial": m["spatial"],
+            "model": m,
+        }
     return out
 
 
 # ------------------------------------------------------------------------------------------------ features
 
-def _first_dev(t: np.ndarray, x: np.ndarray, t0: float, thr_sd: float = 4.0, base: float = 0.4, t1: float | None = None,
-               direction: int = 0, min_thr: float = 0.0) -> np.ndarray:
+
+def _first_dev(
+    t: np.ndarray,
+    x: np.ndarray,
+    t0: float,
+    thr_sd: float = 4.0,
+    base: float = 0.4,
+    t1: float | None = None,
+    direction: int = 0,
+    min_thr: float = 0.0,
+) -> np.ndarray:
     """From a sampled signal (S, Ns): seconds from t0 until it deviates from its pre-t0 mean by more than ``thr_sd`` baseline
     standard deviations (or ``min_thr``) for two consecutive samples. NaN if no deviation or too few baseline samples."""
     S = x.shape[0]
@@ -425,7 +535,6 @@ def features(run: Run, obs_out: dict[str, dict[str, Any]], obs: dict[str, Any]) 
     """Per-seed features computed ONLY from observation streams. A feature is absent when no stream can provide it."""
     cfg = run.cfg
     ev = metrics.events(cfg)
-    S = run["com"].shape[0]
     n = run["theta"].shape[2]
     trunk = min(2, n - 1)
     feats: dict[str, np.ndarray] = {}
@@ -434,7 +543,7 @@ def features(run: Run, obs_out: dict[str, dict[str, Any]], obs: dict[str, Any]) 
     def win(t: np.ndarray, x: np.ndarray, a: float, b: float) -> np.ndarray:
         return x[:, (t >= a) & (t <= b)]
 
-    for mid, o in obs_out.items():
+    for o in obs_out.values():
         t, x, ch, kind = o["t"], o["x"], o["channels"], o["kind"]
         if kind == "posture":
             sp = o["spatial"]
@@ -448,16 +557,22 @@ def features(run: Run, obs_out: dict[str, dict[str, Any]], obs: dict[str, Any]) 
                 tr = x[:, :, 0]
             if tr is not None:
                 w_ = win(t, tr, q0, q1)
-                feats["posture_sway_rms"] = np.array([np.sqrt(np.nanmean((r - np.nanmean(r)) ** 2)) if np.isfinite(r).sum() > 3 else np.nan for r in w_])
+                feats["posture_sway_rms"] = np.array(
+                    [np.sqrt(np.nanmean((r - np.nanmean(r)) ** 2)) if np.isfinite(r).sum() > 3 else np.nan for r in w_]
+                )
                 if sp != "pooled":
                     feats["posture_peak_lean"] = np.nanmax(np.abs(tr), axis=1)
             if sp == "joint" and x.shape[2] == n:
                 com = _forward_com(np.nan_to_num(x, nan=0.0), cfg)
                 com = np.where(np.isfinite(x).all(axis=2), com, np.nan)
-                feats["com_excursion_obs"] = np.nanmax(np.abs(com - np.nanmean(win(t, com, 0.3, ev["cue"] - 0.1), axis=1, keepdims=True)), axis=1)
+                feats["com_excursion_obs"] = np.nanmax(
+                    np.abs(com - np.nanmean(win(t, com, 0.3, ev["cue"] - 0.1), axis=1, keepdims=True)), axis=1
+                )
                 tgt = cfg["task"]["x_turn"]
                 post = (t >= ev["turn"] + cfg["task"]["ramp_s"]) & (t <= ev["turn"] + cfg["task"]["ramp_s"] + 1.2)
-                feats["turn_error_obs"] = np.array([np.nanmean(np.abs(c[post] - tgt)) if np.isfinite(c[post]).any() else np.nan for c in com])
+                feats["turn_error_obs"] = np.array(
+                    [np.nanmean(np.abs(c[post] - tgt)) if np.isfinite(c[post]).any() else np.nan for c in com]
+                )
                 if ev["pushes"]:
                     t_push = ev["pushes"][0]
                     feats["com_onset_push"] = _first_dev(t, com, t_push, thr_sd=4.0, min_thr=0.002)
@@ -468,7 +583,9 @@ def features(run: Run, obs_out: dict[str, dict[str, Any]], obs: dict[str, Any]) 
             for j, nm in enumerate(ch):
                 if nm.startswith("tilt:") and (nm.endswith(cfg["links"][trunk]["id"]) or nm == "tilt:pooled"):
                     w_ = win(t, x[:, :, j], q0, q1)
-                    feats["sway_rms_imu"] = np.array([np.sqrt(np.nanmean((r - np.nanmean(r)) ** 2)) if np.isfinite(r).sum() > 3 else np.nan for r in w_])
+                    feats["sway_rms_imu"] = np.array(
+                        [np.sqrt(np.nanmean((r - np.nanmean(r)) ** 2)) if np.isfinite(r).sum() > 3 else np.nan for r in w_]
+                    )
                 if nm.startswith("rate:") and (nm.endswith(cfg["links"][trunk]["id"]) or nm == "rate:pooled") and ev["pushes"]:
                     feats["imu_onset_push"] = _first_dev(t, x[:, :, j], ev["pushes"][0], thr_sd=4.0, min_thr=0.02)
                     pw = (t >= ev["pushes"][0]) & (t <= ev["pushes"][0] + 1.5)
@@ -501,7 +618,7 @@ def features(run: Run, obs_out: dict[str, dict[str, Any]], obs: dict[str, Any]) 
         elif kind == "contact":
             if "cop" in ch:
                 c = x[:, :, ch.index("cop")]
-                feats["cop_rms_obs"] = np.sqrt(np.nanmean(c ** 2, axis=1))
+                feats["cop_rms_obs"] = np.sqrt(np.nanmean(c**2, axis=1))
                 feats["cop_range_obs"] = np.nanmax(c, axis=1) - np.nanmin(c, axis=1)
                 if ev["pushes"]:
                     feats["cop_onset_push"] = _first_dev(t, c, ev["pushes"][0], thr_sd=4.0, min_thr=0.006)
@@ -509,7 +626,9 @@ def features(run: Run, obs_out: dict[str, dict[str, Any]], obs: dict[str, Any]) 
                 feats["load_mean"] = np.nanmean(x[:, :, ch.index("fn")], axis=1)
         elif kind == "respiration":
             c = x[:, :, 0]
-            pp = np.array([np.nanmax(r[(t >= 0.5)]) - np.nanmin(r[(t >= 0.5)]) if np.isfinite(r).sum() > 4 else np.nan for r in c])
+            pp = np.array(
+                [np.nanmax(r[(t >= 0.5)]) - np.nanmin(r[(t >= 0.5)]) if np.isfinite(r).sum() > 4 else np.nan for r in c]
+            )
             feats["breath_amp_obs"] = pp
         elif kind == "eeg":
             a = x[:, :, 0] if o["spatial"] == "pooled" else x[:, :, 0]

@@ -127,6 +127,11 @@ ignore = ["E731", "SIM108", "B905"]
 "xzr/study/templates.py" = ["E501"]
 "tests/test_study_ards.py" = ["E501"]
 "tests/test_study_shared.py" = ["E501"]
+# The XenoBody research package and its tests carry long quoted specification strings (principle definitions, Ziran responsibility
+# definitions, table titles) that are kept verbatim; the code around them is formatted with `ruff format` at the same line length.
+"xzr/xbtro/*" = ["E501"]
+"xzr/service/xbtro_ops.py" = ["E501"]
+"tests/test_xbtro_*" = ["E501"]
 
 [tool.mypy]
 python_version = "3.12"
