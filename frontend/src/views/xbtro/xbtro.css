@@ -9,6 +9,11 @@
 .xb .error, .xb .notice { margin: 6px 0; padding: 6px 10px; border: 1px solid var(--line2); border-radius: 3px; }
 .xb .error { border-color: var(--warn); color: var(--warn); }
 .xb .grow { flex: 1 1 auto; }
+.xb-beta { border: 1px solid var(--amber); color: var(--amber); border-radius: 9px; padding: 0 8px; font-size: 11px; letter-spacing: .04em; text-transform: uppercase; }
+.xb-release { margin: 4px 0 8px; }
+.xb-release dl { margin: 6px 0 0; display: grid; gap: 4px; }
+.xb-release dt { color: var(--dim); text-transform: uppercase; letter-spacing: .05em; font-size: 10.5px; }
+.xb-release dd { margin: 0 0 2px; }
 .xb .chip { display: inline-block; margin-left: 6px; padding: 0 6px; border: 1px solid var(--line2); border-radius: 8px; font-size: 10.5px; color: var(--dim); }
 .xb .warn-soft { color: #d8b27a; }
 

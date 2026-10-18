@@ -1,0 +1,5848 @@
+{
+ "digest": "cb74246e928aa9a55f85c1994d29b4e86555fe354a6f22468c3d2f89be92318b",
+ "experiment": "G",
+ "history": {
+  "reentry": []
+ },
+ "id": "xb-g-cb74246e928a",
+ "initial_configuration": {
+  "adaptation": {
+   "cost": 0.0,
+   "enabled": true,
+   "error_target": 0.003,
+   "eta": 0.2,
+   "gain_max": 1.15,
+   "gain_min": 0.9
+  },
+  "environment": {
+   "compliance": 0.0,
+   "friction_mu": 0.8,
+   "gravity": 9.81,
+   "handrail": null,
+   "ledge": null,
+   "pushes": [
+    {
+     "dur": 0.12,
+     "force": 35.0,
+     "link": 2,
+     "point_frac": 0.8,
+     "t": 3.2
+    }
+   ]
+  },
+  "family": "human-like",
+  "foot": {
+   "heel": 0.07,
+   "toe": 0.17
+  },
+  "internal": {
+   "activation_cost": 0.004,
+   "basal_cost": 0.0004,
+   "breath_amp": 0.015,
+   "breath_period": 4.0,
+   "breath_variability": 0.05,
+   "capacity_floor": 0.45,
+   "energy0": 1.0,
+   "energy_floor": 0.3,
+   "fatigue_rate": 0.02,
+   "fatigue_recovery": 0.012,
+   "resources_enabled": true
+  },
+  "joints": [
+   {
+    "act_fall": 0.08,
+    "act_rise": 0.04,
+    "c_passive": 45.0,
+    "id": "ankle",
+    "k_passive": 720.0,
+    "label": "ankle",
+    "q_range": 0.6,
+    "tau_max": 120.0
+   },
+   {
+    "act_fall": 0.08,
+    "act_rise": 0.04,
+    "c_passive": 40.0,
+    "id": "knee",
+    "k_passive": 700.0,
+    "label": "knee",
+    "q_range": 0.6,
+    "tau_max": 150.0
+   },
+   {
+    "act_fall": 0.08,
+    "act_rise": 0.04,
+    "c_passive": 35.0,
+    "id": "hip",
+    "k_passive": 420.0,
+    "label": "hip",
+    "q_range": 0.8,
+    "tau_max": 180.0
+   },
+   {
+    "act_fall": 0.06,
+    "act_rise": 0.03,
+    "c_passive": 4.0,
+    "id": "neck",
+    "k_passive": 45.0,
+    "label": "neck",
+    "q_range": 0.8,
+    "tau_max": 25.0
+   }
+  ],
+  "lines": [
+   {
+    "enabled": true,
+    "id": "mech.passive",
+    "ignition": {
+     "hold_s": 0.0,
+     "signal": "always",
+     "threshold": 0.0
+    },
+    "kind": "mechanical",
+    "label": "viscoelastic joints (passive)",
+    "note": "always on; stiffness and damping per joint",
+    "observable_by": [
+     "posture",
+     "imu"
+    ],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 0.0
+   },
+   {
+    "enabled": true,
+    "id": "sens.proprio",
+    "ignition": {
+     "hold_s": 0.05,
+     "signal": "joint-velocity",
+     "threshold": 0.05
+    },
+    "kind": "sensory",
+    "label": "proprioceptive sensing",
+    "note": "timescale = sensory delay (s); ignites when a joint velocity exceeds the threshold (rad/s)",
+    "observable_by": [
+     "posture",
+     "emg"
+    ],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 0.03
+   },
+   {
+    "enabled": true,
+    "id": "sens.vestibular",
+    "ignition": {
+     "hold_s": 0.05,
+     "signal": "trunk-tilt-rate",
+     "threshold": 0.03
+    },
+    "kind": "sensory",
+    "label": "vestibular / head-motion sensing",
+    "note": "timescale = delay; ignites on trunk tilt rate (rad/s)",
+    "observable_by": [
+     "imu",
+     "eeg"
+    ],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 0.02
+   },
+   {
+    "enabled": true,
+    "id": "sens.visual",
+    "ignition": {
+     "hold_s": 0.1,
+     "signal": "com-offset",
+     "threshold": 0.004
+    },
+    "kind": "sensory",
+    "label": "visual feedback",
+    "note": "timescale = delay; ignites on a visible COM offset (m); can be blocked",
+    "observable_by": [
+     "posture",
+     "eeg"
+    ],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 0.1
+   },
+   {
+    "enabled": true,
+    "id": "sens.tactile",
+    "ignition": {
+     "hold_s": 0.05,
+     "signal": "cop-shift",
+     "threshold": 0.004
+    },
+    "kind": "sensory",
+    "label": "tactile / contact-pressure sensing",
+    "note": "timescale = delay; ignites on a centre-of-pressure shift (m)",
+    "observable_by": [
+     "contact",
+     "eeg"
+    ],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 0.04
+   },
+   {
+    "enabled": true,
+    "id": "sens.cue",
+    "ignition": {
+     "hold_s": 0.05,
+     "signal": "cue",
+     "threshold": 0.5
+    },
+    "kind": "sensory",
+    "label": "cue perception",
+    "note": "timescale = delay; the movement / direction-change cues are sensed through it",
+    "observable_by": [
+     "eeg",
+     "latency"
+    ],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 0.12
+   },
+   {
+    "enabled": true,
+    "id": "neural.reflex",
+    "ignition": {
+     "hold_s": 0.08,
+     "signal": "joint-velocity",
+     "threshold": 0.12
+    },
+    "kind": "neural",
+    "label": "local joint reflex",
+    "note": "timescale = loop latency; ignites on a fast sensed joint motion",
+    "observable_by": [
+     "emg",
+     "latency",
+     "eeg"
+    ],
+    "resource": {
+     "cost_per_s": 0.002,
+     "pool": "energy"
+    },
+    "timescale_s": 0.04
+   },
+   {
+    "enabled": true,
+    "id": "neural.central.ankle",
+    "ignition": {
+     "hold_s": 0.2,
+     "signal": "com-offset",
+     "threshold": 0.003
+    },
+    "kind": "neural",
+    "label": "central balance command (ankle)",
+    "note": "timescale = latency; ignites on a sensed COM offset from the reference",
+    "observable_by": [
+     "emg",
+     "eeg",
+     "latency"
+    ],
+    "resource": {
+     "cost_per_s": 0.004,
+     "pool": "energy"
+    },
+    "timescale_s": 0.1
+   },
+   {
+    "enabled": true,
+    "id": "neural.central.hip",
+    "ignition": {
+     "hold_s": 0.25,
+     "signal": "com-offset",
+     "threshold": 0.02
+    },
+    "kind": "neural",
+    "label": "central balance command (hip)",
+    "note": "timescale = latency; ignites on a large COM offset",
+    "observable_by": [
+     "emg",
+     "eeg",
+     "latency"
+    ],
+    "resource": {
+     "cost_per_s": 0.008,
+     "pool": "energy"
+    },
+    "timescale_s": 0.1
+   },
+   {
+    "enabled": true,
+    "id": "neural.central.cue",
+    "ignition": {
+     "hold_s": 0.3,
+     "signal": "cue",
+     "threshold": 0.5
+    },
+    "kind": "neural",
+    "label": "central movement command (feed-forward)",
+    "note": "timescale = latency; ignites on a sensed cue",
+    "observable_by": [
+     "emg",
+     "eeg",
+     "latency"
+    ],
+    "resource": {
+     "cost_per_s": 0.004,
+     "pool": "energy"
+    },
+    "timescale_s": 0.1
+   },
+   {
+    "enabled": true,
+    "id": "core.tonic",
+    "ignition": {
+     "hold_s": 0.0,
+     "signal": "always",
+     "threshold": 0.0
+    },
+    "kind": "internal",
+    "label": "tonic co-contraction (core)",
+    "note": "baseline co-contraction level; costs energy while on",
+    "observable_by": [
+     "emg"
+    ],
+    "resource": {
+     "cost_per_s": 0.003,
+     "pool": "energy"
+    },
+    "timescale_s": 0.0
+   },
+   {
+    "enabled": true,
+    "id": "breath.cycle",
+    "ignition": {
+     "hold_s": 0.0,
+     "signal": "always",
+     "threshold": 0.0
+    },
+    "kind": "internal",
+    "label": "breathing cycle",
+    "note": "timescale = period (s); modulates trunk drive and chest motion",
+    "observable_by": [
+     "respiration",
+     "imu",
+     "emg"
+    ],
+    "resource": {
+     "cost_per_s": 0.001,
+     "pool": "energy"
+    },
+    "timescale_s": 4.0
+   },
+   {
+    "enabled": true,
+    "id": "metabolic.supply",
+    "ignition": {
+     "hold_s": 0.0,
+     "signal": "always",
+     "threshold": 0.0
+    },
+    "kind": "internal",
+    "label": "energy supply / fatigue",
+    "note": "timescale = fatigue time constant (s); internal, no observation model sees it directly",
+    "observable_by": [],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 30.0
+   },
+   {
+    "enabled": true,
+    "id": "adapt.gain",
+    "ignition": {
+     "hold_s": 0.0,
+     "signal": "always",
+     "threshold": 0.0
+    },
+    "kind": "internal",
+    "label": "gain adaptation",
+    "note": "timescale = adaptation time constant (s); slow retained state",
+    "observable_by": [],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 20.0
+   }
+  ],
+  "links": [
+   {
+    "com_frac": 0.45,
+    "id": "shank",
+    "label": "shank + foot",
+    "length": 0.45,
+    "mass": 6.6,
+    "region": "shank"
+   },
+   {
+    "com_frac": 0.45,
+    "id": "thigh",
+    "label": "thigh",
+    "length": 0.45,
+    "mass": 14.0,
+    "region": "thigh"
+   },
+   {
+    "com_frac": 0.5,
+    "id": "trunk",
+    "label": "trunk + arms",
+    "length": 0.55,
+    "mass": 38.0,
+    "region": "trunk"
+   },
+   {
+    "com_frac": 0.5,
+    "id": "head",
+    "label": "head + neck",
+    "length": 0.3,
+    "mass": 4.8,
+    "region": "head"
+   }
+  ],
+  "model": "xb-tro/1.0",
+  "name": "human-like-planar",
+  "neural": {
+   "cocontraction_base": 0.06,
+   "cocontraction_gain": 2.0,
+   "gain_ankle_d": 3.5,
+   "gain_ankle_p": 3.0,
+   "gain_cop": 0.0,
+   "gain_cue_ff": 1.0,
+   "gain_hip_d": 0.8,
+   "gain_hip_p": 1.2,
+   "gain_reflex_d": 0.05,
+   "gain_reflex_p": 0.6,
+   "gravity_comp": 0.5,
+   "gravity_ff": -0.4,
+   "motor_noise": 0.01,
+   "proprio_weight": 2.0,
+   "strategy": "endpoint",
+   "tactile_weight": 0.6,
+   "vestibular_weight": 1.0,
+   "visual_weight": 1.0,
+   "windup_frac": 0.35,
+   "windup_s": 0.25
+  },
+  "sensors": {
+   "cue": {
+    "noise": 0.15
+   },
+   "proprio": {
+    "gain": 1.0,
+    "noise": 0.002
+   },
+   "tactile": {
+    "gain": 1.0,
+    "noise": 0.003
+   },
+   "vestibular": {
+    "gain": 1.0,
+    "noise": 0.004
+   },
+   "visual": {
+    "blocked_windows": [],
+    "gain": 1.0,
+    "noise": 0.004
+   }
+  },
+  "slow_state0": null,
+  "task": {
+   "dt": 0.01,
+   "horizon": 7.5,
+   "initial_lean": 0.0,
+   "integrator": "rk4",
+   "ramp_s": 0.3,
+   "substeps": 2,
+   "t_cue": 0.8,
+   "t_turn": 5.2,
+   "x_target": 0.035,
+   "x_turn": -0.02
+  },
+  "xeno14": []
+ },
+ "interventions": [
+  {
+   "xeno14": [
+    "lower-abdominal-continuity"
+   ]
+  },
+  {
+   "xeno14": [
+    "whole-skin-sensing"
+   ]
+  },
+  {
+   "xeno14": [
+    "axis-maintenance"
+   ]
+  },
+  {
+   "xeno14": [
+    "endpoint-removal"
+   ]
+  },
+  {
+   "xeno14": [
+    "low-noise-movement"
+   ]
+  },
+  {
+   "xeno14": [
+    "minimal-approach-distance"
+   ]
+  },
+  {
+   "xeno14": [
+    "zero-run-up-transition"
+   ]
+  },
+  {
+   "xeno14": [
+    "tensegrity"
+   ]
+  },
+  {
+   "xeno14": [
+    "slow-movement"
+   ]
+  },
+  {
+   "xeno14": [
+    "narrow-step-balance"
+   ]
+  },
+  {
+   "xeno14": [
+    "fingertip-tension"
+   ]
+  },
+  {
+   "xeno14": [
+    "breathing-synchronization"
+   ]
+  },
+  {
+   "xeno14": [
+    "anti-collapse-posture"
+   ]
+  },
+  {
+   "xeno14": [
+    "long-duration-sedimentation"
+   ]
+  }
+ ],
+ "labels": {
+  "estimate": "model-based estimate computed from observation outputs only",
+  "observation": "output of a simulated observation model applied to the reference (separate from it)",
+  "reference": "model reference state (simulator-internal; not an observation of a real body)"
+ },
+ "model_version": "xb-tro/1.0",
+ "negative_results": [
+  {
+   "evidence": {},
+   "statement": "tensegrity: improved ['correction_latency'] without a detectable weakening elsewhere (no Fragility Transfer)"
+  },
+  {
+   "evidence": {},
+   "statement": "narrow-step-balance: improved ['correction_latency', 'turn_settling_after_push'] without a detectable weakening elsewhere (no Fragility Transfer)"
+  },
+  {
+   "evidence": {},
+   "statement": "fingertip-tension: improved ['posture_sway', 'recovery_region', 'turn_settling_after_push'] without a detectable weakening elsewhere (no Fragility Transfer)"
+  },
+  {
+   "evidence": {
+    "ignition": 0.0
+   },
+   "statement": "anti-collapse-posture: its rule never ignited in the protocol; no effect could occur"
+  },
+  {
+   "evidence": {},
+   "statement": "long-duration-sedimentation: improved ['peak_dev_forward', 'recovery_region', 'turn_settling_after_push'] without a detectable weakening elsewhere (no Fragility Transfer)"
+  }
+ ],
+ "numerical_method": "RK4 on the N-link planar Lagrangian equations with the muscle drive held over each step; batched seeds with common random numbers; first-order activation dynamics; digests over 6 significant digits",
+ "observation_configurations": [],
+ "parameters": {
+  "ablate": true,
+  "n_seeds": 12,
+  "preset": "human-like-planar",
+  "principles": [
+   "lower-abdominal-continuity",
+   "whole-skin-sensing",
+   "axis-maintenance",
+   "endpoint-removal",
+   "low-noise-movement",
+   "minimal-approach-distance",
+   "zero-run-up-transition",
+   "tensegrity",
+   "slow-movement",
+   "narrow-step-balance",
+   "fingertip-tension",
+   "breathing-synchronization",
+   "anti-collapse-posture",
+   "long-duration-sedimentation"
+  ]
+ },
+ "provenance": {
+  "machine": "arm64",
+  "numpy": "2.5.3",
+  "platform": "darwin",
+  "python": "3.12.13"
+ },
+ "rerun": {
+  "experiment": "G",
+  "parameters": {
+   "ablate": true,
+   "n_seeds": 12,
+   "preset": "human-like-planar",
+   "principles": [
+    "lower-abdominal-continuity",
+    "whole-skin-sensing",
+    "axis-maintenance",
+    "endpoint-removal",
+    "low-noise-movement",
+    "minimal-approach-distance",
+    "zero-run-up-transition",
+    "tensegrity",
+    "slow-movement",
+    "narrow-step-balance",
+    "fingertip-tension",
+    "breathing-synchronization",
+    "anti-collapse-posture",
+    "long-duration-sedimentation"
+   ]
+  }
+ },
+ "results": {
+  "control": {
+   "actuator_saturation": 0.0,
+   "correction_latency": 0.2625,
+   "energy_beyond_declared": 0.0998469852716,
+   "line_conflicts": 1.13333333333,
+   "peak_dev_forward": 0.0174372156189,
+   "posture_sway": 0.00120308666711,
+   "recovery_region": 3.91666666667,
+   "silenced_lines": 0.0,
+   "tolerance_backward": 0.0,
+   "tolerance_forward": 0.0,
+   "turn_not_established": 1.0,
+   "turn_settling_after_push": 1.49
+  },
+  "design": {
+   "alpha": 0.05,
+   "label_rule": "BH q < 0.05 over 168 tests and |d| >= 0.8; falls alone are not a transfer",
+   "min_attainable_p": 0.00048828125,
+   "min_detectable_dz": 0.808747989918,
+   "n_pairs": 12,
+   "power": 0.8,
+   "reading": "with 12 paired seeds an effect of about 0.81 (standardised, paired) is detectable with 80% power at the 0.05 level; smaller true effects are expected to be missed, so 'no detectable effect' is not 'no effect'"
+  },
+  "groups": {
+   "availability": [
+    "silenced_lines"
+   ],
+   "direction": [
+    "tolerance_forward",
+    "tolerance_backward",
+    "recovery_region"
+   ],
+   "posture": [
+    "posture_sway",
+    "peak_dev_forward"
+   ],
+   "reachability": [
+    "turn_not_established"
+   ],
+   "resource": [
+    "energy_beyond_declared",
+    "line_conflicts",
+    "actuator_saturation"
+   ],
+   "timing": [
+    "correction_latency",
+    "turn_settling_after_push"
+   ]
+  },
+  "ignition": {
+   "anti-collapse-posture": 0.0,
+   "axis-maintenance": 1.0,
+   "breathing-synchronization": 1.0,
+   "endpoint-removal": 1.0,
+   "fingertip-tension": 1.0,
+   "long-duration-sedimentation": null,
+   "low-noise-movement": 1.0,
+   "lower-abdominal-continuity": 1.0,
+   "minimal-approach-distance": 1.0,
+   "narrow-step-balance": 1.0,
+   "slow-movement": 1.0,
+   "tensegrity": 1.0,
+   "whole-skin-sensing": 1.0,
+   "zero-run-up-transition": 1.0
+  },
+  "ladder_N": [
+   30.0,
+   60.0,
+   90.0
+  ],
+  "matrix": {
+   "anti-collapse-posture": {
+    "actuator_saturation": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "resource",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "correction_latency": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "timing",
+     "label": "no detectable effect",
+     "mean": 0.2625,
+     "mean_control": 0.2625,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "energy_beyond_declared": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "resource",
+     "label": "no detectable effect",
+     "mean": 0.0998469852716,
+     "mean_control": 0.0998469852716,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "line_conflicts": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "resource",
+     "label": "no detectable effect",
+     "mean": 1.13333333333,
+     "mean_control": 1.13333333333,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "peak_dev_forward": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "posture",
+     "label": "no detectable effect",
+     "mean": 0.0174372156189,
+     "mean_control": 0.0174372156189,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "posture_sway": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "posture",
+     "label": "no detectable effect",
+     "mean": 0.00120308666711,
+     "mean_control": 0.00120308666711,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "recovery_region": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "direction",
+     "label": "no detectable effect",
+     "mean": 3.91666666667,
+     "mean_control": 3.91666666667,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "silenced_lines": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "availability",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "tolerance_backward": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "direction",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "tolerance_forward": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "direction",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "turn_not_established": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "reachability",
+     "label": "no detectable effect",
+     "mean": 1.0,
+     "mean_control": 1.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "turn_settling_after_push": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "timing",
+     "label": "no detectable effect",
+     "mean": 1.49,
+     "mean_control": 1.49,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    }
+   },
+   "axis-maintenance": {
+    "actuator_saturation": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "resource",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "correction_latency": {
+     "d": -2.22329506604,
+     "dropped": 0,
+     "effect_of_the_rule_line": -0.120833333333,
+     "group": "timing",
+     "label": "improved",
+     "mean": 0.141666666667,
+     "mean_control": 0.2625,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    },
+    "energy_beyond_declared": {
+     "d": 15.8447862189,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0198530866734,
+     "group": "resource",
+     "label": "worsened",
+     "mean": 0.119700071945,
+     "mean_control": 0.0998469852716,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    },
+    "line_conflicts": {
+     "d": 6.78137146578,
+     "dropped": 0,
+     "effect_of_the_rule_line": 7.44444444444,
+     "group": "resource",
+     "label": "worsened",
+     "mean": 8.57777777778,
+     "mean_control": 1.13333333333,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    },
+    "peak_dev_forward": {
+     "d": 3.11025087016,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.00638471854784,
+     "group": "posture",
+     "label": "worsened",
+     "mean": 0.0238219341667,
+     "mean_control": 0.0174372156189,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    },
+    "posture_sway": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "posture",
+     "label": "no detectable effect",
+     "mean": 0.00120308666711,
+     "mean_control": 0.00120308666711,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "recovery_region": {
+     "d": 2.31394930167,
+     "dropped": 0,
+     "effect_of_the_rule_line": 2.08333333333,
+     "group": "direction",
+     "label": "worsened",
+     "mean": 6.0,
+     "mean_control": 3.91666666667,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    },
+    "silenced_lines": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "availability",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "tolerance_backward": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "direction",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "tolerance_forward": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "direction",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "turn_not_established": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "reachability",
+     "label": "no detectable effect",
+     "mean": 1.0,
+     "mean_control": 1.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "turn_settling_after_push": {
+     "d": -18.2873232179,
+     "dropped": 0,
+     "effect_of_the_rule_line": -0.753333333333,
+     "group": "timing",
+     "label": "improved",
+     "mean": 0.736666666667,
+     "mean_control": 1.49,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    }
+   },
+   "breathing-synchronization": {
+    "actuator_saturation": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "resource",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "correction_latency": {
+     "d": -3.39257317092,
+     "dropped": 0,
+     "effect_of_the_rule_line": -0.1975,
+     "group": "timing",
+     "label": "improved",
+     "mean": 0.0566666666667,
+     "mean_control": 0.2625,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    },
+    "energy_beyond_declared": {
+     "d": -2.11870821162,
+     "dropped": 0,
+     "effect_of_the_rule_line": -0.002635858015,
+     "group": "resource",
+     "label": "improved",
+     "mean": 0.0972683127547,
+     "mean_control": 0.0998469852716,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    },
+    "line_conflicts": {
+     "d": 0.40219983327,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.111111111111,
+     "group": "resource",
+     "label": "no detectable effect",
+     "mean": 1.23333333333,
+     "mean_control": 1.13333333333,
+     "n": 12,
+     "p": 0.25,
+     "q": 0.617647058824
+    },
+    "peak_dev_forward": {
+     "d": 3.98115188658,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.00271103452892,
+     "group": "posture",
+     "label": "worsened",
+     "mean": 0.0205615327385,
+     "mean_control": 0.0174372156189,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    },
+    "posture_sway": {
+     "d": -1.2076980849,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "posture",
+     "label": "improved",
+     "mean": 0.00108803112691,
+     "mean_control": 0.00120308666711,
+     "n": 12,
+     "p": 0.001953125,
+     "q": 0.00607638888889
+    },
+    "recovery_region": {
+     "d": -3.0042704648,
+     "dropped": 0,
+     "effect_of_the_rule_line": -2.41666666667,
+     "group": "direction",
+     "label": "improved",
+     "mean": 1.25,
+     "mean_control": 3.91666666667,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    },
+    "silenced_lines": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "availability",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "tolerance_backward": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "direction",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "tolerance_forward": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "direction",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "turn_not_established": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "reachability",
+     "label": "no detectable effect",
+     "mean": 1.0,
+     "mean_control": 1.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "turn_settling_after_push": {
+     "d": -2.18213466856,
+     "dropped": 0,
+     "effect_of_the_rule_line": -0.0266666666667,
+     "group": "timing",
+     "label": "improved",
+     "mean": 1.43833333333,
+     "mean_control": 1.49,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    }
+   },
+   "endpoint-removal": {
+    "actuator_saturation": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "resource",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "correction_latency": {
+     "d": -5.41715382425,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "timing",
+     "label": "improved",
+     "mean": 0.14,
+     "mean_control": 0.2625,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    },
+    "energy_beyond_declared": {
+     "d": 5.50969042402,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "resource",
+     "label": "worsened",
+     "mean": 0.105216861805,
+     "mean_control": 0.0998469852716,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    },
+    "line_conflicts": {
+     "d": -1.96019045403,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "resource",
+     "label": "improved",
+     "mean": 0.0888888888889,
+     "mean_control": 1.13333333333,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    },
+    "peak_dev_forward": {
+     "d": 8.63416711746,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "posture",
+     "label": "worsened",
+     "mean": 0.0247814467305,
+     "mean_control": 0.0174372156189,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    },
+    "posture_sway": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "posture",
+     "label": "no detectable effect",
+     "mean": 0.00120308666711,
+     "mean_control": 0.00120308666711,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "recovery_region": {
+     "d": -2.99722093502,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "direction",
+     "label": "improved",
+     "mean": 1.58333333333,
+     "mean_control": 3.91666666667,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    },
+    "silenced_lines": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "availability",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "tolerance_backward": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "direction",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "tolerance_forward": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "direction",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "turn_not_established": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "reachability",
+     "label": "no detectable effect",
+     "mean": 1.0,
+     "mean_control": 1.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "turn_settling_after_push": {
+     "d": -3.42398659614,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "timing",
+     "label": "improved",
+     "mean": 1.445,
+     "mean_control": 1.49,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    }
+   },
+   "fingertip-tension": {
+    "actuator_saturation": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "resource",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "correction_latency": {
+     "d": -0.288675134595,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "timing",
+     "label": "no detectable effect",
+     "mean": 0.260833333333,
+     "mean_control": 0.2625,
+     "n": 12,
+     "p": 0.625,
+     "q": 1.0
+    },
+    "energy_beyond_declared": {
+     "d": 0.725834327601,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.00142869623703,
+     "group": "resource",
+     "label": "no detectable effect",
+     "mean": 0.100474168909,
+     "mean_control": 0.0998469852716,
+     "n": 12,
+     "p": 0.03125,
+     "q": 0.0875
+    },
+    "line_conflicts": {
+     "d": -0.175780762328,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "resource",
+     "label": "no detectable effect",
+     "mean": 1.1,
+     "mean_control": 1.13333333333,
+     "n": 12,
+     "p": 0.6953125,
+     "q": 1.0
+    },
+    "peak_dev_forward": {
+     "d": 0.616543154522,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "posture",
+     "label": "no detectable effect",
+     "mean": 0.0176734210522,
+     "mean_control": 0.0174372156189,
+     "n": 12,
+     "p": 0.05908203125,
+     "q": 0.152704326923
+    },
+    "posture_sway": {
+     "d": -1.39852977446,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "posture",
+     "label": "improved",
+     "mean": 0.00103112680173,
+     "mean_control": 0.00120308666711,
+     "n": 12,
+     "p": 0.00244140625,
+     "q": 0.00732421875
+    },
+    "recovery_region": {
+     "d": -2.59528558089,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "direction",
+     "label": "improved",
+     "mean": 1.75,
+     "mean_control": 3.91666666667,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    },
+    "silenced_lines": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "availability",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "tolerance_backward": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "direction",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "tolerance_forward": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "direction",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "turn_not_established": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "reachability",
+     "label": "no detectable effect",
+     "mean": 1.0,
+     "mean_control": 1.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "turn_settling_after_push": {
+     "d": -2.88952300312,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "timing",
+     "label": "improved",
+     "mean": 1.45416666667,
+     "mean_control": 1.49,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    }
+   },
+   "long-duration-sedimentation": {
+    "actuator_saturation": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": null,
+     "group": "resource",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "correction_latency": {
+     "d": -0.428174419289,
+     "dropped": 0,
+     "effect_of_the_rule_line": null,
+     "group": "timing",
+     "label": "no detectable effect",
+     "mean": 0.260833333333,
+     "mean_control": 0.2625,
+     "n": 12,
+     "p": 0.5,
+     "q": 1.0
+    },
+    "energy_beyond_declared": {
+     "d": -0.24853210976,
+     "dropped": 0,
+     "effect_of_the_rule_line": null,
+     "group": "resource",
+     "label": "no detectable effect",
+     "mean": 0.0997548656244,
+     "mean_control": 0.0998469852716,
+     "n": 12,
+     "p": 0.400390625,
+     "q": 0.934244791667
+    },
+    "line_conflicts": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": null,
+     "group": "resource",
+     "label": "no detectable effect",
+     "mean": 1.13333333333,
+     "mean_control": 1.13333333333,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "peak_dev_forward": {
+     "d": -1.48688597976,
+     "dropped": 0,
+     "effect_of_the_rule_line": null,
+     "group": "posture",
+     "label": "improved",
+     "mean": 0.0169399002165,
+     "mean_control": 0.0174372156189,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    },
+    "posture_sway": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": null,
+     "group": "posture",
+     "label": "no detectable effect",
+     "mean": 0.00120308666711,
+     "mean_control": 0.00120308666711,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "recovery_region": {
+     "d": -1.94382491098,
+     "dropped": 0,
+     "effect_of_the_rule_line": null,
+     "group": "direction",
+     "label": "improved",
+     "mean": 1.75,
+     "mean_control": 3.91666666667,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    },
+    "silenced_lines": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": null,
+     "group": "availability",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "tolerance_backward": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": null,
+     "group": "direction",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "tolerance_forward": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": null,
+     "group": "direction",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "turn_not_established": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": null,
+     "group": "reachability",
+     "label": "no detectable effect",
+     "mean": 1.0,
+     "mean_control": 1.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "turn_settling_after_push": {
+     "d": -1.78903654772,
+     "dropped": 0,
+     "effect_of_the_rule_line": null,
+     "group": "timing",
+     "label": "improved",
+     "mean": 1.46916666667,
+     "mean_control": 1.49,
+     "n": 12,
+     "p": 0.0009765625,
+     "q": 0.00328125
+    }
+   },
+   "low-noise-movement": {
+    "actuator_saturation": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "resource",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "correction_latency": {
+     "d": -3.42968258682,
+     "dropped": 0,
+     "effect_of_the_rule_line": -0.0316666666667,
+     "group": "timing",
+     "label": "improved",
+     "mean": 0.228333333333,
+     "mean_control": 0.2625,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    },
+    "energy_beyond_declared": {
+     "d": -3.87827502666,
+     "dropped": 0,
+     "effect_of_the_rule_line": -0.00255243548516,
+     "group": "resource",
+     "label": "improved",
+     "mean": 0.0970529329525,
+     "mean_control": 0.0998469852716,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    },
+    "line_conflicts": {
+     "d": -0.296779870973,
+     "dropped": 0,
+     "effect_of_the_rule_line": -0.0444444444444,
+     "group": "resource",
+     "label": "no detectable effect",
+     "mean": 1.03333333333,
+     "mean_control": 1.13333333333,
+     "n": 12,
+     "p": 0.375,
+     "q": 0.887323943662
+    },
+    "peak_dev_forward": {
+     "d": -3.15907546284,
+     "dropped": 0,
+     "effect_of_the_rule_line": -0.00290831332506,
+     "group": "posture",
+     "label": "improved",
+     "mean": 0.014539853068,
+     "mean_control": 0.0174372156189,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    },
+    "posture_sway": {
+     "d": -0.663913632286,
+     "dropped": 0,
+     "effect_of_the_rule_line": -4.70267521488e-05,
+     "group": "posture",
+     "label": "no detectable effect",
+     "mean": 0.00104859678369,
+     "mean_control": 0.00120308666711,
+     "n": 12,
+     "p": 0.0439453125,
+     "q": 0.115356445312
+    },
+    "recovery_region": {
+     "d": -0.787176080998,
+     "dropped": 0,
+     "effect_of_the_rule_line": -1.41666666667,
+     "group": "direction",
+     "label": "no detectable effect",
+     "mean": 3.0,
+     "mean_control": 3.91666666667,
+     "n": 12,
+     "p": 0.0390625,
+     "q": 0.104166666667
+    },
+    "silenced_lines": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "availability",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "tolerance_backward": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "direction",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "tolerance_forward": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "direction",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "turn_not_established": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "reachability",
+     "label": "no detectable effect",
+     "mean": 1.0,
+     "mean_control": 1.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "turn_settling_after_push": {
+     "d": 4.44887817397,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.075,
+     "group": "timing",
+     "label": "worsened",
+     "mean": 1.56666666667,
+     "mean_control": 1.49,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    }
+   },
+   "lower-abdominal-continuity": {
+    "actuator_saturation": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "resource",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "correction_latency": {
+     "d": -1.24452825388,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "timing",
+     "label": "improved",
+     "mean": 0.250833333333,
+     "mean_control": 0.2625,
+     "n": 12,
+     "p": 0.00390625,
+     "q": 0.0115131578947
+    },
+    "energy_beyond_declared": {
+     "d": 8.40219116804,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.00114295698963,
+     "group": "resource",
+     "label": "worsened",
+     "mean": 0.121583683894,
+     "mean_control": 0.0998469852716,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    },
+    "line_conflicts": {
+     "d": -0.614370393486,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "resource",
+     "label": "no detectable effect",
+     "mean": 0.977777777778,
+     "mean_control": 1.13333333333,
+     "n": 12,
+     "p": 0.0810546875,
+     "q": 0.206321022727
+    },
+    "peak_dev_forward": {
+     "d": 2.23467397823,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "posture",
+     "label": "worsened",
+     "mean": 0.0185487069035,
+     "mean_control": 0.0174372156189,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    },
+    "posture_sway": {
+     "d": -1.41019476358,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "posture",
+     "label": "improved",
+     "mean": 0.000662675684868,
+     "mean_control": 0.00120308666711,
+     "n": 12,
+     "p": 0.00244140625,
+     "q": 0.00732421875
+    },
+    "recovery_region": {
+     "d": 0.092557972067,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "direction",
+     "label": "no detectable effect",
+     "mean": 4.0,
+     "mean_control": 3.91666666667,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "silenced_lines": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "availability",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "tolerance_backward": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "direction",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "tolerance_forward": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "direction",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "turn_not_established": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "reachability",
+     "label": "no detectable effect",
+     "mean": 1.0,
+     "mean_control": 1.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "turn_settling_after_push": {
+     "d": -3.64921398772,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "timing",
+     "label": "improved",
+     "mean": 1.43083333333,
+     "mean_control": 1.49,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    }
+   },
+   "minimal-approach-distance": {
+    "actuator_saturation": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "resource",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "correction_latency": {
+     "d": -5.43868258797,
+     "dropped": 0,
+     "effect_of_the_rule_line": -0.0525,
+     "group": "timing",
+     "label": "improved",
+     "mean": 0.21,
+     "mean_control": 0.2625,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    },
+    "energy_beyond_declared": {
+     "d": 5.81606058693,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.00427191404129,
+     "group": "resource",
+     "label": "worsened",
+     "mean": 0.104118899313,
+     "mean_control": 0.0998469852716,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    },
+    "line_conflicts": {
+     "d": 5.52770798393,
+     "dropped": 0,
+     "effect_of_the_rule_line": 1.33333333333,
+     "group": "resource",
+     "label": "worsened",
+     "mean": 2.46666666667,
+     "mean_control": 1.13333333333,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    },
+    "peak_dev_forward": {
+     "d": 11.7533332005,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.00607143667291,
+     "group": "posture",
+     "label": "worsened",
+     "mean": 0.0235086522918,
+     "mean_control": 0.0174372156189,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    },
+    "posture_sway": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "posture",
+     "label": "no detectable effect",
+     "mean": 0.00120308666711,
+     "mean_control": 0.00120308666711,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "recovery_region": {
+     "d": 0.258984885141,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.25,
+     "group": "direction",
+     "label": "no detectable effect",
+     "mean": 4.16666666667,
+     "mean_control": 3.91666666667,
+     "n": 12,
+     "p": 0.5625,
+     "q": 1.0
+    },
+    "silenced_lines": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "availability",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "tolerance_backward": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "direction",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "tolerance_forward": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "direction",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "turn_not_established": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "reachability",
+     "label": "no detectable effect",
+     "mean": 1.0,
+     "mean_control": 1.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "turn_settling_after_push": {
+     "d": -5.30453842044,
+     "dropped": 0,
+     "effect_of_the_rule_line": -0.130833333333,
+     "group": "timing",
+     "label": "improved",
+     "mean": 1.35916666667,
+     "mean_control": 1.49,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    }
+   },
+   "narrow-step-balance": {
+    "actuator_saturation": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "resource",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "correction_latency": {
+     "d": -4.23790945434,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "timing",
+     "label": "improved",
+     "mean": 0.205,
+     "mean_control": 0.2625,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    },
+    "energy_beyond_declared": {
+     "d": -0.752208497928,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "resource",
+     "label": "no detectable effect",
+     "mean": 0.0993179482469,
+     "mean_control": 0.0998469852716,
+     "n": 12,
+     "p": 0.02587890625,
+     "q": 0.0736890889831
+    },
+    "line_conflicts": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "resource",
+     "label": "no detectable effect",
+     "mean": 1.13333333333,
+     "mean_control": 1.13333333333,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "peak_dev_forward": {
+     "d": -0.0883260610031,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "posture",
+     "label": "no detectable effect",
+     "mean": 0.0173845334739,
+     "mean_control": 0.0174372156189,
+     "n": 12,
+     "p": 0.74853515625,
+     "q": 1.0
+    },
+    "posture_sway": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "posture",
+     "label": "no detectable effect",
+     "mean": 0.00120308666711,
+     "mean_control": 0.00120308666711,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "recovery_region": {
+     "d": -0.375533808099,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "direction",
+     "label": "no detectable effect",
+     "mean": 3.58333333333,
+     "mean_control": 3.91666666667,
+     "n": 12,
+     "p": 0.359375,
+     "q": 0.8625
+    },
+    "silenced_lines": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "availability",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "tolerance_backward": {
+     "d": null,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "direction",
+     "label": "undefined",
+     "mean": 1.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    },
+    "tolerance_forward": {
+     "d": null,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "direction",
+     "label": "undefined",
+     "mean": 1.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    },
+    "turn_not_established": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "reachability",
+     "label": "no detectable effect",
+     "mean": 1.0,
+     "mean_control": 1.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "turn_settling_after_push": {
+     "d": -1.65831239518,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "timing",
+     "label": "improved",
+     "mean": 1.4775,
+     "mean_control": 1.49,
+     "n": 12,
+     "p": 0.001953125,
+     "q": 0.00607638888889
+    }
+   },
+   "slow-movement": {
+    "actuator_saturation": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "resource",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "correction_latency": {
+     "d": 0.887511785482,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "timing",
+     "label": "worsened",
+     "mean": 0.350833333333,
+     "mean_control": 0.2625,
+     "n": 12,
+     "p": 0.005859375,
+     "q": 0.0169719827586
+    },
+    "energy_beyond_declared": {
+     "d": 1.6349121411,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "resource",
+     "label": "worsened",
+     "mean": 0.101716214247,
+     "mean_control": 0.0998469852716,
+     "n": 12,
+     "p": 0.001953125,
+     "q": 0.00607638888889
+    },
+    "line_conflicts": {
+     "d": 5.11120451937,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "resource",
+     "label": "worsened",
+     "mean": 2.78888888889,
+     "mean_control": 1.13333333333,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    },
+    "peak_dev_forward": {
+     "d": -10.0998247425,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "posture",
+     "label": "improved",
+     "mean": 0.0120297539693,
+     "mean_control": 0.0174372156189,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    },
+    "posture_sway": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "posture",
+     "label": "no detectable effect",
+     "mean": 0.00120308666711,
+     "mean_control": 0.00120308666711,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "recovery_region": {
+     "d": -0.177789750555,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "direction",
+     "label": "no detectable effect",
+     "mean": 3.75,
+     "mean_control": 3.91666666667,
+     "n": 12,
+     "p": 0.75390625,
+     "q": 1.0
+    },
+    "silenced_lines": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "availability",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "tolerance_backward": {
+     "d": 0.288675134595,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "direction",
+     "label": "no detectable effect",
+     "mean": 0.0833333333333,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "tolerance_forward": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "direction",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "turn_not_established": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "reachability",
+     "label": "no detectable effect",
+     "mean": 1.0,
+     "mean_control": 1.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "turn_settling_after_push": {
+     "d": 4.03170429759,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "timing",
+     "label": "worsened",
+     "mean": 1.56583333333,
+     "mean_control": 1.49,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    }
+   },
+   "tensegrity": {
+    "actuator_saturation": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "resource",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "correction_latency": {
+     "d": -2.14087209644,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "timing",
+     "label": "improved",
+     "mean": 0.254166666667,
+     "mean_control": 0.2625,
+     "n": 12,
+     "p": 0.001953125,
+     "q": 0.00607638888889
+    },
+    "energy_beyond_declared": {
+     "d": 0.708433829466,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.000285739247406,
+     "group": "resource",
+     "label": "no detectable effect",
+     "mean": 0.0999663959794,
+     "mean_control": 0.0998469852716,
+     "n": 12,
+     "p": 0.03466796875,
+     "q": 0.0939390120968
+    },
+    "line_conflicts": {
+     "d": 1.62731486613e-16,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "resource",
+     "label": "no detectable effect",
+     "mean": 1.13333333333,
+     "mean_control": 1.13333333333,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "peak_dev_forward": {
+     "d": -0.302629695751,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "posture",
+     "label": "no detectable effect",
+     "mean": 0.0174002580765,
+     "mean_control": 0.0174372156189,
+     "n": 12,
+     "p": 0.31640625,
+     "q": 0.770380434783
+    },
+    "posture_sway": {
+     "d": 0.708949741297,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "posture",
+     "label": "no detectable effect",
+     "mean": 0.00122330277331,
+     "mean_control": 0.00120308666711,
+     "n": 12,
+     "p": 0.03466796875,
+     "q": 0.0939390120968
+    },
+    "recovery_region": {
+     "d": -0.40219983327,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "direction",
+     "label": "no detectable effect",
+     "mean": 3.66666666667,
+     "mean_control": 3.91666666667,
+     "n": 12,
+     "p": 0.5,
+     "q": 1.0
+    },
+    "silenced_lines": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "availability",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "tolerance_backward": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "direction",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "tolerance_forward": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "direction",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "turn_not_established": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "reachability",
+     "label": "no detectable effect",
+     "mean": 1.0,
+     "mean_control": 1.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "turn_settling_after_push": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "timing",
+     "label": "no detectable effect",
+     "mean": 1.49,
+     "mean_control": 1.49,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    }
+   },
+   "whole-skin-sensing": {
+    "actuator_saturation": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "resource",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "correction_latency": {
+     "d": -3.31662479036,
+     "dropped": 0,
+     "effect_of_the_rule_line": -0.02,
+     "group": "timing",
+     "label": "improved",
+     "mean": 0.2425,
+     "mean_control": 0.2625,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    },
+    "energy_beyond_declared": {
+     "d": -0.464790598893,
+     "dropped": 0,
+     "effect_of_the_rule_line": -0.000558587916187,
+     "group": "resource",
+     "label": "no detectable effect",
+     "mean": 0.0992883973555,
+     "mean_control": 0.0998469852716,
+     "n": 12,
+     "p": 0.13427734375,
+     "q": 0.336695429104
+    },
+    "line_conflicts": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "resource",
+     "label": "no detectable effect",
+     "mean": 1.13333333333,
+     "mean_control": 1.13333333333,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "peak_dev_forward": {
+     "d": 1.70162453302,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.00144083475226,
+     "group": "posture",
+     "label": "worsened",
+     "mean": 0.0188780503711,
+     "mean_control": 0.0174372156189,
+     "n": 12,
+     "p": 0.0009765625,
+     "q": 0.00328125
+    },
+    "posture_sway": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "posture",
+     "label": "no detectable effect",
+     "mean": 0.00120308666711,
+     "mean_control": 0.00120308666711,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "recovery_region": {
+     "d": -3.39383499039,
+     "dropped": 0,
+     "effect_of_the_rule_line": -2.83333333333,
+     "group": "direction",
+     "label": "improved",
+     "mean": 1.08333333333,
+     "mean_control": 3.91666666667,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    },
+    "silenced_lines": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "availability",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "tolerance_backward": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "direction",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "tolerance_forward": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "direction",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "turn_not_established": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "reachability",
+     "label": "no detectable effect",
+     "mean": 1.0,
+     "mean_control": 1.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "turn_settling_after_push": {
+     "d": -3.09557338921,
+     "dropped": 0,
+     "effect_of_the_rule_line": -0.0691666666667,
+     "group": "timing",
+     "label": "improved",
+     "mean": 1.42083333333,
+     "mean_control": 1.49,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    }
+   },
+   "zero-run-up-transition": {
+    "actuator_saturation": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "resource",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "correction_latency": {
+     "d": -6.42104275225,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "timing",
+     "label": "improved",
+     "mean": 0.121666666667,
+     "mean_control": 0.2625,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    },
+    "energy_beyond_declared": {
+     "d": 5.50359382016,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "resource",
+     "label": "worsened",
+     "mean": 0.104967978022,
+     "mean_control": 0.0998469852716,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    },
+    "line_conflicts": {
+     "d": -2.1709176987,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "resource",
+     "label": "improved",
+     "mean": 0.0444444444444,
+     "mean_control": 1.13333333333,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    },
+    "peak_dev_forward": {
+     "d": 9.99733058842,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "posture",
+     "label": "worsened",
+     "mean": 0.0249949620146,
+     "mean_control": 0.0174372156189,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    },
+    "posture_sway": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "posture",
+     "label": "no detectable effect",
+     "mean": 0.00120308666711,
+     "mean_control": 0.00120308666711,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "recovery_region": {
+     "d": -2.59807621135,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "direction",
+     "label": "improved",
+     "mean": 1.66666666667,
+     "mean_control": 3.91666666667,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    },
+    "silenced_lines": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "availability",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "tolerance_backward": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "direction",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "tolerance_forward": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "direction",
+     "label": "no detectable effect",
+     "mean": 0.0,
+     "mean_control": 0.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "turn_not_established": {
+     "d": 0.0,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "reachability",
+     "label": "no detectable effect",
+     "mean": 1.0,
+     "mean_control": 1.0,
+     "n": 12,
+     "p": 1.0,
+     "q": 1.0
+    },
+    "turn_settling_after_push": {
+     "d": -7.51067616199,
+     "dropped": 0,
+     "effect_of_the_rule_line": 0.0,
+     "group": "timing",
+     "label": "improved",
+     "mean": 1.42333333333,
+     "mean_control": 1.49,
+     "n": 12,
+     "p": 0.00048828125,
+     "q": 0.001708984375
+    }
+   }
+  },
+  "reading": "Conditions are compared with the matched control on identical seeds. 'No detectable effect' is not 'no effect' (see design.min_detectable_dz).",
+  "series": {
+   "control_com": {
+    "mean": [
+     0.0,
+     7.01210005304e-07,
+     4.20394909922e-06,
+     9.53679803179e-06,
+     -1.67798521715e-06,
+     -4.03737239928e-05,
+     -0.000108793843213,
+     -0.000181072220835,
+     -0.000238181369662,
+     -0.000302167775194,
+     -0.000387201378138,
+     -0.000489939987761,
+     -0.000601923567525,
+     -0.000727906764747,
+     -0.000826335291553,
+     -0.000887147375956,
+     -0.000917199804598,
+     -0.000942924462933,
+     -0.000948719671994,
+     -0.000921867090251,
+     -0.000855017266756,
+     -0.000848334758342,
+     -0.00206871515339,
+     -0.00438808415372,
+     -0.00679568168036,
+     -0.00822677590483,
+     -0.00846189074016,
+     -0.00829825433296,
+     -0.00731745193111,
+     -0.00528096729319,
+     -0.00255967434082,
+     0.00116720287466,
+     0.00644358064006,
+     0.013260173012,
+     0.0203092968238,
+     0.0267015198996,
+     0.0321948619505,
+     0.0367835946579,
+     0.0403888334628,
+     0.0428515541095,
+     0.0441053999124,
+     0.0442844944651,
+     0.0436034007421,
+     0.0423313041446,
+     0.0408124493089,
+     0.0393292840827,
+     0.0380340197898,
+     0.0369779191709,
+     0.0361931796021,
+     0.03577041662,
+     0.0357929033199,
+     0.0362466928969,
+     0.03702957529,
+     0.0380579683177,
+     0.0392516175644,
+     0.0405035730008,
+     0.0416861732514,
+     0.0426727492226,
+     0.0433815176618,
+     0.0437529489456,
+     0.0437739485358,
+     0.0434465330017,
+     0.0427647285128,
+     0.0418115142402,
+     0.0407131234852,
+     0.0403426782669,
+     0.0416782293066,
+     0.0446006141228,
+     0.0480164609064,
+     0.05144000865,
+     0.0542673764944,
+     0.0562471618202,
+     0.05770212641,
+     0.058789513895,
+     0.0592161792391,
+     0.0587748473813,
+     0.0575722084561,
+     0.0555899058407,
+     0.0528780633851,
+     0.0496509764561,
+     0.0463838418162,
+     0.0435395907579,
+     0.0413663071483,
+     0.039964068721,
+     0.0393364620102,
+     0.0394706112687,
+     0.0402535520851,
+     0.0414507445347,
+     0.042766476242,
+     0.0439703600052,
+     0.0450109840212,
+     0.045813548048,
+     0.0462464759488,
+     0.0462126895004,
+     0.045717945049,
+     0.0448772365848,
+     0.0438320517975,
+     0.0426515304474,
+     0.0414167659271,
+     0.0402548007563,
+     0.0393110675527,
+     0.0387124299009,
+     0.0385143428826,
+     0.0387143903816,
+     0.0392787834324,
+     0.0401625357582,
+     0.0413450150408,
+     0.0427580307025,
+     0.0442360794172,
+     0.0455953090429,
+     0.0467016422882,
+     0.0474199440072,
+     0.0476746098277,
+     0.0471310731093,
+     0.0453828551345,
+     0.0422056394054,
+     0.0377819959448,
+     0.0324733999615,
+     0.0266696157345,
+     0.0207390390259,
+     0.0149973255336,
+     0.00972637111676,
+     0.00517483262403,
+     0.00147753781008,
+     -0.0013407257376,
+     -0.00329705463371,
+     -0.0044807591621,
+     -0.00502153148733,
+     -0.0051312871758,
+     -0.00505352984277,
+     -0.00496407142596,
+     -0.00500032976039,
+     -0.00531367059218,
+     -0.00598173634405,
+     -0.0070010738273,
+     -0.00830029880815,
+     -0.00981817613994,
+     -0.0115073179695,
+     -0.0133113747555,
+     -0.0151161384169,
+     -0.0167675009053,
+     -0.0181895380421,
+     -0.019359570929,
+     -0.0202564999598,
+     -0.020825182125,
+     -0.0209794524422,
+     -0.0207947069876,
+     -0.0204079719358,
+     -0.0199240342439,
+     -0.0193983911475
+    ],
+    "sd": [
+     0.0,
+     9.33665635462e-06,
+     2.65848703926e-05,
+     3.6763478086e-05,
+     7.6090392851e-05,
+     0.00014529208888,
+     0.000199924687834,
+     0.00024713021405,
+     0.000307342154902,
+     0.000362791170872,
+     0.000400238789256,
+     0.000440457822943,
+     0.000514823226125,
+     0.000591371458691,
+     0.000630041228421,
+     0.000636493735232,
+     0.000647934252414,
+     0.000671368583543,
+     0.000669567102071,
+     0.000676827903247,
+     0.000738157001867,
+     0.000818395523613,
+     0.000885918179366,
+     0.000955034408355,
+     0.000997383502677,
+     0.00101684952814,
+     0.00101462157123,
+     0.000984725705919,
+     0.00097447869977,
+     0.00107896489784,
+     0.0012539883603,
+     0.00146438237837,
+     0.001709355342,
+     0.00191050036306,
+     0.00201598031442,
+     0.00209227910116,
+     0.00217261324741,
+     0.00223960046223,
+     0.00224224569133,
+     0.00215951824972,
+     0.00201636447492,
+     0.00182568141386,
+     0.00161233959198,
+     0.00138788080234,
+     0.0012115040018,
+     0.00109288716506,
+     0.0010240285861,
+     0.000960039466843,
+     0.000879407247531,
+     0.000807141751397,
+     0.000763507045305,
+     0.000707203759314,
+     0.00065448139021,
+     0.000599467221946,
+     0.000573545062338,
+     0.000570490060865,
+     0.000569053089319,
+     0.000587997973849,
+     0.000610133772597,
+     0.000610939868319,
+     0.000605418059926,
+     0.000626146227177,
+     0.000662705374895,
+     0.000675731795023,
+     0.00067617480283,
+     0.000685559808936,
+     0.000709347116757,
+     0.000727274743324,
+     0.00074161183188,
+     0.000761659327079,
+     0.000788784679146,
+     0.000871502594943,
+     0.00101543846895,
+     0.00117681685622,
+     0.00132331140163,
+     0.00147219665089,
+     0.00159109507331,
+     0.00161219052404,
+     0.00153296413254,
+     0.00139421215165,
+     0.00123867443987,
+     0.00109498116515,
+     0.000993489449412,
+     0.000902964059954,
+     0.000812985318532,
+     0.000719478687254,
+     0.000628170132016,
+     0.000582309989235,
+     0.000574757038554,
+     0.000605046141608,
+     0.000665618147122,
+     0.000719658143873,
+     0.000764995835071,
+     0.000818024117606,
+     0.000877685575012,
+     0.000916427139078,
+     0.000971643129355,
+     0.00104300271257,
+     0.00111904686526,
+     0.001164270301,
+     0.00117498673492,
+     0.00118988869099,
+     0.0012225136429,
+     0.00121396167557,
+     0.00115985576431,
+     0.00109202593762,
+     0.00104669717535,
+     0.000998499918885,
+     0.000970587484969,
+     0.0010242918595,
+     0.00115282173618,
+     0.00127390341474,
+     0.00137337664185,
+     0.00146341113732,
+     0.00155051511423,
+     0.00163986789199,
+     0.00173548843857,
+     0.00184606637534,
+     0.00194082939323,
+     0.00202362511538,
+     0.00212293870249,
+     0.00218788493147,
+     0.00219027453237,
+     0.00212304893433,
+     0.00198870167933,
+     0.00178968705695,
+     0.00157468981593,
+     0.00135604495633,
+     0.00113520587893,
+     0.000932460806287,
+     0.000779013265492,
+     0.000684138842302,
+     0.000662272645986,
+     0.000731024215371,
+     0.00084390287651,
+     0.000949807551602,
+     0.00102076460195,
+     0.00105252889491,
+     0.00104274039173,
+     0.00099562496471,
+     0.000945119295772,
+     0.00093557094289,
+     0.000995446775447,
+     0.00107950160552,
+     0.00114234383225,
+     0.00118024015287,
+     0.00118584849106,
+     0.00114864344182,
+     0.00104118200197,
+     0.00090046726617
+    ],
+    "t": [
+     0.0,
+     0.05,
+     0.1,
+     0.15,
+     0.2,
+     0.25,
+     0.3,
+     0.35,
+     0.4,
+     0.45,
+     0.5,
+     0.55,
+     0.6,
+     0.65,
+     0.7,
+     0.75,
+     0.8,
+     0.85,
+     0.9,
+     0.95,
+     1.0,
+     1.05,
+     1.1,
+     1.15,
+     1.2,
+     1.25,
+     1.3,
+     1.35,
+     1.4,
+     1.45,
+     1.5,
+     1.55,
+     1.6,
+     1.65,
+     1.7,
+     1.75,
+     1.8,
+     1.85,
+     1.9,
+     1.95,
+     2.0,
+     2.05,
+     2.1,
+     2.15,
+     2.2,
+     2.25,
+     2.3,
+     2.35,
+     2.4,
+     2.45,
+     2.5,
+     2.55,
+     2.6,
+     2.65,
+     2.7,
+     2.75,
+     2.8,
+     2.85,
+     2.9,
+     2.95,
+     3.0,
+     3.05,
+     3.1,
+     3.15,
+     3.2,
+     3.25,
+     3.3,
+     3.35,
+     3.4,
+     3.45,
+     3.5,
+     3.55,
+     3.6,
+     3.65,
+     3.7,
+     3.75,
+     3.8,
+     3.85,
+     3.9,
+     3.95,
+     4.0,
+     4.05,
+     4.1,
+     4.15,
+     4.2,
+     4.25,
+     4.3,
+     4.35,
+     4.4,
+     4.45,
+     4.5,
+     4.55,
+     4.6,
+     4.65,
+     4.7,
+     4.75,
+     4.8,
+     4.85,
+     4.9,
+     4.95,
+     5.0,
+     5.05,
+     5.1,
+     5.15,
+     5.2,
+     5.25,
+     5.3,
+     5.35,
+     5.4,
+     5.45,
+     5.5,
+     5.55,
+     5.6,
+     5.65,
+     5.7,
+     5.75,
+     5.8,
+     5.85,
+     5.9,
+     5.95,
+     6.0,
+     6.05,
+     6.1,
+     6.15,
+     6.2,
+     6.25,
+     6.3,
+     6.35,
+     6.4,
+     6.45,
+     6.5,
+     6.55,
+     6.6,
+     6.65,
+     6.7,
+     6.75,
+     6.8,
+     6.85,
+     6.9,
+     6.95,
+     7.0,
+     7.05,
+     7.1,
+     7.15,
+     7.2,
+     7.25,
+     7.3,
+     7.35,
+     7.4,
+     7.45
+    ]
+   }
+  },
+  "tables": [
+   {
+    "columns": [
+     "principle",
+     "group",
+     "measure",
+     "control mean",
+     "condition mean",
+     "d (paired)",
+     "p",
+     "q (BH)",
+     "label",
+     "of which the rule line (mean, vs ablation)",
+     "ignition of the rule line"
+    ],
+    "name": "effects",
+    "rows": [
+     [
+      "lower-abdominal-continuity",
+      "posture",
+      "trunk sway in quiet standing",
+      0.00120308666711,
+      0.000662675684868,
+      -1.41019476358,
+      0.00244140625,
+      0.00732421875,
+      "improved",
+      0.0,
+      1.0
+     ],
+     [
+      "lower-abdominal-continuity",
+      "posture",
+      "peak COM deviation after the forward push",
+      0.0174372156189,
+      0.0185487069035,
+      2.23467397823,
+      0.00048828125,
+      0.001708984375,
+      "worsened",
+      0.0,
+      1.0
+     ],
+     [
+      "lower-abdominal-continuity",
+      "direction",
+      "forward disturbance tolerance (rungs not survived)",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "lower-abdominal-continuity",
+      "direction",
+      "backward disturbance tolerance (rungs not survived)",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "lower-abdominal-continuity",
+      "direction",
+      "recovery region (rungs not recovered from inside the window, both directions)",
+      3.91666666667,
+      4.0,
+      0.092557972067,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "lower-abdominal-continuity",
+      "timing",
+      "movement-correction latency after the push",
+      0.2625,
+      0.250833333333,
+      -1.24452825388,
+      0.00390625,
+      0.0115131578947,
+      "improved",
+      0.0,
+      1.0
+     ],
+     [
+      "lower-abdominal-continuity",
+      "timing",
+      "settling after the direction change (restricted mean)",
+      1.49,
+      1.43083333333,
+      -3.64921398772,
+      0.00048828125,
+      0.001708984375,
+      "improved",
+      0.0,
+      1.0
+     ],
+     [
+      "lower-abdominal-continuity",
+      "resource",
+      "energy used beyond the condition's declared line cost",
+      0.0998469852716,
+      0.121583683894,
+      8.40219116804,
+      0.00048828125,
+      0.001708984375,
+      "worsened",
+      0.00114295698963,
+      1.0
+     ],
+     [
+      "lower-abdominal-continuity",
+      "resource",
+      "line conflicts (steps per s)",
+      1.13333333333,
+      0.977777777778,
+      -0.614370393486,
+      0.0810546875,
+      0.206321022727,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "lower-abdominal-continuity",
+      "resource",
+      "time with a muscle drive saturated",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "lower-abdominal-continuity",
+      "availability",
+      "baseline lines that stopped igniting",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "lower-abdominal-continuity",
+      "reachability",
+      "direction change not established after the push (fraction of rungs)",
+      1.0,
+      1.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "whole-skin-sensing",
+      "posture",
+      "trunk sway in quiet standing",
+      0.00120308666711,
+      0.00120308666711,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "whole-skin-sensing",
+      "posture",
+      "peak COM deviation after the forward push",
+      0.0174372156189,
+      0.0188780503711,
+      1.70162453302,
+      0.0009765625,
+      0.00328125,
+      "worsened",
+      0.00144083475226,
+      1.0
+     ],
+     [
+      "whole-skin-sensing",
+      "direction",
+      "forward disturbance tolerance (rungs not survived)",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "whole-skin-sensing",
+      "direction",
+      "backward disturbance tolerance (rungs not survived)",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "whole-skin-sensing",
+      "direction",
+      "recovery region (rungs not recovered from inside the window, both directions)",
+      3.91666666667,
+      1.08333333333,
+      -3.39383499039,
+      0.00048828125,
+      0.001708984375,
+      "improved",
+      -2.83333333333,
+      1.0
+     ],
+     [
+      "whole-skin-sensing",
+      "timing",
+      "movement-correction latency after the push",
+      0.2625,
+      0.2425,
+      -3.31662479036,
+      0.00048828125,
+      0.001708984375,
+      "improved",
+      -0.02,
+      1.0
+     ],
+     [
+      "whole-skin-sensing",
+      "timing",
+      "settling after the direction change (restricted mean)",
+      1.49,
+      1.42083333333,
+      -3.09557338921,
+      0.00048828125,
+      0.001708984375,
+      "improved",
+      -0.0691666666667,
+      1.0
+     ],
+     [
+      "whole-skin-sensing",
+      "resource",
+      "energy used beyond the condition's declared line cost",
+      0.0998469852716,
+      0.0992883973555,
+      -0.464790598893,
+      0.13427734375,
+      0.336695429104,
+      "no detectable effect",
+      -0.000558587916187,
+      1.0
+     ],
+     [
+      "whole-skin-sensing",
+      "resource",
+      "line conflicts (steps per s)",
+      1.13333333333,
+      1.13333333333,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "whole-skin-sensing",
+      "resource",
+      "time with a muscle drive saturated",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "whole-skin-sensing",
+      "availability",
+      "baseline lines that stopped igniting",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "whole-skin-sensing",
+      "reachability",
+      "direction change not established after the push (fraction of rungs)",
+      1.0,
+      1.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "axis-maintenance",
+      "posture",
+      "trunk sway in quiet standing",
+      0.00120308666711,
+      0.00120308666711,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "axis-maintenance",
+      "posture",
+      "peak COM deviation after the forward push",
+      0.0174372156189,
+      0.0238219341667,
+      3.11025087016,
+      0.00048828125,
+      0.001708984375,
+      "worsened",
+      0.00638471854784,
+      1.0
+     ],
+     [
+      "axis-maintenance",
+      "direction",
+      "forward disturbance tolerance (rungs not survived)",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "axis-maintenance",
+      "direction",
+      "backward disturbance tolerance (rungs not survived)",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "axis-maintenance",
+      "direction",
+      "recovery region (rungs not recovered from inside the window, both directions)",
+      3.91666666667,
+      6.0,
+      2.31394930167,
+      0.00048828125,
+      0.001708984375,
+      "worsened",
+      2.08333333333,
+      1.0
+     ],
+     [
+      "axis-maintenance",
+      "timing",
+      "movement-correction latency after the push",
+      0.2625,
+      0.141666666667,
+      -2.22329506604,
+      0.00048828125,
+      0.001708984375,
+      "improved",
+      -0.120833333333,
+      1.0
+     ],
+     [
+      "axis-maintenance",
+      "timing",
+      "settling after the direction change (restricted mean)",
+      1.49,
+      0.736666666667,
+      -18.2873232179,
+      0.00048828125,
+      0.001708984375,
+      "improved",
+      -0.753333333333,
+      1.0
+     ],
+     [
+      "axis-maintenance",
+      "resource",
+      "energy used beyond the condition's declared line cost",
+      0.0998469852716,
+      0.119700071945,
+      15.8447862189,
+      0.00048828125,
+      0.001708984375,
+      "worsened",
+      0.0198530866734,
+      1.0
+     ],
+     [
+      "axis-maintenance",
+      "resource",
+      "line conflicts (steps per s)",
+      1.13333333333,
+      8.57777777778,
+      6.78137146578,
+      0.00048828125,
+      0.001708984375,
+      "worsened",
+      7.44444444444,
+      1.0
+     ],
+     [
+      "axis-maintenance",
+      "resource",
+      "time with a muscle drive saturated",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "axis-maintenance",
+      "availability",
+      "baseline lines that stopped igniting",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "axis-maintenance",
+      "reachability",
+      "direction change not established after the push (fraction of rungs)",
+      1.0,
+      1.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "endpoint-removal",
+      "posture",
+      "trunk sway in quiet standing",
+      0.00120308666711,
+      0.00120308666711,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "endpoint-removal",
+      "posture",
+      "peak COM deviation after the forward push",
+      0.0174372156189,
+      0.0247814467305,
+      8.63416711746,
+      0.00048828125,
+      0.001708984375,
+      "worsened",
+      0.0,
+      1.0
+     ],
+     [
+      "endpoint-removal",
+      "direction",
+      "forward disturbance tolerance (rungs not survived)",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "endpoint-removal",
+      "direction",
+      "backward disturbance tolerance (rungs not survived)",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "endpoint-removal",
+      "direction",
+      "recovery region (rungs not recovered from inside the window, both directions)",
+      3.91666666667,
+      1.58333333333,
+      -2.99722093502,
+      0.00048828125,
+      0.001708984375,
+      "improved",
+      0.0,
+      1.0
+     ],
+     [
+      "endpoint-removal",
+      "timing",
+      "movement-correction latency after the push",
+      0.2625,
+      0.14,
+      -5.41715382425,
+      0.00048828125,
+      0.001708984375,
+      "improved",
+      0.0,
+      1.0
+     ],
+     [
+      "endpoint-removal",
+      "timing",
+      "settling after the direction change (restricted mean)",
+      1.49,
+      1.445,
+      -3.42398659614,
+      0.00048828125,
+      0.001708984375,
+      "improved",
+      0.0,
+      1.0
+     ],
+     [
+      "endpoint-removal",
+      "resource",
+      "energy used beyond the condition's declared line cost",
+      0.0998469852716,
+      0.105216861805,
+      5.50969042402,
+      0.00048828125,
+      0.001708984375,
+      "worsened",
+      0.0,
+      1.0
+     ],
+     [
+      "endpoint-removal",
+      "resource",
+      "line conflicts (steps per s)",
+      1.13333333333,
+      0.0888888888889,
+      -1.96019045403,
+      0.00048828125,
+      0.001708984375,
+      "improved",
+      0.0,
+      1.0
+     ],
+     [
+      "endpoint-removal",
+      "resource",
+      "time with a muscle drive saturated",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "endpoint-removal",
+      "availability",
+      "baseline lines that stopped igniting",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "endpoint-removal",
+      "reachability",
+      "direction change not established after the push (fraction of rungs)",
+      1.0,
+      1.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "low-noise-movement",
+      "posture",
+      "trunk sway in quiet standing",
+      0.00120308666711,
+      0.00104859678369,
+      -0.663913632286,
+      0.0439453125,
+      0.115356445312,
+      "no detectable effect",
+      -4.70267521488e-05,
+      1.0
+     ],
+     [
+      "low-noise-movement",
+      "posture",
+      "peak COM deviation after the forward push",
+      0.0174372156189,
+      0.014539853068,
+      -3.15907546284,
+      0.00048828125,
+      0.001708984375,
+      "improved",
+      -0.00290831332506,
+      1.0
+     ],
+     [
+      "low-noise-movement",
+      "direction",
+      "forward disturbance tolerance (rungs not survived)",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "low-noise-movement",
+      "direction",
+      "backward disturbance tolerance (rungs not survived)",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "low-noise-movement",
+      "direction",
+      "recovery region (rungs not recovered from inside the window, both directions)",
+      3.91666666667,
+      3.0,
+      -0.787176080998,
+      0.0390625,
+      0.104166666667,
+      "no detectable effect",
+      -1.41666666667,
+      1.0
+     ],
+     [
+      "low-noise-movement",
+      "timing",
+      "movement-correction latency after the push",
+      0.2625,
+      0.228333333333,
+      -3.42968258682,
+      0.00048828125,
+      0.001708984375,
+      "improved",
+      -0.0316666666667,
+      1.0
+     ],
+     [
+      "low-noise-movement",
+      "timing",
+      "settling after the direction change (restricted mean)",
+      1.49,
+      1.56666666667,
+      4.44887817397,
+      0.00048828125,
+      0.001708984375,
+      "worsened",
+      0.075,
+      1.0
+     ],
+     [
+      "low-noise-movement",
+      "resource",
+      "energy used beyond the condition's declared line cost",
+      0.0998469852716,
+      0.0970529329525,
+      -3.87827502666,
+      0.00048828125,
+      0.001708984375,
+      "improved",
+      -0.00255243548516,
+      1.0
+     ],
+     [
+      "low-noise-movement",
+      "resource",
+      "line conflicts (steps per s)",
+      1.13333333333,
+      1.03333333333,
+      -0.296779870973,
+      0.375,
+      0.887323943662,
+      "no detectable effect",
+      -0.0444444444444,
+      1.0
+     ],
+     [
+      "low-noise-movement",
+      "resource",
+      "time with a muscle drive saturated",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "low-noise-movement",
+      "availability",
+      "baseline lines that stopped igniting",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "low-noise-movement",
+      "reachability",
+      "direction change not established after the push (fraction of rungs)",
+      1.0,
+      1.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "minimal-approach-distance",
+      "posture",
+      "trunk sway in quiet standing",
+      0.00120308666711,
+      0.00120308666711,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "minimal-approach-distance",
+      "posture",
+      "peak COM deviation after the forward push",
+      0.0174372156189,
+      0.0235086522918,
+      11.7533332005,
+      0.00048828125,
+      0.001708984375,
+      "worsened",
+      0.00607143667291,
+      1.0
+     ],
+     [
+      "minimal-approach-distance",
+      "direction",
+      "forward disturbance tolerance (rungs not survived)",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "minimal-approach-distance",
+      "direction",
+      "backward disturbance tolerance (rungs not survived)",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "minimal-approach-distance",
+      "direction",
+      "recovery region (rungs not recovered from inside the window, both directions)",
+      3.91666666667,
+      4.16666666667,
+      0.258984885141,
+      0.5625,
+      1.0,
+      "no detectable effect",
+      0.25,
+      1.0
+     ],
+     [
+      "minimal-approach-distance",
+      "timing",
+      "movement-correction latency after the push",
+      0.2625,
+      0.21,
+      -5.43868258797,
+      0.00048828125,
+      0.001708984375,
+      "improved",
+      -0.0525,
+      1.0
+     ],
+     [
+      "minimal-approach-distance",
+      "timing",
+      "settling after the direction change (restricted mean)",
+      1.49,
+      1.35916666667,
+      -5.30453842044,
+      0.00048828125,
+      0.001708984375,
+      "improved",
+      -0.130833333333,
+      1.0
+     ],
+     [
+      "minimal-approach-distance",
+      "resource",
+      "energy used beyond the condition's declared line cost",
+      0.0998469852716,
+      0.104118899313,
+      5.81606058693,
+      0.00048828125,
+      0.001708984375,
+      "worsened",
+      0.00427191404129,
+      1.0
+     ],
+     [
+      "minimal-approach-distance",
+      "resource",
+      "line conflicts (steps per s)",
+      1.13333333333,
+      2.46666666667,
+      5.52770798393,
+      0.00048828125,
+      0.001708984375,
+      "worsened",
+      1.33333333333,
+      1.0
+     ],
+     [
+      "minimal-approach-distance",
+      "resource",
+      "time with a muscle drive saturated",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "minimal-approach-distance",
+      "availability",
+      "baseline lines that stopped igniting",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "minimal-approach-distance",
+      "reachability",
+      "direction change not established after the push (fraction of rungs)",
+      1.0,
+      1.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "zero-run-up-transition",
+      "posture",
+      "trunk sway in quiet standing",
+      0.00120308666711,
+      0.00120308666711,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "zero-run-up-transition",
+      "posture",
+      "peak COM deviation after the forward push",
+      0.0174372156189,
+      0.0249949620146,
+      9.99733058842,
+      0.00048828125,
+      0.001708984375,
+      "worsened",
+      0.0,
+      1.0
+     ],
+     [
+      "zero-run-up-transition",
+      "direction",
+      "forward disturbance tolerance (rungs not survived)",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "zero-run-up-transition",
+      "direction",
+      "backward disturbance tolerance (rungs not survived)",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "zero-run-up-transition",
+      "direction",
+      "recovery region (rungs not recovered from inside the window, both directions)",
+      3.91666666667,
+      1.66666666667,
+      -2.59807621135,
+      0.00048828125,
+      0.001708984375,
+      "improved",
+      0.0,
+      1.0
+     ],
+     [
+      "zero-run-up-transition",
+      "timing",
+      "movement-correction latency after the push",
+      0.2625,
+      0.121666666667,
+      -6.42104275225,
+      0.00048828125,
+      0.001708984375,
+      "improved",
+      0.0,
+      1.0
+     ],
+     [
+      "zero-run-up-transition",
+      "timing",
+      "settling after the direction change (restricted mean)",
+      1.49,
+      1.42333333333,
+      -7.51067616199,
+      0.00048828125,
+      0.001708984375,
+      "improved",
+      0.0,
+      1.0
+     ],
+     [
+      "zero-run-up-transition",
+      "resource",
+      "energy used beyond the condition's declared line cost",
+      0.0998469852716,
+      0.104967978022,
+      5.50359382016,
+      0.00048828125,
+      0.001708984375,
+      "worsened",
+      0.0,
+      1.0
+     ],
+     [
+      "zero-run-up-transition",
+      "resource",
+      "line conflicts (steps per s)",
+      1.13333333333,
+      0.0444444444444,
+      -2.1709176987,
+      0.00048828125,
+      0.001708984375,
+      "improved",
+      0.0,
+      1.0
+     ],
+     [
+      "zero-run-up-transition",
+      "resource",
+      "time with a muscle drive saturated",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "zero-run-up-transition",
+      "availability",
+      "baseline lines that stopped igniting",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "zero-run-up-transition",
+      "reachability",
+      "direction change not established after the push (fraction of rungs)",
+      1.0,
+      1.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "tensegrity",
+      "posture",
+      "trunk sway in quiet standing",
+      0.00120308666711,
+      0.00122330277331,
+      0.708949741297,
+      0.03466796875,
+      0.0939390120968,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "tensegrity",
+      "posture",
+      "peak COM deviation after the forward push",
+      0.0174372156189,
+      0.0174002580765,
+      -0.302629695751,
+      0.31640625,
+      0.770380434783,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "tensegrity",
+      "direction",
+      "forward disturbance tolerance (rungs not survived)",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "tensegrity",
+      "direction",
+      "backward disturbance tolerance (rungs not survived)",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "tensegrity",
+      "direction",
+      "recovery region (rungs not recovered from inside the window, both directions)",
+      3.91666666667,
+      3.66666666667,
+      -0.40219983327,
+      0.5,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "tensegrity",
+      "timing",
+      "movement-correction latency after the push",
+      0.2625,
+      0.254166666667,
+      -2.14087209644,
+      0.001953125,
+      0.00607638888889,
+      "improved",
+      0.0,
+      1.0
+     ],
+     [
+      "tensegrity",
+      "timing",
+      "settling after the direction change (restricted mean)",
+      1.49,
+      1.49,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "tensegrity",
+      "resource",
+      "energy used beyond the condition's declared line cost",
+      0.0998469852716,
+      0.0999663959794,
+      0.708433829466,
+      0.03466796875,
+      0.0939390120968,
+      "no detectable effect",
+      0.000285739247406,
+      1.0
+     ],
+     [
+      "tensegrity",
+      "resource",
+      "line conflicts (steps per s)",
+      1.13333333333,
+      1.13333333333,
+      1.62731486613e-16,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "tensegrity",
+      "resource",
+      "time with a muscle drive saturated",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "tensegrity",
+      "availability",
+      "baseline lines that stopped igniting",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "tensegrity",
+      "reachability",
+      "direction change not established after the push (fraction of rungs)",
+      1.0,
+      1.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "slow-movement",
+      "posture",
+      "trunk sway in quiet standing",
+      0.00120308666711,
+      0.00120308666711,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "slow-movement",
+      "posture",
+      "peak COM deviation after the forward push",
+      0.0174372156189,
+      0.0120297539693,
+      -10.0998247425,
+      0.00048828125,
+      0.001708984375,
+      "improved",
+      0.0,
+      1.0
+     ],
+     [
+      "slow-movement",
+      "direction",
+      "forward disturbance tolerance (rungs not survived)",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "slow-movement",
+      "direction",
+      "backward disturbance tolerance (rungs not survived)",
+      0.0,
+      0.0833333333333,
+      0.288675134595,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "slow-movement",
+      "direction",
+      "recovery region (rungs not recovered from inside the window, both directions)",
+      3.91666666667,
+      3.75,
+      -0.177789750555,
+      0.75390625,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "slow-movement",
+      "timing",
+      "movement-correction latency after the push",
+      0.2625,
+      0.350833333333,
+      0.887511785482,
+      0.005859375,
+      0.0169719827586,
+      "worsened",
+      0.0,
+      1.0
+     ],
+     [
+      "slow-movement",
+      "timing",
+      "settling after the direction change (restricted mean)",
+      1.49,
+      1.56583333333,
+      4.03170429759,
+      0.00048828125,
+      0.001708984375,
+      "worsened",
+      0.0,
+      1.0
+     ],
+     [
+      "slow-movement",
+      "resource",
+      "energy used beyond the condition's declared line cost",
+      0.0998469852716,
+      0.101716214247,
+      1.6349121411,
+      0.001953125,
+      0.00607638888889,
+      "worsened",
+      0.0,
+      1.0
+     ],
+     [
+      "slow-movement",
+      "resource",
+      "line conflicts (steps per s)",
+      1.13333333333,
+      2.78888888889,
+      5.11120451937,
+      0.00048828125,
+      0.001708984375,
+      "worsened",
+      0.0,
+      1.0
+     ],
+     [
+      "slow-movement",
+      "resource",
+      "time with a muscle drive saturated",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "slow-movement",
+      "availability",
+      "baseline lines that stopped igniting",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "slow-movement",
+      "reachability",
+      "direction change not established after the push (fraction of rungs)",
+      1.0,
+      1.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "narrow-step-balance",
+      "posture",
+      "trunk sway in quiet standing",
+      0.00120308666711,
+      0.00120308666711,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "narrow-step-balance",
+      "posture",
+      "peak COM deviation after the forward push",
+      0.0174372156189,
+      0.0173845334739,
+      -0.0883260610031,
+      0.74853515625,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "narrow-step-balance",
+      "direction",
+      "forward disturbance tolerance (rungs not survived)",
+      0.0,
+      1.0,
+      null,
+      0.00048828125,
+      0.001708984375,
+      "undefined",
+      0.0,
+      1.0
+     ],
+     [
+      "narrow-step-balance",
+      "direction",
+      "backward disturbance tolerance (rungs not survived)",
+      0.0,
+      1.0,
+      null,
+      0.00048828125,
+      0.001708984375,
+      "undefined",
+      0.0,
+      1.0
+     ],
+     [
+      "narrow-step-balance",
+      "direction",
+      "recovery region (rungs not recovered from inside the window, both directions)",
+      3.91666666667,
+      3.58333333333,
+      -0.375533808099,
+      0.359375,
+      0.8625,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "narrow-step-balance",
+      "timing",
+      "movement-correction latency after the push",
+      0.2625,
+      0.205,
+      -4.23790945434,
+      0.00048828125,
+      0.001708984375,
+      "improved",
+      0.0,
+      1.0
+     ],
+     [
+      "narrow-step-balance",
+      "timing",
+      "settling after the direction change (restricted mean)",
+      1.49,
+      1.4775,
+      -1.65831239518,
+      0.001953125,
+      0.00607638888889,
+      "improved",
+      0.0,
+      1.0
+     ],
+     [
+      "narrow-step-balance",
+      "resource",
+      "energy used beyond the condition's declared line cost",
+      0.0998469852716,
+      0.0993179482469,
+      -0.752208497928,
+      0.02587890625,
+      0.0736890889831,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "narrow-step-balance",
+      "resource",
+      "line conflicts (steps per s)",
+      1.13333333333,
+      1.13333333333,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "narrow-step-balance",
+      "resource",
+      "time with a muscle drive saturated",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "narrow-step-balance",
+      "availability",
+      "baseline lines that stopped igniting",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "narrow-step-balance",
+      "reachability",
+      "direction change not established after the push (fraction of rungs)",
+      1.0,
+      1.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "fingertip-tension",
+      "posture",
+      "trunk sway in quiet standing",
+      0.00120308666711,
+      0.00103112680173,
+      -1.39852977446,
+      0.00244140625,
+      0.00732421875,
+      "improved",
+      0.0,
+      1.0
+     ],
+     [
+      "fingertip-tension",
+      "posture",
+      "peak COM deviation after the forward push",
+      0.0174372156189,
+      0.0176734210522,
+      0.616543154522,
+      0.05908203125,
+      0.152704326923,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "fingertip-tension",
+      "direction",
+      "forward disturbance tolerance (rungs not survived)",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "fingertip-tension",
+      "direction",
+      "backward disturbance tolerance (rungs not survived)",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "fingertip-tension",
+      "direction",
+      "recovery region (rungs not recovered from inside the window, both directions)",
+      3.91666666667,
+      1.75,
+      -2.59528558089,
+      0.00048828125,
+      0.001708984375,
+      "improved",
+      0.0,
+      1.0
+     ],
+     [
+      "fingertip-tension",
+      "timing",
+      "movement-correction latency after the push",
+      0.2625,
+      0.260833333333,
+      -0.288675134595,
+      0.625,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "fingertip-tension",
+      "timing",
+      "settling after the direction change (restricted mean)",
+      1.49,
+      1.45416666667,
+      -2.88952300312,
+      0.00048828125,
+      0.001708984375,
+      "improved",
+      0.0,
+      1.0
+     ],
+     [
+      "fingertip-tension",
+      "resource",
+      "energy used beyond the condition's declared line cost",
+      0.0998469852716,
+      0.100474168909,
+      0.725834327601,
+      0.03125,
+      0.0875,
+      "no detectable effect",
+      0.00142869623703,
+      1.0
+     ],
+     [
+      "fingertip-tension",
+      "resource",
+      "line conflicts (steps per s)",
+      1.13333333333,
+      1.1,
+      -0.175780762328,
+      0.6953125,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "fingertip-tension",
+      "resource",
+      "time with a muscle drive saturated",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "fingertip-tension",
+      "availability",
+      "baseline lines that stopped igniting",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "fingertip-tension",
+      "reachability",
+      "direction change not established after the push (fraction of rungs)",
+      1.0,
+      1.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "breathing-synchronization",
+      "posture",
+      "trunk sway in quiet standing",
+      0.00120308666711,
+      0.00108803112691,
+      -1.2076980849,
+      0.001953125,
+      0.00607638888889,
+      "improved",
+      0.0,
+      1.0
+     ],
+     [
+      "breathing-synchronization",
+      "posture",
+      "peak COM deviation after the forward push",
+      0.0174372156189,
+      0.0205615327385,
+      3.98115188658,
+      0.00048828125,
+      0.001708984375,
+      "worsened",
+      0.00271103452892,
+      1.0
+     ],
+     [
+      "breathing-synchronization",
+      "direction",
+      "forward disturbance tolerance (rungs not survived)",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "breathing-synchronization",
+      "direction",
+      "backward disturbance tolerance (rungs not survived)",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "breathing-synchronization",
+      "direction",
+      "recovery region (rungs not recovered from inside the window, both directions)",
+      3.91666666667,
+      1.25,
+      -3.0042704648,
+      0.00048828125,
+      0.001708984375,
+      "improved",
+      -2.41666666667,
+      1.0
+     ],
+     [
+      "breathing-synchronization",
+      "timing",
+      "movement-correction latency after the push",
+      0.2625,
+      0.0566666666667,
+      -3.39257317092,
+      0.00048828125,
+      0.001708984375,
+      "improved",
+      -0.1975,
+      1.0
+     ],
+     [
+      "breathing-synchronization",
+      "timing",
+      "settling after the direction change (restricted mean)",
+      1.49,
+      1.43833333333,
+      -2.18213466856,
+      0.00048828125,
+      0.001708984375,
+      "improved",
+      -0.0266666666667,
+      1.0
+     ],
+     [
+      "breathing-synchronization",
+      "resource",
+      "energy used beyond the condition's declared line cost",
+      0.0998469852716,
+      0.0972683127547,
+      -2.11870821162,
+      0.00048828125,
+      0.001708984375,
+      "improved",
+      -0.002635858015,
+      1.0
+     ],
+     [
+      "breathing-synchronization",
+      "resource",
+      "line conflicts (steps per s)",
+      1.13333333333,
+      1.23333333333,
+      0.40219983327,
+      0.25,
+      0.617647058824,
+      "no detectable effect",
+      0.111111111111,
+      1.0
+     ],
+     [
+      "breathing-synchronization",
+      "resource",
+      "time with a muscle drive saturated",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "breathing-synchronization",
+      "availability",
+      "baseline lines that stopped igniting",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "breathing-synchronization",
+      "reachability",
+      "direction change not established after the push (fraction of rungs)",
+      1.0,
+      1.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      1.0
+     ],
+     [
+      "anti-collapse-posture",
+      "posture",
+      "trunk sway in quiet standing",
+      0.00120308666711,
+      0.00120308666711,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      0.0
+     ],
+     [
+      "anti-collapse-posture",
+      "posture",
+      "peak COM deviation after the forward push",
+      0.0174372156189,
+      0.0174372156189,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      0.0
+     ],
+     [
+      "anti-collapse-posture",
+      "direction",
+      "forward disturbance tolerance (rungs not survived)",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      0.0
+     ],
+     [
+      "anti-collapse-posture",
+      "direction",
+      "backward disturbance tolerance (rungs not survived)",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      0.0
+     ],
+     [
+      "anti-collapse-posture",
+      "direction",
+      "recovery region (rungs not recovered from inside the window, both directions)",
+      3.91666666667,
+      3.91666666667,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      0.0
+     ],
+     [
+      "anti-collapse-posture",
+      "timing",
+      "movement-correction latency after the push",
+      0.2625,
+      0.2625,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      0.0
+     ],
+     [
+      "anti-collapse-posture",
+      "timing",
+      "settling after the direction change (restricted mean)",
+      1.49,
+      1.49,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      0.0
+     ],
+     [
+      "anti-collapse-posture",
+      "resource",
+      "energy used beyond the condition's declared line cost",
+      0.0998469852716,
+      0.0998469852716,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      0.0
+     ],
+     [
+      "anti-collapse-posture",
+      "resource",
+      "line conflicts (steps per s)",
+      1.13333333333,
+      1.13333333333,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      0.0
+     ],
+     [
+      "anti-collapse-posture",
+      "resource",
+      "time with a muscle drive saturated",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      0.0
+     ],
+     [
+      "anti-collapse-posture",
+      "availability",
+      "baseline lines that stopped igniting",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      0.0
+     ],
+     [
+      "anti-collapse-posture",
+      "reachability",
+      "direction change not established after the push (fraction of rungs)",
+      1.0,
+      1.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      0.0,
+      0.0
+     ],
+     [
+      "long-duration-sedimentation",
+      "posture",
+      "trunk sway in quiet standing",
+      0.00120308666711,
+      0.00120308666711,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      null,
+      null
+     ],
+     [
+      "long-duration-sedimentation",
+      "posture",
+      "peak COM deviation after the forward push",
+      0.0174372156189,
+      0.0169399002165,
+      -1.48688597976,
+      0.00048828125,
+      0.001708984375,
+      "improved",
+      null,
+      null
+     ],
+     [
+      "long-duration-sedimentation",
+      "direction",
+      "forward disturbance tolerance (rungs not survived)",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      null,
+      null
+     ],
+     [
+      "long-duration-sedimentation",
+      "direction",
+      "backward disturbance tolerance (rungs not survived)",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      null,
+      null
+     ],
+     [
+      "long-duration-sedimentation",
+      "direction",
+      "recovery region (rungs not recovered from inside the window, both directions)",
+      3.91666666667,
+      1.75,
+      -1.94382491098,
+      0.00048828125,
+      0.001708984375,
+      "improved",
+      null,
+      null
+     ],
+     [
+      "long-duration-sedimentation",
+      "timing",
+      "movement-correction latency after the push",
+      0.2625,
+      0.260833333333,
+      -0.428174419289,
+      0.5,
+      1.0,
+      "no detectable effect",
+      null,
+      null
+     ],
+     [
+      "long-duration-sedimentation",
+      "timing",
+      "settling after the direction change (restricted mean)",
+      1.49,
+      1.46916666667,
+      -1.78903654772,
+      0.0009765625,
+      0.00328125,
+      "improved",
+      null,
+      null
+     ],
+     [
+      "long-duration-sedimentation",
+      "resource",
+      "energy used beyond the condition's declared line cost",
+      0.0998469852716,
+      0.0997548656244,
+      -0.24853210976,
+      0.400390625,
+      0.934244791667,
+      "no detectable effect",
+      null,
+      null
+     ],
+     [
+      "long-duration-sedimentation",
+      "resource",
+      "line conflicts (steps per s)",
+      1.13333333333,
+      1.13333333333,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      null,
+      null
+     ],
+     [
+      "long-duration-sedimentation",
+      "resource",
+      "time with a muscle drive saturated",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      null,
+      null
+     ],
+     [
+      "long-duration-sedimentation",
+      "availability",
+      "baseline lines that stopped igniting",
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      null,
+      null
+     ],
+     [
+      "long-duration-sedimentation",
+      "reachability",
+      "direction change not established after the push (fraction of rungs)",
+      1.0,
+      1.0,
+      0.0,
+      1.0,
+      1.0,
+      "no detectable effect",
+      null,
+      null
+     ]
+    ],
+    "title": "Paired effect of each condition on each measure (lower is better for all)"
+   },
+   {
+    "columns": [
+     "principle",
+     "improved",
+     "worsened",
+     "directional",
+     "falls involved",
+     "ablation available"
+    ],
+    "name": "transfers",
+    "rows": [
+     [
+      "lower-abdominal-continuity",
+      "correction_latency, posture_sway, turn_settling_after_push",
+      "energy_beyond_declared, peak_dev_forward",
+      false,
+      false,
+      true
+     ],
+     [
+      "whole-skin-sensing",
+      "correction_latency, recovery_region, turn_settling_after_push",
+      "peak_dev_forward",
+      false,
+      false,
+      true
+     ],
+     [
+      "axis-maintenance",
+      "correction_latency, turn_settling_after_push",
+      "energy_beyond_declared, line_conflicts, peak_dev_forward, recovery_region",
+      false,
+      false,
+      true
+     ],
+     [
+      "endpoint-removal",
+      "correction_latency, line_conflicts, recovery_region, turn_settling_after_push",
+      "energy_beyond_declared, peak_dev_forward",
+      false,
+      false,
+      true
+     ],
+     [
+      "low-noise-movement",
+      "correction_latency, energy_beyond_declared, peak_dev_forward",
+      "turn_settling_after_push",
+      false,
+      false,
+      true
+     ],
+     [
+      "minimal-approach-distance",
+      "correction_latency, turn_settling_after_push",
+      "energy_beyond_declared, line_conflicts, peak_dev_forward",
+      false,
+      false,
+      true
+     ],
+     [
+      "zero-run-up-transition",
+      "correction_latency, line_conflicts, recovery_region, turn_settling_after_push",
+      "energy_beyond_declared, peak_dev_forward",
+      false,
+      false,
+      true
+     ],
+     [
+      "slow-movement",
+      "peak_dev_forward",
+      "correction_latency, energy_beyond_declared, line_conflicts, turn_settling_after_push",
+      false,
+      true,
+      true
+     ],
+     [
+      "breathing-synchronization",
+      "correction_latency, energy_beyond_declared, posture_sway, recovery_region, turn_settling_after_push",
+      "peak_dev_forward",
+      false,
+      false,
+      true
+     ]
+    ],
+    "title": "Fragility Transfers: one group improves while another weakens, or one direction improves while the other weakens"
+   }
+  ],
+  "transfers": [
+   {
+    "ablation_available": true,
+    "directional": false,
+    "falls_in_any_condition_run": false,
+    "group_pairs": [
+     [
+      "posture",
+      "resource"
+     ],
+     [
+      "timing",
+      "resource"
+     ],
+     [
+      "timing",
+      "posture"
+     ]
+    ],
+    "improved": [
+     "correction_latency",
+     "posture_sway",
+     "turn_settling_after_push"
+    ],
+    "line_accounts_for": {
+     "energy_beyond_declared": 0.00114295698963,
+     "peak_dev_forward": 0.0
+    },
+    "principle": "lower-abdominal-continuity",
+    "worsened": [
+     "energy_beyond_declared",
+     "peak_dev_forward"
+    ],
+    "worsened_groups_named_by_the_definition": [
+     "posture"
+    ]
+   },
+   {
+    "ablation_available": true,
+    "directional": false,
+    "falls_in_any_condition_run": false,
+    "group_pairs": [
+     [
+      "timing",
+      "posture"
+     ],
+     [
+      "direction",
+      "posture"
+     ]
+    ],
+    "improved": [
+     "correction_latency",
+     "recovery_region",
+     "turn_settling_after_push"
+    ],
+    "line_accounts_for": {
+     "peak_dev_forward": 0.00144083475226
+    },
+    "principle": "whole-skin-sensing",
+    "worsened": [
+     "peak_dev_forward"
+    ],
+    "worsened_groups_named_by_the_definition": [
+     "posture"
+    ]
+   },
+   {
+    "ablation_available": true,
+    "directional": false,
+    "falls_in_any_condition_run": false,
+    "group_pairs": [
+     [
+      "timing",
+      "resource"
+     ],
+     [
+      "timing",
+      "posture"
+     ],
+     [
+      "timing",
+      "direction"
+     ]
+    ],
+    "improved": [
+     "correction_latency",
+     "turn_settling_after_push"
+    ],
+    "line_accounts_for": {
+     "energy_beyond_declared": 0.0198530866734,
+     "line_conflicts": 7.44444444444,
+     "peak_dev_forward": 0.00638471854784,
+     "recovery_region": 2.08333333333
+    },
+    "principle": "axis-maintenance",
+    "worsened": [
+     "energy_beyond_declared",
+     "line_conflicts",
+     "peak_dev_forward",
+     "recovery_region"
+    ],
+    "worsened_groups_named_by_the_definition": [
+     "posture"
+    ]
+   },
+   {
+    "ablation_available": true,
+    "directional": false,
+    "falls_in_any_condition_run": false,
+    "group_pairs": [
+     [
+      "resource",
+      "posture"
+     ],
+     [
+      "timing",
+      "resource"
+     ],
+     [
+      "timing",
+      "posture"
+     ],
+     [
+      "direction",
+      "resource"
+     ],
+     [
+      "direction",
+      "posture"
+     ]
+    ],
+    "improved": [
+     "correction_latency",
+     "line_conflicts",
+     "recovery_region",
+     "turn_settling_after_push"
+    ],
+    "line_accounts_for": {
+     "energy_beyond_declared": 0.0,
+     "peak_dev_forward": 0.0
+    },
+    "principle": "endpoint-removal",
+    "worsened": [
+     "energy_beyond_declared",
+     "peak_dev_forward"
+    ],
+    "worsened_groups_named_by_the_definition": [
+     "posture"
+    ]
+   },
+   {
+    "ablation_available": true,
+    "directional": false,
+    "falls_in_any_condition_run": false,
+    "group_pairs": [
+     [
+      "resource",
+      "timing"
+     ],
+     [
+      "posture",
+      "timing"
+     ]
+    ],
+    "improved": [
+     "correction_latency",
+     "energy_beyond_declared",
+     "peak_dev_forward"
+    ],
+    "line_accounts_for": {
+     "turn_settling_after_push": 0.075
+    },
+    "principle": "low-noise-movement",
+    "worsened": [
+     "turn_settling_after_push"
+    ],
+    "worsened_groups_named_by_the_definition": []
+   },
+   {
+    "ablation_available": true,
+    "directional": false,
+    "falls_in_any_condition_run": false,
+    "group_pairs": [
+     [
+      "timing",
+      "resource"
+     ],
+     [
+      "timing",
+      "posture"
+     ]
+    ],
+    "improved": [
+     "correction_latency",
+     "turn_settling_after_push"
+    ],
+    "line_accounts_for": {
+     "energy_beyond_declared": 0.00427191404129,
+     "line_conflicts": 1.33333333333,
+     "peak_dev_forward": 0.00607143667291
+    },
+    "principle": "minimal-approach-distance",
+    "worsened": [
+     "energy_beyond_declared",
+     "line_conflicts",
+     "peak_dev_forward"
+    ],
+    "worsened_groups_named_by_the_definition": []
+   },
+   {
+    "ablation_available": true,
+    "directional": false,
+    "falls_in_any_condition_run": false,
+    "group_pairs": [
+     [
+      "resource",
+      "posture"
+     ],
+     [
+      "timing",
+      "resource"
+     ],
+     [
+      "timing",
+      "posture"
+     ],
+     [
+      "direction",
+      "resource"
+     ],
+     [
+      "direction",
+      "posture"
+     ]
+    ],
+    "improved": [
+     "correction_latency",
+     "line_conflicts",
+     "recovery_region",
+     "turn_settling_after_push"
+    ],
+    "line_accounts_for": {
+     "energy_beyond_declared": 0.0,
+     "peak_dev_forward": 0.0
+    },
+    "principle": "zero-run-up-transition",
+    "worsened": [
+     "energy_beyond_declared",
+     "peak_dev_forward"
+    ],
+    "worsened_groups_named_by_the_definition": [
+     "posture"
+    ]
+   },
+   {
+    "ablation_available": true,
+    "directional": false,
+    "falls_in_any_condition_run": true,
+    "group_pairs": [
+     [
+      "posture",
+      "resource"
+     ],
+     [
+      "posture",
+      "timing"
+     ]
+    ],
+    "improved": [
+     "peak_dev_forward"
+    ],
+    "line_accounts_for": {
+     "correction_latency": 0.0,
+     "energy_beyond_declared": 0.0,
+     "line_conflicts": 0.0,
+     "turn_settling_after_push": 0.0
+    },
+    "principle": "slow-movement",
+    "worsened": [
+     "correction_latency",
+     "energy_beyond_declared",
+     "line_conflicts",
+     "turn_settling_after_push"
+    ],
+    "worsened_groups_named_by_the_definition": []
+   },
+   {
+    "ablation_available": true,
+    "directional": false,
+    "falls_in_any_condition_run": false,
+    "group_pairs": [
+     [
+      "resource",
+      "posture"
+     ],
+     [
+      "timing",
+      "posture"
+     ],
+     [
+      "direction",
+      "posture"
+     ]
+    ],
+    "improved": [
+     "correction_latency",
+     "energy_beyond_declared",
+     "posture_sway",
+     "recovery_region",
+     "turn_settling_after_push"
+    ],
+    "line_accounts_for": {
+     "peak_dev_forward": 0.00271103452892
+    },
+    "principle": "breathing-synchronization",
+    "worsened": [
+     "peak_dev_forward"
+    ],
+    "worsened_groups_named_by_the_definition": [
+     "posture"
+    ]
+   }
+  ]
+ },
+ "schema": "xbtro.record/1",
+ "seeds": [
+  5000,
+  5001,
+  5002,
+  5003,
+  5004,
+  5005,
+  5006,
+  5007,
+  5008,
+  5009,
+  5010,
+  5011
+ ],
+ "time_step_s": 0.01,
+ "unobserved_differences": []
+}

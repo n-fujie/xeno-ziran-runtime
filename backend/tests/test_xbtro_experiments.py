@@ -127,3 +127,26 @@ def test_unknown_experiment_and_bad_seed_counts_are_refused():
         experiments.run("Z", {})
     with pytest.raises(experiments.ExperimentError):
         experiments.run_to_end("B", {"n_seeds": 3})
+
+
+def test_experiment_e_is_not_experiment_a_and_covers_each_hidden_change():
+    e, _ = experiments.run_to_end("E", {"n_seeds": 8, "rounds": 2})
+    a, _ = experiments.run_to_end("A", {"n_seeds": 8, "rounds": 2})
+    assert e["digest"] != a["digest"]
+    rows = next(t for t in e["results"]["tables"] if t["name"] == "adaptive_summary")["rows"]
+    assert [r[0] for r in rows] == ["mixed", "delay-only", "tone-only", "fatigue-only"]
+    assert all(r[3] >= r[2] for r in rows)  # revision never ends with fewer identified differences than it started with
+
+
+def test_a_model_that_is_already_deployed_is_not_proposed_again():
+    """Regression: two candidates wanting the same new model (or an already deployed one) crashed a reconfiguration round."""
+    from xzr.xbtro import observation, tro
+
+    obs = observation.validate(observation.config("motion+emg+contact"))
+    obs["models"].append(observation.model("emg", "emg-added"))
+    obs = observation.validate(obs)
+    rows = [{"id": "cocontraction", "status": "unobserved", "reason": "device-mismatch", "reference": {"exists": True, "d": 5.0}}]
+    for c in tro.candidates(rows, obs, experiments.base_config("human-like-planar")):
+        assert not any(ch["op"] == "add" and (ch.get("id") or ch.get("kind")) == "emg-added" for ch in c["changes"])
+    for kind in ("delay-only", "tone-only", "fatigue-only", "mixed"):
+        experiments.run_to_end("E", {"n_seeds": 12, "rounds": 3, "alteration": kind})  # used to raise 'duplicate model id'

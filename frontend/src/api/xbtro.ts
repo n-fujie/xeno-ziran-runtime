@@ -15,7 +15,12 @@ export interface Principle {
   id: string; alias: string; definition: string; operationalization: string; ignition: string; acts_on: string[]; fidelity: string; gap: string;
   source_rule: string; status: string;
 }
+export interface Release {
+  name: string; channel: string; platforms: Record<string, string>; statements: { topic: string; text: string }[];
+  xeno14_fidelity: Record<string, number>;
+}
 export interface Catalog {
+  release: Release;
   model_version: string; record_schema: string; presets: Preset[]; interventions: Record<string, InterventionSpec>; experiments: Experiment[];
   xeno14: Principle[]; xeno14_source: string;
   observation: { kinds: Record<string, ObsKind>; presets: Record<string, string[]>; regions: string[] };

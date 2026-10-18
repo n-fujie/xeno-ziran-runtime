@@ -92,6 +92,13 @@ changes of world structure; where they fail, its **control fails with them** (no
 regime its control advantage is small. Scope: one simulated world, one task, one comparator family — not a claim
 about Active Inference in general.
 
+## XenoBody (Research Beta)
+
+`XenoBody — Operational-Shape Robotics Simulator` is a research environment for a simplified planar body, its observation devices and
+the experiments that study how the observation configuration changes what can be identified and how improving one operation can
+weaken another. It is a model with nominal parameters: **no real-robot or human validation, no claim about any real body**
+(`docs/XBTRO.md`). Open the *XenoBody* view of the local app or of the in-browser edition.
+
 ## Reproducibility, citation, license
 
 Exact commands, determinism and its limits: [docs/REPRODUCIBILITY.md](docs/REPRODUCIBILITY.md). Every run records

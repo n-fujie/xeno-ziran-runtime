@@ -18,7 +18,7 @@ const en = {
   view_primitives: 'Primitive Inspector',
   view_res_matrix: 'Resolution Matrix', view_res_hidden: 'Hidden Difference', view_res_penetration: 'Scale Penetration',
   view_res_structure: 'Reasoning Structure Inspector', view_res_disconnection: 'Disconnection Study',
-  view_res_compression: 'Long-Run Compression', view_xbtro: 'XenoBody / Total Observation', view_overview: 'Overview',
+  view_res_compression: 'Long-Run Compression', view_xbtro: 'XenoBody', view_overview: 'Overview',
 };
 
 type Key = keyof typeof en;

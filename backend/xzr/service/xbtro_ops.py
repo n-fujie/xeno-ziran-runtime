@@ -59,6 +59,8 @@ class XbLimits:
     max_horizon_s: int  # XZR_XB_MAX_HORIZON_S: horizon of a live body
     max_workspaces: int  # XZR_XB_MAX_WORKSPACES: per process
     max_trials: int  # XZR_XB_MAX_TRIALS: adaptation trials (Experiment D)
+    max_body_cells: int  # XZR_XB_MAX_BODY_CELLS: seeds x simulation steps of one live body (memory is proportional to it)
+    max_obs_models: int  # XZR_XB_MAX_OBS_MODELS: observation models in one configuration
     experiments: tuple[str, ...]  # XZR_XB_EXPERIMENTS: comma-separated ids that may be started
 
 
@@ -74,6 +76,8 @@ def load_xb_limits() -> XbLimits:
         _n("XZR_XB_MAX_HORIZON_S", 60, 30),
         _n("XZR_XB_MAX_WORKSPACES", 16, 64),
         _n("XZR_XB_MAX_TRIALS", 8, 6),
+        _n("XZR_XB_MAX_BODY_CELLS", 600_000, 90_000),
+        _n("XZR_XB_MAX_OBS_MODELS", 16, 12),
         ids,
     )
 
@@ -497,9 +501,24 @@ def observation_from(spec: Any, n_links: int = 4) -> dict[str, Any]:
         raise OpError(422, "observation must be a preset name or an object")
     try:
         if "config" in spec:
-            return observation.validate(spec["config"], n_links)
+            cfg = spec["config"]
+            models = cfg.get("models") if isinstance(cfg, dict) else None
+            if isinstance(models, list):
+                if len(models) > XB.max_obs_models:
+                    raise OpError(422, f"an observation configuration has at most {XB.max_obs_models} models")
+                for m in models:
+                    if (
+                        isinstance(m, dict)
+                        and isinstance(m.get("blind_windows", []), list)
+                        and len(m.get("blind_windows", [])) > 16
+                    ):
+                        raise OpError(422, "a model has at most 16 blind windows")
+            return observation.validate(cfg, n_links)
         if "kinds" in spec:
-            return observation.validate(observation.config(spec.get("name", "custom"), kinds=list(spec["kinds"])), n_links)
+            kinds = spec["kinds"]
+            if not isinstance(kinds, list) or len(kinds) > XB.max_obs_models or not all(isinstance(k, str) for k in kinds):
+                raise OpError(422, f"kinds must be a list of at most {XB.max_obs_models} observation kinds")
+            return observation.validate(observation.config(spec.get("name", "custom"), kinds=kinds), n_links)
         name = spec.get("name", "motion+emg+contact")
         if name not in observation.PRESET_CONFIGS:
             raise OpError(422, f"unknown observation preset {name!r}; known: {sorted(observation.PRESET_CONFIGS)}")
@@ -554,6 +573,20 @@ def create_body(ws: Workspace, body: dict[str, Any] | None) -> dict[str, Any]:
     preset = body.get("preset", "human-like-planar")
     if preset not in xcfg.PRESETS:
         raise OpError(422, f"preset must be one of {sorted(xcfg.PRESETS)}")
+    over = body.get("overrides") or {}
+    if not isinstance(over, dict):
+        raise OpError(422, "overrides must be an object")
+    task = over.get("task") if isinstance(over.get("task"), dict) else {}
+    dt = task.get("dt", xcfg.PRESETS[preset]()["task"]["dt"])
+    if isinstance(dt, bool) or not isinstance(dt, (int, float)) or not 0.002 <= dt <= 0.02:
+        raise OpError(422, "task.dt must be a number within 0.002..0.02")
+    cells = n * math.ceil(horizon / dt)
+    if cells > XB.max_body_cells:
+        raise LimitError(
+            "max_body_cells",
+            f"seeds x steps = {cells:,} exceeds this runtime's {XB.max_body_cells:,}; use fewer seeds, a shorter horizon or a larger time step",
+            422,
+        )
     try:
         obs = observation_from(body.get("observation"), len(xcfg.PRESETS[preset]()["links"]))
         ids = body.get("xeno14") or []

@@ -122,3 +122,20 @@ def test_diagnosis_reports_instead_of_raising():
     good = diagnose(base_config("machine-like-planar"))
     assert good["integrator_stable"] and good["probe"]["diverged_fraction"] == 0
     assert "does not cover" in good["guarantee"]
+
+
+def test_sway_growth_is_defined_only_where_it_means_something():
+    """Regression: a ratio of two floating-point residues (a body that fell) made one verification digest differ between platforms."""
+    from xzr.xbtro.verification import sway_growth
+
+    fell = engine.simulate(
+        base_config(
+            "human-like-planar",
+            extra={"environment": {"pushes": [{"t": 3.2, "dur": 0.12, "force": 400.0, "link": 2, "point_frac": 0.8}]}},
+        ),
+        SEEDS,
+    )
+    assert fell.fell.all() and sway_growth(fell) is None
+    standing = engine.simulate(base_config("machine-like-planar", push=False), SEEDS)
+    g = sway_growth(standing)
+    assert g is not None and 0 < g < 50

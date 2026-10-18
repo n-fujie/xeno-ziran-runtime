@@ -1,5 +1,20 @@
 # Changelog
 
+## Unreleased — XenoBody (Research Beta)
+
+* **XenoBody — Operational-Shape Robotics Simulator**: a research environment for a simplified planar body (human-like and machine-like
+  presets), local observation devices, interventions and experiments A–G, M, R, S, V (`docs/XBTRO.md`; `backend/xzr/xbtro/`,
+  `service/xbtro_ops.py`, `frontend/src/views/xbtro/`, three.js 0.169.0 in a lazy chunk). Reference state, observation and estimate are
+  kept apart everywhere. Records are exportable (JSON / CSV), repeatable, re-observable and re-enterable; imports are checked against
+  their digest.
+* Numerics: explicit RK4 with a step-matrix stability check (a sufficient condition, stated as such), plant sub-steps, divergence kept
+  apart from falls, semi-implicit and explicit Euler for comparison. Recovery and settling are censored time-to-event with statuses; tolerance
+  bands are fixed in advance.
+* The routes are off by default on a public server (`XZR_XBTRO`); the in-browser edition runs the same code (same-condition results
+  identical to the desktop at the recorded resolution). **iOS device behaviour was not checked.**
+* Not a measurement of any real body; no real-robot validation. MO / DO / ZCA / MS are limited instances; the specification's own status
+  (MO, MS not implemented; DO, ZCA partial) is unchanged.
+
 ## Unreleased — browser edition
 
 * The interactive simulator runs in a browser tab at `/app/` of the public site: the engine on Pyodide (CPython on
