@@ -19,55 +19,217 @@ LINE_KINDS = ("mechanical", "sensory", "neural", "internal", "environment")
 OBSERVATION_KINDS = ("eeg", "emg", "imu", "contact", "respiration", "posture", "latency", "threshold")
 
 
-def line(lid: str, label: str, kind: str, timescale_s: float, signal: str, threshold: float, hold_s: float,
-         cost_per_s: float, observable_by: list[str], enabled: bool = True, note: str = "") -> dict[str, Any]:
+def line(
+    lid: str,
+    label: str,
+    kind: str,
+    timescale_s: float,
+    signal: str,
+    threshold: float,
+    hold_s: float,
+    cost_per_s: float,
+    observable_by: list[str],
+    enabled: bool = True,
+    note: str = "",
+) -> dict[str, Any]:
     """One operation line. ``timescale_s`` is used by the engine as the line's characteristic delay / period / time constant
     (see docs/XBTRO.md for the meaning per line); ``ignition`` is the condition on the line's own sensed signal; ``resource``
     is what the line costs while active; ``observable_by`` lists the observation kinds that can in principle see it."""
-    return {"id": lid, "label": label, "kind": kind, "enabled": enabled, "timescale_s": timescale_s,
-            "ignition": {"signal": signal, "threshold": threshold, "hold_s": hold_s},
-            "resource": {"pool": "energy", "cost_per_s": cost_per_s}, "observable_by": observable_by, "note": note}
+    return {
+        "id": lid,
+        "label": label,
+        "kind": kind,
+        "enabled": enabled,
+        "timescale_s": timescale_s,
+        "ignition": {"signal": signal, "threshold": threshold, "hold_s": hold_s},
+        "resource": {"pool": "energy", "cost_per_s": cost_per_s},
+        "observable_by": observable_by,
+        "note": note,
+    }
 
 
 def human_lines() -> list[dict[str, Any]]:
     return [
-        line("mech.passive", "viscoelastic joints (passive)", "mechanical", 0.0, "always", 0.0, 0.0, 0.0, ["posture", "imu"],
-             note="always on; stiffness and damping per joint"),
-        line("sens.proprio", "proprioceptive sensing", "sensory", 0.03, "joint-velocity", 0.05, 0.05, 0.0, ["posture", "emg"],
-             note="timescale = sensory delay (s); ignites when a joint velocity exceeds the threshold (rad/s)"),
-        line("sens.vestibular", "vestibular / head-motion sensing", "sensory", 0.02, "trunk-tilt-rate", 0.03, 0.05, 0.0,
-             ["imu", "eeg"], note="timescale = delay; ignites on trunk tilt rate (rad/s)"),
-        line("sens.visual", "visual feedback", "sensory", 0.10, "com-offset", 0.004, 0.10, 0.0, ["posture", "eeg"],
-             note="timescale = delay; ignites on a visible COM offset (m); can be blocked"),
-        line("sens.tactile", "tactile / contact-pressure sensing", "sensory", 0.04, "cop-shift", 0.004, 0.05, 0.0,
-             ["contact", "eeg"], note="timescale = delay; ignites on a centre-of-pressure shift (m)"),
-        line("sens.cue", "cue perception", "sensory", 0.12, "cue", 0.5, 0.05, 0.0, ["eeg", "latency"],
-             note="timescale = delay; the movement / direction-change cues are sensed through it"),
-        line("neural.reflex", "local joint reflex", "neural", 0.04, "joint-velocity", 0.12, 0.08, 0.002,
-             ["emg", "latency", "eeg"], note="timescale = loop latency; ignites on a fast sensed joint motion"),
-        line("neural.central.ankle", "central balance command (ankle)", "neural", 0.10, "com-offset", 0.003, 0.20, 0.004,
-             ["emg", "eeg", "latency"], note="timescale = latency; ignites on a sensed COM offset from the reference"),
-        line("neural.central.hip", "central balance command (hip)", "neural", 0.10, "com-offset", 0.020, 0.25, 0.008,
-             ["emg", "eeg", "latency"], note="timescale = latency; ignites on a large COM offset"),
-        line("neural.central.cue", "central movement command (feed-forward)", "neural", 0.10, "cue", 0.5, 0.30, 0.004,
-             ["emg", "eeg", "latency"], note="timescale = latency; ignites on a sensed cue"),
-        line("core.tonic", "tonic co-contraction (core)", "internal", 0.0, "always", 0.0, 0.0, 0.003, ["emg"],
-             note="baseline co-contraction level; costs energy while on"),
-        line("breath.cycle", "breathing cycle", "internal", 4.0, "always", 0.0, 0.0, 0.001, ["respiration", "imu", "emg"],
-             note="timescale = period (s); modulates trunk drive and chest motion"),
-        line("metabolic.supply", "energy supply / fatigue", "internal", 30.0, "always", 0.0, 0.0, 0.0, [],
-             note="timescale = fatigue time constant (s); internal, no observation model sees it directly"),
-        line("adapt.gain", "gain adaptation", "internal", 20.0, "always", 0.0, 0.0, 0.0, [],
-             note="timescale = adaptation time constant (s); slow retained state"),
+        line(
+            "mech.passive",
+            "viscoelastic joints (passive)",
+            "mechanical",
+            0.0,
+            "always",
+            0.0,
+            0.0,
+            0.0,
+            ["posture", "imu"],
+            note="always on; stiffness and damping per joint",
+        ),
+        line(
+            "sens.proprio",
+            "proprioceptive sensing",
+            "sensory",
+            0.03,
+            "joint-velocity",
+            0.05,
+            0.05,
+            0.0,
+            ["posture", "emg"],
+            note="timescale = sensory delay (s); ignites when a joint velocity exceeds the threshold (rad/s)",
+        ),
+        line(
+            "sens.vestibular",
+            "vestibular / head-motion sensing",
+            "sensory",
+            0.02,
+            "trunk-tilt-rate",
+            0.03,
+            0.05,
+            0.0,
+            ["imu", "eeg"],
+            note="timescale = delay; ignites on trunk tilt rate (rad/s)",
+        ),
+        line(
+            "sens.visual",
+            "visual feedback",
+            "sensory",
+            0.10,
+            "com-offset",
+            0.004,
+            0.10,
+            0.0,
+            ["posture", "eeg"],
+            note="timescale = delay; ignites on a visible COM offset (m); can be blocked",
+        ),
+        line(
+            "sens.tactile",
+            "tactile / contact-pressure sensing",
+            "sensory",
+            0.04,
+            "cop-shift",
+            0.004,
+            0.05,
+            0.0,
+            ["contact", "eeg"],
+            note="timescale = delay; ignites on a centre-of-pressure shift (m)",
+        ),
+        line(
+            "sens.cue",
+            "cue perception",
+            "sensory",
+            0.12,
+            "cue",
+            0.5,
+            0.05,
+            0.0,
+            ["eeg", "latency"],
+            note="timescale = delay; the movement / direction-change cues are sensed through it",
+        ),
+        line(
+            "neural.reflex",
+            "local joint reflex",
+            "neural",
+            0.04,
+            "joint-velocity",
+            0.12,
+            0.08,
+            0.002,
+            ["emg", "latency", "eeg"],
+            note="timescale = loop latency; ignites on a fast sensed joint motion",
+        ),
+        line(
+            "neural.central.ankle",
+            "central balance command (ankle)",
+            "neural",
+            0.10,
+            "com-offset",
+            0.003,
+            0.20,
+            0.004,
+            ["emg", "eeg", "latency"],
+            note="timescale = latency; ignites on a sensed COM offset from the reference",
+        ),
+        line(
+            "neural.central.hip",
+            "central balance command (hip)",
+            "neural",
+            0.10,
+            "com-offset",
+            0.020,
+            0.25,
+            0.008,
+            ["emg", "eeg", "latency"],
+            note="timescale = latency; ignites on a large COM offset",
+        ),
+        line(
+            "neural.central.cue",
+            "central movement command (feed-forward)",
+            "neural",
+            0.10,
+            "cue",
+            0.5,
+            0.30,
+            0.004,
+            ["emg", "eeg", "latency"],
+            note="timescale = latency; ignites on a sensed cue",
+        ),
+        line(
+            "core.tonic",
+            "tonic co-contraction (core)",
+            "internal",
+            0.0,
+            "always",
+            0.0,
+            0.0,
+            0.003,
+            ["emg"],
+            note="baseline co-contraction level; costs energy while on",
+        ),
+        line(
+            "breath.cycle",
+            "breathing cycle",
+            "internal",
+            4.0,
+            "always",
+            0.0,
+            0.0,
+            0.001,
+            ["respiration", "imu", "emg"],
+            note="timescale = period (s); modulates trunk drive and chest motion",
+        ),
+        line(
+            "metabolic.supply",
+            "energy supply / fatigue",
+            "internal",
+            30.0,
+            "always",
+            0.0,
+            0.0,
+            0.0,
+            [],
+            note="timescale = fatigue time constant (s); internal, no observation model sees it directly",
+        ),
+        line(
+            "adapt.gain",
+            "gain adaptation",
+            "internal",
+            20.0,
+            "always",
+            0.0,
+            0.0,
+            0.0,
+            [],
+            note="timescale = adaptation time constant (s); slow retained state",
+        ),
     ]
 
 
 # ------------------------------------------------------------------------------------------------ presets
 
+
 def human_like() -> dict[str, Any]:
     """A nominal human-like planar body (sagittal plane): shank, thigh, trunk with arms, head. Nominal values."""
     return {
-        "name": "human-like-planar", "family": "human-like", "model": "xb-tro/1.0",
+        "name": "human-like-planar",
+        "family": "human-like",
+        "model": "xb-tro/1.0",
         "links": [
             {"id": "shank", "label": "shank + foot", "region": "shank", "length": 0.45, "mass": 6.6, "com_frac": 0.45},
             {"id": "thigh", "label": "thigh", "region": "thigh", "length": 0.45, "mass": 14.0, "com_frac": 0.45},
@@ -75,14 +237,46 @@ def human_like() -> dict[str, Any]:
             {"id": "head", "label": "head + neck", "region": "head", "length": 0.30, "mass": 4.8, "com_frac": 0.50},
         ],
         "joints": [
-            {"id": "ankle", "label": "ankle", "tau_max": 120.0, "k_passive": 720.0, "c_passive": 45.0, "q_range": 0.6,
-             "act_rise": 0.04, "act_fall": 0.08},
-            {"id": "knee", "label": "knee", "tau_max": 150.0, "k_passive": 700.0, "c_passive": 40.0, "q_range": 0.6,
-             "act_rise": 0.04, "act_fall": 0.08},
-            {"id": "hip", "label": "hip", "tau_max": 180.0, "k_passive": 420.0, "c_passive": 35.0, "q_range": 0.8,
-             "act_rise": 0.04, "act_fall": 0.08},
-            {"id": "neck", "label": "neck", "tau_max": 25.0, "k_passive": 45.0, "c_passive": 4.0, "q_range": 0.8,
-             "act_rise": 0.03, "act_fall": 0.06},
+            {
+                "id": "ankle",
+                "label": "ankle",
+                "tau_max": 120.0,
+                "k_passive": 720.0,
+                "c_passive": 45.0,
+                "q_range": 0.6,
+                "act_rise": 0.04,
+                "act_fall": 0.08,
+            },
+            {
+                "id": "knee",
+                "label": "knee",
+                "tau_max": 150.0,
+                "k_passive": 700.0,
+                "c_passive": 40.0,
+                "q_range": 0.6,
+                "act_rise": 0.04,
+                "act_fall": 0.08,
+            },
+            {
+                "id": "hip",
+                "label": "hip",
+                "tau_max": 180.0,
+                "k_passive": 420.0,
+                "c_passive": 35.0,
+                "q_range": 0.8,
+                "act_rise": 0.04,
+                "act_fall": 0.08,
+            },
+            {
+                "id": "neck",
+                "label": "neck",
+                "tau_max": 25.0,
+                "k_passive": 45.0,
+                "c_passive": 4.0,
+                "q_range": 0.8,
+                "act_rise": 0.03,
+                "act_fall": 0.06,
+            },
         ],
         "foot": {"toe": 0.17, "heel": 0.07},
         "environment": {"gravity": 9.81, "friction_mu": 0.8, "compliance": 0.0, "pushes": [], "ledge": None, "handrail": None},
@@ -94,21 +288,53 @@ def human_like() -> dict[str, Any]:
             "cue": {"noise": 0.15},
         },
         "neural": {
-            "gain_ankle_p": 3.0, "gain_ankle_d": 3.5, "gain_cop": 0.0, "gravity_comp": 0.5, "gravity_ff": -0.4, "gain_hip_p": 1.2, "gain_hip_d": 0.8,
-            "gain_reflex_p": 0.6, "gain_reflex_d": 0.05, "gain_cue_ff": 1.0, "motor_noise": 0.01,
-            "strategy": "endpoint", "windup_s": 0.25, "windup_frac": 0.35, "visual_weight": 1.0,
-            "vestibular_weight": 1.0, "proprio_weight": 2.0, "tactile_weight": 0.6, "cocontraction_base": 0.06,
+            "gain_ankle_p": 3.0,
+            "gain_ankle_d": 3.5,
+            "gain_cop": 0.0,
+            "gravity_comp": 0.5,
+            "gravity_ff": -0.4,
+            "gain_hip_p": 1.2,
+            "gain_hip_d": 0.8,
+            "gain_reflex_p": 0.6,
+            "gain_reflex_d": 0.05,
+            "gain_cue_ff": 1.0,
+            "motor_noise": 0.01,
+            "strategy": "endpoint",
+            "windup_s": 0.25,
+            "windup_frac": 0.35,
+            "visual_weight": 1.0,
+            "vestibular_weight": 1.0,
+            "proprio_weight": 2.0,
+            "tactile_weight": 0.6,
+            "cocontraction_base": 0.06,
             "cocontraction_gain": 2.0,
         },
         "internal": {
-            "breath_period": 4.0, "breath_amp": 0.015, "breath_variability": 0.05, "energy0": 1.0, "basal_cost": 0.0004,
-            "activation_cost": 0.004, "fatigue_rate": 0.020, "fatigue_recovery": 0.012, "capacity_floor": 0.45,
-            "energy_floor": 0.30, "resources_enabled": True,
+            "breath_period": 4.0,
+            "breath_amp": 0.015,
+            "breath_variability": 0.05,
+            "energy0": 1.0,
+            "basal_cost": 0.0004,
+            "activation_cost": 0.004,
+            "fatigue_rate": 0.020,
+            "fatigue_recovery": 0.012,
+            "capacity_floor": 0.45,
+            "energy_floor": 0.30,
+            "resources_enabled": True,
         },
-        "adaptation": {"enabled": True, "eta": 0.2, "error_target": 0.003, "gain_min": 0.9, "gain_max": 1.15,
-                       "cost": 0.0},
-        "task": {"horizon": 8.0, "dt": 0.01, "substeps": 2, "integrator": "rk4", "t_cue": 1.0, "x_target": 0.035, "ramp_s": 0.35, "t_turn": 4.2,
-                 "x_turn": -0.020, "initial_lean": 0.0},
+        "adaptation": {"enabled": True, "eta": 0.2, "error_target": 0.003, "gain_min": 0.9, "gain_max": 1.15, "cost": 0.0},
+        "task": {
+            "horizon": 8.0,
+            "dt": 0.01,
+            "substeps": 2,
+            "integrator": "rk4",
+            "t_cue": 1.0,
+            "x_target": 0.035,
+            "ramp_s": 0.35,
+            "t_turn": 4.2,
+            "x_turn": -0.020,
+            "initial_lean": 0.0,
+        },
         "lines": human_lines(),
         "xeno14": [],
         "slow_state0": None,
@@ -128,29 +354,95 @@ def machine_like() -> dict[str, Any]:
         {"id": "head", "label": "sensor head", "region": "head", "length": 0.20, "mass": 3.0, "com_frac": 0.50},
     ]
     cfg["joints"] = [
-        {"id": "ankle", "label": "ankle actuator", "tau_max": 160.0, "k_passive": 60.0, "c_passive": 6.0, "q_range": 0.6,
-         "act_rise": 0.008, "act_fall": 0.010},
-        {"id": "knee", "label": "knee actuator", "tau_max": 200.0, "k_passive": 900.0, "c_passive": 10.0, "q_range": 0.6,
-         "act_rise": 0.008, "act_fall": 0.010},
-        {"id": "hip", "label": "hip actuator", "tau_max": 220.0, "k_passive": 720.0, "c_passive": 12.0, "q_range": 0.8,
-         "act_rise": 0.008, "act_fall": 0.010},
-        {"id": "neck", "label": "neck actuator", "tau_max": 20.0, "k_passive": 20.0, "c_passive": 1.0, "q_range": 0.8,
-         "act_rise": 0.008, "act_fall": 0.010},
+        {
+            "id": "ankle",
+            "label": "ankle actuator",
+            "tau_max": 160.0,
+            "k_passive": 60.0,
+            "c_passive": 6.0,
+            "q_range": 0.6,
+            "act_rise": 0.008,
+            "act_fall": 0.010,
+        },
+        {
+            "id": "knee",
+            "label": "knee actuator",
+            "tau_max": 200.0,
+            "k_passive": 900.0,
+            "c_passive": 10.0,
+            "q_range": 0.6,
+            "act_rise": 0.008,
+            "act_fall": 0.010,
+        },
+        {
+            "id": "hip",
+            "label": "hip actuator",
+            "tau_max": 220.0,
+            "k_passive": 720.0,
+            "c_passive": 12.0,
+            "q_range": 0.8,
+            "act_rise": 0.008,
+            "act_fall": 0.010,
+        },
+        {
+            "id": "neck",
+            "label": "neck actuator",
+            "tau_max": 20.0,
+            "k_passive": 20.0,
+            "c_passive": 1.0,
+            "q_range": 0.8,
+            "act_rise": 0.008,
+            "act_fall": 0.010,
+        },
     ]
     cfg["foot"] = {"toe": 0.14, "heel": 0.08}
-    cfg["sensors"] = {"proprio": {"noise": 0.0006, "gain": 1.0}, "vestibular": {"noise": 0.0015, "gain": 1.0},
-                      "visual": {"noise": 0.004, "gain": 0.0, "blocked_windows": []},
-                      "tactile": {"noise": 0.001, "gain": 1.0}, "cue": {"noise": 0.05}}
-    cfg["neural"].update({"gain_ankle_p": 1.5, "gain_ankle_d": 1.5, "gravity_comp": 1.0, "gravity_ff": 0.0, "gain_hip_p": 1.6, "gain_hip_d": 0.5, "motor_noise": 0.002,
-                          "visual_weight": 0.0, "vestibular_weight": 0.2, "tactile_weight": 0.8, "cocontraction_base": 0.02, "strategy": "whole-body",
-                          "windup_s": 0.0, "windup_frac": 0.0})
-    cfg["internal"].update({"breath_amp": 0.0, "fatigue_rate": 0.0, "fatigue_recovery": 0.0, "basal_cost": 0.0002,
-                            "activation_cost": 0.003, "capacity_floor": 1.0})
+    cfg["sensors"] = {
+        "proprio": {"noise": 0.0006, "gain": 1.0},
+        "vestibular": {"noise": 0.0015, "gain": 1.0},
+        "visual": {"noise": 0.004, "gain": 0.0, "blocked_windows": []},
+        "tactile": {"noise": 0.001, "gain": 1.0},
+        "cue": {"noise": 0.05},
+    }
+    cfg["neural"].update(
+        {
+            "gain_ankle_p": 1.5,
+            "gain_ankle_d": 1.5,
+            "gravity_comp": 1.0,
+            "gravity_ff": 0.0,
+            "gain_hip_p": 1.6,
+            "gain_hip_d": 0.5,
+            "motor_noise": 0.002,
+            "visual_weight": 0.0,
+            "vestibular_weight": 0.2,
+            "tactile_weight": 0.8,
+            "cocontraction_base": 0.02,
+            "strategy": "whole-body",
+            "windup_s": 0.0,
+            "windup_frac": 0.0,
+        }
+    )
+    cfg["internal"].update(
+        {
+            "breath_amp": 0.0,
+            "fatigue_rate": 0.0,
+            "fatigue_recovery": 0.0,
+            "basal_cost": 0.0002,
+            "activation_cost": 0.003,
+            "capacity_floor": 1.0,
+        }
+    )
     cfg["adaptation"].update({"eta": 0.2})
     by = {ln["id"]: ln for ln in cfg["lines"]}
-    for lid, ts in (("sens.proprio", 0.004), ("sens.vestibular", 0.003), ("sens.tactile", 0.006), ("sens.cue", 0.02),
-                    ("neural.reflex", 0.006), ("neural.central.ankle", 0.015), ("neural.central.hip", 0.015),
-                    ("neural.central.cue", 0.015)):
+    for lid, ts in (
+        ("sens.proprio", 0.004),
+        ("sens.vestibular", 0.003),
+        ("sens.tactile", 0.006),
+        ("sens.cue", 0.02),
+        ("neural.reflex", 0.006),
+        ("neural.central.ankle", 0.015),
+        ("neural.central.hip", 0.015),
+        ("neural.central.cue", 0.015),
+    ):
         by[lid]["timescale_s"] = ts
     by["sens.visual"]["enabled"] = False
     by["breath.cycle"]["enabled"] = False
@@ -164,25 +456,62 @@ PRESETS = {"human-like-planar": human_like, "machine-like-planar": machine_like}
 
 # dotted path -> (min, max); lists of dicts use the path of their element schema (links.*.mass).
 RANGES: dict[str, tuple[float, float]] = {
-    "links.*.length": (0.05, 3.0), "links.*.mass": (0.1, 500.0), "links.*.com_frac": (0.05, 0.95),
-    "joints.*.tau_max": (0.0, 2000.0), "joints.*.k_passive": (0.0, 20000.0), "joints.*.c_passive": (0.0, 2000.0),
-    "joints.*.q_range": (0.05, 3.0), "joints.*.act_rise": (0.002, 1.0), "joints.*.act_fall": (0.002, 1.0),
-    "foot.toe": (0.02, 0.6), "foot.heel": (0.02, 0.6),
-    "environment.gravity": (0.5, 30.0), "environment.friction_mu": (0.05, 2.0), "environment.compliance": (0.0, 1.0),
-    "sensors.*.noise": (0.0, 0.5), "sensors.*.gain": (0.0, 2.0),
-    "neural.*": (-50.0, 50.0), "neural.motor_noise": (0.0, 0.5), "neural.windup_s": (0.0, 2.0), "neural.windup_frac": (0.0, 1.0),
-    "internal.breath_period": (1.0, 12.0), "internal.breath_amp": (0.0, 0.2), "internal.breath_variability": (0.0, 0.5),
-    "internal.energy0": (0.05, 5.0), "internal.basal_cost": (0.0, 0.1), "internal.activation_cost": (0.0, 0.5),
-    "internal.fatigue_rate": (0.0, 1.0), "internal.fatigue_recovery": (0.0, 1.0), "internal.capacity_floor": (0.0, 1.0),
+    "links.*.length": (0.05, 3.0),
+    "links.*.mass": (0.1, 500.0),
+    "links.*.com_frac": (0.05, 0.95),
+    "joints.*.tau_max": (0.0, 2000.0),
+    "joints.*.k_passive": (0.0, 20000.0),
+    "joints.*.c_passive": (0.0, 2000.0),
+    "joints.*.q_range": (0.05, 3.0),
+    "joints.*.act_rise": (0.002, 1.0),
+    "joints.*.act_fall": (0.002, 1.0),
+    "foot.toe": (0.02, 0.6),
+    "foot.heel": (0.02, 0.6),
+    "environment.gravity": (0.5, 30.0),
+    "environment.friction_mu": (0.05, 2.0),
+    "environment.compliance": (0.0, 1.0),
+    "sensors.*.noise": (0.0, 0.5),
+    "sensors.*.gain": (0.0, 2.0),
+    "neural.*": (-50.0, 50.0),
+    "neural.motor_noise": (0.0, 0.5),
+    "neural.windup_s": (0.0, 2.0),
+    "neural.windup_frac": (0.0, 1.0),
+    "internal.breath_period": (1.0, 12.0),
+    "internal.breath_amp": (0.0, 0.2),
+    "internal.breath_variability": (0.0, 0.5),
+    "internal.energy0": (0.05, 5.0),
+    "internal.basal_cost": (0.0, 0.1),
+    "internal.activation_cost": (0.0, 0.5),
+    "internal.fatigue_rate": (0.0, 1.0),
+    "internal.fatigue_recovery": (0.0, 1.0),
+    "internal.capacity_floor": (0.0, 1.0),
     "internal.energy_floor": (0.0, 1.0),
-    "adaptation.eta": (0.0, 5.0), "adaptation.error_target": (0.0, 0.2), "adaptation.gain_min": (0.1, 1.0),
-    "adaptation.gain_max": (1.0, 5.0), "adaptation.cost": (0.0, 1.0),
-    "task.horizon": (1.0, 60.0), "task.dt": (0.002, 0.02), "task.substeps": (1, 8), "task.t_cue": (0.0, 30.0), "task.x_target": (-0.15, 0.15),
-    "task.ramp_s": (0.05, 3.0), "task.t_turn": (0.0, 60.0), "task.x_turn": (-0.15, 0.15), "task.initial_lean": (-0.3, 0.3),
-    "lines.*.timescale_s": (0.0, 600.0), "lines.*.ignition.threshold": (0.0, 10.0), "lines.*.ignition.hold_s": (0.0, 5.0),
+    "adaptation.eta": (0.0, 5.0),
+    "adaptation.error_target": (0.0, 0.2),
+    "adaptation.gain_min": (0.1, 1.0),
+    "adaptation.gain_max": (1.0, 5.0),
+    "adaptation.cost": (0.0, 1.0),
+    "task.horizon": (1.0, 60.0),
+    "task.dt": (0.002, 0.02),
+    "task.substeps": (1, 8),
+    "task.t_cue": (0.0, 30.0),
+    "task.x_target": (-0.15, 0.15),
+    "task.ramp_s": (0.05, 3.0),
+    "task.t_turn": (0.0, 60.0),
+    "task.x_turn": (-0.15, 0.15),
+    "task.initial_lean": (-0.3, 0.3),
+    "lines.*.timescale_s": (0.0, 600.0),
+    "lines.*.ignition.threshold": (0.0, 10.0),
+    "lines.*.ignition.hold_s": (0.0, 5.0),
     "lines.*.resource.cost_per_s": (0.0, 1.0),
 }
-STRING_CHOICES = {"neural.strategy": ("endpoint", "whole-body"), "task.integrator": ("rk4", "semi-implicit-euler", "explicit-euler"), "family": None, "name": None, "model": None}
+STRING_CHOICES = {
+    "neural.strategy": ("endpoint", "whole-body"),
+    "task.integrator": ("rk4", "semi-implicit-euler", "explicit-euler"),
+    "family": None,
+    "name": None,
+    "model": None,
+}
 
 
 class ConfigError(ValueError):
@@ -203,7 +532,7 @@ def _range_for(path: str) -> tuple[float, float] | None:
     if path in RANGES:
         return RANGES[path]
     for i in range(len(parts)):
-        gen = ".".join(parts[:i] + ["*"] + parts[i + 1:])
+        gen = ".".join(parts[:i] + ["*"] + parts[i + 1 :])
         if gen in RANGES:
             return RANGES[gen]
     if len(parts) >= 3:  # links.N.mass -> links.*.mass ; lines.N.ignition.threshold -> lines.*.ignition.threshold
@@ -269,8 +598,13 @@ def validate(cfg: dict[str, Any], reference: dict[str, Any] | None = None) -> di
                 raise ConfigError(f"line {ln['id']}: unknown observation kind {k}")
     env = out["environment"]
     for i, p in enumerate(env.get("pushes", [])):
-        for key, lo, hi in (("t", 0.0, 60.0), ("dur", 0.01, 2.0), ("force", -600.0, 600.0), ("link", 0, n - 1),
-                            ("point_frac", 0.0, 1.0)):
+        for key, lo, hi in (
+            ("t", 0.0, 60.0),
+            ("dur", 0.01, 2.0),
+            ("force", -600.0, 600.0),
+            ("link", 0, n - 1),
+            ("point_frac", 0.0, 1.0),
+        ):
             if key not in p or not lo <= p[key] <= hi:
                 raise ConfigError(f"environment.pushes.{i}.{key} must be within {lo}..{hi}")
     for w in out["sensors"]["visual"].get("blocked_windows", []):
@@ -312,20 +646,55 @@ def line_by_id(cfg: dict[str, Any], lid: str) -> dict[str, Any]:
 # ------------------------------------------------------------------------------------------------ interventions
 
 INTERVENTIONS: dict[str, dict[str, Any]] = {
-    "sensory_delay": {"label": "sensory feedback delay", "unit": "s added", "default": 0.05, "range": (0.0, 0.6),
-                      "edits": "adds delay to the proprioceptive, vestibular and tactile lines (the visual line is separate)"},
-    "visual_block": {"label": "visual feedback block", "unit": "end time of block (s); 0 = whole trial", "default": 0.0,
-                     "range": (0.0, 60.0), "edits": "blocks the visual line from the start (or reconnects it at the given time)"},
-    "contact_change": {"label": "contact condition", "unit": "0 = firm … 1 = slippery and soft", "default": 0.4,
-                       "range": (0.0, 1.0), "edits": "lowers friction and base-of-support quality, raises floor compliance"},
-    "posture_change": {"label": "posture condition", "unit": "initial forward lean (rad)", "default": 0.04,
-                       "range": (-0.2, 0.2), "edits": "initial lean of all links (a posture the body must recover from)"},
-    "neural_delay": {"label": "neural response delay", "unit": "s added", "default": 0.03, "range": (0.0, 0.5),
-                     "edits": "adds latency to the reflex and central command lines"},
-    "perturbation": {"label": "external disturbance", "unit": "push force (N)", "default": 50.0, "range": (-300.0, 300.0),
-                     "edits": "a push on the trunk 1.3 s after the cue has taken effect (inside the cue-settling window)"},
-    "resource_constraint": {"label": "bodily resource constraint", "unit": "0 = none … 1 = severe", "default": 0.4,
-                            "range": (0.0, 1.0), "edits": "less energy, lower capacity floor, faster fatigue"},
+    "sensory_delay": {
+        "label": "sensory feedback delay",
+        "unit": "s added",
+        "default": 0.05,
+        "range": (0.0, 0.6),
+        "edits": "adds delay to the proprioceptive, vestibular and tactile lines (the visual line is separate)",
+    },
+    "visual_block": {
+        "label": "visual feedback block",
+        "unit": "end time of block (s); 0 = whole trial",
+        "default": 0.0,
+        "range": (0.0, 60.0),
+        "edits": "blocks the visual line from the start (or reconnects it at the given time)",
+    },
+    "contact_change": {
+        "label": "contact condition",
+        "unit": "0 = firm … 1 = slippery and soft",
+        "default": 0.4,
+        "range": (0.0, 1.0),
+        "edits": "lowers friction and base-of-support quality, raises floor compliance",
+    },
+    "posture_change": {
+        "label": "posture condition",
+        "unit": "initial forward lean (rad)",
+        "default": 0.04,
+        "range": (-0.2, 0.2),
+        "edits": "initial lean of all links (a posture the body must recover from)",
+    },
+    "neural_delay": {
+        "label": "neural response delay",
+        "unit": "s added",
+        "default": 0.03,
+        "range": (0.0, 0.5),
+        "edits": "adds latency to the reflex and central command lines",
+    },
+    "perturbation": {
+        "label": "external disturbance",
+        "unit": "push force (N)",
+        "default": 50.0,
+        "range": (-300.0, 300.0),
+        "edits": "a push on the trunk 1.3 s after the cue has taken effect (inside the cue-settling window)",
+    },
+    "resource_constraint": {
+        "label": "bodily resource constraint",
+        "unit": "0 = none … 1 = severe",
+        "default": 0.4,
+        "range": (0.0, 1.0),
+        "edits": "less energy, lower capacity floor, faster fatigue",
+    },
 }
 
 
@@ -359,8 +728,10 @@ def apply_intervention(cfg: dict[str, Any], iid: str, magnitude: float | None = 
         t = out["task"]
         # a disturbance inside the cue-settling window of the protocol (tagged as an intervention: it does not cut the protocol's windows)
         t_push = t["t_cue"] + t["ramp_s"] + 1.3
-        out["environment"]["pushes"] = [*out["environment"]["pushes"],
-                                        {"t": round(t_push, 3), "dur": 0.12, "force": m, "link": 2, "point_frac": 0.8, "role": "intervention"}]
+        out["environment"]["pushes"] = [
+            *out["environment"]["pushes"],
+            {"t": round(t_push, 3), "dur": 0.12, "force": m, "link": 2, "point_frac": 0.8, "role": "intervention"},
+        ]
     elif iid == "resource_constraint":
         i = out["internal"]
         i["energy0"] = max(0.05, i["energy0"] * (1 - 0.9 * m))

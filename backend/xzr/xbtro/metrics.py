@@ -22,11 +22,14 @@ from .engine import Run
 # They are NOT adjusted to the outcome of an experiment. Final experiments use other seeds (FINAL_SEED_BASE).
 TOLERANCE: dict[str, dict[str, Any]] = {
     "human-like": {"band": 0.009, "rule": "max(3 x detrended steady COM SD, 0.25 x smallest step), exploration seeds 1000..1031"},
-    "machine-like": {"band": 0.009, "rule": "max(3 x detrended steady COM SD, 0.25 x smallest step), exploration seeds 1000..1031"},
+    "machine-like": {
+        "band": 0.009,
+        "rule": "max(3 x detrended steady COM SD, 0.25 x smallest step), exploration seeds 1000..1031",
+    },
 }
-HOLD = 0.4            # s, how long a body must stay inside the band
+HOLD = 0.4  # s, how long a body must stay inside the band
 STEP_FRACTION = 0.25
-VEL_BAND = 0.04       # m/s, together with the COM band: a settled body is also nearly still
+VEL_BAND = 0.04  # m/s, together with the COM band: a settled body is also nearly still
 EXPLORATION_SEEDS = list(range(1000, 1032))
 FINAL_SEED_BASE = 5000
 
@@ -40,14 +43,15 @@ def band(cfg: dict[str, Any]) -> float:
 def calibrate_band(preset: str) -> float:
     """Reproduce the pre-registered band of a preset from its exploration runs (see TOLERANCE)."""
     from . import config, engine
+
     cfg = config.build(preset)
     r = engine.simulate(cfg, EXPLORATION_SEEDS)
     dt = r.dt
     res = []
     for a, b in ((3.0, 3.8), (5.8, 7.8)):
-        x = r["com"][:, int(a / dt): int(b / dt)]
+        x = r["com"][:, int(a / dt) : int(b / dt)]
         tt = np.linspace(-1.0, 1.0, x.shape[1])
-        V = np.vander(tt, 3)                                   # slow drift (quadratic) is not fluctuation
+        V = np.vander(tt, 3)  # slow drift (quadratic) is not fluctuation
         coef = np.linalg.lstsq(V, x.T, rcond=None)[0]
         res.append(x - (V @ coef).T)
     sd = float(np.sqrt(np.mean(np.concatenate(res, axis=1) ** 2)))
@@ -64,8 +68,14 @@ def events(cfg: dict[str, Any]) -> dict[str, Any]:
     windows of the protocol, not events that cut them."""
     task = cfg["task"]
     pushes = sorted((p for p in cfg["environment"].get("pushes", []) if p.get("role") != "intervention"), key=lambda p: p["t"])
-    return {"cue": task["t_cue"], "turn": task["t_turn"], "pushes": [p["t"] for p in pushes], "push_forces": [p["force"] for p in pushes],
-            "horizon": task["horizon"], "dt": task["dt"]}
+    return {
+        "cue": task["t_cue"],
+        "turn": task["t_turn"],
+        "pushes": [p["t"] for p in pushes],
+        "push_forces": [p["force"] for p in pushes],
+        "horizon": task["horizon"],
+        "dt": task["dt"],
+    }
 
 
 def window_end(ev: dict[str, Any], t_after: float) -> float:
@@ -94,7 +104,9 @@ def _hold_entry(inside: np.ndarray, start: int, hold: int, stop: int | None = No
 STATUSES = ("achieved", "not-achieved-in-window", "fell", "diverged")
 
 
-def time_to_hold(run: Run, inside: np.ndarray, t_event: float, t_end: float, start_idx: np.ndarray | None = None) -> dict[str, np.ndarray]:
+def time_to_hold(
+    run: Run, inside: np.ndarray, t_event: float, t_end: float, start_idx: np.ndarray | None = None
+) -> dict[str, np.ndarray]:
     """Time from ``t_event`` until ``inside`` has held for HOLD within the window ending at ``t_end``.
 
     ``time`` is NaN where it was not achieved (a censored observation, NOT a time). ``status`` says why: achieved,
@@ -108,7 +120,7 @@ def time_to_hold(run: Run, inside: np.ndarray, t_event: float, t_end: float, sta
     hit = np.full(s, -1)
     for k in range(s):
         st = i0 if start_idx is None else int(start_idx[k])
-        hit[k] = _hold_entry(inside[k: k + 1], st, hold, i1)[0]
+        hit[k] = _hold_entry(inside[k : k + 1], st, hold, i1)[0]
     window = (i1 - i0) * dt
     ok = hit >= 0
     time = np.where(ok, (hit - i0) * dt, np.nan)
@@ -145,27 +157,40 @@ def summary(run: Run) -> dict[str, np.ndarray]:
     sway = np.sqrt(((th - th.mean(axis=1, keepdims=True)) ** 2).mean(axis=1))
     out["sway_rms"] = np.where(ok, sway, np.nan)
     # tracking of the true reference over the whole task; fallen bodies score the error they reached (censored by the record)
-    err = (run["com"] - run["xref_true"])
-    out["track_rms"] = np.sqrt((err ** 2).mean(axis=1))
-    last = max(idx(ev["horizon"] - 1.0, dt), 0)
+    err = run["com"] - run["xref_true"]
+    out["track_rms"] = np.sqrt((err**2).mean(axis=1))
+    last = max(T - idx(1.0, dt), 0)  # the last second of the record (the horizon for a complete run)
     out["precision"] = np.sqrt((err[:, last:] ** 2).mean(axis=1))
     # settling after the cue and after the turn (censored)
-    for key, t_ev, tgt in (("settle_cue", ev["cue"], cfg["task"]["x_target"]), ("settle_turn", ev["turn"], cfg["task"]["x_turn"])):
+    for key, t_ev, tgt in (
+        ("settle_cue", ev["cue"], cfg["task"]["x_target"]),
+        ("settle_turn", ev["turn"], cfg["task"]["x_turn"]),
+    ):
         res = settle_time(run, t_ev + cfg["task"]["ramp_s"] * 0.5, np.full((s, T), tgt))
-        out[key], out[key + "_status"], out[key + "_window"], out[key + "_rmst"] = res["time"], res["status"], res["window"], res["rmst"]
+        out[key], out[key + "_status"], out[key + "_window"], out[key + "_rmst"] = (
+            res["time"],
+            res["status"],
+            res["window"],
+            res["rmst"],
+        )
     # push response
     if ev["pushes"]:
         t_push = ev["pushes"][0]
         i0 = idx(t_push, dt)
         base = run["com"][:, max(i0 - 5, 0)]
-        win = run["com"][:, i0: i0 + idx(1.5, dt)]
+        win = run["com"][:, i0 : i0 + idx(1.5, dt)]
         out["peak_dev"] = np.abs(win - base[:, None]).max(axis=1)
         tgt = run["xref_true"]
         inside = (np.abs(run["com"] - tgt) < band(cfg)) & (np.abs(run["vcom"]) < VEL_BAND) & alive
         # the search starts at the time of the largest deviation, so a body that has not yet been moved by the push is not "recovered"
         i_peak = i0 + np.abs(win - base[:, None]).argmax(axis=1)
         res = time_to_hold(run, inside, t_push, window_end(ev, t_push), start_idx=i_peak)
-        out["recovery"], out["recovery_status"], out["recovery_window"], out["recovery_rmst"] = res["time"], res["status"], res["window"], res["rmst"]
+        out["recovery"], out["recovery_status"], out["recovery_window"], out["recovery_rmst"] = (
+            res["time"],
+            res["status"],
+            res["window"],
+            res["rmst"],
+        )
     else:
         out["peak_dev"] = np.full(s, np.nan)
         out["recovery"] = np.full(s, np.nan)
@@ -181,8 +206,12 @@ def summary(run: Run) -> dict[str, np.ndarray]:
     out["kc_end"] = run["kc"][:, -1]
     out["slip_frac"] = run["slip"].mean(axis=1)
     out["diverged"] = run.diverged.astype(float)
-    for k, v in out.items():                      # a numerically diverged run is not scored on anything
-        if k not in ("diverged",) and np.issubdtype(np.asarray(v).dtype, np.floating) and np.asarray(v).shape == run.diverged.shape:
+    for k, v in out.items():  # a numerically diverged run is not scored on anything
+        if (
+            k not in ("diverged",)
+            and np.issubdtype(np.asarray(v).dtype, np.floating)
+            and np.asarray(v).shape == run.diverged.shape
+        ):
             out[k] = np.where(run.diverged, np.nan, v)
     return out
 

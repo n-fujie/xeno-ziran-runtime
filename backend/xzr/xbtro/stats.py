@@ -27,8 +27,16 @@ def paired_effect(a: np.ndarray, b: np.ndarray, n_perm: int = 4096, n_boot: int 
     (exact up to 12 pairs, Monte-Carlo above), a bootstrap 95 % interval, n used and n dropped."""
     d, dropped = clean_pairs(a, b)
     n = len(d)
-    out: dict[str, Any] = {"n": n, "dropped": dropped, "mean_diff": float("nan"), "d": float("nan"), "p": float("nan"),
-                           "ci": [float("nan"), float("nan")], "mean_a": float("nan"), "mean_b": float("nan")}
+    out: dict[str, Any] = {
+        "n": n,
+        "dropped": dropped,
+        "mean_diff": float("nan"),
+        "d": float("nan"),
+        "p": float("nan"),
+        "ci": [float("nan"), float("nan")],
+        "mean_a": float("nan"),
+        "mean_b": float("nan"),
+    }
     aa = np.asarray(a, dtype=float)
     bb = np.asarray(b, dtype=float)
     if np.isfinite(aa).any():
@@ -43,7 +51,7 @@ def paired_effect(a: np.ndarray, b: np.ndarray, n_perm: int = 4096, n_boot: int 
     out["d"] = m / sd if sd > 1e-15 else (0.0 if abs(m) < 1e-15 else math.copysign(float("inf"), m))
     rng = np.random.default_rng(_RNG_SEED)
     if n <= 12:
-        signs = ((np.arange(2 ** n)[:, None] >> np.arange(n)[None]) & 1) * 2 - 1
+        signs = ((np.arange(2**n)[:, None] >> np.arange(n)[None]) & 1) * 2 - 1
     else:
         signs = rng.integers(0, 2, size=(n_perm, n)) * 2 - 1
     stat = np.abs((signs * d[None]).mean(axis=1))
@@ -92,15 +100,15 @@ def predictive_gain(x: np.ndarray, y: np.ndarray, lag: int, order: int = 3) -> f
     start = order + max(lag, 1)
     if n < start + 10:
         return 0.0
-    rows_y = np.stack([y[start - k - 1: n - k - 1] for k in range(order)], axis=1)
-    rows_x = np.stack([x[start - lag - k: n - lag - k] for k in range(order)], axis=1)
+    rows_y = np.stack([y[start - k - 1 : n - k - 1] for k in range(order)], axis=1)
+    rows_x = np.stack([x[start - lag - k : n - lag - k] for k in range(order)], axis=1)
     target = y[start:n]
     base = np.hstack([rows_y, np.ones((len(target), 1))])
     full = np.hstack([base, rows_x])
     rb = target - base @ np.linalg.lstsq(base, target, rcond=None)[0]
     rf = target - full @ np.linalg.lstsq(full, target, rcond=None)[0]
-    vb = float((rb ** 2).sum())
-    return float(max(0.0, (vb - float((rf ** 2).sum())) / vb)) if vb > 1e-18 else 0.0
+    vb = float((rb**2).sum())
+    return float(max(0.0, (vb - float((rf**2).sum())) / vb)) if vb > 1e-18 else 0.0
 
 
 def bh_adjust(p: np.ndarray) -> np.ndarray:
@@ -124,9 +132,16 @@ def design_note(n_pairs: int, alpha: float = 0.05, power: float = 0.8) -> dict[s
     the smallest standardised paired effect (d_z) detectable with the given power at the given (two-sided) level, by the normal
     approximation (d = (z_{1-alpha/2} + z_power) / sqrt(n)). Used to state why a number of seeds was chosen."""
     from statistics import NormalDist
+
     nd = NormalDist()
     d_min = (nd.inv_cdf(1 - alpha / 2) + nd.inv_cdf(power)) / math.sqrt(max(n_pairs, 1))
-    min_p = 2.0 / (2 ** n_pairs) if n_pairs <= 12 else 1.0 / 4097.0
-    return {"n_pairs": n_pairs, "min_attainable_p": min_p, "min_detectable_dz": d_min, "alpha": alpha, "power": power,
-            "reading": f"with {n_pairs} paired seeds an effect of about {d_min:.2f} (standardised, paired) is detectable with {power:.0%} power at the {alpha:g} level; "
-                       "smaller true effects are expected to be missed, so 'no detectable effect' is not 'no effect'"}
+    min_p = 2.0 / (2**n_pairs) if n_pairs <= 12 else 1.0 / 4097.0
+    return {
+        "n_pairs": n_pairs,
+        "min_attainable_p": min_p,
+        "min_detectable_dz": d_min,
+        "alpha": alpha,
+        "power": power,
+        "reading": f"with {n_pairs} paired seeds an effect of about {d_min:.2f} (standardised, paired) is detectable with {power:.0%} power at the {alpha:g} level; "
+        "smaller true effects are expected to be missed, so 'no detectable effect' is not 'no effect'",
+    }

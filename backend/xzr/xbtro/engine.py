@@ -30,9 +30,9 @@ LINE_IDS_SENS = ("sens.proprio", "sens.vestibular", "sens.visual", "sens.tactile
 CUE_PULSE_S = 0.2
 FALL_ANGLE = 0.9
 # run-time divergence criteria (a trajectory that satisfies any of these is a numerical failure, not a fall)
-DIVERGE_OMEGA = 60.0      # rad/s, far beyond any physical joint rate of this model
-DIVERGE_TORQUE = 40.0     # total joint torque in units of the largest joint's tau_max
-CC_MAX = 0.9              # co-contraction is clipped here (see _step), so the static check covers cc in [0, CC_MAX]
+DIVERGE_OMEGA = 60.0  # rad/s, far beyond any physical joint rate of this model
+DIVERGE_TORQUE = 40.0  # total joint torque in units of the largest joint's tau_max
+CC_MAX = 0.9  # co-contraction is clipped here (see _step), so the static check covers cc in [0, CC_MAX]
 
 
 def smoothstep(x: np.ndarray) -> np.ndarray:
@@ -61,7 +61,7 @@ class Params:
         self.length = np.array([ln["length"] for ln in c["links"]], dtype=float)
         self.mass = np.array([ln["mass"] for ln in c["links"]], dtype=float)
         self.d = np.array([ln["com_frac"] * ln["length"] for ln in c["links"]], dtype=float)
-        self.inertia = self.mass * self.length ** 2 / 12.0
+        self.inertia = self.mass * self.length**2 / 12.0
         n = self.n
         coef = np.zeros((n, n))
         for k in range(n):
@@ -126,11 +126,22 @@ class Params:
         rho = float(np.max(np.abs(np.linalg.eigvals(Phi))))
         lam = np.linalg.eigvals(A)
         eig_m = np.linalg.eigvalsh(M)
-        return {"margin": rho, "stable": bool(rho <= 1.0 + 1e-9), "integrator": integrator, "cc": cc, "dt": self.dt, "substeps": self.substeps,
-                "max_abs_lambda_h": float(np.abs(lam).max() * h), "fastest_mode_hz": float(np.abs(lam.imag).max() / (2 * math.pi)),
-                "mass_matrix_min_eig": float(eig_m[0]), "mass_matrix_condition": float(eig_m[-1] / eig_m[0]),
-                "scope": "passive joint dynamics at the upright pose, %s, co-contraction within [0, %.1f]; feedback delays and contact "
-                         "switching are not covered" % (integrator, cc)}
+        return {
+            "margin": rho,
+            "stable": bool(rho <= 1.0 + 1e-9),
+            "integrator": integrator,
+            "cc": cc,
+            "dt": self.dt,
+            "substeps": self.substeps,
+            "max_abs_lambda_h": float(np.abs(lam).max() * h),
+            "fastest_mode_hz": float(np.abs(lam.imag).max() / (2 * math.pi)),
+            "mass_matrix_min_eig": float(eig_m[0]),
+            "mass_matrix_condition": float(eig_m[-1] / eig_m[0]),
+            "scope": f"passive joint dynamics at the upright pose, {integrator}, co-contraction within [0, {cc:.1f}]. A spectral radius of at most 1 "
+            "guarantees that the integration of the passive plant does not blow up anywhere in that range (a sufficient condition). It is not "
+            "necessary: a refused configuration may still run stably at the co-contraction it actually uses, which is why the run-time divergence "
+            "criteria also exist. It does not cover feedback delays, gains or contact switching: a passed configuration can still have an unstable closed loop",
+        }
 
     def enabled(self, lid: str) -> bool:
         ln = self.lines.get(lid)
@@ -151,9 +162,9 @@ class Run:
     dt: float
     arrays: dict[str, np.ndarray]
     line_ids: list[str]
-    fell: np.ndarray          # physical fall (segment angle or COM beyond the recoverable range)
+    fell: np.ndarray  # physical fall (segment angle or COM beyond the recoverable range)
     fall_time: np.ndarray
-    diverged: np.ndarray      # numerical divergence (non-finite, rate or torque beyond the criteria) — never a fall
+    diverged: np.ndarray  # numerical divergence (non-finite, rate or torque beyond the criteria) — never a fall
     diverge_time: np.ndarray
     slow_end: dict[str, np.ndarray]
     events: dict[str, Any]
@@ -165,10 +176,20 @@ class Run:
 class Sim:
     """A batch of S bodies advancing together. ``advance(k)`` takes k steps; the record accumulates in ``self.rec``."""
 
-    def __init__(self, cfg: dict[str, Any], seeds: list[int], horizon_steps: int | None = None,
-                 slow_state: dict[str, Any] | None = None, record: bool = True, noise_stream: int = 0, enforce_stability: bool = True):
+    def __init__(
+        self,
+        cfg: dict[str, Any],
+        seeds: list[int],
+        horizon_steps: int | None = None,
+        slow_state: dict[str, Any] | None = None,
+        record: bool = True,
+        noise_stream: int = 0,
+        enforce_stability: bool = True,
+    ):
         self.record = record
-        self.enforce_stability = enforce_stability     # False only for the study that checks the a-priori criterion against real runs
+        self.enforce_stability = (
+            enforce_stability  # False only for the study that checks the a-priori criterion against real runs
+        )
         self.set_config(cfg)
         p = self.p
         self.seeds = list(seeds)
@@ -229,22 +250,37 @@ class Sim:
         ns = self.p.numeric_stability()
         if not ns["stable"] and getattr(self, "enforce_stability", True):
             from .config import ConfigError
-            raise ConfigError(f"the explicit RK4 step is numerically unstable for the passive joint dynamics (plant step {self.p.h:g} s, "
-                              f"largest step amplification {ns['margin']:.2f} > 1, fastest mode {ns['fastest_mode_hz']:.1f} Hz, "
-                              f"checked with co-contraction up to {ns['cc']:g}); lower c_passive / k_passive or the time step. "
-                              "Such a run would diverge numerically and must not be read as a falling body.")
+
+            raise ConfigError(
+                f"the explicit RK4 step is numerically unstable for the passive joint dynamics (plant step {self.p.h:g} s, "
+                f"largest step amplification {ns['margin']:.2f} > 1, fastest mode {ns['fastest_mode_hz']:.1f} Hz, "
+                f"checked with co-contraction up to {ns['cc']:g}); lower c_passive / k_passive or the time step. "
+                "Such a run would diverge numerically and must not be read as a falling body."
+            )
         self.x14 = _x14.effects(cfg)
 
     def _load_slow(self, st: dict[str, Any]) -> None:
-        for key, arr in (("fatigue", self.fatigue), ("energy", self.energy), ("kc", self.kc), ("sediment", self.sediment),
-                         ("core", self.core), ("hand", self.hand)):
+        for key, arr in (
+            ("fatigue", self.fatigue),
+            ("energy", self.energy),
+            ("kc", self.kc),
+            ("sediment", self.sediment),
+            ("core", self.core),
+            ("hand", self.hand),
+        ):
             if key in st and st[key] is not None:
                 v = np.asarray(st[key], dtype=float)
                 arr[:] = v if v.shape == arr.shape else np.resize(v, arr.shape)
 
     def slow_state(self) -> dict[str, np.ndarray]:
-        return {"fatigue": self.fatigue.copy(), "energy": self.energy.copy(), "kc": self.kc.copy(),
-                "sediment": self.sediment.copy(), "core": self.core.copy(), "hand": self.hand.copy()}
+        return {
+            "fatigue": self.fatigue.copy(),
+            "energy": self.energy.copy(),
+            "kc": self.kc.copy(),
+            "sediment": self.sediment.copy(),
+            "core": self.core.copy(),
+            "hand": self.hand.copy(),
+        }
 
     def _alloc(self) -> None:
         s, T, n, L = self.S, self.T, self.p.n, len(self.p.line_ids)
@@ -252,8 +288,23 @@ class Sim:
         for k in ("theta", "omega", "q", "tau"):
             r[k] = np.zeros((s, T, n))
         r["act"] = np.zeros((s, T, n, 2))
-        for k in ("com", "vcom", "cop", "fn", "energy", "fatigue", "cap", "phi", "xref_true", "xref_ctrl", "xhat", "vhat",
-                  "kc", "sediment", "core"):
+        for k in (
+            "com",
+            "vcom",
+            "cop",
+            "fn",
+            "energy",
+            "fatigue",
+            "cap",
+            "phi",
+            "xref_true",
+            "xref_ctrl",
+            "xhat",
+            "vhat",
+            "kc",
+            "sediment",
+            "core",
+        ):
             r[k] = np.zeros((s, T))
         r["slip"] = np.zeros((s, T), dtype=bool)
         r["alive"] = np.zeros((s, T), dtype=bool)
@@ -264,8 +315,17 @@ class Sim:
         r["cc"] = np.zeros((s, T, n))
 
     # ---------------------------------------------------------------------------------------- mechanics
-    def _accel(self, theta: np.ndarray, omega: np.ndarray, tau_act: np.ndarray, cc: np.ndarray, qgen: np.ndarray,
-               toe: np.ndarray, heel: np.ndarray, fn: float) -> tuple[np.ndarray, np.ndarray]:
+    def _accel(
+        self,
+        theta: np.ndarray,
+        omega: np.ndarray,
+        tau_act: np.ndarray,
+        cc: np.ndarray,
+        qgen: np.ndarray,
+        toe: np.ndarray,
+        heel: np.ndarray,
+        fn: float,
+    ) -> tuple[np.ndarray, np.ndarray]:
         p = self.p
         n = p.n
         cosd = np.cos(theta[:, :, None] - theta[:, None, :])
@@ -273,7 +333,7 @@ class Sim:
         M = p.H[None] * cosd
         idx = np.arange(n)
         M[:, idx, idx] += p.inertia[None]
-        cor = (p.H[None] * sind * (omega ** 2)[:, None, :]).sum(axis=2)
+        cor = (p.H[None] * sind * (omega**2)[:, None, :]).sum(axis=2)
         grav = p.g * p.Sg[None] * np.sin(theta)
         q = np.concatenate([theta[:, :1], np.diff(theta, axis=1)], axis=1)
         qd = np.concatenate([omega[:, :1], np.diff(omega, axis=1)], axis=1)
@@ -318,9 +378,21 @@ class Sim:
         cue1 = 1.0 if task["t_cue"] <= t < task["t_cue"] + CUE_PULSE_S else 0.0
         cue2 = 1.0 if task["t_turn"] <= t < task["t_turn"] + CUE_PULSE_S else 0.0
         fn = p.mtot * p.g
-        y = np.concatenate([q, qd, self.theta[:, p.trunk:p.trunk + 1], self.omega[:, p.head:p.head + 1], xcom[:, None],
-                            vcom[:, None], self.cop[:, None], np.full((s, 1), fn), np.full((s, 1), cue1),
-                            np.full((s, 1), cue2)], axis=1)
+        y = np.concatenate(
+            [
+                q,
+                qd,
+                self.theta[:, p.trunk : p.trunk + 1],
+                self.omega[:, p.head : p.head + 1],
+                xcom[:, None],
+                vcom[:, None],
+                self.cop[:, None],
+                np.full((s, 1), fn),
+                np.full((s, 1), cue1),
+                np.full((s, 1), cue2),
+            ],
+            axis=1,
+        )
         # K = 2n + 8 used; one spare column keeps the width at 2n + 9 (noise has one more column than channels)
         self.Y[:, i, : y.shape[1]] = y
         sens = cfg["sensors"]
@@ -339,16 +411,25 @@ class Sim:
         qd_hat = read("sens.proprio", slice(n, 2 * n), 6 * (pr["noise"] + nadd), slice(n, 2 * n), pr["gain"])
         ve = sens["vestibular"]
         tilt_hat = read("sens.vestibular", slice(2 * n, 2 * n + 1), ve["noise"] + nadd, slice(2 * n, 2 * n + 1), ve["gain"])
-        head_rate_hat = read("sens.vestibular", slice(2 * n + 1, 2 * n + 2), 5 * (ve["noise"] + nadd),
-                             slice(2 * n + 1, 2 * n + 2), ve["gain"])
+        head_rate_hat = read(
+            "sens.vestibular", slice(2 * n + 1, 2 * n + 2), 5 * (ve["noise"] + nadd), slice(2 * n + 1, 2 * n + 2), ve["gain"]
+        )
         vi = sens["visual"]
         blocked = any(a <= t <= b for a, b in vi.get("blocked_windows", []))
         vis_ok = p.enabled("sens.visual") and not blocked and vi["gain"] > 0
-        x_vis = read("sens.visual", slice(2 * n + 2, 2 * n + 3), vi["noise"] + nadd, slice(2 * n + 2, 2 * n + 3), vi["gain"]) \
-            if vis_ok else np.zeros((s, 1))
+        x_vis = (
+            read("sens.visual", slice(2 * n + 2, 2 * n + 3), vi["noise"] + nadd, slice(2 * n + 2, 2 * n + 3), vi["gain"])
+            if vis_ok
+            else np.zeros((s, 1))
+        )
         ta = sens["tactile"]
-        cop_hat = read("sens.tactile", slice(2 * n + 4, 2 * n + 5), ta["noise"] * (1.0 + env["compliance"]) + nadd,
-                       slice(2 * n + 4, 2 * n + 5), ta["gain"])
+        cop_hat = read(
+            "sens.tactile",
+            slice(2 * n + 4, 2 * n + 5),
+            ta["noise"] * (1.0 + env["compliance"]) + nadd,
+            slice(2 * n + 4, 2 * n + 5),
+            ta["gain"],
+        )
         cue_sd = sens["cue"]["noise"]
         cue1_hat = read("sens.cue", slice(2 * n + 6, 2 * n + 7), cue_sd, slice(2 * n + 6, 2 * n + 7))[:, 0]
         cue2_hat = read("sens.cue", slice(2 * n + 7, 2 * n + 8), cue_sd, slice(2 * n + 7, 2 * n + 8))[:, 0]
@@ -439,7 +520,9 @@ class Sim:
             contrib[:, j, hi] = np.where(active[:, j], u_hip, 0.0)
         j = li("neural.reflex")
         if j >= 0:
-            contrib[:, j, :] = np.where(active[:, j][:, None], -(neural["gain_reflex_p"] * q_hat + neural["gain_reflex_d"] * qd_hat), 0.0)
+            contrib[:, j, :] = np.where(
+                active[:, j][:, None], -(neural["gain_reflex_p"] * q_hat + neural["gain_reflex_d"] * qd_hat), 0.0
+            )
             contrib[:, j, 0] = 0.0  # the ankle is governed by the central line; the reflex stiffens the other joints
         j = li("neural.central.cue")
         if j >= 0:
@@ -447,12 +530,29 @@ class Sim:
             ff = neural["gain_cue_ff"] * neural["gain_ankle_d"] * vref * kc
             contrib[:, j, 0] = np.where(active[:, j], ff, 0.0)
         # ---- optional Xeno-14 rule lines (experimental conditions; see xeno14.py)
-        extra = _x14.drive(self, x14, t, i, dict(xhat=xhat, vhat=vhat, tilt=tilt_hat[:, 0], q_hat=q_hat, qd_hat=qd_hat,
-                                                 cop_hat=cop_hat[:, 0], err=err, xref=xref_ctrl, head_rate=head_rate_hat[:, 0]))
+        extra = _x14.drive(
+            self,
+            x14,
+            t,
+            i,
+            dict(
+                xhat=xhat,
+                vhat=vhat,
+                tilt=tilt_hat[:, 0],
+                q_hat=q_hat,
+                qd_hat=qd_hat,
+                cop_hat=cop_hat[:, 0],
+                err=err,
+                xref=xref_ctrl,
+                head_rate=head_rate_hat[:, 0],
+            ),
+        )
         for name, (xu, xon) in extra["lines"].items():
             j = li(name)
             if j >= 0:
-                on = xon & alive & (energy_ok | ~costly[j]) & bool(p.lines[name]["enabled"])      # a switched-off line contributes nothing
+                on = (
+                    xon & alive & (energy_ok | ~costly[j]) & bool(p.lines[name]["enabled"])
+                )  # a switched-off line contributes nothing
                 contrib[:, j, :] = np.where(on[:, None], xu, 0.0)
                 active[:, j] = on
         # breath: slow modulation of trunk / neck drive, and a small COM sway
@@ -513,8 +613,9 @@ class Sim:
         for push in env.get("pushes", []):
             if push["t"] <= t < push["t"] + push["dur"]:
                 force = force + push["force"]
-                qgen = qgen + self._generalised(np.full(s, float(push["force"])), min(int(push["link"]), n - 1),
-                                                float(push["point_frac"]), self.theta)
+                qgen = qgen + self._generalised(
+                    np.full(s, float(push["force"])), min(int(push["link"]), n - 1), float(push["point_frac"]), self.theta
+                )
         hr = env.get("handrail")
         if hr and hr["t0"] <= t <= hr["t1"]:
             ptx = self._attach_x(self.theta, hr["height_frac"])
@@ -532,7 +633,9 @@ class Sim:
                 tau1, acc_first = tau_s, acc1
             if p.integrator == "rk4":
                 acc2, _ = self._accel(th_s + 0.5 * h * om_s, om_s + 0.5 * h * acc1, tau_act, cc, qgen, toe, heel, fn)
-                acc3, _ = self._accel(th_s + 0.5 * h * (om_s + 0.5 * h * acc1), om_s + 0.5 * h * acc2, tau_act, cc, qgen, toe, heel, fn)
+                acc3, _ = self._accel(
+                    th_s + 0.5 * h * (om_s + 0.5 * h * acc1), om_s + 0.5 * h * acc2, tau_act, cc, qgen, toe, heel, fn
+                )
                 acc4, _ = self._accel(th_s + h * (om_s + 0.5 * h * acc2), om_s + h * acc3, tau_act, cc, qgen, toe, heel, fn)
                 th_s = th_s + h * (om_s + h * (acc1 + acc2 + acc3) / 6.0)
                 om_s = om_s + h * (acc1 + 2 * acc2 + 2 * acc3 + acc4) / 6.0
@@ -575,8 +678,8 @@ class Sim:
             r["line_u"][:, i] = applied
             r["push_force"][:, i] = force
             r["cc"][:, i] = cc
-            r["sensed"][:, i, : n] = q_hat
-            r["sensed"][:, i, n: 2 * n] = qd_hat
+            r["sensed"][:, i, :n] = q_hat
+            r["sensed"][:, i, n : 2 * n] = qd_hat
             r["sensed"][:, i, 2 * n] = tilt_hat[:, 0]
             r["sensed"][:, i, 2 * n + 1] = head_rate_hat[:, 0]
             r["sensed"][:, i, 2 * n + 2] = x_vis[:, 0]
@@ -585,8 +688,12 @@ class Sim:
             r["sensed"][:, i, 2 * n + 7] = cue2_hat
         self.prev_xref = xref_ctrl.copy()
         self.cop = np.where(alive, -tau1[:, 0] / fn, self.cop)
-        bad = (~np.isfinite(th_new).all(axis=1) | ~np.isfinite(om_new).all(axis=1) | (np.abs(om_new) > DIVERGE_OMEGA).any(axis=1)
-               | ((np.abs(tau1) / float(p.tau_max.max())) > DIVERGE_TORQUE).any(axis=1)) & alive
+        bad = (
+            ~np.isfinite(th_new).all(axis=1)
+            | ~np.isfinite(om_new).all(axis=1)
+            | (np.abs(om_new) > DIVERGE_OMEGA).any(axis=1)
+            | ((np.abs(tau1) / float(p.tau_max.max())) > DIVERGE_TORQUE).any(axis=1)
+        ) & alive
         self.div_t = np.where(bad, (i + 1) * dt, self.div_t)
         self.diverged = self.diverged | bad
         alive = alive & ~bad
@@ -595,15 +702,19 @@ class Sim:
         self.omega = np.where(good, om_new, self.omega)
         # internal state
         w = p.tau_max / max(p.tau_max.sum(), 1e-9)
-        level = ((self.act ** 2).sum(axis=2) * w[None]).sum(axis=1) / 2.0
+        level = ((self.act**2).sum(axis=2) * w[None]).sum(axis=1) / 2.0
         act_cost = internal["activation_cost"] * level * 4.0
         line_cost = (active * cost[None]).sum(axis=1)
         if internal["resources_enabled"]:
-            self.energy = np.maximum(self.energy - dt * (internal["basal_cost"] + act_cost + line_cost) * (1.0 + 0.2 * np.sin(self.phi)),
-                                     0.0)
+            self.energy = np.maximum(
+                self.energy - dt * (internal["basal_cost"] + act_cost + line_cost) * (1.0 + 0.2 * np.sin(self.phi)), 0.0
+            )
             fr = internal["fatigue_rate"] * x14["fatigue_scale"]
-            self.fatigue = np.clip(self.fatigue + dt * (fr * level * (1 - self.fatigue)
-                                                        - internal["fatigue_recovery"] * self.fatigue * (1 - level)), 0.0, 1.0)
+            self.fatigue = np.clip(
+                self.fatigue + dt * (fr * level * (1 - self.fatigue) - internal["fatigue_recovery"] * self.fatigue * (1 - level)),
+                0.0,
+                1.0,
+            )
         self.phi = self.phi + dt * 2 * math.pi / period * (1.0 + internal["breath_variability"] * self.noise_breath[:, i])
         # slow gain adaptation: error filtered over ~1 s; gain rises when the error stays above target
         ad = cfg["adaptation"]
@@ -640,11 +751,12 @@ class Sim:
 
     def _com_acc(self, theta: np.ndarray, omega: np.ndarray, acc: np.ndarray) -> np.ndarray:
         p = self.p
-        ak = (np.cos(theta) * acc - np.sin(theta) * omega ** 2) @ p.coef.T
+        ak = (np.cos(theta) * acc - np.sin(theta) * omega**2) @ p.coef.T
         return (ak @ p.mass) / p.mtot
 
-    def _xref(self, t: float, t1: np.ndarray, t2: np.ndarray, endpoint: bool, windup: float = 0.0,
-              ramp_scale: float = 1.0) -> np.ndarray:
+    def _xref(
+        self, t: float, t1: np.ndarray, t2: np.ndarray, endpoint: bool, windup: float = 0.0, ramp_scale: float = 1.0
+    ) -> np.ndarray:
         """The COM reference as a function of (perceived) cue times: wind-up (endpoint strategy), ramp to the target, ramp to
         the turn position."""
         task = self.cfg["task"]
@@ -674,12 +786,29 @@ class Sim:
         t = np.arange(self.step_i) * self.p.dt
         arrays = {k: v[:, : self.step_i] for k, v in self.rec.items()}
         events = {"cue_detect": {str(k): self.t_det[k].copy() for k in (1, 2)}}
-        return Run(self.cfg, self.seeds, t, self.p.dt, arrays, list(self.p.line_ids), np.isfinite(self.fall_t), self.fall_t.copy(),
-                   self.diverged.copy(), self.div_t.copy(),
-                   self.slow_state(), events)
+        return Run(
+            self.cfg,
+            self.seeds,
+            t,
+            self.p.dt,
+            arrays,
+            list(self.p.line_ids),
+            np.isfinite(self.fall_t),
+            self.fall_t.copy(),
+            self.diverged.copy(),
+            self.div_t.copy(),
+            self.slow_state(),
+            events,
+        )
 
 
-def simulate(cfg: dict[str, Any], seeds: list[int], slow_state: dict[str, Any] | None = None, chunk: int = 0, enforce_stability: bool = True):
+def simulate(
+    cfg: dict[str, Any],
+    seeds: list[int],
+    slow_state: dict[str, Any] | None = None,
+    chunk: int = 0,
+    enforce_stability: bool = True,
+):
     """Run a batch to the horizon. With ``chunk`` > 0 this is a generator that yields after every ``chunk`` steps (for hosts
     without threads, which advance such generators in time slices); the return value of the generator is the Run."""
     sim = Sim(cfg, seeds, slow_state=slow_state, enforce_stability=enforce_stability)

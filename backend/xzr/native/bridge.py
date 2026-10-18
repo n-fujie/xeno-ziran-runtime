@@ -26,6 +26,7 @@ from .. import __version__
 from ..lod.hierarchy import HierarchyTooLarge
 from ..scenario.io import list_samples
 from ..service import operations as ops
+from ..service import xbtro_ops as xb
 from ..service.limits import LIMITS, LimitError
 from ..service.security import check_payload, check_scenario
 from ..service.session import COOPERATIVE, DEFERRED, JOBS, CommandError, Session, cancel_job, prune_jobs, run_deferred
@@ -251,6 +252,17 @@ def _memory_warning(_q: dict, _b: Any) -> dict:
     return {"paused": paused}
 
 
+def _xbtro(method: str, rest: str, query: dict, body: Any) -> tuple[int, str, Any]:
+    """XenoBody / Total Observation: the same route table as the HTTP service (service/xbtro_ops.py).
+    One device, one user: a single owner. Exports come back as text (the page names the file)."""
+    if body is not None:
+        check_payload(body)
+    r = xb.dispatch(method, "/" + rest, {k: v[0] for k, v in query.items() if v}, body, "native")
+    if isinstance(r, xb.Raw):
+        return 200, "text", r.text
+    return 200, "json", r
+
+
 # (method, path pattern, handler(match, query, body) -> (status, kind, value))
 def _json(v: Any) -> tuple[int, str, Any]:
     return 200, "json", v
@@ -293,6 +305,9 @@ ROUTES: list[tuple[str, re.Pattern, Any]] = [(m, re.compile(p), h) for m, p, h i
     ("GET", r"/api/sessions/(?P<sid>[0-9a-f]{32})/export",
      lambda m, q, b: (lambda r: (200, "json" if r[1] == "application/json" else "text", r[0]))(
          _export(_session(m["sid"]), q))),
+    ("GET", r"/api/xbtro/(?P<rest>.*)", lambda m, q, b: _xbtro("GET", m["rest"], q, b)),
+    ("POST", r"/api/xbtro/(?P<rest>.*)", lambda m, q, b: _xbtro("POST", m["rest"], q, b)),
+    ("DELETE", r"/api/xbtro/(?P<rest>.*)", lambda m, q, b: _xbtro("DELETE", m["rest"], q, b)),
     ("POST", r"/native/stream/(?P<sid>[0-9a-f]{32})", lambda m, q, b: _json(_stream_open(m["sid"]))),
     ("POST", r"/native/stream/(?P<key>st\d{1,9})/message", lambda m, q, b: _json(_stream_message(m["key"], b))),
     ("DELETE", r"/native/stream/(?P<key>st\d{1,9})", lambda m, q, b: _json(_stream_delete(m["key"]))),

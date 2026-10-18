@@ -29,6 +29,8 @@ import TimelineView from './views/TimelineView';
 // The WebGL projections (deck.gl, world atlas) load only when a graph or comparison view opens.
 const GraphView = lazy(() => import('./views/GraphView'));
 const CompareView = lazy(() => import('./views/CompareView'));
+// The XenoBody research environment (three.js) loads only when its view opens.
+const XenoBodyView = lazy(() => import('./views/xbtro/XenoBodyView'));
 
 // The in-tab runtime's start-up progress exists only in the browser build (the literal test removes it from the others).
 const WebBoot = import.meta.env.VITE_WEBRT === '1' ? lazy(() => import('./components/WebBoot')) : () => null;
@@ -54,6 +56,7 @@ const VIEWS: { id: View; label: () => string }[] = [
   { id: 'res_structure', label: () => t('view_res_structure') },
   { id: 'res_disconnection', label: () => t('view_res_disconnection') },
   { id: 'res_compression', label: () => t('view_res_compression') },
+  { id: 'xbtro', label: () => t('view_xbtro') },
 ];
 
 // Static read-only mirror (VITE_STATIC=1): no backend session; only the research views, read from exported result
@@ -243,6 +246,7 @@ export default function App() {
             {view === 'res_structure' && <ReasoningStructureView />}
             {view === 'res_disconnection' && <DisconnectionView />}
             {view === 'res_compression' && <CompressionView />}
+            {view === 'xbtro' && <XenoBodyView />}
             {view === 'overview' && (
               <div className="entry">
                 <Orientation views={AVAILABLE.filter((v) => v !== 'overview').map((v) => ({ id: v, label: labelOf(v) }))}
