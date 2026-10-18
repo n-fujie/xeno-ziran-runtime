@@ -4,7 +4,7 @@
   "record": "xb-a-0d75b06791b7",
   "digest": "0d75b06791b7",
   "neg": 0,
-  "s": 1.9
+  "s": 1.8
  },
  {
   "label": "reanalyse A full",
@@ -21,69 +21,69 @@
   "record": "xb-b-24887dd2f05b",
   "digest": "24887dd2f05b",
   "neg": 35,
-  "s": 14.6
+  "s": 15.7
  },
  {
   "label": "C n4 subset",
   "record": "xb-c-1a7cbdf0dd77",
   "digest": "1a7cbdf0dd77",
   "neg": 3,
-  "s": 3.3
+  "s": 3.5
  },
  {
   "label": "D n4 trials3",
   "record": "xb-d-59f36deacb42",
   "digest": "59f36deacb42",
   "neg": 13,
-  "s": 5.1
+  "s": 5.2
  },
  {
   "label": "E n4 r1",
-  "record": "xb-e-0d75b06791b7",
-  "digest": "0d75b06791b7",
+  "record": "xb-e-b9e79eecbb7b",
+  "digest": "b9e79eecbb7b",
   "neg": 0,
-  "s": 1.5
+  "s": 4.0
  },
  {
   "label": "F n4",
   "record": "xb-f-3aa1b89b9d1f",
   "digest": "3aa1b89b9d1f",
   "neg": 6,
-  "s": 16.5
+  "s": 21.7
  },
  {
   "label": "G n4 subset",
   "record": "xb-g-3fbeb42a9876",
   "digest": "3fbeb42a9876",
   "neg": 2,
-  "s": 14.5
+  "s": 19.2
  },
  {
   "label": "M n4 r2",
   "record": "xb-m-ba5da3cc83ea",
   "digest": "ba5da3cc83ea",
   "neg": 0,
-  "s": 1.6
+  "s": 2.0
  },
  {
   "label": "S n4",
   "record": "xb-s-2a761b9dc9f8",
   "digest": "2a761b9dc9f8",
   "neg": 7,
-  "s": 13.0
+  "s": 15.8
  },
  {
   "label": "R n4 subset",
   "record": "xb-r-d6c73f7e85b1",
   "digest": "d6c73f7e85b1",
   "neg": 0,
-  "s": 14.2
+  "s": 20.3
  },
  {
   "label": "V n4",
-  "record": "xb-v-331c77c39f2d",
-  "digest": "331c77c39f2d",
+  "record": "xb-v-9f7539d5d767",
+  "digest": "9f7539d5d767",
   "neg": 0,
-  "s": 66.8
+  "s": 83.2
  }
 ]
