@@ -27,12 +27,11 @@ INF_T = 1e9
 
 
 def _list(x: np.ndarray, nd: int = 6) -> Any:
+    """Rounded nested lists for JSON; a value that is not a finite number (a diverged run) is None, never NaN."""
     a = np.asarray(x, dtype=float)
-    return (
-        np.where(np.isfinite(a), np.round(a, nd), np.nan).tolist()
-        if a.ndim
-        else (None if not np.isfinite(a) else round(float(a), nd))
-    )
+    if a.ndim == 0:
+        return None if not np.isfinite(a) else round(float(a), nd)
+    return _nan_to_none(np.where(np.isfinite(a), np.round(a, nd), np.nan).tolist())
 
 
 def _nan_to_none(v: Any) -> Any:
@@ -349,10 +348,7 @@ class BodySession:
                 "angle_rad": _list(run["theta"][seed_index, k0:k1, idx]),
                 "angular_rate": _list(run["omega"][seed_index, k0:k1, idx]),
             }
-            now = {
-                "angle_rad": float(run["theta"][seed_index, k1 - 1, idx]),
-                "angular_rate": float(run["omega"][seed_index, k1 - 1, idx]),
-            }
+            now: dict[str, Any] = {k: (v[-1] if v else None) for k, v in series.items()}  # nothing recorded yet: no value
             cols = [idx]
         elif kind == "joint":
             idx = next((i for i, j in enumerate(cfg["joints"]) if j["id"] == pid), None)
@@ -365,7 +361,7 @@ class BodySession:
                 "muscle_drive": _list(run["act"][seed_index, k0:k1, idx, 0] - run["act"][seed_index, k0:k1, idx, 1], 4),
                 "cocontraction": _list(run["cc"][seed_index, k0:k1, idx], 4),
             }
-            now = {k: v[-1] for k, v in series.items()}
+            now = {k: (v[-1] if v else None) for k, v in series.items()}  # nothing recorded yet: no value, not an error
             cols = [idx]
         elif kind in ("ground", "neural", "internal"):
             region = kind
@@ -387,15 +383,16 @@ class BodySession:
                     "controller_com_estimate_m": _list(run["xhat"][seed_index, k0:k1]),
                     "controller_reference_m": _list(run["xref_ctrl"][seed_index, k0:k1]),
                 }
-            now = {k: v[-1] for k, v in series.items()}
+            now = {k: (v[-1] if v else None) for k, v in series.items()}  # nothing recorded yet: no value, not an error
             cols = []
         else:
             raise config.ConfigError("part must be link:<id>, joint:<id>, ground, neural or internal")
         lines = []
         for j, lid in enumerate(run.line_ids):
             ln = next(x for x in cfg["lines"] if x["id"] == lid)
-            drive = float(np.abs(run["line_u"][seed_index, k0:k1, j][:, cols]).mean()) if cols else 0.0
-            frac = float(run["line_active"][seed_index, k0:k1, j].mean())
+            have = k1 > k0  # nothing recorded yet: the fractions are 0, not NaN
+            drive = float(np.abs(run["line_u"][seed_index, k0:k1, j][:, cols]).mean()) if cols and have else 0.0
+            frac = float(run["line_active"][seed_index, k0:k1, j].mean()) if have else 0.0
             touches = drive > 1e-6 or (
                 kind in ("ground", "neural", "internal")
                 and ln["kind"] in {"ground": ("environment",), "neural": ("neural", "sensory"), "internal": ("internal",)}[kind]
