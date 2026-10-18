@@ -85,11 +85,50 @@ PRINCIPLES: list[dict[str, Any]] = [
      "ignition": "always on (slow clock)", "acts_on": ["posture_stability", "fatigue_cost"], "cost_per_s": 0.0},
 ]
 BY_ID = {p["id"]: p for p in PRINCIPLES}
+
+# How each principle relates to the source rule in body.ts ("source_rule" is the rule as written there: its ignition test and its
+# action). Fidelity classes:
+#   translated   the planar body has the quantities the rule acts on; ignition and action are translated one-to-one in kind
+#                (thresholds are rescaled from the abstract lean/tension units of the source to radians / metres)
+#   partial      the rule acts on something the planar body only has in part
+#   proxy-only   the planar body has no counterpart of what the rule acts on; the implemented condition is a stand-in and is NOT
+#                the principle (do not read its effects as evidence about the principle)
+FIDELITY: dict[str, dict[str, str]] = {
+    "lower-abdominal-continuity": {"fidelity": "translated", "source_rule": "clock slow: if lower-abdominal tension < 0.6 then +0.1 and consume energy; couples to every segment tension (gain 0.5, delay 0.2)",
+                                   "gap": "the myofascial coupling delay (0.2) is not modelled; tension acts as co-contraction on a slow clock"},
+    "whole-skin-sensing": {"fidelity": "partial", "source_rule": "five distributed skin channels (resolution 0.02); if any |lean| > 0.03 then lean -= 0.35 x reading, consume energy",
+                           "gap": "the planar body has joint sensors, not a skin; the tactile channel's noise stands in for the skin's resolution"},
+    "axis-maintenance": {"fidelity": "translated", "source_rule": "if |axis| > 0.02 then every segment lean -= 0.3 x axis, consume energy 0.04", "gap": "the axis is the sensed trunk tilt"},
+    "endpoint-removal": {"fidelity": "translated", "source_rule": "disable the endpoint run-up and go-command; whole-body step instead",
+                         "gap": "the endpoint run-up is the pre-movement counter-lean (windup); whole-body means no windup"},
+    "low-noise-movement": {"fidelity": "partial", "source_rule": "if a push is registered then the push is damped and lean reduced by 0.1",
+                           "gap": "a push is registered through the sensed head rate (> 0.05 rad/s); damping is joint damping drive plus halved motor noise; the source does not mention motor noise"},
+    "minimal-approach-distance": {"fidelity": "proxy-only", "source_rule": "if movement velocity > 1.0 then velocity -= 0.3 x excess",
+                                  "gap": "the source's 'movement velocity' is an abstract state; here a braking ankle drive above 0.05 m/s COM velocity. The alias mapping is flagged uncertain in the source."},
+    "zero-run-up-transition": {"fidelity": "translated", "source_rule": "on a cue with velocity < 0.2 and no run-up: velocity += 1.4 (and a forward lean if tension is low)",
+                               "gap": "whole-body strategy with a 20 % faster reference ramp; the low-tension lean is not modelled"},
+    "tensegrity": {"fidelity": "translated", "source_rule": "slow clock: each segment tension moves 50 % towards the mean (-0.05 t + 0.02); lean couples to neighbouring tensions (gain 0.4, delay 0.3)",
+                   "gap": "the neighbour couplings with delay are not modelled; only the equalisation of co-contraction"},
+    "slow-movement": {"fidelity": "translated", "source_rule": "if velocity > 0.6 then velocity -= 0.4 x excess", "gap": "implemented as a 1.8 x slower reference ramp (a velocity cap on the abstract state has no direct counterpart)"},
+    "narrow-step-balance": {"fidelity": "translated", "source_rule": "base of support = 0.7", "gap": "toe and heel lengths x 0.7"},
+    "fingertip-tension": {"fidelity": "proxy-only", "source_rule": "slow clock: if fingertip tension < 0.4 then +0.1 and consume energy; couples to lower-abdominal tension (gain 0.4, delay 0.5)",
+                          "gap": "the planar body has no hand or fingertip; a distal co-contraction state stands in. It is NOT a fingertip."},
+    "breathing-synchronization": {"fidelity": "partial", "source_rule": "breath clock (period 4) alternates phase and shifts every tension +-0.05; on exhale with |axis| > 0.04 lean -= 0.15 x lean",
+                                  "gap": "phase modulation of co-contraction and a trunk release drive on exhale; breath period from the internal breathing line"},
+    "anti-collapse-posture": {"fidelity": "translated", "source_rule": "if any |lean| > 0.55 x base then lean -= 0.6 x lean and consume energy 0.8",
+                              "gap": "strong ankle drive when the sensed COM offset exceeds 55 % of the toe-side support; ignites only in large excursions"},
+    "long-duration-sedimentation": {"fidelity": "proxy-only", "source_rule": "sediment clock (period 25): sediment += 1, raises the lower-abdominal couplings' gain and tension",
+                                    "gap": "a sediment state on an accelerated clock (one unit per 2 s) adding co-contraction. Real long-horizon deposition is not simulated in a 7 s trial."},
+}
+for _p in PRINCIPLES:
+    _p.update(FIDELITY[_p["id"]])
+
 ORGANIZATIONS = ("posture_stability", "correction_quality", "turn_speed", "precision", "fatigue_cost", "recovery_time", "fall_rate")
 
 
 def catalog() -> list[dict[str, Any]]:
-    return [{**p, "status": "implemented as an experimental condition (planar translation)", "source": SOURCE} for p in PRINCIPLES]
+    return [{**p, "status": {"translated": "translated to the planar body", "partial": "partly translated", "proxy-only": "proxy only: the planar body has no counterpart"}[p["fidelity"]], "source": SOURCE}
+            for p in PRINCIPLES]
 
 
 def apply(cfg: dict[str, Any], ids: list[str]) -> dict[str, Any]:
