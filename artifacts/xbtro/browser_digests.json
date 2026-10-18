@@ -1,0 +1,7 @@
+[
+ {"label":"A n4 r1","digest":"0d75b06791b7"},{"label":"B n4","digest":"24887dd2f05b"},{"label":"C n4 subset","digest":"1a7cbdf0dd77"},
+ {"label":"D n4 trials3","digest":"59f36deacb42"},{"label":"E n4 r1","digest":"b9e79eecbb7b"},{"label":"F n4","digest":"3aa1b89b9d1f"},
+ {"label":"G n4 subset","digest":"3fbeb42a9876"},{"label":"M n4 r2","digest":"ba5da3cc83ea"},{"label":"S n4","digest":"2a761b9dc9f8"},
+ {"label":"reanalyse A full","digest":"13c73d71aa9c"},{"label":"reenter B from A","digest":"5edfa39cf318"},{"label":"R n4 subset","digest":"d6c73f7e85b1"},
+ {"label":"V n4","digest":"9f7539d5d767"}
+]

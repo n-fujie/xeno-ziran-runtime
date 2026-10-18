@@ -77,7 +77,10 @@ with 2 sub-steps. Time-step convergence (noiseless runs): refining the human pla
   (`metrics.calibrate_band` reproduces it; a test checks it). Registered: **human-like 9 mm, machine-like 9 mm.** Experiments use
   other seeds (5000…; the replication 7000…). **Note on 13 mm:** an intermediate controller tuning gave 13 mm for the human-like body;
   the controller was then retuned on the tuning seeds and the same rule gave 9 mm. No band was ever set from final-seed results. The
-  effect of using 13 mm is reported as a sensitivity analysis (`SUMMARY.md`), the registered value is unchanged.
+  effect of using 13 mm is reported as a sensitivity analysis (`SUMMARY.md`), the registered value is unchanged. **The human-like recovery
+  classification is sensitive to the band**: with 9 mm the human-like body recovers inside the window in 7 of 12 seeds (restricted mean
+  1.58 s in B's control), with 13 mm in all 12 (0.89 s). Conclusions about human-like recovery time are therefore conclusions under the
+  registered band. (The sensitivity run varied the human-like band only; the machine-like band was not varied.)
 * Comparisons are paired by seed (common random numbers; interventions never touch the random streams). Effects are paired `d`, a
   sign-flip permutation test (exact up to 12 pairs) and a bootstrap interval; label thresholds (Benjamini–Hochberg `q < 0.05` over the
   whole table, `|d| ≥ 0.8`) are fixed in advance. `stats.design_note(n)` states what `n` seeds can resolve (12 seeds: about 0.81).

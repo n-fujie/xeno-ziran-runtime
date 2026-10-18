@@ -86,7 +86,7 @@ export const useXb = create<XbState>((set, get) => {
       if (now - lastUi > 90 || r.finished) { patch.tick = get().tick + 1; lastUi = now; }
       if (r.finished) { patch.running = false; patch.notice = r.status.fell[0] ? 'The body fell (a physical fall in the model).' : r.status.diverged[0] ? 'The run diverged numerically — this is a failure of the numerics, not a fall.' : 'The horizon of this body was reached.'; }
       set(patch);
-      if (get().selected && now - lastInspect > 700) { lastInspect = now; void refreshInspect(); }
+      if (get().selected && now - lastInspect > 250) { lastInspect = now; void refreshInspect(); }
     } catch (e) { fail(e); return; }
     if (get().running) timer = setTimeout(() => void pump(), Math.max(0, 50 - (performance.now() - t0)));
   }
@@ -147,7 +147,13 @@ export const useXb = create<XbState>((set, get) => {
       set({ body: null, bid: null, status: null, selected: null, inspect: null });
     },
     run: () => { if (!get().running && get().bid) { set({ running: true, error: null }); void pump(); } },
-    pause: () => { if (timer) clearTimeout(timer); timer = null; set({ running: false }); },
+    pause: () => {
+      if (timer) clearTimeout(timer);
+      timer = null;
+      set({ running: false });
+      // the part panel shows the state the body is paused in, not the one up to a refresh interval ago
+      if (get().selected) void refreshInspect();
+    },
     stepOnce: async (n = 5) => {
       const { wid, bid } = get();
       if (!wid || !bid || get().busy) return;

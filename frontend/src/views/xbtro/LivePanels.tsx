@@ -197,7 +197,7 @@ export function PartInspector({ body }: { body: BodyInfo }) {
   if (jointId) for (const [id, m] of obsStore.models) m.channels.forEach((c, k) => { if (c.endsWith(`:${jointId}`)) { const s = obsStore.series(id, k, t0); observed.push({ label: `${id} ${c} (observation)`, t: s.t, v: s.v, layer: 'observation' }); } });
   return (
     <details className="xb-card" open>
-      <summary>Part: {sel ?? 'none selected'}</summary>
+      <summary>Part: {sel ?? 'none selected'}{ins && sel ? <span className="dim small"> · as of t = {fmt(ins.t[ins.t.length - 1], 4)} s</span> : null}</summary>
       <div className="xb-chips">{parts.map((p) => <button key={p} className={sel === p ? 'on' : ''} onClick={() => select(sel === p ? null : p)}>{p}</button>)}</div>
       <div className="small dim">Click a segment or joint in the 3D view, or pick a part here.</div>
       {ins && sel && (
