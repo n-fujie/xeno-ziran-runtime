@@ -16,6 +16,14 @@ from xzr.service.app import app
 B = "/api/xbtro"
 
 
+@pytest.fixture(autouse=True)
+def _isolated_workspaces():
+    """Each test starts from an empty set of workspaces (the per-process workspace limit is itself a tested behaviour)."""
+    xb.WORKSPACES.clear()
+    yield
+    xb.WORKSPACES.clear()
+
+
 @pytest.fixture()
 def alice():
     with TestClient(app) as c:

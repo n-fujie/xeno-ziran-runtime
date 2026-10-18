@@ -1,7 +1,7 @@
-# record,xb-g-1da4c7f8e5e2
+# record,xb-g-41c322db9990
 # experiment,G
 # model_version,xb-tro/1.0
-# digest,1da4c7f8e5e260492c113b46744b4d20586de1ac586ed88160fa84549b970fe5
+# digest,41c322db99904644233374640bfa50b94be36cc3158d461931bec34a547d4800
 # time_step_s,0.01
 # numerical_method,RK4 on the N-link planar Lagrangian equations with the muscle drive held over each step; batched seeds with common random numbers; first-order activation dynamics; digests over 6 significant digits
 # seeds,5000 5001 5002 5003 5004 5005 5006 5007 5008 5009 5010 5011
