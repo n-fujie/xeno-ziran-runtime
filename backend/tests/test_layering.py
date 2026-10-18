@@ -31,6 +31,7 @@ ALLOWED = {
     # TEOO (BODY / TOTAL OBSERVATION): body-observation records, provenance, an open body graph; self-contained, imports nothing
     # of the rest of xzr (tests/test_teoo_layering.py also runs it in a fresh interpreter); only the service imports it
     "teoo": {"teoo"},
+    "xbtro": {"xbtro"},  # the XenoBody / Total Observation research layer: pure numpy, imports nothing else from xzr
 }
 
 
