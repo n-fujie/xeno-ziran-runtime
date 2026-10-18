@@ -15,6 +15,7 @@ ALLOWED = {
     "compare": {"runtime", "lod", "shapes", "compare"},
     "scenario": {"scenario", "runtime", "lod"},
     "reasonlab": {"reasonlab", "practice", "runtime", "scenario"},  # never interpret, shapes or service
+    "xbtro": {"xbtro"},  # the XenoBody / Total Observation research layer: pure numpy, imports nothing else from xzr
 }
 
 
