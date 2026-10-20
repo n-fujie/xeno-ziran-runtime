@@ -1,0 +1,34 @@
+numpy 2.5.4 scipy 1.18.1
+
+== small-600: first differing depth 4
+ sub-graph 75 nodes; top eigenvalues [1.         0.99078194 0.97497636 0.95844738]; gap l2-l3 = 1.58e-02, l1-l2 = 9.22e-03
+   numpy eigh (current)               nodes disagreeing with the stored reference split: 0
+   scipy eigh driver=ev               nodes disagreeing with the stored reference split: 2
+   scipy eigh driver=evd              nodes disagreeing with the stored reference split: 0
+   scipy eigh driver=evr              nodes disagreeing with the stored reference split: 2
+   scipy eigh driver=evx              nodes disagreeing with the stored reference split: 2
+   numpy eigh, nodes permuted         nodes disagreeing with the stored reference split: 2
+   numpy eigh, float32 input          nodes disagreeing with the stored reference split: 2
+   variants disagree with 'numpy eigh (current)' by: [2, 0, 2, 2, 2, 2]
+
+== reason-lab: first differing depth 3
+ sub-graph 375 nodes; top eigenvalues [1.         1.         0.99286028 0.98944465]; gap l2-l3 = 7.14e-03, l1-l2 = 6.66e-16
+   numpy eigh (current)               nodes disagreeing with the stored reference split: 186
+   scipy eigh driver=ev               nodes disagreeing with the stored reference split: 177
+   scipy eigh driver=evd              nodes disagreeing with the stored reference split: 186
+   scipy eigh driver=evr              nodes disagreeing with the stored reference split: 177
+   scipy eigh driver=evx              nodes disagreeing with the stored reference split: 177
+   numpy eigh, nodes permuted         nodes disagreeing with the stored reference split: 175
+   numpy eigh, float32 input          nodes disagreeing with the stored reference split: 186
+   variants disagree with 'numpy eigh (current)' by: [165, 0, 151, 165, 124, 182]
+
+== demo-3k: first differing depth 5
+ sub-graph 188 nodes; top eigenvalues [1.         1.         0.98612616 0.98341435]; gap l2-l3 = 1.39e-02, l1-l2 = 4.44e-16
+   numpy eigh (current)               nodes disagreeing with the stored reference split: 80
+   scipy eigh driver=ev               nodes disagreeing with the stored reference split: 58
+   scipy eigh driver=evd              nodes disagreeing with the stored reference split: 80
+   scipy eigh driver=evr              nodes disagreeing with the stored reference split: 78
+   scipy eigh driver=evx              nodes disagreeing with the stored reference split: 58
+   numpy eigh, nodes permuted         nodes disagreeing with the stored reference split: 84
+   numpy eigh, float32 input          nodes disagreeing with the stored reference split: 82
+   variants disagree with 'numpy eigh (current)' by: [82, 0, 86, 82, 90, 88]

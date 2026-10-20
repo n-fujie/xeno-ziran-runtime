@@ -1,0 +1,6 @@
+small-600: 686 Fiedler solves = 2 ARPACK (>400 nodes, disconnected: 0) + 684 dense (<=400 nodes); dense solves on a DISCONNECTED sub-graph (eigenvalue 1 repeated): 130; min (l1-l2) over those: 0.0; sizes: [3, 4, 5, 9, 10, 19, 37, 38]
+    dense solves on CONNECTED sub-graphs: 554; smallest l1-l2 gap there: 9.22e-03
+reason-lab: 1022 Fiedler solves = 6 ARPACK (>400 nodes, disconnected: 0) + 1016 dense (<=400 nodes); dense solves on a DISCONNECTED sub-graph (eigenvalue 1 repeated): 294; min (l1-l2) over those: 0.0; sizes: [5, 6, 11, 12, 23, 24, 46, 47]
+    dense solves on CONNECTED sub-graphs: 722; smallest l1-l2 gap there: 4.32e-03
+demo-3k: 1022 Fiedler solves = 14 ARPACK (>400 nodes, disconnected: 0) + 1008 dense (<=400 nodes); dense solves on a DISCONNECTED sub-graph (eigenvalue 1 repeated): 184; min (l1-l2) over those: 0.0; sizes: [11, 12, 23, 24, 47, 94, 188]
+    dense solves on CONNECTED sub-graphs: 824; smallest l1-l2 gap there: 2.74e-03
