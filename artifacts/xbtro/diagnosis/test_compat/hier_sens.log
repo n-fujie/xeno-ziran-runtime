@@ -1,0 +1,12 @@
+demo-3k n 3000
+  reference first split vs now(1e-4): 0  vs exact(1e-12): 16
+  start-vector perturbation rel 1e-14: first-split changes vs unperturbed (5 draws): [0, 0, 0, 0, 0]
+  start-vector perturbation rel 1e-10: first-split changes vs unperturbed (5 draws): [0, 0, 0, 0, 0]
+  start-vector perturbation rel 1e-06: first-split changes vs unperturbed (5 draws): [0, 0, 0, 0, 0]
+  exact(1e-12) under perturbation 1e-10: [0, 0, 0]
+reason-lab n 1500
+  reference first split vs now(1e-4): 0  vs exact(1e-12): 2
+  start-vector perturbation rel 1e-14: first-split changes vs unperturbed (5 draws): [0, 0, 0, 0, 0]
+  start-vector perturbation rel 1e-10: first-split changes vs unperturbed (5 draws): [0, 0, 0, 0, 0]
+  start-vector perturbation rel 1e-06: first-split changes vs unperturbed (5 draws): [0, 0, 0, 0, 0]
+  exact(1e-12) under perturbation 1e-10: [0, 0, 0]

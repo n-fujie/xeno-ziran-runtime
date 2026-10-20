@@ -1,0 +1,4 @@
+numpy 2.5.4 scipy 1.18.1 compat False
+     demo-3k n=3000 ref=yes path!=ref: 501  split diff now-vs-tight 16, now-vs-dense 16, tight-vs-dense 0; top eigenvalues [1.         0.98563696 0.98474841]
+  reason-lab n=1500 ref=yes path!=ref: 494  split diff now-vs-tight 2, now-vs-dense 2, tight-vs-dense 0; top eigenvalues [1.         0.98517882 0.98458173]
+   small-600 n=600 ref=yes path!=ref: 155  split diff now-vs-tight 0, now-vs-dense 0, tight-vs-dense 0; top eigenvalues [1.         0.98750672 0.98318638]

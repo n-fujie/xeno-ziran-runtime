@@ -1,0 +1,3 @@
+small-600 nodes differing in the first d bits, d=1..9: [0, 0, 0, 2, 40, 58, 85, 131, 155] | first differing depth 4 | size of the sub-graph(s) split there: [75]
+reason-lab nodes differing in the first d bits, d=1..9: [0, 0, 108, 277, 316, 360, 381, 434, 494] | first differing depth 3 | size of the sub-graph(s) split there: [375]
+demo-3k nodes differing in the first d bits, d=1..9: [0, 0, 0, 0, 78, 153, 272, 383, 501] | first differing depth 5 | size of the sub-graph(s) split there: [188]
