@@ -240,6 +240,35 @@ No record supports a statement about a real human body, a real robot, or any har
 4. **Exploration results are not stored** (seeds 1000..1031), so the path from exploration to the final design cannot be audited from files.
 5. **Records were produced before commit `1c5c155`**; re-execution at the current commit is recorded in §3.
 
-## 3. Re-execution evidence (Phase 2)
+## 3. Re-execution evidence (2026-10-20, ARDS replay workflow)
 
-*Filled after the Phase 2 runs; see the end of this file.*
+**Method.** Each stored record was re-executed on the real backend (`xzr.xbtro.experiments.run_to_end` with the record's own `rerun` field, same seeds), in the worktree at commit
+`9e1aaf8` (clean), with Python 3.12.13 / numpy 2.5.3 — the environment recorded in the records — and compared value by value with the stored record (relative tolerance 1e-6, the
+project's rule; the environment record `/provenance` is not compared). The comparison was recomputed by independently written code and the whole run is stored
+(`pa-simulation-environment/artifacts/ards/phase2/`, generated `SUMMARY.md` and machine-readable `claim-evidence-map.json`). **This tests that the stored result can be obtained again
+from the same code and seeds. It does not test that the result is correct or general.**
+
+| stored record | seeds | values compared | reproduced | wall | peak memory |
+|---|---|---|---|---|---|
+| A_standard | 12 | 4,348 | exact (also exact under Python 3.14.7 / numpy 2.5.4, and in a second run) | 1.9 s | 66 MiB |
+| B_standard | 12 | 4,822 | within rounding: 4,818 identical, 4 differ by at most 2.0e-10 relative; the project digest is equal | 15.0 s | 170 MiB |
+| C_standard | 12 | 6,246 | exact | 16.8 s | 197 MiB |
+| D_standard | 12 | 3,927 | exact | 6.7 s | 99 MiB |
+| E_standard | 12 | 1,860 | exact | 4.8 s | 75 MiB |
+| F_standard | 12 | 1,877 | exact | 15.3 s | 110 MiB |
+| G_original_conditions | 8 | 1,910 | exact | 27.4 s | 84 MiB |
+| G_standard | 12 | 4,571 | exact | 91.6 s | 100 MiB |
+| G_independent_replication | 16 | 4,584 | exact | 93.7 s | 139 MiB |
+| M_standard | 12 | 1,215 | exact | 8.4 s | 75 MiB |
+| R_standard | 12 | 1,976 | exact | 78.4 s | 184 MiB |
+| S_standard | 12 | 829 | exact | 12.6 s | 109 MiB |
+| V_standard | 12 | 1,201 | exact | 66.0 s | 149 MiB |
+
+Consequences for the claims: for **XB-01, 02, 04–12** (all rows that rest on these records) the records are *reproducible on the same code and seeds*; the claim-evidence map lists
+`all-records-reproduced` for each. The qualifiers of each row stand unchanged (small seed counts, planar model, band sensitivity, variant sensitivity).
+`B_band_13mm` and `D_band_13mm` were **not replayed**: the 13 mm band is set outside the record's `rerun` field (the final-run script patches `metrics.TOLERANCE`), so a replay from the record would not
+reproduce that setting; those two records are not claimed as reproduced. XB-03, 13, 14, 15 rest on source and tests, not on experiment records.
+
+**Not part of XB-TRO, recorded here because the same machinery found it.** The Ziran runtime was re-executed the same way: its conformance snapshot of `small-600` reproduces every dynamics
+fingerprint but not the hierarchy digest (and 2 observation metrics, 3rd–4th digit); its reasoning-layer suite (`reason.json`) is **not reproduced** by default (1,326 of 3,971 values differ) and
+is nearly reproduced (52 of 3,909 differ, all in `scenarios` / `phases`) when the stored reference hierarchy is forced. This is the hierarchy sensitivity documented in `diagnosis/test_compat/`; it does not touch any XB-TRO record.
