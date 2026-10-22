@@ -280,16 +280,34 @@ def test_ops_metrics_are_protected_and_contain_no_identifiers(limits, caplog):
     assert "session_created" in logs and token not in logs and sid not in logs  # only an 8-char prefix is logged
 
 
+def _all_routes() -> list:
+    """App routes including those of included routers (newer FastAPI keeps them behind an ``_IncludedRouter`` wrapper)."""
+    out = []
+    for r in app_mod.app.routes:
+        out += list(r.original_router.routes) if hasattr(r, "original_router") else [r]
+    return out
+
+
 def test_no_route_runs_experiments_or_touches_the_filesystem():
     """The public API surface. A new mutating route must be reviewed against the security boundary."""
-    mutating = sorted((m, r.path) for r in app_mod.app.routes for m in getattr(r, "methods", ()) or ()
+    routes = _all_routes()
+    mutating = sorted((m, r.path) for r in routes for m in getattr(r, "methods", ()) or ()
                       if m in ("POST", "PUT", "PATCH", "DELETE"))
     assert mutating == sorted([
         ("POST", "/api/sessions"), ("DELETE", "/api/sessions/{sid}"), ("POST", "/api/sessions/{sid}/control"),
         ("POST", "/api/sessions/{sid}/rewind"), ("POST", "/api/sessions/{sid}/practice/command"),
         ("POST", "/api/sessions/{sid}/compare"), ("POST", "/api/jobs/{jid}/cancel"), ("POST", "/api/owner/reset"),
         # live laboratory runs: local runtime and same origin only (test_lab_live.py::test_live_routes_boundary)
-        ("POST", "/api/lab/live"), ("POST", "/api/lab/live/{rid}/{action}")])
+        ("POST", "/api/lab/live"), ("POST", "/api/lab/live/{rid}/{action}"),
+        # studies (experiment protocols, runs, reports): local runtime and same origin only, 403 under XZR_PUBLIC
+        # (test_studies_api.py::test_public_deployment_refuses_every_study_route)
+        ("POST", "/api/studies/validate"), ("POST", "/api/studies"), ("POST", "/api/studies/{sid}/run"),
+        ("POST", "/api/studies/{sid}/stop"), ("POST", "/api/studies/{sid}/amend"),
+        ("POST", "/api/studies/{sid}/runs/{arm}/{k}/replay"), ("POST", "/api/studies/{sid}/analyse"),
+        ("POST", "/api/studies/{sid}/report"), ("POST", "/api/studies/{sid}/package"),
+        ("POST", "/api/studies/{sid}/reproduce")])
+    studies_src = Path(app_mod.__file__).with_name("studies.py").read_text()
+    assert studies_src.count("local_only(request)") >= len([1 for r in routes if "/api/studies" in getattr(r, "path", "")])
     src = Path(app_mod.__file__).read_text()
     for forbidden in ("subprocess", "os.system", "run_escalation", "run_reduction", "experiments.run"):
         assert forbidden not in src

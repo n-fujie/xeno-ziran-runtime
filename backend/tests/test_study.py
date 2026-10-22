@@ -50,16 +50,19 @@ def test_protocol_digest_is_stable_and_ignores_amendments():
     assert P.digest(d2) != P.digest(d)
 
 
-@pytest.mark.parametrize("mutate,needle", [
-    (lambda d: d.update(mode="nope"), "mode"),
-    (lambda d: d["arms"][0].pop("description"), "description"),
-    (lambda d: d["arms"][1].update(name=d["arms"][0]["name"]), "unique"),
-    (lambda d: d["contrasts"][0].update(a="ghost"), "arms of this protocol"),
-    (lambda d: d["arms"][1]["controller"].update(authority=["not.a.path"]), "outside the sandbox"),
-    (lambda d: d["arms"][1].update(initial_changes=[{"path": "instruments.closure.level", "value": 99}]), "rejected"),
-    (lambda d: d["stop"].update(timeout_per_run_s=0), "timeout"),
-    (lambda d: d["metrics"].update(primary=[]), "primary"),
-])
+@pytest.mark.parametrize(
+    "mutate,needle",
+    [
+        (lambda d: d.update(mode="nope"), "mode"),
+        (lambda d: d["arms"][0].pop("description"), "description"),
+        (lambda d: d["arms"][1].update(name=d["arms"][0]["name"]), "unique"),
+        (lambda d: d["contrasts"][0].update(a="ghost"), "arms of this protocol"),
+        (lambda d: d["arms"][1]["controller"].update(authority=["not.a.path"]), "outside the sandbox"),
+        (lambda d: d["arms"][1].update(initial_changes=[{"path": "instruments.closure.level", "value": 99}]), "rejected"),
+        (lambda d: d["stop"].update(timeout_per_run_s=0), "timeout"),
+        (lambda d: d["metrics"].update(primary=[]), "primary"),
+    ],
+)
 def test_invalid_protocols_are_refused_with_a_reason(mutate, needle):
     d = quick()
     mutate(d)
@@ -131,6 +134,7 @@ def test_fixed_arm_equals_the_hpo_layers_own_run(tmp_path):
     base = X._warm({"n": 800, "regime": "intermittent"}, 7000, 70000, 40)
     from xzr.hpo.field import Field
     from xzr.hpo.metrics import measure
+
     ref = base.fork().track_rng()
     for _ in range(120):
         ref.step()
@@ -291,7 +295,9 @@ def test_criteria_use_effect_and_interval_not_p_alone():
     res = {"n": 10, "mean": 5.0, "scale": 100.0, "ci95": [1.0, 9.0]}
     ok = analysis._criterion({"direction": "greater", "min_relative_effect": 0.02, "ci_excludes_zero": True}, res)
     small = analysis._criterion({"direction": "greater", "min_relative_effect": 0.10, "ci_excludes_zero": True}, res)
-    wide = analysis._criterion({"direction": "greater", "min_relative_effect": 0.02, "ci_excludes_zero": True}, {**res, "ci95": [-1.0, 11.0]})
+    wide = analysis._criterion(
+        {"direction": "greater", "min_relative_effect": 0.02, "ci_excludes_zero": True}, {**res, "ci95": [-1.0, 11.0]}
+    )
     assert ok["result"] == "met" and small["result"] == "not met" and wide["result"] == "not met"
     assert analysis._criterion({"direction": "greater"}, None)["result"] == "not evaluable"
 
@@ -330,8 +336,11 @@ def test_authority_and_change_budget_reject_and_record(tmp_path):
     rs = [r for r in st.runs() if r["arm"] == "recursive"]
     ch = [c for r in rs for c in r["controller_changes"]]
     assert all(c["path"].startswith("allocation.") for c in ch)
-    assert any("outside this controller's revision authority" in x["error"] or "over the change budget" in x["error"]
-               for r in rs for x in r["controller"]["rejected"])
+    assert any(
+        "outside this controller's revision authority" in x["error"] or "over the change budget" in x["error"]
+        for r in rs
+        for x in r["controller"]["rejected"]
+    )
 
 
 def test_shape_detection_separates_record_detector_and_interpretation(tmp_path):
@@ -348,9 +357,24 @@ def test_report_package_verify_and_reproduce(finished, tmp_path):
     an = analysis.analyse(finished)
     idx = report.build(finished, an)
     rep = finished.path / "report"
-    assert {"methods.md", "results.md", "runs.csv", "descriptives.csv", "contrasts.csv", "accounting.csv", "ziran.csv", "figures.json"} <= set(idx["files"])
+    assert {
+        "methods.md",
+        "results.md",
+        "runs.csv",
+        "descriptives.csv",
+        "contrasts.csv",
+        "accounting.csv",
+        "ziran.csv",
+        "figures.json",
+    } <= set(idx["files"])
     methods = (rep / "methods.md").read_text()
-    for needle in (finished.id, finished.manifest()["protocol_digest"], "Seeds and sample", "Software and environment", "FUNCTIONAL CHECK"):
+    for needle in (
+        finished.id,
+        finished.manifest()["protocol_digest"],
+        "Seeds and sample",
+        "Software and environment",
+        "FUNCTIONAL CHECK",
+    ):
         assert needle in methods
     results = (rep / "results.md").read_text()
     assert "Interpretation boundary" in results and ("IDENTICAL" in results or "UNRESOLVED" in results)
@@ -358,6 +382,7 @@ def test_report_package_verify_and_reproduce(finished, tmp_path):
     svg = (rep / idx["figures"][0]["file"]).read_text()
     assert svg.startswith("<svg") and "</svg>" in svg and finished.id in svg
     import csv
+
     rows = list(csv.DictReader((rep / "runs.csv").open()))
     assert len(rows) == 8 and {"arm", "gen", "seed", "fired_samples"} <= set(rows[0])
 

@@ -835,6 +835,11 @@ async def ws_endpoint(ws: WebSocket, sid: str) -> None:
         METRICS.inc("ws_closed")
 
 
+# ---------------------------------------------------------------------------------------------- studies
+from . import studies as _studies  # noqa: E402  (mounted before the static catch-all below)
+
+app.include_router(_studies.router)
+
 # ---------------------------------------------------------------------------------------------- static frontend
 if STATIC_DIR.is_dir():
     app.mount("/assets", StaticFiles(directory=STATIC_DIR / "assets"), name="assets")

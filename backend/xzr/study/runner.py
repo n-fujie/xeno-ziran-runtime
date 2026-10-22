@@ -462,6 +462,21 @@ def reproduce(src: Study, root: Path, procs: int = 1, inline: bool = False) -> t
     return new, cmp
 
 
+def replay_run(study: Study, arm: str, k: int) -> dict:
+    """Re-execute one stored run from the protocol alone and compare it with the stored record (volatile fields excluded)."""
+    stored = json.loads(study._run_path(arm, k).read_text())
+    gen, seed = P.seed_list(study.protocol())[k]
+    fresh = envs.run_one(study.protocol(), arm, gen, seed)
+    a, b = _strip(stored), _strip(fresh)
+    for d in (a, b):
+        for key in ("index", "protocol_digest", "status", "error", "traceback"):
+            d.pop(key, None)
+    same = json.dumps(a, sort_keys=True) == json.dumps(b, sort_keys=True)
+    mx, my = stored.get("metrics") or {}, fresh.get("metrics") or {}
+    return {"arm": arm, "index": k, "agreement": same, "metrics_differing": sorted(m for m in set(mx) | set(my) if mx.get(m) != my.get(m)),
+            "condition": "same machine and software versions"}
+
+
 def copy_study(src: Study, dst: Path) -> Study:
     shutil.copytree(src.path, dst)
     return Study(dst)
