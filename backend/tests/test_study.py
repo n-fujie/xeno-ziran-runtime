@@ -389,8 +389,9 @@ def test_report_package_verify_and_reproduce(finished, tmp_path):
     z = report.package(finished)
     assert z.exists()
     assert report.verify(finished.path)["ok"]
-    (finished.path / "runs" / finished.run_files()[0].name).write_text("{}")  # tamper
-    assert not report.verify(finished.path)["ok"]
+    copy = runner.copy_study(finished, tmp_path / "tampered")  # tamper with a copy: the fixture is shared by later tests
+    (copy.path / "runs" / copy.run_files()[0].name).write_text("{}")
+    assert not report.verify(copy.path)["ok"] and report.verify(finished.path)["ok"]
 
 
 def test_reproduction_matches_run_for_run(tmp_path):

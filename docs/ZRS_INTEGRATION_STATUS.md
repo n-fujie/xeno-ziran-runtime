@@ -166,3 +166,45 @@ closing and reopening one system's view raises coverage shrink / expansion count
   Same root cause as `test_compat[desktop-scipy]` (tie ordering of the bisection on disconnected sub-graphs; `docs/DISCONNECTION.md`, open item S11).
 * No code change: a deterministic tie-break would change cluster membership, hence every address-based stored result, on every platform, and could not reproduce records made under
   another tie order. It is an owner decision (options: canonical tie-break + regenerate with a compatibility note; or keep the reference-hierarchy mechanism). Stored records untouched.
+
+---
+
+# Final completion record (2026-10-22)
+
+**Tests (current code, current logs).** Backend full run: 469 collected, **467 pass, 2 fail — the two known environment-caused failures** (`test_compat[desktop-scipy]`,
+`test_published_records_replay` / `m2-run-9100.json`), neither skipped nor altered; the run showed two further failures that were test-isolation defects of my own
+(a test that tampered with a module-wide fixture); fixed, and `tests/test_study.py` re-run in order: 50/50. Frontend: tsc, eslint, vitest 82/82. TypeScript simulator 73/73 + tsc.
+ARDS frozen Phase 3 manifest: 1,526 files, no problems; the ARDS repository's git status is unchanged by every bridge run (tested).
+Before → after: backend 365 → 467 passing; the same two failures throughout.
+
+**Both known failures now have a code-level diagnosis (`tests/test_hierarchy_diagnosis.py`), not a fix.** The first divergence from the exported reference hierarchy is a bisection
+of a sub-graph with two connected components (degenerate eigenspace: the second eigenvector is only defined up to the solver); every connected split before it agrees. The `m2` record's
+first steps agree with a fresh run in all per-chamber activity and shutter values; two chambers' memory differ with their sum preserved: a few configurations sit in the neighbouring chamber.
+Unresolved by design: a deterministic tie-break would change cluster membership, hence the addresses of every stored result, and could not reproduce records made under another
+tie order. Impact on the completion judgement: cross-platform bit-reproducibility of address-based results is not guaranteed; same-machine reproduction is (36/36, 8/8 verified).
+
+**Small samples.** `analysis.paired_safe`: fewer than two complete pairs → mean (n=1) only, sd / effect size / interval / p / Holm / BH are `null`, status `INSUFFICIENT DATA`; n=0 → `NOT MEASURED`;
+descriptives for n=1 have no sd/var/interval; criteria become `not evaluable`; nothing is replaced by 0, 1 or ∞. Regression tests for n = 0, 1, 2, 3 (analysis, strict JSON, report, figures),
+and for missing-versus-zero effect.
+
+**Scenarios (software verification, not confirmatory science).**
+A standard experiment (9 arms × seeds → stats → outputs → package): UI-driven earlier, API test `test_end_to_end_paper_experiment…`. B observation / boundary / variable / scale / window changes with reachability:
+revision-study arms. C meta-revision reflected in later decisions: imposed-veil integration test (penetration 0.7 → 0.85 → 1.0 reaches the controller's next changes) and the scarcity study (alloc_step 1.5 → 2.0 → 2.5 in 6/6 severe runs).
+D ARDS: env1, env2, env3 bridge studies run; five arms identical to ARDS-direct on env1 and env3. E reproducibility: stored-run replay (ARDS and HPO arms) and full re-execution of the shared study, 8/8 identical;
+36/36 for the revision study. F failure and negative results (`scarcity-study`, 42 runs): research stop (all operations ceased for an epoch) in 50% of fixed-moderate runs, meta-revisions 3 per run and rule exhaustion
+in 6/6 severe and no-resource runs, complete blindness (0 fired samples) without resources, plus opened-but-unused reachability. G multi-system: ten measured properties (above).
+
+**Output checks.** Tests verify that the generated Methods / Results contain none of a list of unsupported-claim words, carry the functional banner and the interpretation boundary, and that the numbers in
+runs.csv / descriptives.csv / contrasts.csv / results.md equal the stored run records.
+
+**Completion levels.** Level 1 (experimental infrastructure): reached for the study workflow (HPO world, laboratory populations, ARDS env1/env2/env3, shared environment), with the limits below.
+Level 2 (Ziran operational research): the sequence conditions → observation / intervention → revision → change of later possibilities → history re-entry → re-revision runs and is recorded; revisions reach later decisions
+(tests above); whether revision *improves* later research is **not shown** (functional studies: unresolved or negative contrasts, e.g. meta-revision lowered fired samples by 26 in the first scarcity study, UNRESOLVED).
+Level 3 (strong xenoscience): **not claimed**; human-energy independence, human-readability independence, self-reproduction and self-generation of variables / boundaries are not demonstrated, and variable generation
+exists only as `activity_trend` (novel, 0.85, but no downstream effect resolved at 8 seeds).
+
+**Not done / limits.** No third-party or cross-machine reproduction; no PNG without an SVG converter, no PDF; variable generation / boundary change / intervention are *not available* operations in the shared environment (named, not assumed);
+env1 was run through the bridge on replicates 3980–3981 only; ARDS rule family and HPO rule table are structurally close, so the shared-environment comparison is a policy-level comparison; no exploratory/confirmatory ARDS study can be started
+from here by design; the interactive Shape Space view is not linked to study runs.
+
+**Git.** Branch `feat/zrs-integration`; the branch was pushed once (user-instructed, up to commit 57bc3bf); every later commit is local only; nothing deployed. Untracked: `frontend/node_modules` (symlink), study outputs are git-ignored.
