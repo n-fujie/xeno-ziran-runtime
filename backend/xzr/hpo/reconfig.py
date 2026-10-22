@@ -26,11 +26,15 @@ from typing import Any
 import numpy as np
 
 from .field import Field
+from .metarevision import MetaReviser, RuleTable
 from .observe import CHANNELS, DERIVED, InstrumentSpec
 from .operations import NEEDS
+from .reachability import delta, reachability
 from .registry import KINDS
 
 EPOCH = 60
+_BLIND_REASONS = ("instrument_mismatch", "scale_mismatch", "time_window_mismatch", "boundary_invisible", "unmeasured",
+                  "unmeasurable")
 
 
 class SandboxError(ValueError):
@@ -148,9 +152,13 @@ class Controller:
     """Rule-based, deterministic reconfiguration from one epoch's records (``mode='recursive'``), or the same number
     of uniformly random valid changes (``mode='random'``, the control: any change vs result-driven change)."""
 
-    def __init__(self, mode: str = "recursive", seed: int = 0, budget: list[int] | None = None):
+    def __init__(self, mode: str = "recursive", seed: int = 0, budget: list[int] | None = None,
+                 trace_reachability: bool = False, meta: MetaReviser | None = None):
         assert mode in ("recursive", "random", "static")
         self.mode = mode
+        self.trace_reachability = trace_reachability  # opt-in: record what each change opened or closed
+        self.meta = meta  # opt-in: revise this controller's own rule parameters (metarevision.py)
+        self.rules = meta.rules if meta is not None else RuleTable()
         self.rng = np.random.default_rng([seed, 0x5A4952])
         self.trace: list[dict] = []
         self.proposals: list[dict] = []
@@ -167,12 +175,20 @@ class Controller:
             self.counts.append(0)
             return []
         evs = f.history.events[self._mark[0]:]
+        if self.meta is not None and self.mode == "recursive":
+            self.meta.judge(self._blindness(f, evs), epoch)
         changes = self._decide(f, evs) if self.mode == "recursive" else self._random(f, epoch)
         applied = []
         for ch, causes in changes:
             try:
+                before = reachability(f) if self.trace_reachability else None
                 eid = apply(f, ch, causes)
-                applied.append({**ch, "event": eid, "t": f.world.t, "epoch": epoch})
+                rec = {**ch, "event": eid, "t": f.world.t, "epoch": epoch}
+                if before is not None:
+                    rec["reachability"] = delta(before, reachability(f))
+                applied.append(rec)
+                if self.meta is not None and ch.get("why") in _BLIND_REASONS and "." in ch["path"]:
+                    self.meta.register(ch["path"].split(".")[1], ch["why"], eid, epoch, causes)
             except SandboxError as e:
                 self.rejected.append({**ch, "error": str(e), "t": f.world.t})
         self.trace += applied
@@ -181,6 +197,20 @@ class Controller:
         return applied
 
     # ------------------------------------------------------------------ result-driven policy
+    def _blindness(self, f: Field, evs: list[dict]) -> dict[str, dict[str, list[int]]]:
+        """kind → reason → ids of the unobservable events (the reasons operations were blind in these events)."""
+        live = {o.oid: o for o in f.live()}
+        blind: dict[str, dict[str, list[int]]] = {}
+        for e in evs:
+            if e["type"] == "unobservable" and e["source"] in live:
+                for kind, reason in e["detail"]["reasons"].items():
+                    blind.setdefault(kind, {}).setdefault(reason, []).append(e["id"])
+        for o in live.values():
+            for kind, (outcome, reason, _) in o.mem.get("_last_ign", {}).items():
+                if outcome == "UNOBSERVABLE":
+                    blind.setdefault(kind, {}).setdefault(reason, [])
+        return blind
+
     def _decide(self, f: Field, evs: list[dict]) -> list[tuple[dict, list[int]]]:
         out: list[tuple[dict, list[int]]] = []
         seen_paths: set[str] = set()
@@ -192,17 +222,11 @@ class Controller:
 
         live = {o.oid: o for o in f.live()}
         # 1. observation channels / time windows / penetration, from why operations were blind
-        blind: dict[str, dict[str, list[int]]] = {}
-        for e in evs:
-            if e["type"] == "unobservable" and e["source"] in live:
-                for kind, reason in e["detail"]["reasons"].items():
-                    blind.setdefault(kind, {}).setdefault(reason, []).append(e["id"])
-        for o in live.values():
-            for kind, (outcome, reason, _) in o.mem.get("_last_ign", {}).items():
-                if outcome == "UNOBSERVABLE":
-                    blind.setdefault(kind, {}).setdefault(reason, [])
+        blind = self._blindness(f, evs)
         for kind, reasons in blind.items():
             reason = max(reasons, key=lambda r: len(reasons[r]))
+            if reason in self.rules.exhausted:
+                continue
             ids = reasons[reason]
             need = NEEDS[kind]
             if reason == "instrument_mismatch":
@@ -217,10 +241,12 @@ class Controller:
                      "why": reason}, ids)
                 add({"path": f"instruments.{kind}.period", "value": 2, "why": reason}, ids)
             elif reason == "boundary_invisible":
-                add({"path": f"instruments.{kind}.penetration", "value": 0.7, "why": reason}, ids)
+                add({"path": f"instruments.{kind}.penetration", "value": self.rules.params["penetration"],
+                     "why": reason}, ids)
             elif reason == "unmeasured":
                 cur = float(f.s["allocation"].get(kind, 1.0))
-                add({"path": f"allocation.{kind}", "value": min(4.0, cur * 1.5), "why": reason}, ids)
+                add({"path": f"allocation.{kind}", "value": min(4.0, cur * self.rules.params["alloc_step"]),
+                     "why": reason}, ids)
             elif reason == "unmeasurable":
                 for ch in need:
                     if ch not in f.instruments.catalog:
@@ -273,8 +299,8 @@ class Controller:
         if rein and f.s["history"]["reinsert"]:
             caused = {c for e in evs for c in e["causes"]}
             if not caused & set(rein):
-                add({"path": "history.lag", "value": min(400, int(f.s["history"]["lag"]) + 20),
-                     "why": "reinsertions without downstream event"}, rein)
+                lag = int(f.s["history"]["lag"] + self.rules.params["lag_step"])
+                add({"path": "history.lag", "value": min(400, lag), "why": "reinsertions without downstream event"}, rein)
         # 7. stopping: every operation ceased throughout the epoch
         ser = f.stats["series"]
         if ser["ops"] and all(c == o for c, o in zip(ser["ceased"][-EPOCH:], ser["ops"][-EPOCH:], strict=False)):
