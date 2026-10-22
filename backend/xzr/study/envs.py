@@ -214,8 +214,9 @@ def run_hpo_world(doc: dict, arm: dict, gen: int, seed: int) -> dict:
             for ch in by_epoch.get(ep, []):
                 protocol_change(ch, ep)
             if ep < epochs - 1:
-                for r in ctl.end_epoch(f, ep):
-                    changes.append({**r, "source": "controller"})
+                ctl.end_epoch(f, ep)
+        ctl.finalize(f, ran - 1)
+        changes += [{**r, "source": "controller"} for r in ctl.trace]  # settled: levels and realised of every change
         rec["metrics"] = measure(f, ref)
         meta_tr = ctl.meta.trace if ctl.meta else []
         rec["metrics"].update(  # what the controller did to its own configuration and rules (Ziran records as numbers)

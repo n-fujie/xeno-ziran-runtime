@@ -384,6 +384,28 @@ def ziran_records(doc: dict, runs: list[dict], arms: list[str]) -> dict:
             "channels_gained": gained,
             "channels_lost": lost,
         }
+        lv_changes = [c for c in chs if c.get("levels")]
+        if lv_changes:
+            eff = {"static": {}, "dynamic": {}}
+            for c in lv_changes:
+                eff["static"][c["levels"]["static"]["effect"]] = eff["static"].get(c["levels"]["static"]["effect"], 0) + 1
+                if "dynamic" in c["levels"]:
+                    eff["dynamic"][c["levels"]["dynamic"]["effect"]] = eff["dynamic"].get(c["levels"]["dynamic"]["effect"], 0) + 1
+            opened = [(c, o) for c in lv_changes for o in c["levels"]["static"]["available"]["gained"]]
+            settled = [(c, o) for c, o in opened if c.get("realised")]
+            e["levels"] = {
+                "changes": len(lv_changes),
+                "effect_counts": eff,
+                "available_gained": len(opened),
+                "of_which_succeeded_next_epoch": sum(1 for c, o in settled if c["realised"]["success"].get(o, 0) > 0),
+                "of_which_used": sum(1 for c, o in settled if c["realised"]["used"].get(o, 0) > 0),
+                "settled": len(settled),
+                "observable_cells_gained": sum(len(c["levels"]["static"]["observable_cells"]["gained"]) for c in lv_changes),
+                "observable_cells_lost": sum(len(c["levels"]["static"]["observable_cells"]["lost"]) for c in lv_changes),
+                "reachable_configurations_delta": sum(c["levels"]["static"]["reachable_configurations"]["delta"] for c in lv_changes),
+                "note": "static = immediately after the change; dynamic = after the next epoch against the state before it (includes the world's own "
+                "change, so the controlled comparison is across arms). Gained availability, success and use are counted separately.",
+            }
         meta = [
             r["controller"]["meta_trace"]
             for r in rs

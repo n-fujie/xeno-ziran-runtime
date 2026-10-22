@@ -29,7 +29,7 @@ from .field import Field
 from .metarevision import MetaReviser, RuleTable
 from .observe import CHANNELS, DERIVED, InstrumentSpec
 from .operations import NEEDS
-from .reachability import delta, reachability
+from .reachability import compare_levels, delta, levels, reachability, realised
 from .registry import KINDS
 
 EPOCH = 60
@@ -171,19 +171,39 @@ class Controller:
         self.budget = list(budget or [])  # random mode: number of changes per epoch
         self._mark = (0, None)
         self.counts: list[int] = []
+        self._pending: list[dict] = []  # applied changes awaiting their next epoch (levels, realised)
 
     def start(self, f: Field) -> None:
         self._mark = (len(f.history.events), copy.deepcopy(f.stats["evaluations"]))
+
+    def _settle(self, f: Field, evs: list[dict], epoch: int) -> None:
+        """The epoch after earlier changes has run: record what the operations did and the levels now (dynamic part)."""
+        if not self._pending:
+            return
+        nxt = levels(f)
+        real = realised(f, evs, epoch, EPOCH)
+        for rec in self._pending:
+            lv = rec["levels"]
+            lv["next"] = nxt
+            lv["dynamic"] = compare_levels(lv["before"], nxt)
+            rec["realised"] = real
+        self._pending = []
+
+    def finalize(self, f: Field, epoch: int) -> None:
+        """Call after the last epoch: settles the changes made at the end of the epoch before it."""
+        self._settle(f, f.history.events[self._mark[0]:], epoch)
 
     def end_epoch(self, f: Field, epoch: int) -> list[dict]:
         if self.mode == "static":
             self.counts.append(0)
             return []
         evs = f.history.events[self._mark[0]:]
+        self._settle(f, evs, epoch)
         if self.meta is not None and self.mode == "recursive":
             self.meta.judge(self._blindness(f, evs), epoch)
         changes = self._decide(f, evs) if self.mode == "recursive" else self._random(f, epoch)
         applied = []
+        lv_before = levels(f) if self.trace_reachability and changes else None
         for ch, causes in changes:
             try:
                 if self.authority is not None and _pattern(ch["path"]) not in self.authority:
@@ -195,6 +215,10 @@ class Controller:
                 rec = {**ch, "event": eid, "t": f.world.t, "epoch": epoch}
                 if before is not None:
                     rec["reachability"] = delta(before, reachability(f))
+                    lv_after = levels(f)
+                    rec["levels"] = {"before": lv_before, "after": lv_after, "static": compare_levels(lv_before, lv_after)}
+                    lv_before = lv_after  # the next change of this epoch starts from the state this one left
+                    self._pending.append(rec)
                 applied.append(rec)
                 if self.meta is not None and ch.get("why") in _BLIND_REASONS and "." in ch["path"]:
                     self.meta.register(ch["path"].split(".")[1], ch["why"], eid, epoch, causes)

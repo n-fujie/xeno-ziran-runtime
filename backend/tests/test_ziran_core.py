@@ -80,7 +80,7 @@ def _run_controller(warm, trace: bool):
 def test_tracing_reachability_does_not_change_the_run(warm):
     f0, c0 = _run_controller(warm, False)
     f1, c1 = _run_controller(warm, True)
-    strip = [{k: v for k, v in r.items() if k != "reachability"} for r in c1.trace]
+    strip = [{k: v for k, v in r.items() if k not in ("reachability", "levels", "realised")} for r in c1.trace]
     assert json.dumps(strip, sort_keys=True, default=str) == json.dumps(c0.trace, sort_keys=True, default=str)
     assert f0.s == f1.s and len(f0.history.events) == len(f1.history.events)
     assert all("reachability" not in r for r in c0.trace)
