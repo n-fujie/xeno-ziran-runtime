@@ -225,6 +225,8 @@ def run_hpo_world(doc: dict, arm: dict, gen: int, seed: int) -> dict:
                 "controller_rejected": float(len(ctl.rejected)),
                 "meta_revisions": float(sum(1 for m in meta_tr if m["revision"] == "parameter")),
                 "meta_exhausted": float(sum(1 for m in meta_tr if m["revision"] == "exhausted")),
+                "measure_cost": float(f.stats.get("measure_cost", 0.0)),
+                "measure_budget": float(f.stats.get("measure_budget", 0.0)),
                 "stopped_early": float(f.stopped_at is not None),
                 "stop_step": float(f.stopped_at - f.t0) if f.stopped_at is not None else None,
             }

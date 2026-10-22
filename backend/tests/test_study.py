@@ -653,3 +653,33 @@ def test_numbers_in_the_outputs_equal_the_stored_run_logs(finished):
     b = [float(r["fired_samples"]) for r in runs if r["arm"] == c1["b"]]
     assert float(c1["mean_diff"]) == pytest.approx(sum(x - y for x, y in zip(a, b, strict=True)) / len(a))
     assert f"{float(c1['mean_diff']):.3g}" in (rep / "results.md").read_text()  # the formatted table carries the same number
+
+
+def test_meta_revision_followup_tracks_evidence_reflection_cost_and_both_directions(tmp_path):
+    d = templates.template("scarcity-study", n_seeds=3, horizon=600)
+    d["arms"] = [a for a in d["arms"] if a["name"] in ("recursive-moderate", "recursive-meta-moderate")]
+    d["contrasts"] = [
+        {"id": "C1", "a": "recursive-meta-moderate", "b": "recursive-moderate", "varies": ["meta_revision"], "role": "primary"}
+    ]
+    d["hypotheses"] = []
+    st = runner.Study.create(d, tmp_path)
+    st.execute(procs=2)
+    a = analysis.analyse(st)
+    (m,) = a["meta_followup"]
+    assert m["pairs"] == 3 and m["improved"] + m["worsened"] + m["unchanged"] == 3 and "no direction is assumed" in m["note"]
+    revised = [r for r in m["rows"] if r["revisions"]]
+    assert revised and all(r["evidence_recorded"] for r in m["rows"])
+    assert any(
+        r["changes_using_revised_rules"] > 0 for r in revised
+    )  # later decisions were made under the revised rule parameters
+    assert all(r["changes_using_revised_rules"] == 0 for r in m["rows"] if not r["revisions"])  # no revision, nothing to reflect
+    run = next(r for r in st.runs() if r["arm"] == "recursive-meta-moderate" and r["controller"]["meta_trace"])
+    rev = run["controller"]["meta_trace"][0]
+    assert (
+        rev["before"]["params"] != rev["after"]["params"]
+        and rev["evidence"]
+        and {"kind", "reason", "epoch"} <= set(rev["evidence"][0])
+    )
+    assert all(
+        "measure_cost" in r["metrics"] and r["metrics"]["measure_cost"] <= r["metrics"]["measure_budget"] for r in st.runs()
+    )

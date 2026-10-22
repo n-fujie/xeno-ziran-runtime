@@ -336,6 +336,8 @@ class Field:
         budget = min(self.pool, 2 * fair * op.budget) if self.ix["share_resources"] else fair * op.budget
         rng = self.rng if op.instrument.noise else None
         obs, cost = self.instruments.observe(op.instrument, op.needs(), op.region, budget, rng, viewer=op.oid)
+        self.stats["measure_cost"] = self.stats.get("measure_cost", 0.0) + cost  # resources spent on measurement
+        self.stats["measure_budget"] = self.stats.get("measure_budget", 0.0) + budget
         if self.ix["share_resources"]:
             self.pool -= cost
         op.mem["_budget_left"] = budget - cost

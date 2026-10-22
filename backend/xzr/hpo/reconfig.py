@@ -213,6 +213,8 @@ class Controller:
                 before = reachability(f) if self.trace_reachability else None
                 eid = apply(f, ch, causes)
                 rec = {**ch, "event": eid, "t": f.world.t, "epoch": epoch}
+                if self.meta is not None:  # the rule parameters in force when this change was decided (did a revision reach it?)
+                    rec["rules_in_force"] = dict(self.rules.params)
                 if before is not None:
                     rec["reachability"] = delta(before, reachability(f))
                     lv_after = levels(f)

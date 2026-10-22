@@ -148,8 +148,18 @@ def paired_safe(x: np.ndarray, y: np.ndarray, rng: np.random.Generator) -> dict:
         r = paired(x, y, None, rng)
         r["insufficient"] = None
         return r
-    r = {"n": n, "undefined_pairs": int(x.size - n), "insufficient": f"{n} complete pair(s): spread, interval, effect size and test are not estimable",
-         "sd": None, "dz": None, "ci95": [None, None], "p": None, "identical": False, "noise_floor": 0.0, "relative": None}
+    r = {
+        "n": n,
+        "undefined_pairs": int(x.size - n),
+        "insufficient": f"{n} complete pair(s): spread, interval, effect size and test are not estimable",
+        "sd": None,
+        "dz": None,
+        "ci95": [None, None],
+        "p": None,
+        "identical": False,
+        "noise_floor": 0.0,
+        "relative": None,
+    }
     if n == 1:
         xv, yv = float(x[ok][0]), float(y[ok][0])
         r.update(mean_x=xv, mean_y=yv, mean=xv - yv, scale=max(abs(xv), abs(yv), 1e-12))
@@ -186,7 +196,11 @@ def evidence_class(doc: dict, registered: dict, amendments: list[dict], contrast
 
 def _criterion(c: dict, res: dict | None) -> dict:
     if res is None or res.get("n", 0) == 0 or res.get("insufficient") or res.get("ci95", [None, None])[0] is None:
-        return {**c, "result": "not evaluable", "why": "metric undefined, too few complete pairs for an interval, or contrast missing"}
+        return {
+            **c,
+            "result": "not evaluable",
+            "why": "metric undefined, too few complete pairs for an interval, or contrast missing",
+        }
     mean, scale = res["mean"], max(res["scale"], 1e-12)
     rel = mean / scale
     lo, hi = res["ci95"]
@@ -329,6 +343,7 @@ def analyse(study: Study, write: bool = True) -> dict:
         "fairness": P.fairness(doc),
         "amendments": amends,
         "ziran": ziran_records(doc, runs, arms),
+        "meta_followup": meta_followup(doc, runs, by, len(seeds)),
         "censoring": censoring(doc, runs, arms),
         "negative_results_note": "Every declared contrast and metric is listed above, including null and reversed effects.",
         "seeds": seeds,
@@ -337,6 +352,73 @@ def analyse(study: Study, write: bool = True) -> dict:
     if write:
         (study.path / "analysis.json").write_text(json.dumps(out, indent=1, ensure_ascii=False, allow_nan=False))
         study.log("analysed", verdict=verdict)
+    return out
+
+
+def meta_followup(doc: dict, runs: list[dict], by: dict, n: int) -> list[dict]:
+    """For every declared contrast that differs only in meta-revision: what the revisions were, whether later changes used the revised rules, and what
+    happened to the outcome and the resources, seed by seed against the control without revision. Improvement and worsening are both reported;
+    neither is assumed. (Runs of a protocol that imposes scarcity are artificial conditions: the protocol's own provenance field says so.)"""
+    out = []
+    for c in doc.get("contrasts", []):
+        if c.get("varies") != ["meta_revision"]:
+            continue
+        rows = []
+        for k in range(n):
+            ra, rb = by.get((c["a"], k)), by.get((c["b"], k))
+            if not (
+                ra and rb and ra["status"] == "ok" and rb["status"] == "ok" and ra.get("controller") and rb.get("controller")
+            ):
+                continue
+            mt = ra["controller"].get("meta_trace") or []
+            first = min((m["epoch"] for m in mt if m["revision"] == "parameter"), default=None)
+            after = [
+                ch
+                for ch in (ra.get("controller_changes") or [])
+                if first is not None and ch.get("epoch", -1) > first and "rules_in_force" in ch
+            ]
+            default = (ra["controller"].get("rules") or {}).get("params") and {
+                k2: v for k2, v in (ra["controller"]["rules"]["params"]).items()
+            }
+            reflected = [
+                ch
+                for ch in after
+                if default is not None and ch["rules_in_force"] != next(iter(ra["controller_changes"]))["rules_in_force"]
+            ]
+            fa, fb = ra["metrics"].get("fired_samples"), rb["metrics"].get("fired_samples")
+            d = None if fa is None or fb is None else fa - fb
+            tol = 0.02 * max(abs(fb or 0), 1e-12)
+            rows.append(
+                {
+                    "seed": k,
+                    "revisions": sum(1 for m in mt if m["revision"] == "parameter"),
+                    "exhausted": sum(1 for m in mt if m["revision"] == "exhausted"),
+                    "changes_after_first_revision": len(after),
+                    "changes_using_revised_rules": len(reflected),
+                    "evidence_recorded": all(m.get("evidence") is not None and m.get("before") is not None for m in mt),
+                    "delta_fired": d,
+                    "verdict": None if d is None else "improved" if d > tol else "worsened" if d < -tol else "unchanged",
+                    "delta_measure_cost": (ra["metrics"].get("measure_cost") or 0) - (rb["metrics"].get("measure_cost") or 0),
+                    "delta_controller_changes": (ra["metrics"].get("controller_changes") or 0)
+                    - (rb["metrics"].get("controller_changes") or 0),
+                }
+            )
+        v = [r["verdict"] for r in rows if r["verdict"]]
+        out.append(
+            {
+                "contrast": c["id"],
+                "meta_arm": c["a"],
+                "control_arm": c["b"],
+                "pairs": len(rows),
+                "runs_with_a_revision": sum(1 for r in rows if r["revisions"]),
+                "improved": v.count("improved"),
+                "worsened": v.count("worsened"),
+                "unchanged": v.count("unchanged"),
+                "rows": rows,
+                "note": "revision success, failure and exhaustion are separate counts; 'improved' / 'worsened' compare fired samples with the control on the same seed "
+                "(tolerance 2%); no direction is assumed, and a revision is not evidence of improvement.",
+            }
+        )
     return out
 
 
@@ -402,7 +484,9 @@ def ziran_records(doc: dict, runs: list[dict], arms: list[str]) -> dict:
                 "settled": len(settled),
                 "observable_cells_gained": sum(len(c["levels"]["static"]["observable_cells"]["gained"]) for c in lv_changes),
                 "observable_cells_lost": sum(len(c["levels"]["static"]["observable_cells"]["lost"]) for c in lv_changes),
-                "reachable_configurations_delta": sum(c["levels"]["static"]["reachable_configurations"]["delta"] for c in lv_changes),
+                "reachable_configurations_delta": sum(
+                    c["levels"]["static"]["reachable_configurations"]["delta"] for c in lv_changes
+                ),
                 "note": "static = immediately after the change; dynamic = after the next epoch against the state before it (includes the world's own "
                 "change, so the controlled comparison is across arms). Gained availability, success and use are counted separately.",
             }

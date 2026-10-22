@@ -92,9 +92,12 @@ class MetaReviser:
         """``blind``: kind → reason → ids of unobservable events in the epoch just ended. Returns the revisions made."""
         made: list[dict] = []
         outcomes: dict[str, list[bool]] = {}
+        failed_pending: list[dict] = []
         for p in self._pending:
             persisted = p["reason"] in blind.get(p["kind"], {})
             outcomes.setdefault(p["reason"], []).append(persisted)
+            if persisted:
+                failed_pending.append(p)
         self._pending = []
         for reason, results in outcomes.items():
             if reason in self.rules.exhausted:
@@ -122,8 +125,11 @@ class MetaReviser:
                 rec = {"epoch": epoch, "revision": "exhausted", "reason": reason, "param": param,
                        "note": "the rule's change did not remove the blindness it targeted and its parameter "
                                "cannot be revised further; the rule is no longer applied"}
+            rec["before"] = before
             rec["after"] = self.rules.snapshot()
             rec["evidence_epochs"] = self.patience
+            # evidence: the changes whose targeted blindness persisted
+            rec["evidence"] = [{k: p[k] for k in ("kind", "reason", "event", "epoch")} for p in failed_pending if p["reason"] == reason]
             self.trace.append(rec)
             made.append(rec)
         return made
