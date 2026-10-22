@@ -473,8 +473,13 @@ def replay_run(study: Study, arm: str, k: int) -> dict:
             d.pop(key, None)
     same = json.dumps(a, sort_keys=True) == json.dumps(b, sort_keys=True)
     mx, my = stored.get("metrics") or {}, fresh.get("metrics") or {}
-    return {"arm": arm, "index": k, "agreement": same, "metrics_differing": sorted(m for m in set(mx) | set(my) if mx.get(m) != my.get(m)),
-            "condition": "same machine and software versions"}
+    return {
+        "arm": arm,
+        "index": k,
+        "agreement": same,
+        "metrics_differing": sorted(m for m in set(mx) | set(my) if mx.get(m) != my.get(m)),
+        "condition": "same machine and software versions",
+    }
 
 
 def copy_study(src: Study, dst: Path) -> Study:
