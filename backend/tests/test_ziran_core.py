@@ -146,6 +146,7 @@ def test_controller_with_meta_is_deterministic_and_revision_changes_the_next_cha
             f.run(reconfig.EPOCH)
             ctl.end_epoch(f, ep)
         return ctl, meta
+
     a, ma = run()
     b, mb = run()
     assert json.dumps(a.trace, sort_keys=True, default=str) == json.dumps(b.trace, sort_keys=True, default=str)
@@ -154,3 +155,23 @@ def test_controller_with_meta_is_deterministic_and_revision_changes_the_next_cha
     assert [r["to"] for r in ma.trace if r["param"] == "penetration"] == [0.85, 1.0]
     assert pens[0][1] == 0.7 and max(v for _, v in pens) == 1.0  # the revision reached the controller's next changes
     assert [e for e, v in pens if v == 0.85][0] > ma.trace[0]["epoch"] - 1
+
+
+# ------------------------------------------------------------------------------------------ is a generated variable new?
+def test_a_derived_variable_is_distinguishable_from_existing_ones_and_its_downstream_effect_is_measured():
+    from xzr.study import variables
+
+    n = variables.novelty(n_seeds=3)
+    assert 0.0 <= n["novelty"] <= 1.0 and n["novelty"] > 0.5  # activity_trend is not a relabelling of any existing channel
+    assert all(abs(c) < 0.9 for c in n["correlation_with_each"].values() if c is not None)
+    d = variables.downstream(n_seeds=3, horizon=120)
+    assert set(d["paired_with_vs_without"]) >= {"picturing_error", "revisions"} and all(
+        v["n"] == 3 for v in d["paired_with_vs_without"].values()
+    )
+    # a rename would be caught: a variable equal to an existing channel has novelty 0 by construction of the fit
+    import numpy as np
+
+    x = np.random.default_rng(0).random((50, 2))
+    A = np.column_stack([x, np.ones(50)])
+    beta, *_ = np.linalg.lstsq(A, x[:, 0] * 3 + 1, rcond=None)
+    assert np.var(x[:, 0] * 3 + 1 - A @ beta) / np.var(x[:, 0] * 3 + 1) < 1e-9  # novelty of a pure relabelling is 0

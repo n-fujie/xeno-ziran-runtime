@@ -109,3 +109,60 @@ Phase 4 exploration; it is reported as a functional check only.
   exist; whether such revision *improves* later research is not shown (the functional studies are not evidence).
 * **Level 3 (strong xenoscience): not claimed.** Human-energy independence, human-readability independence, self-reproduction and self-generation
   of variables / boundaries are not demonstrated; nothing here bears on them.
+
+---
+
+# Second directive (ARDS env1, shared ARDS–HPO environment, Ziran validation, multi-system) — status
+
+Design record of the new environment: `docs/SHARED_ENVIRONMENT.md`. Everything below is functional-check level (reserved seed ranges / ARDS
+software-test replicates 3980–3989): **no scientific claim, no confirmatory or Phase 4 study was run.**
+
+## Stage 2 — ARDS env1 (XB-TRO) through the bridge
+
+* Specification read from the ARDS code (`envSpec.ts`, `loop/types.ts`, `heldOut2.ts`, `arms2.ts`, `driver.ts`, `studyGuard.ts`): env1 = XB-TRO planar body on the
+  Ziran-runtime variant (worktree `xeno-ziran-runtime-xb-tro`, interpreter `xeno-ziran-runtime/.venv`), held-out cases human/machine × four alterations, 72 body runs,
+  set-up budget from the catalog. The bridge calls ARDS's own `runReplicate`; no method is re-implemented.
+* **Equivalence check** (`python -m xzr.study ards-equivalence`): the bridge path against ARDS's own building blocks (`runArm` + held-out evaluation, as
+  `scripts/ardsV2RealSmoke.ts` uses them), same environment / replicate 3980 / arm / test parameters: **EXISTING-blind, V2-PA, V2-PA-no-reinjection, FIXED-noise,
+  V1-A — metrics identical, 0 verification failures, on env1 and on env3** (`docs/study/ards_equivalence_env{1,3}_3980.json`).
+* A five-arm env1 study ran through the study workflow (10/10 runs, analysis, report). On that single replicate pair EXISTING-blind scored higher unseen coverage
+  than V2-PA (0.74 vs 0.70) — the same direction as the Phase 4 exploration; a functional check only.
+
+## Stage 3 — shared ARDS–HPO environment (`env3`, kind `shared-oi`)
+
+* New environment, own namespace; ARDS arms run unchanged against a Python worker through a TypeScript service; the HPO arm is the HPO-003 *policy* on the
+  same task with the same budgets, permissions, adoption discipline and evaluation (ARDS's held-out code). Operations table: shared / arm-internal / **not
+  available** (variable generation, boundary change, intervention, evaluation change are named as unavailable here, not assumed).
+* A UI-created study (8 arms, 1 replicate) ran to completion (8/8), was analysed, reported (16 files, 7 figures), packaged (32 files verified), and a stored HPO-arm
+  run replayed with agreement. A real defect surfaced and was fixed (figures with undefined intervals at a single seed), with a regression test.
+* A two-replicate study: unseen coverage — existing-blind 0.64, ards-pa 0.35, hpo-rules 0.56, hpo-rules-no-history 0.52, fixed-noise 0.29, control 0.27; `hpo-rules-meta`
+  identical to `hpo-rules` (no rule failed twice, no revision); capability openings predicted by the HPO arm were mostly not identified on fresh data (13 opened, 1
+  identified): the reachability estimate over-predicts usefulness. Two replicates: not evidence.
+
+## Stage 4 — Ziran operational validation
+
+* Observation revision with invisibility ≠ absence: tested (`test_a_hidden_difference_becomes_identifiable…`): a difference that exists in the truth is device-blind, then
+  capable-but-not-identified (noise), then identified after a second revision.
+* Generated variable (`xzr/study/variables.py`): `activity_trend` is **not a relabelling** (novelty 0.85: only 15% of its variance is explained by the existing channels), but with 8
+  paired seeds **no downstream effect is resolved** (picturing_error +0.13, CI [−0.03, 0.28]; revisions, fired samples, ignitions unresolved). New, and not shown to matter.
+* Meta-revision: mechanism verified (imposed veil; the policy's own rule spec in the shared environment); in the functional studies no rule failed twice, so no revision occurred.
+  Null kept; a revision is never evidence of improvement.
+* History re-entry: on/off arms in both worlds; effect not presumed (shared environment: hpo-rules 0.56 vs no-history 0.52 over two replicates, unresolved).
+* Reachability: predicted-vs-realised recorded in both environments (opened ≠ success).
+* Shape detection output stays separated from interpretation (`detect_shapes`); the detector's limits are stored with it.
+
+## Stage 5 — multi-research-system measurements (`lab/multisystem.py`, template `multi-system`)
+
+Ten properties measured per run and contrasted with controls (tests: `test_multisystem.py`). In the functional study (20 systems, 4 seeds × 6 arms, 24/24 runs): histories are
+independent (pair overlap 0.0); 20 distinct observation conditions; activity is asynchronous (first-request spread 1.1 steps, simultaneity 0.1; the non-diverse control is 0);
+exchange and inheritance produce reads of another system's store (61 / 25) but **no change in requests or completions** (null); stopping 30% lowers the others' request rate ratio
+(0.42 vs 0.57 without a stop; confounded by time); scaling to 100 systems raises contention (denied + failed share 0.97 vs 0.53) while completed transfers stay at ~8;
+closing and reopening one system's view raises coverage shrink / expansion counts (20 / 12 vs 18 / 8). These are properties of a simulation, **not evidence of autonomous science**.
+
+## Stage 9 — the two baseline failures (investigated, not "fixed")
+
+* `m2-run-9100.json`: fails identically at the commit that produced it. At steps 1–3 the activity and shutter vectors are identical and **two of 32 chambers' memory differ with
+  their sum preserved**, and the conduit count differs by one (177 vs 176): a few nodes sit in the neighbouring chamber — the dynamics agree, the *hierarchy partition* differs.
+  Same root cause as `test_compat[desktop-scipy]` (tie ordering of the bisection on disconnected sub-graphs; `docs/DISCONNECTION.md`, open item S11).
+* No code change: a deterministic tie-break would change cluster membership, hence every address-based stored result, on every platform, and could not reproduce records made under
+  another tie order. It is an owner decision (options: canonical tie-break + regenerate with a compatibility note; or keep the reference-hierarchy mechanism). Stored records untouched.
