@@ -251,6 +251,11 @@ class LabRun:
             lab.force_failure(h["gantry"], t, ev)
         elif do == "set_resources":
             lab.set_resources(h["gantry"], h["value"], t, ev)
+        elif do in ("stop_system", "start_system"):  # a research system stops acting / resumes (its history is kept)
+            sid = h["system"]
+            if sid not in sci.systems:
+                raise ValueError(f"harness: unknown system {sid!r}")
+            (sci.stopped.add if do == "stop_system" else sci.stopped.discard)(sid)
         elif do in ("close_view", "open_view"):  # the chambers a system observes now (closed) / those closed earlier
             if do == "close_view":
                 chambers = sorted(sci.coverage(sci.systems[h["system"]]))

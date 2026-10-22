@@ -255,55 +255,29 @@ def run_hpo_world(doc: dict, arm: dict, gen: int, seed: int) -> dict:
 
 
 def run_lab_population(doc: dict, arm: dict, gen: int, seed: int) -> dict:
-    from ..lab.population import population
-    from ..lab.record import LabRun
+    """A population of research systems in the shared laboratory, optionally under a scenario (stop, exchange,
+    inherit, close and reopen views, many or few systems); lab/multisystem.py measures what the systems did."""
+    from ..lab import multisystem
 
-    env = doc["environment"]
-    t_wall = time.time()
-    pop = arm.get("population", {})
-    systems = population(int(pop.get("n", 3)), capacities=bool(pop.get("capacities", True)))
-    for s in systems:
-        s.update({k: v for k, v in (pop.get("system_overrides") or {}).items()})
-    steps = int(env.get("horizon", 120))
-    r = LabRun({"gen_seed": gen, "seed": seed, "settings": None, "physics": True, "horizon": steps, "systems": systems})
-    for _ in range(steps):
-        r.step()
-    rec = r.record()
-    st = r.science.systems
-    n = max(1, len(st))
-    tot = lambda key: float(sum(s.stats[key] for s in st.values()))  # noqa: E731
-    metrics = {
-        "requests": tot("requests"),
-        "completed": tot("completed"),
-        "failed": tot("failed"),
-        "denied": tot("denied"),
-        "observed_outcomes": tot("observed_outcomes"),
-        "unobserved_outcomes": tot("unobserved_outcomes"),
-        "variables_adopted": float(sum(len(s.stats["variables_adopted"]) for s in st.values())),
-        "window_changes": tot("window_changes"),
-        "relocations": tot("relocations"),
-        "isolations": tot("isolations"),
-        "spent_per_system": tot("spent") / n,
-        "true_gain_per_system": tot("true_gain") / n,
-        "events": float(len(rec["events"])),
-    }
-    out = {
+    steps = int(doc["environment"].get("horizon", 120))
+    out = multisystem.run(arm, gen, seed, steps)
+    rec = {
         "schema": RUN_SCHEMA,
         "arm": arm["name"],
         "gen": gen,
         "seed": seed,
         "status": "ok",
-        "metrics": metrics,
+        "metrics": out["metrics"],
         "controller": None,
         "protocol_changes": [],
         "reachability_check": None,
         "history_reentry": None,
-        "population": {"n": len(st), "kinds": sorted({s.spec.kind for s in st.values()})},
-        "fingerprint_last": rec["steps"][-1]["fingerprint"],
-        "wall_s": round(time.time() - t_wall, 4),
+        "population": {"n": int(out["metrics"]["n_systems"]), "harness": out["harness"], "scenario": arm.get("scenario")},
+        "fingerprint_last": out["fingerprint_last"],
+        "wall_s": out["wall_s"],
         "peak_rss_mb": _rss_mb(),
     }
-    return clean(out)
+    return clean(rec)
 
 
 def run_ards(doc: dict, arm: dict, gen: int, seed: int) -> dict:
@@ -312,7 +286,13 @@ def run_ards(doc: dict, arm: dict, gen: int, seed: int) -> dict:
     return ards.run_ards(doc, arm, gen, seed)
 
 
-RUNNERS = {"hpo-world": run_hpo_world, "lab-population": run_lab_population, "ards": run_ards}
+def run_shared_oi(doc: dict, arm: dict, gen: int, seed: int) -> dict:
+    from .shared import runner as shared_runner
+
+    return shared_runner.run_arm(doc, arm, gen, seed)
+
+
+RUNNERS = {"hpo-world": run_hpo_world, "lab-population": run_lab_population, "ards": run_ards, "shared-oi": run_shared_oi}
 
 
 def run_one(doc: dict, arm_name: str, gen: int, seed: int) -> dict:

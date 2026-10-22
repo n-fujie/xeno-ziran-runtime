@@ -45,6 +45,11 @@ def main(argv: list[str] | None = None) -> int:
     rp.add_argument("study")
     rp.add_argument("--out", required=True)
     rp.add_argument("--procs", type=int, default=1)
+    ae = sub.add_parser("ards-equivalence", help="compare the ARDS bridge with ARDS's own building blocks (test replicates only)")
+    ae.add_argument("--env", required=True, choices=["env1", "env2", "env3"])
+    ae.add_argument("--replicate", type=int, default=3980)
+    ae.add_argument("--arms", default=",".join(("EXISTING-blind", "V2-PA", "V2-PA-no-reinjection", "FIXED-noise", "V1-A")))
+    ae.add_argument("--out", required=True)
     pf = sub.add_parser("perf", help="measure the workflow's own performance and load into --out/perf.json")
     pf.add_argument("--out", required=True)
     pf.add_argument("--quick", action="store_true")
@@ -107,6 +112,15 @@ def main(argv: list[str] | None = None) -> int:
         new, cmp = runner.reproduce(_study(a.study), Path(a.out), procs=a.procs)
         print(json.dumps({"new": str(new.path), **cmp}, indent=1))
         return 0 if cmp["identical_share"] == 1.0 else 2
+    elif a.cmd == "ards-equivalence":
+        from . import ards
+
+        rows = []
+        for arm in a.arms.split(","):
+            rows.append(ards.equivalence(a.env, arm, a.replicate))
+            print(json.dumps(rows[-1]), flush=True)
+        Path(a.out).write_text(json.dumps({"schema": "xzr.ardsequivalence/1", "rows": rows}, indent=1))
+        return 0 if all(r["metrics_identical"] for r in rows) else 3
     elif a.cmd == "perf":
         from . import perf
 

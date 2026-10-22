@@ -182,6 +182,7 @@ class Science:
         self.by_action: dict[int, dict] = {}
         self.events: list[dict] = []
         self.config_change = config_change
+        self.stopped: set[str] = set()  # systems that do not act (harness stop_system / start_system); their state is kept
         self.owner = np.full(world.state.n, -1, np.int32)
         for i, c in enumerate(chambers):
             self.owner[c.nodes] = i
@@ -365,7 +366,7 @@ class Science:
         self.invalidate()
         for sys_ in self.systems.values():
             sp = sys_.spec
-            if t % sp.period:
+            if t % sp.period or sp.sid in self.stopped:
                 continue
             self._reopen(sys_, t)
             cov = self.coverage(sys_)
@@ -715,7 +716,8 @@ class Science:
         return {sid: {"sensor": s.sensor, "window": s.window, "budget": round(s.budget, 3),
                       "coverage": sorted(self.coverage(s)), "features": list(s.features[len(BASE_FEATURES):]),
                       "pending": [s.pending["src"], s.pending["dst"]] if s.pending else None,
-                      "isolated": sorted(s.isolated), "memory": len(s.memory)} for sid, s in self.systems.items()}
+                      "isolated": sorted(s.isolated), "memory": len(s.memory),
+                      **({"stopped": True} if sid in self.stopped else {})} for sid, s in self.systems.items()}
 
     def summary(self) -> dict:
         out = {}

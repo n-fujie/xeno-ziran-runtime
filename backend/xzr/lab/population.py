@@ -14,7 +14,7 @@ MACROS, SUBS = 8, 4  # the laboratory has 8 bays of 4 chambers (apparatus.chambe
 STAGES = (3, 20, 50, 100, 300)  # staged load: each stage is run and checked before the next is attempted
 
 
-def population(n: int, *, capacities: bool = True) -> list[dict]:
+def population(n: int, *, capacities: bool = True, diverse: bool = False) -> list[dict]:
     """``n`` system configurations (dicts accepted by ``SystemSpec(**d)``), deterministic in ``n``."""
     if n < 1:
         raise ValueError("a population needs at least one system")
@@ -28,6 +28,11 @@ def population(n: int, *, capacities: bool = True) -> list[dict]:
             d["sensors"] = [home, f"{(m + 1) % MACROS}.{(s + 1) % SUBS}", f"{(m + 2) % MACROS}.{(s + 2) % SUBS}"]
         elif kind == "history":
             d.update(memory="ordinary", store=f"{m}.{(s + 1) % SUBS}")
+        if diverse:  # different sampling periods and windows (asynchronous activity); some distributed systems isolate
+            d["period"] = 2 + i % 4
+            d["window"] = 6 + (i % 3) * 2
+            if kind == "distributed" and i % 2 == 0:
+                d["isolate_above"] = 0.03
         if capacities:
             d["revise_observation"] = i % 2 == 0
             d["generate_variables"] = i % 4 == 0

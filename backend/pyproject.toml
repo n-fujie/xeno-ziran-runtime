@@ -48,9 +48,12 @@ ignore = ["E731", "SIM108", "B905"]
 "xzr/study/report.py" = ["E501"]
 "xzr/study/ards.py" = ["E501"]
 "xzr/study/perf.py" = ["E501"]
+"xzr/study/shared/*.py" = ["E501"]
+"xzr/lab/multisystem.py" = ["E501"]
 "xzr/study/protocol.py" = ["E501"]
 "xzr/study/templates.py" = ["E501"]
 "tests/test_study_ards.py" = ["E501"]
+"tests/test_study_shared.py" = ["E501"]
 
 [tool.mypy]
 python_version = "3.12"

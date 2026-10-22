@@ -351,7 +351,8 @@ def ziran_records(doc: dict, runs: list[dict], arms: list[str]) -> dict:
                 "closed_predictions": cn,
                 "closed_consistent": sum(c["closed"]["silent"] for c in chk),
                 "closed_consistency_rate": (sum(c["closed"]["silent"] for c in chk) / cn) if cn else None,
-                "note": "opened = the operation could observe what it needs; success = it acted in the next epoch. Opening is "
+                "note": chk[0].get("note")
+                or "opened = the operation could observe what it needs; success = it acted in the next epoch. Opening is "
                 "not success; the gap between the two is the estimation error of the reachability record.",
             }
         chs = [c for r in rs for c in (r.get("controller_changes") or []) + (r.get("protocol_changes") or [])]

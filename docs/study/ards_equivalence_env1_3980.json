@@ -1,0 +1,85 @@
+{
+ "schema": "xzr.ardsequivalence/1",
+ "rows": [
+  {
+   "env": "env1",
+   "arm": "EXISTING-blind",
+   "replicate": 3980,
+   "metrics_identical": true,
+   "differing_top_level_metric_groups": [],
+   "verification_failed_bridge": 0,
+   "verification_failed_direct": 0,
+   "verification_checks": [
+    14,
+    14
+   ],
+   "bridge_wall_s": 79.1,
+   "direct_wall_s": 78.9,
+   "ards_commit": "26472ca282c2fa4dc07e73ec10378c032ecf8765"
+  },
+  {
+   "env": "env1",
+   "arm": "V2-PA",
+   "replicate": 3980,
+   "metrics_identical": true,
+   "differing_top_level_metric_groups": [],
+   "verification_failed_bridge": 0,
+   "verification_failed_direct": 0,
+   "verification_checks": [
+    18,
+    18
+   ],
+   "bridge_wall_s": 41.6,
+   "direct_wall_s": 64.4,
+   "ards_commit": "26472ca282c2fa4dc07e73ec10378c032ecf8765"
+  },
+  {
+   "env": "env1",
+   "arm": "V2-PA-no-reinjection",
+   "replicate": 3980,
+   "metrics_identical": true,
+   "differing_top_level_metric_groups": [],
+   "verification_failed_bridge": 0,
+   "verification_failed_direct": 0,
+   "verification_checks": [
+    18,
+    18
+   ],
+   "bridge_wall_s": 67.1,
+   "direct_wall_s": 67.1,
+   "ards_commit": "26472ca282c2fa4dc07e73ec10378c032ecf8765"
+  },
+  {
+   "env": "env1",
+   "arm": "FIXED-noise",
+   "replicate": 3980,
+   "metrics_identical": true,
+   "differing_top_level_metric_groups": [],
+   "verification_failed_bridge": 0,
+   "verification_failed_direct": 0,
+   "verification_checks": [
+    14,
+    14
+   ],
+   "bridge_wall_s": 54.2,
+   "direct_wall_s": 54.8,
+   "ards_commit": "26472ca282c2fa4dc07e73ec10378c032ecf8765"
+  },
+  {
+   "env": "env1",
+   "arm": "V1-A",
+   "replicate": 3980,
+   "metrics_identical": true,
+   "differing_top_level_metric_groups": [],
+   "verification_failed_bridge": 0,
+   "verification_failed_direct": 0,
+   "verification_checks": [
+    14,
+    14
+   ],
+   "bridge_wall_s": 30.9,
+   "direct_wall_s": 53.7,
+   "ards_commit": "26472ca282c2fa4dc07e73ec10378c032ecf8765"
+  }
+ ]
+}

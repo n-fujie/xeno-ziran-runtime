@@ -36,17 +36,36 @@ class MetaSandboxError(ValueError):
     pass
 
 
+@dataclass(frozen=True)
+class RuleSpec:
+    """Which rule parameters exist, their defaults, bounds and signed revision steps, and which blindness reason each belongs to.
+    The default spec is the HPO-003 controller's; another controller (the shared ARDS-HPO environment's) brings its own."""
+
+    defaults: dict[str, float]
+    bounds: dict[str, tuple[float, float]]
+    steps: dict[str, float]
+    param_of_reason: dict[str, str]
+
+
+HPO_SPEC = RuleSpec(DEFAULTS, BOUNDS, STEPS, PARAM_OF_REASON)
+
+
 @dataclass
 class RuleTable:
     """The revisable parameters of the controller's rules, and which rules are exhausted."""
 
-    params: dict[str, float] = field(default_factory=lambda: dict(DEFAULTS))
+    spec: RuleSpec = HPO_SPEC
+    params: dict[str, float] = field(default_factory=dict)
     exhausted: set[str] = field(default_factory=set)  # blindness reasons whose rule is no longer applied
 
+    def __post_init__(self) -> None:
+        if not self.params:
+            self.params = dict(self.spec.defaults)
+
     def set(self, name: str, value: float) -> None:
-        if name not in BOUNDS:
+        if name not in self.spec.bounds:
             raise MetaSandboxError(f"rule parameter {name!r} is outside the sandbox")
-        lo, hi = BOUNDS[name]
+        lo, hi = self.spec.bounds[name]
         if not lo <= value <= hi:
             raise MetaSandboxError(f"{name}={value} outside [{lo}, {hi}]")
         self.params[name] = float(value)
@@ -88,10 +107,13 @@ class MetaReviser:
             if self._fails[reason] < self.patience:
                 continue
             self._fails[reason] = 0
-            param = PARAM_OF_REASON.get(reason)
+            spec = self.rules.spec
+            param = spec.param_of_reason.get(reason)
             before = self.rules.snapshot()
-            if param is not None and self.rules.params[param] + STEPS[param] <= BOUNDS[param][1] + 1e-9:
-                new = round(min(BOUNDS[param][1], self.rules.params[param] + STEPS[param]), 6)
+            lo, hi = spec.bounds[param] if param is not None else (0.0, 0.0)
+            nxt = self.rules.params[param] + spec.steps[param] if param is not None else 0.0
+            if param is not None and lo - 1e-9 <= nxt <= hi + 1e-9:
+                new = round(min(hi, max(lo, nxt)), 6)
                 self.rules.set(param, new)
                 rec = {"epoch": epoch, "revision": "parameter", "reason": reason, "param": param,
                        "from": before["params"][param], "to": new}

@@ -29,9 +29,8 @@ def test_template_validates_and_fairness_is_computed_from_ards_arm_facts():
     assert prof["existing-blind"]["history_reinsertion"] is False and prof["pa-validated"]["history_reinsertion"] is True
     assert prof["fixed-noise"]["controller"] == "preset" and prof["existing-blind"]["controller"] == "revised-from-data"
     c1 = next(c for c in P.fairness(d)["contrasts"] if c["contrast"] == "C1")
-    assert set(c1["differences"]) == {
-        "history_reinsertion"
-    }  # same information, same permissions, same budget: only the history differs
+    # same information, permissions and budget: the history and the proposal policy differ (EXISTING-blind is another procedure)
+    assert set(c1["differences"]) == {"history_reinsertion", "proposal_policy"}
 
 
 @pytest.mark.parametrize(
@@ -75,7 +74,7 @@ def test_registry_snapshot_matches_the_live_ards_registry():
     )
     live = json.loads([x for x in p.stdout.splitlines() if x.startswith("{")][-1])
     snap = ards.registry()
-    assert snap["envs"] == live["envs"]
+    assert [*snap["envs"], "env3"] == live["envs"]
     key = ("id", "role", "factors", "reads", "mayRevise", "implementedIn")
     assert snap["arms"] == [{k: a[k] for k in key} for a in live["arms"]], (
         "ARDS arm registry changed: regenerate ards_registry.json"

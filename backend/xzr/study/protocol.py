@@ -28,7 +28,7 @@ from typing import Any
 
 SCHEMA = "xzr.study/1"
 MODES = ("functional", "exploratory", "confirmatory")
-ENV_KINDS = ("hpo-world", "lab-population", "ards")
+ENV_KINDS = ("hpo-world", "lab-population", "ards", "shared-oi")
 CONTROLLER_MODES = ("static", "recursive", "random")
 # seed ranges already used by the published experiments (hpo.experiments.RANGES and development seeds): (gen, engine)
 USED_GEN = [(0, 8), (100, 600), (3000, 3600), (4000, 4600), (4500, 5100), (5000, 5600), (9000, 9100), (9500, 9600)]
@@ -153,7 +153,7 @@ def validate(doc: dict) -> list[str]:
         if not a.get("description"):
             issues.append(f"arm {a['name']}: a description (algorithm, information used, what it may revise) is required")
         _check_arm_settings(a, issues)
-    if env.get("kind") == "ards":
+    if env.get("kind") in ("ards", "shared-oi"):
         issues += _validate_ards(doc)
     try:
         seeds = seed_list(doc)
@@ -185,7 +185,7 @@ def validate(doc: dict) -> list[str]:
     in_functional = all(FUNCTIONAL_GEN[0] <= g < FUNCTIONAL_GEN[1] for g in gens) and all(
         FUNCTIONAL_ENGINE[0] <= e < FUNCTIONAL_ENGINE[1] for e in engs
     )
-    if env.get("kind") == "ards":  # the reserved range of this environment is ARDS's software-test block
+    if env.get("kind") in ("ards", "shared-oi"):  # the reserved range of this environment is ARDS's software-test block
         in_functional = all(ARDS_TEST_REPLICATES[0] <= g < ARDS_TEST_REPLICATES[1] and g == e for g, e in seeds)
     if mode == "functional" and not in_functional:
         issues.append(f"functional runs use the reserved seed range gen {FUNCTIONAL_GEN}, engine {FUNCTIONAL_ENGINE}")
@@ -265,6 +265,10 @@ def arm_profile(arm: dict, doc: dict) -> dict:
         from . import ards
 
         return ards.profile(arm, doc["environment"])
+    if doc["environment"].get("kind") == "shared-oi":
+        from .shared import profiles
+
+        return profiles.profile(arm, doc["environment"])
     c = arm.get("controller", {})
     env = doc["environment"]
     return {
@@ -279,6 +283,7 @@ def arm_profile(arm: dict, doc: dict) -> dict:
         "history_reinsertion": bool(_effective_history(arm, doc)),
         "max_changes_per_epoch": c.get("max_changes_per_epoch"),
         "interventions": len(arm.get("interventions", [])),
+        "scenario": arm.get("scenario"),
         "compute": {
             "warmup": int(env.get("warmup", 40)),
             "horizon": int(env.get("horizon", 240)),
@@ -315,13 +320,26 @@ def fairness(doc: dict) -> dict:
                 "equal_on": sorted(k for k in a if k not in diffs),
             }
         )
+    extra = {}
+    if doc["environment"].get("kind") == "shared-oi":
+        from .shared import profiles
+
+        extra["operations"] = profiles.access_matrix(doc)
     return {
+        **extra,
         "profiles": prof,
         "contrasts": out,
-        "controls": {
-            "initial_condition": "same generator seed, warm-up and exogenous stream in every arm",
-            "evaluation": "same metrics, same horizon, same stop conditions in every arm",
-        },
+        "controls": (
+            {
+                "initial_condition": "same environment definition, replicate, start configuration, alteration order and loop seed blocks in every arm",
+                "evaluation": "same body-run and set-up budgets, same held-out cases scored by ARDS's own code on the same service, same metrics",
+            }
+            if doc["environment"].get("kind") in ("ards", "shared-oi")
+            else {
+                "initial_condition": "same generator seed, warm-up and exogenous stream in every arm",
+                "evaluation": "same metrics, same horizon, same stop conditions in every arm",
+            }
+        ),
     }
 
 

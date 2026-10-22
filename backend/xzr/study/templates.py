@@ -209,7 +209,10 @@ def lab_population_study(n_seeds: int = 2, sizes: tuple[int, ...] = (3, 20)) -> 
         "environment": {"kind": "lab-population", "horizon": 40},
         "arms": arms,
         "seeds": {"gen_base": FUNCTIONAL_GEN[0], "engine_base": FUNCTIONAL_ENGINE[0], "n": n_seeds},
-        "metrics": {"primary": ["requests"], "secondary": ["completed", "failed", "denied", "observed_outcomes", "events"]},
+        "metrics": {
+            "primary": ["requests"],
+            "secondary": ["completed", "failed", "denied", "contention_rate", "distinct_conditions"],
+        },
         "contrasts": [
             {"id": "C1", "a": f"systems-{sizes[-1]}", "b": f"systems-{sizes[0]}", "varies": ["compute"], "role": "primary"}
         ],
@@ -274,13 +277,19 @@ def ards_comparison(n_seeds: int = 2, ards_env: str = "env2") -> dict:
             ],
         },
         "contrasts": [
-            {"id": "C1", "a": "pa-validated", "b": "existing-blind", "varies": ["history_reinsertion"], "role": "primary"},
+            {
+                "id": "C1",
+                "a": "pa-validated",
+                "b": "existing-blind",
+                "varies": ["history_reinsertion", "proposal_policy"],
+                "role": "primary",
+            },
             {"id": "C2", "a": "pa-validated", "b": "pa-no-reinjection", "varies": ["history_reinsertion"], "role": "secondary"},
             {
                 "id": "C3",
                 "a": "pa-validated",
                 "b": "fixed-noise",
-                "varies": ["controller", "information", "revision_authority", "history_reinsertion"],
+                "varies": ["controller", "information", "revision_authority", "history_reinsertion", "proposal_policy"],
                 "role": "secondary",
             },
         ],
@@ -292,11 +301,201 @@ def ards_comparison(n_seeds: int = 2, ards_env: str = "env2") -> dict:
     }
 
 
+def shared_comparison(n_seeds: int = 2) -> dict:
+    """ARDS arms and the HPO arm in one environment (env3: the runtime world observed through the HPO instruments), same budgets and
+    evaluation. Functional check on ARDS software-test replicates."""
+
+    def a(name: str, arm_id: str, description: str) -> dict:
+        return {"name": name, "description": description, "ards": {"arm": arm_id}}
+
+    def h(name: str, description: str, **hpo) -> dict:
+        return {"name": name, "description": description, "hpo": hpo}
+
+    arms = [
+        a(
+            "existing-blind",
+            "EXISTING-blind",
+            "ARDS's re-implementation of the existing procedure with observer-side information only (no memory).",
+        ),
+        a("ards-pa", "V2-PA", "ARDS's PA arm: observer view, own history re-injected, rules R1-R4, validated adoption."),
+        a("ards-pa-no-history", "V2-PA-no-reinjection", "As ards-pa with the memory stored and never read."),
+        a("fixed-noise", "FIXED-noise", "Always halve the sensor noise at the start; reads nothing."),
+        a("control-v1-a", "V1-A", "Phase 3 A-fixed (frozen code): fixed observation configuration, no memory."),
+        h(
+            "hpo-rules",
+            "The HPO-003 reconfiguration policy on the observation configuration: reads the capability reasons of the configuration in force, "
+            "keeps the previous cycle's unidentified differences (history), tries a bundle and single rules against the control, adopts on a gain without loss "
+            "and confirms on fresh seeds.",
+            history=True,
+            meta=False,
+        ),
+        h(
+            "hpo-rules-no-history",
+            "As hpo-rules without the history of earlier cycles (no noise rule; the memory is not kept).",
+            history=False,
+            meta=False,
+        ),
+        h(
+            "hpo-rules-meta",
+            "As hpo-rules, and the policy's own rule parameters (noise multiplier, resolution step) are revised when a rule's change did "
+            "not remove the blindness it targeted twice in a row (hpo.metarevision).",
+            history=True,
+            meta=True,
+        ),
+    ]
+    return {
+        "schema": SCHEMA,
+        "title": "ARDS and HPO policies in the shared environment",
+        "question": "In one environment, with the same information, permissions, budgets and evaluation, how do ARDS's arms and the HPO reconfiguration "
+        "policy differ in what their final observation configurations identify? (functional check on ARDS software-test replicates)",
+        "mode": "functional",
+        "environment": {"kind": "shared-oi"},
+        "arms": arms,
+        "seeds": {"list": [[3980 + i, 3980 + i] for i in range(n_seeds)]},
+        "metrics": {
+            "primary": ["unseen_coverage"],
+            "secondary": [
+                "seen_coverage",
+                "all_coverage",
+                "unseen_fdr",
+                "body_runs",
+                "setup_seconds",
+                "adopted",
+                "changes_applied",
+                "capable_gained",
+                "verification_failed",
+                "reach_opened",
+                "reach_opened_identified",
+                "reach_opened_not_identified",
+                "meta_revisions",
+            ],
+        },
+        "contrasts": [
+            {
+                "id": "C1",
+                "a": "hpo-rules",
+                "b": "existing-blind",
+                "varies": ["proposal_policy", "history_reinsertion"],
+                "role": "primary",
+            },
+            {"id": "C2", "a": "hpo-rules", "b": "ards-pa", "varies": ["proposal_policy"], "role": "secondary"},
+            {"id": "C3", "a": "hpo-rules", "b": "hpo-rules-no-history", "varies": ["history_reinsertion"], "role": "secondary"},
+            {"id": "C4", "a": "hpo-rules-meta", "b": "hpo-rules", "varies": ["meta_revision"], "role": "secondary"},
+            {"id": "C5", "a": "ards-pa", "b": "ards-pa-no-history", "varies": ["history_reinsertion"], "role": "secondary"},
+            {
+                "id": "C6",
+                "a": "ards-pa",
+                "b": "existing-blind",
+                "varies": ["proposal_policy", "history_reinsertion"],
+                "role": "secondary",
+            },
+        ],
+        "criteria": {"success": [], "failure": []},
+        "stop": {"max_wall_seconds": 7200, "timeout_per_run_s": 900, "max_failures": 3},
+        "budget": {"max_runs": 200, "procs": 2},
+        "notes": "New environment defined in this repository (study/shared); ARDS's environments and frozen assets are untouched. ARDS's gate accepts only "
+        "replicates 3980-3989 in test mode, so the study is a functional check by construction.",
+    }
+
+
+def multi_system(n_seeds: int = 4, n: int = 20, horizon: int = 120) -> dict:
+    """Several research systems in the shared laboratory under different conditions: does a population behave as several research systems?
+    Measures ten properties (lab/multisystem.py); load alone is not capability."""
+
+    def arm(name: str, description: str, scenario: dict | None = None, n_systems: int = n) -> dict:
+        return {
+            "name": name,
+            "description": description,
+            "population": {"n": n_systems, "capacities": True, "diverse": True},
+            **({"scenario": scenario} if scenario else {}),
+        }
+
+    arms = [
+        arm(
+            "baseline",
+            f"{n} heterogeneous systems (local / distributed / history), different sampling periods and windows, no intervention.",
+        ),
+        arm(
+            "many",
+            f"{5 * n} systems: the same population scaled up (resource competition for the laboratory's gantries).",
+            n_systems=5 * n,
+        ),
+        arm(
+            "stop-30pct",
+            "30% of the systems stop acting at the middle of the run; their histories are kept.",
+            {"stop": {"fraction": 0.3, "at": horizon // 2}},
+        ),
+        arm(
+            "exchange",
+            "60% of the history systems read another system's stored results (shared_memory_from).",
+            {"exchange": {"fraction": 0.6}},
+        ),
+        arm(
+            "inherit",
+            "A history system starts late (middle of the run) and reads its predecessor's stored results.",
+            {"inherit": {"start_at": horizon // 2}},
+        ),
+        arm(
+            "views-closed",
+            "One system's observed chambers are closed at 1/4 of the run and reopened at 3/4 (shrinking and expanding what it can investigate).",
+            {
+                "harness": [
+                    {"at": horizon // 4, "do": "close_view", "system": "S000"},
+                    {"at": 3 * horizon // 4, "do": "open_view", "system": "S000"},
+                ]
+            },
+        ),
+    ]
+    return {
+        "schema": SCHEMA,
+        "title": "Research-system population: ten properties",
+        "question": "Which of: independent histories, different observation conditions and boundaries, asynchronous activity, exchange of results, mutual "
+        "change of conditions, resource competition, partial stop, inheritance, expansion and shrinking of what can be investigated, "
+        "are present in a population of simulated research systems, and how do they change under each intervention?",
+        "mode": "functional",
+        "environment": {"kind": "lab-population", "horizon": horizon},
+        "arms": arms,
+        "seeds": {"gen_base": FUNCTIONAL_GEN[0], "engine_base": FUNCTIONAL_ENGINE[0], "n": n_seeds},
+        "metrics": {
+            "primary": ["requests"],
+            "secondary": [
+                "completed",
+                "contention_rate",
+                "history_overlap_mean",
+                "distinct_conditions",
+                "distinct_boundaries",
+                "first_request_spread",
+                "simultaneity",
+                "exchange_reads",
+                "external_coverage_drops",
+                "isolations",
+                "rate_ratio_after_before",
+                "coverage_shrinks",
+                "coverage_expansions",
+                "variables_adopted",
+            ],
+        },
+        "contrasts": [
+            {"id": "C1", "a": "many", "b": "baseline", "varies": ["compute", "scenario"], "role": "secondary"},
+            {"id": "C2", "a": "stop-30pct", "b": "baseline", "varies": ["scenario"], "role": "secondary"},
+            {"id": "C3", "a": "exchange", "b": "baseline", "varies": ["scenario"], "role": "secondary"},
+            {"id": "C4", "a": "inherit", "b": "baseline", "varies": ["scenario"], "role": "secondary"},
+            {"id": "C5", "a": "views-closed", "b": "baseline", "varies": ["scenario"], "role": "secondary"},
+        ],
+        "criteria": {"success": [], "failure": []},
+        "stop": {"max_wall_seconds": 3600, "timeout_per_run_s": 600, "max_failures": 3},
+        "budget": {"max_runs": 500, "procs": 2},
+        "notes": "A functional check. The number of systems is a load, not a measure of autonomy; each property is a number computed from what the systems did.",
+    }
+
+
 TEMPLATES = {
     "revision-study": revision_study,
     "quick": quick,
     "lab-population": lab_population_study,
     "ards-comparison": ards_comparison,
+    "shared-comparison": shared_comparison,
+    "multi-system": multi_system,
 }
 
 
