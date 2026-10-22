@@ -141,7 +141,8 @@ export const api = {
 export type StudyProtocol = Record<string, any>;
 export interface StudyValidation {
   valid: boolean; issues: string[]; digest: string; runs?: number; step_runs?: number; high_cost?: boolean;
-  fairness?: { profiles: Record<string, any>; contrasts: { contrast: string; a: string; b: string; differences: Record<string, any>; declared: string[]; undeclared: string[]; equal_on: string[] }[]; controls: Record<string, string> };
+  fairness?: { profiles: Record<string, any>; contrasts: { contrast: string; a: string; b: string; differences: Record<string, any>; declared: string[]; undeclared: string[]; equal_on: string[] }[]; controls: Record<string, string>;
+    operations?: { operations: Record<string, { description: string; status: string; via: string }>; access: Record<string, Record<string, boolean>> } };
   fairness_issues?: string[];
 }
 export interface StudyStatus {

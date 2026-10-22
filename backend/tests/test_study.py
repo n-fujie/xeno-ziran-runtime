@@ -474,3 +474,12 @@ def test_confirmatory_run_is_refused_if_the_registered_protocol_was_altered(tmp_
     (st.path / "protocol.registered.json").write_text(json.dumps(reg))
     with pytest.raises(P.ProtocolInvalid):
         st.execute(inline=True)
+
+
+def test_report_and_figures_survive_a_single_seed_where_intervals_are_undefined(tmp_path):
+    d = quick(1, 120)
+    d["contrasts"], d["criteria"], d["hypotheses"] = [], {"success": [], "failure": []}, []
+    st = runner.Study.create(d, tmp_path)
+    st.execute(inline=True)
+    idx = report.build(st, analysis.analyse(st))
+    assert idx["figures"] and (st.path / "report" / "methods.md").exists()

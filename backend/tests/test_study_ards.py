@@ -102,3 +102,4 @@ def test_one_ards_arm_runs_verified_in_test_mode_and_leaves_the_ards_repo_untouc
     assert r["ards"]["verification_checks"] > 0 and r["ards"]["spec"]["id"] == "EXISTING-blind"
     assert 0.0 <= r["metrics"]["unseen_coverage"] <= 1.0 and r["metrics"]["body_runs"] > 0
     assert snapshot() == before  # nothing written into the ARDS repository
+    assert runner.replay_run(st, "existing-blind", 0)["agreement"]  # the stored ARDS run replays (wall times are not content)

@@ -90,10 +90,15 @@ export default function ProtocolPanel({ onCreated }: { onCreated: (id: string) =
           <div className="study-grid">
             <label>Title <input value={doc.title} onChange={(e) => edit((d) => { d.title = e.target.value; })} /></label>
             <label className="wide">Question <textarea rows={2} value={doc.question} onChange={(e) => edit((d) => { d.question = e.target.value; })} /></label>
-            <label>Seeds (n) <input type="number" min={1} value={seeds.n ?? seeds.list?.length ?? 1}
-              onChange={(e) => edit((d) => { d.seeds = { ...(d.seeds.list ? { gen_base: d.seeds.list[0][0], engine_base: d.seeds.list[0][1] } : d.seeds), n: +e.target.value }; })} /></label>
-            <label>Generator seed base <input type="number" value={seeds.gen_base ?? ''} onChange={(e) => edit((d) => { d.seeds.gen_base = +e.target.value; })} /></label>
-            <label>Engine seed base <input type="number" value={seeds.engine_base ?? ''} onChange={(e) => edit((d) => { d.seeds.engine_base = +e.target.value; })} /></label>
+            {['ards', 'shared-oi'].includes(doc.environment?.kind) ? (
+              <label>Replicates (ARDS test block 3980–3989) <input type="number" min={1} max={10} value={seeds.list?.length ?? 1}
+                onChange={(e) => edit((d) => { d.seeds = { list: Array.from({ length: Math.min(10, Math.max(1, +e.target.value)) }, (_, i) => [3980 + i, 3980 + i]) }; })} /></label>
+            ) : <>
+              <label>Seeds (n) <input type="number" min={1} value={seeds.n ?? seeds.list?.length ?? 1}
+                onChange={(e) => edit((d) => { d.seeds = { ...(d.seeds.list ? { gen_base: d.seeds.list[0][0], engine_base: d.seeds.list[0][1] } : d.seeds), n: +e.target.value }; })} /></label>
+              <label>Generator seed base <input type="number" value={seeds.gen_base ?? ''} onChange={(e) => edit((d) => { d.seeds.gen_base = +e.target.value; })} /></label>
+              <label>Engine seed base <input type="number" value={seeds.engine_base ?? ''} onChange={(e) => edit((d) => { d.seeds.engine_base = +e.target.value; })} /></label>
+            </>}
             {doc.environment?.kind === 'hpo-world' && <>
               <label>Horizon (steps, multiple of 60) <input type="number" step={60} min={60} value={doc.environment.horizon} onChange={(e) => edit((d) => { d.environment.horizon = +e.target.value; })} /></label>
               <label>World configurations <input type="number" min={100} step={100} value={doc.environment.world?.n ?? 800} onChange={(e) => edit((d) => { d.environment.world.n = +e.target.value; })} /></label>
@@ -136,12 +141,20 @@ export default function ProtocolPanel({ onCreated }: { onCreated: (id: string) =
                 c.declared.join(', ') || '—', <span key="u" className={c.undeclared.length ? 'warn' : 'dim'}>{c.undeclared.join(', ') || 'none'}</span>,
                 <span key="e" className="small dim">{c.equal_on.join(', ')}</span>])} />
           </Section>
-          <Section title="Arm profiles (information · authority · compute)">
-            <Table head={['arm', 'controller', 'meta', 'history', 'authority', 'budget/epoch', 'interventions', 'horizon']}
+          <Section title="Arm profiles (information · authority · policy · compute)">
+            <Table head={['arm', 'controller', 'policy', 'meta', 'history', 'authority', 'budget/epoch', 'interventions', 'scenario']}
               rows={Object.entries(val.fairness?.profiles ?? {}).map(([n, p]: [string, any]) => [<span className="mono" key="n">{n}</span>, p.controller,
-                String(p.meta_revision), String(p.history_reinsertion), Array.isArray(p.revision_authority) ? p.revision_authority.join(', ') : p.revision_authority,
-                fmt(p.max_changes_per_epoch), p.interventions, p.compute.horizon])} />
+                p.proposal_policy ?? '—', String(p.meta_revision), String(p.history_reinsertion), Array.isArray(p.revision_authority) ? p.revision_authority.join(', ') : p.revision_authority,
+                fmt(p.max_changes_per_epoch), p.interventions, p.scenario ? JSON.stringify(p.scenario) : '—'])} />
           </Section>
+          {val.fairness?.operations && (
+            <Section title="Research operations: shared, arm-internal, not available"
+              note="Shared operations are available to every arm in the same vocabulary; arm-internal ones are a capability of one method; 'not available' operations are named so that nothing is silently assumed.">
+              <Table head={['operation', 'status', 'via', ...Object.keys(val.fairness.operations.access)]}
+                rows={Object.entries(val.fairness.operations.operations).map(([op, v]) => [<span className="mono" key="o">{op}</span>, <Chip key="s" s={v.status} />,
+                  <span className="small dim" key="v">{v.via}</span>, ...Object.values(val.fairness!.operations!.access).map((a, i) => <span key={i} className={a[op] ? 'up' : 'dim'}>{v.status === 'not available' ? '—' : a[op] ? 'yes' : 'no'}</span>)])} />
+            </Section>
+          )}
         </>
       )}
     </div>

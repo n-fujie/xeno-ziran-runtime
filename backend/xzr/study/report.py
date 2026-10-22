@@ -440,7 +440,7 @@ def fig_arms(study: Study, an: dict, metric: str) -> tuple[str, str]:
         d = an["descriptives"][a][metric]
         if d.get("n"):
             lo_ci, hi_ci = d["ci95_mean"]
-            if math.isfinite(lo_ci):
+            if lo_ci is not None and hi_ci is not None and math.isfinite(lo_ci) and math.isfinite(hi_ci):
                 body.append(
                     f'<line x1="{X(i):.1f}" y1="{Y(lo_ci):.1f}" x2="{X(i):.1f}" y2="{Y(hi_ci):.1f}" stroke="#111" stroke-width="2"/>'
                 )
@@ -459,7 +459,7 @@ def fig_arms(study: Study, an: dict, metric: str) -> tuple[str, str]:
 
 def fig_forest(study: Study, an: dict, metric: str) -> tuple[str, str]:
     rows = [(c["id"], f"{c['a']} − {c['b']}", c["metrics"].get(metric)) for c in an["contrasts"]]
-    rows = [(i, lab, r) for i, lab, r in rows if r and r.get("n") and all(math.isfinite(v) for v in r["ci95"])]
+    rows = [(i, lab, r) for i, lab, r in rows if r and r.get("n") and all(v is not None and math.isfinite(v) for v in r["ci95"])]
     if not rows:
         return "", "no data"
     W, H0 = 760, 70 + 26 * len(rows)

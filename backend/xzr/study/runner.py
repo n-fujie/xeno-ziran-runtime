@@ -39,7 +39,7 @@ from . import protocol as P
 
 DEFAULT_ROOT = Path(os.environ.get("XZR_STUDY_ROOT", Path(__file__).resolve().parents[2] / "experiments" / "studies"))
 REPO = Path(__file__).resolve().parents[3]
-VOLATILE_RUN_KEYS = ("wall_s", "cpu_s", "peak_rss_mb")
+VOLATILE_RUN_KEYS = ("wall_s", "cpu_s", "peak_rss_mb", "ards_wall_s")
 
 
 def _now() -> str:
