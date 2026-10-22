@@ -113,7 +113,7 @@ def metric_values(m: dict, verification_failed: list) -> dict:
         if isinstance(x, dict):
             for k, v in x.items():
                 walk(f"{prefix}_{k}" if prefix else k, v)
-        elif isinstance(x, bool) or isinstance(x, int | float):
+        elif isinstance(x, bool | int | float):
             flat[prefix] = float(x)
         elif x is None:
             flat[prefix] = None
