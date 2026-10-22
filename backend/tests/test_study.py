@@ -483,3 +483,79 @@ def test_report_and_figures_survive_a_single_seed_where_intervals_are_undefined(
     st.execute(inline=True)
     idx = report.build(st, analysis.analyse(st))
     assert idx["figures"] and (st.path / "report" / "methods.md").exists()
+
+
+# ------------------------------------------------------------------------------------------ small samples: undefined stays undefined
+def _small_study(tmp_path, n, fail=False):
+    d = quick(max(n, 1), 120)
+    d["contrasts"], d["criteria"], d["hypotheses"] = (
+        [d["contrasts"][0]],
+        {"success": [d["criteria"]["success"][0]], "failure": []},
+        [],
+    )
+    d["seeds"] = {"gen_base": 7000, "engine_base": 70000, "n": max(n, 1)}
+    st = runner.Study.create(d, tmp_path)
+    if fail:
+        orig = envs.RUNNERS["hpo-world"]
+        envs.RUNNERS["hpo-world"] = lambda *a: (_ for _ in ()).throw(RuntimeError("synthetic"))
+        try:
+            d["stop"]["max_failures"] = 99
+            st.execute(inline=True)
+        finally:
+            envs.RUNNERS["hpo-world"] = orig
+    else:
+        st.execute(inline=True)
+    return st
+
+
+@pytest.mark.parametrize("n", [0, 1, 2, 3])
+def test_every_sample_size_analyses_reports_and_serialises_without_inventing_numbers(tmp_path, n):
+    st = _small_study(tmp_path, n, fail=(n == 0))
+    a = analysis.analyse(st)  # strict JSON: allow_nan=False inside analyse()
+    c = a["contrasts"][0]["metrics"]["fired_samples"]
+    d = a["descriptives"]["fixed"]["fired_samples"]
+    idx = report.build(st, a)
+    assert (st.path / "report" / "results.md").exists() and (st.path / "report" / "methods.md").exists()
+    assert c["n"] == n and d["n"] == n
+    if n == 0:
+        assert c["status"] == "NOT MEASURED" and "mean" not in d and a["accounting"]["fixed"]["failed"] == 1
+        assert a["criteria"]["verdict"].startswith("not evaluable") and not idx["figures"]
+    elif n == 1:
+        assert (
+            c["status"] == "INSUFFICIENT DATA"
+            and c["sd"] is None
+            and c["dz"] is None
+            and c["p"] is None
+            and c["ci95"] == [None, None]
+        )
+        assert c["p_holm"] is None and c["p_bh"] is None  # no test was possible: not p = 1, not significant
+        assert d["sd"] is None and d["var"] is None and d["ci95_mean"] == [None, None]
+        assert a["criteria"]["verdict"].startswith("not evaluable")
+        assert "not estimable" in c["insufficient"] and isinstance(c["mean"], float)  # the single difference itself is a number
+    else:
+        assert c["sd"] is not None and c["p"] is not None and c["ci95"][0] is not None and d["sd"] is not None
+        assert c["insufficient"] is None
+        if n == 2:  # two pairs: defined, but the interval rests on two values and the verdict says so
+            assert "fewer than 8 pairs" in a["criteria"]["verdict"] or a["criteria"]["verdict"].startswith("not evaluable")
+
+
+def test_missing_values_and_a_zero_effect_are_different(tmp_path):
+    safe = analysis.paired_safe
+    rng = np.random.default_rng(0)
+    nan = float("nan")
+    zero = safe(np.array([1.0, 2.0, 3.0]), np.array([1.0, 2.0, 3.0]), rng)
+    assert zero["identical"] and zero["mean"] == 0.0 and zero["n"] == 3  # a real zero effect
+    missing = safe(np.array([1.0, nan, nan]), np.array([1.0, 2.0, nan]), rng)
+    assert (
+        missing["n"] == 1 and missing["mean"] == 0.0 and missing["insufficient"]
+    )  # one pair: its difference is 0, but nothing else is estimable
+    none = safe(np.array([nan, nan]), np.array([1.0, 2.0]), rng)
+    assert none["n"] == 0 and "mean" not in none and none["undefined_pairs"] == 2
+    one = analysis.describe(np.array([5.0]), rng)
+    assert (
+        one["mean"] == 5.0
+        and one["sd"] is None
+        and one["var"] is None
+        and one["ci95_mean"][0] is None
+        or one["ci95_mean"][0] != one["ci95_mean"][0]
+    )

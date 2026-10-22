@@ -54,8 +54,8 @@ def describe(x: np.ndarray, rng: np.random.Generator) -> dict:
     out.update(
         mean=float(ok.mean()),
         median=med,
-        sd=float(ok.std(ddof=1)) if ok.size > 1 else 0.0,
-        var=float(ok.var(ddof=1)) if ok.size > 1 else 0.0,
+        sd=float(ok.std(ddof=1)) if ok.size > 1 else None,  # one value has no spread: undefined, not 0
+        var=float(ok.var(ddof=1)) if ok.size > 1 else None,
         min=float(ok.min()),
         max=float(ok.max()),
         q1=q1,
@@ -139,10 +139,29 @@ def _independent(x: np.ndarray, y: np.ndarray) -> dict:
     return out
 
 
+def paired_safe(x: np.ndarray, y: np.ndarray, rng: np.random.Generator) -> dict:
+    """The paired comparison, with what cannot be estimated said so. Fewer than two complete pairs: no spread, interval, effect size or test exists,
+    and none is invented (a zero would read as "no effect"; infinity as "perfect separation"). Missing data and a zero effect stay different things."""
+    ok = ~(np.isnan(x) | np.isnan(y))
+    n = int(ok.sum())
+    if n >= 2:
+        r = paired(x, y, None, rng)
+        r["insufficient"] = None
+        return r
+    r = {"n": n, "undefined_pairs": int(x.size - n), "insufficient": f"{n} complete pair(s): spread, interval, effect size and test are not estimable",
+         "sd": None, "dz": None, "ci95": [None, None], "p": None, "identical": False, "noise_floor": 0.0, "relative": None}
+    if n == 1:
+        xv, yv = float(x[ok][0]), float(y[ok][0])
+        r.update(mean_x=xv, mean_y=yv, mean=xv - yv, scale=max(abs(xv), abs(yv), 1e-12))
+    return r
+
+
 def status_of(r: dict) -> str:
     """DETECTED / EQUIVALENT / UNRESOLVED / IDENTICAL / NOT MEASURED — the HPO classification, kept for continuity."""
     if r.get("n", 0) == 0:
         return "NOT MEASURED"
+    if r.get("insufficient"):
+        return "INSUFFICIENT DATA"
     if r["identical"]:
         return "IDENTICAL"
     if r["p_holm"] < ALPHA and abs(r["mean"]) >= PRACTICAL * r["scale"] and abs(r["mean"]) > r["noise_floor"]:
@@ -166,8 +185,8 @@ def evidence_class(doc: dict, registered: dict, amendments: list[dict], contrast
 
 
 def _criterion(c: dict, res: dict | None) -> dict:
-    if res is None or res.get("n", 0) == 0:
-        return {**c, "result": "not evaluable", "why": "metric undefined or contrast missing"}
+    if res is None or res.get("n", 0) == 0 or res.get("insufficient") or res.get("ci95", [None, None])[0] is None:
+        return {**c, "result": "not evaluable", "why": "metric undefined, too few complete pairs for an interval, or contrast missing"}
     mean, scale = res["mean"], max(res["scale"], 1e-12)
     rel = mean / scale
     lo, hi = res["ci95"]
@@ -240,11 +259,11 @@ def analyse(study: Study, write: bool = True) -> dict:
         rng_c = _rng(study, "contrast" + c["id"])
         for m in metrics:
             x, y = vec(c["a"], m), vec(c["b"], m)
-            r = paired(x, y, None, rng_c)
+            r = paired_safe(x, y, rng_c)
             r["independent"] = independent(x, y)
             r["sensitivity"] = sensitivity(x, y)
             rows[m] = r
-            if r.get("n", 0):
+            if r.get("n", 0) >= 2 and r.get("p") is not None:
                 family[f"{c['id']}|{m}"] = r["p"]
         contrasts.append(
             {
@@ -264,7 +283,7 @@ def analyse(study: Study, write: bool = True) -> dict:
             if k in hol:
                 r["p_holm"], r["p_bh"] = hol[k], bh[k]
             else:
-                r["p_holm"] = r["p_bh"] = 1.0
+                r["p_holm"] = r["p_bh"] = None  # no test was possible: neither "significant" nor p = 1
             r["status"] = status_of(r)
     cres = {c["id"]: c for c in contrasts}
     crit = doc.get("criteria", {})

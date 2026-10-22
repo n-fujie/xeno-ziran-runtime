@@ -28,6 +28,7 @@ from .population import population
 from .record import LabRun
 
 
+# Harness steps are numbered from 1: the first recorded step has t = 1 (a harness entry at 0 never fires).
 def build_config(arm: dict, gen: int, seed: int, steps: int) -> dict:
     pop = arm.get("population", {})
     scn = arm.get("scenario", {})
@@ -53,7 +54,7 @@ def build_config(arm: dict, gen: int, seed: int, steps: int) -> dict:
             if s["sid"] == succ:
                 s["shared_memory_from"] = pred
         harness += [
-            {"at": 0, "do": "stop_system", "system": succ},
+            {"at": 1, "do": "stop_system", "system": succ},
             {"at": int(scn["inherit"].get("start_at", steps // 2)), "do": "start_system", "system": succ},
         ]
     cfg = {

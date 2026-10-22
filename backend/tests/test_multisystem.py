@@ -62,7 +62,7 @@ def test_stop_and_start_harness_operations():
     assert victim in r.science.stopped and r.science.systems[victim].stats["requests"] == at_stop  # no request after the stop
     assert r.record()["summary"][victim]["requests"] == at_stop and r.science.state()[victim].get("stopped")
     with pytest.raises(ValueError):
-        LabRun({**cfg, "harness": [{"at": 0, "do": "stop_system", "system": "NOPE"}]}).step()
+        LabRun({**cfg, "harness": [{"at": 1, "do": "stop_system", "system": "NOPE"}]}).step()
 
 
 def test_partial_stop_does_not_stop_the_others(baseline):
@@ -74,6 +74,14 @@ def test_partial_stop_does_not_stop_the_others(baseline):
 def test_exchange_and_inheritance_are_reads_of_another_systems_results(baseline):
     ex = run(arm(exchange={"fraction": 0.6}))
     assert baseline["exchange_reads"] == 0 and ex["exchange_reads"] > 0 and ex["exchange_systems"] > 0
+    cfg = M.build_config(arm(inherit={"start_at": 50}), GEN, SEED, STEPS)
+    succ = next(h["system"] for h in cfg["harness"] if h["do"] == "start_system")
+    r = LabRun(cfg)
+    for _ in range(49):
+        r.step()
+    assert (
+        succ in r.science.stopped and r.science.systems[succ].stats["requests"] == 0
+    )  # the successor has not acted before it starts
     inh = run(arm(inherit={"start_at": 50}))
     assert (
         inh["exchange_systems"] == 1 and inh["exchange_reads"] > 0
