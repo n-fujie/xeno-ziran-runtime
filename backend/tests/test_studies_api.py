@@ -130,3 +130,50 @@ def test_oversized_protocol_is_refused(client):
     big = _quick()
     big["notes"] = "x" * (600 * 1024)
     assert client.post("/api/studies/validate", json={"protocol": big}).status_code == 413
+
+
+def test_end_to_end_paper_experiment_every_stage_through_the_api(client):
+    """The whole revision study (nine arms) from protocol to reproducibility package: fixed run, observation / boundary /
+    variable / scale-and-window changes, reachability, meta-revision, history re-entry, comparison with controls, save and
+    reload, statistics, figures, Methods and Results, package, replay and reproduction. A functional check, not evidence."""
+    p = templates.template("revision-study", n_seeds=3, horizon=240)
+    sid = client.post("/api/studies", json={"protocol": p}).json()["id"]
+    client.post(f"/api/studies/{sid}/run", json={"procs": 3})
+    s = _wait(client, sid, timeout=300)
+    assert s["state"] == "finished" and s["n_ok"] == 27 and s["n_failed"] == 0
+
+    runs = client.get(f"/api/studies/{sid}/runs").json()
+    assert {r["arm"] for r in runs} == {a["name"] for a in p["arms"]}
+    by = {}
+    for r in runs:
+        by.setdefault(r["arm"], []).append(r)
+    assert all(r["controller_changes"] == 0 for r in by["fixed"])  # fixed condition: nothing revised
+    assert all(r["protocol_changes"] > 0 for r in by["observation-narrowed"] + by["variable-added"] + by["scale-window-shifted"])
+    # a saved run can be reloaded and carries the changes with what they opened and closed
+    rec = client.get(f"/api/studies/{sid}/runs/observation-narrowed/0").json()
+    narrowed = [c for c in rec["protocol_changes"] if c["path"] == "instruments.withdrawal.channels"]
+    assert narrowed and narrowed[0]["reachability"]["runnable_closed"] or narrowed[0]["reachability"]["channels_closed"]
+
+    an = client.post(f"/api/studies/{sid}/analyse").json()
+    z = an["ziran"]
+    assert z["observation-narrowed"]["reachability"]["closed_predictions"] > 0  # reachability recorded in checkable form
+    assert z["recursive-meta"]["meta_revision"]["runs_with_meta"] == 3  # meta-revision active (and may or may not revise)
+    assert (
+        z["recursive"]["history_reentry"]["reinsertions"] > 0
+        and z["no-history"]["history_reentry"]["reinsertions"] < z["recursive"]["history_reentry"]["reinsertions"]
+    )
+    assert {c["id"] for c in an["contrasts"]} == {f"C{i}" for i in range(1, 9)}
+    assert an["fairness"]["contrasts"] and all(c["undeclared"] == [] for c in an["fairness"]["contrasts"])
+    for c in an["contrasts"]:  # every contrast and metric is reported, whatever it shows
+        assert set(c["metrics"]) == set(an["metrics"])
+
+    idx = client.post(f"/api/studies/{sid}/report").json()
+    methods = client.get(f"/api/studies/{sid}/report/methods.md").text
+    results = client.get(f"/api/studies/{sid}/report/results.md").text
+    assert sid in methods and "Software and environment" in methods and "FUNCTIONAL CHECK" in results
+    assert any(f["file"].endswith("reachability.svg") for f in idx["figures"]) and "runs.csv" in idx["files"]
+    assert client.post(f"/api/studies/{sid}/package").json()["verify"]["ok"]
+    assert client.post(f"/api/studies/{sid}/runs/recursive-meta/1/replay").json()["agreement"] is True
+    new = client.post(f"/api/studies/{sid}/reproduce", json={"procs": 3}).json()
+    _wait(client, new["id"], timeout=300)
+    assert client.get(f"/api/studies/{new['id']}/reproduction").json()["identical_share"] == 1.0

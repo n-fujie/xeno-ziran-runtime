@@ -430,3 +430,16 @@ def test_lab_population_environment_runs(tmp_path):
     a = analysis.analyse(st, write=False)
     assert a["contrasts"][0]["metrics"]["requests"]["n"] == 2
     assert all(r["population"]["n"] in (3, 12) for r in st.runs())
+
+
+# ------------------------------------------------------------------------------------------ performance measurements
+def test_performance_measurements_report_their_conditions(tmp_path):
+    from xzr.study import perf
+
+    par = perf.parallel(tmp_path / "p", (1, 2), n_seeds=2, horizon=120)
+    assert [r["procs"] for r in par["rows"]] == [1, 2] and par["rows"][0]["speedup"] == 1.0
+    assert all(r["failure_rate"] == 0 and r["ok"] == r["runs"] == 4 and r["peak_run_rss_mb"] for r in par["rows"])
+    sr = perf.storage_and_replay(tmp_path / "s", n_seeds=2, horizon=120)
+    assert sr["verify_ok"] and sr["replay"]["agreement_rate"] == 1.0 and sr["bytes_per_run"] > 0
+    hl = perf.history_load(tmp_path / "h", n_seeds=1, horizon=120)
+    assert hl["mean_reinsertions"]["recursive"] > 0 == hl["mean_reinsertions"]["no-history"]

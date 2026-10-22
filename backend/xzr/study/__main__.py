@@ -45,6 +45,9 @@ def main(argv: list[str] | None = None) -> int:
     rp.add_argument("study")
     rp.add_argument("--out", required=True)
     rp.add_argument("--procs", type=int, default=1)
+    pf = sub.add_parser("perf", help="measure the workflow's own performance and load into --out/perf.json")
+    pf.add_argument("--out", required=True)
+    pf.add_argument("--quick", action="store_true")
     am = sub.add_parser("amend", help="record a change to the protocol after registration")
     am.add_argument("study")
     am.add_argument("--path", required=True)
@@ -104,6 +107,10 @@ def main(argv: list[str] | None = None) -> int:
         new, cmp = runner.reproduce(_study(a.study), Path(a.out), procs=a.procs)
         print(json.dumps({"new": str(new.path), **cmp}, indent=1))
         return 0 if cmp["identical_share"] == 1.0 else 2
+    elif a.cmd == "perf":
+        from . import perf
+
+        print(json.dumps(perf.run(Path(a.out), a.quick), indent=1)[:6000])
     elif a.cmd == "amend":
         print(json.dumps(_study(a.study).amend(a.path, json.loads(a.value), a.reason), indent=1))
     return 0
