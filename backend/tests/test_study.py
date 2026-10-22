@@ -443,3 +443,34 @@ def test_performance_measurements_report_their_conditions(tmp_path):
     assert sr["verify_ok"] and sr["replay"]["agreement_rate"] == 1.0 and sr["bytes_per_run"] > 0
     hl = perf.history_load(tmp_path / "h", n_seeds=1, horizon=120)
     assert hl["mean_reinsertions"]["recursive"] > 0 == hl["mean_reinsertions"]["no-history"]
+
+
+# ------------------------------------------------------------------------------------------ confirmatory discipline
+def _confirmatory(n=3):
+    d = quick(n, 120)
+    d["mode"] = "confirmatory"
+    d["seeds"] = {"gen_base": 12000, "engine_base": 120000, "n": n}
+    return d
+
+
+def test_confirmatory_study_is_registered_before_the_first_run_and_labelled_as_such(tmp_path):
+    st = runner.Study.create(_confirmatory(), tmp_path)
+    reg = st.registered()
+    assert reg["freeze"]["digest"] == P.digest(reg) and not st.runs_started()
+    st.execute(procs=2)
+    a = analysis.analyse(st)
+    assert a["mode"] == "confirmatory" and a["contrasts"][0]["evidence"] == "confirmatory"
+    # a change made after the first run is recorded, and the affected contrast is no longer reported as confirmatory
+    st.amend("metrics.secondary", ["ignitions"], "dropped secondary metrics after seeing the runs")
+    again = analysis.analyse(st)
+    assert again["contrasts"][0]["evidence"].startswith("exploratory")
+    assert again["amendments"][0]["status"] == "exploratory" and st.registered()["freeze"]["digest"] == reg["freeze"]["digest"]
+
+
+def test_confirmatory_run_is_refused_if_the_registered_protocol_was_altered(tmp_path):
+    st = runner.Study.create(_confirmatory(), tmp_path)
+    reg = st.registered()
+    reg["title"] = "edited after registration"
+    (st.path / "protocol.registered.json").write_text(json.dumps(reg))
+    with pytest.raises(P.ProtocolInvalid):
+        st.execute(inline=True)

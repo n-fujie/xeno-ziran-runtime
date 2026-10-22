@@ -1,73 +1,111 @@
 # XENO ZIRAN SIMULATOR — integration status (branch `feat/zrs-integration`)
 
-Working record of the integration. Updated with each increment. Everything here is a statement about the software and
-its stored records; nothing is a claim about Strong Xenoscience.
+Working record of the integration. Everything here is a statement about the software and its stored records; nothing is a claim about
+Strong Xenoscience or about any theory. Workflow guide: `docs/STUDY.md`. Perf record: `docs/study/perf_2026-10-22.json`.
 
 ## 1. Baseline before any change (2026-10-22, base `cce36f6`, py3.12.13 / numpy 2.5.3 / scipy 1.18.1)
 
 | Suite | Result |
 |---|---|
-| `ziran-xeno-simulator` (TS) `node --test test/*.test.ts` | 73 / 73 pass; `tsc -p tsconfig.json` clean |
-| `xeno-ziran-runtime` frontend `tsc -b` + `vitest run` | clean; 12 files / 82 tests pass |
-| `xeno-ziran-runtime` backend `pytest` | 347 pass, 1 skipped, **2 fail** |
+| `ziran-xeno-simulator` (TS) `node --test test/*.test.ts` | 73 / 73; `tsc` clean |
+| runtime frontend `tsc -b` + `vitest` | clean; 12 files / 82 tests |
+| runtime backend `pytest` | 347 pass, 1 skipped, **2 fail** |
 
-The two backend failures exist before any change here and are environment-caused, not regressions:
+The two backend failures predate every change here and are environment-caused, not regressions (kept visible, not fixed, stored records not
+regenerated): `test_compat[desktop-scipy]` (hierarchy tie ordering on this platform; open item S11) and `test_published_records_replay`
+(`m2-run-9100.json` does not replay here; it fails identically at the commit that produced it, `390c43f`; `XZR_FORCE_COMPAT=1` does not change it).
 
-1. `test_compat.py::test_engine_conformance_against_the_golden_fixture[desktop-scipy]` — hierarchy digest differs on this
-   platform (tie ordering by rounding noise on disconnected sub-graphs; diagnosis in the XB-TRO worktree, open item S11).
-2. `test_lab.py::test_published_records_replay` (`m2-run-9100.json`) — the stored record does not replay here
-   (digest differs from step 1). Checked at the commit that produced the record (`390c43f`, throwaway worktree): it fails
-   there too, so the later M9 changes are not the cause; `XZR_FORCE_COMPAT=1` does not change it. Fresh records replay
-   (see the multi-agent tests). The record's documented condition is "same machine, same software versions".
-   Neither was fixed or regenerated: stored records are not edited.
+## 2. What already existed (verified by reading the code, not the older capability report)
 
-## 2. What already exists in the code (verified by reading it, not by the capability report)
+HPO-003 recursive reconfiguration with sandbox and causal history (observation channels, scale, time window, penetration, catalog,
+allocation, order, coupling, history, stopping; one derived variable `activity_trend`), instruments with reasons for blindness, lab
+scientific systems (external memory, observation revision, variable generation against a matched control, parameter adaptation), shape
+detector, hierarchy, the 11 result views. None of this was re-implemented.
 
-The capability report (`docs/SIMULATOR_CAPABILITY_REPORT.md`) describes the `lab-m8` checkout and understates this base.
-On this base (`xzr/hpo`, `xzr/lab`) the following exist and are tested:
+## 3. Added (all on top of unchanged defaults)
 
-| Ziran-core item | Where | State |
+| Addition | Where | Tests |
 |---|---|---|
-| Observation / scale / time window / boundary (penetration) revision, with reasons | `hpo/observe.py`, `hpo/reconfig.py` (`SANDBOX`) | implemented; every change recorded in the causal history with before/after settings |
-| Observation catalog change, resource allocation, evaluation order, coupling, history reinsertion, stopping rules | `hpo/reconfig.py` | implemented |
-| Variable proposal / adoption | `hpo/reconfig.py` `_propose` | partial: one derived variable (`activity_trend`) implemented; `veil_coverage`, `conflict_density` are proposals marked "no implementation" |
-| Variable generation by a system, adopted only against a matched control | `lab/science.py` (`generate_variables`, LOO rule) | implemented (lab systems) |
-| External memory (store chamber; modes none / ordinary / contextual / shuffled / write_only) | `lab/science.py` | implemented |
-| Sensor-head relocation, observation-window revision, parameter adaptation | `lab/science.py` | implemented (lab systems) |
-| Layering | `tests/test_layering.py` | enforced |
+| Reachability record of every configuration change, checked against what the operations then did | `hpo/reachability.py`, `Controller(trace_reachability)`, `study/envs.py` | `test_ziran_core.py`, `test_study.py` |
+| Revision of revision rules (bounded, recorded, exhaustible) | `hpo/metarevision.py`, `Controller(meta)` | `test_ziran_core.py` |
+| Revision authority and per-epoch change budget | `Controller(authority, max_changes_per_epoch)` | `test_study.py` |
+| Populations of 3 / 20 / 50 / 100 / 300 scientific systems | `lab/population.py` | `test_ziran_multiagent.py` |
+| **Study layer**: protocol (modes, seed discipline, fairness, registration, amendments), runner (worker pool, timeouts, safe stop, resume, provenance), analysis, report, package / verify / reproduce, CLI, performance measurements | `xzr/study/` | `test_study.py` (41) |
+| Study API (local runtime only; 403 under `XZR_PUBLIC`; cross-origin refused; ids and file names matched before any path is built) | `service/studies.py` | `test_studies_api.py`, `test_security.py` |
+| **Experiments view** (protocol form / JSON, validation + fairness, run control, Ziran records, statistics, paper outputs, replay, reproduce) | `frontend/src/views/study/` | typecheck, eslint, vitest (82), live run in the browser |
+| ARDS bridge (ARDS's own arms on its own environments, test mode only) | `study/ards.py`, `ards_bridge/` | `test_study_ards.py` |
 
-## 3. Added in this branch
+The security-surface test did not see routes of included routers (newer FastAPI hides them behind `_IncludedRouter`); it now flattens them
+and lists the new POST routes explicitly.
 
-| Addition | Files | What it does | Tests |
-|---|---|---|---|
-| Reachability record | `xzr/hpo/reachability.py`, `Controller(trace_reachability=True)` | For each configuration change: which operations became runnable / blocked and which channels opened / closed, with the reason (static reasons only; `boundary_invisible` and `unmeasured` depend on the world and are not evaluated) | `tests/test_ziran_core.py` |
-| Revision of revision rules | `xzr/hpo/metarevision.py`, `Controller(meta=MetaReviser())` | The controller's own rule parameters (penetration, allocation step, lag step) are revised when the change a rule made did not remove the blindness it targeted twice in a row; a rule at its bound is marked exhausted. Sandboxed bounds, every revision recorded with evidence. A revision is a proposal about the controller, not a validated improvement | `tests/test_ziran_core.py` |
-| Populations of scientific systems | `xzr/lab/population.py` | Deterministic heterogeneous populations of 3 / 20 / 50 / 100 / 300 systems for the shared laboratory | `tests/test_ziran_multiagent.py` |
+## 4. Verification evidence
 
-Both Controller options are off by default; with them off the controller's behaviour and trace are identical to before
-(checked in `test_tracing_reachability_does_not_change_the_run` and `test_default_controller_uses_the_original_parameters`).
+* Backend after all changes: **426 pass, 2 fail (the two known), 0 skipped**; ruff clean. Frontend: tsc, eslint, vitest 82/82. TS simulator untouched.
+* **End to end through the UI** (browser, local server): created the nine-arm revision study from the form (4 seeds), ran it (36/36 runs ok, 33 s,
+  3 workers), analysed it, built the paper outputs (17 files, 8 figures rendered), packaged it (61 files checksummed, verification passed),
+  replayed a stored run (agrees), reproduced the whole study (36/36 run records identical).
+* End to end through the API in `test_end_to_end_paper_experiment_every_stage_through_the_api`: fixed run, narrowed observation, veiled boundary,
+  added variable, shifted scale / window, reachability recorded and checked, meta-revision arm, history re-entry vs none, matched-random control,
+  save / reload, statistics, figures, Methods / Results, package, replay, reproduction.
+* ARDS: `EXISTING-blind`, `V2-PA`, `V2-PA-no-reinjection`, `FIXED-noise`, `V1-A` on env2, replicates 3980–3981: 10/10 runs, 0 verification
+  failures. After the runs the frozen Phase 3 manifest verifies (1,526 files, no problems) and the ARDS git status is unchanged.
+  Only env2 was exercised here; env1 (XB-TRO backend, worktree `xeno-ziran-runtime-xb-tro`) was not run through the bridge.
+* Performance (one machine, 8 CPUs; `perf_2026-10-22.json`): run 0.64 s, CPU utilisation 0.98, peak 105 MB; speed-up 1.56× with 2 workers and 1.54× with 4
+  for only 8 short runs (start-up dominates; efficiency 0.78 and 0.38); failure rate 0; analysis 0.03 s, report 0.01 s, package 0.06 s, verify 0.003 s;
+  replay agreement 8/8; history re-entry cost ratio 1.01 (with / without); lab 3 → 300 systems for 40 steps: 1.0 → 2.6 s, 123 → 156 MB. The laboratory's
+  completed transfers saturate (6 of 2,730 requests at 300 systems): the number of systems is a load, not a measure of autonomy.
 
-Staged load (60 steps, this machine, one process): 3 / 12 / 24 / 48 / 100 / 200 / 300 systems took 0.9 / 1.0 / 1.1 / 1.5 /
-1.9 / 2.4 / 3.1 s with a peak of 124–145 MB. This is a scaling statement about the software. The number of systems is
-not a measure of autonomy and is not used as one.
+## 5. What the functional runs showed (not evidence; 4–6 seeds in a reserved range)
 
-## 4. Not done yet (so not claimed)
+`recursive-meta` is identical to `recursive` in the revision study (no rule failed twice in a row, so no revision occurred): a null result,
+kept. `observation-narrowed` shows opened-but-not-used operations (reachability is not success). Contrasts are mostly UNRESOLVED at these sample sizes.
+In the ARDS functional check `EXISTING-blind` scored higher unseen coverage than `V2-PA` (0.69 vs 0.50, 2 replicates), the same direction as the
+Phase 4 exploration; it is reported as a functional check only.
 
-- The ARDS arms do not run on this runtime (the proposed "Environment 3" adapter does not exist). ARDS stays in
-  `pa-simulation-environment`; its Phase 3 frozen assets and Phase 4 constraints are untouched.
-- No new service endpoint and no frontend view for the reachability records, rule revisions or populations; the
-  existing 11 result views are unchanged.
-- No effect test: whether revised rules or reachability-guided changes do better than fixed rules has not been measured
-  (that would be a held-out paired comparison and needs its own protocol).
-- Variable generation in the HPO controller is still limited to `activity_trend`.
-- Save / reload / replay of a controller trace with the new fields has no record format yet.
+## 6. Acceptance criteria (section X of the directive)
 
-## 5. Completion levels (assessed separately, not merged)
+| # | Criterion | State |
+|---|---|---|
+| 1 | starts locally | met (`uvicorn`, built frontend) |
+| 2 | API, UI and runtime connected | met (UI → API → runtime, live run) |
+| 3 | researcher sets conditions | met (form / JSON / CLI) |
+| 4 | independent-seed repetitions | met |
+| 5 | comparison conditions explicit | met (fairness profiles per arm, undeclared differences flagged) |
+| 6 | observation / boundary / scale / variable changes | met (protocol changes and controller changes; HPO world) |
+| 7 | reachability recorded verifiably | met (record + next-epoch check) |
+| 8 | meta-revision reflected in later operation | **partly**: shown in a unit / integration test with an imposed thick veil (revisions at epochs 2 and 4 reach the controller's next changes); in the nine-arm functional study no revision occurred |
+| 9 | history re-entry works | met |
+| 10 | raw data and logs stored | met |
+| 11 | stored results reload | met (list, open, replay) |
+| 12 | statistics | met |
+| 13 | paper figures / tables | met as SVG / CSV; PNG only with an SVG converter; **no PDF** |
+| 14 | Methods / Results data | met |
+| 15 | git / environment / seed / protocol correspondence | met (manifest; the git dirty flag is recorded) |
+| 16 | reproducibility test | met on the same machine (36/36); not exercised across machines |
+| 17 | no serious regression | met apart from the two known baseline failures |
+| 18 | negative results kept | met (every contrast and metric listed; failed runs kept; null results reported) |
+| 19 | unproven propositions not treated as proven | met (labels, interpretation boundary, no theory statements generated) |
+| 20 | third-party procedure exists | exists (`REPRODUCE.md`, CLI); never run by a third party |
 
-- **Level 1 (software):** not complete. New code is tested and the old suites are unchanged, but two baseline backend
-  tests fail for environment reasons and the ARDS bridge, UI and API integration are missing.
-- **Level 2 (Ziran operational):** not claimed. Observation / scale / window / boundary revision with recorded reasons and
-  now reachability and rule-revision records exist; their effect on later research has not been measured.
-- **Level 3 (strong xenoscience):** not claimed; the four conditions (human-energy independence, human-readability
-  independence, self-reproduction, self-generation of variables / boundaries) are not demonstrated, and no experiment
-  here bears on them.
+## 7. Not done (so not claimed)
+
+* ARDS arms do not run on the HPO world; "Environment 3" had no earlier specification (it was only a proposal) and was not built. The ARDS bridge
+  is test-mode only, so no ARDS exploratory / confirmatory study can be produced from here.
+* Active Inference and other comparison methods are not arms of the HPO world; they live in their own environments (`research/`, ARDS). The
+  HPO-world comparators are fixed, recursive, recursive+meta, matched random, no-history and protocol-imposed observation / boundary / variable / scale conditions.
+* The interactive Shape Space view is session-based and is not linked to study runs; a study can run the shape detector (`detect_shapes`) and
+  stores its output separately from interpretation.
+* The agent display is per arm (profile, changes, records), not a live view of agents inside a run.
+* A confirmatory study has been exercised with small functional-size runs in tests only; no confirmatory scientific experiment was run.
+* Variable generation in the HPO controller is still limited to `activity_trend`.
+* No CPU-time or memory limit is enforced per run beyond the timeout (peak memory is recorded).
+
+## 8. Completion levels (separate)
+
+* **Level 1 (software): reached for the study workflow**, subject to the two baseline failures that are environment-related and unchanged,
+  and to the gaps in section 7.
+* **Level 2 (Ziran operational): not claimed.** The operating sequence (conditions → observation / intervention → difference → revision →
+  change of later possibilities → history re-entry → re-revision) can be configured, run and recorded, and reachability and rule-revision records
+  exist; whether such revision *improves* later research is not shown (the functional studies are not evidence).
+* **Level 3 (strong xenoscience): not claimed.** Human-energy independence, human-readability independence, self-reproduction and self-generation
+  of variables / boundaries are not demonstrated; nothing here bears on them.
