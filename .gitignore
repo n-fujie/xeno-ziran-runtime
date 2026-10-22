@@ -28,3 +28,6 @@ research/post_active_inference/results/*/jobs/
 artifacts/zips/
 .cache/
 web-app-build/
+
+# local output of the study layer (experiment directories, packages); each is reproducible from its protocol
+backend/experiments/studies/

@@ -18,6 +18,7 @@ import ReasonView from './views/research/ReasonView';
 import ReductionView from './views/research/ReductionView';
 import HPOView from './views/research/HPOView';
 const LabView = lazy(() => import('./views/lab/LabView'));
+const StudyView = lazy(() => import('./views/study/StudyView'));
 import CompressionView from './views/resolution/CompressionView';
 import DisconnectionView from './views/resolution/DisconnectionView';
 import HiddenDifferenceView from './views/resolution/HiddenDifferenceView';
@@ -58,6 +59,7 @@ const VIEWS: { id: View; label: () => string }[] = [
   { id: 'res_compression', label: () => t('view_res_compression') },
   { id: 'hpo', label: () => t('view_hpo') },
   { id: 'laboratory', label: () => t('view_laboratory') },
+  { id: 'study', label: () => t('view_study') },
 ];
 
 // Static read-only mirror (VITE_STATIC=1): no backend session; only the research views, read from exported result
@@ -71,7 +73,7 @@ const RESEARCH = staticViews as View[];
 // stay on the public research-results site, opened from the app in the system browser.
 const RESULTS_SITE = 'https://ziran-xeno-simulator.vercel.app';
 const AVAILABLE: View[] = STATIC ? RESEARCH
-  : VIEWS.map((v) => v.id).filter((v) => v !== 'overview' && !(NATIVE && RESEARCH.includes(v)));
+  : VIEWS.map((v) => v.id).filter((v) => v !== 'overview' && !(NATIVE && RESEARCH.includes(v)) && !(v === 'study' && (NATIVE || WEBRT)));
 const DEFAULT_VIEW: View = STATIC ? 'overview' : 'network';
 const labelOf = (v: View) => VIEWS.find((x) => x.id === v)?.label() ?? v;
 
@@ -184,7 +186,7 @@ export default function App() {
             experiment result files. No simulation runs on this page. The interactive simulator runs in your browser at{' '}
             <a href="/app/">/app/</a> (smaller workloads), or on a local server for full-size runs.</div>
         )
-      ) : view !== 'laboratory' && <ControlBar />}
+      ) : view !== 'laboratory' && view !== 'study' && <ControlBar />}
       {WEBRT && (
         <div className="static-note small">This simulator runs in your browser tab: the engine is downloaded from this site once and
           nothing you enter is sent anywhere. Workloads are smaller than in the desktop runtime, and floating-point results can
@@ -249,6 +251,7 @@ export default function App() {
             {view === 'res_compression' && <CompressionView />}
             {view === 'hpo' && <HPOView />}
             {view === 'laboratory' && <LabView />}
+            {view === 'study' && <StudyView />}
             {view === 'overview' && (
               <div className="entry">
                 <Orientation views={AVAILABLE.filter((v) => v !== 'overview').map((v) => ({ id: v, label: labelOf(v) }))}

@@ -10,7 +10,7 @@ import { Mirror } from '../lod/mirror';
 export type View = 'network' | 'shape' | 'address' | 'map' | 'globe' | 'timeline' | 'compare' | 'practice'
   | 'reduction' | 'reason' | 'phases' | 'primitives'
   | 'res_matrix' | 'res_hidden' | 'res_penetration' | 'res_structure' | 'res_disconnection' | 'res_compression'
-  | 'hpo' | 'laboratory' | 'overview';
+  | 'hpo' | 'laboratory' | 'study' | 'overview';
 export const GRAPH_VIEWS: View[] = ['network', 'shape', 'address', 'map', 'globe'];
 
 export interface ConsoleEntry { id: number; text: string; report?: CommandReport; error?: string; suggestions?: string[] }

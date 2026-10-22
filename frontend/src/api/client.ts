@@ -108,7 +108,61 @@ export const api = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   experiment: <T = any>(name: string) => j<T>(`/api/experiments/${name}`),
   primitives: () => j<PrimitiveEntry[]>('/api/experiments/primitives'),
+  // Studies (local runtime only): protocols, runs, analysis, reports, packages, replay and reproduction.
+  studyTemplates: () => j<Record<string, StudyProtocol>>('/api/studies/templates'),
+  studyValidate: (protocol: StudyProtocol) => post<StudyValidation>('/api/studies/validate', { protocol }),
+  studyCreate: (protocol: StudyProtocol) => post<StudySummary>('/api/studies', { protocol }),
+  studies: () => j<StudySummary[]>('/api/studies'),
+  study: (id: string) => j<StudyDetail>(`/api/studies/${id}`),
+  studyStatus: (id: string) => j<StudyStatus>(`/api/studies/${id}/status`),
+  studyLog: (id: string, limit = 200) => j<{ at: string; event: string; [k: string]: unknown }[]>(`/api/studies/${id}/log?limit=${limit}`),
+  studyRun: (id: string, procs: number) => post<StudyStatus>(`/api/studies/${id}/run`, { procs }),
+  studyStop: (id: string) => post<StudyStatus>(`/api/studies/${id}/stop`, {}),
+  studyAmend: (id: string, path: string, value: unknown, reason: string) =>
+    post<Record<string, unknown>>(`/api/studies/${id}/amend`, { path, value, reason }),
+  studyRuns: (id: string) => j<StudyRunRow[]>(`/api/studies/${id}/runs`),
+  studyRunRecord: (id: string, arm: string, k: number) =>
+    j<StudyRunRecord>(`/api/studies/${id}/runs/${encodeURIComponent(arm)}/${k}`),
+  studyReplay: (id: string, arm: string, k: number) =>
+    post<{ agreement: boolean; metrics_differing: string[]; condition: string }>(`/api/studies/${id}/runs/${encodeURIComponent(arm)}/${k}/replay`, {}),
+  studyAnalyse: (id: string) => post<StudyAnalysis>(`/api/studies/${id}/analyse`, {}),
+  studyAnalysis: (id: string) => j<StudyAnalysis>(`/api/studies/${id}/analysis`),
+  studyReport: (id: string) => post<{ files: string[]; figures: { file: string; caption: string; png: string | null }[] }>(`/api/studies/${id}/report`, {}),
+  studyReportUrl: (id: string, name: string) => `/api/studies/${id}/report/${name}`,
+  studyReportText: async (id: string, name: string) => (await fetch(`/api/studies/${id}/report/${name}`)).text(),
+  studyPackage: (id: string) => post<{ zip: string; bytes: number; verify: { ok: boolean; files: number } }>(`/api/studies/${id}/package`, {}),
+  studyPackageUrl: (id: string) => `/api/studies/${id}/package.zip`,
+  studyVerify: (id: string) => j<{ ok: boolean; files: number; mismatched: string[]; missing: string[] }>(`/api/studies/${id}/verify`),
+  studyReproduce: (id: string, procs: number) => post<StudySummary>(`/api/studies/${id}/reproduce`, { procs }),
+  studyReproduction: (id: string) => j<{ of: string; identical_share: number; runs_compared: number; differing: unknown[]; condition: string }>(`/api/studies/${id}/reproduction`),
 };
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+export type StudyProtocol = Record<string, any>;
+export interface StudyValidation {
+  valid: boolean; issues: string[]; digest: string; runs?: number; step_runs?: number; high_cost?: boolean;
+  fairness?: { profiles: Record<string, any>; contrasts: { contrast: string; a: string; b: string; differences: Record<string, any>; declared: string[]; undeclared: string[]; equal_on: string[] }[]; controls: Record<string, string> };
+  fairness_issues?: string[];
+}
+export interface StudyStatus {
+  state: string; n_total: number; n_ok: number; n_failed: number; elapsed_s?: number; stop_reason?: string | null; remaining?: number;
+  running?: boolean; runs_on_disk?: number; updated: string;
+}
+export interface StudySummary {
+  id: string; title: string; mode: string; created: string; status: StudyStatus; running: boolean; protocol_digest: string;
+  n_runs: number; reproduces: string | null; not_evidence: boolean; environment: string;
+}
+export interface StudyDetail extends StudySummary {
+  protocol: StudyProtocol; registered_digest: string; manifest: Record<string, any>; amendments: Record<string, any>[];
+  fairness: NonNullable<StudyValidation['fairness']>; has_analysis: boolean; has_report: boolean; has_package: boolean;
+}
+export interface StudyRunRow {
+  arm: string; index: number; gen: number; seed: number; status: string; error?: string | null; wall_s?: number | null;
+  peak_rss_mb?: number | null; metrics: Record<string, number | null>; controller_changes: number; protocol_changes: number;
+}
+export type StudyRunRecord = Record<string, any>;
+export type StudyAnalysis = Record<string, any>;
+/* eslint-enable @typescript-eslint/no-explicit-any */
 
 export interface PrimitiveEntry {
   primitive: string; name: string; definition: string; implementation: string[]; flags: string[]; tests: string[];
