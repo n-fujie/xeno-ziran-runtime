@@ -28,7 +28,7 @@ from typing import Any
 
 SCHEMA = "xzr.study/1"
 MODES = ("functional", "exploratory", "confirmatory")
-ENV_KINDS = ("hpo-world", "lab-population")
+ENV_KINDS = ("hpo-world", "lab-population", "ards")
 CONTROLLER_MODES = ("static", "recursive", "random")
 # seed ranges already used by the published experiments (hpo.experiments.RANGES and development seeds): (gen, engine)
 USED_GEN = [(0, 8), (100, 600), (3000, 3600), (4000, 4600), (4500, 5100), (5000, 5600), (9000, 9100), (9500, 9600)]
@@ -45,6 +45,9 @@ USED_ENGINE = [
 ]
 FUNCTIONAL_GEN = (7000, 8000)
 FUNCTIONAL_ENGINE = (70000, 80000)
+# ARDS (pa-simulation-environment) accepts only replicates 3980-3989 in its software-test mode (studyGuard.assertRunAllowed); the bridge never
+# uses another mode, so an ARDS study is a functional check by construction
+ARDS_TEST_REPLICATES = (3980, 3990)
 HIGH_COST_STEP_RUNS = 200_000  # runs × (warm-up + horizon) beyond this need an explicit approval record
 VOLATILE = ("amendments", "freeze", "approval_log")
 
@@ -83,6 +86,12 @@ def n_runs(doc: dict) -> int:
 def step_runs(doc: dict) -> int:
     env = doc.get("environment", {})
     return n_runs(doc) * (int(env.get("warmup", 40)) + int(env.get("horizon", 240)))
+
+
+def _validate_ards(doc: dict) -> list[str]:
+    from . import ards
+
+    return ards.validate(doc)
 
 
 def _check_arm_settings(arm: dict, issues: list[str]) -> None:
@@ -144,6 +153,8 @@ def validate(doc: dict) -> list[str]:
         if not a.get("description"):
             issues.append(f"arm {a['name']}: a description (algorithm, information used, what it may revise) is required")
         _check_arm_settings(a, issues)
+    if env.get("kind") == "ards":
+        issues += _validate_ards(doc)
     try:
         seeds = seed_list(doc)
     except (KeyError, TypeError, ValueError) as e:
@@ -174,6 +185,8 @@ def validate(doc: dict) -> list[str]:
     in_functional = all(FUNCTIONAL_GEN[0] <= g < FUNCTIONAL_GEN[1] for g in gens) and all(
         FUNCTIONAL_ENGINE[0] <= e < FUNCTIONAL_ENGINE[1] for e in engs
     )
+    if env.get("kind") == "ards":  # the reserved range of this environment is ARDS's software-test block
+        in_functional = all(ARDS_TEST_REPLICATES[0] <= g < ARDS_TEST_REPLICATES[1] and g == e for g, e in seeds)
     if mode == "functional" and not in_functional:
         issues.append(f"functional runs use the reserved seed range gen {FUNCTIONAL_GEN}, engine {FUNCTIONAL_ENGINE}")
     if mode in ("exploratory", "confirmatory"):
@@ -248,6 +261,10 @@ def _effective_history(arm: dict, doc: dict) -> bool:
 
 
 def arm_profile(arm: dict, doc: dict) -> dict:
+    if doc["environment"].get("kind") == "ards":
+        from . import ards
+
+        return ards.profile(arm, doc["environment"])
     c = arm.get("controller", {})
     env = doc["environment"]
     return {

@@ -46,6 +46,10 @@ ignore = ["E731", "SIM108", "B905"]
 [tool.ruff.lint.per-file-ignores]
 # generated prose (Methods / Results text) is kept as readable sentences
 "xzr/study/report.py" = ["E501"]
+"xzr/study/ards.py" = ["E501"]
+"xzr/study/protocol.py" = ["E501"]
+"xzr/study/templates.py" = ["E501"]
+"tests/test_study_ards.py" = ["E501"]
 
 [tool.mypy]
 python_version = "3.12"

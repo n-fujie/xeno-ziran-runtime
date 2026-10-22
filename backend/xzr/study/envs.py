@@ -306,7 +306,13 @@ def run_lab_population(doc: dict, arm: dict, gen: int, seed: int) -> dict:
     return clean(out)
 
 
-RUNNERS = {"hpo-world": run_hpo_world, "lab-population": run_lab_population}
+def run_ards(doc: dict, arm: dict, gen: int, seed: int) -> dict:
+    from . import ards
+
+    return ards.run_ards(doc, arm, gen, seed)
+
+
+RUNNERS = {"hpo-world": run_hpo_world, "lab-population": run_lab_population, "ards": run_ards}
 
 
 def run_one(doc: dict, arm_name: str, gen: int, seed: int) -> dict:

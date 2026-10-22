@@ -219,7 +219,85 @@ def lab_population_study(n_seeds: int = 2, sizes: tuple[int, ...] = (3, 20)) -> 
     }
 
 
-TEMPLATES = {"revision-study": revision_study, "quick": quick, "lab-population": lab_population_study}
+def ards_comparison(n_seeds: int = 2, ards_env: str = "env2") -> dict:
+    """ARDS's own arms on its own environment, as a functional check of the integration (ARDS software-test replicates only)."""
+
+    def arm(name: str, ards_arm: str, description: str) -> dict:
+        return {"name": name, "description": description, "ards": {"arm": ards_arm}}
+
+    arms = [
+        arm(
+            "existing-blind",
+            "EXISTING-blind",
+            "ARDS's independent re-implementation of the existing procedure with observer-side information "
+            "only: revises the observation configuration from data, no memory, no history. Same information and permissions as the PA arms.",
+        ),
+        arm(
+            "pa-validated",
+            "V2-PA",
+            "ARDS's PA arm with validated adoption: reads the observer view, keeps and re-injects its own history, may "
+            "revise the same five observation operations (each validated on disjoint seeds).",
+        ),
+        arm(
+            "pa-no-reinjection",
+            "V2-PA-no-reinjection",
+            "As pa-validated, but the memory is stored and never read (history ablation).",
+        ),
+        arm(
+            "fixed-noise",
+            "FIXED-noise",
+            "Always halve sensor noise at the start; reads nothing (a fixed strategy; software-test parameter).",
+        ),
+        arm("control-v1-a", "V1-A", "Phase 3 A-fixed (frozen code, unchanged): fixed observation, no memory."),
+    ]
+    reps = [[3980 + i, 3980 + i] for i in range(n_seeds)]
+    return {
+        "schema": SCHEMA,
+        "title": "ARDS arms through the study workflow",
+        "question": "Do ARDS's arms run, verify and produce comparable records when driven from a study protocol? (integration check; "
+        "ARDS software-test replicates, no exploration or study data)",
+        "mode": "functional",
+        "environment": {"kind": "ards", "ards_env": ards_env},
+        "arms": arms,
+        "seeds": {"list": reps},
+        "metrics": {
+            "primary": ["unseen_coverage"],
+            "secondary": [
+                "seen_coverage",
+                "all_coverage",
+                "unseen_fdr",
+                "body_runs",
+                "setup_seconds",
+                "adopted",
+                "changes_applied",
+                "verification_failed",
+            ],
+        },
+        "contrasts": [
+            {"id": "C1", "a": "pa-validated", "b": "existing-blind", "varies": ["history_reinsertion"], "role": "primary"},
+            {"id": "C2", "a": "pa-validated", "b": "pa-no-reinjection", "varies": ["history_reinsertion"], "role": "secondary"},
+            {
+                "id": "C3",
+                "a": "pa-validated",
+                "b": "fixed-noise",
+                "varies": ["controller", "information", "revision_authority", "history_reinsertion"],
+                "role": "secondary",
+            },
+        ],
+        "criteria": {"success": [], "failure": []},
+        "stop": {"max_wall_seconds": 3600, "timeout_per_run_s": 900, "max_failures": 2},
+        "budget": {"max_runs": 100, "procs": 2},
+        "notes": "ARDS's own gate accepts only replicates 3980-3989 in test mode; this study cannot be exploratory or confirmatory. The "
+        "ARDS Phase 3 frozen assets and Phase 4 records are not read for results and are not written.",
+    }
+
+
+TEMPLATES = {
+    "revision-study": revision_study,
+    "quick": quick,
+    "lab-population": lab_population_study,
+    "ards-comparison": ards_comparison,
+}
 
 
 def template(name: str, **kw) -> dict:
