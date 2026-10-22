@@ -251,6 +251,19 @@ def information_of(arm: dict, env: dict) -> dict:
     }
 
 
+def _effective_resources(arm: dict, doc: dict) -> float | None:
+    if doc["environment"].get("kind") != "hpo-world":
+        return None
+    from .envs import arm_settings
+
+    eff = arm_settings(arm, doc["environment"])
+    if not eff:
+        return None
+    from ..hpo.field import validate as _validate
+
+    return float(_validate(eff)["resources"]["pool_per_step"])
+
+
 def _effective_history(arm: dict, doc: dict) -> bool:
     if doc["environment"].get("kind") != "hpo-world":
         return False
@@ -289,6 +302,7 @@ def arm_profile(arm: dict, doc: dict) -> dict:
             "horizon": int(env.get("horizon", 240)),
             "epoch": 60,
             "systems": (arm.get("population") or {}).get("n"),
+            "resource_pool_per_step": _effective_resources(arm, doc),
         },
     }
 

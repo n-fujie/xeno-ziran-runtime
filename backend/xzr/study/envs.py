@@ -217,6 +217,17 @@ def run_hpo_world(doc: dict, arm: dict, gen: int, seed: int) -> dict:
                 for r in ctl.end_epoch(f, ep):
                     changes.append({**r, "source": "controller"})
         rec["metrics"] = measure(f, ref)
+        meta_tr = ctl.meta.trace if ctl.meta else []
+        rec["metrics"].update(  # what the controller did to its own configuration and rules (Ziran records as numbers)
+            {
+                "controller_changes": float(len(ctl.trace)),
+                "controller_rejected": float(len(ctl.rejected)),
+                "meta_revisions": float(sum(1 for m in meta_tr if m["revision"] == "parameter")),
+                "meta_exhausted": float(sum(1 for m in meta_tr if m["revision"] == "exhausted")),
+                "stopped_early": float(f.stopped_at is not None),
+                "stop_step": float(f.stopped_at - f.t0) if f.stopped_at is not None else None,
+            }
+        )
         acts = _acts_per_epoch(f, epochs)
         rec["controller"] = {
             "mode": ctl.mode,

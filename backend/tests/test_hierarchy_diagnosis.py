@@ -52,3 +52,29 @@ def test_first_divergence_from_the_reference_hierarchy_is_at_a_disconnected_subg
     assert first is not None
     assert first[2] > 1, f"first divergence at a connected sub-graph {first}: the degenerate-eigenspace explanation does not hold"
     assert connected_mismatches == 0
+
+
+def test_stored_lab_record_m2_differs_only_in_chamber_membership_not_in_dynamics():
+    """test_published_records_replay fails for m2-run-9100.json (also at the commit that produced it). The record's first steps agree with a fresh run
+    in every per-chamber activity and shutter value; two chambers' retained memory differ with their sum preserved and the conduit count differs by one:
+    a few configurations sit in the neighbouring chamber. The dynamics agree; the hierarchy partition (the chambers) differs: the same cause."""
+    import json
+    from pathlib import Path
+
+    import pytest
+
+    pytest.importorskip("mujoco")
+    from xzr.lab.record import LabRun
+
+    rec = json.loads((Path(__file__).resolve().parents[1] / "experiments" / "results" / "lab" / "m2-run-9100.json").read_text())
+    r = LabRun(rec["config"])
+    for t in range(3):
+        r.step()
+        a, b = r.record()["steps"][t], rec["steps"][t]
+        assert np.allclose(a["activity"], b["activity"], atol=1e-3) and np.allclose(a["shutter"], b["shutter"], atol=1e-3)
+        x, y = np.array(a["memory"], float), np.array(b["memory"], float)
+        differing = np.flatnonzero(np.abs(x - y) > 1e-3)
+        assert (
+            len(differing) <= 4 and abs(x[differing].sum() - y[differing].sum()) < 1e-3
+        )  # memory moved between chambers, none created or lost
+        assert abs(len(a["conduits"]) - len(b["conduits"])) <= 2

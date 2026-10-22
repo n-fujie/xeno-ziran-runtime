@@ -559,3 +559,96 @@ def test_missing_values_and_a_zero_effect_are_different(tmp_path):
         and one["ci95_mean"][0] is None
         or one["ci95_mean"][0] != one["ci95_mean"][0]
     )
+
+
+# ------------------------------------------------------------------------------------------ failure, exhaustion, stop (Scenario F)
+def test_scarcity_study_records_revision_exhaustion_blindness_and_stop(tmp_path):
+    d = templates.template("scarcity-study", n_seeds=2, horizon=600)
+    keep = {"fixed-moderate", "recursive-meta-severe", "recursive-meta-none", "recursive-meta-abundant"}
+    d["arms"] = [a for a in d["arms"] if a["name"] in keep]
+    d["contrasts"] = [c for c in d["contrasts"] if {c["a"], c["b"]} <= keep]
+    d["hypotheses"] = []
+    assert P.validate(d) == [] and P.fairness_issues(d) == []
+    st = runner.Study.create(d, tmp_path)
+    st.execute(procs=3)
+    a = analysis.analyse(st)
+    desc = {
+        arm: {
+            m: a["descriptives"][arm][m].get("mean")
+            for m in ("fired_samples", "meta_revisions", "meta_exhausted", "stopped_early")
+        }
+        for arm in a["arms"]
+    }
+    assert desc["recursive-meta-none"]["fired_samples"] == 0.0  # no resources: every measurement fails, nothing ignites
+    assert (
+        desc["recursive-meta-severe"]["meta_revisions"] >= 2 and desc["recursive-meta-severe"]["meta_exhausted"] >= 1
+    )  # failing rules revised, then exhausted
+    assert (
+        desc["recursive-meta-abundant"]["fired_samples"] > desc["recursive-meta-severe"]["fired_samples"]
+    )  # scarcity costs what the operations can do
+    assert desc["fixed-moderate"]["stopped_early"] is not None and desc["fixed-moderate"]["meta_revisions"] == 0
+    z = a["ziran"]["recursive-meta-severe"]["meta_revision"]
+    assert z["exhausted_rules"] >= 1 and z["runs_with_a_revision"] == 2
+    run = next(r for r in st.runs() if r["arm"] == "recursive-meta-severe")
+    assert any(m["revision"] == "exhausted" for m in run["controller"]["meta_trace"])  # the record names what was exhausted
+    # the revision reached the next decisions: the allocation changes made after a revision use the revised step
+    steps = [m["to"] for m in run["controller"]["meta_trace"] if m["revision"] == "parameter" and m["param"] == "alloc_step"]
+    assert steps == sorted(steps) and steps[0] > 1.5
+
+
+# ------------------------------------------------------------------------------------------ generated text and numbers
+FORBIDDEN = (
+    "prove",
+    "proof",
+    "demonstrat",
+    "confirms the theory",
+    "validates the theory",
+    "superior",
+    "outperform",
+    "breakthrough",
+    "novel",
+    "first to",
+)
+
+
+def test_generated_text_makes_no_claim_the_experiment_cannot_support(finished):
+    an = analysis.analyse(finished)
+    report.build(finished, an)
+    rep = finished.path / "report"
+    for name in ("methods.md", "results.md"):
+        text = (rep / name).read_text().lower()
+        assert not [w for w in FORBIDDEN if w in text], (name, [w for w in FORBIDDEN if w in text])
+    results = (rep / "results.md").read_text()
+    assert (
+        "FUNCTIONAL CHECK" in results and "Interpretation boundary" in results and "not a statement about any theory" in results
+    )
+    # every verdict line is about the declared criteria; no sentence interprets an effect as support for a proposition
+    assert "supports" not in results.lower() and "theory" not in results.lower().replace(
+        "not a statement about any theory", ""
+    ).replace("theoretical proposition", "")
+
+
+def test_numbers_in_the_outputs_equal_the_stored_run_logs(finished):
+    import csv
+
+    an = analysis.analyse(finished)
+    report.build(finished, an)
+    rep = finished.path / "report"
+    runs = list(csv.DictReader((rep / "runs.csv").open()))
+    stored = {(r["arm"], r["index"]): r for r in finished.runs()}
+    for row in runs:
+        s = stored[(row["arm"], int(row["index"]))]
+        assert int(row["seed"]) == s["seed"] and float(row["fired_samples"]) == s["metrics"]["fired_samples"]
+    for row in csv.DictReader((rep / "descriptives.csv").open()):
+        vals = (
+            [float(r["fired_samples"]) for r in runs if r["arm"] == row["arm"] and r["status"] == "ok"]
+            if row["metric"] == "fired_samples"
+            else None
+        )
+        if vals:
+            assert float(row["mean"]) == pytest.approx(sum(vals) / len(vals)) and int(row["n"]) == len(vals)
+    c1 = next(r for r in csv.DictReader((rep / "contrasts.csv").open()) if r["metric"] == "fired_samples")
+    a = [float(r["fired_samples"]) for r in runs if r["arm"] == c1["a"]]
+    b = [float(r["fired_samples"]) for r in runs if r["arm"] == c1["b"]]
+    assert float(c1["mean_diff"]) == pytest.approx(sum(x - y for x, y in zip(a, b, strict=True)) / len(a))
+    assert f"{float(c1['mean_diff']):.3g}" in (rep / "results.md").read_text()  # the formatted table carries the same number

@@ -489,6 +489,126 @@ def multi_system(n_seeds: int = 4, n: int = 20, horizon: int = 120) -> dict:
     }
 
 
+def scarcity_study(
+    n_seeds: int = 6,
+    horizon: int = 600,
+    mode: str = "functional",
+    gen_base: int = FUNCTIONAL_GEN[0],
+    engine_base: int = FUNCTIONAL_ENGINE[0],
+) -> dict:
+    """Failure, exhaustion, stop and revision of the revision rules under scarce measurement resources (functional template).
+
+    Operations stay blind for lack of resources, the controller's rules keep failing to remove the blindness, meta-revision revises and finally
+    exhausts them, and when every operation has ceased for an epoch the study of that run stops. Every outcome is recorded; none is presumed good."""
+
+    def scarce(pool: float) -> dict:
+        return {"resources": {"pool_per_step": pool}, "stop": {"all_ceased": True}}
+
+    rec = {"mode": "recursive", "trace_reachability": True}
+    meta = {**rec, "meta": True}
+    arms = [
+        _arm(
+            "fixed-moderate",
+            "History re-entry on, observation configuration never revised; moderately scarce measurement resources (0.5 per step).",
+            settings=scarce(0.5),
+        ),
+        _arm(
+            "recursive-moderate",
+            "The HPO-003 controller reconfigures the instruments from the reasons for blindness; moderate scarcity.",
+            controller=dict(rec),
+            settings=scarce(0.5),
+        ),
+        _arm(
+            "recursive-meta-moderate",
+            "As recursive-moderate; the controller's own rule parameters are revised (and rules exhausted) when a rule's change did not remove its blindness twice in a row.",
+            controller=meta,
+            settings=scarce(0.5),
+        ),
+        _arm(
+            "random-matched-moderate",
+            "Random valid changes, the same number per epoch as recursive-moderate on the same seed.",
+            controller={"mode": "random", "match_budget_of": "recursive-moderate", "trace_reachability": True},
+            settings=scarce(0.5),
+        ),
+        _arm(
+            "recursive-meta-severe",
+            "As recursive-meta-moderate with severe scarcity (0.05 per step).",
+            controller=meta,
+            settings=scarce(0.05),
+        ),
+        _arm(
+            "recursive-meta-none",
+            "As recursive-meta-moderate with no measurement resources at all (0 per step): every measurement fails.",
+            controller=meta,
+            settings=scarce(0.0),
+        ),
+        _arm(
+            "recursive-meta-abundant",
+            "As recursive-meta-moderate with the default resources (2.4 per step): the reference for what scarcity does.",
+            controller=meta,
+            settings={"stop": {"all_ceased": True}},
+        ),
+    ]
+    contrasts = [
+        {"id": "C1", "a": "recursive-meta-moderate", "b": "recursive-moderate", "varies": ["meta_revision"], "role": "primary"},
+        {
+            "id": "C2",
+            "a": "recursive-moderate",
+            "b": "fixed-moderate",
+            "varies": ["controller", "revision_authority"],
+            "role": "secondary",
+        },
+        {"id": "C3", "a": "recursive-moderate", "b": "random-matched-moderate", "varies": ["controller"], "role": "secondary"},
+        {"id": "C4", "a": "recursive-meta-severe", "b": "recursive-meta-moderate", "varies": ["compute"], "role": "secondary"},
+        {"id": "C5", "a": "recursive-meta-none", "b": "recursive-meta-severe", "varies": ["compute"], "role": "secondary"},
+        {"id": "C6", "a": "recursive-meta-moderate", "b": "recursive-meta-abundant", "varies": ["compute"], "role": "secondary"},
+    ]
+    return {
+        "schema": SCHEMA,
+        "title": "Revision failure, rule exhaustion, stop and meta-revision under scarce resources",
+        "question": "When measurement resources are scarce and the controller's rules keep failing to remove blindness, what do rule revision, rule exhaustion and "
+        "stopping do to what the operations can do afterwards?",
+        "hypotheses": [
+            {
+                "id": "H1",
+                "text": "Meta-revision of the rule parameters changes the controller's later changes (C1); no direction is assumed.",
+                "contrasts": ["C1"],
+            }
+        ],
+        "mode": mode,
+        "environment": {
+            "kind": "hpo-world",
+            "world": {"n": 800, "regime": "intermittent"},
+            "warmup": 40,
+            "horizon": horizon,
+            "detect_shapes": False,
+            "keep_trace": False,
+        },
+        "arms": arms,
+        "seeds": {"gen_base": gen_base, "engine_base": engine_base, "n": n_seeds},
+        "metrics": {
+            "primary": ["fired_samples"],
+            "secondary": [
+                "unobservable_samples",
+                "controller_changes",
+                "controller_rejected",
+                "meta_revisions",
+                "meta_exhausted",
+                "stopped_early",
+                "stop_step",
+                "ceased_share",
+                "ignitions",
+            ],
+        },
+        "contrasts": contrasts,
+        "criteria": {"success": [], "failure": []},
+        "stop": {"max_wall_seconds": 3600, "timeout_per_run_s": 300, "max_failures": 3},
+        "budget": {"max_runs": 1000, "procs": 2},
+        "notes": "Functional template. Scarcity is imposed by settings.resources.pool_per_step; a revision of the rules, an exhausted rule or a stop is a record, not evidence "
+        "of improvement or failure of any theory.",
+    }
+
+
 TEMPLATES = {
     "revision-study": revision_study,
     "quick": quick,
@@ -496,6 +616,7 @@ TEMPLATES = {
     "ards-comparison": ards_comparison,
     "shared-comparison": shared_comparison,
     "multi-system": multi_system,
+    "scarcity-study": scarcity_study,
 }
 
 
