@@ -153,11 +153,16 @@ class Controller:
     of uniformly random valid changes (``mode='random'``, the control: any change vs result-driven change)."""
 
     def __init__(self, mode: str = "recursive", seed: int = 0, budget: list[int] | None = None,
-                 trace_reachability: bool = False, meta: MetaReviser | None = None):
+                 trace_reachability: bool = False, meta: MetaReviser | None = None,
+                 authority: list[str] | None = None, max_changes_per_epoch: int | None = None):
         assert mode in ("recursive", "random", "static")
         self.mode = mode
         self.trace_reachability = trace_reachability  # opt-in: record what each change opened or closed
         self.meta = meta  # opt-in: revise this controller's own rule parameters (metarevision.py)
+        # revision authority: the sandbox path patterns this controller may change (None = all of the sandbox) and the
+        # most changes it may make per epoch (None = unlimited); a change outside either is rejected and recorded
+        self.authority = None if authority is None else set(authority)
+        self.max_changes_per_epoch = max_changes_per_epoch
         self.rules = meta.rules if meta is not None else RuleTable()
         self.rng = np.random.default_rng([seed, 0x5A4952])
         self.trace: list[dict] = []
@@ -181,6 +186,10 @@ class Controller:
         applied = []
         for ch, causes in changes:
             try:
+                if self.authority is not None and _pattern(ch["path"]) not in self.authority:
+                    raise SandboxError(f"{ch['path']}: outside this controller's revision authority")
+                if self.max_changes_per_epoch is not None and len(applied) >= self.max_changes_per_epoch:
+                    raise SandboxError(f"{ch['path']}: over the change budget of {self.max_changes_per_epoch} per epoch")
                 before = reachability(f) if self.trace_reachability else None
                 eid = apply(f, ch, causes)
                 rec = {**ch, "event": eid, "t": f.world.t, "epoch": epoch}

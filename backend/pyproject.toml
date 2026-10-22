@@ -43,6 +43,10 @@ target-version = "py311"
 select = ["E", "F", "W", "I", "B", "UP", "SIM", "A", "BLE"]
 ignore = ["E731", "SIM108", "B905"]
 
+[tool.ruff.lint.per-file-ignores]
+# generated prose (Methods / Results text) is kept as readable sentences
+"xzr/study/report.py" = ["E501"]
+
 [tool.mypy]
 python_version = "3.12"
 ignore_missing_imports = true

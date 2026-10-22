@@ -20,6 +20,9 @@ ALLOWED = {
     "hpo": {"hpo", "runtime", "lod", "experiments"},
     # laboratory layer: apparatus states derived from the runtime, observing an HPO field; never service or practice
     "lab": {"lab", "hpo", "runtime", "lod", "experiments"},
+    # study layer: protocols, seeded batch execution, analysis and paper outputs over hpo / lab (and the shape detector);
+    # never service, practice, interpret or reasonlab. Only the service imports it.
+    "study": {"study", "hpo", "lab", "runtime", "lod", "experiments", "shapes"},
 }
 
 
@@ -65,6 +68,7 @@ def test_experiment_layer_is_not_imported_by_the_product_layers():
             assert "experiments" not in _internal_imports(p), p
             assert "hpo" not in _internal_imports(p), p
             assert "lab" not in _internal_imports(p), p
+            assert "study" not in _internal_imports(p), p
     assert _internal_imports(ROOT / "shapes" / "multiscale.py") <= {"runtime", "lod", "shapes"}
 
 
