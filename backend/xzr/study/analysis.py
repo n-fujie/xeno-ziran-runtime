@@ -343,6 +343,7 @@ def analyse(study: Study, write: bool = True) -> dict:
         "fairness": P.fairness(doc),
         "amendments": amends,
         "ziran": ziran_records(doc, runs, arms),
+        "totalobs": totalobs_records(doc, runs, arms),
         "meta_followup": meta_followup(doc, runs, by, len(seeds)),
         "censoring": censoring(doc, runs, arms),
         "negative_results_note": "Every declared contrast and metric is listed above, including null and reversed effects.",
@@ -436,6 +437,20 @@ def censoring(doc: dict, runs: list[dict], arms: list[str]) -> dict:
             "runs_stopped_early": sum(1 for r in runs if r["arm"] == a and r.get("stopped_at") is not None),
         }
     return out
+
+
+def totalobs_records(doc: dict, runs: list[dict], arms: list[str]) -> dict | None:
+    """Summary of the total-observation line's runs (reasons, operations, reachability effects, questions, hypotheses, SSS effects); None for other environments."""
+    if doc["environment"].get("kind") != "total-observation":
+        return None
+    from ..totalobs import summary
+
+    prim = doc["metrics"]["primary"][0]
+    means = {}
+    for a in arms:
+        xs = [r["metrics"][prim] for r in runs if r["arm"] == a and r["status"] == "ok" and (r.get("metrics") or {}).get(prim) is not None]
+        means[a] = float(np.mean(xs)) if xs else None
+    return summary.study_summary(doc, runs, arms, means)
 
 
 def ziran_records(doc: dict, runs: list[dict], arms: list[str]) -> dict:

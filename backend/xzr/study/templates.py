@@ -848,5 +848,10 @@ TEMPLATES = {
 }
 
 
+from ..totalobs import templates as _totalobs_templates  # noqa: E402
+
+TEMPLATES.update(_totalobs_templates.TEMPLATES)
+
+
 def template(name: str, **kw) -> dict:
     return copy.deepcopy(TEMPLATES[name](**kw))

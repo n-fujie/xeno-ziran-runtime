@@ -70,6 +70,13 @@ def methods(study: Study, an: dict) -> str:
                 "A shape detector (xzr.shapes) read the engine's step deltas; its output is a structural measurement "
                 "and no interpretation is produced."
             )
+    elif env["kind"] == "total-observation":
+        lines.append(
+            "A synthetic regional world (xzr.totalobs): activity spreading between regions with finite speed and delay, pulsed sources, observers that read, absorb, "
+            "wear and report through a delayed, cuttable channel, a record store that can lose records, and interventions that leave marks. A research loop of several "
+            "generations (observe, identify, diagnose, change question / hypothesis / experiment / evaluation rule, intervene, re-enter history) acts on it. A verifier "
+            "that reads the world's state scores what was identified; no arm reads the verifier. The world is a finite model, not reality as a whole and not the Earth."
+        )
     else:
         lines.append(
             f"The shared physical laboratory (xzr.lab) with populations of scientific systems, {env.get('horizon')} steps."
@@ -78,6 +85,19 @@ def methods(study: Study, an: dict) -> str:
     prof = an["fairness"]["profiles"]
     for a in doc["arms"]:
         p = prof[a["name"]]
+        if env["kind"] == "total-observation":
+            lines += [
+                f"### {a['name']}",
+                a["description"],
+                "",
+                f"- policy: {p['policy']}; history: {p['history']}; rule revision: {p['meta_revision']}; strong revision: {', '.join(p['strong_revision']) or 'none'}",
+                f"- operations permitted: {', '.join(p['revision_authority']) or 'none'}; generations {p['compute']['generations']} x {p['compute']['gen_steps']} steps; "
+                f"at most {p['compute']['max_ops_per_generation']} operations per generation; budget {p['compute']['budget']}",
+                f"- resources: pool {p['resources']['pool_per_step']} blocks per step, {p['resources']['sensors']} sensors at the start; environment overrides: "
+                f"{json.dumps(p['environment'], sort_keys=True) if p['environment'] else 'none'}",
+                "",
+            ]
+            continue
         lines += [
             f"### {a['name']}",
             a["description"],
@@ -209,8 +229,37 @@ def results(study: Study, an: dict) -> str:
                     f"| {a} | {m} | {d['n']} | {_f(d['mean'])} | {_f(d['median'])} | {_f(d['sd'])} | "
                     f"[{_f(d['ci95_mean'][0])}, {_f(d['ci95_mean'][1])}] | {d['undefined']} |"
                 )
-    z = an["ziran"]
-    lines += ["", "## Ziran records"]
+    z = an["ziran"] if not an.get("totalobs") else {}
+    lines += ["", "## Ziran records"] if z else []
+    to = an.get("totalobs")
+    if to:
+        lines += ["", "## Total observation records (counts; no interpretation)", f"> {to['scope']}"]
+        for a, e in to["arms"].items():
+            hy = ", ".join(f"{k} {v}" for k, v in sorted(e["hypothesis_tests"].items())) or "none"
+            rs = ", ".join(f"{k} {v}" for k, v in e["reasons"].items()) or "none"
+            lines.append(
+                f"- **{a}** ({e['runs']} runs, {e['generations']} generations): reasons found: {rs}. Reachability after the generation (dynamic): "
+                f"{', '.join(f'{k} {v}' for k, v in sorted(e['reachability']['dynamic'].items()))}. Hypothesis tests: {hy}"
+                f"; estimate vs verifier mean relative error {_f(e['estimate_vs_verifier_relative_error_mean'])}; supported but more than 50% off the verifier: "
+                f"{e['supported_but_off_by_more_than_50pct_from_the_verifier']}. Question changes {e['condition_changes'].get('question', 0)}, evaluation-rule changes "
+                f"{e['condition_changes'].get('evaluation-rule', 0)}, grammar changes {e['condition_changes'].get('grammar', 0)}; decisions suppressed by the cooldown "
+                f"{e['suppressed_decisions']}; metric definition breaks {e['metric_definition_breaks']['total_breaks']} (not compared across); "
+                f"ontology audit issues in {e['ontology_audit']['runs_with_issues']} runs; stops: {', '.join(f'{k} {v}' for k, v in e['stopped'].items())}."
+            )
+        pl = to.get("planetary") or {}
+        if any(pl.values()):
+            lines += ["", "Planetary-scale structural conditions per arm (synthetic model; `earth_claim` false):"]
+            for a, c in pl.items():
+                if c:
+                    lines.append(f"- {a}: {c['n_met']}/{c['n']} met" + (" (all)" if c["all_met"] else "") + "; not met: " + (", ".join(r["condition"] for r in c["conditions"] if not r["met"]) or "none"))
+        if to.get("sss"):
+            sx = to["sss"]
+            if sx.get("complete"):
+                lines += ["", "Scale / Size / Speed (effects on arm means of the primary metric; undefined where a cell is undefined):",
+                          "- main: " + ", ".join(f"{k} {_f(v)}" for k, v in sx["main"].items()),
+                          "- interaction: " + ", ".join(f"{k} {_f(v)}" for k, v in sx["interaction"].items())]
+            else:
+                lines += ["", f"Scale / Size / Speed: {sx['note']}"]
     for a, e in z.items():
         bits = []
         if "reachability" in e:

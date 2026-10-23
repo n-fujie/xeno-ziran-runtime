@@ -28,7 +28,7 @@ from typing import Any
 
 SCHEMA = "xzr.study/1"
 MODES = ("functional", "exploratory", "confirmatory")
-ENV_KINDS = ("hpo-world", "lab-population", "ards", "shared-oi")
+ENV_KINDS = ("hpo-world", "lab-population", "ards", "shared-oi", "total-observation")
 CONTROLLER_MODES = ("static", "recursive", "random")
 # seed ranges already used by the published experiments (hpo.experiments.RANGES and development seeds): (gen, engine)
 USED_GEN = [(0, 8), (100, 600), (3000, 3600), (4000, 4600), (4500, 5100), (5000, 5600), (9000, 9100), (9500, 9600)]
@@ -85,6 +85,13 @@ def n_runs(doc: dict) -> int:
 
 def step_runs(doc: dict) -> int:
     env = doc.get("environment", {})
+    if env.get("kind") == "total-observation":
+        from ..totalobs import profiles as _tp
+
+        return sum(
+            int(e["generations"]) * int(e["gen_steps"]) + int(e["warmup"])
+            for e in (_tp.effective_env(env, a) for a in doc["arms"])
+        ) * len(seed_list(doc))
     return n_runs(doc) * (int(env.get("warmup", 40)) + int(env.get("horizon", 240)))
 
 
@@ -155,6 +162,10 @@ def validate(doc: dict) -> list[str]:
         _check_arm_settings(a, issues)
     if env.get("kind") in ("ards", "shared-oi"):
         issues += _validate_ards(doc)
+    if env.get("kind") == "total-observation":
+        from ..totalobs import profiles as _tp
+
+        issues += _tp.validate(doc)
     try:
         seeds = seed_list(doc)
     except (KeyError, TypeError, ValueError) as e:
@@ -347,6 +358,10 @@ def arm_profile(arm: dict, doc: dict) -> dict:
         from .shared import profiles
 
         return profiles.profile(arm, doc["environment"])
+    if doc["environment"].get("kind") == "total-observation":
+        from ..totalobs import profiles as _tp
+
+        return _tp.profile(arm, doc["environment"])
     c = arm.get("controller", {})
     env = doc["environment"]
     return {

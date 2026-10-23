@@ -312,7 +312,22 @@ def run_shared_oi(doc: dict, arm: dict, gen: int, seed: int) -> dict:
     return shared_runner.run_arm(doc, arm, gen, seed)
 
 
-RUNNERS = {"hpo-world": run_hpo_world, "lab-population": run_lab_population, "ards": run_ards, "shared-oi": run_shared_oi}
+def run_total_observation(doc: dict, arm: dict, gen: int, seed: int) -> dict:
+    """The autonomous research loop in the synthetic observation world (xzr.totalobs); the arm's own environment overrides are applied over the study's."""
+    from ..totalobs import loop, profiles
+
+    out = loop.run(profiles.effective_env(doc["environment"], arm), arm, gen, seed)
+    out["peak_rss_mb"] = _rss_mb()
+    return clean(out)
+
+
+RUNNERS = {
+    "hpo-world": run_hpo_world,
+    "lab-population": run_lab_population,
+    "ards": run_ards,
+    "shared-oi": run_shared_oi,
+    "total-observation": run_total_observation,
+}
 
 
 def run_one(doc: dict, arm_name: str, gen: int, seed: int) -> dict:
