@@ -198,3 +198,16 @@ def test_variable_classification_keeps_novelty_identification_availability_and_d
     )  # a measured list, possibly empty: never assumed
     assert c["new_operation_possibility"]["operations_that_read_it"]  # some operation reads the variable
     assert "whether adopting it improves any research outcome" in c["claim_boundary"]
+
+
+def test_three_kinds_of_boundary_change_are_told_apart_by_what_they_touch_and_what_comes_first():
+    from xzr.study import boundaries
+
+    r = boundaries.classify(steps=80)
+    disp, obs, inter = r["display range"], r["observation boundary"], r["interaction structure"]
+    assert disp["first_world_difference_step"] is None and not disp["world_differs_at_end"]  # a display never changes the world
+    assert (
+        obs["order"].startswith("the acts differ first") and obs["world_differs_at_end"]
+    )  # an observation boundary acts through the operations
+    assert inter["order"].startswith("the world differs first")  # an interaction structure changes the dynamics itself
+    assert r["state_space_and_grammar"]["settings_keys_changed"] == []
