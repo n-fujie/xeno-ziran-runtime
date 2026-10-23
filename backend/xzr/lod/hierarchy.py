@@ -182,7 +182,7 @@ def _build_hierarchy(a: sp.csr_matrix) -> Hierarchy:
     return hierarchy_from(path, order)
 
 
-# ----------------------------------------------------------------------------------------------- hierarchy method 2 (opt-in, versioned)
+# ------------------------------------------------------------------------------------------ hierarchy method 2 (opt-in, versioned)
 # Method 1 (``build_hierarchy`` above: the default, and the one every stored address and the golden fixture were made
 # with) splits a sub-graph by the second eigenvector of its normalized adjacency. For a sub-graph with several connected
 # components that eigenvalue is degenerate: every vector of the eigenspace is a valid answer and the one a solver returns
