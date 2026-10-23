@@ -89,7 +89,9 @@ class ObserverNet:
     freshness: str = "observation"
     received: int = 0  # the hub's own accounting: records received, and evicted by capacity (a gap against len(store) means records were lost)
     evicted: int = 0
-    per: dict[str, dict] = field(default_factory=dict)  # per-sensor counts of what happened to its observations (verifier-side audit)
+    per: dict[str, dict] = field(
+        default_factory=dict
+    )  # per-sensor counts of what happened to its observations (verifier-side audit)
     cut_zone: set[int] = field(default_factory=set)  # regions where the link to the hub is down (a regional communication outage)
     _rng: np.random.Generator | None = None
 

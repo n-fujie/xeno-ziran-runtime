@@ -59,6 +59,16 @@ def _git(*args: str) -> str:
         return ""
 
 
+def _numeric_build() -> str:
+    try:
+        import numpy
+
+        cfg = numpy.show_config(mode="dicts")["Build Dependencies"]
+        return f"BLAS {cfg['blas']['name']} / LAPACK {cfg['lapack']['name']}"
+    except Exception:  # noqa: BLE001 - a build without this information
+        return "unknown"
+
+
 def environment_info() -> dict:
     import numpy
     import scipy
@@ -81,6 +91,10 @@ def environment_info() -> dict:
         "cpu_count": os.cpu_count(),
         "dependencies": deps,
         "xzr_force_compat": os.environ.get("XZR_FORCE_COMPAT", ""),
+        # the numerical build the results depend on (the HPO / lab address hierarchy is a spectral split whose result
+        # depends on the eigen-solver build) and the hierarchy method in force
+        "numeric_build": _numeric_build(),
+        "hierarchy_method": 1,
         "determinism_note": "Results are reproducible bit-for-bit only on the same machine and software versions "
         "(docs/REPRODUCIBILITY.md); across platforms the address hierarchy can differ.",
     }

@@ -11,10 +11,11 @@ import copy
 
 from . import agent as A
 from . import sss
+from .identify import INTEGRATIONS
 from .loop import DEFAULT_ENV, merge_env
 
 EVENTS = ("fail_sensor", "cut_zone", "restore_links", "lose_records", "move_source", "add_source", "set_pool")
-OVERRIDE_KEYS = ("world", "net", "generations", "gen_steps", "warmup", "checkpoint", "events")
+OVERRIDE_KEYS = ("world", "net", "generations", "gen_steps", "warmup", "checkpoint", "events", "integration")
 LIMITS = {"generations": (1, 30), "gen_steps": (5, 200), "regions": 600, "sensors": 12}
 
 
@@ -47,7 +48,15 @@ def validate_env(e: dict, where: str) -> list[str]:
             out.append(f"{where}: event {ev!r} is not one of {EVENTS} with a generation")
     if e.get("rules_version", "v1") not in ("v1", "v2"):
         out.append(f"{where}: rules_version must be 'v1' or 'v2'")
-    unknown = set(e) - set(DEFAULT_ENV) - {"rules_version"}
+    if e.get("integration") is not None and e["integration"] not in INTEGRATIONS:
+        out.append(f"{where}: integration must be one of {INTEGRATIONS}")
+    if e.get("measures") not in (None, "extended"):
+        out.append(f"{where}: measures must be 'extended' or absent")
+    if e.get("measures") == "extended" and e.get("rules_version") != "v2":
+        out.append(f"{where}: extended measures are defined for rules_version v2 only")
+    if e["net"].get("placement", "spread") not in ("spread", "random"):
+        out.append(f"{where}: net.placement must be 'spread' or 'random'")
+    unknown = set(e) - set(DEFAULT_ENV) - {"rules_version", "integration", "measures"}
     if unknown:
         out.append(f"{where}: unknown environment keys {sorted(unknown)}")
     return out

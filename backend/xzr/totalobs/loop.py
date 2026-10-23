@@ -87,8 +87,14 @@ def build(env: dict, gen: int, seed: int) -> tuple[WorldConfig, World, ObserverN
     net = ObserverNet(cfg, hub=0, latency=int(n["latency"]), pool=float(n["pool"]), capacity=int(n["capacity"]))
     net.seed(seed)
     k = int(n["n_sensors"])
+    if n.get("placement", "spread") == "random":
+        # a seeded random layout, independent of the world's and the observers' noise streams; the default ("spread") is the layout of every earlier study
+        rr = np.random.default_rng(seed * 911 + gen + 5)
+        regions = sorted(int(x) for x in rr.choice(cfg.n, size=k, replace=False))
+    else:
+        regions = [int((i + 0.5) * cfg.n / k) for i in range(k)]
     for i in range(k):
-        net.add(new_sensor(i, int((i + 0.5) * cfg.n / k), n, int(n["period"])))
+        net.add(new_sensor(i, regions[i], n, int(n["period"])))
     for _ in range(int(env.get("warmup", 12))):
         w.step()
     return cfg, w, net
@@ -400,6 +406,10 @@ def run(env_in: dict, arm: dict, gen: int, seed: int) -> dict:
         ev_by_gen.setdefault(int(e["gen"]), []).append(e)
 
     rc = A.RC()
+    if env.get("integration"):  # the integration rule the research starts with (absent: "separate", as in every earlier study)
+        rc.ident = IdentParams(integrate=env["integration"])
+    ext = env.get("measures") == "extended"
+    count_err: list[float] = []
     rc.grammar |= {op for s in design.strong for op in A.UNLOCKS[s]}
     if design.policy == "random" and "grammar" in design.strong:
         rc.grammar.add("perturb")
@@ -644,6 +654,8 @@ def run(env_in: dict, arm: dict, gen: int, seed: int) -> dict:
                 )
                 if age is not None:
                     ages.append(age)
+                if ext:
+                    count_err.append(abs(len(ids) - sc["n_true"]) / max(1, sc["n_true"]))
                 metlog.measure("recall_region", sc["recall"], {"freshness": net.freshness}, w.t)
                 metlog.measure(
                     "identified_count",
@@ -1006,6 +1018,27 @@ def run(env_in: dict, arm: dict, gen: int, seed: int) -> dict:
     pl = planetary.conditions(env)
     metrics["planetary_conditions_met"] = pl["n_met"] / pl["n"]
     metrics["planetary_all_met"] = float(pl["all_met"])
+    if ext:
+        moved = [int(e["gen"]) for e in env["events"] if e["do"] == "move_source"]
+        post = [x["recall"] for x in scores if moved and x["gen"] >= min(moved) and x["recall"] is not None]
+        segs = metlog.report()["segments"]
+        tot_ops = counters["ops_executed"] + counters["ops_denied"] + counters["ops_rejected"]
+        metrics.update(
+            {
+                # what the research programmes ask for, each from data the run already holds (see docs/research/RESEARCH_PROGRAMS.md for the definitions)
+                "coverage_final": prev_f.coverage if prev_f else None,
+                "identification_count_error": _mean(count_err),
+                "change_failure_rate": ((counters["ops_denied"] + counters["ops_rejected"]) / tot_ops) if tot_ops else None,
+                "ops_cost_spent": round(design.budget - budget, 3),
+                "cycles_completed": rc.cycle,
+                "observation_loss_share": (net.stats["records_lost"] + net.stats["lost_in_transit"])
+                / max(1, net.stats["observations"] + net.stats["lost_in_transit"]),
+                "expiry_rate": net.stats["expired"] / max(1, len(net.sensors)),
+                "reachable_regions_final": prev_lv["reachable_configurations"] if prev_lv else None,
+                "recall_post_change": _mean(post),
+                "metric_definition_breaks": sum(len(v) - 1 for v in segs.values()),
+            }
+        )
     if v2:
         na = [a for a in silence_audit if a["agent_state"] == "no-arrival"]
         metrics.update(

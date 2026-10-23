@@ -49,13 +49,21 @@ def arm_summary(rs: list[dict]) -> dict:
         conf = Counter(f"{a['agent_state']} | true cause {a['true_cause']}" for r in rs for a in r["totalobs"]["silence_audit"])
         confl = [c for r in rs for c in r["totalobs"]["conflicts"]]
         attrib = Counter(
-            f"{e['attribution']} | true causes seen {','.join(e['true_causes_seen_for_this_sensor']) or '-'}" for r in rs for e in r["totalobs"]["silence_log"]
+            f"{e['attribution']} | true causes seen {','.join(e['true_causes_seen_for_this_sensor']) or '-'}"
+            for r in rs
+            for e in r["totalobs"]["silence_log"]
         )
         v2 = {
             "rules_version": "v2",
             "freshness": rs[0]["totalobs"]["freshness"],
             "hypothesis_support_vs_model": dict(sorted(cross.items())),
-            "hypothesis_status_after_test": dict(Counter(g["hypothesis_test"].get("status_after") for g in gens if g.get("hypothesis_test") and g["hypothesis_test"].get("status_after"))),
+            "hypothesis_status_after_test": dict(
+                Counter(
+                    g["hypothesis_test"].get("status_after")
+                    for g in gens
+                    if g.get("hypothesis_test") and g["hypothesis_test"].get("status_after")
+                )
+            ),
             "silence_states_vs_true_causes": dict(sorted(conf.items())),
             "probe_attributions": dict(sorted(attrib.items())),
             "rule_conflicts": {

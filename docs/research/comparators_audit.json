@@ -1,0 +1,70 @@
+{
+ "methods": [
+  {
+   "method": "Active Inference",
+   "reference_to_verify": "Friston et al. 2015, Active inference and epistemic value (expected free energy: pragmatic + epistemic)",
+   "implementation_files": [
+    "xeno-ziran-runtime-zrs/research/post_active_inference/pai/aif_vendor.py",
+    "ziran-xeno-simulator/embodied/active_inference/expected_free_energy.py",
+    "ziran-xeno-simulator/embodied/active_inference/generative_model.py",
+    "ziran-xeno-simulator/embodied/active_inference/policy_selection.py",
+    "ziran-xeno-simulator/embodied/active_inference/state_inference.py"
+   ],
+   "imports_into_study_layers": [],
+   "status": "implemented elsewhere; NOT connected to any study environment as an arm",
+   "compared_in_this_repository": false
+  },
+  {
+   "method": "Active Learning",
+   "reference_to_verify": "Settles 2009, Active learning literature survey (uncertainty sampling, query by committee, expected error reduction)",
+   "implementation_files": [],
+   "imports_into_study_layers": [],
+   "status": "not implemented",
+   "compared_in_this_repository": false
+  },
+  {
+   "method": "Active Sensing / information-gain sensor selection",
+   "reference_to_verify": "e.g. Chaloner & Verdinelli 1995, Bayesian experimental design (expected information gain)",
+   "implementation_files": [],
+   "imports_into_study_layers": [],
+   "status": "not implemented",
+   "compared_in_this_repository": false
+  },
+  {
+   "method": "Bayesian Optimization",
+   "reference_to_verify": "Shahriari et al. 2016, Taking the human out of the loop (Gaussian process, acquisition function)",
+   "implementation_files": [],
+   "imports_into_study_layers": [],
+   "status": "not implemented",
+   "compared_in_this_repository": false
+  },
+  {
+   "method": "Adaptive control",
+   "reference_to_verify": "Astrom & Wittenmark, Adaptive control (self-tuning, model-reference)",
+   "implementation_files": [],
+   "imports_into_study_layers": [],
+   "status": "not implemented",
+   "compared_in_this_repository": false
+  },
+  {
+   "method": "The project's own prior adaptive observation procedure (ARDS existing-blind)",
+   "reference_to_verify": "King et al. 2009 (Adam); Williams et al. 2015 (Eve); Kitano 2021 (Nobel Turing Challenge) are the broader family; this procedure is the project's own earlier one",
+   "implementation_files": [
+    "pa-simulation-environment/src/ards/loop2/arms2.ts",
+    "pa-simulation-environment/src/ards/loop2/existingBlind.ts",
+    "pa-simulation-environment/src/ards/loop2/factors.ts",
+    "pa-simulation-environment/src/ards/loop2/fairness.ts",
+    "pa-simulation-environment/src/ards/loop2/index.ts",
+    "pa-simulation-environment/src/ards/loop2/mechanisms.ts"
+   ],
+   "imports_into_study_layers": [],
+   "status": "implemented as an arm in a study environment (ARDS existing-blind in the ARDS-HPO shared environment, test replicates only)",
+   "compared_in_this_repository": true
+  }
+ ],
+ "notes": [
+  "ARDS EXISTING-E (loop/existing.ts) is oracle-informed: it reads the simulator's truth, so it is NOT information-matched and cannot support a non-redundancy claim; the observer-side re-implementation (existing-blind) is the comparator.",
+  "HPO random-matched is a control (same number of random valid changes), not a prior method.",
+  "A prior method counts as compared only when it is an arm with the same information, intervention authority, change authority and computation budget as the P/A arm (docs/research/COMPARATORS.md)."
+ ]
+}

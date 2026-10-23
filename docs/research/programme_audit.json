@@ -1,0 +1,319 @@
+[
+ {
+  "programme": "rp1-ziran-self-revision",
+  "arms": 9,
+  "contrasts": 8,
+  "mode": "functional",
+  "validation_issues": [],
+  "fairness_issues": [],
+  "step_runs_with_6_seeds": 15120,
+  "smoke_runs": {
+   "ok": 9,
+   "failed": 0,
+   "seconds": 10.0
+  },
+  "declared_metrics_never_defined": [],
+  "requested_metrics": {
+   "executable operations": [
+    {
+     "metric": "reachable_share",
+     "status": "measured"
+    }
+   ],
+   "reachable states": [
+    {
+     "metric": "reachable_share",
+     "status": "measured"
+    }
+   ],
+   "research completion rate": [
+    {
+     "metric": "stopped_early",
+     "status": "measured"
+    },
+    {
+     "metric": "ceased_share",
+     "status": "measured"
+    }
+   ],
+   "identifiability": [
+    {
+     "metric": "fired_samples",
+     "status": "measured"
+    },
+    {
+     "metric": "unobservable_samples",
+     "status": "measured"
+    }
+   ],
+   "research resource use": [
+    {
+     "metric": "measure_cost",
+     "status": "measured"
+    }
+   ],
+   "change failure rate": [
+    {
+     "metric": "derived:controller_rejected / (controller_changes + controller_rejected)",
+     "status": "DERIVED"
+    }
+   ],
+   "later research conditions": [
+    {
+     "metric": "controller_changes",
+     "status": "measured"
+    },
+    {
+     "metric": "reinsertions",
+     "status": "measured"
+    },
+    {
+     "metric": "meta_revisions",
+     "status": "measured"
+    }
+   ]
+  },
+  "ready_to_register": true
+ },
+ {
+  "programme": "rp2-total-observation",
+  "arms": 11,
+  "contrasts": 8,
+  "mode": "functional",
+  "validation_issues": [],
+  "fairness_issues": [],
+  "step_runs_with_6_seeds": 27192,
+  "smoke_runs": {
+   "ok": 11,
+   "failed": 0,
+   "seconds": 2.1
+  },
+  "declared_metrics_never_defined": [
+   "hyp_error_true",
+   "recall_post_change"
+  ],
+  "requested_metrics": {
+   "identifiability": [
+    {
+     "metric": "recall_final",
+     "status": "measured"
+    },
+    {
+     "metric": "precision_mean",
+     "status": "measured"
+    },
+    {
+     "metric": "identification_count_error",
+     "status": "measured"
+    }
+   ],
+   "loss of observational information": [
+    {
+     "metric": "observation_loss_share",
+     "status": "measured"
+    },
+    {
+     "metric": "records_lost",
+     "status": "measured"
+    },
+    {
+     "metric": "ident_lost_object_still_present",
+     "status": "measured"
+    }
+   ],
+   "disturbance by observation": [
+    {
+     "metric": "interference",
+     "status": "measured"
+    },
+    {
+     "metric": "marks_total",
+     "status": "measured"
+    }
+   ],
+   "later reachability": [
+    {
+     "metric": "reachable_regions_final",
+     "status": "measured"
+    },
+    {
+     "metric": "reach_expanded",
+     "status": "measured"
+    },
+    {
+     "metric": "reach_contracted",
+     "status": "measured"
+    }
+   ],
+   "change of observing conditions": [
+    {
+     "metric": "ops_executed",
+     "status": "measured"
+    },
+    {
+     "metric": "eval_changes",
+     "status": "measured"
+    },
+    {
+     "metric": "metric_definition_breaks",
+     "status": "measured"
+    }
+   ],
+   "state after record loss": [
+    {
+     "metric": "marks_total",
+     "status": "measured"
+    },
+    {
+     "metric": "ident_lost_object_still_present",
+     "status": "measured"
+    }
+   ]
+  },
+  "ready_to_register": true
+ },
+ {
+  "programme": "rp3-planetary-placement",
+  "arms": 12,
+  "contrasts": 14,
+  "mode": "functional",
+  "validation_issues": [],
+  "fairness_issues": [],
+  "step_runs_with_6_seeds": 23904,
+  "smoke_runs": {
+   "ok": 12,
+   "failed": 0,
+   "seconds": 2.6
+  },
+  "declared_metrics_never_defined": [
+   "hyp_error_true"
+  ],
+  "requested_metrics": {
+   "observed extent": [
+    {
+     "metric": "coverage_final",
+     "status": "measured"
+    },
+    {
+     "metric": "reachable_regions_final",
+     "status": "measured"
+    }
+   ],
+   "identification error": [
+    {
+     "metric": "identification_count_error",
+     "status": "measured"
+    },
+    {
+     "metric": "precision_mean",
+     "status": "measured"
+    },
+    {
+     "metric": "spurious_rate",
+     "status": "measured"
+    }
+   ],
+   "communication delay": [
+    {
+     "metric": "info_age_mean",
+     "status": "measured"
+    }
+   ],
+   "observer expiry rate": [
+    {
+     "metric": "expiry_rate",
+     "status": "measured"
+    }
+   ],
+   "resource cost": [
+    {
+     "metric": "obs_cost",
+     "status": "measured"
+    },
+    {
+     "metric": "ops_cost_spent",
+     "status": "measured"
+    }
+   ],
+   "tracking of wide-area change": [
+    {
+     "metric": "recall_post_change",
+     "status": "measured"
+    }
+   ]
+  },
+  "ready_to_register": true
+ },
+ {
+  "programme": "rp4-sss-self-revision",
+  "arms": 16,
+  "contrasts": 8,
+  "mode": "functional",
+  "validation_issues": [],
+  "fairness_issues": [],
+  "step_runs_with_6_seeds": 39552,
+  "smoke_runs": {
+   "ok": 16,
+   "failed": 0,
+   "seconds": 2.6
+  },
+  "declared_metrics_never_defined": [
+   "hyp_error_true"
+  ],
+  "requested_metrics": {
+   "identification ability": [
+    {
+     "metric": "recall_final",
+     "status": "measured"
+    }
+   ],
+   "tracking": [
+    {
+     "metric": "recall_post_change",
+     "status": "measured"
+    }
+   ],
+   "comparability": [
+    {
+     "metric": "metric_definition_breaks",
+     "status": "measured"
+    }
+   ],
+   "state transitions": [
+    {
+     "metric": "question_changes",
+     "status": "measured"
+    },
+    {
+     "metric": "reach_expanded",
+     "status": "measured"
+    },
+    {
+     "metric": "reach_contracted",
+     "status": "measured"
+    }
+   ],
+   "resource use": [
+    {
+     "metric": "obs_cost",
+     "status": "measured"
+    },
+    {
+     "metric": "ops_cost_spent",
+     "status": "measured"
+    }
+   ],
+   "later research": [
+    {
+     "metric": "cycles_completed",
+     "status": "measured"
+    },
+    {
+     "metric": "ops_executed",
+     "status": "measured"
+    }
+   ]
+  },
+  "ready_to_register": true
+ }
+]

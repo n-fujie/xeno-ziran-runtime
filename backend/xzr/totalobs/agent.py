@@ -456,12 +456,24 @@ def _probe_silent(f: Findings, mem: Memory, geometry: dict, add) -> None:
         if f.gen > g0 and sid not in mem.resolved and sid not in mem.abandoned:
             if sid in na:
                 mem.abandoned.add(sid)
-                mem.silence_log.append({"gen": f.gen, "sid": sid, "attribution": "stopped-or-unreachable",
-                                        "evidence": "no record arrived in the generation after the sensor was moved next to the hub"})
+                mem.silence_log.append(
+                    {
+                        "gen": f.gen,
+                        "sid": sid,
+                        "attribution": "stopped-or-unreachable",
+                        "evidence": "no record arrived in the generation after the sensor was moved next to the hub",
+                    }
+                )
             else:
                 mem.resolved.add(sid)
-                mem.silence_log.append({"gen": f.gen, "sid": sid, "attribution": "place-dependent (outage or delay)",
-                                        "evidence": "records resumed after the sensor was moved next to the hub"})
+                mem.silence_log.append(
+                    {
+                        "gen": f.gen,
+                        "sid": sid,
+                        "attribution": "place-dependent (outage or delay)",
+                        "evidence": "records resumed after the sensor was moved next to the hub",
+                    }
+                )
     for sid in na:
         if sid in mem.abandoned or sid in mem.probes:
             continue
@@ -507,10 +519,21 @@ def _arbitrate(out: list, mem: Memory, f: Findings, rc: RC, p: dict, geometry: d
     choice = _relief(f, mem, kind, det, avoid if kind == "scale" else set())
     if choice is None and kind == "scale":
         choice = _relief(f, mem, "period", det, set())
-    entry = {"gen": f.gen, "rules": [x for x in ("denied", "scale-mismatch", "period-too-slow") if x in r], "demand": round(f.demand, 3), "pool": pool}
+    entry = {
+        "gen": f.gen,
+        "rules": [x for x in ("denied", "scale-mismatch", "period-too-slow") if x in r],
+        "demand": round(f.demand, 3),
+        "pool": pool,
+    }
     if choice is None:
         mem.infeasible_sids |= {f.reason_args["denied"]["costly"]}
-        mem.conflict_log.append({**entry, "resolution": "infeasible", "why": "no sensor other than the detector can give up cost; resolution and timing win, denial is tolerated"})
+        mem.conflict_log.append(
+            {
+                **entry,
+                "resolution": "infeasible",
+                "why": "no sensor other than the detector can give up cost; resolution and timing win, denial is tolerated",
+            }
+        )
         return {"denied", "scale-mismatch"} if mism else {"denied"}
     sid, val = choice
     sp = f.sensors[sid]
@@ -523,12 +546,20 @@ def _arbitrate(out: list, mem: Memory, f: Findings, rc: RC, p: dict, geometry: d
         new_nb = nb * (sp["scale"] / val) ** 2
         after = f.demand - nb / sp["period"] + new_nb / sp["period"]
         op, extra = "set-scale", {"value": int(val), "direction": +1}
-    mem.conflict_log.append({**entry, "resolution": f"{op} {sid} -> {val}", "demand_after_estimate": round(after, 3),
-                             "why": "priority: keep resolution and the detector's timing, relieve cost elsewhere"})
+    mem.conflict_log.append(
+        {
+            **entry,
+            "resolution": f"{op} {sid} -> {val}",
+            "demand_after_estimate": round(after, 3),
+            "why": "priority: keep resolution and the detector's timing, relieve cost elsewhere",
+        }
+    )
     add(op, "denied", sid=sid, conflict=True, **extra)
     if after > pool * 1.05:
         mem.infeasible_sids.add(sid)
-        mem.conflict_log[-1]["note"] = "demand is still above the pool after this relief: further relief is not retried (infeasible at the requested settings)"
+        mem.conflict_log[-1]["note"] = (
+            "demand is still above the pool after this relief: further relief is not retried (infeasible at the requested settings)"
+        )
     return {"denied", "scale-mismatch"} if mism else {"denied"}
 
 

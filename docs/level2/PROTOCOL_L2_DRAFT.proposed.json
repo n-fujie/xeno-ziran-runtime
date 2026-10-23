@@ -1,0 +1,352 @@
+{
+ "schema": "xzr.study/1",
+ "title": "Level 2: revision of the observation configuration and of its rules under scarce resources (confirmatory, DRAFT)",
+ "question": "Does result-driven revision of the observation configuration (and revision of the revision rules) change what operations do afterwards, compared with no revision, with matched random revision and with revision without rule revision, under moderate scarcity of measurement resources?",
+ "hypotheses": [
+  {
+   "id": "H1",
+   "text": "Revising the controller's own rules changes later fired samples (C1; two-sided).",
+   "contrasts": [
+    "C1"
+   ]
+  },
+  {
+   "id": "H2",
+   "text": "Result-driven revision changes later fired samples relative to no revision (C2; two-sided).",
+   "contrasts": [
+    "C2"
+   ]
+  },
+  {
+   "id": "H3",
+   "text": "Result-driven revision differs from matched random revision (C3; secondary, underpowered: reported with its interval only).",
+   "contrasts": [
+    "C3"
+   ]
+  }
+ ],
+ "mode": "confirmatory",
+ "environment": {
+  "kind": "hpo-world",
+  "world": {
+   "n": 800,
+   "regime": "intermittent"
+  },
+  "warmup": 40,
+  "horizon": 600,
+  "detect_shapes": false,
+  "keep_trace": false
+ },
+ "arms": [
+  {
+   "name": "fixed-moderate",
+   "description": "History re-entry on, observation configuration never revised; moderately scarce measurement resources (0.5 per step).",
+   "condition": "D",
+   "controller": {
+    "mode": "static"
+   },
+   "settings": {
+    "resources": {
+     "pool_per_step": 0.5
+    },
+    "stop": {
+     "all_ceased": true
+    }
+   }
+  },
+  {
+   "name": "recursive-moderate",
+   "description": "The HPO-003 controller reconfigures the instruments from the reasons for blindness; moderate scarcity.",
+   "condition": "D",
+   "controller": {
+    "mode": "recursive",
+    "trace_reachability": true
+   },
+   "settings": {
+    "resources": {
+     "pool_per_step": 0.5
+    },
+    "stop": {
+     "all_ceased": true
+    }
+   }
+  },
+  {
+   "name": "recursive-meta-moderate",
+   "description": "As recursive-moderate; the controller's own rule parameters are revised (and rules exhausted) when a rule's change did not remove its blindness twice in a row.",
+   "condition": "D",
+   "controller": {
+    "mode": "recursive",
+    "trace_reachability": true,
+    "meta": true
+   },
+   "settings": {
+    "resources": {
+     "pool_per_step": 0.5
+    },
+    "stop": {
+     "all_ceased": true
+    }
+   }
+  },
+  {
+   "name": "random-matched-moderate",
+   "description": "Random valid changes, the same number per epoch as recursive-moderate on the same seed.",
+   "condition": "D",
+   "controller": {
+    "mode": "random",
+    "match_budget_of": "recursive-moderate",
+    "trace_reachability": true
+   },
+   "settings": {
+    "resources": {
+     "pool_per_step": 0.5
+    },
+    "stop": {
+     "all_ceased": true
+    }
+   }
+  }
+ ],
+ "seeds": {
+  "gen_base": 20000,
+  "engine_base": 200000,
+  "n": 200
+ },
+ "metrics": {
+  "primary": [
+   "fired_samples"
+  ],
+  "secondary": [
+   "unobservable_samples",
+   "controller_changes",
+   "controller_rejected",
+   "meta_revisions",
+   "meta_exhausted",
+   "measure_cost",
+   "stopped_early",
+   "ceased_share"
+  ]
+ },
+ "contrasts": [
+  {
+   "id": "C1",
+   "a": "recursive-meta-moderate",
+   "b": "recursive-moderate",
+   "varies": [
+    "meta_revision"
+   ],
+   "role": "primary"
+  },
+  {
+   "id": "C2",
+   "a": "recursive-moderate",
+   "b": "fixed-moderate",
+   "varies": [
+    "controller",
+    "revision_authority"
+   ],
+   "role": "secondary"
+  },
+  {
+   "id": "C3",
+   "a": "recursive-moderate",
+   "b": "random-matched-moderate",
+   "varies": [
+    "controller"
+   ],
+   "role": "secondary"
+  }
+ ],
+ "criteria": {
+  "success": [
+   {
+    "contrast": "C1",
+    "metric": "fired_samples",
+    "direction": "different",
+    "min_relative_effect": 0.05,
+    "ci_excludes_zero": true
+   },
+   {
+    "contrast": "C2",
+    "metric": "fired_samples",
+    "direction": "different",
+    "min_relative_effect": 0.2,
+    "ci_excludes_zero": true
+   }
+  ],
+  "failure": [
+   {
+    "contrast": "C1",
+    "metric": "fired_samples",
+    "direction": "equivalent",
+    "min_relative_effect": 0.0,
+    "ci_excludes_zero": false
+   },
+   {
+    "contrast": "C2",
+    "metric": "fired_samples",
+    "direction": "equivalent",
+    "min_relative_effect": 0.0,
+    "ci_excludes_zero": false
+   }
+  ]
+ },
+ "stop": {
+  "max_wall_seconds": 21600,
+  "timeout_per_run_s": 300,
+  "max_failures": 20
+ },
+ "budget": {
+  "max_runs": 1000,
+  "procs": 4
+ },
+ "notes": "Functional template. Scarcity is imposed by settings.resources.pool_per_step; a revision of the rules, an exhausted rule or a stop is a record, not evidence of improvement or failure of any theory.",
+ "approval": {
+  "high_cost": false,
+  "note": "REQUIRED and NOT GRANTED: about half a million step-runs; the researcher must approve before the protocol is created for running"
+ },
+ "status": "DRAFT + PROPOSED AMENDMENT (known incomparabilities, numerical environment, one sensitivity analysis): not frozen, not run, not adopted; the original draft file is unchanged",
+ "planning": {
+  "assumed_sd_upper95": {
+   "C1 meta vs recursive": 24.73680836146685,
+   "C2 recursive vs fixed": 273.9016533942824,
+   "C3 recursive vs random-matched": 576.4261340311405
+  },
+  "min_effect": {
+   "C1 meta vs recursive": 14.65,
+   "C2 recursive vs fixed": 58.6,
+   "C3 recursive vs random-matched": 58.6
+  },
+  "pairs_needed_for_80pct_power": {
+   "C1 meta vs recursive": 25,
+   "C2 recursive vs fixed": 174,
+   "C3 recursive vs random-matched": 762
+  },
+  "n_per_arm": 200,
+  "underpowered": [
+   "C3 recursive vs random-matched"
+  ],
+  "source": "docs/level2/exploration_inputs/scarcity_functional_summary.json (functional run, 6 seeds, reserved range)"
+ },
+ "preregistration": {
+  "central_hypothesis": "Under moderate scarcity, revising the observation configuration from the reasons operations were blind, and revising the controller's rules when they keep failing, changes the number of fired samples relative to the stated controls. No direction is assumed; equivalence is an equally valid result.",
+  "falsification": [
+   "C1: the 95% interval of the paired difference in fired samples (recursive-meta vs recursive) lies inside +/-5% of the control mean: no detectable effect of rule revision",
+   "C2: the interval (recursive vs fixed) lies inside +/-20%: no detectable effect of result-driven revision of that size",
+   "any registered contrast whose interval includes zero and the margin is reported as unresolved, never as support"
+  ],
+  "power": {
+   "n_per_arm": 200,
+   "assumed_sd": {
+    "C1 meta vs recursive": 24.73680836146685,
+    "C2 recursive vs fixed": 273.9016533942824,
+    "C3 recursive vs random-matched": 576.4261340311405
+   },
+   "min_effect": {
+    "C1 meta vs recursive": 14.65,
+    "C2 recursive vs fixed": 58.6,
+    "C3 recursive vs random-matched": 58.6
+   },
+   "alpha": 0.05,
+   "power": 0.8,
+   "source": "docs/level2/exploration_inputs/scarcity_functional_summary.json (functional run, 6 seeds, reserved range); upper 95% bound of each SD (chi-square, df 5)"
+  },
+  "analysis_plan": {
+   "primary": [
+    "fired_samples"
+   ],
+   "secondary": [
+    "unobservable_samples",
+    "controller_changes",
+    "controller_rejected",
+    "meta_revisions",
+    "meta_exhausted",
+    "measure_cost",
+    "stopped_early",
+    "ceased_share"
+   ],
+   "multiplicity": "Holm",
+   "equivalence_margin": 0.05,
+   "sensitivity": [
+    "leave-one-seed-out range of the mean difference",
+    "sign agreement",
+    "Wilcoxon signed-rank",
+    "with / without Tukey outliers",
+    "excluding runs that stopped early (censoring by stop.all_ceased)"
+   ],
+   "estimation": "paired differences by seed; bootstrap 95% interval; Cohen's dz; sign-flip permutation p; Holm / BH over every declared contrast x metric"
+  },
+  "stopping_rules": [
+   "per-run timeout 300 s, wall-clock budget 21600 s, at most 20 failed runs",
+   "no optional stopping: the number of seeds is fixed; a stopped study is resumed, never re-planned from partial results"
+  ],
+  "data_storage": "every run record, the log, the manifest and the registered protocol are kept under the experiment directory; failed and timed-out runs are kept and counted",
+  "separation": {
+   "exploratory_seeds": [
+    [
+     7000,
+     70000
+    ],
+    [
+     7001,
+     70001
+    ],
+    [
+     7002,
+     70002
+    ],
+    [
+     7003,
+     70003
+    ],
+    [
+     7004,
+     70004
+    ],
+    [
+     7005,
+     70005
+    ]
+   ],
+   "confirmatory": "the seeds of this protocol; disjoint from every exploratory and functional seed"
+  },
+  "condition_provenance": [
+   {
+    "condition": "arm fixed-moderate: settings.resources.pool_per_step 0.5, stop.all_ceased true, horizon 600",
+    "derived_from": "exploration",
+    "source": "scarcity-study (functional, seeds 7000-7005): 0.5 per step is where blindness persisted enough for rules to fail and be revised without total blindness; the value was chosen after looking at those runs"
+   },
+   {
+    "condition": "arm recursive-moderate: settings.resources.pool_per_step 0.5, stop.all_ceased true, horizon 600",
+    "derived_from": "exploration",
+    "source": "scarcity-study (functional, seeds 7000-7005): 0.5 per step is where blindness persisted enough for rules to fail and be revised without total blindness; the value was chosen after looking at those runs"
+   },
+   {
+    "condition": "arm recursive-meta-moderate: settings.resources.pool_per_step 0.5, stop.all_ceased true, horizon 600",
+    "derived_from": "exploration",
+    "source": "scarcity-study (functional, seeds 7000-7005): 0.5 per step is where blindness persisted enough for rules to fail and be revised without total blindness; the value was chosen after looking at those runs"
+   },
+   {
+    "condition": "arm random-matched-moderate: settings.resources.pool_per_step 0.5, stop.all_ceased true, horizon 600",
+    "derived_from": "exploration",
+    "source": "scarcity-study (functional, seeds 7000-7005): 0.5 per step is where blindness persisted enough for rules to fail and be revised without total blindness; the value was chosen after looking at those runs"
+   }
+  ],
+  "known_incomparabilities": [
+   "C2 (recursive vs fixed) compares policies that also differ in the instruments the controller sets over time: fired_samples are read through different instruments, so the contrast measures the policy together with the information it creates for itself, not the policy at equal information (declared: varies = controller, revision_authority).",
+   "random-matched matches the NUMBER of changes per epoch of the recursive arm, not their content or their resource cost: measure_cost can differ between arms and is a secondary metric, not a control.",
+   "stop.all_ceased ends a run early when every operation has ceased for an epoch: fired_samples of a stopped run accumulate over fewer steps. Arms with different stopping rates are compared conditionally on stopping; stopped_early and ceased_share are reported beside every contrast, and a sensitivity analysis excludes stopped runs (added to analysis_plan.sensitivity).",
+   "C3 is a secondary contrast declared underpowered (762 pairs needed against 200 planned): it is reported with its interval only and is not claimed as powered or as supporting anything.",
+   "the scarcity condition (pool_per_step 0.5, horizon 600) was chosen after looking at functional runs (provenance: exploration): the contrasts are conditional on that scarcity and say nothing about other levels of scarcity (the severe / none / abundant arms of the scarcity template are exploratory only).",
+   "the address hierarchy of the HPO world is a spectral split (method 1) whose result depends on the eigen-solver build (docs/RELIABILITY_REPAIR.md section 9; two known test failures): results are tied to the numerical build recorded in numerical_environment and are not claimed to reproduce bit-for-bit on another build.",
+   "the functional contrasts that sized this draft (6 seeds, reserved range) are not evidence: the stored sizing input gives C1 -4.83 (interval -14.5 to 0.0); an earlier status record quotes -26 for the first scarcity study; the two are not reconciled here, both are functional."
+  ],
+  "numerical_environment": {
+   "hierarchy_method": 1,
+   "hierarchy_method_note": "the default spectral bisection; the opt-in method 2 (lod.hierarchy.build_hierarchy_v2) is NOT used and its results would not be mixed with method 1",
+   "to_record_at_registration": "python, numpy, scipy and numpy.show_config() BLAS/LAPACK of the machine that runs the study (the study manifest records them from now on: numeric_build, hierarchy_method)",
+   "this_machine_at_certification": "Python 3.12.13, numpy 2.5.3, scipy 1.18.1, Accelerate BLAS/LAPACK, macOS arm64"
+  }
+ }
+}
