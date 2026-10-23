@@ -683,3 +683,59 @@ def test_meta_revision_followup_tracks_evidence_reflection_cost_and_both_directi
     assert all(
         "measure_cost" in r["metrics"] and r["metrics"]["measure_cost"] <= r["metrics"]["measure_budget"] for r in st.runs()
     )
+
+
+# ------------------------------------------------------------------------------------------ non-redundancy is never presumed
+def _fake_analysis(mode, status, evidence, ci=(0.4, 0.6), mean=0.5, scale=10.0):
+    return {
+        "experiment_id": "S0",
+        "mode": mode,
+        "metrics": ["unseen_coverage"],
+        "contrasts": [
+            {
+                "id": "C1",
+                "a": "pa",
+                "b": "existing",
+                "evidence": evidence,
+                "metrics": {"unseen_coverage": {"n": 8, "mean": mean, "ci95": list(ci), "scale": scale, "status": status}},
+            }
+        ],
+    }
+
+
+def test_non_redundancy_defaults_to_not_established_and_needs_an_independent_confirmatory_comparison():
+    from xzr.study import nonredundancy as N
+
+    f = N.assess(_fake_analysis("functional", "DETECTED", "functional check (not evidence)"))
+    assert f["verdict"].startswith("not evaluated") and f["unestablished_by_default"]
+    e = N.assess(_fake_analysis("exploratory", "DETECTED", "exploratory"))
+    assert e["verdict"].startswith("not evaluated")
+    c = N.assess(_fake_analysis("confirmatory", "DETECTED", "confirmatory"))
+    assert c["verdict"].startswith("established on at least one comparable axis")
+    n = N.assess(_fake_analysis("confirmatory", "UNRESOLVED", "confirmatory", ci=(-5, 5)))
+    assert n["verdict"].startswith("not established")
+    eq = N.assess(_fake_analysis("confirmatory", "EQUIVALENT", "confirmatory", ci=(-0.1, 0.1)))
+    assert eq["verdict"].startswith("equivalent")
+    late = N.assess(_fake_analysis("confirmatory", "DETECTED", "exploratory (declared after the first run or not registered)"))
+    assert not late["verdict"].startswith("established")  # a contrast declared after the data is exploratory
+
+
+def test_non_redundancy_names_incomparable_axes_and_what_the_environment_cannot_evaluate():
+    from xzr.study import nonredundancy as N
+
+    a = N.assess(_fake_analysis("functional", "UNRESOLVED", "functional check (not evidence)"))
+    comp = {x["axis"]: x["comparable"] for x in a["axes"]}
+    assert comp["observability"] and comp["reachability"]
+    assert not comp["prediction"] and not comp["action on reality"] and not comp["intervention"]
+    assert any("human-readability" in x for x in a["not_evaluable_by_this_environment"])
+
+
+def test_every_analysis_carries_the_assessment_and_the_results_text_states_it_is_not_a_finding(finished):
+    an = analysis.analyse(finished)
+    assert an["nonredundancy"]["verdict"].startswith("not evaluated")
+    report.build(finished, an)
+    text = (finished.path / "report" / "results.md").read_text()
+    assert (
+        "Operational non-redundancy (assessment, not a finding)" in text
+        and "never inferred from the existence of revision" in text
+    )

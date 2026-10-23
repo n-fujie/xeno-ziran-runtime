@@ -348,6 +348,9 @@ def analyse(study: Study, write: bool = True) -> dict:
         "negative_results_note": "Every declared contrast and metric is listed above, including null and reversed effects.",
         "seeds": seeds,
     }
+    from .nonredundancy import assess
+
+    out["nonredundancy"] = assess(out)
     out = clean(out)
     if write:
         (study.path / "analysis.json").write_text(json.dumps(out, indent=1, ensure_ascii=False, allow_nan=False))

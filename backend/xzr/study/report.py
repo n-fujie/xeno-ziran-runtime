@@ -237,6 +237,21 @@ def results(study: Study, an: dict) -> str:
                 f"history re-entry: {h['reinsertions']} reinsertions, {h['with_downstream_event']} with a downstream event"
             )
         lines.append(f"- **{a}**: " + "; ".join(bits) + ".")
+    nr = an.get("nonredundancy")
+    if nr:
+        lines += [
+            "",
+            "## Operational non-redundancy (assessment, not a finding)",
+            f"Verdict: **{nr['verdict']}**. {nr['rule']}.",
+            "",
+            "| axis | comparable | indicators in this study | why |",
+            "|---|---|---|---|",
+        ]
+        for ax in nr["axes"]:
+            lines.append(
+                f"| {ax['axis']} | {'yes' if ax['comparable'] else 'no'} | {', '.join(ax['indicators_in_this_study']) or '—'} | {ax['why']} |"
+            )
+        lines += ["", "Not evaluable by this environment: " + "; ".join(nr["not_evaluable_by_this_environment"]) + "."]
     lines += [
         "",
         "## Execution constraints",
