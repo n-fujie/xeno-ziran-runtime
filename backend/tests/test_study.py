@@ -55,7 +55,13 @@ def finished(tmp_path_factory):
 def test_templates_validate_and_have_no_undeclared_differences():
     for name in templates.TEMPLATES:
         d = templates.template(name)
-        assert P.validate(d) == [], name
+        issues = P.validate(d)
+        if (
+            name == "level2-confirmatory"
+        ):  # a draft: complete except for the deliberately closed high-cost approval (see its own test)
+            assert len(issues) == 1 and "approval.high_cost" in issues[0]
+        else:
+            assert issues == [], name
         assert P.fairness_issues(d) == [], name
 
 
