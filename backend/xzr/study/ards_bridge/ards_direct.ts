@@ -21,6 +21,6 @@ async function main(): Promise<void> {
   const held = await loop2.evaluateHeldOut2(env, service, run.finalConfig, job.replicate);
   const metrics = loop2.armMetrics(run, held, def);
   service.close?.();
-  process.stdout.write(JSON.stringify({ metrics, verificationFailed: checks.filter((c: { pass: boolean }) => !c.pass), verificationChecks: checks.length }) + "\n");
+  process.stdout.write(JSON.stringify({ finalConfig: run.finalConfig, runSummary: { bodyRuns: run.bodyRuns, setupSecondsSpent: run.setupSecondsSpent, setupBudget: run.setupBudget }, metrics, verificationFailed: checks.filter((c: { pass: boolean }) => !c.pass), verificationChecks: checks.length }) + "\n");
 }
 main().catch((e) => { console.error(e instanceof Error ? e.stack : e); process.exit(1); });

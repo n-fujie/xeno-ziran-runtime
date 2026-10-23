@@ -342,6 +342,14 @@ def shared_comparison(n_seeds: int = 2) -> dict:
             history=True,
             meta=True,
         ),
+        h(
+            "hpo-rules-select",
+            "As hpo-rules, and the arm chooses which alteration the next experiment tests (operation: intervention): the same one again on fresh seeds when "
+            "the last cycle left at least 3 differences capable but not identified, else a new one from the three loop alterations.",
+            history=True,
+            meta=False,
+            select=True,
+        ),
     ]
     return {
         "schema": SCHEMA,

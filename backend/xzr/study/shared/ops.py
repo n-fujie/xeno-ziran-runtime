@@ -51,22 +51,27 @@ OPERATIONS: dict[str, dict] = {
     "variable-generation": {
         "description": "create a new observable variable",
         "status": "not available",
-        "via": "no new difference or channel can be defined by an arm in this environment (the catalog is fixed)",
+        "via": "not shared: a derived variable adds differences that only an arm with that operation can reach, so the environment would favour it by "
+        "construction and ARDS's vocabulary has no such operation. Evaluated in the HPO world instead (study/variables.py: redundancy, "
+        "identification ability, availability change, downstream effect).",
     },
     "boundary-change": {
         "description": "change the boundary an instrument penetrates (veils)",
         "status": "not available",
-        "via": "no veils in this environment; the 'boundary-invisible' reason is a too-short window",
+        "via": "not shared: the world's boundary is veils and gates made by operations of the HPO field; this environment has none, and a region-restricted "
+        "instrument would define differences that ARDS's arms cannot reach. Evaluated in the HPO world (boundary-veiled arms; reachability levels).",
     },
     "intervention": {
-        "description": "act on the observed system",
-        "status": "not available",
-        "via": "arms observe paired worlds; alterations are fixed by the study, not chosen by an arm",
+        "description": "choose which alteration the next experiment tests",
+        "status": "arm-internal",
+        "via": "HPO arm with select (repeat on unidentified, else a new alteration); ARDS arms: fixed order (V2-PA-permuted: permuted across "
+        "replicates). The pool is the three loop alterations; the held-out 'unseen' ones stay unseen",
     },
     "evaluation-change": {
-        "description": "change the evaluation conditions",
-        "status": "not available",
-        "via": "held-out evaluation is fixed by the study and run by ARDS's own code",
+        "description": "re-score a final configuration under other evaluation conditions",
+        "status": "shared",
+        "via": "harness operation: protocol evaluation_variants (cases per held-out case, identification thresholds), applied identically to "
+        "every arm by ARDS's own evaluation code",
     },
 }
 SHARED = tuple(k for k, v in OPERATIONS.items() if v["status"] == "shared")
@@ -91,6 +96,8 @@ def access(arm_kind: str, spec: dict) -> dict:
             "external-memory": f.get("retention") == "memory",
             "history-reinjection": f.get("reinjection") in ("own", "shuffled", "uninformative"),
             "rule-revision": f.get("ruleRevision") == "meta",
+            "intervention": f.get("sequence") == "permuted",
+            "evaluation-change": True,
         }
     return {
         "observe": True,
@@ -99,4 +106,6 @@ def access(arm_kind: str, spec: dict) -> dict:
         "external-memory": bool(spec.get("history", True)),
         "history-reinjection": bool(spec.get("history", True)),
         "rule-revision": bool(spec.get("meta", False)),
+        "intervention": bool(spec.get("select", False)),
+        "evaluation-change": True,
     }

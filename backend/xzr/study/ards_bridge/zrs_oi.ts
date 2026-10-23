@@ -18,7 +18,7 @@ export class OiObserveService {
   private chain: Promise<unknown> = Promise.resolve();
   private cat: unknown = null;
 
-  constructor(private readonly o: { python: string; backendDir: string }) {}
+  constructor(private readonly o: { python: string; backendDir: string; thresholds?: { identP: number; identD: number } }) {}
 
   private start(): ChildProcessWithoutNullStreams {
     if (this.proc) return this.proc;
@@ -48,7 +48,7 @@ export class OiObserveService {
   async capability(_preset: string, configs: readonly unknown[]) { return (await this.rpc({ cmd: "capability", configs })).capability; }
   async observe(req: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
     this.calls++;
-    const r = await this.rpc({ cmd: "observe", req, truth: true });
+    const r = await this.rpc({ cmd: "observe", req: this.o.thresholds ? { ...req, thresholds: this.o.thresholds } : req, truth: true });
     return { request: req, bodyRuns: r.bodyRuns, configs: r.configs, truth: r.truth, wallSeconds: null, maxRssBytes: null };
   }
 }

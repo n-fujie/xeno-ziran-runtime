@@ -329,7 +329,7 @@ IDEAL = {
 }
 
 
-def observe_config(cfg: dict, preset: str, alteration: str, seeds: list[int]) -> dict:
+def observe_config(cfg: dict, preset: str, alteration: str, seeds: list[int], thr: dict | None = None) -> dict:
     caps = {d.id: capability_of(cfg, d) for d in DIFFS}
     ids = [d.id for d in DIFFS if caps[d.id]["capable"]]
     va: dict[str, list[float]] = {i: [] for i in ids}
@@ -349,7 +349,13 @@ def observe_config(cfg: dict, preset: str, alteration: str, seeds: list[int]) ->
             e = paired_effect(va[d.id], vb[d.id])
             observed = {"feature": d.alt.feature, "kind": d.alt.kind, "proxy": False, "d": e["d"], "p": e["p"], "n": e["n"]}
         rows.append(
-            {"id": d.id, "family": d.family, "capability": cap, "observed": observed, "identified": is_identified(observed)}
+            {
+                "id": d.id,
+                "family": d.family,
+                "capability": cap,
+                "observed": observed,
+                "identified": is_identified(observed, thr or THRESHOLDS),
+            }
         )
     return {"name": cfg["name"], "config": cfg, "rows": rows}
 
@@ -450,4 +456,7 @@ def observe(req: dict) -> dict:
             if k not in KINDS:
                 raise ValueError(f"oi: unknown device kind {k!r}")
     seeds = [int(req["seedBase"]) + i for i in range(n)]
-    return {"bodyRuns": 2 * n, "configs": [observe_config(c, preset, alteration, seeds) for c in cfgs]}
+    thr = (
+        {**THRESHOLDS, **req["thresholds"]} if req.get("thresholds") else None
+    )  # an evaluation condition: other identification thresholds
+    return {"bodyRuns": 2 * n, "configs": [observe_config(c, preset, alteration, seeds, thr) for c in cfgs]}

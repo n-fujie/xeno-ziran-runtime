@@ -96,6 +96,7 @@ def profile(arm: dict, env: dict) -> dict:
         "revision_authority": sorted(spec.get("mayRevise", [])) or "none",
         "controller": f.get("observationChange"),  # what the arm does with the observation configuration (the role is a label)
         "proposal_policy": policy_of(spec.get("id", "")),
+        "experiment_selection": "permuted across replicates" if spec.get("factors", {}).get("sequence") == "permuted" else "fixed order",
         "meta_revision": f.get("ruleRevision") == "meta",
         "history_reinsertion": f.get("reinjection") in ("own", "shuffled", "uninformative"),
         "max_changes_per_epoch": None,
@@ -119,7 +120,7 @@ def validate(doc: dict) -> list[str]:
         if shared and a.get("hpo") is not None:
             if a.get("ards") is not None:
                 issues.append(f"arm {a['name']}: declare either ards or hpo, not both")
-            bad = set(a["hpo"]) - {"history", "meta"}
+            bad = set(a["hpo"]) - {"history", "meta", "select"}
             if bad:
                 issues.append(f"arm {a['name']}: unknown hpo option(s) {sorted(bad)}")
             continue
@@ -132,6 +133,17 @@ def validate(doc: dict) -> list[str]:
             issues.append(
                 f"arm {a['name']}: {ards_['arm']} needs another replicate's run and is not available through the bridge"
             )
+    for v in env.get("evaluation_variants", []):
+        thr = v.get("thresholds") or {}
+        ok = (
+            v.get("name")
+            and isinstance(v.get("nPerCase", 12), int)
+            and 4 <= v.get("nPerCase", 12) <= 32
+            and 0 < thr.get("identP", 0.01) < 1
+            and thr.get("identD", 0.8) > 0
+        )
+        if not (ok and shared):
+            issues.append("evaluation_variants (shared-oi only): each needs a name, nPerCase in 4..32 and thresholds identP in (0,1), identD > 0")
     seeds = doc.get("seeds", {})
     if "list" not in seeds:
         issues.append("ards: seeds must be an explicit list of [replicate, replicate] pairs inside 3980-3989")

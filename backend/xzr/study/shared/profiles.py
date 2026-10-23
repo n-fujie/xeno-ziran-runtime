@@ -14,6 +14,7 @@ def profile(arm: dict, env: dict) -> dict:
             "revision_authority": sorted(ops.REVISION_OPS),
             "controller": "revised-from-data",
             "proposal_policy": "HPO-003 rule table (reason -> instrument change, bundle)",
+            "experiment_selection": "adaptive (repeat on unidentified, else new)" if h.get("select") else "fixed order",
             "meta_revision": bool(h.get("meta", False)),
             "history_reinsertion": bool(h.get("history", True)),
             "max_changes_per_epoch": None,

@@ -2,11 +2,11 @@
 import { join } from "node:path";
 import { OiObserveService, env3Spec } from "./zrs_oi";
 
-export async function makeService(root: string, envId: string, tag: string): Promise<any> { // eslint-disable-line @typescript-eslint/no-explicit-any
+export async function makeService(root: string, envId: string, tag: string, thresholds?: { identP: number; identD: number }): Promise<any> { // eslint-disable-line @typescript-eslint/no-explicit-any
   const loop2 = await import(join(root, "src/ards/loop2/index.ts"));
   if (envId === "env2") return new loop2.OscillatorObserveService();
   if (envId === "env3") {
-    return new OiObserveService({ python: process.env.XZR_PYTHON ?? "python3", backendDir: join(__dirname, "..", "..", "..") });
+    return new OiObserveService({ python: process.env.XZR_PYTHON ?? "python3", backendDir: join(__dirname, "..", "..", ".."), ...(thresholds ? { thresholds } : {}) });
   }
   const ards = await import(join(root, "src/ards/index.ts"));
   const { ExperimentalBackendRegistry } = await import(join(root, "src/ziran/experimental/registry.ts"));

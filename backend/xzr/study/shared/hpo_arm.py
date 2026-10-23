@@ -207,11 +207,36 @@ def propose(
     return out
 
 
-def run(replicate: int, *, history: bool = True, meta: bool = False, preset: str | None = None) -> dict:
+REPEAT_ABOVE = 3  # capable-but-unidentified differences that make the arm test the same alteration again (more evidence) instead of a new one
+
+
+def choose_alteration(pool: list[str], done: list[dict], last_unidentified: int) -> tuple[str, str]:
+    """The operation "intervention": which alteration the next experiment tests. First cycle: the first of the pool. Then: if the last cycle left at least
+    REPEAT_ABOVE differences capable but not identified, repeat that alteration on fresh seeds; otherwise take the first alteration not tested yet."""
+    if not done:
+        return pool[0], "first of the pool"
+    if last_unidentified >= REPEAT_ABOVE:
+        return done[-1][
+            "alteration"
+        ], f"{last_unidentified} differences capable but not identified: more evidence on the same alteration"
+    tested = {d["alteration"] for d in done}
+    return next(
+        (a for a in pool if a not in tested), done[-1]["alteration"]
+    ), "last cycle left few capable-unidentified differences: a new alteration"
+
+
+def run(replicate: int, *, history: bool = True, meta: bool = False, select: bool = False, preset: str | None = None) -> dict:
     """One replicate of the HPO arm. Reads only the observer's view (capability model, observations); never the ground truth."""
     cat = O.catalog()
     preset = preset or "intermittent"
-    alterations = ["input-shift", "coupling-shift", "retention-shift"]
+    pool = [
+        "input-shift",
+        "coupling-shift",
+        "retention-shift",
+    ]  # the alterations the loops may observe (the held-out "unseen" ones stay unseen)
+    alterations = list(pool)  # replaced by the chosen sequence when the arm may select experiments (operation: intervention)
+    interventions: list[dict] = []
+    last_unidentified = 0
     cfg = copy.deepcopy(O.START_CONFIG)
     setup_budget = SETUP_TOTAL - config_setup(cfg, cat)
     setup_spent = 0
@@ -227,6 +252,7 @@ def run(replicate: int, *, history: bool = True, meta: bool = False, preset: str
     design = {
         "history": history,
         "meta": meta,
+        "select": select,
         "preset": preset,
         "alterations": alterations,
         "bodyRunBudget": BODY_RUN_BUDGET,
@@ -234,7 +260,10 @@ def run(replicate: int, *, history: bool = True, meta: bool = False, preset: str
         "seedBlocks": [LOOP_SEED_BASE + 1000 * replicate + 100 * k for k in range(CYCLES)],
         "rules": copy.deepcopy(OI_SPEC.defaults),
     }
-    for k, alt in enumerate(alterations):
+    for k in range(CYCLES):
+        alt, why = choose_alteration(pool, interventions, last_unidentified) if select else (pool[k], "fixed order")
+        interventions.append({"cycle": k + 1, "alteration": alt, "reason": why})
+        alterations[k] = alt
         base = LOOP_SEED_BASE + 1000 * replicate + 100 * k
         control = {**copy.deepcopy(cfg), "name": "control"}
         cap_rows = [
@@ -358,6 +387,7 @@ def run(replicate: int, *, history: bool = True, meta: bool = False, preset: str
             if reviser is not None:
                 reviser.register(c["kind"], c["reason"], k, k, [])
         prev_blind = {} if reviser is not None else None
+        last_unidentified = sum(1 for r in ctl_obs["rows"] if r["capability"]["capable"] and not r["identified"])
         if history:  # memory of this cycle's control observation: capable differences that the data did not identify
             memory_unidentified = {}
             for r in ctl_obs["rows"]:
@@ -385,7 +415,8 @@ def run(replicate: int, *, history: bool = True, meta: bool = False, preset: str
         )
     final = {**copy.deepcopy(cfg), "name": "evaluated"}
     return {
-        "armId": "HPO-rules" + ("-meta" if meta else "") + ("" if history else "-no-history"),
+        "armId": "HPO-rules" + ("-meta" if meta else "") + ("" if history else "-no-history") + ("-select" if select else ""),
+        "interventions": interventions,
         "replicate": replicate,
         "design": design,
         "cycles": cycles,
@@ -459,6 +490,16 @@ def verify(run_: dict) -> list[dict]:
         "final configuration equals the start configuration with the adopted changes applied in order",
         final == {k: v for k, v in cfg.items() if k != "name"},
     )
+    seq_ok = True
+    done: list[dict] = []
+    pool = ["input-shift", "coupling-shift", "retention-shift"]
+    last_unid = 0
+    for c in cycles:
+        want = choose_alteration(pool, done, last_unid)[0] if run_["design"].get("select") else pool[len(done)]
+        seq_ok &= c["alteration"] == want
+        done.append({"alteration": c["alteration"]})
+        last_unid = sum(1 for r in c["control"]["rows"] if r["capable"] and not r["identified"])
+    ck("intervention: the sequence of alterations re-derives from the stated rule and the stored rows", seq_ok)
     ck("permissions: only the five revision operations were used", set(run_["opsUsed"]) <= set(REVISION_OPS))
     seeds_ok = all(c["request"]["seedBase"] >= LOOP_SEED_BASE and c["request"]["seedBase"] + 60 < 5_000_000 for c in cycles)
     ck("seeds: loop seeds only, disjoint from the held-out (5,000,000+) and truth (90,000,000+) seeds", seeds_ok)

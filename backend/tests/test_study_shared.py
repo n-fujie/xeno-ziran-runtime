@@ -187,14 +187,17 @@ def test_operations_table_names_what_is_shared_internal_and_unavailable():
         "scale-change",
         "time-window-change",
         "capability-query",
+        "evaluation-change",
     }
     unavailable = {k for k, v in ops.OPERATIONS.items() if v["status"] == "not available"}
-    assert {
-        "variable-generation",
-        "boundary-change",
-        "intervention",
-        "evaluation-change",
-    } == unavailable  # named, never silently assumed
+    assert {"variable-generation", "boundary-change"} == unavailable  # named with their reasons, never silently assumed
+    assert all("not shared" in ops.OPERATIONS[k]["via"] for k in unavailable)
+    assert ops.OPERATIONS["intervention"]["status"] == "arm-internal"
+    assert ops.access("hpo", {"select": True})["intervention"] and not ops.access("hpo", {})["intervention"]
+    assert (
+        ops.access("ards", ards.arm_spec("V2-PA-permuted"))["intervention"]
+        and not ops.access("ards", ards.arm_spec("V2-PA"))["intervention"]
+    )
     ex = ops.access("ards", ards.arm_spec("EXISTING-blind"))
     pa = ops.access("ards", ards.arm_spec("V2-PA"))
     h = ops.access("hpo", {"history": True, "meta": True})
@@ -270,3 +273,53 @@ def test_hpo_arm_and_an_ards_arm_run_in_one_study_and_are_scored_by_ards_code(tm
         )
     assert runs["hpo-rules"]["hpo_arm"]["verification_failed"] == [] and runs["hpo-rules"]["ards_eval"]["mode"] == "test"
     assert runs["existing-blind"]["ards"]["env"] == "env3"
+
+
+def test_alteration_selection_is_a_verified_rule_that_repeats_on_unidentified_and_never_touches_the_unseen_alteration():
+    ch = H.choose_alteration
+    pool = ["input-shift", "coupling-shift", "retention-shift"]
+    assert ch(pool, [], 0)[0] == "input-shift"
+    assert (
+        ch(pool, [{"alteration": "input-shift"}], 5)[0] == "input-shift"
+    )  # many capable-but-unidentified: more evidence on the same alteration
+    assert ch(pool, [{"alteration": "input-shift"}], 0)[0] == "coupling-shift"  # few: a new one
+    assert ch(pool, [{"alteration": a} for a in pool], 0)[0] in pool  # the pool never contains the held-out unseen alteration
+    r = H.run(3981, select=True)
+    assert [c for c in H.verify(r) if not c["pass"]] == [] and r["armId"].endswith("-select") and r["bodyRuns"] == 72
+    assert {i["alteration"] for i in r["interventions"]} <= set(pool) and "threshold-shift" not in {
+        i["alteration"] for i in r["interventions"]
+    }
+    bad = json.loads(json.dumps(r))
+    bad["cycles"][1]["alteration"] = "retention-shift"  # a sequence that the rule does not produce
+    assert any(not c["pass"] and "intervention" in c["check"] for c in H.verify(bad))
+
+
+def test_thresholds_are_an_evaluation_condition_applied_to_the_same_observation():
+    req = {**REQ, "nSeeds": 8}
+    lax = O.observe({**req, "configs": [O.START_CONFIG], "thresholds": {"identP": 0.2, "identD": 0.1}})["configs"][0]["rows"]
+    strict = O.observe({**req, "configs": [O.START_CONFIG], "thresholds": {"identP": 0.0001, "identD": 3.0}})["configs"][0][
+        "rows"
+    ]
+    same = O.observe({**req, "configs": [O.START_CONFIG]})["configs"][0]["rows"]
+    d = lambda rows: [r["observed"] and r["observed"]["d"] for r in rows]  # noqa: E731
+    assert d(lax) == d(strict) == d(same)  # the data are the same; only the call "identified" changes
+    n = lambda rows: sum(r["identified"] for r in rows)  # noqa: E731
+    assert n(strict) <= n(same) <= n(lax) and n(lax) > n(strict)
+
+
+@needs_ards
+def test_evaluation_change_scores_every_arm_family_under_the_protocols_other_conditions(tmp_path):
+    d = templates.template("shared-comparison", n_seeds=1)
+    d["arms"] = [a for a in d["arms"] if a["name"] in ("hpo-rules", "control-v1-a")]
+    d["contrasts"], d["hypotheses"] = [], []
+    d["environment"]["evaluation_variants"] = [{"name": "strict", "thresholds": {"identP": 0.001, "identD": 1.2}}]
+    assert P.validate(d) == []
+    st = runner.Study.create(d, tmp_path)
+    st.execute(procs=2)
+    for r in st.runs():
+        assert r["status"] == "ok", r.get("error")
+        m = r["metrics"]
+        assert 0 <= m["unseen_coverage@strict"] <= m["unseen_coverage"] + 1e-9  # a stricter rule cannot identify more
+    bad = json.loads(json.dumps(d))
+    bad["environment"]["evaluation_variants"] = [{"name": "x", "nPerCase": 3}]
+    assert any("evaluation_variants" in i for i in P.validate(bad))
