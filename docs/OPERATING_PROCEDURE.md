@@ -84,3 +84,14 @@ Never deselect a test to raise the pass rate. The two known failures are an owne
 `total-observation-confirmatory` and `docs/level2/PROTOCOL_L2_DRAFT.json` are drafts: not frozen, not run. A protocol that declares `approval.confirmatory_run` cannot be created until the owner records **who** and **when**;
 a protocol above the cost gate (200,000 step-runs) cannot be created without `approval.high_cost` (who, when). Both drafts are blocked by exactly these approvals and by nothing else (`docs/certification/protocol_audit.json`).
 The ARDS bridge cannot run a confirmatory study at all (test replicates only), and ARDS Phase 4 stays stopped. Nothing in this procedure starts a confirmatory run.
+
+
+## 7. Audit scripts added in the regression audit
+
+```bash
+cd backend
+PYTHONPATH=. <PYTHON> scripts/audit_statistics.py <ids.json> ../docs/certification/statistics_audit.json   # independent recomputation of the engine's statistics from raw run records
+PYTHONPATH=. <PYTHON> scripts/protocol_audit.py ../docs/certification/protocol_audit.json                # 19-row audit of the confirmatory drafts
+PYTHONPATH=. <PYTHON> scripts/certify_studies.py <spec.json> <out.json>                                   # replays every run; records the replay environment (run it once per interpreter)
+```
+`certification_record_alt_env.json` was produced with a second interpreter on the same machine (Python 3.14.7, numpy 2.5.4). The usable range of each environment is shown in the UI (New protocol banner, Research lines tab).

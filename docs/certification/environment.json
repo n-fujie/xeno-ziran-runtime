@@ -1,0 +1,39 @@
+{
+ "note": "software environments in which the stored runs were re-executed (replay) on the same machine; the studies' own manifests record the environment that made them",
+ "environments": [
+  {
+   "python": "3.12.13",
+   "numpy": "2.5.3",
+   "scipy": "1.18.1",
+   "blas_lapack": "accelerate / accelerate",
+   "platform": "macOS-27.0.1-arm64-arm-64bit",
+   "git_commit": "7216beff2d71",
+   "git_dirty": false
+  },
+  {
+   "python": "3.14.7",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "blas_lapack": "accelerate / accelerate",
+   "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+   "git_commit": "7216beff2d71",
+   "git_dirty": false
+  }
+ ],
+ "hierarchy_vs_exported_reference": {
+  "fixture": "demo-3k (tests/fixtures + reference hierarchy cache)",
+  "python_3.12.13_numpy_2.5.3": {
+   "equals_reference": false,
+   "nodes_differing": 501
+  },
+  "python_3.14.7_numpy_2.5.4": {
+   "equals_reference": false,
+   "nodes_differing": 501
+  },
+  "reading": "the computed hierarchy is the same in both software sets on this machine; the exported reference was made by a solver build that is not recorded in the fixture (no version metadata), so the dependency that matters is that build, not the Python or numpy version"
+ },
+ "known_failures": [
+  "test_compat[desktop-scipy]",
+  "test_published_records_replay"
+ ]
+}

@@ -44,7 +44,16 @@
    "identical_share": 1.0,
    "runs_compared": 6
   },
-  "replay_seconds": 6.7
+  "replay_seconds": 9.7,
+  "replay_environment": {
+   "python": "3.12.13",
+   "numpy": "2.5.3",
+   "scipy": "1.18.1",
+   "blas_lapack": "accelerate / accelerate",
+   "platform": "macOS-27.0.1-arm64-arm-64bit",
+   "git_commit": "7216beff2d71",
+   "git_dirty": false
+  }
  },
  {
   "environment": "Total Observation (v2)",
@@ -91,7 +100,16 @@
    "identical_share": 1.0,
    "runs_compared": 16
   },
-  "replay_seconds": 1.8
+  "replay_seconds": 2.8,
+  "replay_environment": {
+   "python": "3.12.13",
+   "numpy": "2.5.3",
+   "scipy": "1.18.1",
+   "blas_lapack": "accelerate / accelerate",
+   "platform": "macOS-27.0.1-arm64-arm-64bit",
+   "git_commit": "7216beff2d71",
+   "git_dirty": false
+  }
  },
  {
   "environment": "Planetary-Scale Observation (v2)",
@@ -138,7 +156,16 @@
    "identical_share": 1.0,
    "runs_compared": 10
   },
-  "replay_seconds": 1.1
+  "replay_seconds": 2.0,
+  "replay_environment": {
+   "python": "3.12.13",
+   "numpy": "2.5.3",
+   "scipy": "1.18.1",
+   "blas_lapack": "accelerate / accelerate",
+   "platform": "macOS-27.0.1-arm64-arm-64bit",
+   "git_commit": "7216beff2d71",
+   "git_dirty": false
+  }
  },
  {
   "environment": "SSS (v2)",
@@ -185,7 +212,16 @@
    "identical_share": 1.0,
    "runs_compared": 16
   },
-  "replay_seconds": 1.4
+  "replay_seconds": 1.8,
+  "replay_environment": {
+   "python": "3.12.13",
+   "numpy": "2.5.3",
+   "scipy": "1.18.1",
+   "blas_lapack": "accelerate / accelerate",
+   "platform": "macOS-27.0.1-arm64-arm-64bit",
+   "git_commit": "7216beff2d71",
+   "git_dirty": false
+  }
  },
  {
   "environment": "Autonomous research loop (v2)",
@@ -232,7 +268,16 @@
    "identical_share": 1.0,
    "runs_compared": 9
   },
-  "replay_seconds": 0.8
+  "replay_seconds": 1.1,
+  "replay_environment": {
+   "python": "3.12.13",
+   "numpy": "2.5.3",
+   "scipy": "1.18.1",
+   "blas_lapack": "accelerate / accelerate",
+   "platform": "macOS-27.0.1-arm64-arm-64bit",
+   "git_commit": "7216beff2d71",
+   "git_dirty": false
+  }
  },
  {
   "environment": "ARDS (env2 bridge)",
@@ -279,7 +324,16 @@
    "identical_share": 1.0,
    "runs_compared": 3
   },
-  "replay_seconds": 171.6
+  "replay_seconds": 256.8,
+  "replay_environment": {
+   "python": "3.12.13",
+   "numpy": "2.5.3",
+   "scipy": "1.18.1",
+   "blas_lapack": "accelerate / accelerate",
+   "platform": "macOS-27.0.1-arm64-arm-64bit",
+   "git_commit": "7216beff2d71",
+   "git_dirty": false
+  }
  },
  {
   "environment": "ARDS-HPO shared (env3)",
@@ -326,7 +380,16 @@
    "identical_share": 1.0,
    "runs_compared": 4
   },
-  "replay_seconds": 164.9
+  "replay_seconds": 265.2,
+  "replay_environment": {
+   "python": "3.12.13",
+   "numpy": "2.5.3",
+   "scipy": "1.18.1",
+   "blas_lapack": "accelerate / accelerate",
+   "platform": "macOS-27.0.1-arm64-arm-64bit",
+   "git_commit": "7216beff2d71",
+   "git_dirty": false
+  }
  },
  {
   "environment": "v1 compat: total-observation (first release)",
@@ -373,7 +436,16 @@
    "identical_share": 1.0,
    "runs_compared": 84
   },
-  "replay_seconds": 9.2
+  "replay_seconds": 13.4,
+  "replay_environment": {
+   "python": "3.12.13",
+   "numpy": "2.5.3",
+   "scipy": "1.18.1",
+   "blas_lapack": "accelerate / accelerate",
+   "platform": "macOS-27.0.1-arm64-arm-64bit",
+   "git_commit": "7216beff2d71",
+   "git_dirty": false
+  }
  },
  {
   "environment": "v1 compat: autonomous-loop (first release)",
@@ -420,7 +492,16 @@
    "identical_share": 1.0,
    "runs_compared": 36
   },
-  "replay_seconds": 3.5
+  "replay_seconds": 4.5,
+  "replay_environment": {
+   "python": "3.12.13",
+   "numpy": "2.5.3",
+   "scipy": "1.18.1",
+   "blas_lapack": "accelerate / accelerate",
+   "platform": "macOS-27.0.1-arm64-arm-64bit",
+   "git_commit": "7216beff2d71",
+   "git_dirty": false
+  }
  },
  {
   "environment": "v1 compat: planetary (first release)",
@@ -467,7 +548,16 @@
    "identical_share": 1.0,
    "runs_compared": 48
   },
-  "replay_seconds": 4.0
+  "replay_seconds": 5.6,
+  "replay_environment": {
+   "python": "3.12.13",
+   "numpy": "2.5.3",
+   "scipy": "1.18.1",
+   "blas_lapack": "accelerate / accelerate",
+   "platform": "macOS-27.0.1-arm64-arm-64bit",
+   "git_commit": "7216beff2d71",
+   "git_dirty": false
+  }
  },
  {
   "environment": "v1 compat: sss (first release)",
@@ -514,6 +604,15 @@
    "identical_share": 1.0,
    "runs_compared": 32
   },
-  "replay_seconds": 2.8
+  "replay_seconds": 3.6,
+  "replay_environment": {
+   "python": "3.12.13",
+   "numpy": "2.5.3",
+   "scipy": "1.18.1",
+   "blas_lapack": "accelerate / accelerate",
+   "platform": "macOS-27.0.1-arm64-arm-64bit",
+   "git_commit": "7216beff2d71",
+   "git_dirty": false
+  }
  }
 ]

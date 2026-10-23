@@ -74,3 +74,22 @@ The hypothesis test still needs a steady detector (many tests are deferred). Seq
 * **v2 on the seven environments** (64 runs): replay 64/64 and re-execution 64/64, same machine and software versions only (table in `ZRS_INTEGRATION_STATUS.md`, evidence in `docs/certification/certification_record.json`). Replay and re-execution are independent checks.
 * **What the repair does not show.** The higher recall under delay in v2 is the removal of a measurement artefact (records discarded on arrival), not evidence that any method is better. With stationary sources recall does not show the cost of delay at all (information age does); v2 contrasts between arms remain UNRESOLVED in the functional studies.
 * **Open limits, unchanged:** the hypothesis test needs a steady detector; sequential rule conflicts across generations are limited by the cooldown (reported as `scale_reversals`); no other machine or person has reproduced a result; the two known failures remain (owner decision).
+
+
+## 9. Reproducibility in four tiers, and the environment dependence of the two known failures (2026-10-24)
+
+| tier | what | performed | result |
+|---|---|---|---|
+| 1 | same machine, same software (Python 3.12.13, numpy 2.5.3, scipy 1.18.1, Accelerate BLAS/LAPACK), clean committed code `7216bef` | yes | replay of **264/264** stored runs identical (`docs/certification/certification_record.json`); whole-study re-execution identical for all 11 studies (stored `reproduction.json`, made earlier with the same code) |
+| 2 | same machine, changed dependencies (Python 3.14.7, numpy 2.5.4, scipy 1.18.1, same Accelerate) | yes | replay of **264/264** identical, including the 7 ARDS-bridge runs (`certification_record_alt_env.json`) |
+| 3 | another machine | **not performed** | — |
+| 4 | independent third party | **not performed** | — |
+
+Each record carries the environment in which it was produced (`replay_environment`: interpreter, numpy, scipy, BLAS/LAPACK, platform, git commit, dirty flag — clean for both). The studies themselves record the commit that made them and `git_dirty: true`
+(working trees with uncommitted changes: `62d26cd` for the current-rules studies, `c8a60f2` for the v1 ones). Their traceability is therefore: the creating commit and its dirty flag, the registered protocol digest and seeds in the manifest, and the fact that **the clean committed code reproduces every stored run**
+(tier 1 and 2). The uncommitted content of those working trees is not recoverable and is not claimed.
+
+**The two known failures are an environment dependence, not a Python or numpy dependence.** In both software sets the computed hierarchy of the golden fixture's graph differs from the exported reference in the **same 501 of its nodes** (`docs/certification/environment.json`): on this machine the result is stable across these versions, so the reference was produced by
+a solver build that the fixture does not record. The repository's `requirements-lock.txt` (2026-08-04) pins numpy 2.5.1 and no scipy or BLAS/LAPACK, which is not enough to rebuild it. To rebuild the old environment the owner needs: (1) the machine and build that produced the reference
+(`numpy.show_config()`, scipy version, platform), (2) a virtualenv with those versions installed, (3) `pytest tests/test_compat.py tests/test_lab.py::test_published_records_replay` there. That would confirm the dependency; it was **not executed here** (it needs package downloads, and step 1 is unknown). From now on the build of any new reference should be recorded next to it.
+Nothing stored was changed, and results of the default hierarchy method are never mixed with those of the opt-in method 2.

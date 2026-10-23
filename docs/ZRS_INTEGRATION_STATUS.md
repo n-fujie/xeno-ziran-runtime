@@ -408,3 +408,28 @@ No environment is NOT READY for functional or exploratory use. v1 is for replayi
 ## To start a confirmatory study
 
 1. The owner accepts (or amends before freezing) a draft's preregistration: hypothesis, falsification, power source, provenance. 2. The owner records `approval.high_cost` and, for the total-observation draft, `approval.confirmatory_run` (who, when). 3. The study is created (this registers its digest) and run (about 4–5 minutes for the total-observation draft on this machine). 4. For any cross-platform claim, another machine or person re-executes it. 5. The owner decides on the two known failures if address-based results are to be claimed across platforms. This certification released no gate and started no confirmatory run, no Phase 4 experiment, no push and no deployment.
+
+
+---
+
+# Research operations baseline — regression audit (2026-10-24)
+
+Scope: confirm that the completed integrated version is retained, in current execution results and not only in earlier reports. No new research module; the additions are an independent statistics audit, a computed usable-range table, and audit rows. Commit audited: `7216bef` (clean tree).
+
+| check | current result |
+|---|---|
+| Backend, full run, nothing deselected | **566 passed, 2 failed** (the two known: `test_compat[desktop-scipy]`, `test_published_records_replay`); no new failure (565 + 1 new test) |
+| Frontend | `tsc -b` and `eslint .` clean; vitest 87/87 |
+| TypeScript simulator | 73/73 |
+| Ruff | clean |
+| ARDS Phase 3 | 1,526 files, no problems; the ARDS repository has no modified tracked file; its 6 untracked Phase 4 documents date from 2026-10-22, before this work, and were not created by it |
+| Existing 11 result views (Runtime Reduction … Heterogeneous Philosophical Operations) | all present, content shown, no error banner, no JS error (browser) |
+| Research lines | Native 8 · Adapter 2 · Replay 1 · Reference 1 · Unavailable 1 — unchanged (ANESCIRE Unavailable) |
+| Replay of every stored run | **264/264** identical at the clean commit, in two software sets on the same machine (tiers 1 and 2 in `RELIABILITY_REPAIR.md` §9); tiers 3 (another machine) and 4 (third party) **not performed** |
+| Independent statistics audit (`scripts/audit_statistics.py`, separate numpy / scipy code) | 10 stored studies, **34,554 recomputed quantities, 0 disagreements** (means, medians, sd, var, paired differences, dz, Welch, Mann-Whitney, Wilcoxon, leave-one-out) |
+| Older stored analysis | `S20261022-39b6c421-6365` was analysed (2026-10-22 17:12) before the small-sample fix: its n=1 contrasts carry p=1.0. Recomputed with the current code they are undefined (INSUFFICIENT DATA). The stored file is kept unchanged as a historical artefact; the current code is correct |
+| Protocol audit (`scripts/protocol_audit.py`, 19 rows) | `total-observation-confirmatory`: 19/19; `PROTOCOL_L2_DRAFT.json`: 18/19 — it declares no known incomparabilities (kept unaltered; an open condition for its registration); both are blocked from creation only by the approvals they declare |
+
+**Usable range per environment** is now computed by the Study Engine's own validation and shown in the UI (New protocol banner and Research lines tab; also in `/api/studies/lineage` → `environments`): functional / exploratory / confirmatory / reproducibility evidence. Confirmatory is never READY: HPO and Total Observation are CONDITIONALLY READY (blocked by the declared approvals), the ARDS bridge and the ARDS–HPO environment are NOT READY by design (test replicates only), Planetary / SSS / loop have no draft. The HPO contrast C3 is a declared underpowered secondary (762 pairs needed, 200 planned): it is reported with its interval only and is not claimed as powered.
+Open conditions kept: the two known failures; no confirmatory study started; the high-cost and execution approval gates closed; no other machine or third party has reproduced anything; scientific evaluation (C) and non-redundancy (D) not reached.
+Completion axes unchanged and re-verified on current evidence: **A reached, B reached, E reached, F reached; C not reached, D not established.** The software completion stands; it is not a scientific demonstration.
