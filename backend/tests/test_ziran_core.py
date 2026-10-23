@@ -175,3 +175,26 @@ def test_a_derived_variable_is_distinguishable_from_existing_ones_and_its_downst
     A = np.column_stack([x, np.ones(50)])
     beta, *_ = np.linalg.lstsq(A, x[:, 0] * 3 + 1, rcond=None)
     assert np.var(x[:, 0] * 3 + 1 - A @ beta) / np.var(x[:, 0] * 3 + 1) < 1e-9  # novelty of a pure relabelling is 0
+
+
+def test_variable_classification_keeps_novelty_identification_availability_and_downstream_apart():
+    from xzr.study import variables
+
+    c = variables.classify(3)
+    assert {
+        "new_name",
+        "transformation_of_existing",
+        "compression_of_existing_information",
+        "new_identification_ability",
+        "new_operation_possibility",
+        "later_research_conditions",
+        "claim_boundary",
+    } <= set(c)
+    assert c["transformation_of_existing"]["novelty"] > 0.5  # not a rename
+    ident = c["new_identification_ability"]
+    assert set(ident["alterations"]) == {"input-shift", "coupling-shift", "retention-shift", "threshold-shift"}
+    assert isinstance(
+        ident["trend_identifies_what_no_existing_channel_does"], list
+    )  # a measured list, possibly empty: never assumed
+    assert c["new_operation_possibility"]["operations_that_read_it"]  # some operation reads the variable
+    assert "whether adopting it improves any research outcome" in c["claim_boundary"]
