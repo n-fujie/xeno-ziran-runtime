@@ -1,4 +1,4 @@
-"""Protocol templates of the total-observation line (registered into ``study.templates.TEMPLATES``). All are functional protocols: they check that the
+"""Protocol templates of the total-observation line (registered into ``study.templates.TEMPLATES``; they live in the study layer, which imports ``totalobs``). All are functional protocols: they check that the
 machinery runs and records what it is meant to record. None of them is a confirmatory study and none is pre-registered."""
 
 from __future__ import annotations
@@ -6,9 +6,9 @@ from __future__ import annotations
 import copy
 import itertools
 
-from ..study.protocol import FUNCTIONAL_ENGINE, FUNCTIONAL_GEN, SCHEMA
-from . import sss
-from .agent import STRONG
+from ..totalobs import sss
+from ..totalobs.agent import STRONG
+from .protocol import FUNCTIONAL_ENGINE, FUNCTIONAL_GEN, SCHEMA
 
 PRIMARY = ["recall_final"]
 SECONDARY = [

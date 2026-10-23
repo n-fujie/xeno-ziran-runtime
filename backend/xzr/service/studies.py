@@ -123,10 +123,6 @@ def get_templates(request: Request) -> dict:
     return {name: templates.template(name) for name in templates.TEMPLATES}
 
 
-class EnvIn(BaseModel):
-    environment: dict[str, Any]
-
-
 @router.get("/lineage")
 def lineage_map(request: Request) -> dict:
     """The research lines and what each can actually do on this machine (Native / Adapter / Replay / Reference / Unavailable), probed from the file system."""
@@ -136,18 +132,24 @@ def lineage_map(request: Request) -> dict:
     return lineage.capability_map()
 
 
-@router.post("/totalobs/conditions")
-def totalobs_conditions(body: EnvIn, request: Request) -> dict:
-    """The declared structural conditions of a planetary-scale observation problem, evaluated for an environment (no run is made)."""
+@router.get("/totalobs/conditions")
+def totalobs_conditions(request: Request, env: str = "{}") -> dict:
+    """The declared structural conditions of a planetary-scale observation problem, evaluated for an environment given as JSON (no run is made;
+    a read-only computation, hence a GET)."""
     local_only(request)
     from ..totalobs import planetary, profiles
 
+    if len(env) > 4096:
+        raise HTTPException(413, "environment too large")
     try:
-        env = profiles.effective_env({"kind": "total-observation", **body.environment})
-    except (TypeError, ValueError, KeyError) as e:
-        raise HTTPException(422, {"issues": [str(e)]}) from e
-    issues = profiles.validate_env(env, "environment")
-    return {"issues": issues, "conditions": None if issues else planetary.conditions(env)}
+        body = json.loads(env)
+        if not isinstance(body, dict):
+            raise ValueError("the environment must be an object")
+        e = profiles.effective_env({"kind": "total-observation", **body})
+    except (TypeError, ValueError, KeyError) as ex:
+        raise HTTPException(422, {"issues": [str(ex)]}) from ex
+    issues = profiles.validate_env(e, "environment")
+    return {"issues": issues, "conditions": None if issues else planetary.conditions(e)}
 
 
 @router.post("/validate")

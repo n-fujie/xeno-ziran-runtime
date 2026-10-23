@@ -468,3 +468,60 @@ def test_scaling_law_needs_enough_points_and_recovers_a_known_exponent():
 def test_planetary_metrics_and_block_are_in_every_run():
     r = run({"policy": "fixed"})
     assert 0 <= r["metrics"]["planetary_conditions_met"] <= 1 and r["totalobs"]["planetary"]["earth_claim"] is False
+
+
+# ---------------------------------------------------------------------------------------------------- the remaining functional checks of the directive
+def test_distributed_observation_covers_more_and_observers_interfere_with_each_other():
+    w1 = warm()
+    one = ObserverNet(w1.cfg, hub=0, pool=1000.0)
+    one.seed(SEED)
+    one.add(Sensor("A", 20, radius=2, period=1, backaction=0.3, noise=0.0))
+    w2 = warm()
+    two = ObserverNet(w2.cfg, hub=0, pool=1000.0)
+    two.seed(SEED)
+    two.add(Sensor("A", 20, radius=2, period=1, backaction=0.3, noise=0.0))
+    two.add(Sensor("B", 21, radius=2, period=1, backaction=0.3, noise=0.0))  # overlapping footprint
+    one.observe(w1)
+    two.observe(w2)
+    cover = lambda net: {i for r in net.store for _, (_, idx) in r.blocks.items() for i in idx}  # noqa: E731
+    assert len(cover(two)) > len(cover(one))  # two places are read where one was
+    shared = [i for i in cover(two) if w2.d[20, i] <= 2 and w2.d[21, i] <= 2]
+    a_first = next(r for r in two.store if r.sid == "A")
+    b_second = next(r for r in two.store if r.sid == "B")
+    pick = shared[0]
+    va = next(v for _, (v, idx) in a_first.blocks.items() if pick in idx)
+    vb = next(v for _, (v, idx) in b_second.blocks.items() if pick in idx)
+    assert vb < va  # B read what A had already absorbed from: the observers interfered with each other (the order of reading matters)
+
+
+def test_strong_revisions_are_exercised_with_their_reasons():
+    faint = {"generations": 10, "world": {"source_amp": 0.12}}  # activity near the detection threshold: identification fails
+    fine = {"generations": 10, "net": {"scale": 3, "n_sensors": 3}}  # coarse blocks that can cut an object
+    ops = []
+    for env in (faint, fine):
+        for i in range(8):
+            ops += [(o["op"], o["reason"], o["status"], o.get("result")) for g in run(FULL, env, i)["totalobs"]["generations"] for o in g["ops"]]
+    names = {(op, reason, st) for op, reason, st, _ in ops}
+    assert ("set-threshold", "no-object", "executed") in names  # classification scheme revised after a failure to identify anything
+    assert ("set-offset", "split-by-boundary", "executed") in names  # observation boundary redefined after an object was cut by a block edge
+    assert ("derive-variable", "no-object", "executed") in names and ("derive-variable", "no-object", "rejected") in names  # a variable adopted, and one refused
+    for _, _, _, res in (o for o in ops if o[0] == "derive-variable" and o[3]):
+        assert res["adopted"] == (res["objects_candidate"] > res["objects_level"] and res["objects_candidate"] > res["objects_control"])
+
+
+def test_a_refuted_hypothesis_changes_the_next_experiment():
+    rs = [run(FULL, {"generations": 14}, i) for i in range(8)]
+    seen = 0
+    for r in rs:
+        tests = [g["hypothesis_test"] for g in r["totalobs"]["generations"] if g["hypothesis_test"] and g["hypothesis_test"].get("B")]
+        for a, b in zip(tests, tests[1:], strict=False):
+            if a["outcome"] in ("refuted", "coarse"):
+                assert b["c_hat_before"] == pytest.approx(a["c_obs"], abs=1e-3)  # the next test predicts from the revised hypothesis
+                seen += 1
+    assert seen >= 1
+
+
+def test_integration_loss_is_diagnosed_by_the_agent_from_its_own_records():
+    rs = [run(FULL, {"generations": 10}, i) for i in range(8)]
+    effects = {g["integration"]["effect"] for r in rs for g in r["totalobs"]["generations"]}
+    assert effects <= {"invariant", "lost"} and all(set(g["integration"]["sets"]) == {"separate", "mean", "finest"} for r in rs for g in r["totalobs"]["generations"])

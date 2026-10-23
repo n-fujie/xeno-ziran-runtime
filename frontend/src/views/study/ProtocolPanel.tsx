@@ -52,7 +52,7 @@ function TotalObsSetup({ doc, edit }: { doc: StudyProtocol; edit: (f: (d: StudyP
         </div>))}
       {issues.length > 0 && <ul className="small warn">{issues.map((i) => <li key={i}>{i}</li>)}</ul>}
       {cond && <details><summary className="small">Planetary-scale structural conditions: {cond.n_met}/{cond.n} met{cond.all_met ? ' (all)' : ''} — synthetic model, no claim about the Earth</summary>
-        <Table head={['condition', 'value', 'unit', 'threshold', 'met']} rows={cond.conditions.map((r: any) => [r.condition, fmt(r.value), r.unit, r.threshold, <Chip key="m" s={r.met ? 'ok' : 'UNRESOLVED'} />])} />
+        <Table head={['condition', 'value', 'unit', 'threshold', 'met']} rows={cond.conditions.map((r: any) => [r.condition, fmt(r.value), r.unit, r.threshold, <Chip key="m" s={r.met ? 'ok' : 'not met'} />])} />
         <p className="small dim">{cond.note}</p></details>}
     </Section>
   );

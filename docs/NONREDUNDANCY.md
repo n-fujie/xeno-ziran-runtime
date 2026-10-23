@@ -42,6 +42,13 @@ rules in full).
   configuration; ARDS's EXISTING-blind arm is an independent re-implementation of an existing adaptive procedure with observer-side information only. Overlap with these
   families is expected until a comparable axis shows otherwise; none of them has been implemented here as an arm beyond the ones named.
 
+* **Observation, apparatus and reality.** That measurement apparatuses take part in what they measure, and that what counts as an object is made in an observing arrangement, is argued by Barad (2007,
+  *Meeting the Universe Halfway*: agential realism, apparatus, intra-action); that a naturalist account of nature does not guarantee that it is for us, and what that implies for thought, by Brassier
+  (2007, *Nihil Unbound*). The total-observation line implements *operational analogues* (absorption by observation, wear of the observer, objects that depend on the configuration) in a synthetic
+  model; it does not adopt or test those positions, and the one reference named as "Capps" in the project brief has not been identified to a specific work here: it is listed for the owner to supply
+  and verify. **Nothing in this repository shows that these operational analogues are new**; distributed sensing, adaptive sampling and sensor-network placement are long-standing engineering topics, and
+  closed-loop automated science (Langley; King; Williams; Kitano, above) already revises hypotheses and experiments from results.
+
 ## What would count
 
 A confirmatory, pre-registered comparison on fresh seeds (not the functional replicates 3980–3989) in which a method with the P/A operation is compared with

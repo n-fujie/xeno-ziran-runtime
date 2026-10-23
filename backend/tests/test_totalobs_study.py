@@ -174,12 +174,10 @@ def http():
 def test_endpoints_serve_the_capability_map_and_the_conditions(http):
     m = http.get("/api/studies/lineage").json()
     assert m["counts"] and any(r["line"] == "ANESCIRE" for r in m["lines"])
-    r = http.post(
-        "/api/studies/totalobs/conditions",
-        json={"environment": {"world": {"rows": 12, "cols": 24, "span": 3}, "net": {"n_sensors": 4, "latency": 2, "pool": 24.0}}},
-    ).json()
+    env = {"world": {"rows": 12, "cols": 24, "span": 3}, "net": {"n_sensors": 4, "latency": 2, "pool": 24.0}}
+    r = http.get("/api/studies/totalobs/conditions", params={"env": json.dumps(env)}).json()
     assert r["issues"] == [] and r["conditions"]["all_met"] and r["conditions"]["earth_claim"] is False
-    bad = http.post("/api/studies/totalobs/conditions", json={"environment": {"world": {"rows": 99, "cols": 99}}}).json()
+    bad = http.get("/api/studies/totalobs/conditions", params={"env": json.dumps({"world": {"rows": 99, "cols": 99}})}).json()
     assert bad["issues"] and bad["conditions"] is None
     tpl = http.get("/api/studies/templates").json()
     assert set(NEW) <= set(tpl)

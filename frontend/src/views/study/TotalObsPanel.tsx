@@ -9,12 +9,12 @@ import { Chip, Section, Table, fmt } from './common';
 
 const OPS = (g: any) => (g.ops ?? []).map((o: any) => `${o.op}${o.sid ? ' ' + o.sid : ''}${o.value !== undefined ? '=' + JSON.stringify(o.value) : ''} [${o.status}] ← ${o.reason}`);
 
-function Conditions({ c }: { c: any }) {
+export function Conditions({ c }: { c: any }) {
   return (
     <>
       <p className="small dim">{c.note} Synthetic model; <b>earth_claim: {String(c.earth_claim)}</b>.</p>
       <Table head={['condition', 'value', 'unit', 'threshold', 'met']}
-        rows={c.conditions.map((r: any) => [r.condition, fmt(r.value), r.unit, r.threshold, <Chip key="m" s={r.met ? 'ok' : 'UNRESOLVED'} />])} />
+        rows={c.conditions.map((r: any) => [r.condition, fmt(r.value), r.unit, r.threshold, <Chip key="m" s={r.met ? 'ok' : 'not met'} />])} />
       <details className="small"><summary>Limits of the model and what a real-world claim would require</summary>
         <ul>{c.limits.map((l: string) => <li key={l}>{l}</li>)}</ul>
         <p className="dim">Requires: {c.requires_for_real_world_claims.join('; ')}.</p></details>
@@ -22,7 +22,7 @@ function Conditions({ c }: { c: any }) {
   );
 }
 
-function Trace({ rec }: { rec: any }) {
+export function Trace({ rec }: { rec: any }) {
   const t = rec.totalobs;
   const [open, setOpen] = useState<number | null>(null);
   const g = open === null ? null : t.generations[open];

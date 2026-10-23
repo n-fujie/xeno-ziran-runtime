@@ -848,7 +848,7 @@ TEMPLATES = {
 }
 
 
-from ..totalobs import templates as _totalobs_templates  # noqa: E402
+from . import totalobs_templates as _totalobs_templates  # noqa: E402
 
 TEMPLATES.update(_totalobs_templates.TEMPLATES)
 

@@ -22,7 +22,10 @@ ALLOWED = {
     "lab": {"lab", "hpo", "runtime", "lod", "experiments"},
     # study layer: protocols, seeded batch execution, analysis and paper outputs over hpo / lab (and the shape detector);
     # never service, practice, interpret or reasonlab. Only the service imports it.
-    "study": {"study", "hpo", "lab", "runtime", "lod", "experiments", "shapes"},
+    "study": {"study", "hpo", "lab", "runtime", "lod", "experiments", "shapes", "totalobs"},
+    # total-observation layer: a synthetic world, observers and a research loop re-using hpo's rule revision and reachability
+    # comparison; imports nothing of study, lab, service, practice, interpret or reasonlab (study imports it, never the reverse)
+    "totalobs": {"totalobs", "hpo"},
 }
 
 
