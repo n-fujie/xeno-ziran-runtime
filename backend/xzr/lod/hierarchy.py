@@ -183,12 +183,14 @@ def _build_hierarchy(a: sp.csr_matrix) -> Hierarchy:
 
 
 # ---------------------------------------------------------------------------------------------------- hierarchy method v2 (opt-in, versioned)
-# Method 1 (``build_hierarchy`` above: the default, and the one every stored address and the golden fixture were made with) splits a sub-graph by the
-# second eigenvector of its normalized adjacency. For a sub-graph with several connected components that eigenvalue is degenerate: every vector of the
-# eigenspace is a valid answer and the one a solver returns depends on its LAPACK / ARPACK build (open item S11; tests/test_hierarchy_diagnosis.py).
-# Method 2 removes that freedom: components are ordered by a canonical rule (size, then lowest node index) and a split orders nodes by (component,
-# position within the component). It gives DIFFERENT partitions from method 1 wherever method 1 hit a degenerate eigenspace, so it is a new method
-# with its own name, never a replacement: nothing selects it by default, results made with method 1 keep their meaning, no reference is rewritten.
+# Method 1 (``build_hierarchy`` above: the default, and the one every stored address and the golden fixture were made
+# with) splits a sub-graph by the second eigenvector of its normalized adjacency. For a sub-graph with several connected
+# components that eigenvalue is degenerate: every vector of the eigenspace is a valid answer and the one a solver returns
+# depends on its LAPACK / ARPACK build (open item S11; tests/test_hierarchy_diagnosis.py). Method 2 removes that freedom:
+# components are ordered by a canonical rule (size, then lowest node index) and a split orders nodes by (component,
+# position within the component). It gives DIFFERENT partitions from method 1 wherever method 1 hit a degenerate
+# eigenspace, so it is a new method with its own name, never a replacement: nothing selects it by default, results made
+# with method 1 keep their meaning, no reference is rewritten.
 HIERARCHY_METHODS = {
     1: "spectral bisection (default; platform-dependent on disconnected sub-graphs)",
     2: "component-canonical spectral bisection (opt-in; solver-independent on disconnected sub-graphs)",
