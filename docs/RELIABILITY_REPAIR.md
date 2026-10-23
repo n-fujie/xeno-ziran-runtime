@@ -65,3 +65,12 @@ Nothing stored was changed or regenerated; the tests still fail and are not skip
 ## 7. Limits that remain
 
 The hypothesis test still needs a steady detector (many tests are deferred). Sequential rule conflicts are limited by a cooldown. Recall is blind to delay while sources stand still. The model is one scalar-activity family. Cross-machine and third-party reproduction have not been exercised.
+
+
+## 8. Final verification (2026-10-24)
+
+* **v1 compatibility.** The behaviour of v1 is pinned by digests of metrics and operation sequences (`tests/test_totalobs_v2.py::test_v1_behaviour_is_pinned`, three cases) and a v1 record gains no key. The four studies stored before the repair (200 runs: total-observation 84, autonomous-loop 36, planetary 48, SSS 32) were
+  replayed **run by run under the repaired code: 200/200 identical**; their whole-study re-executions were 100 % identical. The repair did not rewrite any stored result and no v1 number is compared with a v2 number.
+* **v2 on the seven environments** (64 runs): replay 64/64 and re-execution 64/64, same machine and software versions only (table in `ZRS_INTEGRATION_STATUS.md`, evidence in `docs/certification/certification_record.json`). Replay and re-execution are independent checks.
+* **What the repair does not show.** The higher recall under delay in v2 is the removal of a measurement artefact (records discarded on arrival), not evidence that any method is better. With stationary sources recall does not show the cost of delay at all (information age does); v2 contrasts between arms remain UNRESOLVED in the functional studies.
+* **Open limits, unchanged:** the hypothesis test needs a steady detector; sequential rule conflicts across generations are limited by the cooldown (reported as `scale_reversals`); no other machine or person has reproduced a result; the two known failures remain (owner decision).

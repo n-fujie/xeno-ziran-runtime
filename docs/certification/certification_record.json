@@ -1,0 +1,519 @@
+[
+ {
+  "environment": "HPO / Ziran",
+  "experiment_id": "S20261023-455de16c-8195",
+  "protocol_digest": "455de16c6857d989211736e96abcd96eeb9aa63614441cb635b3770724fb3eab",
+  "registered_digest_identical": true,
+  "kind": "hpo-world",
+  "rules_version": "v1 (absent)",
+  "mode": "functional",
+  "seeds": {
+   "n": 2,
+   "first": [
+    7000,
+    70000
+   ],
+   "last": [
+    7001,
+    70001
+   ]
+  },
+  "arms": 3,
+  "runs": 6,
+  "ok": 6,
+  "failed": 0,
+  "run_seconds_sum": 6.2,
+  "stored_files": 32,
+  "package_checksums_sha256": "8a27fc27943771c905725f2e98f7466055f855b5262c4f210187ed64cef5285d",
+  "package_verified": true,
+  "analysis": true,
+  "figures": 8,
+  "methods_results": [
+   true,
+   true
+  ],
+  "replay_runs": 6,
+  "replay_agreement": 1.0,
+  "git": {
+   "commit": "62d26cd2f69a",
+   "dirty": true
+  },
+  "limit": "functional sample; same-machine bit-reproducibility; address-based results are not guaranteed cross-platform (the two known failures)",
+  "reproduction": {
+   "study": "S20261023-455de16c-f4ff",
+   "identical_share": 1.0,
+   "runs_compared": 6
+  },
+  "replay_seconds": 6.7
+ },
+ {
+  "environment": "Total Observation (v2)",
+  "experiment_id": "S20261023-2311be9b-b9aa",
+  "protocol_digest": "2311be9b5d4ca231958cca9af732616ce9a5fc51e0e517f3acca980a37e90394",
+  "registered_digest_identical": true,
+  "kind": "total-observation",
+  "rules_version": "v2",
+  "mode": "functional",
+  "seeds": {
+   "n": 4,
+   "first": [
+    7000,
+    70000
+   ],
+   "last": [
+    7003,
+    70003
+   ]
+  },
+  "arms": 4,
+  "runs": 16,
+  "ok": 16,
+  "failed": 0,
+  "run_seconds_sum": 1.5,
+  "stored_files": 41,
+  "package_checksums_sha256": "ff56a113f9264971e941d821ea9677c1dd84f6c36bccfab7dcaa48cc7e1ff1b5",
+  "package_verified": true,
+  "analysis": true,
+  "figures": 7,
+  "methods_results": [
+   true,
+   true
+  ],
+  "replay_runs": 16,
+  "replay_agreement": 1.0,
+  "git": {
+   "commit": "62d26cd2f69a",
+   "dirty": true
+  },
+  "limit": "synthetic regional model; not the Earth; recall = what the system observed (not reproducibility); stationary sources hide the cost of delay",
+  "reproduction": {
+   "study": "S20261023-2311be9b-bc66",
+   "identical_share": 1.0,
+   "runs_compared": 16
+  },
+  "replay_seconds": 1.8
+ },
+ {
+  "environment": "Planetary-Scale Observation (v2)",
+  "experiment_id": "S20261023-c39f962b-ff5d",
+  "protocol_digest": "c39f962b0c4b65ab8cebf02908730bbd1158dd9b4ee87aecc96467f135138769",
+  "registered_digest_identical": true,
+  "kind": "total-observation",
+  "rules_version": "v2",
+  "mode": "functional",
+  "seeds": {
+   "n": 2,
+   "first": [
+    7000,
+    70000
+   ],
+   "last": [
+    7001,
+    70001
+   ]
+  },
+  "arms": 5,
+  "runs": 10,
+  "ok": 10,
+  "failed": 0,
+  "run_seconds_sum": 1.0,
+  "stored_files": 35,
+  "package_checksums_sha256": "d73d0bae5dfe80cee3966eaf26405a31cb93cf0e1e9fa4b6c3e7e383c7c56aee",
+  "package_verified": true,
+  "analysis": true,
+  "figures": 7,
+  "methods_results": [
+   true,
+   true
+  ],
+  "replay_runs": 10,
+  "replay_agreement": 1.0,
+  "git": {
+   "commit": "62d26cd2f69a",
+   "dirty": true
+  },
+  "limit": "synthetic regional model; not the Earth; recall = what the system observed (not reproducibility); stationary sources hide the cost of delay",
+  "reproduction": {
+   "study": "S20261023-c39f962b-ad61",
+   "identical_share": 1.0,
+   "runs_compared": 10
+  },
+  "replay_seconds": 1.1
+ },
+ {
+  "environment": "SSS (v2)",
+  "experiment_id": "S20261023-5273a397-443d",
+  "protocol_digest": "5273a397e95bbca69a979aeb085c6c6da737da795ceac9582a7a6310033875b6",
+  "registered_digest_identical": true,
+  "kind": "total-observation",
+  "rules_version": "v2",
+  "mode": "functional",
+  "seeds": {
+   "n": 2,
+   "first": [
+    7000,
+    70000
+   ],
+   "last": [
+    7001,
+    70001
+   ]
+  },
+  "arms": 8,
+  "runs": 16,
+  "ok": 16,
+  "failed": 0,
+  "run_seconds_sum": 1.2,
+  "stored_files": 41,
+  "package_checksums_sha256": "eb69848eeb76d64ecc19af25dcaec8d10fbdc0d86d92d58fb99f86225046b85d",
+  "package_verified": true,
+  "analysis": true,
+  "figures": 7,
+  "methods_results": [
+   true,
+   true
+  ],
+  "replay_runs": 16,
+  "replay_agreement": 1.0,
+  "git": {
+   "commit": "62d26cd2f69a",
+   "dirty": true
+  },
+  "limit": "synthetic regional model; not the Earth; recall = what the system observed (not reproducibility); stationary sources hide the cost of delay",
+  "reproduction": {
+   "study": "S20261023-5273a397-8ebb",
+   "identical_share": 1.0,
+   "runs_compared": 16
+  },
+  "replay_seconds": 1.4
+ },
+ {
+  "environment": "Autonomous research loop (v2)",
+  "experiment_id": "S20261023-4a489b45-ed13",
+  "protocol_digest": "4a489b45f090767b5daee7ae9ae482382d3259085a2d120aa1a9e79f3e7759ba",
+  "registered_digest_identical": true,
+  "kind": "total-observation",
+  "rules_version": "v2",
+  "mode": "functional",
+  "seeds": {
+   "n": 3,
+   "first": [
+    7000,
+    70000
+   ],
+   "last": [
+    7002,
+    70002
+   ]
+  },
+  "arms": 3,
+  "runs": 9,
+  "ok": 9,
+  "failed": 0,
+  "run_seconds_sum": 0.6,
+  "stored_files": 34,
+  "package_checksums_sha256": "e685588e45a2481916dd8a64f9b33e414ac88e7872de8e0691a72bfe47067c34",
+  "package_verified": true,
+  "analysis": true,
+  "figures": 7,
+  "methods_results": [
+   true,
+   true
+  ],
+  "replay_runs": 9,
+  "replay_agreement": 1.0,
+  "git": {
+   "commit": "62d26cd2f69a",
+   "dirty": true
+  },
+  "limit": "synthetic regional model; not the Earth; recall = what the system observed (not reproducibility); stationary sources hide the cost of delay",
+  "reproduction": {
+   "study": "S20261023-4a489b45-421b",
+   "identical_share": 1.0,
+   "runs_compared": 9
+  },
+  "replay_seconds": 0.8
+ },
+ {
+  "environment": "ARDS (env2 bridge)",
+  "experiment_id": "S20261023-970d1342-3557",
+  "protocol_digest": "970d13427f853b84c97f53571b5e514a35d1011ab3ee1a7af6a97d135c7d904f",
+  "registered_digest_identical": true,
+  "kind": "ards",
+  "rules_version": "v1 (absent)",
+  "mode": "functional",
+  "seeds": {
+   "n": 1,
+   "first": [
+    3980,
+    3980
+   ],
+   "last": [
+    3980,
+    3980
+   ]
+  },
+  "arms": 3,
+  "runs": 3,
+  "ok": 3,
+  "failed": 0,
+  "run_seconds_sum": 184.7,
+  "stored_files": 27,
+  "package_checksums_sha256": "05a2230cc4e30ea90b12b9a167b7c578e0e162e951c1615b41b736e5943b0843",
+  "package_verified": true,
+  "analysis": true,
+  "figures": 6,
+  "methods_results": [
+   true,
+   true
+  ],
+  "replay_runs": 3,
+  "replay_agreement": 1.0,
+  "git": {
+   "commit": "62d26cd2f69a",
+   "dirty": true
+  },
+  "limit": "ARDS test mode only (replicates 3980-3989): a functional check by construction; not a confirmatory path",
+  "reproduction": {
+   "study": "S20261023-970d1342-7c41",
+   "identical_share": 1.0,
+   "runs_compared": 3
+  },
+  "replay_seconds": 171.6
+ },
+ {
+  "environment": "ARDS-HPO shared (env3)",
+  "experiment_id": "S20261023-0c30f43b-feef",
+  "protocol_digest": "0c30f43bc0da12fcbc1a135e9f7e622072daa059e83e820c809fb93e8160cb76",
+  "registered_digest_identical": true,
+  "kind": "shared-oi",
+  "rules_version": "v1 (absent)",
+  "mode": "functional",
+  "seeds": {
+   "n": 1,
+   "first": [
+    3980,
+    3980
+   ],
+   "last": [
+    3980,
+    3980
+   ]
+  },
+  "arms": 4,
+  "runs": 4,
+  "ok": 4,
+  "failed": 0,
+  "run_seconds_sum": 229.5,
+  "stored_files": 29,
+  "package_checksums_sha256": "515f6282c833072872a4aeeab2f10cf879726a6522bd12f94f7784dafbf7c559",
+  "package_verified": true,
+  "analysis": true,
+  "figures": 7,
+  "methods_results": [
+   true,
+   true
+  ],
+  "replay_runs": 4,
+  "replay_agreement": 1.0,
+  "git": {
+   "commit": "62d26cd2f69a",
+   "dirty": true
+  },
+  "limit": "ARDS test mode only; ARDS and HPO policies are structurally close, so the comparison is policy-level",
+  "reproduction": {
+   "study": "S20261023-0c30f43b-4f1f",
+   "identical_share": 1.0,
+   "runs_compared": 4
+  },
+  "replay_seconds": 164.9
+ },
+ {
+  "environment": "v1 compat: total-observation (first release)",
+  "experiment_id": "S20261023-a6ce61ef-7ffe",
+  "protocol_digest": "a6ce61efd3ac3c6d77c70765b82a43eb1ebfd3dfe94de22305fbf53aa5a9ff4d",
+  "registered_digest_identical": true,
+  "kind": "total-observation",
+  "rules_version": "v1 (absent)",
+  "mode": "functional",
+  "seeds": {
+   "n": 6,
+   "first": [
+    7000,
+    70000
+   ],
+   "last": [
+    7005,
+    70005
+   ]
+  },
+  "arms": 14,
+  "runs": 84,
+  "ok": 84,
+  "failed": 0,
+  "run_seconds_sum": 12.6,
+  "stored_files": 109,
+  "package_checksums_sha256": "7bfdfcf55c82a575cd5e3054c8ccb167c21e55db4553da7e582e83f117fa9614",
+  "package_verified": true,
+  "analysis": true,
+  "figures": 7,
+  "methods_results": [
+   true,
+   true
+  ],
+  "replay_runs": 84,
+  "replay_agreement": 1.0,
+  "git": {
+   "commit": "c8a60f240764",
+   "dirty": true
+  },
+  "limit": "synthetic regional model; not the Earth; recall = what the system observed (not reproducibility); stationary sources hide the cost of delay",
+  "reproduction": {
+   "study": "S20261023-a6ce61ef-f4ea",
+   "identical_share": 1.0,
+   "runs_compared": 84
+  },
+  "replay_seconds": 9.2
+ },
+ {
+  "environment": "v1 compat: autonomous-loop (first release)",
+  "experiment_id": "S20261023-3112b368-55f4",
+  "protocol_digest": "3112b36826e526127ad1994a4abd0f559460a63cdffde80275567a3b35d9df16",
+  "registered_digest_identical": true,
+  "kind": "total-observation",
+  "rules_version": "v1 (absent)",
+  "mode": "functional",
+  "seeds": {
+   "n": 6,
+   "first": [
+    7000,
+    70000
+   ],
+   "last": [
+    7005,
+    70005
+   ]
+  },
+  "arms": 6,
+  "runs": 36,
+  "ok": 36,
+  "failed": 0,
+  "run_seconds_sum": 3.3,
+  "stored_files": 61,
+  "package_checksums_sha256": "c8cd9f680dc0a07fce344aa8484d020d3b25c808cdeed46ccc11af76f7dc7c76",
+  "package_verified": true,
+  "analysis": true,
+  "figures": 7,
+  "methods_results": [
+   true,
+   true
+  ],
+  "replay_runs": 36,
+  "replay_agreement": 1.0,
+  "git": {
+   "commit": "c8a60f240764",
+   "dirty": true
+  },
+  "limit": "synthetic regional model; not the Earth; recall = what the system observed (not reproducibility); stationary sources hide the cost of delay",
+  "reproduction": {
+   "study": "S20261023-3112b368-3781",
+   "identical_share": 1.0,
+   "runs_compared": 36
+  },
+  "replay_seconds": 3.5
+ },
+ {
+  "environment": "v1 compat: planetary (first release)",
+  "experiment_id": "S20261023-d64d110e-74f4",
+  "protocol_digest": "d64d110ed43079ebaabc3943e7f627ede5763889e5902ca27c62b5b40b609f1d",
+  "registered_digest_identical": true,
+  "kind": "total-observation",
+  "rules_version": "v1 (absent)",
+  "mode": "functional",
+  "seeds": {
+   "n": 4,
+   "first": [
+    7000,
+    70000
+   ],
+   "last": [
+    7003,
+    70003
+   ]
+  },
+  "arms": 12,
+  "runs": 48,
+  "ok": 48,
+  "failed": 0,
+  "run_seconds_sum": 4.9,
+  "stored_files": 73,
+  "package_checksums_sha256": "db1538e264d279d9f669c3b15342639681ca2faa92a01a9c6774e6d231bf999a",
+  "package_verified": true,
+  "analysis": true,
+  "figures": 7,
+  "methods_results": [
+   true,
+   true
+  ],
+  "replay_runs": 48,
+  "replay_agreement": 1.0,
+  "git": {
+   "commit": "c8a60f240764",
+   "dirty": true
+  },
+  "limit": "synthetic regional model; not the Earth; recall = what the system observed (not reproducibility); stationary sources hide the cost of delay",
+  "reproduction": {
+   "study": "S20261023-d64d110e-90a8",
+   "identical_share": 1.0,
+   "runs_compared": 48
+  },
+  "replay_seconds": 4.0
+ },
+ {
+  "environment": "v1 compat: sss (first release)",
+  "experiment_id": "S20261023-1a599fc1-433f",
+  "protocol_digest": "1a599fc1c39b875f1b98d06b9520d1b16492c26d19dbec91c43d63c7fd558dbd",
+  "registered_digest_identical": true,
+  "kind": "total-observation",
+  "rules_version": "v1 (absent)",
+  "mode": "functional",
+  "seeds": {
+   "n": 4,
+   "first": [
+    7000,
+    70000
+   ],
+   "last": [
+    7003,
+    70003
+   ]
+  },
+  "arms": 8,
+  "runs": 32,
+  "ok": 32,
+  "failed": 0,
+  "run_seconds_sum": 3.4,
+  "stored_files": 57,
+  "package_checksums_sha256": "f9ffe852ed5a609b9ee45a6972c13a1789abb464e558a7a76519d4df9ea62187",
+  "package_verified": true,
+  "analysis": true,
+  "figures": 7,
+  "methods_results": [
+   true,
+   true
+  ],
+  "replay_runs": 32,
+  "replay_agreement": 1.0,
+  "git": {
+   "commit": "c8a60f240764",
+   "dirty": true
+  },
+  "limit": "synthetic regional model; not the Earth; recall = what the system observed (not reproducibility); stationary sources hide the cost of delay",
+  "reproduction": {
+   "study": "S20261023-1a599fc1-4ad0",
+   "identical_share": 1.0,
+   "runs_compared": 32
+  },
+  "replay_seconds": 2.8
+ }
+]

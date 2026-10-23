@@ -1,0 +1,68 @@
+[
+ {
+  "draft": "docs/level2/PROTOCOL_L2_DRAFT.json (HPO)",
+  "mode": "confirmatory",
+  "status": "DRAFT: not frozen, not run, nothing about its outcome is known or assumed",
+  "frozen": false,
+  "items": {
+   "1 main hypothesis": true,
+   "2 falsification conditions": true,
+   "3 arms (described)": true,
+   "4 fairness (no undeclared difference)": true,
+   "5 independent seeds (fresh, validated)": true,
+   "6 number of trials": "200 seeds per arm",
+   "7 power (assumptions and source; every contrast powered or declared underpowered)": true,
+   "7b contrasts declared underpowered (reported with intervals only)": [
+    "C3 recursive vs random-matched"
+   ],
+   "8 metrics (primary / secondary)": true,
+   "9 analysis plan": true,
+   "10 multiplicity correction": true,
+   "11 stopping rules": true,
+   "12 computational budget": "512000 step-runs; gate 200000; budget {'max_runs': 1000, 'procs': 4}",
+   "13 storage format": true,
+   "14 reproduction procedure": true,
+   "15 exploration / confirmation separated": true,
+   "16 change management after registration": true
+  },
+  "open_issues_that_block_creation": [
+   "estimated 512000 step-runs exceed 200000: set approval.high_cost with an explicit approval record (who, when) before starting"
+  ],
+  "approvals_granted": {
+   "high_cost": false
+  }
+ },
+ {
+  "draft": "template total-observation-confirmatory",
+  "mode": "confirmatory",
+  "status": "DRAFT: not frozen, not run, nothing about its outcome is known or assumed",
+  "frozen": false,
+  "items": {
+   "1 main hypothesis": true,
+   "2 falsification conditions": true,
+   "3 arms (described)": true,
+   "4 fairness (no undeclared difference)": true,
+   "5 independent seeds (fresh, validated)": true,
+   "6 number of trials": "189 seeds per arm",
+   "7 power (assumptions and source; every contrast powered or declared underpowered)": true,
+   "7b contrasts declared underpowered (reported with intervals only)": [],
+   "8 metrics (primary / secondary)": true,
+   "9 analysis plan": true,
+   "10 multiplicity correction": true,
+   "11 stopping rules": true,
+   "12 computational budget": "233604 step-runs; gate 200000; budget {'max_runs': 2000, 'procs': 4}",
+   "13 storage format": true,
+   "14 reproduction procedure": true,
+   "15 exploration / confirmation separated": true,
+   "16 change management after registration": true
+  },
+  "open_issues_that_block_creation": [
+   "approval.confirmatory_run is declared and not granted: record who approved the confirmatory run and when before the study is created",
+   "estimated 233604 step-runs exceed 200000: set approval.high_cost with an explicit approval record (who, when) before starting"
+  ],
+  "approvals_granted": {
+   "high_cost": false,
+   "confirmatory_run": false
+  }
+ }
+]

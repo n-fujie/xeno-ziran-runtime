@@ -337,3 +337,74 @@ v1 of the total-observation line: replay of earlier studies only; do not start n
 Nothing is NOT READY for functional or exploratory use. Scientific evaluation (C) and non-redundancy (D) remain **not reached**; no confirmatory study, Phase 4 main experiment, push or deployment was started.
 
 **To start a confirmatory study:** (a) the owner reads and accepts the draft's preregistration (hypothesis, falsification, power source, provenance) and, if wanted, changes it before freezing; (b) records `approval.high_cost` and `approval.confirmatory_run` (who, when); (c) the study is created (this registers its digest), then run; (d) a second machine or person reproduces it if cross-platform claims are wanted; (e) the owner decides on the two known failures if address-based results are to be claimed across platforms.
+
+
+---
+
+# Final certification (2026-10-24)
+
+Evidence: `docs/certification/certification_record.json` (collected by `backend/scripts/certify_studies.py`, which re-executes every stored run in memory and changes nothing) and `docs/certification/protocol_audit.json`
+(`backend/scripts/protocol_audit.py`). Operating procedure: `docs/OPERATING_PROCEDURE.md` (every command in it was executed). Reliability repair: `docs/RELIABILITY_REPAIR.md`. Branch `feat/zrs-integration`; local commits only; last push still `57bc3bf`; nothing deployed.
+
+## Regression (current code)
+
+* **Backend, full run, nothing deselected: 565 passed, 2 failed, 0 skipped-to-pass.** The two failures are the known ones and are unchanged: `test_compat[desktop-scipy]`, `test_published_records_replay` (`m2-run-9100.json`). No new failure.
+  The run was made on the code of commit `a95cdbd`; since then only the lint configuration (`pyproject.toml` per-file ignores), two evidence scripts and documents changed (`git diff a95cdbd HEAD`): no behavioural code. Layering and API-security guards pass.
+* **Frontend:** `tsc -b` and `eslint .` clean; vitest 87/87 (13 files). **TypeScript simulator:** 73/73. **Ruff:** clean.
+* **Protected assets:** ARDS Phase 3 manifest — **1,526 files, no problems** (re-verified at certification); ARDS repository — 0 modified tracked files (HEAD `26472ca`); `m2-run-9100.json`, the golden fixture, `tests/test_lab.py` and `tests/test_compat.py` — no diff.
+* **The two known failures** remain failing by design: the golden fixture and the stored m2 record were produced with another solver build; the cause (a degenerate eigenspace in the split of a disconnected sub-graph) is re-run by `tests/test_hierarchy_diagnosis.py`; nothing stored was changed. The opt-in `lod.hierarchy.build_hierarchy_v2` is a separate method (default untouched) and is tested to be invariant where the default is not. Whether to change the default is the owner's decision.
+
+## Reproducibility: 264 runs, two independent checks
+
+Replay (one stored run re-executed from its protocol alone and compared with the stored record, wall time / CPU / memory excluded) and whole-study re-execution (the registered protocol re-run into a new study and compared run by run) are separate checks; each was 100 % on every study.
+**Same machine, same software versions (Python 3.12.13, scipy 1.18.1, numpy 2.5.3); no other machine or person has reproduced anything.**
+
+| environment | experiment id | protocol digest | seeds (n, first) | runs ok/failed | run-time sum | stored files | package checksums (sha256, first 12) | figures | replay (all runs) | re-execution (new study) |
+|---|---|---|---|---|---|---|---|---|---|---|
+| HPO / Ziran | S20261023-455de16c-8195 | 455de16c6857 | 2, (7000,70000) | 6/0 | 6.2 s | 32 | 8a27fc279437 | 8 | 6/6 | 100 % (…-f4ff) |
+| Total Observation (v2) | S20261023-2311be9b-b9aa | 2311be9b5d4c | 4, (7000,70000) | 16/0 | 1.5 s | 41 | ff56a113f926 | 7 | 16/16 | 100 % (…-bc66) |
+| Planetary-Scale (v2) | S20261023-c39f962b-ff5d | c39f962b0c4b | 2, (7000,70000) | 10/0 | 1.0 s | 35 | d73d0bae5dfe | 7 | 10/10 | 100 % (…-ad61) |
+| SSS (v2) | S20261023-5273a397-443d | 5273a397e95b | 2, (7000,70000) | 16/0 | 1.2 s | 41 | eb69848eeb76 | 7 | 16/16 | 100 % (…-8ebb) |
+| Autonomous loop (v2) | S20261023-4a489b45-ed13 | 4a489b45f090 | 3, (7000,70000) | 9/0 | 0.6 s | 34 | e685588e45a2 | 7 | 9/9 | 100 % (…-421b) |
+| ARDS bridge env2 | S20261023-970d1342-3557 | 970d13427f85 | 1, (3980,3980) | 3/0 | 184.7 s | 27 | 05a2230cc4e3 | 6 | 3/3 | 100 % (…-7c41) |
+| ARDS–HPO shared env3 | S20261023-0c30f43b-feef | 0c30f43bc0da | 1, (3980,3980) | 4/0 | 229.5 s | 29 | 515f6282c833 | 7 | 4/4 | 100 % (…-4f1f) |
+| **7 environments** | | | | **64/0** | | | | | **64/64** | **64/64** |
+| v1 (first release) total-observation | S20261023-a6ce61ef-7ffe | a6ce61efd3ac | 6 | 84/0 | 12.6 s | 109 | 7bfdfcf55c82 | 7 | 84/84 | 100 % (…-f4ea) |
+| v1 autonomous-loop | S20261023-3112b368-55f4 | 3112b36826e5 | 6 | 36/0 | 3.3 s | 61 | c8cd9f680dc0 | 7 | 36/36 | 100 % (…-3781) |
+| v1 planetary | S20261023-d64d110e-74f4 | d64d110ed430 | 4 | 48/0 | 4.9 s | 73 | db1538e264d2 | 7 | 48/48 | 100 % (…-90a8) |
+| v1 SSS | S20261023-1a599fc1-433f | 1a599fc1c39b | 4 | 32/0 | 3.4 s | 57 | f9ffe852ed5a | 7 | 32/32 | 100 % (…-4ad0) |
+| **v1 (stored before the repair, replayed under the repaired code)** | | | | **200/0** | | | | | **200/200** | **200/200** |
+| **Total** | | | | **264/0** | | | | | **264/264** | **264/264** |
+
+All studies: registered digest identical to the protocol digest; analysis, Methods and Results written; package verified. The seven current-environment studies were created and exercised through the UI (protocol → create → run → analysis → figures → package → verify → replay → re-execution); the four v1 studies were created through the UI/API before the repair and replayed here.
+Caveats: every manifest records `git_dirty: true` (the studies were made from a working tree with uncommitted changes — commit `62d26cd` for the current ones, `c8a60f2` for the v1 ones; the later commits added the confirmatory draft, an approval gate that applies only to protocols that declare it, tests and documents, none of which a run uses). The ARDS and shared studies have no `rules_version` (it applies to the total-observation line only). ARDS env1 and lab-population / multi-system were not re-run through the UI in this certification (qualified earlier by API and tests). Run times of the ARDS studies are dominated by the node bridge.
+
+## Operational judgement, three axes per environment
+
+| environment | functional / exploratory use | reproducibility (same machine) | technical readiness for a confirmatory study |
+|---|---|---|---|
+| HPO / Ziran | READY | READY (6/6 replay, re-execution 100 %) | CONDITIONALLY READY: `docs/level2/PROTOCOL_L2_DRAFT.json` is complete (15 of 16 audit items fully met) and blocked only by the cost approval (512,000 step-runs > 200,000); contrast C3 is a *declared underpowered secondary* (762 pairs needed, 200 planned): it is reported with its interval only and is not claimed as powered; C1 (25) and C2 (174) are within the 200 planned |
+| ARDS bridge (env1, env2) | READY (test mode, replicates 3980–3989) | READY (env2 re-verified; env1 earlier) | NOT READY by design: the bridge refuses non-test replicates; ARDS Phase 4 is stopped |
+| ARDS–HPO shared (env3) | READY | READY | NOT READY by design (same bridge limit) |
+| Total Observation (v2) | READY | READY | CONDITIONALLY READY: `total-observation-confirmatory` (3 arms, 189 fresh seeds sized from a 12-seed exploration with upper-bound SDs, Holm, equivalence margin, provenance stating that v2 was adopted after seeing v1 results); blocked only by `approval.high_cost` (233,604 step-runs) and `approval.confirmatory_run`, both declared and **not granted**; all 16 audit items met |
+| Planetary-Scale | READY (synthetic model; no Earth claim) | READY | not prepared: no confirmatory draft |
+| SSS | READY | READY | not prepared: no confirmatory draft (2-seed interaction contrasts are not evidence) |
+| Autonomous loop | READY | READY | not prepared: the draft covers the default environment, not the failure environment |
+No environment is NOT READY for functional or exploratory use. v1 is for replaying earlier studies only.
+
+## Completion axes
+
+| axis | judgement |
+|---|---|
+| A — Implementation | **reached** |
+| B — Operational verification | **reached**: the follow-on operation of changed conditions was run, recorded, replayed and re-executed (264/264) |
+| C — Scientific evaluation | **not reached**: functional studies only; all contrasts UNRESOLVED; the improvement of v2 over v1 is a repair of a measurement rule, not evidence of superiority |
+| D — Scientific non-redundancy | **not established**: assessment defaults to "not evaluated"; no Active Inference / Active Learning arm exists |
+| E — Ontological scope | **reached** (software): eight-layer ledger and scope audit in every run (0 issues), the agent cut from the world and the verifier (tested), all four claims false; a property of this model, not a proof about reality |
+| F — Experiment readiness | **reached**: protocols can be created, registered, run, analysed, reported, packaged, replayed and re-executed from the UI and the CLI (`docs/OPERATING_PROCEDURE.md`); confirmatory readiness is conditional as above |
+
+**The integrated working version of XENO ZIRAN SIMULATOR is complete on A, B, E and F.** C and D are independent scientific demonstrations and remain unreached; nothing here claims scientific non-redundancy, a scientific advantage of any method, or the strong Xenoscience conditions.
+
+## To start a confirmatory study
+
+1. The owner accepts (or amends before freezing) a draft's preregistration: hypothesis, falsification, power source, provenance. 2. The owner records `approval.high_cost` and, for the total-observation draft, `approval.confirmatory_run` (who, when). 3. The study is created (this registers its digest) and run (about 4–5 minutes for the total-observation draft on this machine). 4. For any cross-platform claim, another machine or person re-executes it. 5. The owner decides on the two known failures if address-based results are to be claimed across platforms. This certification released no gate and started no confirmatory run, no Phase 4 experiment, no push and no deployment.
