@@ -84,8 +84,9 @@ def test_exchange_and_inheritance_are_reads_of_another_systems_results(baseline)
     )  # the successor has not acted before it starts
     inh = run(arm(inherit={"start_at": 50}))
     assert (
-        inh["exchange_systems"] == 1 and inh["exchange_reads"] > 0
-    )  # the successor read the predecessor's store after it started
+        inh["exchange_systems"] == 1
+    )  # one successor reads its predecessor's store; whether it consulted it is diagnosed, not assumed
+    assert M.run(arm(inherit={"start_at": 50}), GEN, SEED, STEPS)["exchange_diagnosis"]
 
 
 def test_expansion_and_shrinking_of_what_can_be_investigated(baseline):
@@ -110,3 +111,35 @@ def test_study_environment_uses_the_measurements(tmp_path):
     st.execute(procs=2)
     assert {r["status"] for r in st.runs()} == {"ok"} and all("distinct_conditions" in r["metrics"] for r in st.runs())
     assert any(r["metrics"]["stopped_systems"] > 0 for r in st.runs() if r["arm"] == "stop-30pct")
+
+
+def test_exchange_diagnosis_separates_empty_store_no_overlap_redundancy_and_effect():
+    d = M._exchange_diagnosis
+    base = {
+        "exchange_systems": 2.0,
+        "reader_memory_reads": 10.0,
+        "store_entries_read": 5.0,
+        "reader_memory_hits": 3.0,
+        "reader_decisions_changed_by_memory": 1.0,
+    }
+    assert d({**base, "exchange_systems": 0.0}) is None
+    assert d({**base, "reader_memory_reads": 0.0}).startswith("no reads")
+    assert d({**base, "store_entries_read": 0.0}).startswith("reads of an empty store")
+    assert d({**base, "reader_memory_hits": 0.0}).startswith("reads without hits")
+    assert d({**base, "reader_decisions_changed_by_memory": 0.0}).startswith("hits without a changed decision")
+    assert d(base).startswith("the stored results changed")
+
+
+def test_exchange_variants_are_built_as_declared_and_the_writer_is_chosen_on_a_control_run():
+    stale = M.build_config(
+        arm(exchange={"fraction": 0.6, "quality": "stale", "delay": 25, "writer_sid": "S005"}), GEN, SEED, STEPS
+    )
+    readers = [s for s in stale["systems"] if s.get("shared_memory_from") == "S005"]
+    assert readers and all(s["memory_delay"] == 25 for s in readers) and all(s["diagnose"] for s in stale["systems"])
+    wrong = M.build_config(arm(exchange={"fraction": 0.6, "quality": "wrong", "writer_sid": "S005"}), GEN, SEED, STEPS)
+    assert next(s for s in wrong["systems"] if s["sid"] == "S005")["memory"] == "shuffled"
+    out = M.run(arm(exchange={"fraction": 0.6}), GEN, SEED, 150)
+    assert out["writer"]["rule"].startswith("history system with the most stored results") and out["exchange_diagnosis"]
+    m = out["metrics"]
+    assert m["reader_memory_reads"] > 0 and m["messages"] == m["reader_memory_reads"] and m["store_entries_read"] >= 0
+    assert M.run(BASE, GEN, SEED, 60)["exchange_diagnosis"] is None  # a population without exchange has nothing to diagnose

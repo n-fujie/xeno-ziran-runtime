@@ -39,17 +39,38 @@ def build_config(arm: dict, gen: int, seed: int, steps: int) -> dict:
         s.update(pop.get("system_overrides") or {})
     hist = [s["sid"] for s in systems if s["kind"] == "history"]
     harness: list[dict] = []
-    if scn.get("exchange") and len(hist) >= 2:  # a fraction of the history systems read the first history system's store
-        k = max(1, int(len(hist) * float(scn["exchange"].get("fraction", 0.5))))
+    if scn.get(
+        "diagnose", bool(scn.get("exchange") or scn.get("inherit"))
+    ):  # would each decision have differed without the memory?
         for s in systems:
-            if s["sid"] in hist[1 : 1 + k]:
-                s["shared_memory_from"] = hist[0]
+            s["diagnose"] = True
+    if scn.get("exchange") and len(hist) >= 2:  # some history systems read another system's store
+        ex = scn["exchange"]
+        k = max(1, int(len(hist) * float(ex.get("fraction", 0.5))))
+        writer = ex.get("writer_sid") or hist[0]
+        if ex.get("placement") == "colocated":  # readers nearest to the writer's bay first (a natural topology, not a tuned one)
+            ring = sorted({s["home"].split(".")[0] for s in systems}, key=int)
+            bay = {s["sid"]: s["home"].split(".")[0] for s in systems}
+            dist = lambda sid: min((int(bay[sid]) - int(bay[writer])) % len(ring), (int(bay[writer]) - int(bay[sid])) % len(ring))  # noqa: E731
+            readers = sorted(hist[1:], key=lambda sid: (dist(sid), sid))[:k]
+        else:
+            readers = hist[1 : 1 + k]
+        quality = ex.get("quality", "fresh")
+        for s in systems:
+            if s["sid"] in readers:
+                s["shared_memory_from"] = writer
+                if quality == "stale":
+                    s["memory_delay"] = int(ex.get("delay", 30))  # entries readable only this long after they were written
+            if quality == "wrong" and s["sid"] == writer:
+                s["memory"] = "shuffled"  # the store's outcomes are permuted across entries: information that is wrong
     if scn.get("stop"):  # a fraction of the systems stops acting at a step
         k = max(1, int(len(systems) * float(scn["stop"].get("fraction", 0.3))))
         victims = [s["sid"] for s in systems][-k:]
         harness += [{"at": int(scn["stop"].get("at", steps // 2)), "do": "stop_system", "system": v} for v in victims]
     if scn.get("inherit") and len(hist) >= 2:  # a successor starts late and reads its predecessor's store
-        pred, succ = hist[0], hist[-1]
+        pred, succ = scn["inherit"].get("writer_sid") or hist[0], hist[-1]
+        if pred == succ:
+            succ = next(h for h in hist if h != pred)
         for s in systems:
             if s["sid"] == succ:
                 s["shared_memory_from"] = pred
@@ -72,11 +93,53 @@ def build_config(arm: dict, gen: int, seed: int, steps: int) -> dict:
     return cfg
 
 
+def _exchange_diagnosis(m: dict) -> str | None:
+    """Why an exchange of results did or did not reach the decisions: separates a mechanism that was never reached, information that does not overlap
+    with what the reader considers (an environment constraint), information the reader already has (redundancy), and information that changed decisions."""
+    if not m["exchange_systems"]:
+        return None
+    if not m["reader_memory_reads"]:
+        return "no reads: the mechanism was not reached (the reader never consulted the store)"
+    if not m["store_entries_read"]:
+        return "reads of an empty store: the system whose results were to be shared had produced none (nothing to exchange yet)"
+    if not m["reader_memory_hits"]:
+        return "reads without hits: the store holds nothing about the experiments the reader considers (no overlap; an environment constraint)"
+    if not m["reader_decisions_changed_by_memory"]:
+        return "hits without a changed decision: the information was redundant with what the reader already used"
+    return "the stored results changed some of the reader's decisions"
+
+
 def _jaccard(a: set, b: set) -> float:
     return len(a & b) / len(a | b) if a | b else 0.0
 
 
+def productive_writer(arm: dict, gen: int, seed: int, steps: int) -> tuple[str | None, int]:
+    """The history system with the most stored results in a control run (same seed, no exchange): who has something to share. Chosen on the
+    control, disclosed in the record; it is the only use of the control's outcomes, and it keeps the exchange from being a read of an empty store."""
+    ctl = {**arm, "scenario": {"diagnose": False}}
+    r = LabRun(build_config(ctl, gen, seed, steps))
+    for _ in range(steps):
+        r.step()
+    hist = [(len(s.memory), s.spec.sid) for s in r.science.systems.values() if s.spec.kind == "history"]
+    if not hist or max(hist)[0] == 0:
+        return None, 0
+    n, sid = max(hist, key=lambda x: (x[0], -ord(x[1][-1])))
+    return sid, n
+
+
 def run(arm: dict, gen: int, seed: int, steps: int) -> dict:
+    scn = arm.get("scenario", {})
+    writer_info = None
+    for key in ("exchange", "inherit"):
+        if scn.get(key) and scn[key].get("writer", "productive") == "productive" and not scn[key].get("writer_sid"):
+            sid, n = productive_writer(arm, gen, seed, steps)
+            writer_info = {
+                "rule": "history system with the most stored results in a control run",
+                "writer": sid,
+                "entries_in_control": n,
+            }
+            arm = {**arm, "scenario": {**scn, key: {**scn[key], **({"writer_sid": sid} if sid else {})}}}
+            break
     cfg = build_config(arm, gen, seed, steps)
     t0 = time.time()
     r = LabRun(cfg)
@@ -101,6 +164,7 @@ def run(arm: dict, gen: int, seed: int, steps: int) -> dict:
             sensor_prev[s] = st.sensor
         req_by_step.append(step_req)
     summ = sci.summary()
+    rec_events = list(sci.events)
     specs = {s: sci.systems[s].spec for s in sids}
     # 1. independent histories
     pairs = {s: set(sci.systems[s].stats["pairs"]) for s in sids}
@@ -144,6 +208,17 @@ def run(arm: dict, gen: int, seed: int, steps: int) -> dict:
     # 5 / 9. exchange and inheritance
     ex_reads = sum(summ[s]["memory_reads"] for s in sids if specs[s].shared_memory_from)
     ex_unavail = sum(summ[s]["memory_unavailable"] for s in sids if specs[s].shared_memory_from)
+    readers = [s for s in sids if specs[s].shared_memory_from]
+    rd = [sci.systems[s].diag for s in readers]
+    r_reads = sum(summ[s]["memory_reads"] for s in readers)
+    r_hits = sum(summ[s]["memory_hits"] for s in readers)
+    r_dec = sum(d.get("decisions", 0) for d in rd)
+    r_changed = sum(d.get("changed_without_memory", 0) for d in rd)
+    store_entries = sum(len(sci.systems[w].memory) for w in {specs[s].shared_memory_from for s in readers})
+    basis_memory = sum(
+        1 for e in rec_events if e["type"] == "experiment_selected" and e["system"] in readers and e["basis"] == "memory"
+    )
+    selected = sum(1 for e in rec_events if e["type"] == "experiment_selected" and e["system"] in readers)
     metrics: dict[str, float | None] = {
         "n_systems": float(len(sids)),
         "systems_with_history": float(len(active)),
@@ -172,6 +247,15 @@ def run(arm: dict, gen: int, seed: int, steps: int) -> dict:
         "coverage_expansions": float(expand),
         "coverage_shrinks": float(shrink),
         "coverage_mean": float(np.mean([np.mean(c) for c in cov_series.values()])),
+        "reader_decisions": float(r_dec),
+        "reader_decisions_changed_by_memory": float(r_changed),
+        "reader_memory_hits": float(r_hits),
+        "reader_memory_reads": float(r_reads),
+        "reader_hit_rate": (r_hits / r_reads) if r_reads else None,
+        "reader_changed_share": (r_changed / r_dec) if r_dec else None,
+        "reader_memory_basis_share": (basis_memory / selected) if selected else None,
+        "store_entries_read": float(store_entries),
+        "messages": float(r_reads),
         "variables_adopted": float(sum(len(summ[s]["variables_adopted"]) for s in sids)),
         "window_changes": float(sum(summ[s]["window_changes"] for s in sids)),
         "relocations": float(sum(summ[s]["relocations"] for s in sids)),
@@ -179,6 +263,8 @@ def run(arm: dict, gen: int, seed: int, steps: int) -> dict:
     rec = r.record()
     return {
         "metrics": metrics,
+        "exchange_diagnosis": _exchange_diagnosis(metrics),
+        "writer": writer_info,
         "fingerprint_last": rec["steps"][-1]["fingerprint"],
         "events": len(rec["events"]),
         "wall_s": round(time.time() - t0, 3),

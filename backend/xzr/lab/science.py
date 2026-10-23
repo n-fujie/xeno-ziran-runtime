@@ -146,7 +146,7 @@ class SystemState:
     stats: dict[str, Any] = field(default_factory=lambda: {
         "requests": 0, "completed": 0, "failed": 0, "denied": 0, "true_gain": 0.0, "true_gain_post": 0.0,
         "observed_outcomes": 0, "unobserved_outcomes": 0, "relocations": 0, "window_changes": 0, "isolations": 0,
-        "memory_reads": 0, "memory_unavailable": 0, "abs_pred_error": [], "coverage": [], "paths": [],
+        "memory_reads": 0, "memory_hits": 0, "memory_unavailable": 0, "abs_pred_error": [], "coverage": [], "paths": [],
         "first_request": None, "pairs": set(), "variables_adopted": [], "variables_rejected": 0, "spent": 0.0})
 
 
@@ -356,6 +356,8 @@ class Science:
             outs = [entries[i]["outcome"] for i in perm]
             entries = [{**e, "outcome": o} for e, o in zip(entries, outs, strict=True)]
         rel = [e for e in entries if e["pair"] == (a, b)]
+        if rel:
+            sys_.stats["memory_hits"] += 1  # the store held something about this very experiment
         if mode == "contextual":
             ctx = self.context(self._wrong(b) if sp.context_error else b, f)
             rel = [e for e in rel if e["ctx"] == ctx]
@@ -443,7 +445,7 @@ class Science:
             d["changed_without_variables"] = d.get("changed_without_variables", 0) + int(
                 pick(True, list(BASE_FEATURES), True) != chosen)
         sys_.features = base
-        for k in ("memory_reads", "memory_unavailable"):
+        for k in ("memory_reads", "memory_hits", "memory_unavailable"):
             sys_.stats[k] = stats[k]
 
     def _request(self, sys_: SystemState, pair: tuple[str, str], pred: float, basis: str, cov: dict[str, int], t: int):

@@ -431,6 +431,21 @@ def multi_system(n_seeds: int = 4, n: int = 20, horizon: int = 120) -> dict:
             {"exchange": {"fraction": 0.6}},
         ),
         arm(
+            "exchange-colocated",
+            "As exchange, readers chosen nearest to the writer's bay first.",
+            {"exchange": {"fraction": 0.6, "placement": "colocated"}},
+        ),
+        arm(
+            "exchange-stale",
+            "As exchange, entries readable only 30 steps after they were written (old information).",
+            {"exchange": {"fraction": 0.6, "quality": "stale", "delay": 30}},
+        ),
+        arm(
+            "exchange-wrong",
+            "As exchange, the writer's stored outcomes are permuted across entries at every read (wrong information).",
+            {"exchange": {"fraction": 0.6, "quality": "wrong"}},
+        ),
+        arm(
             "inherit",
             "A history system starts late (middle of the run) and reads its predecessor's stored results.",
             {"inherit": {"start_at": horizon // 2}},
@@ -473,6 +488,11 @@ def multi_system(n_seeds: int = 4, n: int = 20, horizon: int = 120) -> dict:
                 "coverage_shrinks",
                 "coverage_expansions",
                 "variables_adopted",
+                "reader_memory_hits",
+                "reader_decisions_changed_by_memory",
+                "reader_hit_rate",
+                "store_entries_read",
+                "messages",
             ],
         },
         "contrasts": [
@@ -480,6 +500,9 @@ def multi_system(n_seeds: int = 4, n: int = 20, horizon: int = 120) -> dict:
             {"id": "C2", "a": "stop-30pct", "b": "baseline", "varies": ["scenario"], "role": "secondary"},
             {"id": "C3", "a": "exchange", "b": "baseline", "varies": ["scenario"], "role": "secondary"},
             {"id": "C4", "a": "inherit", "b": "baseline", "varies": ["scenario"], "role": "secondary"},
+            {"id": "C6", "a": "exchange-stale", "b": "exchange", "varies": ["scenario"], "role": "secondary"},
+            {"id": "C7", "a": "exchange-wrong", "b": "exchange", "varies": ["scenario"], "role": "secondary"},
+            {"id": "C8", "a": "exchange-colocated", "b": "exchange", "varies": ["scenario"], "role": "secondary"},
             {"id": "C5", "a": "views-closed", "b": "baseline", "varies": ["scenario"], "role": "secondary"},
         ],
         "criteria": {"success": [], "failure": []},

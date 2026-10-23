@@ -129,7 +129,9 @@ class MetaReviser:
             rec["after"] = self.rules.snapshot()
             rec["evidence_epochs"] = self.patience
             # evidence: the changes whose targeted blindness persisted
-            rec["evidence"] = [{k: p[k] for k in ("kind", "reason", "event", "epoch")} for p in failed_pending if p["reason"] == reason]
+            rec["evidence"] = [
+                {k: p[k] for k in ("kind", "reason", "event", "epoch")} for p in failed_pending if p["reason"] == reason
+            ]
             self.trace.append(rec)
             made.append(rec)
         return made
