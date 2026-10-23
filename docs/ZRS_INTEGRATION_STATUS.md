@@ -433,3 +433,42 @@ Scope: confirm that the completed integrated version is retained, in current exe
 **Usable range per environment** is now computed by the Study Engine's own validation and shown in the UI (New protocol banner and Research lines tab; also in `/api/studies/lineage` → `environments`): functional / exploratory / confirmatory / reproducibility evidence. Confirmatory is never READY: HPO and Total Observation are CONDITIONALLY READY (blocked by the declared approvals), the ARDS bridge and the ARDS–HPO environment are NOT READY by design (test replicates only), Planetary / SSS / loop have no draft. The HPO contrast C3 is a declared underpowered secondary (762 pairs needed, 200 planned): it is reported with its interval only and is not claimed as powered.
 Open conditions kept: the two known failures; no confirmatory study started; the high-cost and execution approval gates closed; no other machine or third party has reproduced anything; scientific evaluation (C) and non-redundancy (D) not reached.
 Completion axes unchanged and re-verified on current evidence: **A reached, B reached, E reached, F reached; C not reached, D not established.** The software completion stands; it is not a scientific demonstration.
+
+
+---
+
+# Scientific research activation baseline (2026-10-24)
+
+Scope: fix the research-operations baseline and prepare the programmes' protocols and audits. **No experiment was run as evidence; no confirmatory study, ARDS Phase 4 run, high-cost computation, freeze, push or deployment was started or approved.** Software completion (A, B, E, F) is retained; scientific evaluation (C) and non-redundancy (D) are unreached and nothing here makes a claim about either.
+
+## Baseline retention — current execution results (commit `c0d3691`, clean tree)
+
+| check | result |
+|---|---|
+| Backend, full run, nothing deselected | **579 passed, 2 failed** — the two known failures (`test_compat[desktop-scipy]`, `test_published_records_replay`), unchanged; no new failure (566 + 13 new tests) |
+| Frontend / TypeScript simulator | tsc + eslint clean, vitest 87/87 / 73/73 |
+| Phase 3 freeze, ARDS repository | 1,526 files, no problems / no modified tracked file (HEAD `26472ca`) |
+| Replay of every stored run at the final code | **264/264** identical (`docs/certification/certification_record.json`, replay environment: Python 3.12.13, numpy 2.5.3, scipy 1.18.1, Accelerate, commit `c0d3691`, dirty = false). Replay under a second software set (Python 3.14.7, numpy 2.5.4) was done at `7216bef` (264/264, `certification_record_alt_env.json`); changes since are options that are absent from every earlier record (tested), so it was not repeated. Tiers 3 (another machine) and 4 (a third party): not performed |
+| Whole-study re-execution | 100 % for all 11 studies (stored `reproduction.json`, same code lineage; not re-run now) |
+| Independent statistics audit | 34,554 recomputed quantities, 0 disagreements (`statistics_audit.json`) |
+
+## What was added (no new simulator)
+
+* **Four registrable programme protocols** — `rp1-ziran-self-revision`, `rp2-total-observation`, `rp3-planetary-placement`, `rp4-sss-self-revision` (`docs/research/RESEARCH_PROGRAMS.md`). Pre-execution audit (`docs/research/programme_audit.json`): all validate, pass the fairness check, and run to completion on one reserved seed per arm (**48/48 smoke runs**); every requested metric is measured except one that is *derived* (RP1's change failure rate). They use three **optional, default-off** environment settings (random placement, initial integration rule, `measures: extended`) and, for the manifest, `numeric_build` and `hierarchy_method`; none alters an earlier record (pins and the 264-run replay).
+* **Comparator audit** (`docs/research/COMPARATORS.md`, `comparators_audit.json`): Active Inference is implemented elsewhere (the Post-Active-Inference package and the sibling repository) but **not connected as an arm**; Active Learning, Active Sensing, Bayesian Optimization and adaptive control are **not implemented**; the only prior procedure that is an arm is ARDS *existing-blind* (ARDS–HPO shared environment, test replicates only; policy-level). **No prior method is claimed as compared.** The conditions for a fair comparison are written down.
+* **Evidence management** (`docs/research/EVIDENCE_MANAGEMENT.md`, `scripts/evidence_check.py`): the seven certified studies grade `COMPLETE-WITH-LIMITS` (the working tree was dirty at creation — the manifest lists the dirty file names; numerical build and hierarchy method not yet recorded then). New studies record both.
+* **Proposed amendment of the Level 2 draft** (`docs/level2/PROTOCOL_L2_DRAFT_PROPOSED_AMENDMENT.md`, `PROTOCOL_L2_DRAFT.proposed.json`): seven known incomparabilities, the numerical environment, one censoring sensitivity analysis. **The draft itself is unchanged** (digest `d7748ff9…0aed`, pinned by a test), not frozen; the proposal keeps exactly the one cost-gate issue; no approval was granted.
+
+## Audit of the two confirmatory drafts (`protocol_audit.json`, 19 rows)
+
+| | `total-observation-confirmatory` | `PROTOCOL_L2_DRAFT.json` | `PROTOCOL_L2_DRAFT.proposed.json` |
+|---|---|---|---|
+| rows met | 19/19 | 18/19 (row 18, known incomparabilities, missing) | 19/19 |
+| blocking issues | `approval.confirmatory_run`; cost gate (233,604 step-runs) | cost gate (512,000 step-runs) | the same single cost gate |
+| power | all contrasts powered (189 seeds) | C1 25, C2 174 ≤ 200; **C3 needs 762, plans 200: declared underpowered, interval only** | same |
+
+## Unresolved conditions before any confirmatory study
+
+1. The owner reads the drafts' preregistrations and decides on the proposed amendment (before freezing). 2. The owner records `approval.high_cost` (and `approval.confirmatory_run` where declared): who, when. 3. RP2–RP4 have no confirmatory drafts: each needs a small, owner-approved exploratory study on fresh seeds first, with every later design change recorded as exploration-derived. 4. Metrics that do not exist for the HPO world (a stored change-failure rate) would be a new rules version. 5. Any HPO / laboratory confirmatory protocol must state the hierarchy method and the solver build; the two known failures remain an owner decision. 6. No other machine or third party has reproduced anything. 7. No prior method other than ARDS existing-blind exists as an arm: a non-redundancy claim cannot be tested until comparator arms with the same information, authority and budget are implemented (not started).
+
+**Axes unchanged:** A reached · B reached · C not reached · D not established · E reached (software) · F reached. The software's completion is not evidence for any theory, and a negative scientific evaluation would not retract it.

@@ -95,3 +95,16 @@ PYTHONPATH=. <PYTHON> scripts/protocol_audit.py ../docs/certification/protocol_a
 PYTHONPATH=. <PYTHON> scripts/certify_studies.py <spec.json> <out.json>                                   # replays every run; records the replay environment (run it once per interpreter)
 ```
 `certification_record_alt_env.json` was produced with a second interpreter on the same machine (Python 3.14.7, numpy 2.5.4). The usable range of each environment is shown in the UI (New protocol banner, Research lines tab).
+
+
+## 8. Research programmes and audits (this baseline)
+
+Templates (New protocol → template): `rp1-ziran-self-revision`, `rp2-total-observation`, `rp3-planetary-placement`, `rp4-sss-self-revision` — protocols, not results (`docs/research/RESEARCH_PROGRAMS.md`). Audits (read-only):
+
+```bash
+cd backend && export PYTHONPATH=.
+<PYTHON> scripts/programme_audit.py ../docs/research/programme_audit.json        # validation, fairness and a one-seed smoke run of every arm of the four programmes
+<PYTHON> scripts/comparators_audit.py ../docs/research/comparators_audit.json    # which prior methods exist as arms (none beyond ARDS existing-blind)
+<PYTHON> scripts/evidence_check.py experiments/studies <ids.json> ../docs/certification/evidence_check.json   # the evidence policy per study
+```
+Evidence policy and confirmatory conditions: `docs/research/EVIDENCE_MANAGEMENT.md`. The proposed amendment of the Level 2 draft is a separate file (`docs/level2/PROTOCOL_L2_DRAFT.proposed.json`); the draft is untouched.
