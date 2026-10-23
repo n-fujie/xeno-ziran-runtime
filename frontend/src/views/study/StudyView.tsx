@@ -5,6 +5,8 @@ import OutputsPanel from './OutputsPanel';
 import ProtocolPanel from './ProtocolPanel';
 import ResultsPanel from './ResultsPanel';
 import RunPanel from './RunPanel';
+import LineagePanel from './LineagePanel';
+import TotalObsPanel from './TotalObsPanel';
 import ZiranPanel from './ZiranPanel';
 import { Chip, ModeBanner, Section, Table } from './common';
 
@@ -13,7 +15,7 @@ import { Chip, ModeBanner, Section, Table } from './common';
 //   figures, tables, Methods and Results → package → replay and reproduction.
 // Everything shown is read from the study directory the backend wrote; nothing here is simulated in the browser.
 
-const TABS = [['new', 'New protocol'], ['studies', 'Studies'], ['run', 'Run'], ['ziran', 'Observation & Ziran'], ['results', 'Statistics'], ['outputs', 'Paper outputs']] as const;
+const TABS = [['new', 'New protocol'], ['studies', 'Studies'], ['run', 'Run'], ['ziran', 'Observation & Ziran'], ['totalobs', 'Total observation'], ['lines', 'Research lines'], ['results', 'Statistics'], ['outputs', 'Paper outputs']] as const;
 type Tab = typeof TABS[number][0];
 const KEY = 'xzr-study-id';
 
@@ -96,7 +98,7 @@ export default function StudyView() {
         for analysis, figures, Methods / Results text and a reproducibility package. Functional checks are labelled and are not evidence.</p>
       <nav className="hpo-nav">
         {TABS.map(([k, label]) => <button key={k} className={tab === k ? 'on' : ''} onClick={() => setTab(k)}
-          disabled={k !== 'new' && k !== 'studies' && !detail}>{label}</button>)}
+          disabled={k !== 'new' && k !== 'studies' && k !== 'lines' && !detail}>{label}</button>)}
         {detail && <span className="small mono dim" style={{ marginLeft: 10 }}>{detail.id}</span>}
       </nav>
       {err && <div className="error">{err}</div>}
@@ -111,6 +113,8 @@ export default function StudyView() {
       )}
       {tab === 'run' && detail && <RunPanel key={detail.id} study={detail} onChange={() => void refresh()} />}
       {tab === 'ziran' && detail && <ZiranPanel study={detail} runs={runs} />}
+      {tab === 'totalobs' && detail && <TotalObsPanel study={detail} runs={runs} />}
+      {tab === 'lines' && <LineagePanel />}
       {tab === 'results' && detail && <ResultsPanel key={detail.id} study={detail} onChange={() => void refresh()} />}
       {tab === 'outputs' && detail && <OutputsPanel study={detail} runs={runs} onChange={() => void refresh()} onOpen={(sid) => open(sid, 'run')} />}
     </div>

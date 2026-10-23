@@ -50,9 +50,15 @@ export default function RunPanel({ study, onChange }: { study: StudyDetail; onCh
       {s.stop_reason && <p className="small warn">Stopped: {s.stop_reason} — {s.remaining} runs remain; Resume continues from the stored runs.</p>}
       {err && <div className="error">{err}</div>}
       <Section title="Runs" note="One record per arm × seed, stored under the experiment directory. Failed and timed-out runs are kept and counted.">
-        <Table head={['arm', '#', 'gen/seed', 'status', 'fired', 'ignitions', 'unobservable', 'changes (ctl/protocol)', 's']}
-          rows={runs.map((r) => [<span className="mono" key="a">{r.arm}</span>, r.index, `${r.gen}/${r.seed}`, <Chip key="s" s={r.status} />, fmt(r.metrics.fired_samples),
-            fmt(r.metrics.ignitions), fmt(r.metrics.unobservable_samples), `${r.controller_changes}/${r.protocol_changes}`, fmt(r.wall_s)])} />
+        {study.protocol.environment?.kind === 'total-observation' ? (
+          <Table head={['arm', '#', 'gen/seed', 'status', 'recall (final)', 'generations', 'operations', 'question changes', 's']}
+            rows={runs.map((r) => [<span className="mono" key="a">{r.arm}</span>, r.index, `${r.gen}/${r.seed}`, <Chip key="s" s={r.status} />, fmt(r.metrics.recall_final),
+              fmt(r.metrics.generations_run), fmt(r.metrics.ops_executed), fmt(r.metrics.question_changes), fmt(r.wall_s)])} />
+        ) : (
+          <Table head={['arm', '#', 'gen/seed', 'status', 'fired', 'ignitions', 'unobservable', 'changes (ctl/protocol)', 's']}
+            rows={runs.map((r) => [<span className="mono" key="a">{r.arm}</span>, r.index, `${r.gen}/${r.seed}`, <Chip key="s" s={r.status} />, fmt(r.metrics.fired_samples),
+              fmt(r.metrics.ignitions), fmt(r.metrics.unobservable_samples), `${r.controller_changes}/${r.protocol_changes}`, fmt(r.wall_s)])} />
+        )}
       </Section>
       <Section title="Experiment log">
         <ul className="small mono study-log">{log.slice().reverse().map((l, i) => <li key={i}><span className="dim">{String(l.at).slice(11, 19)}</span> {l.event}

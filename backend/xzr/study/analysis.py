@@ -351,7 +351,7 @@ def analyse(study: Study, write: bool = True) -> dict:
     }
     from .nonredundancy import assess
 
-    out["nonredundancy"] = assess(out)
+    out["nonredundancy"] = assess(out, kind=doc["environment"].get("kind"))
     out = clean(out)
     if write:
         (study.path / "analysis.json").write_text(json.dumps(out, indent=1, ensure_ascii=False, allow_nan=False))

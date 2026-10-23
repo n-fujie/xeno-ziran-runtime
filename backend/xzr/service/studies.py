@@ -123,6 +123,33 @@ def get_templates(request: Request) -> dict:
     return {name: templates.template(name) for name in templates.TEMPLATES}
 
 
+class EnvIn(BaseModel):
+    environment: dict[str, Any]
+
+
+@router.get("/lineage")
+def lineage_map(request: Request) -> dict:
+    """The research lines and what each can actually do on this machine (Native / Adapter / Replay / Reference / Unavailable), probed from the file system."""
+    local_only(request)
+    from .. import lineage
+
+    return lineage.capability_map()
+
+
+@router.post("/totalobs/conditions")
+def totalobs_conditions(body: EnvIn, request: Request) -> dict:
+    """The declared structural conditions of a planetary-scale observation problem, evaluated for an environment (no run is made)."""
+    local_only(request)
+    from ..totalobs import planetary, profiles
+
+    try:
+        env = profiles.effective_env({"kind": "total-observation", **body.environment})
+    except (TypeError, ValueError, KeyError) as e:
+        raise HTTPException(422, {"issues": [str(e)]}) from e
+    issues = profiles.validate_env(env, "environment")
+    return {"issues": issues, "conditions": None if issues else planetary.conditions(env)}
+
+
 @router.post("/validate")
 def validate(body: ProtocolIn, request: Request) -> dict:
     local_only(request)
@@ -242,7 +269,18 @@ def _run_view(r: dict) -> dict:
         "peak_rss_mb": r.get("peak_rss_mb"),
         "metrics": {
             k: m.get(k)
-            for k in ("fired_samples", "ignitions", "unobservable_samples", "field_ignitions", "revisions", "reinsertions")
+            for k in (
+                "fired_samples",
+                "ignitions",
+                "unobservable_samples",
+                "field_ignitions",
+                "revisions",
+                "reinsertions",
+                "recall_final",
+                "generations_run",
+                "ops_executed",
+                "question_changes",
+            )
         },
         "controller_changes": len(r.get("controller_changes") or []),
         "protocol_changes": len(r.get("protocol_changes") or []),

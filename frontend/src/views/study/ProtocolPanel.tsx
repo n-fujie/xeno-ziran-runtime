@@ -8,6 +8,56 @@ import { Chip, Section, Table, fmt } from './common';
 
 const MODES = ['functional', 'exploratory', 'confirmatory'];
 
+// Conditions of the total-observation line, as the protocol's environment sets them. Scale / Size / Speed are the groups of parameters the backend
+// declares for the three axes (xzr.totalobs.sss); the planetary-scale conditions are evaluated by the backend for exactly these values.
+const FIELDS: { group: string; key: string; path: [string, string] | [string]; step?: number; min?: number }[] = [
+  { group: 'Observation layout', key: 'sensors', path: ['net', 'n_sensors'], min: 1 },
+  { group: 'Observation layout', key: 'footprint radius', path: ['net', 'radius'], min: 1 },
+  { group: 'Observation layout', key: 'absorption by observing', path: ['net', 'backaction'], step: 0.05, min: 0 },
+  { group: 'Observation layout', key: 'wear of the observer', path: ['net', 'wear'], step: 0.05, min: 0 },
+  { group: 'Observation layout', key: 'resource pool / step', path: ['net', 'pool'], min: 1 },
+  { group: 'Planetary model', key: 'interaction span', path: ['world', 'span'], min: 1 },
+  { group: 'Planetary model', key: 'latency per hop', path: ['net', 'latency'], min: 0 },
+  { group: 'Planetary model', key: 'sources', path: ['world', 'n_sources'], min: 1 },
+  { group: 'Scale', key: 'sensor block size', path: ['net', 'scale'], min: 1 },
+  { group: 'Size', key: 'rows', path: ['world', 'rows'], min: 3 },
+  { group: 'Size', key: 'cols', path: ['world', 'cols'], min: 3 },
+  { group: 'Speed', key: 'propagation c', path: ['world', 'c'], step: 0.25, min: 0.25 },
+  { group: 'Speed', key: 'source period', path: ['world', 'source_period'], min: 10 },
+  { group: 'Speed', key: 'sensor period', path: ['net', 'period'], min: 1 },
+  { group: 'Research loop', key: 'generations', path: ['generations'], min: 1 },
+  { group: 'Research loop', key: 'steps per generation', path: ['gen_steps'], min: 5 },
+];
+const DEFAULTS: Record<string, any> = { net: { n_sensors: 2, radius: 3, backaction: 0.05, wear: 0.08, pool: 30, latency: 1, scale: 1, period: 4 },
+  world: { span: 2, n_sources: 3, rows: 8, cols: 12, c: 1, source_period: 28 }, generations: 8, gen_steps: 40 };
+const read = (env: any, p: string[]) => (p.length === 1 ? env[p[0]] ?? DEFAULTS[p[0]] : env[p[0]]?.[p[1]] ?? DEFAULTS[p[0]][p[1]]);
+
+function TotalObsSetup({ doc, edit }: { doc: StudyProtocol; edit: (f: (d: StudyProtocol) => void) => void }) {
+  const [cond, setCond] = useState<any>(null);
+  const [issues, setIssues] = useState<string[]>([]);
+  const env = doc.environment;
+  useEffect(() => {
+    const { kind: _k, ...rest } = env;   // eslint-disable-line @typescript-eslint/no-unused-vars
+    api.studyConditions(rest).then((r) => { setCond(r.conditions); setIssues(r.issues); }).catch((e) => setIssues([String(e)]));
+  }, [env]);
+  const groups = [...new Set(FIELDS.map((f) => f.group))];
+  return (
+    <Section title="Total-observation conditions (study environment)" note="These are the base conditions of every arm; an arm may override them (see its description). Scale, Size and Speed are separate groups of parameters, so each can be changed alone.">
+      {groups.map((g) => (
+        <div className="study-row" key={g}><b className="small" style={{ minWidth: 130 }}>{g}</b>
+          {FIELDS.filter((f) => f.group === g).map((f) => (
+            <label className="small" key={f.key}>{f.key} <input type="number" step={f.step ?? 1} min={f.min} style={{ width: 70 }} value={read(env, f.path as string[])}
+              onChange={(e) => edit((d) => { if (f.path.length === 1) d.environment[f.path[0]] = +e.target.value; else { d.environment[f.path[0]] = { ...(d.environment[f.path[0]] ?? {}), [f.path[1]]: +e.target.value }; } })} /></label>
+          ))}
+        </div>))}
+      {issues.length > 0 && <ul className="small warn">{issues.map((i) => <li key={i}>{i}</li>)}</ul>}
+      {cond && <details><summary className="small">Planetary-scale structural conditions: {cond.n_met}/{cond.n} met{cond.all_met ? ' (all)' : ''} — synthetic model, no claim about the Earth</summary>
+        <Table head={['condition', 'value', 'unit', 'threshold', 'met']} rows={cond.conditions.map((r: any) => [r.condition, fmt(r.value), r.unit, r.threshold, <Chip key="m" s={r.met ? 'ok' : 'UNRESOLVED'} />])} />
+        <p className="small dim">{cond.note}</p></details>}
+    </Section>
+  );
+}
+
 export default function ProtocolPanel({ onCreated }: { onCreated: (id: string) => void }) {
   const [templates, setTemplates] = useState<Record<string, StudyProtocol>>({});
   const [name, setName] = useState('revision-study');
@@ -108,6 +158,7 @@ export default function ProtocolPanel({ onCreated }: { onCreated: (id: string) =
             <label>Wall-clock budget (s) <input type="number" min={1} value={doc.stop.max_wall_seconds} onChange={(e) => edit((d) => { d.stop.max_wall_seconds = +e.target.value; })} /></label>
             <label>Primary metric <input value={(doc.metrics.primary ?? []).join(', ')} onChange={(e) => edit((d) => { d.metrics.primary = e.target.value.split(',').map((x) => x.trim()).filter(Boolean); })} /></label>
           </div>
+          {doc.environment?.kind === 'total-observation' && <TotalObsSetup doc={doc} edit={edit} />}
           <Section title="Arms" note="Uncheck an arm to leave it out (contrasts that name it are dropped).">
             <ul className="hpo-rows">
               {(templates[name]?.arms ?? doc.arms).map((a: any) => {
@@ -143,9 +194,9 @@ export default function ProtocolPanel({ onCreated }: { onCreated: (id: string) =
           </Section>
           <Section title="Arm profiles (information · authority · policy · compute)">
             <Table head={['arm', 'controller', 'policy', 'meta', 'history', 'authority', 'budget/epoch', 'interventions', 'scenario']}
-              rows={Object.entries(val.fairness?.profiles ?? {}).map(([n, p]: [string, any]) => [<span className="mono" key="n">{n}</span>, p.controller,
-                p.proposal_policy ?? '—', String(p.meta_revision), String(p.history_reinsertion), Array.isArray(p.revision_authority) ? p.revision_authority.join(', ') : p.revision_authority,
-                fmt(p.max_changes_per_epoch), p.interventions, p.scenario ? JSON.stringify(p.scenario) : '—'])} />
+              rows={Object.entries(val.fairness?.profiles ?? {}).map(([n, p]: [string, any]) => [<span className="mono" key="n">{n}</span>, p.controller ?? p.policy,
+                p.proposal_policy ?? (p.strong_revision ? p.strong_revision.join(', ') || '—' : '—'), String(p.meta_revision), String(p.history_reinsertion ?? p.history), Array.isArray(p.revision_authority) ? p.revision_authority.join(', ') : p.revision_authority,
+                fmt(p.max_changes_per_epoch ?? p.compute?.max_ops_per_generation), p.interventions ?? '—', p.scenario ? JSON.stringify(p.scenario) : (p.environment && Object.keys(p.environment).length ? JSON.stringify(p.environment) : '—')])} />
           </Section>
           {val.fairness?.operations && (
             <Section title="Research operations: shared, arm-internal, not available"

@@ -15,9 +15,9 @@ function ArmCards({ study }: { study: StudyDetail }) {
         return (
           <li key={a.name}>
             <b className="mono">{a.name}</b>
-            <Chip s={p?.controller} />
+            <Chip s={p?.controller ?? p?.policy} />
             {p?.meta_revision && <span className="status-chip mono">meta-revision</span>}
-            {p?.history_reinsertion && <span className="status-chip mono">history re-entry</span>}
+            {(p?.history_reinsertion || (p?.history && p.history !== 'off')) && <span className="status-chip mono">history re-entry</span>}
             <span className="small dim">{a.description}</span>
             <span className="small mono dim">authority: {Array.isArray(p?.revision_authority) ? p.revision_authority.join(', ') : p?.revision_authority} · budget/epoch: {fmt(p?.max_changes_per_epoch)}</span>
           </li>

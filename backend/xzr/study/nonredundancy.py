@@ -77,13 +77,35 @@ INDICATORS = {
 }
 
 
-def assess(analysis: dict, margin: float = 0.05) -> dict:
+# the total-observation line: every arm is scored by the same verifier on the same world, so identification is comparable across arms; the counts of what
+# an arm did are arm-internal and are reported, not ranked
+INDICATORS_BY_KIND = {
+    "total-observation": {
+        "reachability": ("ident_gained", "ident_lost", "reach_expanded", "reach_contracted"),
+        "observability": ("recall_final", "recall_mean", "precision_mean", "spurious_rate", "config_born_rate"),
+        "reorganisation of later structure": ("ops_executed", "question_changes", "eval_changes", "grammar_changes", "meta_revisions", "meta_exhausted", "history_changes"),
+        "temporal continuity": ("stopped_early", "generations_run"),
+        "prediction": ("hyp_supported", "hyp_refuted", "hyp_inconclusive"),
+        "intervention": ("hyp_tests",),
+    }
+}
+NOT_EVALUABLE_BY_KIND = {
+    "total-observation": [
+        "alternatives that are not implemented as arms: Active Inference and Active Learning are not arms of this line (the matched random revision and the ablations are the only comparators)",
+        "the synthetic world is one family of dynamics (a scalar activity with delay): nothing here bears on other systems or on the Earth",
+        "the verifier is part of the model: it measures agreement with the model's own state, not with any reality",
+    ]
+}
+
+
+def assess(analysis: dict, margin: float = 0.05, kind: str | None = None) -> dict:
     """Fill the axes from a study analysis. ``margin`` is the equivalence margin as a share of the compared mean."""
     mode = analysis["mode"]
     axes = []
     verdicts = []
+    extra = INDICATORS_BY_KIND.get(kind or "", {})
     for name, spec in AXES.items():
-        present = [m for m in INDICATORS.get(name, ()) if m in analysis["metrics"]]
+        present = [m for m in dict.fromkeys((*INDICATORS.get(name, ()), *extra.get(name, ()))) if m in analysis["metrics"]]
         rows = []
         for c in analysis["contrasts"]:
             for m in present:
@@ -139,7 +161,7 @@ def assess(analysis: dict, margin: float = 0.05) -> dict:
         "mode": mode,
         "equivalence_margin": margin,
         "axes": axes,
-        "not_evaluable_by_this_environment": NOT_EVALUABLE,
+        "not_evaluable_by_this_environment": NOT_EVALUABLE + NOT_EVALUABLE_BY_KIND.get(kind or "", []),
         "verdict": verdict,
         "rule": "non-redundancy is never inferred from the existence of revision, reachability records or meta-revision; see the module docstring",
         "unestablished_by_default": True,

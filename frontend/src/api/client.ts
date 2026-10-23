@@ -109,6 +109,8 @@ export const api = {
   experiment: <T = any>(name: string) => j<T>(`/api/experiments/${name}`),
   primitives: () => j<PrimitiveEntry[]>('/api/experiments/primitives'),
   // Studies (local runtime only): protocols, runs, analysis, reports, packages, replay and reproduction.
+  studyLineage: () => j<StudyAnalysis>('/api/studies/lineage'),
+  studyConditions: (environment: StudyProtocol) => post<{ issues: string[]; conditions: StudyAnalysis | null }>('/api/studies/totalobs/conditions', { environment }),
   studyTemplates: () => j<Record<string, StudyProtocol>>('/api/studies/templates'),
   studyValidate: (protocol: StudyProtocol) => post<StudyValidation>('/api/studies/validate', { protocol }),
   studyCreate: (protocol: StudyProtocol) => post<StudySummary>('/api/studies', { protocol }),

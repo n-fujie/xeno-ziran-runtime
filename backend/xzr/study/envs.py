@@ -313,7 +313,7 @@ def run_shared_oi(doc: dict, arm: dict, gen: int, seed: int) -> dict:
 
 
 def run_total_observation(doc: dict, arm: dict, gen: int, seed: int) -> dict:
-    """The autonomous research loop in the synthetic observation world (xzr.totalobs); the arm's own environment overrides are applied over the study's."""
+    """The research loop in the synthetic observation world (xzr.totalobs); the arm's overrides apply."""
     from ..totalobs import loop, profiles
 
     out = loop.run(profiles.effective_env(doc["environment"], arm), arm, gen, seed)
