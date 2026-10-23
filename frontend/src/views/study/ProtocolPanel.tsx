@@ -50,6 +50,10 @@ function TotalObsSetup({ doc, edit }: { doc: StudyProtocol; edit: (f: (d: StudyP
               onChange={(e) => edit((d) => { if (f.path.length === 1) d.environment[f.path[0]] = +e.target.value; else { d.environment[f.path[0]] = { ...(d.environment[f.path[0]] ?? {}), [f.path[1]]: +e.target.value }; } })} /></label>
           ))}
         </div>))}
+      <div className="study-row"><b className="small" style={{ minWidth: 130 }}>Rules</b>
+        <label className="small">rules version <select value={env.rules_version ?? 'v1'} onChange={(e) => edit((d) => { d.environment.rules_version = e.target.value; })}>
+          <option value="v2">v2 — arrival-based freshness, silence without asserted cause, arbitrated conflicts, two-test support</option>
+          <option value="v1">v1 — first release (kept to replay earlier studies)</option></select></label></div>
       {issues.length > 0 && <ul className="small warn">{issues.map((i) => <li key={i}>{i}</li>)}</ul>}
       {cond && <details><summary className="small">Planetary-scale structural conditions: {cond.n_met}/{cond.n} met{cond.all_met ? ' (all)' : ''} — synthetic model, no claim about the Earth</summary>
         <Table head={['condition', 'value', 'unit', 'threshold', 'met']} rows={cond.conditions.map((r: any) => [r.condition, fmt(r.value), r.unit, r.threshold, <Chip key="m" s={r.met ? 'ok' : 'not met'} />])} />

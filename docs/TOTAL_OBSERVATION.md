@@ -88,8 +88,13 @@ fixed · random-matched (same grammar, random arguments) · adaptive · adaptive
 classification, boundary, evaluation rule, grammar extension, history, rule revision. Same world, seeds, start layout, budget, information (the hub's records), stop rules and verifier in every arm;
 contrasts that differ in several components declare all of them (`varies`). No arm is Active Inference or Active Learning: neither is implemented as an arm here.
 
+## 7a. Rules v1 and v2
+
+`environment.rules_version` selects the rule set. `v1` (the default when the key is absent) is the first release and is kept so that earlier stored studies replay identically; `v2` is the reliability repair
+(`docs/RELIABILITY_REPAIR.md`): the hub's freshness window counts from arrival, a missing report is classified without asserting a cause and probed, `denied` / `scale-mismatch` conflicts are arbitrated and infeasibility is declared,
+a hypothesis is `supported` only after two consistent tests and can be withdrawn, and the verifier audits every one of these. The templates use v2. v1 and v2 results are not compared.
+
 ## 8. What is not done
 
 No confirmatory study, no power analysis for this line, no cross-machine reproduction. No claim of non-redundancy (axes in `NONREDUNDANCY.md`). The model is one family of dynamics with a scalar activity.
-The hypothesis test is confounded by the world's own pulses unless the detector is steady; many tests are deferred or inconclusive. The `silent` reason conflates an outage with a delay longer than the
-staleness window (the agent then moves a sensor next to the hub, which is also what fixes delay). Rule conflicts (`denied` vs `scale-mismatch`) are handled by a cooldown, not resolved.
+The hypothesis test is confounded by the world's own pulses unless the detector is steady; many tests are deferred or inconclusive. Under rules v1 the `silent` reason conflated an outage with a delay longer than the freshness window and `denied` vs `scale-mismatch` was handled by a cooldown only; v2 repairs both (see 7a).

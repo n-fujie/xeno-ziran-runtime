@@ -211,6 +211,14 @@ def validate(doc: dict) -> list[str]:
             issues.append("confirmatory: declare the contrasts before the run")
         if not doc.get("criteria", {}).get("success"):
             issues.append("confirmatory: declare the success criteria before the run")
+    # execution approval: a protocol that DECLARES a confirmatory-run gate cannot be created until who and when are recorded
+    ap = doc.get("approval", {})
+    if "confirmatory_run" in ap:
+        g = ap["confirmatory_run"]
+        if not (isinstance(g, dict) and g.get("who") and g.get("when")):
+            issues.append(
+                "approval.confirmatory_run is declared and not granted: record who approved the confirmatory run and when before the study is created"
+            )
     # cost gate
     if step_runs(doc) > HIGH_COST_STEP_RUNS and not doc.get("approval", {}).get("high_cost"):
         issues.append(

@@ -183,3 +183,38 @@ def test_endpoints_serve_the_capability_map_and_the_conditions(http):
     assert set(NEW) <= set(tpl)
     v = http.post("/api/studies/validate", json={"protocol": tpl["total-observation"]}).json()
     assert v["valid"] is True and json.dumps(v)  # strict JSON
+
+
+# ---------------------------------------------------------------------------------------------------- confirmatory preparation (a draft, never run here)
+def test_confirmatory_draft_is_complete_sized_from_exploration_and_cannot_be_created_without_the_approvals(tmp_path):
+    d = templates.template("total-observation-confirmatory")
+    assert d["mode"] == "confirmatory" and d["environment"]["rules_version"] == "v2" and d["status"].startswith("DRAFT")
+    issues = P.validate(d)
+    assert (
+        len(issues) == 2 and any("confirmatory_run" in i for i in issues) and any("step-runs" in i for i in issues)
+    )  # nothing else is missing
+    assert not [i for i in P.preregistration_issues(d)] and P.fairness_issues(d) == []
+    pl = d["planning"]
+    assert d["seeds"]["n"] == max(pl["pairs_needed_for_80pct_power_at_alpha_0.025"].values()) and pl["underpowered"] == []
+    gens = [g for g, _ in P.seed_list(d)]
+    assert min(gens) >= 21000 and not set(gens) & {
+        7000 + i for i in range(12)
+    }  # fresh seeds, disjoint from the exploration that sized it
+    prov = {p["derived_from"] for p in d["preregistration"]["condition_provenance"]}
+    assert "exploration" in prov  # rules v2 was chosen after seeing earlier results, and the protocol says so
+    with pytest.raises(P.ProtocolInvalid):
+        runner.Study.create(d, tmp_path)  # refused: no study, no run
+    d["approval"] = {
+        "high_cost": {"who": "owner", "when": "2026-10-24"},
+        "confirmatory_run": {"who": "owner", "when": "2026-10-24"},
+    }
+    assert P.validate(d) == []  # with the approvals recorded it would be a valid protocol (it is not created here)
+
+
+def test_a_declared_execution_gate_is_enforced_only_when_declared():
+    d = templates.template("total-observation", n_seeds=2)
+    assert P.validate(d) == []
+    d["approval"] = {"confirmatory_run": None}
+    assert any("confirmatory_run" in i for i in P.validate(d))
+    d["approval"] = {"confirmatory_run": {"who": "a", "when": "b"}}
+    assert P.validate(d) == []

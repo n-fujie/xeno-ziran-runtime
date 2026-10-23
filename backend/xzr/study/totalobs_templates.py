@@ -299,9 +299,121 @@ def sss_axes(n_seeds: int = 6, design: dict | None = None) -> dict:
     )
 
 
+def total_observation_confirmatory(n_seeds: int | None = None) -> dict:
+    """DRAFT confirmatory protocol for the total-observation line (rules v2) — NOT registered, NOT run, and it cannot be created until the approvals are recorded.
+
+    Question: does the research loop identify more of the world's objects than a fixed observing layout (C1), and do the strong revisions + history + rule
+    revision add to the base loop (C6)? Sized from a 12-seed functional exploration of rules v2 on the reserved seed range (docs/level2/exploration_inputs/
+    totalobs_v2_exploration.json), using the upper 95 % bound of each paired spread. Rules v2 itself was introduced after the first release's results were
+    seen: that is stated in the provenance, not hidden. The cost approval and the execution approval are declared and NOT granted."""
+    from . import power as W
+    from .templates import preregistration
+
+    explore = {"adaptive - fixed": (12, 0.2855, 0.10), "full - adaptive": (12, 0.1928, 0.08)}
+    sd = {k: round(W.sd_upper(v[1], v[0] - 1), 4) for k, v in explore.items()}
+    eff = {k: v[2] for k, v in explore.items()}
+    need = {k: W.sample_size_paired(sd[k], eff[k], alpha=0.025) for k in sd}  # Holm over two contrasts: the stricter level
+    n = n_seeds or min(600, max(need.values()))
+    d = total_observation(n, 10)
+    keep = {"fixed", "adaptive", "full"}
+    d["arms"] = [a for a in d["arms"] if a["name"] in keep]
+    d["contrasts"] = [
+        {**c, "role": "primary"} for c in d["contrasts"] if (c["a"], c["b"]) in (("adaptive", "fixed"), ("full", "adaptive"))
+    ]
+    d["mode"] = "confirmatory"
+    d["seeds"] = {
+        "gen_base": 21000,
+        "engine_base": 210000,
+        "n": n,
+    }  # fresh: outside the functional range and every published or exploratory range
+    d["title"] = "Total-observation research loop against a fixed layout and its own base (confirmatory, DRAFT)"
+    d["question"] = (
+        "Does the autonomous research loop identify a different share of the synthetic world's objects than a fixed observing layout, and does adding history, "
+        "rule revision and the five strong revisions change that share relative to the base loop? (rules v2; a statement about this synthetic model only)"
+    )
+    d["hypotheses"] = [
+        {
+            "id": "H1",
+            "text": "The base loop's final recall differs from the fixed layout's (C1; two-sided).",
+            "contrasts": ["C1"],
+        },
+        {"id": "H2", "text": "The full loop's final recall differs from the base loop's (C6; two-sided).", "contrasts": ["C6"]},
+    ]
+    d["metrics"] = {"primary": ["recall_final"], "secondary": [m for m in SECONDARY if m != "recall_final"]}
+    d["criteria"] = {
+        "success": [
+            {
+                "contrast": c,
+                "metric": "recall_final",
+                "direction": "different",
+                "min_relative_effect": 0.1,
+                "ci_excludes_zero": True,
+            }
+            for c in ("C1", "C6")
+        ],
+        "failure": [
+            {
+                "contrast": c,
+                "metric": "recall_final",
+                "direction": "equivalent",
+                "min_relative_effect": 0.0,
+                "ci_excludes_zero": False,
+            }
+            for c in ("C1", "C6")
+        ],
+    }
+    d["stop"] = {"max_wall_seconds": 7200, "timeout_per_run_s": 120, "max_failures": 10}
+    d["budget"] = {"max_runs": 2000, "procs": 4}
+    d["approval"] = {
+        "high_cost": False,
+        "confirmatory_run": None,
+        "note": "REQUIRED and NOT GRANTED: the cost approval (when the estimated step-runs exceed the gate) and the execution approval of the confirmatory run",
+    }
+    d["status"] = "DRAFT: not frozen, not run, nothing about its outcome is known or assumed"
+    d["planning"] = {
+        "assumed_sd_upper95": sd,
+        "min_effect": eff,
+        "pairs_needed_for_80pct_power_at_alpha_0.025": need,
+        "n_per_arm": n,
+        "underpowered": [k for k in need if need[k] > n],
+        "source": "docs/level2/exploration_inputs/totalobs_v2_exploration.json (functional run, 12 seeds, reserved range, rules v2)",
+    }
+    d["preregistration"] = preregistration(
+        d,
+        hypothesis="Under rules v2 in the synthetic regional world, the base research loop and the full loop identify a different share of the world's objects at the "
+        "last generation than the stated controls. No direction is assumed; equivalence is an equally valid result. Nothing is claimed about any real system.",
+        falsification=[
+            "C1: the 95% interval of the paired difference in final recall (adaptive vs fixed) lies inside +/-0.05: no detectable effect of the loop of that size",
+            "C6: the interval (full vs adaptive) lies inside +/-0.05: the added revisions have no detectable effect of that size",
+            "any registered contrast whose interval contains zero and the margin is reported as unresolved, never as support",
+        ],
+        assumed_sd=sd,
+        min_effect=eff,
+        source=d["planning"]["source"] + "; upper 95% bound of each paired SD (chi-square, df 11)",
+        provenance=[
+            {
+                "condition": "environment rules_version v2 and the default world, net and generation settings (10 generations of 40 steps)",
+                "derived_from": "exploration",
+                "source": "rules v2 was written after the first release's functional studies showed the freshness-window defect (recall near zero under delay); the world and net "
+                "defaults were fixed before any functional study",
+            },
+            {
+                "condition": "arms fixed, adaptive, full (their designs)",
+                "derived_from": "prior-knowledge",
+                "source": "docs/TOTAL_OBSERVATION.md section 7: the designs were declared before the first functional study",
+            },
+        ],
+        exploratory_seeds=[[7000 + i, 70000 + i] for i in range(12)],
+        multiplicity="Holm",
+        equivalence_margin=0.05,
+    )
+    return d
+
+
 TEMPLATES = {
     "total-observation": total_observation,
     "autonomous-loop": autonomous_loop,
     "planetary-observation": planetary_observation,
     "sss-axes": sss_axes,
+    "total-observation-confirmatory": total_observation_confirmatory,
 }

@@ -102,6 +102,17 @@ export default function TotalObsPanel({ study, runs }: { study: StudyDetail; run
                 e.supported_but_off_by_more_than_50pct_from_the_verifier, e.suppressed_decisions, e.metric_definition_breaks.total_breaks,
                 <span className="small" key="s">{Object.entries(e.stopped).map(([k, v]) => `${k} ${v}`).join(', ')}</span>])} />
           </Section>
+          {Object.entries(to.arms).some(([, e]: any) => e.rules_version === 'v2') && (
+            <Section title="Rules v2: what the records say about missing reports, conflicts and hypothesis support"
+              note={`${Object.values<any>(to.arms).find((e) => e.freshness)?.freshness.meaning ?? ''} The verifier's causes and agreement are for the audit only; the agent never reads them.`}>
+              <Table head={['arm', 'hypothesis support / model', 'sensor reports / true cause', 'rule conflicts', 'identification lost: object still there / absent']}
+                rows={Object.entries(to.arms).filter(([, e]: any) => e.rules_version === 'v2').map(([a, e]: any) => [<span className="mono" key="a">{a}</span>,
+                  <span className="small" key="h">{Object.entries(e.hypothesis_support_vs_model).map(([k, v]) => `${k} ${v}`).join('; ') || '—'}</span>,
+                  <span className="small" key="s">{Object.entries(e.silence_states_vs_true_causes).map(([k, v]) => `${k}: ${v}`).join('; ') || '—'}</span>,
+                  <span className="small" key="c">{e.rule_conflicts.events} (infeasible/not retried {e.rule_conflicts.infeasible_or_not_retried}; reversals {e.rule_conflicts.scale_reversals}; cooldown {e.rule_conflicts.cooldown_suppressions})</span>,
+                  `${e.identification_lost.object_still_present_in_the_world} / ${e.identification_lost.object_absent}`])} />
+            </Section>
+          )}
           {to.sss && (
             <Section title="Scale / Size / Speed" note={to.sss.note}>
               {to.sss.complete ? <Table head={['effect', 'value']} rows={[...Object.entries(to.sss.main).map(([k, v]: any) => [`main ${k}`, fmt(v)]), ...Object.entries(to.sss.interaction).map(([k, v]: any) => [`interaction ${k}`, fmt(v)])]} /> : <p className="small">{to.sss.note}</p>}

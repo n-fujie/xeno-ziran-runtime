@@ -60,6 +60,8 @@ def test_templates_validate_and_have_no_undeclared_differences():
             name == "level2-confirmatory"
         ):  # a draft: complete except for the deliberately closed high-cost approval (see its own test)
             assert len(issues) == 1 and "approval.high_cost" in issues[0]
+        elif name == "total-observation-confirmatory":  # a draft: complete except for the two approvals it declares and has not been granted
+            assert len(issues) == 2 and all("approval" in i or "step-runs" in i for i in issues)
         else:
             assert issues == [], name
         assert P.fairness_issues(d) == [], name
