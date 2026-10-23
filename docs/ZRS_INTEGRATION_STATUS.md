@@ -297,3 +297,43 @@ Hypothesis tests: many deferred or inconclusive; in 10 seeds × 12 generations 6
 
 **Open / not done.** Confirmatory evaluation of the new line (needs a protocol, power plan and the owner's approval; none started). Cross-machine and third-party reproduction. Active Inference / Active Learning arms. The agent's `silent` reason conflates an outage with a delay longer than the staleness window; `denied` vs `scale-mismatch` is handled by a cooldown, not resolved; the hypothesis test depends on a steady detector. The model is one scalar-activity family; it is not the Earth. The two known failures remain an owner decision. "Capps" in the brief was not identified to a work.
 **Git.** Branch `feat/zrs-integration`, local commits only; last push still 57bc3bf (user-instructed); nothing deployed or published; no high-cost experiment, Phase 4 main experiment or confirmatory run started.
+
+---
+
+# Final reliability repair and research-readiness (2026-10-24)
+
+Details: `docs/RELIABILITY_REPAIR.md`. Latest local commit at the time of writing: see `git log` (branch `feat/zrs-integration`; last push still 57bc3bf; nothing deployed).
+
+**Tests (current code).** Backend full run: 567 collected, **565 pass, 2 fail — the two known failures**, unchanged, not skipped (`test_compat[desktop-scipy]`, `test_published_records_replay`). Before this round: 545 pass. Frontend tsc / eslint clean, vitest 87/87. TypeScript simulator 73/73.
+ARDS Phase 3 manifest: 1,526 files, no problems; ARDS repository unchanged; `m2-run-9100.json`, the golden fixture and `test_lab.py` / `test_compat.py` have no diff.
+
+**Repairs.** (1) Near-zero recall in `comm-delay` / `planetary-form`: not a determinism fault. The hub's freshness window counted from observation, so records delayed in transit were discarded on arrival (fixed layout, latency 4 and 8: nothing identified at all). `recall` measures what the research system observed, not reproducibility. Rules v2 counts the window from arrival.
+(2) A missing report is no longer read as an extinct sensor: states `ok / partial / delayed / no-arrival / not-due`, a probe, an attribution recorded as such, lost records detected from the hub's own accounting, the true cause audited by the verifier (`no-arrival` ↔ failed or outage only). (3) `denied` vs `scale-mismatch` and `denied` vs `period-too-slow`: arbitrated by a stated priority with an explicit infeasibility declaration; the cooldown is a counted backstop. (4) A hypothesis is `supported` only after two consistent tests, can be withdrawn, and the verifier's agreement is recorded apart and never read by the agent (tested). (5) The two known failures: root cause re-run, nothing changed; an opt-in deterministic hierarchy method 2 exists as a separate function (default untouched; invariant where method 1 is not).
+Versioning: `rules_version` v1 (default, pinned; earlier stored studies replay identically under the new code: verified) / v2 (templates). Results of the two are not compared.
+
+**End-to-end from the UI** (protocol → create / registered digest → run → analysis → figures and Methods / Results → package → verify → replay → whole-study re-execution), small functional scale:
+| environment | runs | registered digest | package | replay | re-execution |
+|---|---|---|---|---|---|
+| HPO world (revision-study) | 6/6 | identical | 31 files verified | agrees | 100 % (6) |
+| ARDS bridge env2 (ards-comparison) | 3/3 | identical | 26 files | agrees | 100 % (3) |
+| ARDS–HPO shared env3 (shared-comparison) | 4/4 | identical | 28 files | agrees | 100 % (4) |
+| Total Observation v2 | 16/16 | identical | 40 files | agrees | 100 % (16) |
+| Planetary-Scale (incl. drifting arms) | 10/10 | identical | 34 files | agrees | 100 % (10) |
+| SSS (2³ design) | 16/16 | identical | 40 files | agrees | 100 % (16) |
+| Autonomous loop under failure | 9/9 | identical | 33 files | agrees | 100 % (9) |
+Completion 71/71, no failed or timed-out run; all identical on the same machine. Not exercised from the UI this round: ARDS env1, lab-population / multi-system (qualified earlier by API and tests). Cross-machine and third-party reproduction: not exercised; address-based results are not guaranteed cross-platform (the two known failures).
+
+**Operational judgement, per environment** (no environment is assumed usable because another is).
+| environment | READY — Functional | READY — Reproducible (same machine) | Confirmatory |
+|---|---|---|---|
+| HPO world | yes | yes | CONDITIONALLY READY: the `level2-confirmatory` draft exists (not frozen, not run); needs freeze, the cost approval and an execution approval |
+| ARDS bridge (env1 / env2) | yes (test mode, replicates 3980–3989) | yes (env2 UI; env1 earlier by API) | **NOT READY by design**: the bridge refuses any non-test replicate; ARDS Phase 4 is a separate pipeline and is not started |
+| ARDS–HPO shared (env3) | yes | yes | **NOT READY by design** (same bridge limit) |
+| Total Observation (v2) | yes | yes | CONDITIONALLY READY: `total-observation-confirmatory` draft (3 arms, 189 fresh seeds from a 12-seed exploration, Holm, equivalence margin, provenance stating that v2 was introduced after seeing v1 results); needs freeze, cost approval (233,604 step-runs > 200,000) and execution approval — both declared and **not granted**; about 4–5 minutes on this machine |
+| Planetary-Scale | yes (synthetic; no claim about the Earth) | yes | not prepared: no confirmatory draft; recall is blind to delay while sources stand still (use the drifting arms) |
+| SSS | yes | yes | not prepared: interaction contrasts from 2 seeds are not evidence |
+| Autonomous loop under failure | yes | yes | not prepared (the draft covers the default environment, not the stress environment) |
+v1 of the total-observation line: replay of earlier studies only; do not start new studies on it.
+Nothing is NOT READY for functional or exploratory use. Scientific evaluation (C) and non-redundancy (D) remain **not reached**; no confirmatory study, Phase 4 main experiment, push or deployment was started.
+
+**To start a confirmatory study:** (a) the owner reads and accepts the draft's preregistration (hypothesis, falsification, power source, provenance) and, if wanted, changes it before freezing; (b) records `approval.high_cost` and `approval.confirmatory_run` (who, when); (c) the study is created (this registers its digest), then run; (d) a second machine or person reproduces it if cross-platform claims are wanted; (e) the owner decides on the two known failures if address-based results are to be claimed across platforms.
