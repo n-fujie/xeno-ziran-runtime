@@ -24,6 +24,25 @@ def quick(n=3, horizon=120, **kw):
     return d
 
 
+def _prereg(d):
+    return templates.preregistration(
+        d,
+        hypothesis="Revising the observation configuration changes later fired samples (no direction assumed).",
+        falsification=["the 95% interval of the primary paired difference lies inside the equivalence margin"],
+        assumed_sd={"fired_samples": 100.0},
+        min_effect={"fired_samples": 20.0},
+        source="test fixture (not derived from data)",
+        provenance=[
+            {
+                "condition": f"arm {name}: conditions as defined in the template",
+                "derived_from": "default",
+                "source": "xzr.study.templates",
+            }
+            for name in P._non_default_arms(d)
+        ],
+    )
+
+
 @pytest.fixture(scope="module")
 def finished(tmp_path_factory):
     root = tmp_path_factory.mktemp("studies")
@@ -84,6 +103,8 @@ def test_seed_discipline_by_mode():
 
 def test_confirmatory_needs_declared_contrasts_and_criteria_and_registers_a_digest():
     d = templates.template("revision-study", n_seeds=4, mode="confirmatory", gen_base=12000, engine_base=120000)
+    assert any("preregistration block is required" in i for i in P.validate(d))  # no registration without a plan
+    d["preregistration"] = _prereg(d)
     assert P.validate(d) == []
     frozen = P.freeze(d, "abc")
     assert frozen["freeze"]["digest"] == P.digest(d) and P.is_registered_unchanged(frozen)
@@ -116,12 +137,17 @@ def test_high_cost_protocols_need_an_approval_record():
 
 def test_amendments_are_recorded_and_the_registered_digest_stays():
     d = templates.template("revision-study", n_seeds=4, mode="confirmatory", gen_base=12000, engine_base=120000)
+    d["preregistration"] = _prereg(d)
     frozen = P.freeze(d)
     a = P.amend(frozen, "stop.timeout_per_run_s", 120, "runs are fast", runs_started=False)
     assert a["amendments"][0]["status"] == "pre-registered change" and a["freeze"]["digest"] == frozen["freeze"]["digest"]
     assert P.digest(a) != frozen["freeze"]["digest"] and not P.is_registered_unchanged(a)
-    b = P.amend(a, "metrics.primary", ["ignitions"], "changed my mind", runs_started=True)
+    b = P.amend(a, "stop.max_failures", 7, "tolerate more failures", runs_started=True)
     assert b["amendments"][-1]["status"] == "exploratory"
+    with pytest.raises(
+        P.ProtocolInvalid
+    ):  # changing the primary metric after registration contradicts the registered analysis plan
+        P.amend(a, "metrics.primary", ["ignitions"], "changed my mind", runs_started=True)
     with pytest.raises(P.ProtocolInvalid):
         P.amend(a, "stop.timeout_per_run_s", 1, "  ", runs_started=False)
 
@@ -451,6 +477,7 @@ def _confirmatory(n=3):
     d = quick(n, 120)
     d["mode"] = "confirmatory"
     d["seeds"] = {"gen_base": 12000, "engine_base": 120000, "n": n}
+    d["preregistration"] = _prereg(d)
     return d
 
 
@@ -739,3 +766,83 @@ def test_every_analysis_carries_the_assessment_and_the_results_text_states_it_is
         "Operational non-redundancy (assessment, not a finding)" in text
         and "never inferred from the existence of revision" in text
     )
+
+
+# ------------------------------------------------------------------------------------------ preregistration discipline
+def _confirmatory_revision(n=4):
+    d = templates.template("revision-study", n_seeds=n, mode="confirmatory", gen_base=12000, engine_base=120000)
+    d["preregistration"] = _prereg(d)
+    return d
+
+
+@pytest.mark.parametrize(
+    "mutate,needle",
+    [
+        (lambda d: d["preregistration"].pop("central_hypothesis"), "central_hypothesis"),
+        (lambda d: d["preregistration"].update(falsification=[]), "falsification"),
+        (lambda d: d["preregistration"]["power"].update(n_per_arm=99), "must equal the number of seeds"),
+        (lambda d: d["preregistration"]["power"].pop("source"), "power"),
+        (lambda d: d["preregistration"]["analysis_plan"].update(primary=["ignitions"]), "subset of metrics.primary"),
+        (lambda d: d["preregistration"]["analysis_plan"].update(multiplicity="none"), "multiplicity"),
+        (lambda d: d["preregistration"].update(stopping_rules=[]), "stopping_rules"),
+        (
+            lambda d: d["preregistration"]["separation"].update(exploratory_seeds=[[12000, 120000]]),
+            "overlap the exploratory seeds",
+        ),
+        (lambda d: d["preregistration"].update(condition_provenance=[]), "no provenance for the conditions of arm"),
+        (lambda d: d["preregistration"]["condition_provenance"][0].update(derived_from="hunch"), "condition_provenance"),
+    ],
+)
+def test_incomplete_preregistrations_are_refused(mutate, needle):
+    d = _confirmatory_revision()
+    assert P.validate(d) == []
+    mutate(d)
+    issues = P.validate(d)
+    assert issues and any(needle in i for i in issues), issues
+
+
+def test_sample_size_arithmetic_is_consistent_and_conservative():
+    from xzr.study import power as W
+
+    assert W.sample_size_paired(1.0, 1.0) >= 8  # dz = 1 needs about 10 pairs for 80% power
+    n = W.sample_size_paired(2.0, 1.0)
+    assert n > W.sample_size_paired(1.0, 1.0) > W.sample_size_paired(1.0, 2.0)
+    assert W.minimal_detectable_difference(2.0, n) <= 1.0 + 1e-6  # the planned n detects the planned effect
+    assert W.sd_upper(10.0, 5) > 10.0 and W.sd_upper(10.0, 50) < W.sd_upper(
+        10.0, 5
+    )  # small exploratory samples are distrusted more
+    with pytest.raises(ValueError):
+        W.sample_size_paired(0.0, 1.0)
+
+
+def test_level2_draft_protocol_is_complete_but_cannot_be_run_or_frozen_without_approval(tmp_path):
+    from xzr.study import power as W
+
+    d = templates.template("level2-confirmatory")
+    assert "freeze" not in d and d["status"].startswith("DRAFT")
+    issues = P.validate(d)
+    assert (
+        len(issues) == 1 and "approval.high_cost" in issues[0]
+    )  # everything else is in order; the cost gate is deliberately closed
+    assert P.fairness_issues(d) == [] and P.preregistration_issues(d) == []
+    with pytest.raises(P.ProtocolInvalid):
+        P.freeze(d)
+    with pytest.raises(P.ProtocolInvalid):
+        runner.Study.create(d, tmp_path)
+    pl = d["planning"]
+    for k, n in pl["pairs_needed_for_80pct_power"].items():  # the planning numbers re-derive from the stated inputs
+        assert n == W.sample_size_paired(pl["assumed_sd_upper95"][k], pl["min_effect"][k])
+    assert (
+        pl["underpowered"] == ["C3 recursive vs random-matched"]
+        and d["preregistration"]["power"]["n_per_arm"] == pl["n_per_arm"] == 200
+    )
+    assert all(
+        p["derived_from"] == "exploration" for p in d["preregistration"]["condition_provenance"]
+    )  # chosen after exploratory data: declared
+    seeds = {tuple(x) for x in P.seed_list(d)}
+    assert not seeds & {tuple(x) for x in d["preregistration"]["separation"]["exploratory_seeds"]}
+    import json
+    from pathlib import Path
+
+    saved = json.loads((Path(__file__).resolve().parents[2] / "docs" / "level2" / "PROTOCOL_L2_DRAFT.json").read_text())
+    assert saved == json.loads(json.dumps(d))  # the committed draft is the template, unchanged

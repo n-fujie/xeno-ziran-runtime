@@ -1,0 +1,137 @@
+{
+ "experiment_id": "S20261022-b562966d-fa18",
+ "mode": "functional",
+ "label": "FUNCTIONAL CHECK \u2014 not evidence",
+ "seeds": [
+  [
+   7000,
+   70000
+  ],
+  [
+   7001,
+   70001
+  ],
+  [
+   7002,
+   70002
+  ],
+  [
+   7003,
+   70003
+  ],
+  [
+   7004,
+   70004
+  ],
+  [
+   7005,
+   70005
+  ]
+ ],
+ "protocol_digest": "b562966d814fd81968530bc985bc0c65a7b46602bbcb37b004f343ec37215ce2",
+ "contrasts": [
+  {
+   "id": "C1",
+   "a": "recursive-meta-moderate",
+   "b": "recursive-moderate",
+   "fired_samples": {
+    "n": 6,
+    "mean": -4.833333333333333,
+    "sd": 11.839200423452027,
+    "dz": -0.408248290463863,
+    "scale": 293.3333333333333,
+    "ci95": [
+     -14.5,
+     0.0
+    ],
+    "status": "EQUIVALENT"
+   }
+  },
+  {
+   "id": "C2",
+   "a": "recursive-moderate",
+   "b": "fixed-moderate",
+   "fired_samples": {
+    "n": 6,
+    "mean": 134.5,
+    "sd": 131.09500371867725,
+    "dz": 1.0259735015426652,
+    "scale": 293.3333333333333,
+    "ci95": [
+     43.0,
+     234.19999999999982
+    ],
+    "status": "UNRESOLVED"
+   }
+  },
+  {
+   "id": "C3",
+   "a": "recursive-moderate",
+   "b": "random-matched-moderate",
+   "fired_samples": {
+    "n": 6,
+    "mean": -12.0,
+    "sd": 275.85503439306666,
+    "dz": -0.04350110929243062,
+    "scale": 305.3333333333333,
+    "ci95": [
+     -229.16666666666666,
+     184.69583333333316
+    ],
+    "status": "UNRESOLVED"
+   }
+  },
+  {
+   "id": "C4",
+   "a": "recursive-meta-severe",
+   "b": "recursive-meta-moderate",
+   "fired_samples": {
+    "n": 6,
+    "mean": -71.33333333333333,
+    "sd": 199.4027749723325,
+    "dz": -0.35773490786791184,
+    "scale": 288.5,
+    "ci95": [
+     -219.5,
+     60.166666666666664
+    ],
+    "status": "UNRESOLVED"
+   }
+  },
+  {
+   "id": "C5",
+   "a": "recursive-meta-none",
+   "b": "recursive-meta-severe",
+   "fired_samples": {
+    "n": 6,
+    "mean": -217.16666666666666,
+    "sd": 124.62008933822294,
+    "dz": -1.7426296820994032,
+    "scale": 217.16666666666666,
+    "ci95": [
+     -310.2041666666667,
+     -134.33333333333334
+    ],
+    "status": "UNRESOLVED"
+   }
+  },
+  {
+   "id": "C6",
+   "a": "recursive-meta-moderate",
+   "b": "recursive-meta-abundant",
+   "fired_samples": {
+    "n": 6,
+    "mean": -641.5,
+    "sd": 448.5852204431172,
+    "dz": -1.4300515727342056,
+    "scale": 930.0,
+    "ci95": [
+     -949.3333333333334,
+     -315.0
+    ],
+    "status": "UNRESOLVED"
+   }
+  }
+ ],
+ "note": "functional study on reserved seeds (7000-7005); used ONLY to size the sample of the Level 2 protocol (spreads), never as evidence of an effect"
+}

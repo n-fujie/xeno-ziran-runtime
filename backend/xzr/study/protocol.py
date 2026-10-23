@@ -195,6 +195,7 @@ def validate(doc: dict) -> list[str]:
         if _overlaps(gens, USED_GEN) or _overlaps(engs, USED_ENGINE):
             issues.append("seeds overlap development or published-experiment ranges (xzr.hpo.experiments); choose fresh seeds")
     if mode == "confirmatory":
+        issues += preregistration_issues(doc)
         if not doc.get("contrasts"):
             issues.append("confirmatory: declare the contrasts before the run")
         if not doc.get("criteria", {}).get("success"):
@@ -206,6 +207,70 @@ def validate(doc: dict) -> list[str]:
             "explicit approval record (who, when) before starting"
         )
     return issues
+
+
+# ----------------------------------------------------------------------------------------------- pre-registration
+PROVENANCE = ("exploration", "prior-knowledge", "imposed-functional", "default")
+
+
+def _non_default_arms(doc: dict) -> list[str]:
+    return [
+        a["name"]
+        for a in doc.get("arms", [])
+        if a.get("settings") or a.get("initial_changes") or a.get("interventions") or a.get("scenario")
+    ]
+
+
+def preregistration_issues(doc: dict) -> list[str]:
+    """What a confirmatory protocol must state before its first run. Conditions decided after seeing exploratory data must say so (provenance)."""
+    pr = doc.get("preregistration")
+    if not isinstance(pr, dict):
+        return [
+            "confirmatory: a preregistration block is required (central hypothesis, falsification, power, analysis plan, stopping, storage, separation, provenance)"
+        ]
+    out: list[str] = []
+    for k in ("central_hypothesis", "data_storage"):
+        if not isinstance(pr.get(k), str) or not pr[k].strip():
+            out.append(f"preregistration.{k} is required")
+    if not pr.get("falsification") or not all(isinstance(x, str) and x.strip() for x in pr["falsification"]):
+        out.append("preregistration.falsification: at least one condition that would count against the hypothesis")
+    pw = pr.get("power") or {}
+    if not (
+        isinstance(pw.get("n_per_arm"), int)
+        and pw["n_per_arm"] >= 2
+        and pw.get("assumed_sd")
+        and pw.get("min_effect")
+        and pw.get("source")
+    ):
+        out.append("preregistration.power: n_per_arm, assumed_sd, min_effect and the source of the assumptions are required")
+    elif pw["n_per_arm"] != len(seed_list(doc)):
+        out.append(f"preregistration.power.n_per_arm ({pw['n_per_arm']}) must equal the number of seeds ({len(seed_list(doc))})")
+    ap = pr.get("analysis_plan") or {}
+    if not set(ap.get("primary", [])) or not set(ap["primary"]) <= set(doc.get("metrics", {}).get("primary", [])):
+        out.append("preregistration.analysis_plan.primary must be a non-empty subset of metrics.primary")
+    if ap.get("multiplicity") not in ("Holm", "Benjamini-Hochberg"):
+        out.append("preregistration.analysis_plan.multiplicity must be Holm or Benjamini-Hochberg")
+    if not isinstance(ap.get("equivalence_margin"), int | float) or not ap.get("sensitivity"):
+        out.append("preregistration.analysis_plan: equivalence_margin and sensitivity analyses are required")
+    if not pr.get("stopping_rules"):
+        out.append("preregistration.stopping_rules: required")
+    sep = pr.get("separation") or {}
+    expl = {tuple(x) for x in sep.get("exploratory_seeds", [])}
+    if "exploratory_seeds" not in sep:
+        out.append("preregistration.separation.exploratory_seeds: list the seeds already used for exploration (may be empty)")
+    elif expl & {tuple(x) for x in seed_list(doc)}:
+        out.append("preregistration.separation: confirmatory seeds overlap the exploratory seeds")
+    prov = pr.get("condition_provenance")
+    if not isinstance(prov, list) or any(
+        not isinstance(p, dict) or p.get("derived_from") not in PROVENANCE or not p.get("source") or not p.get("condition")
+        for p in prov
+    ):
+        out.append(f"preregistration.condition_provenance: list of {{condition, derived_from in {PROVENANCE}, source}}")
+    else:
+        for name in _non_default_arms(doc):
+            if not any(name in p["condition"] for p in prov):
+                out.append(f"preregistration.condition_provenance: no provenance for the conditions of arm {name!r}")
+    return out
 
 
 # ----------------------------------------------------------------------------------------------- fairness

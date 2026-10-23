@@ -640,6 +640,202 @@ def scarcity_study(
     }
 
 
+def preregistration(
+    doc: dict,
+    *,
+    hypothesis: str,
+    falsification: list[str],
+    assumed_sd: dict,
+    min_effect: dict,
+    source: str,
+    provenance: list[dict] | None = None,
+    exploratory_seeds: list | None = None,
+    multiplicity: str = "Holm",
+    equivalence_margin: float = 0.05,
+    alpha: float = 0.05,
+    power: float = 0.8,
+) -> dict:
+    """A preregistration block from explicit inputs (nothing is invented: the hypothesis, the falsification conditions, the assumed spreads and
+    minimal effects and their source are the researcher's). Stopping rules and storage are taken from the protocol itself."""
+    from .protocol import seed_list
+
+    return {
+        "central_hypothesis": hypothesis,
+        "falsification": falsification,
+        "power": {
+            "n_per_arm": len(seed_list(doc)),
+            "assumed_sd": assumed_sd,
+            "min_effect": min_effect,
+            "alpha": alpha,
+            "power": power,
+            "source": source,
+        },
+        "analysis_plan": {
+            "primary": list(doc["metrics"]["primary"]),
+            "secondary": list(doc["metrics"].get("secondary", [])),
+            "multiplicity": multiplicity,
+            "equivalence_margin": equivalence_margin,
+            "sensitivity": [
+                "leave-one-seed-out range of the mean difference",
+                "sign agreement",
+                "Wilcoxon signed-rank",
+                "with / without Tukey outliers",
+            ],
+            "estimation": "paired differences by seed; bootstrap 95% interval; Cohen's dz; sign-flip permutation p; Holm / BH over every declared contrast x metric",
+        },
+        "stopping_rules": [
+            f"per-run timeout {doc['stop']['timeout_per_run_s']} s, wall-clock budget {doc['stop']['max_wall_seconds']} s, at most {doc['stop'].get('max_failures', 3)} failed runs",
+            "no optional stopping: the number of seeds is fixed; a stopped study is resumed, never re-planned from partial results",
+        ],
+        "data_storage": "every run record, the log, the manifest and the registered protocol are kept under the experiment directory; failed and timed-out runs are kept and counted",
+        "separation": {
+            "exploratory_seeds": exploratory_seeds or [],
+            "confirmatory": "the seeds of this protocol; disjoint from every exploratory and functional seed",
+        },
+        "condition_provenance": provenance or [],
+    }
+
+
+def level2_confirmatory(n_seeds: int = 200) -> dict:
+    """DRAFT protocol for the Level 2 question — NOT frozen and NOT run. Does result-driven revision of the observation configuration, and revision of
+    its own rules, change what the operations do afterwards, under moderately scarce measurement resources? Sized from the spreads of a functional study
+    (docs/level2/exploration_inputs), distrusting its small sample (upper 95% bound of each standard deviation).
+
+    The run is a high-cost computation (about half a million step-runs): approval.high_cost is NOT granted here; the protocol must be frozen (registered)
+    and approved before any run. Conditions that were chosen after looking at exploratory data say so in preregistration.condition_provenance."""
+    from . import power as W
+
+    mean_ctl = 293.0  # mean fired samples of the control arm in the functional scarcity study
+    sd = {
+        "C1 meta vs recursive": W.sd_upper(11.84, 5),
+        "C2 recursive vs fixed": W.sd_upper(131.1, 5),
+        "C3 recursive vs random-matched": W.sd_upper(275.9, 5),
+    }
+    eff = {
+        "C1 meta vs recursive": 0.05 * mean_ctl,
+        "C2 recursive vs fixed": 0.20 * mean_ctl,
+        "C3 recursive vs random-matched": 0.20 * mean_ctl,
+    }
+    need = {k: W.sample_size_paired(sd[k], eff[k]) for k in sd}
+    base = scarcity_study(n_seeds, 600, "confirmatory", 20000, 200000)
+    keep = {"fixed-moderate", "recursive-moderate", "recursive-meta-moderate", "random-matched-moderate"}
+    base["arms"] = [a for a in base["arms"] if a["name"] in keep]
+    base["contrasts"] = [c for c in base["contrasts"] if c["id"] in ("C1", "C2", "C3")]
+    base["title"] = (
+        "Level 2: revision of the observation configuration and of its rules under scarce resources (confirmatory, DRAFT)"
+    )
+    base["question"] = (
+        "Does result-driven revision of the observation configuration (and revision of the revision rules) change what operations do afterwards, compared with no "
+        "revision, with matched random revision and with revision without rule revision, under moderate scarcity of measurement resources?"
+    )
+    base["hypotheses"] = [
+        {
+            "id": "H1",
+            "text": "Revising the controller's own rules changes later fired samples (C1; two-sided).",
+            "contrasts": ["C1"],
+        },
+        {
+            "id": "H2",
+            "text": "Result-driven revision changes later fired samples relative to no revision (C2; two-sided).",
+            "contrasts": ["C2"],
+        },
+        {
+            "id": "H3",
+            "text": "Result-driven revision differs from matched random revision (C3; secondary, underpowered: reported with its interval only).",
+            "contrasts": ["C3"],
+        },
+    ]
+    base["metrics"] = {
+        "primary": ["fired_samples"],
+        "secondary": [
+            "unobservable_samples",
+            "controller_changes",
+            "controller_rejected",
+            "meta_revisions",
+            "meta_exhausted",
+            "measure_cost",
+            "stopped_early",
+            "ceased_share",
+        ],
+    }
+    base["criteria"] = {
+        "success": [
+            {
+                "contrast": "C1",
+                "metric": "fired_samples",
+                "direction": "different",
+                "min_relative_effect": 0.05,
+                "ci_excludes_zero": True,
+            },
+            {
+                "contrast": "C2",
+                "metric": "fired_samples",
+                "direction": "different",
+                "min_relative_effect": 0.20,
+                "ci_excludes_zero": True,
+            },
+        ],
+        "failure": [
+            {
+                "contrast": "C1",
+                "metric": "fired_samples",
+                "direction": "equivalent",
+                "min_relative_effect": 0.0,
+                "ci_excludes_zero": False,
+            },
+            {
+                "contrast": "C2",
+                "metric": "fired_samples",
+                "direction": "equivalent",
+                "min_relative_effect": 0.0,
+                "ci_excludes_zero": False,
+            },
+        ],
+    }
+    base["stop"] = {"max_wall_seconds": 21600, "timeout_per_run_s": 300, "max_failures": 20}
+    base["budget"] = {"max_runs": 1000, "procs": 4}
+    base["approval"] = {
+        "high_cost": False,
+        "note": "REQUIRED and NOT GRANTED: about half a million step-runs; the researcher must approve before the protocol is created for running",
+    }
+    base["status"] = "DRAFT: not frozen, not run, nothing about its outcome is known or assumed"
+    base["planning"] = {
+        "assumed_sd_upper95": sd,
+        "min_effect": eff,
+        "pairs_needed_for_80pct_power": need,
+        "n_per_arm": n_seeds,
+        "underpowered": [k for k in need if need[k] > n_seeds],
+        "source": "docs/level2/exploration_inputs/scarcity_functional_summary.json (functional run, 6 seeds, reserved range)",
+    }
+    prov = [
+        {
+            "condition": f"arm {a['name']}: settings.resources.pool_per_step 0.5, stop.all_ceased true, horizon 600",
+            "derived_from": "exploration",
+            "source": "scarcity-study (functional, seeds 7000-7005): 0.5 per step is where blindness persisted enough for rules to fail and be revised without total blindness; "
+            "the value was chosen after looking at those runs",
+        }
+        for a in base["arms"]
+    ]
+    base["preregistration"] = preregistration(
+        base,
+        hypothesis="Under moderate scarcity, revising the observation configuration from the reasons operations were blind, and revising the controller's rules when they "
+        "keep failing, changes the number of fired samples relative to the stated controls. No direction is assumed; equivalence is an equally valid result.",
+        falsification=[
+            "C1: the 95% interval of the paired difference in fired samples (recursive-meta vs recursive) lies inside +/-5% of the control mean: no detectable effect of rule revision",
+            "C2: the interval (recursive vs fixed) lies inside +/-20%: no detectable effect of result-driven revision of that size",
+            "any registered contrast whose interval includes zero and the margin is reported as unresolved, never as support",
+        ],
+        assumed_sd=sd,
+        min_effect=eff,
+        source=base["planning"]["source"] + "; upper 95% bound of each SD (chi-square, df 5)",
+        provenance=prov,
+        exploratory_seeds=[[7000 + i, 70000 + i] for i in range(6)],
+        multiplicity="Holm",
+        equivalence_margin=0.05,
+    )
+    return base
+
+
 TEMPLATES = {
     "revision-study": revision_study,
     "quick": quick,
@@ -648,6 +844,7 @@ TEMPLATES = {
     "shared-comparison": shared_comparison,
     "multi-system": multi_system,
     "scarcity-study": scarcity_study,
+    "level2-confirmatory": level2_confirmatory,
 }
 
 
