@@ -407,6 +407,12 @@ def total_observation_confirmatory(n_seeds: int | None = None) -> dict:
         multiplicity="Holm",
         equivalence_margin=0.05,
     )
+    d["preregistration"]["known_incomparabilities"] = [
+        "rules v1 and v2 results are not comparable: the freshness rule is part of the basis of recall, identified_count and info_age (sss.METRICS_V2)",
+        "recall_final is blind to delay while the sources stand still: it cannot show the cost of delay there (information age can); this draft's environment has stationary sources",
+        "a metric whose definition changes within a run (the evaluation rule E0 -> E1 -> E2) is compared only within a version segment; across a break no number is formed",
+        "the arms differ in several components (history, rule revision, five strong revisions): C6 is not a single-mechanism effect",
+    ]
     return d
 
 

@@ -43,6 +43,11 @@ def audit(name: str, d: dict) -> dict:
         "14 reproduction procedure": hasattr(runner, "reproduce") and hasattr(runner, "replay_run"),
         "15 exploration / confirmation separated": bool(expl) and not (expl & {tuple(s) for s in seeds}),
         "16 change management after registration": callable(P.amend),
+        "17 minimum effect sizes declared": bool(pw.get("min_effect")),
+        "18 known incomparabilities declared in the protocol": bool(pr.get("known_incomparabilities")),
+        "19 design changes after exploration recorded (provenance 'exploration')": any(
+            p_.get("derived_from") == "exploration" for p_ in pr.get("condition_provenance", [])
+        ),
     }
     return {
         "draft": name,

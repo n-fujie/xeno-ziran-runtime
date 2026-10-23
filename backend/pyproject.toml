@@ -63,6 +63,7 @@ ignore = ["E731", "SIM108", "B905"]
 "xzr/lineage.py" = ["E501"]
 "scripts/certify_studies.py" = ["E501"]
 "scripts/protocol_audit.py" = ["E501"]
+"scripts/audit_statistics.py" = ["E501"]
 "xzr/service/studies.py" = ["E501"]  # prose docstrings and generated text
 "tests/test_totalobs*.py" = ["E501"]
 "xzr/study/protocol.py" = ["E501"]

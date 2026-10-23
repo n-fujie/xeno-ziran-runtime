@@ -41,7 +41,11 @@ def _lines() -> list[dict]:
         {
             "line": "ARDS (autonomous R&D system)",
             "modes": {
-                "Adapter": [_p("pa-simulation-environment/src/ards", "bim"), _p("backend/xzr/study/ards.py"), _p("backend/xzr/study/ards_bridge/ards_job.ts")],
+                "Adapter": [
+                    _p("pa-simulation-environment/src/ards", "bim"),
+                    _p("backend/xzr/study/ards.py"),
+                    _p("backend/xzr/study/ards_bridge/ards_job.ts"),
+                ],
                 "Replay": [_p("pa-simulation-environment/artifacts/ards", "bim")],
                 "Reference": [_p("pa-ards-design", "bim")],
             },
@@ -118,7 +122,10 @@ def _lines() -> list[dict]:
             "line": "Active Inference",
             "modes": {
                 "Native": [_p("research/post_active_inference/pai/aif_vendor.py")],
-                "Reference": [_p("research/post_active_inference/IMPLEMENTATION_GAP.md"), _p("ziran-xeno-simulator/embodied/active_inference", "bim")],
+                "Reference": [
+                    _p("research/post_active_inference/IMPLEMENTATION_GAP.md"),
+                    _p("ziran-xeno-simulator/embodied/active_inference", "bim"),
+                ],
             },
             "input": "the Post-Active-Inference benchmark's comparator (discrete A/B/C/D/E model, EFE policy selection)",
             "output": "benchmark cell scores",
@@ -131,7 +138,10 @@ def _lines() -> list[dict]:
         {
             "line": "Post-Active-Inference",
             "modes": {
-                "Native": [_p("research/post_active_inference/run_benchmark.py"), _p("research/post_active_inference/pai/controllers.py")],
+                "Native": [
+                    _p("research/post_active_inference/run_benchmark.py"),
+                    _p("research/post_active_inference/pai/controllers.py"),
+                ],
                 "Replay": [_p("research/post_active_inference/results")],
             },
             "input": "benchmark configs",
@@ -200,13 +210,101 @@ def _lines() -> list[dict]:
     ]
 
 
+# the seven research environments of the Study Engine: (name, environment kind, template, confirmatory draft). The draft is a template name or a file under docs/.
+ENVIRONMENTS = (
+    ("HPO / Ziran", "hpo-world", "revision-study", "docs/level2/PROTOCOL_L2_DRAFT.json"),
+    ("Total Observation", "total-observation", "total-observation", "total-observation-confirmatory"),
+    ("Planetary-Scale Observation", "total-observation", "planetary-observation", None),
+    ("SSS", "total-observation", "sss-axes", None),
+    ("Autonomous research loop", "total-observation", "autonomous-loop", None),
+    ("ARDS (bridge)", "ards", "ards-comparison", None),
+    ("ARDS-HPO shared comparison", "shared-oi", "shared-comparison", None),
+)
+_CERT_LABELS = {
+    "HPO / Ziran": "HPO / Ziran",
+    "Total Observation": "Total Observation (v2)",
+    "Planetary-Scale Observation": "Planetary-Scale Observation (v2)",
+    "SSS": "SSS (v2)",
+    "Autonomous research loop": "Autonomous research loop (v2)",
+    "ARDS (bridge)": "ARDS (env2 bridge)",
+    "ARDS-HPO shared comparison": "ARDS-HPO shared (env3)",
+}
+_PREREQ = (
+    "approval",
+    "step-runs",
+    "preregistration",
+    "contrasts",
+    "criteria",
+)  # issues that are prerequisites of a confirmatory run, not obstacles to using the mode
+
+
+def environment_ranges() -> list[dict]:
+    """For each research environment: what it may be used for, *computed* from the Study Engine's own validation (not asserted), and the reproducibility evidence found in
+    the certification record. Confirmatory readiness is never "READY": a draft can at most be CONDITIONALLY READY, blocked by the approvals it declares."""
+    import json
+
+    from .study import protocol as P
+    from .study import templates
+
+    cert: dict[str, dict] = {}
+    cp = REPO / "docs" / "certification" / "certification_record.json"
+    if cp.exists():
+        cert = {r["environment"]: r for r in json.loads(cp.read_text())}
+    out = []
+    for name, kind, tpl, draft in ENVIRONMENTS:
+        d = templates.template(tpl, n_seeds=2) if tpl in ("revision-study",) else templates.template(tpl)
+        functional = P.validate(d) == []
+        e = json.loads(json.dumps(d))
+        e["mode"] = "exploratory"
+        if kind != "ards" and kind != "shared-oi":
+            e["seeds"] = {"gen_base": 12000, "engine_base": 120000, "n": 2}
+        ex_issues = P.validate(e)
+        if draft is None:
+            conf = (
+                "NOT READY by design: the ARDS bridge accepts test replicates only"
+                if ex_issues and kind in ("ards", "shared-oi")
+                else "not prepared: no confirmatory draft"
+            )
+        else:
+            dd = templates.template(draft) if draft in templates.TEMPLATES else json.loads((REPO / draft).read_text())
+            blocking = P.validate(dd)
+            conf = (
+                "CONDITIONALLY READY: draft complete; blocked only by "
+                + "; ".join(("cost gate: " if "step-runs" in i else "") + i.split(":")[0][:90] for i in blocking)
+                if blocking and all(any(k in i for k in _PREREQ) for i in blocking)
+                else "NOT READY: " + "; ".join(blocking)[:200]
+                if blocking
+                else "CONDITIONALLY READY: draft valid (approvals recorded) but never frozen or run"
+            )
+        c = cert.get(_CERT_LABELS[name])
+        repro = (
+            f"READY (same machine and software versions): replay {c['replay_agreement']:.0%} of {c['replay_runs']} runs, whole-study re-execution {c['reproduction']['identical_share']:.0%}"
+            if c and c.get("replay_agreement") is not None and c.get("reproduction")
+            else "no certification record found: not claimed"
+        )
+        out.append(
+            {
+                "environment": name,
+                "kind": kind,
+                "template": tpl,
+                "functional": "READY" if functional else "NOT READY: template does not validate",
+                "exploratory": "READY" if not ex_issues else "not available: " + ex_issues[0][:120],
+                "confirmatory": conf,
+                "reproducibility": repro,
+            }
+        )
+    return out
+
+
 def capability_map() -> dict:
     rows = []
     for ln in _lines():
         got = [m for m in ORDER[:-1] if ln["modes"].get(m) and all(e["exists"] for e in ln["modes"][m])]
         status = got[0] if got else "Unavailable"
         # evidence that exists for a mode that is not complete is still shown: availability is not all-or-nothing
-        partial = {m: [e for e in ev if e["exists"]] for m, ev in ln["modes"].items() if m not in got and any(e["exists"] for e in ev)}
+        partial = {
+            m: [e for e in ev if e["exists"]] for m, ev in ln["modes"].items() if m not in got and any(e["exists"] for e in ev)
+        }
         rows.append(
             {
                 **{k: v for k, v in ln.items() if k != "modes"},
@@ -220,6 +318,7 @@ def capability_map() -> dict:
         "statuses": list(ORDER),
         "rule": "status = the strongest mode whose evidence all exists on this machine; a name in a document is not a capability",
         "lines": rows,
+        "environments": environment_ranges(),
         "counts": {s: sum(1 for r in rows if r["status"] == s) for s in ORDER},
         "reality_as_a_whole": (
             "Not a module and not a line: an ontological scope. The runtime keeps the world's state, the observer's state, their interaction, interventions, "

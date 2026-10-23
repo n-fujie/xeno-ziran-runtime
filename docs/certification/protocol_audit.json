@@ -23,7 +23,10 @@
    "13 storage format": true,
    "14 reproduction procedure": true,
    "15 exploration / confirmation separated": true,
-   "16 change management after registration": true
+   "16 change management after registration": true,
+   "17 minimum effect sizes declared": true,
+   "18 known incomparabilities declared in the protocol": false,
+   "19 design changes after exploration recorded (provenance 'exploration')": true
   },
   "open_issues_that_block_creation": [
    "estimated 512000 step-runs exceed 200000: set approval.high_cost with an explicit approval record (who, when) before starting"
@@ -54,7 +57,10 @@
    "13 storage format": true,
    "14 reproduction procedure": true,
    "15 exploration / confirmation separated": true,
-   "16 change management after registration": true
+   "16 change management after registration": true,
+   "17 minimum effect sizes declared": true,
+   "18 known incomparabilities declared in the protocol": true,
+   "19 design changes after exploration recorded (provenance 'exploration')": true
   },
   "open_issues_that_block_creation": [
    "approval.confirmatory_run is declared and not granted: record who approved the confirmatory run and when before the study is created",

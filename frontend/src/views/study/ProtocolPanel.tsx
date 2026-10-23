@@ -71,12 +71,14 @@ export default function ProtocolPanel({ onCreated }: { onCreated: (id: string) =
   const [val, setVal] = useState<StudyValidation | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [envs, setEnvs] = useState<any[]>([]);
 
   useEffect(() => {
     api.studyTemplates().then((t) => { setTemplates(t); setDoc(t['revision-study']); setRaw(JSON.stringify(t['revision-study'], null, 1)); })
       .catch((e) => setErr(String(e)));
   }, []);
 
+  useEffect(() => { api.studyLineage().then((m) => setEnvs(m.environments ?? [])).catch(() => setEnvs([])); }, []);
   const pick = (n: string) => { setName(n); setDoc(templates[n]); setRaw(JSON.stringify(templates[n], null, 1)); setVal(null); };
   const edit = (f: (d: StudyProtocol) => void) => {
     if (!doc) return;
@@ -137,6 +139,8 @@ export default function ProtocolPanel({ onCreated }: { onCreated: (id: string) =
         })}>{MODES.map((m) => <option key={m}>{m}</option>)}</select></label>
         <button className={rawMode ? 'on' : ''} onClick={() => { if (rawMode && parsed) setDoc(parsed); setRawMode(!rawMode); }}>{rawMode ? 'Form' : 'Edit JSON'}</button>
       </div>
+      {envs.find((e) => e.template === name) && (() => { const e = envs.find((x) => x.template === name); return (
+        <div className="study-banner soft" role="note"><b>{e.environment} — usable range.</b> Functional: {e.functional}. Exploratory: {e.exploratory}. Confirmatory: {e.confirmatory}. Reproducibility: {e.reproducibility}.</div>); })()}
       {rawMode ? (
         <textarea className="mono study-json" value={raw} spellCheck={false} onChange={(e) => { setRaw(e.target.value); setVal(null); }} aria-label="Protocol JSON" />
       ) : (

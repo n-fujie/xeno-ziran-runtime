@@ -27,6 +27,30 @@ LIMITS = {
 }
 
 
+def replay_environment() -> dict:
+    """The environment this record was produced in (not the one that made the studies: their own manifests say that)."""
+    import platform
+    import subprocess
+
+    import numpy
+    import scipy
+
+    def git(*a: str) -> str:
+        return subprocess.run(["git", *a], capture_output=True, text=True, cwd=ROOT.parents[2]).stdout.strip()
+
+    cfg = numpy.show_config(mode="dicts")["Build Dependencies"]
+    dirty = [ln for ln in git("status", "--porcelain").splitlines() if "node_modules" not in ln]
+    return {
+        "python": platform.python_version(),
+        "numpy": numpy.__version__,
+        "scipy": scipy.__version__,
+        "blas_lapack": f"{cfg['blas']['name']} / {cfg['lapack']['name']}",
+        "platform": platform.platform(),
+        "git_commit": git("rev-parse", "HEAD")[:12],
+        "git_dirty": bool(dirty),
+    }
+
+
 def sha(p: Path) -> str:
     return hashlib.sha256(p.read_bytes()).hexdigest()
 
@@ -73,7 +97,7 @@ def collect(label: str, sid: str, repro: str | None, replay_all: bool = True) ->
 
 if __name__ == "__main__":
     spec = json.loads(Path(sys.argv[1]).read_text())
-    res = [collect(**s) for s in spec]
+    res = [{**collect(**s), "replay_environment": replay_environment()} for s in spec]
     Path(sys.argv[2]).write_text(json.dumps(res, indent=1, default=str))
     for r in res:
         print(

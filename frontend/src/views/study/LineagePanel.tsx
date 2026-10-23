@@ -18,6 +18,11 @@ export default function LineagePanel() {
       <Table head={['line', 'status', 'also', 'connection', 'not supported', 'scientific state']}
         rows={m.lines.map((r: any) => [<b key="l">{r.line}</b>, <Chip key="s" s={r.status} />, <span className="small" key="a">{r.also.join(', ') || '—'}</span>,
           <span className="small" key="c">{r.connection}</span>, <span className="small" key="u">{r.unsupported}</span>, <span className="small dim" key="x">{r.scientific_state}</span>])} />
+      <Section title="Research environments: what each may be used for" note="Computed by the Study Engine's own validation, not asserted. Confirmatory readiness is never READY: at best a draft is CONDITIONALLY READY, blocked by the approvals it declares.">
+        <Table head={['environment', 'functional', 'exploratory', 'confirmatory', 'reproducibility (evidence)']}
+          rows={(m.environments ?? []).map((e: any) => [<b key="n">{e.environment}</b>, <Chip key="f" s={e.functional === 'READY' ? 'ok' : 'failed'} />,
+            <span className="small" key="x">{e.exploratory}</span>, <span className="small" key="c">{e.confirmatory}</span>, <span className="small dim" key="r">{e.reproducibility}</span>])} />
+      </Section>
       <Section title="Reality as a whole" note="An ontological scope, not a module."><p className="small">{m.reality_as_a_whole}</p></Section>
       <Section title="Evidence per line (this machine)">
         {m.lines.map((r: any) => (

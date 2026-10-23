@@ -218,3 +218,26 @@ def test_a_declared_execution_gate_is_enforced_only_when_declared():
     assert any("confirmatory_run" in i for i in P.validate(d))
     d["approval"] = {"confirmatory_run": {"who": "a", "when": "b"}}
     assert P.validate(d) == []
+
+
+# ---------------------------------------------------------------------------------------------------- usable range of each environment (computed, never READY for confirmatory)
+def test_environment_ranges_are_computed_from_the_engine_and_never_claim_confirmatory_readiness():
+    envs = {e["environment"]: e for e in lineage.environment_ranges()}
+    assert len(envs) == 7 and set(envs) == {e[0] for e in lineage.ENVIRONMENTS}
+    assert all(e["functional"] == "READY" for e in envs.values())  # every template validates
+    for e in envs.values():
+        assert not e["confirmatory"].startswith("READY")  # at best CONDITIONALLY READY: a draft is never READY
+    assert envs["ARDS (bridge)"]["confirmatory"].startswith("NOT READY by design") and envs["ARDS-HPO shared comparison"][
+        "confirmatory"
+    ].startswith("NOT READY by design")
+    assert envs["ARDS (bridge)"]["exploratory"].startswith("not available")  # the bridge refuses non-test replicates
+    assert (
+        envs["Total Observation"]["confirmatory"].startswith("CONDITIONALLY READY")
+        and "confirmatory_run" in envs["Total Observation"]["confirmatory"]
+    )
+    assert (
+        envs["HPO / Ziran"]["confirmatory"].startswith("CONDITIONALLY READY")
+        and "cost gate" in envs["HPO / Ziran"]["confirmatory"]
+    )
+    assert envs["SSS"]["confirmatory"].startswith("not prepared")  # no draft, no claim
+    assert lineage.capability_map()["environments"] == lineage.environment_ranges()
