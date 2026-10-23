@@ -60,6 +60,14 @@ export default function ResultsPanel({ study, onChange }: { study: StudyDetail; 
               rows={an.arms.map((a: string) => { const d = an.descriptives[a][metric ?? '']; return d?.n ? [<span className="mono" key="a">{a}</span>, d.n, fmt(d.mean), fmt(d.median), fmt(d.sd),
                 `[${fmt(d.ci95_mean[0])}, ${fmt(d.ci95_mean[1])}]`, fmt(d.min), fmt(d.max), d.undefined, (an.outliers[a]?.[metric ?? ''] ?? []).length] : [a, 0, '—', '—', '—', '—', '—', '—', '—', '—']; })} />
           </Section>
+          {an.nonredundancy && (
+            <Section title="Operational non-redundancy (assessment, not a finding)" note={an.nonredundancy.rule}>
+              <p className="mono small"><b>{an.nonredundancy.verdict}</b></p>
+              <Table head={['axis', 'comparable', 'indicators in this study', 'why']}
+                rows={an.nonredundancy.axes.map((ax: any) => [ax.axis, <Chip key="c" s={ax.comparable ? 'comparable' : 'not comparable'} />, ax.indicators_in_this_study.join(', ') || '—', <span className="small dim" key="w">{ax.why}</span>])} />
+              <p className="small dim">Not evaluable by this environment: {an.nonredundancy.not_evaluable_by_this_environment.join('; ')}.</p>
+            </Section>
+          )}
           <Section title="Censoring and fairness">
             <Table head={['arm', 'runs with censored first ignition', 'censoring point', 'stopped early']}
               rows={Object.entries(an.censoring).map(([a, v]: [string, any]) => [<span className="mono" key="a">{a}</span>, v.runs_with_censored_first_ignition, v.censoring_point, v.runs_stopped_early])} />

@@ -529,6 +529,15 @@ def ziran_records(doc: dict, runs: list[dict], arms: list[str]) -> dict:
                 "detector_limits": sd[0]["detector_limits"],
                 "separation": "transition record (engine deltas) / detector output / interpretation (none produced)",
             }
+        diag = [
+            r["population"]["exchange_diagnosis"] for r in rs if r.get("population") and r["population"].get("exchange_diagnosis")
+        ]
+        if diag:
+            e["exchange"] = {
+                "runs": len(diag),
+                "diagnoses": {d: diag.count(d) for d in sorted(set(diag))},
+                "note": "separates an empty store, no overlap, redundancy and a changed decision; a null effect is not read as a mechanism failure",
+            }
         e["proposals"] = sorted(
             {p["name"] + " [" + p["status"] + "]" for r in rs for p in ((r.get("controller") or {}).get("proposals") or [])}
         )

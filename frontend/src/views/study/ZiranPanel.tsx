@@ -67,6 +67,29 @@ export default function ZiranPanel({ study, runs }: { study: StudyDetail; runs: 
                 e.reachability ? `${e.reachability.opened_then_acted}/${e.reachability.opened_predictions}` : '—', e.reachability ? e.reachability.opened_not_used : '—',
                 e.reachability ? `${e.reachability.closed_consistent}/${e.reachability.closed_predictions}` : '—'])} />
           </Section>
+          <Section title="Levels of reachability" note="Available → executable → succeeded → used are different things: a gained availability is not a gained research possibility. Static = right after the change; dynamic = after the next epoch (includes the world's own change).">
+            <Table head={['arm', 'changes', 'static: expanded / contracted / mixed / equivalent', 'dynamic', 'available gained', 'succeeded next epoch', 'used', 'observable cells +/−']}
+              rows={Object.entries(z).filter(([, e]: [string, any]) => e.levels).map(([arm, e]: [string, any]) => {
+                const st = e.levels.effect_counts.static; const dy = e.levels.effect_counts.dynamic;
+                const f = (o: any) => ['expanded', 'contracted', 'mixed', 'equivalent'].map((k) => o[k] ?? 0).join(' / ');
+                return [<span className="mono" key="a">{arm}</span>, e.levels.changes, f(st), f(dy), e.levels.available_gained, `${e.levels.of_which_succeeded_next_epoch}/${e.levels.settled}`,
+                  e.levels.of_which_used, `${e.levels.observable_cells_gained} / ${e.levels.observable_cells_lost}`];
+              })} />
+          </Section>
+          <Section title="Meta-revision follow-up" note="Per contrast that differs only in meta-revision: what was revised, whether later changes used the revised rules, and the outcome against the no-revision control on the same seed. Improvement and worsening are both reported.">
+            {(an.meta_followup ?? []).length === 0 ? <p className="dim small">No contrast in this study differs only in meta-revision.</p> : (an.meta_followup as any[]).map((m) => (
+              <div key={m.contrast}>
+                <p className="small"><b className="mono">{m.contrast}</b> {m.meta_arm} vs {m.control_arm}: revision in {m.runs_with_a_revision}/{m.pairs} pairs · improved {m.improved} · worsened {m.worsened} · unchanged {m.unchanged}</p>
+                <Table head={['seed', 'revisions', 'exhausted', 'changes after 1st revision', 'using revised rules', 'Δ fired', 'verdict', 'Δ measure cost']}
+                  rows={m.rows.map((r: any) => [r.seed, r.revisions, r.exhausted, r.changes_after_first_revision, r.changes_using_revised_rules, fmt(r.delta_fired), <Chip key="v" s={r.verdict} />, fmt(r.delta_measure_cost)])} />
+              </div>
+            ))}
+          </Section>
+          <Section title="Exchange and inheritance of results" note="Why stored results did or did not reach decisions: an empty store, no overlap with what the reader considers, redundancy, or a changed decision.">
+            <ul className="hpo-rows">{Object.entries(z).filter(([, e]: [string, any]) => e.exchange).map(([arm, e]: [string, any]) => (
+              <li key={arm}><b className="mono">{arm}</b><span className="small">{Object.entries(e.exchange.diagnoses).map(([d, n]) => `${n}× ${d}`).join(' · ')}</span></li>))}
+              {!Object.values(z).some((e: any) => e.exchange) && <li className="dim small">No arm in this study exchanges results.</li>}</ul>
+          </Section>
           <Section title="Meta-revision of the revision rules" note="A revision changes the controller's own rule parameters after a rule's change failed to remove its blindness twice. Whether later changes were better is a separate contrast.">
             <ul className="hpo-rows">{Object.entries(z).filter(([, e]: [string, any]) => e.meta_revision).map(([arm, e]: [string, any]) => (
               <li key={arm}><b className="mono">{arm}</b><span className="mono small">{e.meta_revision.revisions} revisions in {e.meta_revision.runs_with_a_revision}/{e.meta_revision.runs_with_meta} runs ·

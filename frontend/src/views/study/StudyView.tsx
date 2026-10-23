@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCallback, useEffect, useState } from 'react';
 import { api, type StudyDetail, type StudyRunRow, type StudySummary } from '../../api/client';
 import OutputsPanel from './OutputsPanel';
@@ -43,6 +44,14 @@ function Info({ study, onChange }: { study: StudyDetail; onChange: () => void })
         </ul>
         <p className="small dim">{m.environment.determinism_note}</p>
       </Section>
+      {study.protocol.preregistration && (
+        <Section title="Preregistration" note="What was declared before the first run. Conditions chosen after looking at exploratory data are listed with their provenance.">
+          <p className="small"><b>Hypothesis.</b> {study.protocol.preregistration.central_hypothesis}</p>
+          <ul className="small">{study.protocol.preregistration.falsification.map((f: string, i: number) => <li key={i}>{f}</li>)}</ul>
+          <p className="small dim">Power: {study.protocol.preregistration.power.n_per_arm} seeds per arm; source: {study.protocol.preregistration.power.source}. Multiplicity: {study.protocol.preregistration.analysis_plan.multiplicity}; equivalence margin ±{study.protocol.preregistration.analysis_plan.equivalence_margin}.</p>
+          <Table head={['condition', 'derived from', 'source']} rows={study.protocol.preregistration.condition_provenance.map((p: any) => [p.condition, <Chip key="d" s={p.derived_from} />, <span className="small dim" key="s">{p.source}</span>])} />
+        </Section>
+      )}
       <Section title="Amendments after registration" note="A change after registration is never overwritten: it is recorded with its reason, and one made after a run started is analysed as exploratory.">
         {study.amendments.length === 0 ? <p className="dim small">None.</p> : <Table head={['at', 'path', 'old → new', 'status', 'reason']}
           rows={study.amendments.map((a) => [String(a.at).slice(0, 19), <span className="mono" key="p">{a.path}</span>, `${JSON.stringify(a.old)} → ${JSON.stringify(a.new)}`, a.status, a.reason])} />}
