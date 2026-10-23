@@ -208,3 +208,56 @@ env1 was run through the bridge on replicates 3980–3981 only; ARDS rule family
 from here by design; the interactive Shape Space view is not linked to study runs.
 
 **Git.** Branch `feat/zrs-integration`; the branch was pushed once (user-instructed, up to commit 57bc3bf); every later commit is local only; nothing deployed. Untracked: `frontend/node_modules` (symlink), study outputs are git-ignored.
+
+---
+
+# Level 2 completion record (2026-10-23)
+
+Judged in four stages; a stage is never reported as the one above it.
+
+| stage | meaning | status |
+|---|---|---|
+| A | Implementation complete | **reached** for the items below |
+| B | Operationally verified (runs, recorded, tested, reproduced on the same machine) | **reached** for the items below |
+| C | Scientifically evaluated (confirmatory, pre-registered, fresh seeds) | **NOT reached** — only functional studies were run |
+| D | Non-redundancy established | **NOT established** — default verdict is "not evaluated / not established" |
+
+## What A and B cover
+
+* **Reachability levels** (`hpo/reachability.py`, `hpo/reconfig.py`): availability, executability, success, reachable / observable / detector-identified sets, used.
+  Static (right after a change) and dynamic (after the next epoch) levels; effect classes expanded / contracted / mixed / equivalent. `tests/test_reachability_levels.py` (9):
+  expansion, contraction, observability gain and loss, boundary change → branching, scale change → identifiability, resource exhaustion → inoperable, history reinjection → selection change,
+  invalid revision, equivalent change. Tracing does not change a run (tested).
+* **Shared-environment operations** (`study/shared/ops.py`): evaluation change is a shared harness operation; intervention is arm-internal (HPO arm selection rule vs ARDS fixed / permuted order);
+  variable generation and boundary change are **not shared**, with the reasons recorded and the operations evaluated in the HPO world (`study/variables.py`, `study/boundaries.py`).
+  Permitted / implemented / succeeded are recorded separately. No arm is forced onto another arm's internal algorithm.
+* **Meta-revision follow-up**: before-rule, evidence, after-rule, `rules_in_force` per later change, paired comparison against a no-revision control (improved / worsened / unchanged, 2 % tolerance),
+  success / failure / exhaustion, measurement cost and budget. Both improvement and worsening are reported. The first scarcity study's result (meta-revision lowered fired samples by 26) is **kept as UNRESOLVED / negative**.
+  Artificially imposed functional conditions are separated from independent evaluation conditions (`provenance`).
+* **Multi-system exchange / inheritance** (`lab/multisystem.py`): controls (no exchange), stale (`memory_delay`), wrong (`shuffled` writer), colocated placement, stop / start, per-decision counterfactual.
+  The null result is kept and is now **diagnosed** into: empty store / no reads / reads without hits (no overlap) / hits without a changed decision (redundancy) / decisions changed.
+  Mechanism bug, redundancy and environment constraint are different outcomes in the record. The writer is chosen on a control run and that is disclosed.
+* **Variable and boundary generation**: classified as new name / transformation / compression / new identification ability / new intervention possibility / changed later conditions;
+  display range vs observation boundary vs interaction structure kept apart. `activity_trend` stays at novelty 0.85 with no resolved downstream effect.
+* **Non-redundancy assessment** (`study/nonredundancy.py`, `docs/NONREDUNDANCY.md`): eight axes; comparable axes (reachability via `capable_gained`, observability via `unseen_coverage`) vs not comparable
+  (prediction, intervention, action on reality, temporal continuity, reorganisation); literature overlap named (Steinle, Feest, Rheinberger, Rouse, Chang, Schickore; Active Inference, active learning, adaptive control, automated science).
+  **No novelty is claimed.** "Established" requires a detected, declared, comparable-axis contrast in an independent confirmatory study.
+* **Level 2 paper protocol** (`docs/level2/PROTOCOL_L2_DRAFT.json`, `LEVEL2_PROTOCOL.md`, template `level2-confirmatory`): hypothesis, falsification, arms, independent seeds, primary / secondary metrics, power with its source,
+  analysis plan (Holm / BH, equivalence margin, sensitivity), stopping rules, budget, storage, exploration / confirmation seed separation, condition provenance. `preregistration_issues` refuses incomplete blocks.
+  **It is a draft: not frozen, not run.** Its only validation issue is the deliberately closed high-cost approval gate.
+* **UI / API / report**: reachability levels, follow-up, exchange diagnoses, non-redundancy and preregistration shown in the study views and the generated Results text (verified live in the browser pane; frontend tests 82/82).
+
+## Regression audit
+
+Backend: see the numbers appended below (full unmodified run; nothing deselected, skipped or disabled). Frontend tsc / eslint / vitest 82/82 (last confirmed). TypeScript simulator 73/73 (re-run 2026-10-23).
+Phase 3 freeze manifest: **1,526 files, no problems** (re-run 2026-10-23); the ARDS repository has no modified tracked files (HEAD 26472ca). `m2-run-9100.json` untouched. Hierarchy-split semantics untouched.
+The two known failures (`test_compat[desktop-scipy]`, `test_published_records_replay`) remain, root cause recorded in `tests/test_hierarchy_diagnosis.py`, owner decision pending.
+
+## Not done / not claimed
+
+Stage C and D; any confirmatory run (high-cost approval not granted; the draft stays unfrozen); cross-machine or third-party reproduction; PNG / PDF outputs; variable generation and boundary change as shared operations;
+action on reality and human-energy / human-readability independence (outside this environment). Level 3 is not claimed.
+
+## Git
+
+Branch `feat/zrs-integration`; last push was 57bc3bf (user-instructed). Everything since, including Level 2, is **local commits only**. Nothing deployed or published.
