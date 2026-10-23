@@ -45,7 +45,9 @@ def validate_env(e: dict, where: str) -> list[str]:
     for ev in e["events"]:
         if ev.get("do") not in EVENTS or "gen" not in ev:
             out.append(f"{where}: event {ev!r} is not one of {EVENTS} with a generation")
-    unknown = set(e) - set(DEFAULT_ENV)
+    if e.get("rules_version", "v1") not in ("v1", "v2"):
+        out.append(f"{where}: rules_version must be 'v1' or 'v2'")
+    unknown = set(e) - set(DEFAULT_ENV) - {"rules_version"}
     if unknown:
         out.append(f"{where}: unknown environment keys {sorted(unknown)}")
     return out

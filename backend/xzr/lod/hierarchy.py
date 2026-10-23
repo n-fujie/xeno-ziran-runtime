@@ -182,6 +182,66 @@ def _build_hierarchy(a: sp.csr_matrix) -> Hierarchy:
     return hierarchy_from(path, order)
 
 
+# ---------------------------------------------------------------------------------------------------- hierarchy method v2 (opt-in, versioned)
+# Method 1 (``build_hierarchy`` above: the default, and the one every stored address and the golden fixture were made with) splits a sub-graph by the
+# second eigenvector of its normalized adjacency. For a sub-graph with several connected components that eigenvalue is degenerate: every vector of the
+# eigenspace is a valid answer and the one a solver returns depends on its LAPACK / ARPACK build (open item S11; tests/test_hierarchy_diagnosis.py).
+# Method 2 removes that freedom: components are ordered by a canonical rule (size, then lowest node index) and a split orders nodes by (component,
+# position within the component). It gives DIFFERENT partitions from method 1 wherever method 1 hit a degenerate eigenspace, so it is a new method
+# with its own name, never a replacement: nothing selects it by default, results made with method 1 keep their meaning, no reference is rewritten.
+HIERARCHY_METHODS = {
+    1: "spectral bisection (default; platform-dependent on disconnected sub-graphs)",
+    2: "component-canonical spectral bisection (opt-in; solver-independent on disconnected sub-graphs)",
+}
+
+
+def _fiedler_v2(a: sp.csr_matrix) -> np.ndarray:
+    from scipy.sparse import csgraph as _csg  # desktop only: the iOS path never selects method 2
+
+    m = a.shape[0]
+    ncc, lab = _csg.connected_components(a, directed=False)
+    if ncc == 1:
+        return _fiedler(a)
+    # canonical component order: larger first, ties by the lowest node index
+    comps = sorted(range(ncc), key=lambda c: (-int((lab == c).sum()), int(np.flatnonzero(lab == c)[0])))
+    f = np.zeros(m)
+    for rank, c in enumerate(comps):
+        idx = np.flatnonzero(lab == c)
+        if len(idx) > 2:
+            inner = _fiedler(a[idx][:, idx])
+            pos = np.argsort(np.argsort(inner, kind="stable"), kind="stable") / max(1, len(idx) - 1)
+        else:
+            pos = np.linspace(0.0, 1.0, len(idx)) if len(idx) > 1 else np.zeros(1)
+        f[idx] = rank + 0.5 * pos  # strictly inside the component's slot
+    return f
+
+
+def build_hierarchy_v2(a: sp.csr_matrix) -> Hierarchy:
+    """Method 2 (see above). Same structure and addresses format as method 1; ``source`` says which method made it."""
+    n = a.shape[0]
+    path = np.zeros(n, dtype=np.int64)
+    pos = np.zeros(n)
+    stack: list[tuple[np.ndarray, int]] = [(np.arange(n), 0)]
+    while stack:
+        idx, depth = stack.pop()
+        if depth == DEPTH:
+            continue
+        if len(idx) < 2:
+            path[idx] <<= DEPTH - depth
+            continue
+        f = _fiedler_v2(a[idx][:, idx]) if len(idx) > 2 else np.array([0.0, 1.0])
+        o = np.argsort(f, kind="stable")
+        pos[idx] = np.argsort(o) / max(1, len(idx) - 1)
+        half = len(idx) // 2
+        lo, hi = idx[o[:half]], idx[o[half:]]
+        path[lo] <<= 1
+        path[hi] = (path[hi] << 1) | 1
+        stack.append((lo, depth + 1))
+        stack.append((hi, depth + 1))
+    order = np.lexsort((pos, path)).astype(np.int32)
+    return hierarchy_from(path, order, source="method 2 (component-canonical)")
+
+
 def hierarchy_from(path: np.ndarray, order: np.ndarray, source: str = "computed") -> Hierarchy:
     """The cluster scales of a hierarchy, derived from its leaf paths and linear order."""
     path = np.asarray(path, dtype=np.int64)

@@ -246,6 +246,16 @@ def results(study: Study, an: dict) -> str:
                 f"{e['suppressed_decisions']}; metric definition breaks {e['metric_definition_breaks']['total_breaks']} (not compared across); "
                 f"ontology audit issues in {e['ontology_audit']['runs_with_issues']} runs; stops: {', '.join(f'{k} {v}' for k, v in e['stopped'].items())}."
             )
+            if e.get("rules_version") == "v2":
+                rc_ = e["rule_conflicts"]
+                lines.append(
+                    f"  - rules v2 ({a}): freshness window counts from arrival; hypothesis support vs the verifier: "
+                    f"{', '.join(f'{k} {v}' for k, v in e['hypothesis_support_vs_model'].items()) or 'no test'}; sensor reports vs true cause: "
+                    f"{', '.join(f'{k} {v}' for k, v in e['silence_states_vs_true_causes'].items()) or 'none missing'}; rule conflicts {rc_['events']} "
+                    f"(infeasible or not retried {rc_['infeasible_or_not_retried']}; scale reversals {rc_['scale_reversals']}; cooldown suppressions {rc_['cooldown_suppressions']}); "
+                    f"identification lost with the object still present {e['identification_lost']['object_still_present_in_the_world']}, object absent "
+                    f"{e['identification_lost']['object_absent']}."
+                )
         pl = to.get("planetary") or {}
         if any(pl.values()):
             lines += ["", "Planetary-scale structural conditions per arm (synthetic model; `earth_claim` false):"]

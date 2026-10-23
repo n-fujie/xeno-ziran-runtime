@@ -163,6 +163,56 @@ def make_findings(
     return A.Findings(g, objects, len(covered) / cfg.n, silent, denied, len(recs), sensor_info(net, recs), integration_sets=sets)
 
 
+def nominal_blocks(w_d: np.ndarray, cfg: WorldConfig, s: Sensor) -> int:
+    """Blocks one full observation by ``s`` would read (what the agent can compute from its own configuration)."""
+    from .observers import block_of
+
+    return len({block_of(cfg, int(i), s.scale, s.offset) for i in np.flatnonzero(w_d[s.region] <= s.radius)})
+
+
+def v2_status(cfg: WorldConfig, net: ObserverNet, d: np.ndarray, t: int, t0: int, lost_prev: int) -> tuple[dict, int, float, int]:
+    """Rules v2. For every sensor, what the hub's own bookkeeping says about its reports in this generation: ``ok``, ``partial`` (fewer blocks than the footprint:
+    cost denied), ``delayed`` (reports arrive later than one period), ``no-arrival`` (reports were due and none arrived) or ``not-due`` (none could have arrived
+    yet). The expected arrivals use only the agent's own layout, the grid and the declared latency. The cause of a missing report (outage, stopped sensor, lost
+    records) is NOT decided here. Also: records the hub received but no longer holds (its own accounting), and the demand of the configuration on the pool."""
+    status: dict[str, dict] = {}
+    demand = 0.0
+    for sid, s in sorted(net.sensors.items()):
+        delay = int(d[s.region, net.hub]) * net.latency
+        nb = nominal_blocks(d, cfg, s)
+        due = sum(1 for to in range(max(1, t0 + 1 - delay), t - delay + 1) if (to - s.phase) % s.period == 0)
+        got = [r for r in net.store if r.sid == sid and t0 < r.t_arrive <= t]
+        if due == 0:
+            state = "not-due"
+        elif not got:
+            state = "no-arrival"
+        else:
+            lag = float(np.mean([r.t_arrive - r.t_obs for r in got]))
+            blocks = float(np.mean([len(r.blocks) for r in got]))
+            state = "delayed" if lag > s.period else ("partial" if blocks < 0.8 * nb else "ok")
+        status[sid] = {"state": state, "due": due, "arrived": len(got), "expected_delay": delay, "nominal_blocks": nb}
+        demand += nb / s.period
+    lost = net.received - net.evicted - len(net.store)
+    return status, max(0, lost - lost_prev), demand, lost
+
+
+def truth_cause(net: ObserverNet, sid: str, delay: int, denied_delta: int, record_loss_event: bool, state: str) -> str:
+    """Verifier side: the true cause of a sensor's missing, late or partial reports, in a fixed order of precedence (a stopped sensor, an outage over its
+    position, a loss of records at the hub, denial of cost, transit delay longer than one period). Never given to the agent."""
+    s = net.sensors[sid]
+    if not s.alive:
+        return "failed"
+    if s.region in net.cut_zone:
+        return "outage"
+    if record_loss_event and state == "no-arrival":
+        return "record-loss"
+    if denied_delta > 0 and state in ("partial", "no-arrival"):
+        return "pool-denied"
+    if delay > s.period:
+        return "delay"
+    return "none-found"
+
+
 # ---------------------------------------------------------------------------------------------------- levels of reachability (sets over the observing net)
 def _bin(cfg: WorldConfig, i: int) -> str:
     r, c = divmod(i, cfg.cols)
@@ -357,8 +407,20 @@ def run(env_in: dict, arm: dict, gen: int, seed: int) -> dict:
     rules = reviser.rules if reviser else RuleTable(A.OBS_SPEC)
     mem = A.Memory(mode=design.history)
     rng = np.random.default_rng(seed * 31 + gen)
-    metlog = sss.MetricLog()
+    version = env.get("rules_version", "v1")
+    if version not in ("v1", "v2"):
+        raise ValueError("rules_version must be 'v1' or 'v2'")
+    v2 = version == "v2"
+    if v2:
+        net.freshness = "arrival"  # the freshness window counts from arrival: a record delayed in transit is not thrown away for having been in transit
+    metlog = sss.MetricLog("v2" if v2 else "v1")
     budget = float(design.budget)
+    silence_audit: list[dict] = []
+    scale_dir: dict[str, int] = {}
+    reversals = ident_lost_present = ident_lost_absent = 0
+    lost_prev = 0
+    denied_snap: dict[str, int] = {}
+    conflicts_seen = 0
 
     gens: list[dict] = []
     scores: list[dict] = []
@@ -396,6 +458,8 @@ def run(env_in: dict, arm: dict, gen: int, seed: int) -> dict:
         "meta_revisions": 0,
         "meta_exhausted": 0,
     }
+    if v2:
+        counters["hyp_withdrawn"] = 0
     ages: list[float] = []
     hyp_true_err: float | None = None
 
@@ -463,6 +527,10 @@ def run(env_in: dict, arm: dict, gen: int, seed: int) -> dict:
             elif o == "move-sensor":
                 net.sensors[op["sid"]].region = int(op["region"])
             elif o == "set-scale":
+                _dir = 1 if int(op["value"]) > net.sensors[op["sid"]].scale else -1
+                if scale_dir.get(op["sid"], _dir) != _dir:
+                    reversals += 1
+                scale_dir[op["sid"]] = _dir
                 mem.cool[f"{op['sid']}:{op.get('direction', 1 if int(op['value']) > net.sensors[op['sid']].scale else -1)}"] = g
                 net.sensors[op["sid"]].scale = int(op["value"])
             elif o == "set-period":
@@ -576,7 +644,7 @@ def run(env_in: dict, arm: dict, gen: int, seed: int) -> dict:
                 )
                 if age is not None:
                     ages.append(age)
-                metlog.measure("recall_region", sc["recall"], {}, w.t)
+                metlog.measure("recall_region", sc["recall"], {"freshness": net.freshness}, w.t)
                 metlog.measure(
                     "identified_count",
                     len(ids),
@@ -588,13 +656,32 @@ def run(env_in: dict, arm: dict, gen: int, seed: int) -> dict:
                         "scale_profile": tuple(sorted(s.scale for s in net.sensors.values())),
                         "variable": rc.ident.variable,
                         "integrate": rc.ident.integrate,
+                        "freshness": net.freshness,
                     },
                     w.t,
                 )
-                metlog.measure("info_age", age, {"staleness": stale}, w.t)
+                metlog.measure("info_age", age, {"staleness": stale, "freshness": net.freshness}, w.t)
         denied = int(net.stats["denied_blocks"] - stats0["denied_blocks"])
         # --- findings, tests, evaluation
         f = make_findings(g, cfg, net, w.t, t_gen0, rc.ident, denied, d, stale)
+        if v2:
+            f.sensor_status, f.records_lost, f.demand, lost_prev = v2_status(cfg, net, d, w.t, t_gen0, lost_prev)
+            for sid_, info_ in f.sensors.items():
+                info_["nominal_blocks"] = f.sensor_status[sid_]["nominal_blocks"]
+            # verifier-side audit of the agent's per-sensor states against the true causes (never given to the agent)
+            loss_event = any(e["do"] == "lose_records" for e in applied_events)
+            for sid_, st_ in f.sensor_status.items():
+                dd = net.per.get(sid_, {}).get("denied_blocks", 0) - denied_snap.get(sid_, 0)
+                denied_snap[sid_] = net.per.get(sid_, {}).get("denied_blocks", 0)
+                if st_["state"] in ("no-arrival", "delayed", "partial"):
+                    silence_audit.append(
+                        {
+                            "gen": g,
+                            "sid": sid_,
+                            "agent_state": st_["state"],
+                            "true_cause": truth_cause(net, sid_, st_["expected_delay"], dd, loss_event, st_["state"]),
+                        }
+                    )
         hyp_test = None
         if exp is not None:
             hyp_test = evaluate_experiment(exp, net, rc.hyp, float(env["net"]["noise"]))
@@ -629,6 +716,24 @@ def run(env_in: dict, arm: dict, gen: int, seed: int) -> dict:
                 true_speed = exp["D"] / hyp_test["true_lag"]
                 hyp_true_err = abs(rc.hyp["c_hat"] - true_speed) / true_speed
                 hyp_test["true_speed"] = round(true_speed, 4)
+            if v2:
+                # observational support and the model's own state are kept apart (agent.update_hypothesis); agreement with the verifier is recorded and never used
+                # by the agent
+                h = rc.hyp
+                if A.update_hypothesis(h, o, hyp_test.get("c_obs")) == "withdrawn":
+                    counters["hyp_withdrawn"] += 1
+                if hyp_test.get("true_lag") is None:
+                    agree = "unobservable"
+                elif "c_obs" in hyp_test:
+                    agree = "agree" if abs(hyp_test["c_obs"] / hyp_test["true_speed"] - 1) <= 0.5 else "disagree"
+                else:
+                    agree = None
+                hyp_test.update(
+                    observational_support=o,
+                    status_after=h["status"],
+                    model_agreement=agree,
+                    withdrawal="a refuting test after two consistent supports withdraws the support; model_agreement is the verifier's and is not used by the agent",
+                )
         elif rc.question == "trace" and design.policy == "adaptive":
             if "perturb" in rc.grammar and (design.authority is None or "perturb" in design.authority):
                 hyp_test = {
@@ -638,7 +743,7 @@ def run(env_in: dict, arm: dict, gen: int, seed: int) -> dict:
             else:
                 hyp_test = {"outcome": "untestable", "why": "no intervention permitted this generation"}
         f.hyp_test = hyp_test
-        A.diagnose(f, rc, {"hub": net.hub, "n": cfg.n}, prev_f)
+        A.diagnose(f, rc, {"hub": net.hub, "n": cfg.n, **({"v2": True, "pool": net.pool} if v2 else {})}, prev_f)
         ok = A.eval_ok(rc.eval_rule, f, prev_f, rc)
         metlog.measure("eval_success", bool(ok), {"eval_rule": rc.eval_rule}, w.t)
         last_reporters = {r.sid for r in net.view(w.t, stale) if r.t_obs >= t_gen0}
@@ -666,10 +771,14 @@ def run(env_in: dict, arm: dict, gen: int, seed: int) -> dict:
                 rc.question = "resolve"
             elif rc.question == "resolve" and persistent and "scale-mismatch" not in f.reasons:
                 rc.question = "trace"
-            elif rc.question == "trace" and hyp_test and hyp_test.get("outcome") == "supported":
+            elif rc.question == "trace" and (
+                rc.hyp["status"] == "supported" if v2 else (hyp_test and hyp_test.get("outcome") == "supported")
+            ):
                 rc.question, rc.cycle = "survey", rc.cycle + 1
                 rc.cov_target = min(0.9, rc.cov_target + 0.15)
                 rc.hyp["status"] = "untested"
+                if v2:
+                    rc.hyp["consistent"], rc.hyp["last_c_obs"] = 0, None
             elif rc.question != "survey" and no_obj_streak >= 2:
                 rc.question = "survey"
             if rc.question != q0:
@@ -739,7 +848,15 @@ def run(env_in: dict, arm: dict, gen: int, seed: int) -> dict:
         proposals: list[dict] = []
         if design.policy != "fixed" and stopped is None:
             proposals = A.propose(
-                f, rc, rules, design, {"hub": net.hub, "n": cfg.n, "integrate": rc.ident.integrate}, mem, rng, sig, score_now
+                f,
+                rc,
+                rules,
+                design,
+                {"hub": net.hub, "n": cfg.n, "integrate": rc.ident.integrate, **({"v2": True, "pool": net.pool} if v2 else {})},
+                mem,
+                rng,
+                sig,
+                score_now,
             )
         mem.write(sig, score_now, {"sensors": {k: v for k, v in f.sensors.items()}, "ident": rc.ident.to_dict()})
         chosen: list[dict] = []
@@ -758,12 +875,31 @@ def run(env_in: dict, arm: dict, gen: int, seed: int) -> dict:
         counters[f"reach_{eff_dyn['effect']}"] += 1
         lost_ids = set(prev_lv["identified"]) - set(lv_dyn["identified"])
         gained_ids = set(lv_dyn["identified"]) - set(prev_lv["identified"])
+        if v2 and lost_ids and prev_f is not None:
+            truth_now = V.true_objects(w)
+            for o_ in prev_f.objects:
+                if o_["key"] in lost_ids:
+                    if any(set(o_["cells"]) & t_ for t_ in truth_now):
+                        ident_lost_present += (
+                            1  # identification lost while the world's object is still there: unobserved, not gone
+                        )
+                    else:
+                        ident_lost_absent += 1
         counters["ident_lost"] += int(bool(lost_ids))
         counters["ident_gained"] += int(bool(gained_ids))
         sc_g = [s for s in scores if s["gen"] == g]
         rec_g.update(
             {
-                "trigger": {"reasons": list(f.reasons), "events": applied_events, "silent": f.silent, "denied_blocks": denied},
+                "trigger": {
+                    "reasons": list(f.reasons),
+                    "events": applied_events,
+                    **(
+                        {"no_arrival": [sid for sid, v in sorted(f.sensor_status.items()) if v["state"] == "no-arrival"]}
+                        if v2
+                        else {"silent": f.silent}
+                    ),
+                    "denied_blocks": denied,
+                },
                 "changes": rc_changes,
                 "levels": {
                     "before": prev_lv,
@@ -777,6 +913,7 @@ def run(env_in: dict, arm: dict, gen: int, seed: int) -> dict:
                     "n_records": f.n_records,
                     "objects": [{k: v for k, v in o.items() if k != "cells"} for o in f.objects],
                     "coverage": round(f.coverage, 4),
+                    **({"sensor_status": f.sensor_status, "records_lost_detected": f.records_lost} if v2 else {}),
                 },
                 "hypothesis_test": hyp_test,
                 "evaluation": {"rule": rc.eval_rule, "satisfied": bool(ok)},
@@ -786,6 +923,7 @@ def run(env_in: dict, arm: dict, gen: int, seed: int) -> dict:
                     "proposed": [{k: v for k, v in p.items() if k != "config"} for p in proposals],
                     "chosen": [{k: v for k, v in p.items() if k != "config"} for p in chosen],
                     "deferred": len(proposals) - len(chosen),
+                    **({"conflicts": mem.conflict_log[conflicts_seen:]} if v2 else {}),
                 },
                 "rule_revision": meta_revs,
                 "rules": rules.snapshot(),
@@ -810,10 +948,16 @@ def run(env_in: dict, arm: dict, gen: int, seed: int) -> dict:
         executed_any = any(o["status"] == "executed" for o in ops_done)
         stagnant = 0 if (executed_any or rc_changes or f.keys() != (prev_f.keys() if prev_f else set())) else stagnant + 1
         if design.policy == "adaptive" and stopped is None:
-            if len(f.silent) == len(net.sensors) and budget < A.OP_COST["add-sensor"]:
+            if v2 and all(v["state"] == "no-arrival" for v in f.sensor_status.values()) and budget < A.OP_COST["add-sensor"]:
+                stopped = {
+                    "gen": g,
+                    "reason": "no-arrival: records arrive from no sensor (cause undetermined) and the budget cannot add one",
+                }
+            elif not v2 and len(f.silent) == len(net.sensors) and budget < A.OP_COST["add-sensor"]:
                 stopped = {"gen": g, "reason": "no-observer: every sensor silent and the budget cannot add one"}
             elif stagnant >= 3 and not chosen:
                 stopped = {"gen": g, "reason": "stagnation: three generations without a change and nothing left to try"}
+        conflicts_seen = len(mem.conflict_log)
         rec_g["stopped"] = stopped if stopped and stopped["gen"] == g else None
         gens.append(rec_g)
         prev_f, prev_lv = f, lv_dyn
@@ -862,6 +1006,22 @@ def run(env_in: dict, arm: dict, gen: int, seed: int) -> dict:
     pl = planetary.conditions(env)
     metrics["planetary_conditions_met"] = pl["n_met"] / pl["n"]
     metrics["planetary_all_met"] = float(pl["all_met"])
+    if v2:
+        na = [a for a in silence_audit if a["agent_state"] == "no-arrival"]
+        metrics.update(
+            {
+                "scale_reversals": reversals,
+                "conflict_events": len(mem.conflict_log),
+                "infeasible_events": sum(1 for c in mem.conflict_log if c["resolution"] == "infeasible" or c.get("note")),
+                "cooldown_suppressions": len(mem.suppressed),
+                "abandoned_sensors": len(mem.abandoned),
+                "no_arrival_events": len(na),
+                "no_arrival_cause_failed_or_outage": sum(1 for a in na if a["true_cause"] in ("failed", "outage")),
+                "ident_lost_object_still_present": ident_lost_present,
+                "ident_lost_object_absent": ident_lost_absent,
+                "hyp_withdrawn": counters.get("hyp_withdrawn", 0),
+            }
+        )
     rec = {
         "schema": SCHEMA,
         "arm": arm["name"],
@@ -890,6 +1050,32 @@ def run(env_in: dict, arm: dict, gen: int, seed: int) -> dict:
             "counters": counters,
             "planetary": pl,
             "env": env,
+            **(
+                {
+                    "rules_version": "v2",
+                    "freshness": {
+                        "rule": net.freshness,
+                        "window": stale,
+                        "meaning": "a record is usable while the time since its ARRIVAL is within the window; the transit delay is not deducted from its usefulness",
+                    },
+                    "silence_log": [
+                        {
+                            **e_,
+                            "true_causes_seen_for_this_sensor": sorted(
+                                {a["true_cause"] for a in silence_audit if a["sid"] == e_["sid"] and a["gen"] <= e_["gen"]}
+                            ),
+                        }
+                        for e_ in mem.silence_log
+                    ],
+                    "silence_audit": silence_audit,
+                    "conflicts": mem.conflict_log,
+                    "hub_accounting": {"received": net.received, "evicted": net.evicted, "held": len(net.store)},
+                    "recall_definition": "fraction of the world's objects (verifier, full resolution) overlapped by an object identified from the records the hub's freshness rule lets the agent use; it is "
+                    "a measure of what the research system observed, not of the software's reproducibility",
+                }
+                if v2
+                else {}
+            ),
         },
         "wall_s": round(time.time() - t_wall, 4),
     }

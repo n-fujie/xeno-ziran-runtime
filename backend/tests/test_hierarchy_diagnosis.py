@@ -78,3 +78,47 @@ def test_stored_lab_record_m2_differs_only_in_chamber_membership_not_in_dynamics
             len(differing) <= 4 and abs(x[differing].sum() - y[differing].sum()) < 1e-3
         )  # memory moved between chambers, none created or lost
         assert abs(len(a["conduits"]) - len(b["conduits"])) <= 2
+
+
+# ---------------------------------------------------------------------------------------------------- method 2 (opt-in, versioned)
+def _rotating_eigh(seed: int):
+    """A stand-in for 'another LAPACK build': an eigensolver that returns a different but equally valid basis inside every degenerate eigenspace."""
+    real = np.linalg.eigh
+
+    def eigh(x, *args, **kw):
+        w, v = real(x, *args, **kw)
+        rng = np.random.default_rng(seed)
+        i = 0
+        while i < len(w):
+            j = i + 1
+            while j < len(w) and abs(w[j] - w[i]) < 1e-9:
+                j += 1
+            if j - i > 1:
+                q, _ = np.linalg.qr(rng.normal(size=(j - i, j - i)))
+                v[:, i:j] = v[:, i:j] @ q
+            i = j
+        return w, v
+
+    return eigh
+
+
+def test_method_1_depends_on_the_solver_where_the_eigenspace_is_degenerate_and_method_2_does_not(monkeypatch):
+    s = Session(load_sample("demo-3k"))
+    st = s.engine.state
+    m = st.alive
+    a = H.symmetric_adjacency(st.src[m], st.dst[m], st.n)
+    p1, p2 = [], []
+    for seed in (1, 2, 3):
+        monkeypatch.setattr(np.linalg, "eigh", _rotating_eigh(seed))
+        p1.append(H._build_hierarchy(a).path.copy())
+        p2.append(H.build_hierarchy_v2(a).path.copy())
+    assert any(not np.array_equal(p1[0], p) for p in p1[1:])  # method 1: the partition changes with an equally valid solver
+    assert all(np.array_equal(p2[0], p) for p in p2[1:])  # method 2: it does not
+    monkeypatch.undo()
+    h = H.build_hierarchy_v2(a)
+    assert h.source.startswith("method 2") and h.n == st.n
+
+
+def test_method_1_is_untouched_and_remains_the_default():
+    assert H.HIERARCHY_METHODS[1].startswith("spectral bisection (default")
+    assert H.build_hierarchy.__name__ == "build_hierarchy" and H._build_hierarchy.__code__.co_names.count("_fiedler_v2") == 0

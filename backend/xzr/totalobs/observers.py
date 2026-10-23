@@ -84,6 +84,12 @@ class ObserverNet:
             "interference": 0.0,
         }
     )
+    # freshness rule of the hub's view: "observation" (v1: a record is usable while its age since OBSERVATION is within the window, so a record delayed in transit
+    # longer than the window is discarded on arrival) or "arrival" (v2: the window counts from the record's ARRIVAL)
+    freshness: str = "observation"
+    received: int = 0  # the hub's own accounting: records received, and evicted by capacity (a gap against len(store) means records were lost)
+    evicted: int = 0
+    per: dict[str, dict] = field(default_factory=dict)  # per-sensor counts of what happened to its observations (verifier-side audit)
     cut_zone: set[int] = field(default_factory=set)  # regions where the link to the hub is down (a regional communication outage)
     _rng: np.random.Generator | None = None
 
@@ -119,8 +125,12 @@ class ObserverNet:
                 val = float(np.mean(w.u[idx])) + float(self._rng.normal(0.0, s.noise / np.sqrt(len(idx))))
                 blocks[b] = (max(val, 0.0), tuple(idx))
                 self.stats["blocks_read"] += 1
+            slot = self.per.setdefault(sid, {"observed": 0, "denied_blocks": 0, "lost_in_transit": 0, "expected_blocks": 0})
+            slot["expected_blocks"] += len(groups)
+            slot["denied_blocks"] += len(groups) - len(blocks)
             if not blocks:
                 continue
+            slot["observed"] += 1
             self.stats["observations"] += 1
             served = np.array([i for _, (_, idx) in blocks.items() for i in idx])
             before = float(w.u[served].sum())
@@ -134,16 +144,21 @@ class ObserverNet:
             rec = Record(sid, w.t, w.t + delay, s.scale, s.offset, blocks)
             if s.region in self.cut_zone:
                 self.stats["lost_in_transit"] += 1
+                slot["lost_in_transit"] += 1
                 continue
             self.store.append(rec)
+            self.received += 1
             out.append(rec)
             if len(self.store) > self.capacity:
                 self.store.pop(0)
+                self.evicted += 1
         return out
 
     # ------------------------------------------------------------------------------------------------- the hub's view (what an agent may read)
     def view(self, t: int, staleness: int) -> list[Record]:
         """The records that have arrived by ``t`` and are not older than ``staleness`` steps (the only access an agent has to the world)."""
+        if self.freshness == "arrival":
+            return [r for r in self.store if r.t_arrive <= t and t - r.t_arrive <= staleness]
         return [r for r in self.store if r.t_arrive <= t and t - r.t_obs <= staleness]
 
     # ------------------------------------------------------------------------------------------------- losses (harness operations)

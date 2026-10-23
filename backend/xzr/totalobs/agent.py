@@ -149,6 +149,11 @@ class Findings:
     reason_args: dict[str, dict] = field(default_factory=dict)
     hyp_test: dict | None = None
     integration_sets: dict[str, list[str]] = field(default_factory=dict)
+    # rules v2: what the agent can tell about each sensor's reports from the hub's own bookkeeping (never the cause), the hub's loss accounting,
+    # and the demand its configuration puts on the resource pool
+    sensor_status: dict[str, dict] = field(default_factory=dict)
+    records_lost: int = 0
+    demand: float = 0.0
 
     def keys(self) -> set[str]:
         return {o["key"] for o in self.objects}
@@ -172,7 +177,18 @@ def diagnose(f: Findings, rc: RC, geometry: dict, prev: Findings | None) -> None
     if f.denied_blocks > 0:
         r.append("denied")
         args["denied"] = {"costly": max(f.sensors, key=lambda s: (f.sensors[s]["cost_blocks"], s))}
-    if f.silent:
+    if geometry.get("v2"):
+        # rules v2: a sensor from which nothing arrived is `no-arrival` (outage, stopped sensor and lost records are NOT told apart by the hub: the cause stays
+        # undetermined until a probe); late and partial reports are named for what they are; none of these says that anything has ceased to exist
+        na = [sid for sid, v in sorted(f.sensor_status.items()) if v["state"] == "no-arrival"]
+        if na:
+            r.append("no-arrival")
+            args["no-arrival"] = {"sids": na}
+        if any(v["state"] == "delayed" for v in f.sensor_status.values()):
+            r.append("delayed")
+        if f.records_lost > 0:
+            r.append("records-lost")
+    elif f.silent:
         r.append("silent")
         args["silent"] = {"sids": list(f.silent)}
     if not f.objects and f.n_records:
@@ -193,6 +209,33 @@ def diagnose(f: Findings, rc: RC, geometry: dict, prev: Findings | None) -> None
     if sus:
         r.append("split-by-boundary")
     f.reasons, f.reason_args = r, args
+
+
+# ---------------------------------------------------------------------------------------------------- hypothesis status (rules v2)
+CONSISTENCY = 0.35  # two supporting tests are consistent when their estimates differ by at most this share
+
+
+def update_hypothesis(h: dict, outcome: str, c_obs: float | None) -> str | None:
+    """Rules v2: observational support is not acceptance. One supporting test makes the hypothesis ``provisional``; a second one consistent with it
+    (estimates within ``CONSISTENCY``) makes it ``supported``; a supporting test inconsistent with the last one restarts the count; a refuting test after
+    ``supported`` WITHDRAWS the support (``withdrawn``), after anything else leaves it ``refuted``. Returns ``"withdrawn"`` when support was withdrawn.
+    Uses the agent's own observations only (never the verifier)."""
+    h.setdefault("consistent", 0)
+    h.setdefault("withdrawn", 0)
+    h.setdefault("last_c_obs", None)
+    if outcome == "supported" and c_obs is not None:
+        last = h["last_c_obs"]
+        h["consistent"] = h["consistent"] + 1 if last is not None and abs(c_obs / last - 1) <= CONSISTENCY else 1
+        h["last_c_obs"] = c_obs
+        h["status"] = "supported" if h["consistent"] >= 2 else "provisional"
+        return None
+    if outcome == "refuted":
+        was = h["status"] == "supported"
+        h["status"] = "withdrawn" if was else "refuted"
+        h["withdrawn"] += int(was)
+        h["consistent"], h["last_c_obs"] = 0, None
+        return "withdrawn" if was else None
+    return None
 
 
 # ---------------------------------------------------------------------------------------------------- evaluation rules (agent-side success)
@@ -232,6 +275,13 @@ class Memory:
         default_factory=dict
     )  # "sid:direction" -> generation of the last scale move (stops two opposed rules from flip-flopping one sensor)
     suppressed: list[dict] = field(default_factory=list)
+    # rules v2: probes of silent sensors, abandoned sensors, attributions, rule conflicts and infeasible (resource-bound) sensors
+    probes: dict[str, int] = field(default_factory=dict)
+    abandoned: set[str] = field(default_factory=set)
+    resolved: set[str] = field(default_factory=set)
+    silence_log: list[dict] = field(default_factory=list)
+    conflict_log: list[dict] = field(default_factory=list)
+    infeasible_sids: set[str] = field(default_factory=set)
     _perm: dict[str, str] | None = None
 
     def write(self, sig: str, score: float, config: dict) -> None:
@@ -343,16 +393,22 @@ def propose(
                     "score": better[1]["score"],
                 }
             )
-    if "silent" in f.reasons and "silent" not in ex:
-        for sid in f.reason_args["silent"]["sids"][:1]:
-            add("move-sensor", "silent", sid=sid, region=geometry["hub"])
-    if "denied" in f.reasons:
+    v2 = bool(geometry.get("v2"))
+    if v2:
+        _probe_silent(f, mem, geometry, add)
+        handled = _arbitrate(out, mem, f, rc, p, geometry, add)
+    else:
+        handled = set()
+        if "silent" in f.reasons and "silent" not in ex:
+            for sid in f.reason_args["silent"]["sids"][:1]:
+                add("move-sensor", "silent", sid=sid, region=geometry["hub"])
+    if "denied" in f.reasons and "denied" not in handled:
         sid = f.reason_args["denied"]["costly"]
         _scale_move(out, mem, f, "denied", sid, +1, int(min(4, f.sensors[sid]["scale"] + round(p["scale_step"]))), add)
     if "uncovered" in f.reasons:
         for _ in range(int(round(p["sensor_step"]))):
             add("add-sensor", "uncovered")
-    if "scale-mismatch" in f.reasons:
+    if "scale-mismatch" in f.reasons and "scale-mismatch" not in handled:
         sid = f.reason_args["scale-mismatch"]["sid"]
         _scale_move(out, mem, f, "scale-mismatch", sid, -1, int(max(1, f.sensors[sid]["scale"] - round(p["scale_step"]))), add)
     if "period-too-slow" in f.reasons:
@@ -388,6 +444,92 @@ def propose(
 
 
 COOLDOWN = 3
+MAX_PERIOD = 16
+
+
+def _probe_silent(f: Findings, mem: Memory, geometry: dict, add) -> None:
+    """Rules v2: a sensor with no arrivals is probed once, by moving it next to the hub (an experiment: records resuming say the place was cut off or too far;
+    records still absent say the sensor stopped or cannot be reached, and it is abandoned rather than served again). The attribution is recorded as
+    an attribution, with its evidence, never as a fact about the sensor."""
+    na = f.reason_args.get("no-arrival", {}).get("sids", [])
+    for sid, g0 in list(mem.probes.items()):
+        if f.gen > g0 and sid not in mem.resolved and sid not in mem.abandoned:
+            if sid in na:
+                mem.abandoned.add(sid)
+                mem.silence_log.append({"gen": f.gen, "sid": sid, "attribution": "stopped-or-unreachable",
+                                        "evidence": "no record arrived in the generation after the sensor was moved next to the hub"})
+            else:
+                mem.resolved.add(sid)
+                mem.silence_log.append({"gen": f.gen, "sid": sid, "attribution": "place-dependent (outage or delay)",
+                                        "evidence": "records resumed after the sensor was moved next to the hub"})
+    for sid in na:
+        if sid in mem.abandoned or sid in mem.probes:
+            continue
+        mem.probes[sid] = f.gen
+        add("move-sensor", "no-arrival", sid=sid, region=geometry["hub"], probe=True)
+        break  # one probe per generation
+
+
+def _relief(f: Findings, mem: Memory, kind: str, det: str | None, avoid: set[str]) -> tuple[str, int] | None:
+    """A cost-relieving change on a sensor that is not the test's detector: ``period`` (doubled, keeps the resolution) or ``scale`` (+1, keeps the timing)."""
+    order = sorted(f.sensors, key=lambda s: (-f.sensors[s].get("nominal_blocks", 0) / f.sensors[s]["period"], s))
+    for sid in order:
+        if sid == det or sid in mem.abandoned or sid in mem.infeasible_sids:
+            continue
+        sp = f.sensors[sid]
+        if kind == "period" and sp["period"] < MAX_PERIOD and sid not in avoid:
+            return sid, min(MAX_PERIOD, sp["period"] * 2)
+        if kind == "scale" and sp["scale"] < 4 and sid not in avoid:
+            return sid, sp["scale"] + 1
+    return None
+
+
+def _arbitrate(out: list, mem: Memory, f: Findings, rc: RC, p: dict, geometry: dict, add) -> set[str]:
+    """Rules v2: when `denied` (cost exceeds the pool) comes with `scale-mismatch` (resolution too coarse) or `period-too-slow` (the test needs a fast detector),
+    the rules want opposite things of the same resources. One rule is chosen by a stated priority and the conflict is recorded with its numbers:
+
+      denied + scale-mismatch    keep the resolution, relieve the cost by lengthening the period of the costliest sensor that is not the detector
+      denied + period-too-slow   keep the detector's period, relieve the cost by coarsening the costliest non-detector sensor (by period if that sensor
+                                 is the one whose resolution is wanted)
+      no relief left, or the demand would still exceed the pool    the conflict is INFEASIBLE: the requested resolution and timing cannot be paid for;
+                                 the resolution / timing rules win (information value over cost), `denied` is tolerated for that sensor and not retried
+
+    Returns the reasons that were handled here (the plain rules then skip them). The cooldown (see ``_scale_move``) stays as a backstop and is counted apart."""
+    r = f.reasons
+    if "denied" not in r or not ({"scale-mismatch", "period-too-slow"} & set(r)):
+        return set()
+    det = (f.hyp_test or {}).get("B")
+    mism = "scale-mismatch" in r
+    slow = "period-too-slow" in r
+    pool = float(geometry["pool"])
+    kind = "period" if mism and not slow else "scale"
+    avoid = {f.reason_args["scale-mismatch"]["sid"]} if mism and "scale-mismatch" in f.reason_args else set()
+    choice = _relief(f, mem, kind, det, avoid if kind == "scale" else set())
+    if choice is None and kind == "scale":
+        choice = _relief(f, mem, "period", det, set())
+    entry = {"gen": f.gen, "rules": [x for x in ("denied", "scale-mismatch", "period-too-slow") if x in r], "demand": round(f.demand, 3), "pool": pool}
+    if choice is None:
+        mem.infeasible_sids |= {f.reason_args["denied"]["costly"]}
+        mem.conflict_log.append({**entry, "resolution": "infeasible", "why": "no sensor other than the detector can give up cost; resolution and timing win, denial is tolerated"})
+        return {"denied", "scale-mismatch"} if mism else {"denied"}
+    sid, val = choice
+    sp = f.sensors[sid]
+    nb = sp.get("nominal_blocks", 0)
+    after = f.demand
+    if sp["period"] != val and (val > sp["period"]):  # a period relief
+        after = f.demand - nb / sp["period"] + nb / val
+        op, extra = "set-period", {"value": int(val)}
+    else:  # a scale relief: blocks fall roughly with the square of the block size
+        new_nb = nb * (sp["scale"] / val) ** 2
+        after = f.demand - nb / sp["period"] + new_nb / sp["period"]
+        op, extra = "set-scale", {"value": int(val), "direction": +1}
+    mem.conflict_log.append({**entry, "resolution": f"{op} {sid} -> {val}", "demand_after_estimate": round(after, 3),
+                             "why": "priority: keep resolution and the detector's timing, relieve cost elsewhere"})
+    add(op, "denied", sid=sid, conflict=True, **extra)
+    if after > pool * 1.05:
+        mem.infeasible_sids.add(sid)
+        mem.conflict_log[-1]["note"] = "demand is still above the pool after this relief: further relief is not retried (infeasible at the requested settings)"
+    return {"denied", "scale-mismatch"} if mism else {"denied"}
 
 
 def _scale_move(out: list, mem: Memory, f: Findings, reason: str, sid: str, direction: int, value: int, add) -> None:

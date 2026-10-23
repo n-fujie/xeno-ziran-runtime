@@ -39,7 +39,40 @@ def arm_summary(rs: list[dict]) -> dict:
                 est = h["D"] / max(h["lag"], 1)
                 disagree.append(abs(est - h["true_speed"]) / h["true_speed"])
     sup = [h for g in gens if (h := g.get("hypothesis_test")) and h.get("outcome") == "supported" and h.get("true_speed")]
+    v2 = {}
+    if all(r["totalobs"].get("rules_version") == "v2" for r in rs):
+        cross: Counter = Counter()
+        for g in gens:
+            h = g.get("hypothesis_test")
+            if h and h.get("observational_support"):
+                cross[f"{h['observational_support']} / model {h['model_agreement']}"] += 1
+        conf = Counter(f"{a['agent_state']} | true cause {a['true_cause']}" for r in rs for a in r["totalobs"]["silence_audit"])
+        confl = [c for r in rs for c in r["totalobs"]["conflicts"]]
+        attrib = Counter(
+            f"{e['attribution']} | true causes seen {','.join(e['true_causes_seen_for_this_sensor']) or '-'}" for r in rs for e in r["totalobs"]["silence_log"]
+        )
+        v2 = {
+            "rules_version": "v2",
+            "freshness": rs[0]["totalobs"]["freshness"],
+            "hypothesis_support_vs_model": dict(sorted(cross.items())),
+            "hypothesis_status_after_test": dict(Counter(g["hypothesis_test"].get("status_after") for g in gens if g.get("hypothesis_test") and g["hypothesis_test"].get("status_after"))),
+            "silence_states_vs_true_causes": dict(sorted(conf.items())),
+            "probe_attributions": dict(sorted(attrib.items())),
+            "rule_conflicts": {
+                "events": len(confl),
+                "resolutions": dict(Counter(c["resolution"].split(" ")[0] for c in confl)),
+                "infeasible_or_not_retried": sum(1 for c in confl if c["resolution"] == "infeasible" or c.get("note")),
+                "scale_reversals": sum(r["metrics"].get("scale_reversals", 0) or 0 for r in rs),
+                "cooldown_suppressions": sum(r["metrics"].get("cooldown_suppressions", 0) or 0 for r in rs),
+            },
+            "identification_lost": {
+                "object_still_present_in_the_world": sum(r["metrics"].get("ident_lost_object_still_present", 0) or 0 for r in rs),
+                "object_absent": sum(r["metrics"].get("ident_lost_object_absent", 0) or 0 for r in rs),
+                "note": "a lost identification is not a vanished object: the verifier says which",
+            },
+        }
     return {
+        **v2,
         "runs": len(rs),
         "generations": len(gens),
         "reasons": dict(sorted(reasons.items())),

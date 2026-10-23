@@ -160,6 +160,17 @@ METRICS: dict[str, dict] = {
 }
 
 
+# rules v2 (see loop.py): the hub's freshness window counts from ARRIVAL, so the same metric names are measured on a different set of records than under v1. The
+# freshness rule becomes part of the basis of the metrics that depend on what the hub holds: a v1 and a v2 measurement are not comparable, and say why.
+METRICS_V2 = copy.deepcopy(METRICS)
+for _m in ("recall_region", "identified_count", "info_age"):
+    METRICS_V2[_m]["basis_keys"] = [*METRICS_V2[_m]["basis_keys"], "freshness"]
+METRICS_V2["recall_region"]["definition"] += (
+    "; computed from the records the hub's freshness rule lets the agent use (rules v2: the window counts from arrival). This is a measure of what the research "
+    "system observed, not of the software's reproducibility"
+)
+
+
 def comparable(a: dict, b: dict) -> dict:
     """Two measurements ``{metric, version, basis: {...}}``: comparable only if the metric is the same, at the same version, and every basis key the
     metric declares is equal. Returns ``{"comparable": bool, "reasons": [...]}``; there is no partial comparability and nothing is converted."""
@@ -181,8 +192,8 @@ class MetricLog:
     """Measurements with the definition under which they were made. A *revision* of a metric (a new definition) bumps its version and keeps the
     history; ``segments`` and ``compare`` then refuse to treat numbers across a break as one series."""
 
-    def __init__(self) -> None:
-        self.registry = copy.deepcopy(METRICS)
+    def __init__(self, rules_version: str = "v1") -> None:
+        self.registry = copy.deepcopy(METRICS_V2 if rules_version == "v2" else METRICS)
         self.rows: list[dict] = []
 
     def measure(self, metric: str, value, basis: dict, t: int) -> dict:

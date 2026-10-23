@@ -56,6 +56,8 @@ SECONDARY = [
     "planetary_conditions_met",
 ]
 FULL = {"policy": "adaptive", "history": "own", "meta": True, "strong": list(STRONG)}
+# the sources move at generations 3-7 (regions are valid in every world of the templates)
+DRIFT = [{"gen": g, "do": "move_source", "k": k, "region": (17 * k + 31 * g) % 96} for g in (3, 4, 5, 6, 7) for k in (0, 1, 2)]
 STRESS_ENV = {
     "generations": 10,
     "net": {"pool": 16.0, "n_sensors": 3},
@@ -83,7 +85,9 @@ def _doc(title: str, question: str, environment: dict, arms: list[dict], contras
         "title": title,
         "question": question,
         "mode": "functional",
-        "environment": {"kind": "total-observation", **environment},
+        # rules_version v2: the hub's freshness window counts from arrival, silence is diagnosed without asserting a cause, rule conflicts are arbitrated, a
+        # supported hypothesis needs two consistent tests; v1 (the first release's rules) stays available for replaying earlier studies
+        "environment": {"kind": "total-observation", "rules_version": "v2", **environment},
         "arms": arms,
         "seeds": {"gen_base": FUNCTIONAL_GEN[0], "engine_base": FUNCTIONAL_ENGINE[0], "n": n_seeds},
         "metrics": {"primary": list(PRIMARY), "secondary": list(SECONDARY)},
@@ -177,7 +181,7 @@ def autonomous_loop(n_seeds: int = 6) -> dict:
     keep = {"fixed", "random-matched", "adaptive", "adaptive-history", "adaptive-meta", "full"}
     d["arms"] = [a for a in d["arms"] if a["name"] in keep]
     d["contrasts"] = [c for c in d["contrasts"] if c["a"] in keep and c["b"] in keep]
-    d["environment"] = {"kind": "total-observation", **copy.deepcopy(STRESS_ENV)}
+    d["environment"] = {"kind": "total-observation", "rules_version": "v2", **copy.deepcopy(STRESS_ENV)}
     d["title"] = "Autonomous research loop under failure, outage, record loss and scarcity"
     d["question"] = (
         "When an observer fails, communication is cut over a region, the hub loses records and measurement resources are scarce, which of the loop's "
@@ -222,6 +226,16 @@ def planetary_observation(n_seeds: int = 6) -> dict:
             {"events": [{"gen": 3, "do": "cut_zone", "center": 40, "radius": 4}, {"gen": 7, "do": "restore_links"}]},
         ),
         (
+            "drifting-sources",
+            "The world's sources move at generations 3-7 (a changing world: information goes out of date).",
+            {"events": DRIFT},
+        ),
+        (
+            "drifting-comm-delay",
+            "As drifting-sources, with four steps of delay per hop: what delay costs when the world changes.",
+            {"net": {"latency": 4}, "events": DRIFT},
+        ),
+        (
             "planetary-form",
             "A 12 x 24 world, span 3, four sensors, two steps per hop: meets every declared structural condition (planetary.conditions).",
             {"world": {"rows": 12, "cols": 24, "span": 3}, "net": {"n_sensors": 4, "latency": 2, "pool": 24.0}},
@@ -232,7 +246,7 @@ def planetary_observation(n_seeds: int = 6) -> dict:
         {
             "id": f"C{i}",
             "a": n,
-            "b": "distributed",
+            "b": "drifting-sources" if n == "drifting-comm-delay" else "distributed",
             "varies": ["resources", "environment"]
             if n in ("local", "resource-contention", "planetary-form")
             else ["environment"],
