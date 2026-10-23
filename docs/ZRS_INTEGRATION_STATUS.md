@@ -263,3 +263,37 @@ action on reality and human-energy / human-readability independence (outside thi
 Branch `feat/zrs-integration`; last push was 57bc3bf (user-instructed). Everything since, including Level 2, is **local commits only**. Nothing deployed or published.
 
 **Backend full run (2026-10-23, current HEAD, nothing deselected):** 501 collected, **499 pass, 2 fail — only the two known failures** (`test_compat[desktop-scipy]`, `test_published_records_replay`). Before the Level 2 directive: 467 pass.
+
+---
+
+# Final integration: total observation, planetary-scale observation, SSS, autonomous research loop (2026-10-23)
+
+Guide: `docs/TOTAL_OBSERVATION.md`. Code: `backend/xzr/totalobs/` (new layer), `backend/xzr/lineage.py`, `backend/xzr/study/totalobs_templates.py`; UI: Experiments → New protocol (conditions form), Total observation, Research lines.
+
+**Tests (current code).** Backend full run: 547 collected, **545 pass, 2 fail — the two known failures** (`test_compat[desktop-scipy]`, `test_published_records_replay`), neither altered, skipped or deselected.
+Before this directive: 499 pass. New: `test_totalobs.py` (31), `test_totalobs_study.py` (15). Two regressions of mine were found by the existing guards in the first full run and fixed, not loosened:
+`test_layering` (totalobs became its own layer; its templates moved into `study/`) and `test_security` (the conditions endpoint became a GET: a read-only computation, not a mutating route).
+Frontend: tsc, eslint clean, vitest 87/87 (82 + 5 new contract tests on a stored run record). TypeScript simulator 73/73. ARDS Phase 3 manifest: 1,526 files, no problems; the ARDS repository is unchanged (HEAD 26472ca, no modified tracked files). `m2-run-9100.json`, hierarchy-split semantics, Phase 4 records: untouched.
+
+**Scenarios completed as stored functional studies** (reserved seeds; 200 runs; all ok; three stored runs per study replayed identically; whole-study re-execution 100 % identical; package verified; ontology audit clean in every run):
+`total-observation` S20261023-a6ce61ef-7ffe (84 runs, reproduced as …-f4ea), `autonomous-loop` S20261023-3112b368-55f4 (36, …-3781), `planetary-observation` S20261023-d64d110e-74f4 (48, …-90a8), `sss-axes` S20261023-1a599fc1-433f (32, …-4ad0). Study outputs are git-ignored; the ids are for this machine.
+Mechanism checks (tests): distributed observation; interference (between observers, and observer on object); integration loss; objects made by the configuration (classified `configuration` by the verifier); record loss with persistent marks; order dependence; SSS axis independence, 2- and 3-way interactions, metric incomparability across a definition break; observing-condition self-revision (classification, boundary, derived variable with matched control, scale/period/integration); return to the research question; changed later experiment after a refuted hypothesis; multi-generation loop; stop / failure / expiry; save, replay, re-execution.
+
+**Results of the functional studies — reported as found, none is evidence.** `recall_final` (verifier's recall at the last generation), 6 seeds: fixed 0.33, random-matched 0.37, adaptive 0.49, full 0.58; every contrast UNRESOLVED (e.g. adaptive − fixed 0.17, CI [0.0, 0.5]).
+In the default environment history, meta-revision, variable generation, boundary redefinition and evaluation-rule revision gave results IDENTICAL to their controls: those mechanisms did not fire there (not "no effect in general"); only classification revision and the grammar extension changed the outcome (UNRESOLVED).
+Under failure / outage / record loss / scarcity (`autonomous-loop`): fixed 0.16, random 0.24, adaptive 0.26, +history 0.29, +meta 0.26, full 0.28, all contrasts UNRESOLVED; meta-revision −0.006 vs adaptive (no gain). In an earlier 8-seed exploration under the same stress meta-revision *lowered* recall (0.19 vs 0.29): worsening is a possible outcome of rule revision here and is not hidden.
+Hypothesis tests: many deferred or inconclusive; in 10 seeds × 12 generations 6 supported, 5 refuted, 2 coarse; a "supported" hypothesis can be far from the verifier's value (counted in the Results text). `comm-delay` and `planetary-form` arms had near-zero recall (reports older than the staleness window / sparse coverage under a small pool): failures kept.
+
+**Capability map (`/api/studies/lineage`, computed from the file system).** Native 8 (HPO, Operational-Shape Dynamics, Robotics [laboratory mechanics only], Active Inference [research package, not an arm of the new line], Post-Active-Inference, Total Observation, Planetary-Scale Observation, SSS), Adapter 2 (ARDS, XenoBody via ARDS env1), Replay 1 (XenoSNN fixture; live snnTorch server not exercised), Reference 1 (Xenoscience), Unavailable 1 (**ANESCIRE**: no implementation or record found anywhere on this machine).
+
+**Judgement.**
+| | |
+|---|---|
+| A Implementation complete | **reached**: total observation (A–G), planetary conditions, SSS, autonomous loop run in the existing simulator, Study Engine, API and UI |
+| B Operationally verified | **reached**: changes of observing / research conditions and of SSS were run, recorded, replayed and re-executed identically (same machine) |
+| C Scientific evaluation | **not reached**: functional studies only, 6 seeds, no power plan for this line, all contrasts unresolved |
+| D Non-redundancy | **not established**: assessment defaults to "not evaluated"; no Active Inference / Active Learning arm exists; literature overlap named, none excluded |
+| E Ontological scope preserved | **reached for the software**: eight-layer ledger, `scope_audit` in every run, agent module structurally cut from the world and verifier (tested), all four claims false. It is a property of this model and its records, not a proof about reality |
+
+**Open / not done.** Confirmatory evaluation of the new line (needs a protocol, power plan and the owner's approval; none started). Cross-machine and third-party reproduction. Active Inference / Active Learning arms. The agent's `silent` reason conflates an outage with a delay longer than the staleness window; `denied` vs `scale-mismatch` is handled by a cooldown, not resolved; the hypothesis test depends on a steady detector. The model is one scalar-activity family; it is not the Earth. The two known failures remain an owner decision. "Capps" in the brief was not identified to a work.
+**Git.** Branch `feat/zrs-integration`, local commits only; last push still 57bc3bf (user-instructed); nothing deployed or published; no high-cost experiment, Phase 4 main experiment or confirmatory run started.
