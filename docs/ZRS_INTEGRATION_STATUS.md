@@ -261,3 +261,5 @@ action on reality and human-energy / human-readability independence (outside thi
 ## Git
 
 Branch `feat/zrs-integration`; last push was 57bc3bf (user-instructed). Everything since, including Level 2, is **local commits only**. Nothing deployed or published.
+
+**Backend full run (2026-10-23, current HEAD, nothing deselected):** 501 collected, **499 pass, 2 fail — only the two known failures** (`test_compat[desktop-scipy]`, `test_published_records_replay`). Before the Level 2 directive: 467 pass.
