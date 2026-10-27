@@ -27,6 +27,7 @@ seed and intervention list reproduce the same record bit for bit (the record car
 from __future__ import annotations
 
 import base64
+import collections
 import copy
 import hashlib
 import json
@@ -34,7 +35,7 @@ from typing import Any
 
 import numpy as np
 
-ENGINE_VERSION = "meos-0.1"
+ENGINE_VERSION = "meos-0.2"
 SCHEMA = "xzr.meos/1"
 ENTITIES = ("A1", "A2")
 
@@ -127,6 +128,10 @@ SETTABLE: dict[str, tuple[float, float]] = {
     "sss.size": (0.25, 4.0),
     "sss.speed": (0.25, 4.0),
     "noise": (0.0, 0.2),
+    "environment.renew_efficiency": (
+        0.1,
+        2.0,
+    ),  # the share of A2's renewal that reaches the field: an environmental regime parameter (absent = 1)
 }
 for _e in ENTITIES:
     for _k, _r in {
@@ -142,7 +147,22 @@ for _e in ENTITIES:
     SETTABLE[f"entities.{_e}.x"] = (0, 13)
     SETTABLE[f"entities.{_e}.y"] = (0, 13)
 
-OPS = ("REMOVE", "ISOLATE", "RECONNECT", "RECONFIGURE", "CHANGE_BOUNDARY", "DISABLE_HISTORY", "ALTER_SSS", "ALTER_RESOURCE")
+SETTABLE["entities.A2.renew"] = (0.05, 3.0)  # how much resource A2 transfers per action step (a configuration parameter of A2)
+
+OPS = (
+    "REMOVE",
+    "ISOLATE",
+    "RECONNECT",
+    "RECONFIGURE",
+    "CHANGE_BOUNDARY",
+    "DISABLE_HISTORY",
+    "ALTER_SSS",
+    "ALTER_RESOURCE",
+    "ADDRESS",
+)
+ADDRESS_MODES = ("loss", "reassign", "fragment", "collision", "partial", "restore")
+M2_SENSE = ("none", "direct", "delayed", "noisy")
+PHIL_MODES = ("none", "expression", "scorekeeping", "revision")
 
 
 class MeosError(ValueError):
@@ -193,6 +213,15 @@ def validate_config(cfg: dict) -> list[str]:
         issues.append("horizon must be an integer in 1..1200")
     if not isinstance(cfg.get("seed"), int):
         issues.append("seed must be an integer")
+    m2 = cfg.get("m2")
+    if m2 is not None and not (isinstance(m2, dict) and m2.get("sense", "none") in M2_SENSE):
+        issues.append(f"m2.sense must be one of {M2_SENSE}")
+    ph = cfg.get("phil")
+    if ph is not None and not (isinstance(ph, dict) and ph.get("mode", "none") in PHIL_MODES):
+        issues.append(f"phil.mode must be one of {PHIL_MODES}")
+    acc = cfg.get("history", {}).get("access")
+    if acc is not None and not (isinstance(acc, dict) and set(acc) <= set(ENTITIES)):
+        issues.append("history.access must map A1 / A2 to booleans")
     for e in ENTITIES:
         ent = cfg.get("entities", {}).get(e)
         if not isinstance(ent, dict):
@@ -227,6 +256,16 @@ def validate_interventions(ivs: list[dict], horizon: int) -> list[str]:
                 issues.append(f"interventions[{i}].value must be a number in {lo}..{hi}")
         if op == "CHANGE_BOUNDARY" and not (isinstance(iv.get("arena_radius"), int) and 1 <= iv["arena_radius"] <= 14):
             issues.append(f"interventions[{i}].arena_radius must be an integer in 1..14")
+        if op == "ADDRESS":
+            mode = iv.get("mode")
+            if mode not in ADDRESS_MODES or iv.get("target") not in (*ENTITIES, "both"):
+                issues.append(f"interventions[{i}] needs mode in {ADDRESS_MODES} and target A1 / A2 / both")
+            elif mode == "reassign" and not all(isinstance(iv.get(k), int) and 0 <= iv[k] < 24 for k in ("x", "y")):
+                issues.append(f"interventions[{i}] reassign needs integer cell x, y")
+            elif mode in ("fragment", "partial") and not (
+                isinstance(iv.get("fraction"), int | float) and 0 <= iv["fraction"] <= 1
+            ):
+                issues.append(f"interventions[{i}] {mode} needs fraction in 0..1")
         if op == "ALTER_SSS" and not any(k in iv for k in ("scale", "size", "speed")):
             issues.append(f"interventions[{i}] needs scale, size or speed")
         if op == "ALTER_RESOURCE" and "inject" in iv:
@@ -308,10 +347,36 @@ class Run:
         self.status = {"label": "DEGRADED", "reason": "forming", "dependency": None, "cycles_in_window": 0}
         self.pending_chain: dict[int, dict] = {}  # fire-event id -> chain info for cycle detection
         self.end_reason: str | None = None
+        # optional features: all inert unless configured or intervened, and none of them draws from the main random stream
+        self.rng_aux = np.random.default_rng(int(self.cfg["seed"]) + 104729)
+        self.addr: dict[str, dict] = {name: {"mode": None, "fraction": 1.0, "mask": None} for name in ENTITIES}
+        self.addr_events = 0
+        self.m2_hist: collections.deque = collections.deque(maxlen=64)
+        self.tick_acc: dict[str, float] = {}
+        self.traces: dict[str, list] = collections.defaultdict(list)
+        self.phil = None
+        if (self.cfg.get("phil") or {}).get("mode", "none") != "none":
+            from .phil import PhilOps
+
+            self.phil = PhilOps(self)
         self._apply_due()  # tick-0 interventions are part of the initial configuration
         self._record(first=True)
 
     # ------------------------------------------------------------------------------------------------ helpers
+    def _acc(self, key: str, amount: float = 1.0) -> None:
+        self.tick_acc[key] = self.tick_acc.get(key, 0.0) + amount
+
+    def _renew_efficiency(self) -> float:
+        return float(self.cfg["environment"].get("renew_efficiency", 1.0))
+
+    def _addressable(self, name: str) -> bool:
+        return self.addr[name]["mode"] != "loss"
+
+    def _partial_ok(self, name: str) -> bool:
+        """Partial addressability: each sensing or action step reaches its address with probability ``fraction`` (its own random stream)."""
+        a = self.addr[name]
+        return a["mode"] != "partial" or bool(self.rng_aux.random() < a["fraction"])
+
     def _eid(self) -> int:
         i = self.next_id
         self.next_id += 1
@@ -439,13 +504,42 @@ class Run:
                 if k in iv:
                     cfg["sss"][k] = float(iv[k])
             detail = {k: cfg["sss"][k] for k in ("scale", "size", "speed")}
+        elif op == "ADDRESS":
+            detail = self._apply_address(iv)
         e = self._event("intervention", None, op=op, **detail)
         self.intervention_log.append({"tick": self.t, "op": op, "event": e["id"], **detail})
+
+    def _apply_address(self, iv: dict) -> dict:
+        """Address Domain interventions: loss (the configuration can no longer address the field: it senses nothing and its actions reach nothing),
+        reassignment (a new address, state kept), fragmentation (only a fraction of its sensing window remains addressable), collision (it is
+        assigned the other configuration's address), partial addressability (each step reaches its address with a probability) and restoration."""
+        mode = iv["mode"]
+        names = ENTITIES if iv["target"] == "both" else (iv["target"],)
+        self.addr_events += 1
+        for name in names:
+            a, e = self.addr[name], self.ent[name]
+            if mode == "restore":
+                a.update(mode=None, fraction=1.0, mask=None)
+            elif mode == "loss":
+                a.update(mode="loss", fraction=0.0, mask=None)
+            elif mode == "reassign":
+                e["x"], e["y"] = self._clamp_arena(int(iv["x"]), int(iv["y"]))
+                self.cfg["entities"][name]["pos"] = [e["x"], e["y"]]
+                a.update(mode=None, fraction=1.0, mask=None)
+            elif mode == "collision":
+                other = self.ent["A1" if name == "A2" else "A2"]
+                e["x"], e["y"] = other["x"], other["y"]
+            elif mode == "fragment":
+                g = np.random.default_rng(int(self.cfg["seed"]) * 1000 + self.t * 10 + self.addr_events)
+                a.update(mode="fragment", fraction=float(iv["fraction"]), mask=g.random((self.n, self.n)) < float(iv["fraction"]))
+            elif mode == "partial":
+                a.update(mode="partial", fraction=float(iv["fraction"]), mask=None)
+        return {"address_mode": mode, "target": iv["target"], **{k: iv[k] for k in ("x", "y", "fraction") if k in iv}}
 
     # ------------------------------------------------------------------------------------------------ one tick
     def _history_theta(self, name: str, theta0: float) -> tuple[float, float]:
         h = self.cfg["history"]
-        if not h["enabled"]:
+        if not h["enabled"] or not (h.get("access") or {}).get(name, True):
             return theta0, 0.0
         floor = h["theta_floor"] * theta0  # history can lower a threshold, never remove it
         theta = max(floor, theta0 - h["kappa"] * self.ent[name]["h"])
@@ -472,7 +566,16 @@ class Run:
             chan_ok = ch["sensor_alteration"] and ch["interaction"]
             field = self.M1
         chk("sensor channel connected", chan_ok)
-        s0 = float(self._window(field, x, y, r).max()) if chan_ok else 0.0  # a peak detector over the sensing window
+        a = self.addr[name]
+        if a["mode"] is not None:  # Address Domain faults: a configuration that cannot address the field senses nothing there
+            chan_ok = chan_ok and self._addressable(name) and self._partial_ok(name)
+            chk("addressable", self._addressable(name))
+        win = self._window(field, x, y, r)
+        if a["mode"] == "fragment":
+            win = np.where(self._window(a["mask"], x, y, r), win, 0.0)
+        s0 = float(win.max()) if chan_ok and win.size else 0.0  # a peak detector over the sensing window
+        if chan_ok and name == "A1":
+            s0 += self._m2_signal(x, y, r)
         s = s0 + (float(self.rng.normal(0.0, self.cfg["noise"])) if chan_ok else 0.0)
         e["s0"] = s0
         d = s - e["baseline"]
@@ -497,6 +600,24 @@ class Run:
         return {"fire": fire, "checks": checks, "s": s, "d": d, "theta": theta, "red": red}
 
     LAG_MAX = 6  # a firing is attributed to an event of the other configuration only if that event touched its sensor window within this many ticks
+
+    def _m2_signal(self, x: int, y: int, r: int) -> float:
+        """A1's optional sensing of A2's alteration M2 (default: none). Direct, delayed (the field ``delay`` ticks ago) or noisy (its own random stream)."""
+        m2 = self.cfg.get("m2") or {}
+        sense = m2.get("sense", "none")
+        if sense == "none":
+            return 0.0
+        if sense == "delayed":
+            d = int(m2.get("delay", 3))
+            if len(self.m2_hist) < d:
+                return 0.0
+            field = self.m2_hist[-d]
+        else:
+            field = self.M2
+        v = float(self._window(field, x, y, r).max())
+        if sense == "noisy":
+            v = max(0.0, v + float(self.rng_aux.normal(0.0, float(m2.get("noise", 0.05)))))
+        return float(m2.get("weight", 0.5)) * v
 
     def _source_event(self, name: str, signal: float) -> int | None:
         """The event of the other configuration this firing is causally attributed to, or None: the latest event that touched the sensor window
@@ -528,7 +649,17 @@ class Run:
             nx, ny = x + int(np.sign(tx - x)), y + int(np.sign(ty - y))
             e["x"], e["y"] = self._clamp_arena(nx, ny)
 
+    def _blocked(self, name: str, fid: int) -> bool:
+        """An action that cannot reach its address (lost, or a partial step that missed) has no effect on the environment; the firing still ran."""
+        if self.addr[name]["mode"] is None or (self._addressable(name) and self._partial_ok(name)):
+            return False
+        e = self.ent[name]
+        self._event("act", name, action="blocked: not addressable", fire=fid, cell=[e["x"], e["y"]])
+        return True
+
     def _act_a1(self, fid: int) -> None:
+        if self._blocked("A1", fid):
+            return
         e, c = self.ent["A1"], self.cfg["entities"]["A1"]
         fp = self._footprint("A1")
         size = float(c["size"]) * self.cfg["sss"]["size"]
@@ -539,6 +670,7 @@ class Run:
         take = min(want, avail)
         if avail > 0:
             self.R[reg] -= self.R[reg] * (take / avail)
+        self._acc("consumed", take)
         e["energy"] = min(c["energy_max"], e["energy"] + c["gain"] * take)
         dep = c["deposit"] * (take / max(want, 1e-9)) * size
         self.M1[reg] += dep / self.R[reg].size
@@ -548,6 +680,8 @@ class Run:
         self.prov_m1[reg] = ev["id"]
 
     def _act_a2(self, fid: int) -> None:
+        if self._blocked("A2", fid):
+            return
         e, c = self.ent["A2"], self.cfg["entities"]["A2"]
         self._move_toward("A2", self.M1)
         fp = self._footprint("A2")
@@ -557,12 +691,19 @@ class Run:
         self.M2[reg] += c["deposit"] / self.M2[reg].size
         amt = 0.0
         if self.cfg["channels"]["feedback"]:
-            want = c["renew"] * size
+            want = c["renew"] * size * (self.phil.boost if self.phil else 1.0)
             amt = want if self.cfg["power"]["infinite"] else min(want, self.power)
             if not self.cfg["power"]["infinite"]:
                 self.power -= amt
+            eff = self._renew_efficiency()
             # reconfigure the environment around A1's reach: the renewed resource is placed where this configuration is
-            self.R[reg] += amt / self.R[reg].size
+            self.R[reg] += amt * eff / self.R[reg].size
+            self._acc("renewed", amt * eff)
+            self._acc("renew_requested", amt)
+            self._acc("power_renew", amt)
+            self._acc("renewal_events")
+            if self.phil:
+                self.phil.on_renewal(self, amt, eff)
         ev = self._event("act", "A2", action="reconfigure", renewed=round(amt, 4), fire=fid, cell=[x, y])
         if amt > 0:
             self.prov_r[reg] = ev["id"]
@@ -598,6 +739,9 @@ class Run:
             e["energy"] -= c["cost"]
         elif not self.cfg["power"]["infinite"]:
             self.power -= c["cost"]
+            self._acc("power_fire", c["cost"])
+        if name == "A1" and self.phil:
+            self.phil.on_a1_fire(self, fe)
         # causal chain for cycle detection: A1.act -> A2.fire -> A2.reconfigure -> A1.fire
         if name == "A2":
             if (
@@ -630,6 +774,7 @@ class Run:
             self.end_reason = self.end_reason or "horizon reached"
             return False
         self.t += 1
+        self.tick_acc = {}
         self._apply_due()
         for name in ENTITIES:
             self.ent[name]["fired_now"] = False
@@ -667,6 +812,7 @@ class Run:
             if not self.cfg["power"]["infinite"]:
                 draw = min(draw, self.power)
                 self.power -= draw
+                self._acc("power_regrow", draw)
             gain = draw / self.n
             self.R[0, :] = np.minimum(src * 1.5, self.R[0, :] + gain)
         for f in (self.M1, self.M2):
@@ -676,7 +822,9 @@ class Run:
             f *= 1.0 - env["persistence"]
             np.clip(f, 0.0, None, out=f)
         pw = self.cfg["power"]
+        before = self.power
         self.power = pw["capacity"] if pw["infinite"] else min(pw["capacity"], self.power + pw["charge"])
+        self._acc("power_in", self.power - before)
         a1 = self.ent["A1"]
         if a1["present"]:
             a1["energy"] = max(0.0, a1["energy"] - self.cfg["entities"]["A1"]["upkeep"])
@@ -687,6 +835,10 @@ class Run:
             e["h"] = (
                 e["h"] * (1.0 - h["decay"]) + (h["gain"] if e["fired_now"] else 0.0) + (0.2 * h["gain"] if e["d"] > 0.02 else 0.0)
             )
+        if (self.cfg.get("m2") or {}).get("sense") == "delayed":
+            self.m2_hist.append(self.M2.copy())
+        if self.phil:
+            self.phil.step(self)
         self._record()
         return self.t < self.cfg["horizon"] - 1
 
@@ -773,8 +925,66 @@ class Run:
     def _quant(self, f: np.ndarray, top: float) -> bytes:
         return np.clip(np.rint(f / top * 255.0), 0, 255).astype(np.uint8).tobytes()
 
+    def _address_integrity(self, name: str) -> float:
+        a = self.addr[name]
+        if a["mode"] == "loss":
+            return 0.0
+        if a["mode"] == "partial":
+            return float(a["fraction"])
+        if a["mode"] == "fragment":
+            return float(a["mask"].mean())
+        return 1.0
+
+    def _trace(self) -> None:
+        """The intermediate quantities of the operation, one value per tick (a separate block of the record: the status never reads it)."""
+        T, A = self.traces, self.tick_acc
+        a1, a2, ev = self.ent["A1"], self.ent["A2"], self.status
+        n_cyc, age = ev["cycles_in_window"], ev.get("age")
+        margin_age = -1.0 if age is None else (24 - age) / 24
+        consumed, renewed = A.get("consumed", 0.0), A.get("renewed", 0.0)
+        draw = A.get("power_fire", 0.0) + A.get("power_renew", 0.0) + A.get("power_regrow", 0.0) + A.get("power_phil", 0.0)
+        cols = {
+            "t": self.t,
+            "resource_consumed": consumed,
+            "resource_renewed": renewed,
+            "resource_flow": consumed + renewed,
+            "resource_total": float(self.R.sum()),
+            "power_reserve": self.power,
+            "power_in": A.get("power_in", 0.0),
+            "power_draw": draw,
+            "power_balance": A.get("power_in", 0.0) - draw,
+            "renewal_requested": A.get("renew_requested", 0.0),
+            "renewal_events": A.get("renewal_events", 0.0),
+            "a1_energy": a1["energy"],
+            "a1_activity": 1.0 if a1["active"] > 0 else 0.0,
+            "a2_activity": 1.0 if a2["active"] > 0 else 0.0,
+            "a1_fired": 1.0 if a1["fired_now"] else 0.0,
+            "a2_fired": 1.0 if a2["fired_now"] else 0.0,
+            "interaction_strength": a2["s0"],  # the alteration A2 senses of A1
+            "reconfiguration_signal": a1["s0"],  # what A1 senses of the resource field (and of M2 if connected)
+            "a1_differentiated": a1["d"],
+            "a2_differentiated": a2["d"],
+            "history_contribution_a1": a1["reentry_now"],
+            "history_contribution_a2": a2["reentry_now"],
+            "history_trace_a1": a1["h"],
+            "history_trace_a2": a2["h"],
+            "sensor_radius_a1": float(self._scaled_radius("A1")),
+            "sensor_radius_a2": float(self._scaled_radius("A2")),
+            "speed_a1": self._speed("A1"),
+            "speed_a2": self._speed("A2"),
+            "address_integrity_a1": self._address_integrity("A1"),
+            "address_integrity_a2": self._address_integrity("A2"),
+            "cycles_in_window": float(n_cyc),
+            "target_margin": min(n_cyc / 2 - 1, margin_age),  # >= 0 exactly when the ACTIVE criteria hold
+        }
+        if self.phil:
+            cols.update(self.phil.trace_columns())
+        for k, v in cols.items():
+            T[k].append(round(float(v), 5) if k != "t" else int(v))
+
     def _record(self, first: bool = False) -> None:
         self._classify()
+        self._trace()
         fr: dict[str, Any] = {
             "t": self.t,
             "status": self.status["label"],
@@ -806,6 +1016,10 @@ class Run:
                 "failed": [k["precondition"] for k in e["last_eval"] if not k["ok"]],
             }
         ad = {name: self._ad_static(name) for name in ENTITIES}
+        if any(a["mode"] is not None for a in self.addr.values()):
+            fr["address"] = {
+                name: {"mode": self.addr[name]["mode"], "integrity": round(self._address_integrity(name), 4)} for name in ENTITIES
+            }
         if ad != self._last_ad:
             fr["ad"] = ad
             self._last_ad = ad
@@ -908,6 +1122,7 @@ class Run:
                 "collapsed": self.status["label"] == "COLLAPSED",
                 "failed_dependency": self.status["dependency"] if self.status["label"] != "ACTIVE" else None,
             },
+            "traces": {k: list(v) for k, v in self.traces.items()},
             "fields": {
                 "grid": self.n,
                 "channels": ["R", "M1", "M2"],
@@ -937,6 +1152,10 @@ def run_record(config: dict, interventions: list[dict] | None = None) -> dict:
     out = {k: rec[k] for k in ("frames", "events", "cycles", "status_log", "final_status", "termination")}
     out["fields"] = rec["fields"]["b64"]
     rec["result_digest"] = digest(out)
+    # the intermediate quantities are a separate block with its own digest, so that the result digest of a run (what earlier records and tests pin) is
+    # the digest of the same things as before; full_digest covers both
+    rec["trace_digest"] = digest(rec["traces"])
+    rec["full_digest"] = digest({"result": rec["result_digest"], "traces": rec["trace_digest"]})
     return rec
 
 
@@ -944,7 +1163,8 @@ def replay(rec: dict) -> dict:
     """Re-run a stored record from its recorded initial configuration, seed and interventions. ``identical`` compares the result digests bit for bit."""
     again = run_record(rec["config"], rec["interventions"])
     return {
-        "identical": again["result_digest"] == rec["result_digest"],
+        "identical": again["result_digest"] == rec["result_digest"]
+        and again.get("trace_digest") == rec.get("trace_digest", again.get("trace_digest")),
         "expected": rec["result_digest"],
         "got": again["result_digest"],
     }

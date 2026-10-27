@@ -278,51 +278,110 @@ def address_sweep(config: dict) -> dict:
     return {"rows": rows}
 
 
-def observe(rec: dict, obs: dict | None = None) -> dict:
-    """What an observation array with a configured sampling interval, spatial resolution and region would conclude about the same run.
+OBSERVABILITY = {
+    "sampling_interval": "INSUFFICIENT_TEMPORAL_RESOLUTION",
+    "spatial_stride": "INSUFFICIENT_SPATIAL_RESOLUTION",
+    "region": "REGION_EXCLUDES_ACTIVITY",
+    "aggregation": "AGGREGATION_SCALE_MISMATCH",
+    "window": "OBSERVATION_WINDOW_MISMATCH",
+}
+FULL_OBSERVATION = {
+    "sampling_interval": 1,
+    "spatial_stride": 1,
+    "spatial_offset": [0, 0],
+    "region": None,
+    "aggregation": 1,
+    "window": 48,
+}
 
-    The observer sees only the events at sampled ticks (tick % interval == 0) inside its region; a cycle is observed only if all four of its events
-    are observed. The observed status is computed with the same criteria as the true status, from the observed cycles only. It can differ from the
-    true status: observation is a parameter of what is found, not a neutral window."""
-    obs = {"sampling_interval": 1, "spatial_resolution": 1, "region": None, **(obs or {})}
-    k = max(1, int(obs["sampling_interval"]))
-    ev = {e["id"]: e for e in rec["events"]}
+
+def _observed_cycle_ticks(rec: dict, obs: dict) -> list[int]:
+    """The cycles an observation resolves. It sees an event only at a sampled tick, on its sampling lattice (every ``spatial_stride``-th cell from ``spatial_offset``),
+    inside its region; a cycle is observed if all four of its events are seen; with an aggregation scale a, cycles inside one block of a ticks are one observed cycle."""
+    k, s, a = max(1, int(obs["sampling_interval"])), max(1, int(obs["spatial_stride"])), max(1, int(obs["aggregation"]))
+    ox, oy = obs["spatial_offset"]
     region = obs["region"]
+    ev = {e["id"]: e for e in rec["events"]}
 
     def seen(e: dict | None) -> bool:
         if e is None or e["tick"] % k != 0:
             return False
-        if region and e.get("cell"):
-            x, y = e["cell"]
-            return region[0] <= x <= region[2] and region[1] <= y <= region[3]
-        return True
+        cell = e.get("cell")
+        if cell is None:
+            return True
+        x, y = cell
+        if (x - ox) % s or (y - oy) % s:
+            return False
+        return not region or (region[0] <= x <= region[2] and region[1] <= y <= region[3])
 
-    cycles = []
-    for e in rec["events"]:
-        if e["kind"] != "cycle":
-            continue
-        parts = [ev.get(e["a1_act"]), ev.get(e["a2_fire"]), ev.get(e["reconfigure"]), ev.get(e["a1_fire"])]
-        if all(seen(p) for p in parts):
-            cycles.append(e["tick"])
-    win, k_active, stale = 48, 2, 24
-    trajectory = []
-    for t in range(len(rec["frames"])):
+    ticks = [
+        e["tick"]
+        for e in rec["events"]
+        if e["kind"] == "cycle" and all(seen(ev.get(e[key])) for key in ("a1_act", "a2_fire", "reconfigure", "a1_fire"))
+    ]
+    return sorted({(t // a) * a + (a - 1) for t in ticks}) if a > 1 else ticks
+
+
+def _label_trajectory(cycles: list[int], n: int, win: int) -> list[str]:
+    k_active, stale = 2, min(24, win)
+    out = []
+    for t in range(n):
         c = [x for x in cycles if x <= t and t - x < win]
         last = max((x for x in cycles if x <= t), default=None)
         if len(c) >= k_active and last is not None and t - last <= stale:
-            lab = "ACTIVE"
+            out.append("ACTIVE")
         elif c or t < win:
-            lab = "DEGRADED"
+            out.append("DEGRADED")
         else:
-            lab = "COLLAPSED"
-        trajectory.append(lab)
+            out.append("COLLAPSED")
+    return out
+
+
+def observe(rec: dict, obs: dict | None = None) -> dict:
+    """What an observation array with the configured temporal sampling interval, spatial resolution (sampling lattice), region, aggregation scale and observation window
+    would conclude about the same run, kept apart from what the run did.
+
+    ``operational_state`` is the status of the run itself; ``observed_state`` is the status computed with the same criteria from the observed cycles only;
+    ``observability_status`` says why they differ — found by relaxing each observation parameter in turn to full resolution and seeing which restores agreement. An
+    observation that cannot resolve the operation does not show that the operation is gone: it shows a limit of the observation."""
+    obs = {**FULL_OBSERVATION, **(obs or {})}
+    n = len(rec["frames"])
     true_final = rec["final_status"]["label"]
+
+    def state(o: dict) -> tuple[str, list[str], list[int]]:
+        cyc = _observed_cycle_ticks(rec, o)
+        traj = _label_trajectory(cyc, n, int(o["window"]))
+        return traj[-1], traj, cyc
+
+    observed, traj, cycles = state(obs)
+    agrees = observed == true_final
+    causes: list[str] = []
+    if agrees:
+        status = "OBSERVABLE"
+    else:
+        for key, full in (("sampling_interval", 1), ("spatial_stride", 1), ("region", None), ("aggregation", 1), ("window", 48)):
+            relaxed = {**obs, key: full}
+            if obs[key] != full and state(relaxed)[0] == true_final:
+                causes.append(key)
+        if observed == "ACTIVE" and true_final != "ACTIVE":
+            status = "OBSERVATION_OVERESTIMATES"
+        elif len(causes) == 1:
+            status = OBSERVABILITY[causes[0]]
+        elif causes:
+            status = "MULTIPLE_LIMITS: " + ", ".join(OBSERVABILITY[c] for c in causes)
+        else:
+            status = "COMBINED_LIMITS: no single parameter restores agreement"
     return {
         "observation": obs,
+        "operational_state": true_final,
+        "observed_state": observed,
+        "observability_status": status,
+        "limiting_parameters": causes,
         "observed_cycles": len(cycles),
         "true_cycles": len(rec["cycles"]),
-        "observed_status": trajectory[-1],
+        "observed_trajectory": traj,
+        # kept for the interface and earlier records
+        "observed_status": observed,
         "true_status": true_final,
-        "agrees": trajectory[-1] == true_final,
-        "observed_trajectory": trajectory,
+        "agrees": agrees,
     }

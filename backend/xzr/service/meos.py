@@ -14,6 +14,7 @@ from fastapi import APIRouter, HTTPException, Request
 
 from ..meos import analysis as A
 from ..meos import engine as E
+from ..meos import experiments as X
 from .studies import local_only
 
 router = APIRouter(prefix="/api/meos")
@@ -166,3 +167,122 @@ def sss(request: Request, body: dict[str, Any]) -> dict:
 def address(request: Request, body: dict[str, Any]) -> dict:
     local_only(request)
     return _guard(A.address_sweep, _config(body))
+
+
+# ---------------------------------------------------------------------------------------------- second-stage experiments (bounded sizes)
+def _seeds(body: dict, default: tuple[int, ...], limit: int = 5) -> tuple[int, ...]:
+    seeds = body.get("seeds")
+    if seeds is None:
+        return default
+    if not (isinstance(seeds, list) and 1 <= len(seeds) <= limit and all(isinstance(s, int) for s in seeds)):
+        raise HTTPException(422, f"seeds must be 1..{limit} integers")
+    return tuple(seeds)
+
+
+@router.post("/causal")
+def causal(request: Request, body: dict[str, Any]) -> dict:
+    """intervention -> change of intermediate quantities -> persistence failure -> collapse, from the run and its counterfactual (same seed, no intervention)."""
+    local_only(request)
+    cfg, ivs = _config(body), _ivs(body)
+    if not ivs:
+        raise HTTPException(422, "interventions are required")
+    _guard(E.validate_interventions, ivs, cfg["horizon"])
+    return _guard(X.causal_path, cfg, ivs)
+
+
+@router.post("/factorial")
+def factorial(request: Request, body: dict[str, Any]) -> dict:
+    """history (on/off) x resource gradient (on/off) x power (finite/unlimited)."""
+    local_only(request)
+    return _guard(X.factorial_history_gradient_power, _config(body), _seeds(body, tuple(range(1, 6)), 10))
+
+
+@router.post("/necessity")
+def necessity(request: Request, body: dict[str, Any]) -> dict:
+    local_only(request)
+    return _guard(X.history_necessity_map, _config(body), seeds=_seeds(body, (1, 2), 3))
+
+
+@router.post("/minimal-configurations")
+def minimal_configurations(request: Request, body: dict[str, Any]) -> dict:
+    """Every subset of the admissible reductions is run; all inclusion-minimal preserving sets are reported."""
+    local_only(request)
+    horizon = body.get("horizon", 160)
+    if not (isinstance(horizon, int) and 60 <= horizon <= 240):
+        raise HTTPException(422, "horizon must be an integer in 60..240")
+    obs = body.get("observation")
+    if obs is not None and not isinstance(obs, dict):
+        raise HTTPException(422, "observation must be an object")
+    out = _guard(X.minimal_configurations, _config(body), _seeds(body, (1,), 2), horizon, obs)
+    if not body.get("all_subsets"):
+        out.pop("all_subsets", None)
+    return out
+
+
+@router.post("/boundary-experiments")
+def boundary_experiments(request: Request, body: dict[str, Any]) -> dict:
+    local_only(request)
+    cfg = _config(body)
+    return {"kinds": _guard(X.boundary_experiments, cfg, _seeds(body, (1, 2), 3)), "closure": _guard(X.body_closure, cfg)}
+
+
+@router.post("/recovery")
+def recovery(request: Request, body: dict[str, Any]) -> dict:
+    local_only(request)
+    amounts = body.get("amounts")
+    if amounts is not None and not (
+        isinstance(amounts, list)
+        and 1 <= len(amounts) <= 30
+        and all(isinstance(a, int | float) and 0 <= a <= 20 for a in amounts)
+    ):
+        raise HTTPException(422, "amounts must be 1..30 numbers in 0..20")
+    scenario = body.get("scenario", "interaction cut 100-150")
+    if scenario not in ("interaction cut 100-150", "A2 removed 100-150"):
+        raise HTTPException(422, "unknown scenario")
+    return _guard(X.recovery_phase, _config(body), tuple(amounts) if amounts else None, _seeds(body, (1, 2), 5), scenario)
+
+
+@router.post("/sss-phase")
+def sss_phase(request: Request, body: dict[str, Any]) -> dict:
+    local_only(request)
+    axes = {}
+    for k, default in (("scales", (0.5, 1.0, 1.5)), ("sizes", (1.0, 2.0)), ("speeds", (0.5, 1.0, 2.0))):
+        v = body.get(k, default)
+        if not (
+            isinstance(v, list | tuple) and 1 <= len(v) <= 8 and all(isinstance(x, int | float) and 0.25 <= x <= 4 for x in v)
+        ):
+            raise HTTPException(422, f"{k} must be 1..8 numbers in 0.25..4")
+        axes[k] = tuple(v)
+    if len(axes["scales"]) * len(axes["sizes"]) * len(axes["speeds"]) > 48:
+        raise HTTPException(422, "at most 48 grid points on this API")
+    return _guard(X.sss_phase, _config(body), axes["scales"], axes["sizes"], axes["speeds"], _seeds(body, (1,), 2))
+
+
+@router.post("/address-experiments")
+def address_experiments(request: Request, body: dict[str, Any]) -> dict:
+    local_only(request)
+    return _guard(X.address_experiments, _config(body), _seeds(body, (1,), 3))
+
+
+@router.post("/m2")
+def m2(request: Request, body: dict[str, Any]) -> dict:
+    local_only(request)
+    return _guard(X.m2_experiment, _config(body), _seeds(body, (1,), 3))
+
+
+@router.post("/phil")
+def phil(request: Request, body: dict[str, Any]) -> dict:
+    local_only(request)
+    return _guard(X.phil_experiment, _config(body), _seeds(body, (1,), 3))
+
+
+@router.post("/observe")
+def observe(request: Request, body: dict[str, Any]) -> dict:
+    """Run, then observe with a configured observation: operational state, observed state and why they differ."""
+    local_only(request)
+    cfg, ivs = _config(body), _ivs(body)
+    obs = body.get("observation")
+    if obs is not None and not isinstance(obs, dict):
+        raise HTTPException(422, "observation must be an object")
+    rec = _guard(E.run_record, cfg, ivs)
+    return A.observe(rec, obs)
