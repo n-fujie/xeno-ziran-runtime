@@ -313,7 +313,8 @@ def test_no_route_runs_experiments_or_touches_the_filesystem():
         ("POST", "/api/meos/boundary"), ("POST", "/api/meos/history"), ("POST", "/api/meos/sss"), ("POST", "/api/meos/address"),
         ("POST", "/api/meos/causal"), ("POST", "/api/meos/factorial"), ("POST", "/api/meos/necessity"),
         ("POST", "/api/meos/minimal-configurations"), ("POST", "/api/meos/boundary-experiments"), ("POST", "/api/meos/recovery"),
-        ("POST", "/api/meos/sss-phase"), ("POST", "/api/meos/address-experiments"), ("POST", "/api/meos/m2"), ("POST", "/api/meos/phil"),
+        ("POST", "/api/meos/sss-phase"), ("POST", "/api/meos/address-experiments"), ("POST", "/api/meos/m2"),
+        ("POST", "/api/meos/phil"),
         ("POST", "/api/meos/observe")])
     meos_src = Path(app_mod.__file__).with_name("meos.py").read_text()
     assert meos_src.count("local_only(request)") >= len([1 for r in routes if "/api/meos" in getattr(r, "path", "")])
