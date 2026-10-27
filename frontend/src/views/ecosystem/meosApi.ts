@@ -18,6 +18,7 @@ export interface AdStatic {
 export interface Frame {
   t: number; status: Label; cycles: number; power: number; R: number; M1: number; M2: number; A1: EntityFrame; A2: EntityFrame;
   ad?: { A1: AdStatic; A2: AdStatic };
+  address?: Record<'A1' | 'A2', { mode: string | null; integrity: number }>;  // present only while an Address Domain fault is active
 }
 export interface Ev {
   id: number; tick: number; kind: string; actor: string | null; [k: string]: unknown;
@@ -31,15 +32,18 @@ export interface MeosRecord {
   final_status: { label: Label; reason: string; dependency: Dependency; cycles_in_window: number; history_reentry_cycles: number; age: number | null };
   termination: { reason: string; tick: number; collapsed: boolean; failed_dependency: Dependency };
   fields: { grid: number; channels: string[]; encoding: string; r_top: number; b64: string };
-  initial_config_digest: string; result_digest: string;
+  initial_config_digest: string; result_digest: string; trace_digest?: string; full_digest?: string;
+  traces?: Record<string, number[]>;  // intermediate quantities, one value per tick (the status never reads them)
 }
 export interface MeosConfig {
   seed: number; horizon: number; grid: number; noise: number;
+  m2?: { sense: 'none' | 'direct' | 'delayed' | 'noisy'; weight?: number; delay?: number; noise?: number };
+  phil?: { mode: 'none' | 'expression' | 'scorekeeping' | 'revision'; margin?: number; window?: number; verify_margin?: number; noise?: number; delay?: number; cost?: number };
   environment: Record<string, number | boolean | null>; power: { reserve: number; capacity: number; charge: number; infinite: boolean };
   channels: Record<string, boolean>; history: Record<string, number | boolean | string>; sss: { scale: number; size: number; speed: number };
   entities: Record<'A1' | 'A2', Record<string, number | boolean | number[]>>;
 }
-export interface Intervention { tick: number; op: string; target?: string; path?: string; value?: number; arena_radius?: number; mode?: string;
+export interface Intervention { tick: number; op: string; target?: string; path?: string; value?: number; arena_radius?: number; mode?: string; x?: number; y?: number; fraction?: number;
   scale?: number; size?: number; speed?: number; inject?: { x: number; y: number; amount: number } }
 export interface Spec {
   engine: string; defaults: MeosConfig; components: string[]; entities: string[]; operations: string[]; settable: Record<string, [number, number]>;
@@ -49,8 +53,12 @@ export interface Spec {
 export interface Summary { status: Label; persists: boolean; cycles: number; first_collapse_tick: number | null; failed_dependency: Dependency;
   result_digest: string; status_log: Array<[number, Label]>; final_power: number; history_reentry_cycles: number; reason: string }
 export interface RunOut { record: MeosRecord; summary: Summary; observed?: Observed }
+export interface Observation { sampling_interval: number; spatial_stride: number; region: number[] | null; aggregation: number; window: number }
+export const FULL_OBSERVATION: Observation = { sampling_interval: 1, spatial_stride: 1, region: null, aggregation: 1, window: 48 };
 export interface Observed { observation: Record<string, unknown>; observed_cycles: number; true_cycles: number; observed_status: Label; true_status: Label;
-  agrees: boolean; observed_trajectory: Label[] }
+  agrees: boolean; observed_trajectory: Label[];
+  // operational state and observed state are kept apart; the status says why they differ
+  operational_state: Label; observed_state: Label; observability_status: string; limiting_parameters: string[] }
 export interface AblationRow { removed: string[]; persists_in_all_seeds: boolean;
   outcomes: Array<{ seed: number; status: Label; persists: boolean; cycles: number; first_collapse_tick: number | null; failed_dependency: Dependency }> }
 export interface MfsOut { baseline_persists: boolean; retained: string[]; removed: string[]; retained_is_one_minimal?: boolean;
@@ -73,7 +81,7 @@ export const getSpec = async (): Promise<Spec> => {
   if (!r.ok) throw new Error(`spec: ${r.status}`);
   return r.json();
 };
-export const runMeos = (config: Partial<MeosConfig> | undefined, interventions: Intervention[], observation?: Record<string, unknown>) =>
+export const runMeos = (config: Record<string, unknown> | undefined, interventions: Intervention[], observation?: Record<string, unknown>) =>
   post<RunOut>('/run', { config, interventions, observation });
 export const replayMeos = (config: unknown, interventions: Intervention[], result_digest: string) =>
   post<{ identical: boolean; expected: string; got: string }>('/replay', { config, interventions, result_digest });
@@ -115,3 +123,17 @@ export function adAt(frames: Frame[], t: number): { A1: AdStatic; A2: AdStatic }
 }
 
 export const STATUS_VALUE: Record<Label, number> = { COLLAPSED: 0, DEGRADED: 1, ACTIVE: 2 };
+
+// ------------------------------------------------------------------------------------------------ second-stage experiments (tables are shown as the engine returned them)
+export type Json = Record<string, unknown>;
+export const causalPath = (config: unknown, interventions: Intervention[]) => post<Json>('/causal', { config, interventions });
+export const factorial = (config: unknown, seeds?: number[]) => post<Json>('/factorial', { config, seeds });
+export const necessity = (config: unknown, seeds?: number[]) => post<Json>('/necessity', { config, seeds });
+export const minimalConfigurations = (config: unknown, body: Json = {}) => post<Json>('/minimal-configurations', { config, ...body });
+export const boundaryExperiments = (config: unknown, seeds?: number[]) => post<Json>('/boundary-experiments', { config, seeds });
+export const recoveryPhase = (config: unknown, body: Json = {}) => post<Json>('/recovery', { config, ...body });
+export const sssPhase = (config: unknown, body: Json = {}) => post<Json>('/sss-phase', { config, ...body });
+export const addressExperiments = (config: unknown, seeds?: number[]) => post<Json>('/address-experiments', { config, seeds });
+export const m2Experiment = (config: unknown, seeds?: number[]) => post<Json>('/m2', { config, seeds });
+export const philExperiment = (config: unknown, seeds?: number[]) => post<Json>('/phil', { config, seeds });
+export const observeRun = (config: unknown, interventions: Intervention[], observation: Json) => post<Observed>('/observe', { config, interventions, observation });
