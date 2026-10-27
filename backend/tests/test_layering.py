@@ -26,6 +26,8 @@ ALLOWED = {
     # total-observation layer: a synthetic world, observers and a research loop re-using hpo's rule revision and reachability
     # comparison; imports nothing of study, lab, service, practice, interpret or reasonlab (study imports it, never the reverse)
     "totalobs": {"totalobs", "hpo"},
+    # MEOS (XENO ECOSYSTEM): a self-contained experimental layer; imports nothing of the rest of xzr (only the service imports it)
+    "meos": {"meos"},
 }
 
 

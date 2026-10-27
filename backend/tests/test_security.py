@@ -305,7 +305,14 @@ def test_no_route_runs_experiments_or_touches_the_filesystem():
         ("POST", "/api/studies/{sid}/stop"), ("POST", "/api/studies/{sid}/amend"),
         ("POST", "/api/studies/{sid}/runs/{arm}/{k}/replay"), ("POST", "/api/studies/{sid}/analyse"),
         ("POST", "/api/studies/{sid}/report"), ("POST", "/api/studies/{sid}/package"),
-        ("POST", "/api/studies/{sid}/reproduce")])
+        ("POST", "/api/studies/{sid}/reproduce"),
+        # MEOS (XENO ECOSYSTEM): stateless, deterministic computations that store nothing; local runtime and same origin only,
+        # 403 under XZR_PUBLIC
+        # (test_meos.py::test_the_api_is_local_only_and_stateless)
+        ("POST", "/api/meos/run"), ("POST", "/api/meos/replay"), ("POST", "/api/meos/ablation"), ("POST", "/api/meos/mfs"),
+        ("POST", "/api/meos/boundary"), ("POST", "/api/meos/history"), ("POST", "/api/meos/sss"), ("POST", "/api/meos/address")])
+    meos_src = Path(app_mod.__file__).with_name("meos.py").read_text()
+    assert meos_src.count("local_only(request)") >= len([1 for r in routes if "/api/meos" in getattr(r, "path", "")])
     studies_src = Path(app_mod.__file__).with_name("studies.py").read_text()
     assert studies_src.count("local_only(request)") >= len([1 for r in routes if "/api/studies" in getattr(r, "path", "")])
     src = Path(app_mod.__file__).read_text()

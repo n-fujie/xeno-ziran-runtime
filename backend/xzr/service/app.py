@@ -840,6 +840,11 @@ from . import studies as _studies  # noqa: E402  (mounted before the static catc
 
 app.include_router(_studies.router)
 
+# XENO ECOSYSTEM: the MEOS simulation endpoints (stateless, local runtime only)
+from . import meos as _meos  # noqa: E402
+
+app.include_router(_meos.router)
+
 # ---------------------------------------------------------------------------------------------- static frontend
 if STATIC_DIR.is_dir():
     app.mount("/assets", StaticFiles(directory=STATIC_DIR / "assets"), name="assets")

@@ -1,0 +1,168 @@
+"""MEOS API: the XENO ECOSYSTEM view's simulation endpoints (xzr.meos) over HTTP.
+
+Stateless and read-only on the server: a request carries a configuration, a seed and an intervention list, and the answer is the deterministic record
+of that run (nothing is stored; replay is the same request). Local runtime only, like the study routes: a run costs CPU, so on a public deployment
+(XZR_PUBLIC=1) every route answers 403 and a request made from another site's page is refused. Sizes are bounded before anything runs.
+"""
+
+from __future__ import annotations
+
+import copy
+from typing import Any
+
+from fastapi import APIRouter, HTTPException, Request
+
+from ..meos import analysis as A
+from ..meos import engine as E
+from .studies import local_only
+
+router = APIRouter(prefix="/api/meos")
+MAX_HORIZON = 600
+MAX_SEEDS = 5
+
+
+def _config(body: dict) -> dict:
+    over = body.get("config") or {}
+    if not isinstance(over, dict):
+        raise HTTPException(422, "config must be an object")
+    cfg = E.default_config()
+    for k, v in over.items():
+        if isinstance(v, dict) and isinstance(cfg.get(k), dict):
+            for k2, v2 in v.items():
+                if isinstance(v2, dict) and isinstance(cfg[k].get(k2), dict):
+                    cfg[k][k2].update(v2)
+                else:
+                    cfg[k][k2] = v2
+        else:
+            cfg[k] = v
+    if isinstance(cfg.get("horizon"), int) and cfg["horizon"] > MAX_HORIZON:
+        raise HTTPException(422, f"horizon is limited to {MAX_HORIZON} ticks on this API")
+    return cfg
+
+
+def _ivs(body: dict) -> list[dict]:
+    ivs = body.get("interventions") or []
+    if not isinstance(ivs, list) or not all(isinstance(i, dict) for i in ivs):
+        raise HTTPException(422, "interventions must be a list of objects")
+    return ivs
+
+
+def _guard(fn, *args: Any, **kw: Any) -> Any:
+    try:
+        return fn(*args, **kw)
+    except E.MeosError as exc:
+        raise HTTPException(422, str(exc)) from exc
+
+
+@router.get("/spec")
+def spec(request: Request) -> dict:
+    """Everything a client needs to build the experiment controls: defaults, the removable components, the settable parameters, the operations, the status
+    criteria and the named boundary partitions."""
+    local_only(request)
+    return {
+        "engine": E.ENGINE_VERSION,
+        "schema": E.SCHEMA,
+        "defaults": E.default_config(),
+        "components": list(E.COMPONENTS),
+        "entities": list(E.ENTITIES),
+        "operations": list(E.OPS),
+        "settable": {k: list(v) for k, v in E.SETTABLE.items()},
+        "partitions": A.PARTITIONS,
+        "body_components": list(A.BODY_COMPONENTS),
+        "legs": {k: list(v) for k, v in A.LEGS.items()},
+        "status_criteria": {
+            "ACTIVE": "at least 2 complete cycles in the last 48 ticks and the latest cycle no older than 24 ticks",
+            "DEGRADED": "at least one cycle in the window but fewer than required or stale, or no cycle yet during the first 48 ticks (forming)",
+            "COLLAPSED": "no complete cycle in the last 48 ticks after the first 48 ticks",
+            "cycle": "A1 acts (alters the environment) -> A2 detects that alteration and fires -> A2 reconfigures the environment -> A1 detects the change and fires; "
+            "every link is a causal attribution to a recorded event of the other configuration within 6 ticks",
+        },
+        "limits": {"max_horizon": MAX_HORIZON, "max_interventions": 64, "max_seeds": MAX_SEEDS},
+    }
+
+
+@router.post("/run")
+def run(request: Request, body: dict[str, Any]) -> dict:
+    """Run to the horizon: the full record (frames, events, cycles, status log, fields) with its input and result digests, and the observed status
+    for an optional observation configuration."""
+    local_only(request)
+    cfg, ivs = _config(body), _ivs(body)
+    rec = _guard(E.run_record, cfg, ivs)
+    out: dict[str, Any] = {"record": rec, "summary": A.summarize(rec)}
+    if body.get("observation") is not None:
+        out["observed"] = A.observe(rec, body["observation"])
+    return out
+
+
+@router.post("/replay")
+def replay(request: Request, body: dict[str, Any]) -> dict:
+    """Re-run a record's initial configuration, seed and interventions and compare the result digests bit for bit."""
+    local_only(request)
+    cfg, ivs = _config(body), _ivs(body)
+    expected = body.get("result_digest")
+    if not isinstance(expected, str):
+        raise HTTPException(422, "result_digest is required")
+    rec = _guard(E.run_record, cfg, ivs)
+    return {"identical": rec["result_digest"] == expected, "expected": expected, "got": rec["result_digest"]}
+
+
+@router.post("/ablation")
+def ablation(request: Request, body: dict[str, Any]) -> dict:
+    local_only(request)
+    cfg = _config(body)
+    seeds = body.get("seeds") or [cfg["seed"]]
+    if not (isinstance(seeds, list) and 1 <= len(seeds) <= MAX_SEEDS and all(isinstance(s, int) for s in seeds)):
+        raise HTTPException(422, f"seeds must be 1..{MAX_SEEDS} integers")
+    subsets = body.get("subsets")
+    if subsets is not None and not (
+        isinstance(subsets, list)
+        and len(subsets) <= 24
+        and all(isinstance(s, list) and set(s) <= set(E.COMPONENTS) for s in subsets)
+    ):
+        raise HTTPException(422, "subsets must be lists of components")
+    return _guard(A.ablation_table, cfg, subsets, tuple(seeds))
+
+
+@router.post("/mfs")
+def mfs(request: Request, body: dict[str, Any]) -> dict:
+    local_only(request)
+    return _guard(A.minimal_configuration, _config(body), bool(body.get("exhaustive")), body.get("horizon"))
+
+
+@router.post("/boundary")
+def boundary(request: Request, body: dict[str, Any]) -> dict:
+    local_only(request)
+    parts = body.get("partitions")
+    if parts is not None:
+        ok = (
+            isinstance(parts, dict)
+            and len(parts) <= 8
+            and all(
+                isinstance(p, dict)
+                and isinstance(p.get("components"), list)
+                and set(p["components"]) <= {"A1", *A.BODY_COMPONENTS}
+                for p in parts.values()
+            )
+        )
+        if not ok:
+            raise HTTPException(422, "partitions must map ids to {components: [...]} of operational components")
+        parts = copy.deepcopy(parts)
+    return _guard(A.boundary_analysis, _config(body), parts)
+
+
+@router.post("/history")
+def history(request: Request, body: dict[str, Any]) -> dict:
+    local_only(request)
+    return _guard(A.history_comparison, _config(body))
+
+
+@router.post("/sss")
+def sss(request: Request, body: dict[str, Any]) -> dict:
+    local_only(request)
+    return _guard(A.sss_sweep, _config(body))
+
+
+@router.post("/address")
+def address(request: Request, body: dict[str, Any]) -> dict:
+    local_only(request)
+    return _guard(A.address_sweep, _config(body))
