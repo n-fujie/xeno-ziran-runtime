@@ -1,0 +1,12 @@
+HPO / Ziran 6 6
+Total Observation (v2) 16 16
+Planetary-Scale Observation (v2) 10 10
+SSS (v2) 16 16
+Autonomous research loop (v2) 9 9
+ARDS (env2 bridge) 3 3
+ARDS-HPO shared (env3) 4 4
+v1 compat: total-observation (first release) 84 84
+v1 compat: autonomous-loop (first release) 36 36
+v1 compat: planetary (first release) 48 48
+v1 compat: sss (first release) 32 32
+TOTAL 264 / 264

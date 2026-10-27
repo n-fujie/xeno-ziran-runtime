@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased — XENO ECOSYSTEM (MEOS-0)
+
+* New view `ecosystem` (local runtime only): a real-time 3D megastructure organised like the XENOSCIENCE drawing around a deterministic simulation of MEOS-0, the first
+  Minimal Ecosystem Operational Shape experiment (`docs/ECOSYSTEM_MEOS.md`). New self-contained layer `backend/xzr/meos/` (engine, reduction experiments), stateless API
+  `/api/meos/*`, the view `frontend/src/views/ecosystem/`, 34 new backend and 26 new frontend tests, capture and comparison scripts, recorded experiments
+  (`docs/ecosystem/`). The only changes to existing files are the view registration, one i18n label, the layering declaration, the security route enumeration and lint settings.
+* MEOS status (ACTIVE / DEGRADED / COLLAPSED) is derived from counted cycles of a causal chain, never from animation; ablation, the minimal operational configuration,
+  XenoBody boundaries, history re-entry, SSS and Address Domain perturbation and observation-dependent status are run on the real engine and recorded with digests.
+* Not implemented: the philosophical-AI connection; live engine stepping (playback is of a deterministic record); a pixel-difference visual gate. See section 9 of the document.
+
 ## Unreleased — browser edition
 
 * The interactive simulator runs in a browser tab at `/app/` of the public site: the engine on Pyodide (CPython on

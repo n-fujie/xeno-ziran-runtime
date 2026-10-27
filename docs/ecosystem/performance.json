@@ -1,0 +1,68 @@
+{
+ "machine": "Apple M1 (ANGLE Metal renderer), Claude desktop app browser pane, 1024x768 CSS px, devicePixelRatio 2 (renderer pixel ratio capped at 1 / 1.5 / 2 by quality)",
+ "method": "window.__meos.resetPerf() after warm-up, then 240 requestAnimationFrame frames; frame time is the true (unclamped) interval; 'playing' = the simulation clock running at 12 ticks/s",
+ "note": "the frame rate is vsync-limited at 60 fps: no headroom figure can be read from it; one machine, one browser",
+ "measurements": [
+  {
+   "quality": "performance",
+   "camera": "overview",
+   "state": "playing",
+   "fps": 60.0,
+   "frame_ms_mean": 16.66,
+   "frame_ms_p95": 17.6,
+   "frame_ms_max": 17.7,
+   "draw_calls": 94,
+   "triangles": 360362,
+   "instances": 22525,
+   "edge_segments": 57677,
+   "sim_update_ms_mean": 0.35,
+   "heap_mb": 20.3
+  },
+  {
+   "quality": "balanced",
+   "camera": "overview",
+   "state": "paused",
+   "fps": 59.98,
+   "frame_ms_mean": 16.67,
+   "frame_ms_p95": 17.7,
+   "frame_ms_max": 17.8,
+   "draw_calls": 94,
+   "triangles": 653030,
+   "instances": 42684,
+   "edge_segments": 97478,
+   "sim_update_ms_mean": null,
+   "heap_mb": 23.7
+  },
+  {
+   "quality": "high",
+   "camera": "research core + operational overlay",
+   "state": "paused",
+   "fps": 60.0,
+   "frame_ms_mean": 16.67,
+   "frame_ms_p95": 17.7,
+   "frame_ms_max": 17.7,
+   "draw_calls": 49,
+   "triangles": 974728,
+   "instances": 65300,
+   "edge_segments": 136390,
+   "sim_update_ms_mean": null,
+   "heap_mb": 28.8
+  },
+  {
+   "quality": "high",
+   "camera": "research core + operational overlay",
+   "state": "playing",
+   "fps": 59.0,
+   "frame_ms_mean": 16.94,
+   "frame_ms_p95": 17.7,
+   "frame_ms_max": 51.0,
+   "draw_calls": 49,
+   "triangles": 974728,
+   "instances": 65300,
+   "edge_segments": 136390,
+   "sim_update_ms_mean": 1.13,
+   "heap_mb": 29.5
+  }
+ ],
+ "software_rendering": "headless Chromium on SwiftShader (used only for the screenshot captures) renders in the order of seconds per frame at 1672x808 and is not a performance measurement of the view; the perf-*.json files next to the captures are its readings"
+}

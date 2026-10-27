@@ -1,0 +1,49 @@
+// XENO ECOSYSTEM — visual-regression captures and performance measurements.
+//
+//   node frontend/scripts/ecosystem_capture.mjs --base http://127.0.0.1:3031 --out docs/ecosystem/visual [--width 1672 --height 941] [--quality balanced]
+//
+// Needs Playwright (resolved from PLAYWRIGHT_DIR, a directory whose node_modules contains it) and a Chromium/headless-shell binary (CHROME). It loads the view with
+// ?chrome=0 (the stage alone), waits until the record is loaded and the scene settled, takes the picture of the stage and reads window.__meos.perf().
+// In a headless browser WebGL runs on a software rasteriser (SwiftShader): the frame rates it reports are those of software rendering, not of a GPU.
+import { createRequire } from 'node:module';
+import { mkdirSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+
+const arg = (k, d) => { const i = process.argv.indexOf(`--${k}`); return i > 0 ? process.argv[i + 1] : d; };
+const base = arg('base', 'http://127.0.0.1:3031'), out = arg('out', 'docs/ecosystem/visual'), width = +arg('width', 1672), height = +arg('height', 941), quality = arg('quality', 'balanced');
+const only = arg('only', null);
+const wait = +arg('wait', 9000);
+const require = createRequire((process.env.PLAYWRIGHT_DIR ?? process.cwd()) + '/package.json');
+const { chromium } = require('playwright');
+const exe = process.env.CHROME;
+mkdirSync(out, { recursive: true });
+
+export const SHOTS = {
+  '01-overview': 'cam=overview&layers=physical,meos&tick=120',
+  '02-habitat': 'cam=habitat&layers=physical,operational,firing&tick=120',
+  '03-research-core': 'cam=core&layers=physical&tick=120',
+  '04-meos0-active': 'cam=habitat&layers=physical,meos,operational&tick=120',
+  '05-meos-collapse': 'preset=a2-removed&cam=habitat&layers=physical,meos,firing&tick=150',
+  '06-xenobody-boundary': 'cam=habitat&layers=physical,xenobody,address&tick=120',
+  '07-history-overlay': 'cam=habitat&layers=physical,history&tick=120',
+  '08-subsurface-laboratory': 'reductions=1&cam=subsurface&layers=physical&tick=120',
+};
+
+const browser = await chromium.launch({ executablePath: exe, args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--enable-webgl'] });
+const perf = {};
+for (const [name, q] of Object.entries(SHOTS)) {
+  if (only && !only.split(',').some((o) => name.includes(o))) continue;
+  const page = await browser.newPage({ viewport: { width, height } });
+  page.on('pageerror', (e) => console.error('pageerror', String(e).slice(0, 300)));
+  await page.goto(`${base}/?view=ecosystem&${q}&quality=${quality}&chrome=0&capture=1`, { waitUntil: 'load' });
+  await page.waitForFunction(() => document.querySelector('.eco-stage')?.getAttribute('data-settled') === '1' && window.__meos?.ready?.(), null, { timeout: 120000 });
+  await page.waitForTimeout(wait);
+  await page.evaluate(() => window.__meos.resetPerf());  // measure after warm-up: the scene build and shader compilation are not steady state
+  await page.waitForTimeout(+arg('measure', 5000));
+  perf[name] = await page.evaluate(() => ({ ...window.__meos.perf(), camera: window.__meos.camera(), stats: window.__meos.stats() }));
+  await (await page.$('.eco-stage')).screenshot({ path: join(out, `${name}.png`) });
+  await page.close();
+  console.log(name, 'ok', perf[name].fps.toFixed(1), 'fps (software rendering)');
+}
+writeFileSync(join(out, `perf-${quality}.json`), JSON.stringify({ browser: 'headless Chromium, WebGL on SwiftShader (software)', viewport: [width, height], quality, perf }, null, 1));
+await browser.close();
