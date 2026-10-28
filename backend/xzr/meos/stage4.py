@@ -230,6 +230,9 @@ def boundary_perturbation(
         pert = E.run_record(c, sp["ivs"])  # the boundary stays perturbed
         back = E.run_record(c, [*sp["ivs"], *sp["restore"]])  # perturbed for ``duration`` ticks, then restored
         pulsed = E.run_record(c, [*sp["ivs"], *sp["restore"], X.pulse(tick + duration + 1, 2.0)])
+        control = E.run_record(
+            c, [X.pulse(tick + duration + 1, 2.0)]
+        )  # the same pulse into the unperturbed run: what the pulse does by itself
         obs_cfg = sp["observation"] or {}
         ob = A.observe(back, obs_cfg)
         pa_base, pa_back = path_activity(base), path_activity(back)
@@ -257,7 +260,8 @@ def boundary_perturbation(
                 "collapse_tick": collapse,
                 "collapsed": collapse is not None,
                 "recovers_without_pulse": collapse is not None and back["final_status"]["label"] == "ACTIVE",
-                "recovers_with_pulse": pulsed["final_status"]["label"] == "ACTIVE",
+                "recovers_with_pulse": collapse is not None and pulsed["final_status"]["label"] == "ACTIVE",
+                "state_final_unperturbed_and_pulse": control["final_status"]["label"],
                 "operation_changed": back["result_digest"] != base["result_digest"],
                 "paths": paths,
                 "observability": {
@@ -477,19 +481,20 @@ def run_log_csv(rec: dict, observation: dict | None = None) -> str:
 
 
 # ---------------------------------------------------------------------------------------------------- SSS region of one point
+def sss_region(p: dict) -> str:
+    """The region name of one ``sss_phase`` point."""
+    if p["class"] == "metastable":
+        return "METASTABLE"
+    if p["class"] == "ACTIVE":
+        return "OBSERVATION-SENSITIVE" if p["observation_sensitive"] else "ACTIVE"
+    return "RECOVERY-CAPABLE" if p["recovery_capable"] else "COLLAPSED"
+
+
 def sss_classify(cfg: dict, scale: float, size: float, speed: float, seeds: tuple[int, ...] = (1, 2)) -> dict:
-    """The region of one (scale, size, speed) point: ACTIVE / COLLAPSED / metastable, recovery-capable, observation-sensitive (same definition as ``experiments.sss_phase``)."""
-    ph = X.sss_phase(cfg, (scale,), (size,), (speed,), seeds)
-    p = ph["points"][0]
-    cls = p["class"]
-    if cls == "metastable":
-        region = "METASTABLE"
-    elif cls == "ACTIVE":
-        region = "OBSERVATION-SENSITIVE" if p["observation_sensitive"] else "ACTIVE"
-    else:
-        region = "RECOVERY-CAPABLE" if p["recovery_capable"] else "COLLAPSED"
+    """The region of one (scale, size, speed) point: ACTIVE / COLLAPSED / METASTABLE / RECOVERY-CAPABLE / OBSERVATION-SENSITIVE (same definitions as ``experiments.sss_phase``)."""
+    p = X.sss_phase(cfg, (scale,), (size,), (speed,), seeds)["points"][0]
     return {
         **{k: p[k] for k in ("scale", "size", "speed", "class", "recovery_capable", "observation_sensitive", "per_seed")},
-        "region": region,
+        "region": sss_region(p),
         "seeds": list(seeds),
     }

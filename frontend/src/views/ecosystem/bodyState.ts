@@ -17,17 +17,24 @@
 //   recovery after a collapse                        sequential reactivation: node A at once, node B 8 ticks later, node C 16 ticks later
 //   Address Domain fault on A1 / A2                  the probe of node B / node C is 'inactive' (loss) or 'overloaded' (fragment or partial)
 //   arena boundary changed                           the observer's probe ring is repositioned toward the observed region (aim) and the boundary posts of the arena move
+//   SSS scale / size / speed (fourth stage)          scale -> the observer's boom reach (mechanical preload); size -> the probe ring's posture (tilt); speed -> the coupling's tension and
+//                                                    the reservoir regulation; the SSS region of the setting (metastable, recovery-capable, ...) -> how far the archive latch stands ajar
+//   M2 sensing configured (fourth stage)             node B's second probe is the M2 tap: out and lit while A1's sensor signal includes an M2 term, trembling for a noisy tap, drawn
+//                                                    from the trace m2_sensed; absent when M2 is not connected
 //
 // It is a presentation, not an identification: A1, A2 and the observation are not these machines.
 import { adAt, type MeosRecord, type Observation } from './meosApi';
 import type { ProbeState } from './probes';
 import { deviceState } from './researchDevice';
+import { m2TapState, sssMechanics, type M2Tap, type SssMechanics, type SssRegion } from './mechanics';
 
 export interface BodyState {
   sampling: boolean; coverage: number; aim: [number, number]; interval: number;
   a1FireAge: number | null; renewAge: number | null; interaction: number; couplingCut: boolean; a2Present: boolean; status: string; recovered: boolean;
   collapsed: boolean; recoveryAge: number | null; pulseAge: number | null; pulseAmount: number; historyEnabled: boolean;
   address: { A1: string | null; A2: string | null }; arenaRadius: number | null; observability: string; tick: number;
+  /** how the bodies are posed for the SSS of the run at this tick (a visual representation rule, see mechanics.ts) */ sss: { scale: number; size: number; speed: number }; sssRegion: SssRegion; mech: SssMechanics;
+  m2: M2Tap;
 }
 export const FLASH_TICKS = 5, PULSE_TICKS = 14, RECOVERY_TICKS = 24;
 /** Ticks after a recovery at which each node is reactivated (sequential reactivation). */
@@ -38,9 +45,9 @@ const lastAge = (rec: MeosRecord, t: number, pick: (e: MeosRecord['events'][numb
   return null;
 };
 
-export function bodyState(rec: MeosRecord, tick: number, obs: Partial<Observation> | null | undefined, observability = 'OBSERVABLE'): BodyState {
+export function bodyState(rec: MeosRecord, tick: number, obs: Partial<Observation> | null | undefined, observability = 'OBSERVABLE', sssRegion: SssRegion = 'ACTIVE'): BodyState {
   const t = Math.min(Math.max(0, tick), rec.frames.length - 1), d = deviceState(rec, t, obs), f = rec.frames[t];
-  const inter = rec.traces?.interaction_strength, ad = adAt(rec.frames, t);
+  const inter = rec.traces?.interaction_strength, ad = adAt(rec.frames, t), sss = ad ? ad.A1.sss : rec.config.sss;
   return {
     sampling: d.array.sampling, coverage: d.array.coverage, aim: d.array.aim, interval: Math.max(1, obs?.sampling_interval ?? 1),
     a1FireAge: lastAge(rec, t, (e) => e.kind === 'fire' && e.actor === 'A1'),
@@ -51,6 +58,7 @@ export function bodyState(rec: MeosRecord, tick: number, obs: Partial<Observatio
     pulseAge: d.pulse.active ? d.pulse.age : null, pulseAmount: d.pulse.amount,
     historyEnabled: ad ? ad.A1.history_reentry_enabled : true,
     address: { A1: f.address?.A1.mode ?? null, A2: f.address?.A2.mode ?? null }, arenaRadius: d.boundary.arenaRadius, observability, tick: t,
+    sss, sssRegion, mech: sssMechanics(sss, sssRegion), m2: m2TapState(rec, t),
   };
 }
 

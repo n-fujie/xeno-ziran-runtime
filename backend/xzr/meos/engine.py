@@ -358,6 +358,7 @@ class Run:
         self.addr: dict[str, dict] = {name: {"mode": None, "fraction": 1.0, "mask": None} for name in ENTITIES}
         self.addr_events = 0
         self.m2_hist: collections.deque = collections.deque(maxlen=64)
+        self.m2_sensed = 0.0  # what A1's M2 tap added to its sensor signal at the latest evaluation (recorded as a trace only when M2 sensing is configured)
         self.tick_acc: dict[str, float] = {}
         self.traces: dict[str, list] = collections.defaultdict(list)
         self.phil = None
@@ -602,7 +603,8 @@ class Run:
             win = np.where(self._window(a["mask"], x, y, r), win, 0.0)
         s0 = float(win.max()) if chan_ok and win.size else 0.0  # a peak detector over the sensing window
         if chan_ok and name == "A1":
-            s0 += self._m2_signal(x, y, r)
+            self.m2_sensed = self._m2_signal(x, y, r)
+            s0 += self.m2_sensed
         s = s0 + (float(self.rng.normal(0.0, self.cfg["noise"])) if chan_ok else 0.0)
         e["s0"] = s0
         d = s - e["baseline"]
@@ -1011,6 +1013,8 @@ class Run:
         }
         if self.phil:
             cols.update(self.phil.trace_columns())
+        if (self.cfg.get("m2") or {}).get("sense", "none") != "none":
+            cols["m2_sensed"] = self.m2_sensed  # absent unless M2 sensing is configured, so that the traces of every other run are what they were
         for k, v in cols.items():
             T[k].append(round(float(v), 5) if k != "t" else int(v))
 

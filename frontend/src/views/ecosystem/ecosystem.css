@@ -75,3 +75,14 @@
 .eco-sheet-table tr.active td:first-child, .eco-sheet-table tr.active td:nth-child(5) { color: #0b4a8f; font-weight: 700; }
 .eco-sheet-table tr.cut td:nth-child(5), .eco-sheet-table tr.overloaded td:nth-child(5) { color: #a3261b; font-weight: 700; }
 .eco-sheet-table tr.inactive td, .eco-sheet-table tr.retracted td, .eco-sheet-table tr.asleep td { color: #7a7d83; }
+
+/* fourth stage: research map and comparison on the technical sheet, the research pane, replay markers */
+.eco-sheet .eco-sheet-wide { grid-column: 1 / -1; }
+.eco-compare { display: flex; gap: 10px; flex-wrap: wrap; } .eco-compare > div { display: flex; flex-direction: column; border-right: 1px solid #dcdcd6; } .eco-compare b { padding: 2px 6px; font-size: 10px; } .eco-compare span { padding: 0 6px 4px; font-size: 9px; color: #5a5d63; }
+.eco-sheet .eco-layers { display: flex; gap: 4px; flex-wrap: wrap; margin: 4px 0; } .eco-sheet .eco-layers button { background: transparent; color: #15171a; border: 1px solid #9a9da3; padding: 1px 6px; font: inherit; font-size: 9px; cursor: pointer; } .eco-sheet .eco-layers button.on { background: #15171a; color: #f4f4f1; border-color: #15171a; }
+.eco-markers { position: relative; height: 16px; margin: 0 0 2px; } .eco-markers i { position: absolute; top: 1px; width: 7px; height: 14px; margin-left: -3px; border-radius: 2px; cursor: pointer; opacity: 0.9; } .eco-markers i:hover, .eco-markers i.sel { opacity: 1; outline: 1px solid #fff; }
+.eco-legend { display: flex; flex-wrap: wrap; gap: 8px; font-size: 10px; color: #a8a8ad; } .eco-legend i { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 3px; }
+.eco-pane .eco-group { border: 1px solid #1c1c21; padding: 6px 8px; margin: 6px 0; } .eco-pane .eco-group > legend, .eco-pane .eco-group > h4 { margin: 0 0 4px; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #a8a8ad; }
+.eco-two { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; } .eco-two > div { border: 1px solid #1c1c21; padding: 6px 8px; } .eco-two h4 { margin: 0 0 4px; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; }
+.eco-two .mr h4 { color: #8fb6ff; } .eco-two .vr h4 { color: #c9a227; }
+.eco-map-row { display: flex; gap: 14px; align-items: flex-start; } .eco-map-legend { margin: 6px 0; display: grid; grid-template-columns: 130px 1fr; gap: 3px 8px; font-size: 10px; max-width: 360px; } .eco-map-legend dt { font-weight: 700; color: #7a7d83; } .eco-map-legend dt.on { color: #15171a; } .eco-map-legend dd { margin: 0; color: #5a5d63; }

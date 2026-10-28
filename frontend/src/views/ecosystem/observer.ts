@@ -206,9 +206,11 @@ export function buildObserver(M: BodyMats, detail: number, groundAt: (x: number,
     const want = Math.atan2(-to.y, Math.max(1, flat)) * 0.9, boundary = s.arenaRadius === null ? 0 : Math.max(-0.5, Math.min(0.5, (s.arenaRadius - 7) * 0.08));
     pitch.rotation.x = s.collapsed ? 0.62 : Math.max(-0.25, Math.min(0.5, want + 0.08));
     const e = s.collapsed ? 0 : !awake ? 0.1 : s.sampling ? 1 : 0.4 + 0.3 * s.coverage;
-    sec2.position.z = 2.2 + e * 1.3; sec3.position.z = 1.9 + e * 1.0;
+    // SSS scale preloads the boom: a longer reach extends its sections further (a visual representation rule, see mechanics.ts)
+    sec2.position.z = 2.2 + e * 1.3 + 0.35 * s.mech.boomPreload; sec3.position.z = 1.9 + e * 1.0 + 0.25 * s.mech.boomPreload;
     ring.rotation.z = (2 * Math.PI * (s.tick % s.interval)) / s.interval;
     cluster.rotation.z = boundary;  // the probe ring is repositioned when the arena boundary changes
+    cluster.rotation.x = s.mech.ringTilt;  // SSS size sets the posture of the probe ring
     const stretch = 0.55 + 0.35 * e; loops.group.scale.z = stretch;
     ringProbes.forEach((p, i) => p.setState(ringProbeState(s, i, ringProbes.length), s.tick));
     M.lampA.emissiveIntensity = awake && s.sampling ? 0.6 + 2.8 * s.coverage : 0.06;

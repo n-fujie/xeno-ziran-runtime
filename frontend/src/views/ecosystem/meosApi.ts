@@ -18,7 +18,7 @@ export interface AdStatic {
 export interface Frame {
   t: number; status: Label; cycles: number; power: number; R: number; M1: number; M2: number; A1: EntityFrame; A2: EntityFrame;
   ad?: { A1: AdStatic; A2: AdStatic };
-  address?: Record<'A1' | 'A2', { mode: string | null; integrity: number }>;  // present only while an Address Domain fault is active
+  address?: Record<'A1' | 'A2', { mode: string | null; integrity: number; at?: [number, number] }>;  // present only while an Address Domain fault is active; ``at`` is the cell a stale or delayed address still names
 }
 export interface Ev {
   id: number; tick: number; kind: string; actor: string | null; [k: string]: unknown;
@@ -37,13 +37,13 @@ export interface MeosRecord {
 }
 export interface MeosConfig {
   seed: number; horizon: number; grid: number; noise: number;
-  m2?: { sense: 'none' | 'direct' | 'delayed' | 'noisy'; weight?: number; delay?: number; noise?: number };
+  m2?: { sense: 'none' | 'direct' | 'delayed' | 'noisy' | 'threshold'; weight?: number; delay?: number; noise?: number; threshold?: number };
   phil?: { mode: 'none' | 'expression' | 'scorekeeping' | 'revision'; margin?: number; window?: number; verify_margin?: number; noise?: number; delay?: number; cost?: number };
   environment: Record<string, number | boolean | null>; power: { reserve: number; capacity: number; charge: number; infinite: boolean };
   channels: Record<string, boolean>; history: Record<string, number | boolean | string>; sss: { scale: number; size: number; speed: number };
   entities: Record<'A1' | 'A2', Record<string, number | boolean | number[]>>;
 }
-export interface Intervention { tick: number; op: string; target?: string; path?: string; value?: number; arena_radius?: number; mode?: string; x?: number; y?: number; fraction?: number;
+export interface Intervention { tick: number; op: string; target?: string; path?: string; value?: number; arena_radius?: number; mode?: string; x?: number; y?: number; fraction?: number; delay?: number; duration?: number;
   scale?: number; size?: number; speed?: number; inject?: { x: number; y: number; amount: number } }
 export interface Spec {
   engine: string; defaults: MeosConfig; components: string[]; entities: string[]; operations: string[]; settable: Record<string, [number, number]>;
@@ -52,13 +52,25 @@ export interface Spec {
 }
 export interface Summary { status: Label; persists: boolean; cycles: number; first_collapse_tick: number | null; failed_dependency: Dependency;
   result_digest: string; status_log: Array<[number, Label]>; final_power: number; history_reentry_cycles: number; reason: string }
-export interface RunOut { record: MeosRecord; summary: Summary; observed?: Observed }
-export interface Observation { sampling_interval: number; spatial_stride: number; region: number[] | null; aggregation: number; window: number }
+export interface RunOut { record: MeosRecord; summary: Summary; observed?: Observed; paths?: PathActivity }
+/** The observation configuration. ``threshold``, ``occluder`` and ``address_resolution`` are the fourth stage's optional limits: absent, the observation is the earlier one. */
+export interface Observation { sampling_interval: number; spatial_stride: number; region: number[] | null; aggregation: number; window: number;
+  threshold?: number | null; occluder?: number[] | null; address_resolution?: number | null; spatial_offset?: number[] }
 export const FULL_OBSERVATION: Observation = { sampling_interval: 1, spatial_stride: 1, region: null, aggregation: 1, window: 48 };
+/** The fourth stage's observability vocabulary (``observability.status``); the first-stage name stays in ``observability_status``. */
+export const OBSERVABILITY_STATUSES = ['SUFFICIENT', 'INSUFFICIENT_TEMPORAL_RESOLUTION', 'INSUFFICIENT_SPATIAL_RESOLUTION', 'OUTSIDE_OBSERVATION_REGION', 'BOUNDARY_OCCLUDED', 'ADDRESS_UNRESOLVED', 'WINDOW_TOO_SHORT', 'SIGNAL_BELOW_THRESHOLD', 'COMBINED_LIMITS', 'OBSERVATION_OVERESTIMATES'] as const;
+export type ObservabilityStatus = (typeof OBSERVABILITY_STATUSES)[number] | 'WINDOW_MISMATCH';
+export interface TimelineRow { t: number; operational: Label; observed: Label; observability: ObservabilityStatus; limiting: string[] }
 export interface Observed { observation: Record<string, unknown>; observed_cycles: number; true_cycles: number; observed_status: Label; true_status: Label;
   agrees: boolean; observed_trajectory: Label[];
   // operational state and observed state are kept apart; the status says why they differ
-  operational_state: Label; observed_state: Label; observability_status: string; limiting_parameters: string[] }
+  operational_state: Label; observed_state: Label; observability_status: string; limiting_parameters: string[];
+  observability: { status: ObservabilityStatus; limiting_parameters: string[]; legacy_status: string; observed_collapse_is_operational: boolean; observed_collapse_is_artifact: boolean };
+  timeline: TimelineRow[] }
+export type PathId = 'resource' | 'coupling' | 'history_access' | 'observation' | 'recovery';
+export const PATH_IDS: PathId[] = ['resource', 'coupling', 'history_access', 'observation', 'recovery'];
+export interface PathActivity { [id: string]: { label: string; components: string[]; means: string; signal_name: string; peak: number; mean: number; active_ticks: number; cut_ticks: number;
+  series: number[]; state_intervals: Array<{ from: number; to: number; state: 'cut' | 'active' | 'quiet' }> } }
 export interface AblationRow { removed: string[]; persists_in_all_seeds: boolean;
   outcomes: Array<{ seed: number; status: Label; persists: boolean; cycles: number; first_collapse_tick: number | null; failed_dependency: Dependency }> }
 export interface MfsOut { baseline_persists: boolean; retained: string[]; removed: string[]; retained_is_one_minimal?: boolean;
@@ -81,8 +93,8 @@ export const getSpec = async (): Promise<Spec> => {
   if (!r.ok) throw new Error(`spec: ${r.status}`);
   return r.json();
 };
-export const runMeos = (config: Record<string, unknown> | undefined, interventions: Intervention[], observation?: Record<string, unknown>) =>
-  post<RunOut>('/run', { config, interventions, observation });
+export const runMeos = (config: Record<string, unknown> | undefined, interventions: Intervention[], observation?: Record<string, unknown>, paths = true) =>
+  post<RunOut>('/run', { config, interventions, observation, paths });
 export const replayMeos = (config: unknown, interventions: Intervention[], result_digest: string) =>
   post<{ identical: boolean; expected: string; got: string }>('/replay', { config, interventions, result_digest });
 export const ablation = (config: unknown, subsets?: string[][], seeds?: number[]) => post<{ rows: AblationRow[]; seeds: number[] }>('/ablation', { config, subsets, seeds });
@@ -137,3 +149,29 @@ export const addressExperiments = (config: unknown, seeds?: number[]) => post<Js
 export const m2Experiment = (config: unknown, seeds?: number[]) => post<Json>('/m2', { config, seeds });
 export const philExperiment = (config: unknown, seeds?: number[]) => post<Json>('/phil', { config, seeds });
 export const observeRun = (config: unknown, interventions: Intervention[], observation: Json) => post<Observed>('/observe', { config, interventions, observation });
+
+// ------------------------------------------------------------------------------------------------ fourth stage: research readings
+export type BoundaryKind = 'observation' | 'coupling' | 'resource_exchange' | 'history_access' | 'address_domain';
+export const BOUNDARY_KINDS: BoundaryKind[] = ['observation', 'coupling', 'resource_exchange', 'history_access', 'address_domain'];
+export interface BoundaryPerturbationOut { boundary: BoundaryKind; label: string; tick: number; duration: number; interventions: Intervention[]; affected_components: string[];
+  bodies: Record<string, { label: string; components: string[]; affected_inside: string[]; affected_outside: string[]; legs_closed: string[]; legs_closed_count: number; legs_broken_by_perturbation: string[]; legs_total: number }>;
+  rows: Array<{ seed: number; state_before: Label; state_end_of_perturbation: Label; state_final_perturbed_open: Label; state_final_restored: Label; state_final_restored_and_pulse: Label; state_final_unperturbed: Label;
+    state_final_unperturbed_and_pulse: Label; collapse_tick: number | null; collapsed: boolean; recovers_without_pulse: boolean; recovers_with_pulse: boolean; operation_changed: boolean;
+    paths: Record<string, { mean_unperturbed: number; mean_perturbed: number; changed: boolean; cut_directly: boolean }>;
+    observability: { operational_state: Label; observed_state: Label; status: ObservabilityStatus; observation: Record<string, unknown> } }>;
+  affected_paths: string[]; paths_cut_directly: string[]; note: string }
+export interface AddressEffect { tick: number; mode: string; affected_address: string[]; old_state: Record<string, Json>; new_state: Record<string, Json>; affected_path: string[];
+  operational_effect: { state_before: Label; worst_state_after: Label; collapse_tick: number | null }; observed_effect: { observed_state_final: Label; observability: ObservabilityStatus };
+  recovery_status: string; recovery_with_pulse?: string; params: Record<string, number> }
+export interface AddressInterventionOut { mode: string; target: string; effects: AddressEffect[]; operational_state: Label; unperturbed_state: Label; restored_and_pulse_state: Label; record: MeosRecord; observed: Observed;
+  digests: Record<string, string> }
+export interface SssClassOut { scale: number; size: number; speed: number; class: string; region: 'ACTIVE' | 'COLLAPSED' | 'METASTABLE' | 'RECOVERY-CAPABLE' | 'OBSERVATION-SENSITIVE'; recovery_capable: boolean | null; observation_sensitive: boolean; seeds: number[] }
+export const boundaryPerturbation = (config: unknown, body: { kind: BoundaryKind; tick?: number; duration?: number; seeds?: number[]; params?: Json }) => post<BoundaryPerturbationOut>('/boundary-perturbation', { config, ...body });
+export const addressIntervention = (config: unknown, body: { mode: string; target?: string; tick?: number; duration?: number; seed?: number; params?: Json; observation?: Json }) => post<AddressInterventionOut>('/address-intervention', { config, ...body });
+export const sssClassify = (config: unknown, body: { scale: number; size: number; speed: number; seeds?: number[] }) => post<SssClassOut>('/sss-classify', { config, ...body });
+export const runLog = (config: unknown, interventions: Intervention[], observation?: Json) => post<Json>('/run-log', { config, interventions, observation, format: 'json' });
+export async function runLogCsv(config: unknown, interventions: Intervention[], observation?: Json): Promise<string> {
+  const r = await fetch(`${API}/run-log`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ config, interventions, observation, format: 'csv' }) });
+  if (!r.ok) throw new Error(`/run-log: ${r.status}`);
+  return r.text();
+}

@@ -1,8 +1,11 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { buildBodies, type BodySet } from './bodies';
 import { bodyState } from './bodyState';
-import type { MeosRecord, Observation } from './meosApi';
+import type { MeosRecord, Observation, Observed, PathActivity, PathId } from './meosApi';
+import { deltaSnapshots, inspectAt, pathStatesAt, snapshotTicks, type Marker, type Snapshot, type SssRegion } from './research';
+import { ALL_MAP_LAYERS, buildResearchMap, MAP_LAYERS, affected, type MapLayer } from './researchMap';
+import { drawResearchMap } from './researchMapDraw';
 import { probeDimensions } from './probes';
 import { cableRoutes, collectInstances, collectSegments, componentRows, dimensionLines, measure, partStates, project, type PartState, type Segments, type ViewName } from './technical';
 
@@ -13,12 +16,21 @@ const INK = '#15171a', ACTIVE = '#0b4a8f', CUT = '#a3261b', MUTE = '#7a7d83', PA
 const COLOR: Record<PartState, string> = { active: ACTIVE, idle: INK, inactive: MUTE, retracted: MUTE, overloaded: CUT, cut: CUT, asleep: MUTE };
 const LABELLED = ['node', 'probe', 'ring', 'cluster', 'optic', 'reservoir', 'archive', 'joint', 'module', 'sensor', 'chassis'];
 
-export default function TechnicalView({ rec, tick, obs, observability, which, setWhich, probeId, setProbeId }: {
-  rec: MeosRecord; tick: number; obs: Observation; observability: string; which: 'ncb' | 'observer'; setWhich: (w: 'ncb' | 'observer') => void; probeId: string; setProbeId: (s: string) => void;
+/** The research readings the sheet adds to the drawings (all computed from the record by the view): the observed state, the path activity, the event markers and the SSS region. */
+export interface SheetResearch { observed: Observed | null; paths: PathActivity | null; markers: Marker[]; sssRegion: SssRegion; compare: boolean }
+// cable id -> the operational path it carries (the cable network of the non-central body, by what moves along it)
+const CABLE_PATH: Record<string, PathId> = { BCb: 'coupling', BCc: 'coupling', BCa: 'coupling', JB: 'coupling', JC: 'resource', AC: 'resource', AB: 'resource', AJ: 'resource', CRES: 'resource', ARCH: 'history_access', OBSV: 'observation', REC: 'recovery' };
+
+export default function TechnicalView({ rec, tick, obs, observability, which, setWhich, probeId, setProbeId, research }: {
+  rec: MeosRecord; tick: number; obs: Observation; observability: string; which: 'ncb' | 'observer'; setWhich: (w: 'ncb' | 'observer') => void; probeId: string; setProbeId: (s: string) => void; research?: SheetResearch;
 }) {
+  const [mapLayers, setMapLayers] = useState<Set<MapLayer>>(() => new Set(ALL_MAP_LAYERS));
+  const toggleLayer = (id: MapLayer) => setMapLayers((l) => { const n = new Set(l); if (n.has(id)) n.delete(id); else n.add(id); return n; });
+  const mapCanvas = useRef<HTMLCanvasElement | null>(null), compareCanvases = useRef<Array<HTMLCanvasElement | null>>([]);
   const body = useMemo<BodySet>(() => buildBodies('performance', null, () => 0), []);
   useEffect(() => () => body.dispose(), [body]);
-  const s = useMemo(() => bodyState(rec, tick, obs, observability), [rec, tick, obs, observability]);
+  const region = research?.sssRegion ?? 'ACTIVE';
+  const s = useMemo(() => bodyState(rec, tick, obs, observability, region), [rec, tick, obs, observability, region]);
   const aim = useMemo(() => new THREE.Vector3(-66, 0, 16), []);
   const views: ViewName[] = ['front', 'side', 'top'];
   const canvases = useRef<Record<string, HTMLCanvasElement | null>>({});
@@ -57,7 +69,8 @@ export default function TechnicalView({ rec, tick, obs, observability, which, se
       for (const h of data.hot[v]) { g.strokeStyle = COLOR[h.state]; g.lineWidth = 0.7; g.globalAlpha = 0.9; g.beginPath(); for (let i = 0; i < h.segs.data.length; i += 4) { g.moveTo(X(h.segs.data[i]), Y(h.segs.data[i + 1])); g.lineTo(X(h.segs.data[i + 2]), Y(h.segs.data[i + 3])); } g.stroke(); g.globalAlpha = 1; }
       // cable routing: power solid, resource dashed, data dotted
       for (const r of cableRoutes(body, which, v)) {
-        g.strokeStyle = r.kind === 'power' ? ACTIVE : r.kind === 'resource' ? '#2f6f4f' : '#6a4a8a'; g.lineWidth = 0.8 + r.radius * 6; g.setLineDash(r.kind === 'power' ? [] : r.kind === 'resource' ? [7, 3] : [1.5, 3.5]); g.globalAlpha = 0.8;
+        const pid = CABLE_PATH[r.id], pst = pid && research && mapLayers.has(`path.${pid}` as MapLayer) ? pathStatesAt(research.paths, tick)[pid] : null;  // a cable of a path whose layer is on takes the path's state
+        g.strokeStyle = pst === 'cut' ? CUT : r.kind === 'power' ? ACTIVE : r.kind === 'resource' ? '#2f6f4f' : '#6a4a8a'; g.lineWidth = 0.8 + r.radius * 6 + (pst === 'active' ? 0.8 : 0); g.setLineDash(pst === 'cut' ? [4, 4] : r.kind === 'power' ? [] : r.kind === 'resource' ? [7, 3] : [1.5, 3.5]); g.globalAlpha = pst === 'quiet' ? 0.35 : 0.8;
         g.beginPath(); r.pts.forEach(([x, y], i) => (i ? g.lineTo(X(x), Y(y)) : g.moveTo(X(x), Y(y)))); g.stroke(); g.setLineDash([]); g.globalAlpha = 1;
       }
       // component identifiers
@@ -98,7 +111,30 @@ export default function TechnicalView({ rec, tick, obs, observability, which, se
     }
     // the drawing depends on the data, the body, the selection and the states; W, H, root and views are constants of this component
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, body, which, states, probeId]);
+  }, [data, body, which, states, probeId, mapLayers, research, tick]);
+
+  // the research map (and, in comparison mode, the three snapshots with their differences)
+  const inspect = useMemo(() => inspectAt(rec, research?.observed, tick, research?.paths, research?.markers), [rec, research, tick]);
+  const snapshots = useMemo<Snapshot[]>(() => {
+    if (!research?.compare) return [];
+    const tk = snapshotTicks(rec);
+    return ([['baseline', tk.baseline], ['intervention', tk.intervention], ['recovered', tk.recovered]] as const).map(([label, t]) => {
+      const st = partStates(body.parts, bodyState(rec, t, obs, observability, region));
+      return { label, tick: t, inspect: inspectAt(rec, research.observed, t, research.paths, research.markers), parts: Object.fromEntries(Object.entries(st).map(([k, v]) => [k, v.state])) };
+    });
+  }, [rec, research, body, obs, observability, region]);
+  const deltas = useMemo(() => snapshots.slice(1).map((b, i) => deltaSnapshots(snapshots[i], b)), [snapshots]);
+  useEffect(() => {
+    const dpr = window.devicePixelRatio || 1;
+    const draw = (cv: HTMLCanvasElement | null, t: number, ins: ReturnType<typeof inspectAt>, w: number, h: number) => {
+      if (!cv) return;
+      cv.width = w * dpr; cv.height = h * dpr; const g = cv.getContext('2d')!; g.scale(dpr, dpr);
+      drawResearchMap(g, buildResearchMap({ rec, tick: t, obs, inspect: ins, paths: research?.paths, markers: research?.markers ?? [], layers: mapLayers }), w, h);
+    };
+    draw(mapCanvas.current, tick, inspect, 760, 700);
+    snapshots.forEach((sn, i) => draw(compareCanvases.current[i], sn.tick, sn.inspect, 560, 500));
+    // the map depends on the record, the tick, the observation, the layers and the research readings
+  }, [rec, tick, obs, inspect, snapshots, mapLayers, research]);
 
   const probes = body.nodes.flatMap((n) => n.probes).concat(body.observer.probes).map((p) => p.spec.id).filter((id) => (which === 'ncb' ? !id.startsWith('O') : id.startsWith('O')));
   const title = which === 'ncb' ? 'NON-CENTRAL EXPERIMENTAL BODY' : 'ADAPTIVE OBSERVATION NODE';
@@ -115,19 +151,37 @@ export default function TechnicalView({ rec, tick, obs, observability, which, se
       <div className="eco-sheet-grid">
         {views.map((v) => <figure key={v}><canvas ref={(el) => { canvases.current[v] = el; }} style={{ width: W, height: H }} aria-label={`${v} view`} /><figcaption>{v} · one scale for the three views · units are scene units (u), measured on the geometry</figcaption></figure>)}
         <figure><canvas ref={detail} style={{ width: W, height: H }} aria-label="probe detail" /><figcaption>probe detail · side view</figcaption></figure>
+        {research && <figure className="eco-sheet-wide" data-testid="eco-research-map"><div className="eco-map-row"><canvas ref={mapCanvas} style={{ width: 760, height: 700 }} aria-label="research map" />
+          <dl className="eco-map-legend">{MAP_LAYERS.map((l) => <><dt key={l.id + 't'} className={mapLayers.has(l.id) ? 'on' : ''}>{l.label}</dt><dd key={l.id}>{l.what}</dd></>)}</dl></div>
+          <figcaption>research map · plan of the arena at tick {tick} · MODEL RESULT: boundaries, paths, observation and interventions are read from the record · solid heavy = XenoBody boundary · dash-dot = Address Domain · dashed = observation boundary · path arrows: solid active, dotted quiet, red dashed cut</figcaption></figure>}
+        {research?.compare && snapshots.length === 3 && <figure className="eco-sheet-wide" data-testid="eco-compare">
+          <div className="eco-compare">{snapshots.map((sn, i) => <div key={sn.label}><canvas ref={(el) => { compareCanvases.current[i] = el; }} style={{ width: 560, height: 500 }} aria-label={`${sn.label} map`} /><b>{sn.label} · tick {sn.tick}</b><span>{sn.inspect.operational} · observed {sn.inspect.observed ?? 'full'} · {sn.inspect.observability ?? 'full observation'}</span></div>)}</div>
+          <figcaption>comparison of three snapshots of one record (same seed, same configuration) · MODEL RESULT</figcaption>
+          <table className="eco-sheet-table"><thead><tr><th>change</th><th>state</th><th>components</th><th>paths</th><th>boundary</th><th>address</th><th>observability</th></tr></thead><tbody>
+            {deltas.map((d) => <tr key={d.to}><td>{d.from} → {d.to}</td><td>{d.status[0]} → {d.status[1]}</td><td>{d.components.length ? d.components.map((c) => `${c.id} ${c.from}→${c.to}`).join('; ') : 'none'}</td><td>{d.paths.length ? d.paths.map((c) => `${c.path} ${c.from}→${c.to}`).join('; ') : 'none'}</td>
+              <td>{[...d.boundary.opened.map((c) => `opened ${c}`), ...d.boundary.closed.map((c) => `closed ${c}`), ...(d.boundary.arenaRadius ? [`arena ${d.boundary.arenaRadius.join('→')}`] : [])].join('; ') || 'none'}</td><td>{d.address.length ? d.address.map((a) => `${a.target}: ${a.from} → ${a.to}`).join('; ') : 'none'}</td><td>{d.observabilityChange === 'lost' ? 'LOST' : d.observabilityChange === 'gained' ? 'GAINED' : 'unchanged'} ({d.observability[0] ?? 'full'} → {d.observability[1] ?? 'full'})</td></tr>)}</tbody></table>
+        </figure>}
         <div className="eco-sheet-state">
-          <h4>state read from the run</h4>
+          <h4>MODEL RESULT · state read from the run</h4>
+          {research && <dl><dt>operational state</dt><dd>{inspect.operational}</dd><dt>observed state</dt><dd>{inspect.observed ?? 'full observation: the operational state'}</dd><dt>observability</dt><dd>{inspect.observability ?? 'full observation'}{inspect.limiting.length ? ` — limited by ${inspect.limiting.join(', ')}` : ''}</dd>
+            <dt>paths</dt><dd>{(Object.entries(inspect.paths) as Array<[string, string]>).map(([k, v]) => `${k}: ${v}`).join(' · ')}</dd></dl>}
           <dl>
             <dt>observation</dt><dd>every {obs.sampling_interval} tick(s), stride {obs.spatial_stride}, window {obs.window}, covers {(s.coverage * 100).toFixed(0)}% of the arena; {s.sampling ? 'a sampled tick' : 'not a sampled tick'}</dd>
             <dt>observability</dt><dd>{observability}</dd>
             <dt>sampling interval</dt><dd>{s.interval} (the ring turns once per interval)</dd>
             <dt>XenoBody boundary</dt><dd>{s.arenaRadius === null ? 'the whole grid' : `arena radius ${s.arenaRadius}`}; interaction channel {s.couplingCut ? 'CUT' : 'intact'}</dd>
             <dt>Address Domain</dt><dd>A1 {s.address.A1 ?? 'intact'} · A2 {s.address.A2 ?? 'intact'}</dd>
-            <dt>M2-sensitive</dt><dd>{rec.config.m2 && rec.config.m2.sense !== 'none' ? `yes: A1's sensing also reads M2 (${rec.config.m2.sense}); drawn on the probes of B / the sensor head` : 'no (M2 is not connected in this run)'}</dd>
+            <dt>M2-sensitive</dt><dd>{rec.config.m2 && rec.config.m2.sense !== 'none' ? `yes: A1's sensing also reads M2 (${rec.config.m2.sense}); the M2 tap is node B's probe B2, ${s.m2.state ?? 'idle'} at this tick (A1 senses ${s.m2.sensed.toFixed(3)} of M2)` : 'no (M2 is not connected in this run)'}</dd>
+            <dt>SSS</dt><dd>scale {s.sss.scale} · size {s.sss.size} · speed {s.sss.speed}; region {region}</dd>
             <dt>history</dt><dd>re-entry {s.historyEnabled ? 'enabled (archive latch closed)' : 'DISABLED (latch open)'}</dd>
             <dt>resource</dt><dd>{s.pulseAge === null ? 'no pulse in the last 14 ticks' : `pulse ${s.pulseAmount} injected ${s.pulseAge} ticks ago`}</dd>
             <dt>run</dt><dd>{s.collapsed ? 'COLLAPSED: probes retracted, lamps dark' : s.recoveryAge !== null && s.recoveryAge < 24 ? `recovering: ${s.recoveryAge} ticks since recovery` : s.status}</dd>
           </dl>
+          {research && <><h4>VISUAL REPRESENTATION · how the bodies are posed</h4>
+          <dl><dt>boom reach</dt><dd>{s.mech.boomPreload.toFixed(2)} (SSS scale)</dd><dt>probe ring tilt</dt><dd>{(s.mech.ringTilt * 57.3).toFixed(1)}° (SSS size)</dd><dt>coupling tension</dt><dd>{s.mech.couplingTension.toFixed(2)} (SSS speed)</dd><dt>archive latch ajar</dt><dd>{(s.mech.archiveAjar * 57.3).toFixed(0)}° (SSS region {region})</dd><dt>reservoir regulation</dt><dd>{s.mech.regulation.toFixed(2)} (SSS speed)</dd></dl>
+          <p className="dim">A pose is a rule of this view (mechanics.ts); it is never evidence about the run.</p>
+          <h4>research map layers</h4><div className="eco-layers">{MAP_LAYERS.map((l) => <button key={l.id} title={l.what} className={mapLayers.has(l.id) ? 'on' : ''} onClick={() => toggleLayer(l.id)}>{l.label}</button>)}</div>
+          {research.markers.filter((m) => m.tick <= tick).slice(-6).length > 0 && <ul>{research.markers.filter((m) => m.tick <= tick).slice(-6).map((m, i) => <li key={i}>t{m.tick} {m.label} → {affected(rec.intervention_log.find((iv) => iv.tick === m.tick && m.label.startsWith(iv.op)) ?? { tick: m.tick, op: m.kind, event: 0 })}</li>)}</ul>}</>}
           <h4>lines</h4>
           <ul>{routes.map((r) => <li key={r.id}><i className={`eco-line ${r.kind}`} />{r.id}: {r.kind === 'power' ? 'energy line' : r.kind === 'resource' ? 'resource line' : 'data line'}, radius {r.radius}, length {r.length} u</li>)}</ul>
           <p className="dim">state colours: <b style={{ color: ACTIVE }}>active</b> · black idle · <span style={{ color: MUTE }}>inactive / retracted / asleep</span> · <b style={{ color: CUT }}>cut / overloaded</b></p>

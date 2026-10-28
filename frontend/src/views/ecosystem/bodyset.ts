@@ -114,21 +114,31 @@ export function buildBodies(quality: 'performance' | 'balanced' | 'high', env: T
   const cTop = (i: number) => world(nodeC, nodeC.anchors[`hubTop${i}`]), cBase = (i: number) => world(nodeC, nodeC.anchors[`hubBase${i}`]);
   const resTop = world(nodeC, nodeC.anchors.reservoirTop);
   const main: CableRoute[] = [
-    { id: 'AJ', kind: 'power', points: [aBase(1).add(v3(0, 0.3, 0)), aBase(1).lerp(J, 0.5).add(v3(0.3, 0.2, 0)), J.clone().add(v3(0.05, 0.12, -0.4))], radius: 0.09, sag: 0.1, sleeve: [0.2, 0.75], ends: ['anchor', 'connector'], clamps: [0.18, 0.55, 0.85] },
-    { id: 'JB', kind: 'data', points: [J.clone().add(v3(-0.8, 0.1, 0.2)), J.clone().add(v3(-3.2, -0.9, 0.9)), bTop(0)], radius: 0.055, sag: 0.14, ends: ['connector', 'strain'], clamps: [0.3, 0.75] },
-    { id: 'JC', kind: 'resource', points: [J.clone().add(v3(0.8, 0.1, 0.2)), J.clone().add(v3(2.4, -0.6, 0.6)), cTop(1)], radius: 0.105, sag: 0.12, ends: ['connector', 'strain'], clamps: [0.3, 0.6, 0.85] },
-    { id: 'AB', kind: 'power', points: [aBase(2).add(v3(0, 0.1, 0)), aBase(2).lerp(bTop(2), 0.5).add(v3(0.6, -0.8, 0.2)), bTop(2)], radius: 0.052, sag: 0.16, sleeve: [0.1, 0.5], ends: ['anchor', 'strain'], clamps: [0.35, 0.8] },
-    { id: 'AC', kind: 'resource', points: [aBase(0), aBase(0).lerp(cTop(2), 0.5).add(v3(-0.5, -1.0, 0.4)), cTop(2)], radius: 0.075, sag: 0.18, ends: ['strain', 'connector'], clamps: [0.25, 0.7] },
-    { id: 'CRES', kind: 'resource', points: [resTop, resTop.clone().add(v3(0.4, 0.5, 0.3)), cTop(0).add(v3(0, 0.2, 0))], radius: 0.065, sag: 0.2, ends: ['connector', 'strain'], clamps: [0.5] },
+    { id: 'AJ', kind: 'power', points: [aBase(1).add(v3(0, 0.3, 0)), aBase(1).lerp(J, 0.5).add(v3(0.3, 0.2, 0)), J.clone().add(v3(0.05, 0.12, -0.4))], radius: 0.09, sag: 0.1, sleeve: [0.2, 0.75], ends: ['anchor', 'connector'], clamps: [0.18, 0.55, 0.85], path: 'resource', strands: 2, ties: 3 },
+    { id: 'JB', kind: 'data', points: [J.clone().add(v3(-0.8, 0.1, 0.2)), J.clone().add(v3(-3.2, -0.9, 0.9)), bTop(0)], radius: 0.055, sag: 0.14, ends: ['connector', 'strain'], clamps: [0.3, 0.75], path: 'coupling', strands: 2, ties: 4 },
+    { id: 'JC', kind: 'resource', points: [J.clone().add(v3(0.8, 0.1, 0.2)), J.clone().add(v3(2.4, -0.6, 0.6)), cTop(1)], radius: 0.105, sag: 0.12, ends: ['connector', 'strain'], clamps: [0.3, 0.6, 0.85], path: 'resource', strands: 3, ties: 5 },
+    { id: 'AB', kind: 'power', points: [aBase(2).add(v3(0, 0.1, 0)), aBase(2).lerp(bTop(2), 0.5).add(v3(0.6, -0.8, 0.2)), bTop(2)], radius: 0.052, sag: 0.16, sleeve: [0.1, 0.5], ends: ['anchor', 'strain'], clamps: [0.35, 0.8], path: 'resource', strands: 2, ties: 3 },
+    { id: 'AC', kind: 'resource', points: [aBase(0), aBase(0).lerp(cTop(2), 0.5).add(v3(-0.5, -1.0, 0.4)), cTop(2)], radius: 0.075, sag: 0.18, ends: ['strain', 'connector'], clamps: [0.25, 0.7], path: 'resource', strands: 2, ties: 4 },
+    { id: 'CRES', kind: 'resource', points: [resTop, resTop.clone().add(v3(0.4, 0.5, 0.3)), cTop(0).add(v3(0, 0.2, 0))], radius: 0.065, sag: 0.2, ends: ['connector', 'strain'], clamps: [0.5], path: 'resource', strands: 2, ties: 2 },
     { id: 'BG', kind: 'data', points: [bBase(1).add(v3(0, 0.1, 0)), bBase(1).add(v3(-2.2, -0.4, 1.8)), bBase(1).add(v3(-5.8, -0.5, 4.2)), v3(-9.5, 0.0, 6.5)], radius: 0.05, sag: 0.05, rest: 0.02, ends: ['strain', 'anchor'], clamps: [0.4, 0.85] },
-    { id: 'BCa', kind: 'data', points: [bBase(0).add(v3(0, 0.05, 0.3)), v3(-3.5, 0.18, 6.4), v3(3.5, 0.18, 6.4), cBase(1).add(v3(0, 0.05, 0.3))], radius: 0.042, sag: 0.05, rest: 0.05, ends: ['strain', 'strain'], clamps: [0.3, 0.7] },
+    { id: 'BCa', kind: 'data', path: 'coupling', strands: 2, ties: 6, points: [bBase(0).add(v3(0, 0.05, 0.3)), v3(-3.5, 0.18, 6.4), v3(3.5, 0.18, 6.4), cBase(1).add(v3(0, 0.05, 0.3))], radius: 0.042, sag: 0.05, rest: 0.05, ends: ['strain', 'strain'], clamps: [0.3, 0.7] },
   ];
+  // the cables of the three operational paths that had none: history access (the archive unit to the junction), observation (node A's sensor line to a ground port on the side of the observer)
+  // and recovery (the reservoir to the pulse port on the ground). They carry what the path carries (the technical view colours them by the path's state) and each ends where its path does.
+  const archive = nodeB.anchors.archive ? world(nodeB, nodeB.anchors.archive) : bTop(1);
+  const toObs = v3(OBSERVER_AT.x - NCB_AT.x, 0, OBSERVER_AT.z - NCB_AT.z).applyAxisAngle(v3(0, 1, 0), -0.35).normalize();  // from the body toward the observation node, in the body's frame
+  const portObs = aBase(2).clone().setY(0.05).addScaledVector(toObs, 8.5), portRec = world(nodeC, nodeC.anchors.reservoirBottom ?? cBase(1)).clone().setY(0.05).add(v3(3.2, 0, 2.0));
+  main.push(
+    { id: 'ARCH', kind: 'data', path: 'history_access', points: [archive.clone().add(v3(0, 0.1, 0)), archive.clone().lerp(J, 0.5).add(v3(-0.4, 0.5, 0.3)), J.clone().add(v3(-0.5, 0.05, -0.3))], radius: 0.045, sag: 0.12, ends: ['strain', 'connector'], clamps: [0.45], ties: 4, fan: 0.12 },
+    { id: 'OBSV', kind: 'data', path: 'observation', points: [aBase(2).clone().add(v3(0, 0.15, 0.1)), aBase(2).clone().addScaledVector(toObs, 2.4).setY(0.5), aBase(2).clone().addScaledVector(toObs, 5.2).setY(0.12), portObs], radius: 0.05, sag: 0.06, rest: 0.03, ends: ['strain', 'anchor'], clamps: [0.35, 0.78], ties: 7 },
+    { id: 'REC', kind: 'resource', path: 'recovery', points: [world(nodeC, nodeC.anchors.reservoirBottom ?? cBase(1)).clone().add(v3(0.3, 0.1, 0)), cBase(2).clone().add(v3(1.4, 0.3, 1.0)), portRec], radius: 0.07, sag: 0.1, rest: 0.03, sleeve: [0.15, 0.7], ends: ['connector', 'anchor'], clamps: [0.5, 0.85], ties: 3, fan: 0.1 },
+  );
   const mainSet = buildCables(main, cm, detail, R);
   ncb.add(mainSet.group);
   // the coupling: a B-side half that stays, and a C-side half that swings down about node C when the coupling is cut
-  const bcB: CableRoute = { id: 'BCb', kind: 'resource', points: [bBase(2).add(v3(0, 0.1, 0.2)), v3(-5.5, 0.9, 5.8), mid], radius: 0.115, sag: 0.1, sleeve: [0.3, 0.8], ends: ['anchor', 'connector'], clamps: [0.3, 0.6] };
+  const bcB: CableRoute = { id: 'BCb', kind: 'resource', path: 'coupling', points: [bBase(2).add(v3(0, 0.1, 0.2)), v3(-5.5, 0.9, 5.8), mid], radius: 0.115, sag: 0.1, sleeve: [0.3, 0.8], ends: ['anchor', 'connector'], clamps: [0.3, 0.6], strands: 3, ties: 5, fan: 0.1 };
   const cAnchor = cBase(0).add(v3(0, 0.1, 0.2));
-  const bcC: CableRoute = { id: 'BCc', kind: 'resource', points: [mid.clone().add(v3(0.02, 0, 0)), v3(5.5, 0.9, 5.8), cAnchor], radius: 0.115, sag: 0.1, sleeve: [0.2, 0.7], ends: ['connector', 'anchor'], clamps: [0.4, 0.7] };
+  const bcC: CableRoute = { id: 'BCc', kind: 'resource', path: 'coupling', points: [mid.clone().add(v3(0.02, 0, 0)), v3(5.5, 0.9, 5.8), cAnchor], radius: 0.115, sag: 0.1, sleeve: [0.2, 0.7], ends: ['connector', 'anchor'], clamps: [0.4, 0.7], strands: 3, ties: 5, fan: 0.1 };
   const couplingB = buildCables([bcB], cm, detail, R), couplingC = buildCables([bcC], cm, detail, R);
   ncb.add(couplingB.group);
   const pivot = new THREE.Group(); pivot.position.copy(cAnchor); couplingC.group.position.copy(cAnchor.clone().negate()); pivot.add(couplingC.group); ncb.add(pivot);
@@ -180,16 +190,18 @@ export function buildBodies(quality: 'performance' | 'balanced' | 'high', env: T
     [nodeA, nodeB, nodeC].forEach((n) => {
       const st = nodeProbeState(s, n.spec.id);
       n.probes[0].setState(st, s.tick);
-      if (n.probes[1]) n.probes[1].setState(st === 'sampling' ? 'sampling' : st === 'extended' ? 'retracted' : st, s.tick);
+      // node B's second probe is the M2 tap when M2 sensing is configured: it follows what A1's sensor signal receives from M2, not the node's own probe
+      if (n.probes[1]) n.probes[1].setState(n.spec.id === 'B' && s.m2.configured && s.m2.state ? (awakeB ? s.m2.state : 'retracted') : st === 'sampling' ? 'sampling' : st === 'extended' ? 'retracted' : st, s.tick);
     });
     sparkMat.opacity = Math.min(1, renF * 1.4); sparkC.visible = renF > 0.05; if (sparkC.visible) placeSparks(s.tick, renF);
     // the lens covers slide shut while a node sleeps (a collapsed run, or a node not yet reactivated after a recovery) and open when it works
     for (const [n, id] of [[nodeA, 'A'], [nodeB, 'B']] as const) if (n.cover) n.cover.mesh.position.x = nodeAwake(s, id) ? n.cover.open : 0;
     // reservoir level and the archive latch
-    if (nodeC.reservoir) nodeC.reservoir.piston.position.y = nodeC.reservoir.bottom + reservoirLevel(s) * nodeC.reservoir.height;
-    if (nodeB.latch) { nodeB.latch.lever.rotation.z = s.historyEnabled ? 0 : 1.25; (nodeB.latch.lamp.material as THREE.MeshStandardMaterial).emissiveIntensity = s.historyEnabled && awakeB ? 1.6 : 0; }
+    if (nodeC.reservoir) nodeC.reservoir.piston.position.y = nodeC.reservoir.bottom + Math.max(0, Math.min(1, reservoirLevel(s) + s.mech.regulation)) * nodeC.reservoir.height;
+    if (nodeB.latch) { nodeB.latch.lever.rotation.z = s.historyEnabled ? s.mech.archiveAjar : 1.25; (nodeB.latch.lamp.material as THREE.MeshStandardMaterial).emissiveIntensity = s.historyEnabled && awakeB ? 1.6 : 0; }
     // the coupling: the C-side half swings down and the junction ring opens when the coupling is cut
-    pivot.rotation.set(0, 0, 0); pivot.rotateOnAxis(swingAxis, s.couplingCut ? swing * 0.6 : 0);
+    // the coupling's tension (speed): a slack line sags, a taut one lifts from the ground; the half that swings down on a cut keeps its cut pose
+    pivot.rotation.set(0, 0, 0); pivot.rotateOnAxis(swingAxis, s.couplingCut ? swing * 0.6 : -swing * 0.1 * (s.mech.couplingTension - 0.5));
     jr.forEach((r, i) => { r.position.z = (i === 0 ? 0 : i === 1 ? 0.14 : -0.14) * (s.couplingCut ? 3.4 : 1) + 0.5; });
     // travelling lights
     const place = (m: THREE.Mesh, f: (out: THREE.Vector3) => void, opacity: number) => { m.visible = opacity > 0.02; if (m.visible) { f(tmp); m.position.copy(tmp); (m.material as THREE.MeshBasicMaterial).opacity = opacity; } };

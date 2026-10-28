@@ -14,6 +14,10 @@ export interface CableRoute {
   ends?: [EndKind, EndKind];
   /** positions along the route (0..1) that carry a clamp on an anchor plate */ clamps?: number[];
   /** the route is lowered so that its lowest point lies at this height (a cable resting on the ground, partly under gravel) */ rest?: number;
+  /** the number of cable ties (a flat band with a cut tail) along the route: a bundled harness is laced, a free line is not */ ties?: number;
+  /** the cable opens into thin strands over this share of its length at each end that ends in a connector (a multi-conductor cable fanned out to its pins) */ fan?: number;
+  /** a multi-conductor cable: this many thin conductors wind round the main cable along its whole length, held by its ties and clamps (the harness of the path the route carries) */ strands?: number;
+  /** the operational path this route carries (resource, coupling, history_access, observation, recovery), for the technical view */ path?: string;
 }
 export interface CableSet {
   group: THREE.Group; curves: Record<string, THREE.CatmullRomCurve3>; routes: CableRoute[];
@@ -95,6 +99,35 @@ export function buildCables(routes: CableRoute[], M: CableMats, detail: number, 
         hw.add('chrome', cylAt(p.clone().addScaledVector(tan, -rad * 2.5).addScaledVector(up, rad * 2.2), tan, rad * 0.5, rad * 0.6, 8), 0.8);
       }
     });
+    // the conductors of a harness (they bow out between the ties and are drawn in at each tie): thin cables that wind slowly round the main one (each its own silhouette on the outline of the cable)
+    const ns = r.strands ?? 0;
+    if (ns > 0) {
+      const L = curve.getLength(), n = Math.max(16, Math.round(L * 7 * detail)), fr = curve.computeFrenetFrames(n, false), turns = Math.max(1.2, L * 0.32);
+      for (let q = 0; q < ns; q++) {
+        const pts: THREE.Vector3[] = [], ph = (q / ns) * Math.PI * 2, off = rad * (1.7 + 0.45 * (q % 2));
+        for (let i = 0; i <= n; i++) { const t = i / n, ang = t * turns * Math.PI * 2 + ph, e = Math.min(1, t * 8, (1 - t) * 8) * off * (1 + 1.9 * Math.abs(Math.sin(Math.PI * t * ((r.ties ?? 0) + 1))) * (0.7 + 0.3 * (q % 2))); pts.push(curve.getPoint(t).addScaledVector(fr.normals[i], Math.cos(ang) * e).addScaledVector(fr.binormals[i], Math.sin(ang) * e)); }
+        rubber.push(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts, false, 'catmullrom', 0.5), n, rad * (0.24 + 0.05 * (q % 2)), 5, false));
+      }
+    }
+    // cable ties: a flat band round the cable with a tail that was cut off at an angle (a laced harness; each tie is a separate small silhouette on the cable's outline)
+    const nt = r.ties ?? 0;
+    for (let k = 0; k < nt; k++) {
+      const t = (k + 0.5) / nt, p = curve.getPointAt(t), tan = curve.getTangentAt(t), side = tan.clone().cross(UP).normalize(), up = tan.clone().cross(side).normalize();
+      hw.add('dark', torusAt(p, tan, rad * 1.18, rad * 0.2, 10), 0.8);
+      hw.add('dark', boxAt(p.clone().addScaledVector(side, rad * 1.5 * (k % 2 ? 1 : -1)).addScaledVector(up, rad * 0.4), side, up, tan, rad * 1.9, rad * 0.35, rad * 0.5), 0.8);
+    }
+    // a cable that ends in a connector fans out into thin strands (one per pin) over the last stretch: the outline opens into several lines
+    if (r.fan) {
+      (r.ends ?? ['strain', 'strain']).forEach((kind, k) => {
+        if (kind !== 'connector') return;
+        const t0 = k === 0 ? 0 : 1, dir = k === 0 ? 1 : -1, tan = curve.getTangentAt(t0).multiplyScalar(-dir), side = tan.clone().cross(UP).normalize(), up = tan.clone().cross(side).normalize();
+        for (let q = 0; q < 3; q++) {
+          const a = (q / 3) * Math.PI * 2 + 0.5, pts: THREE.Vector3[] = [];
+          for (let i = 0; i <= 8; i++) { const u = i / 8, p = curve.getPointAt(Math.max(0, Math.min(1, t0 + dir * (r.fan ?? 0) * (1 - u)))), spread = rad * 2.4 * Math.sin(u * Math.PI * 0.5); pts.push(p.addScaledVector(side, Math.cos(a) * spread).addScaledVector(up, Math.sin(a) * spread)); }
+          sleeve.push(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts, false, 'catmullrom', 0.5), 12, rad * 0.3, 5, false));
+        }
+      });
+    }
     // clamps: a ring round the cable on a small anchor plate with a bolt, standing off toward whatever lies beneath
     for (const t of r.clamps ?? []) {
       clampsN++;

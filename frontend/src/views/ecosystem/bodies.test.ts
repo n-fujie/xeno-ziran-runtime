@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import * as THREE from 'three';
 import { describe, expect, it } from 'vitest';
 import { bodyState, buildBodies, FLASH_TICKS, perforated } from './bodies';
+import { sssMechanics } from './mechanics';
 import { nodeAwake, nodeProbeState, reservoirLevel, ringProbeState, REACTIVATE_AT, RECOVERY_TICKS, type BodyState } from './bodyState';
 import { buildCables, routeCurve } from './cables';
 import { Fasteners } from './hardware';
@@ -21,6 +22,7 @@ const rec1 = JSON.parse(readFileSync(join(dir, 'meos-a2-removed.json'), 'utf8'))
 const idle: BodyState = {
   sampling: false, coverage: 1, aim: [6.5, 6.5], interval: 1, a1FireAge: null, renewAge: null, interaction: 0, couplingCut: false, a2Present: true, status: 'ACTIVE', recovered: false,
   collapsed: false, recoveryAge: null, pulseAge: null, pulseAmount: 0, historyEnabled: true, address: { A1: null, A2: null }, arenaRadius: null, observability: 'OBSERVABLE', tick: 0,
+  sss: { scale: 1, size: 1, speed: 1 }, sssRegion: 'ACTIVE', mech: sssMechanics({ scale: 1, size: 1, speed: 1 }), m2: { configured: false, sense: 'none', sensed: 0, state: null },
 };
 
 describe('bodyState', () => {
