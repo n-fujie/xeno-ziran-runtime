@@ -9,6 +9,9 @@
   XenoBody boundaries, collapse / recovery phase, SSS phase regions, Address Domain, M2 connection, Philosophical operations. Null, seed-dependent, context-reversed and non-monotone results are recorded as found.
 * Interface: observation controls, connections, a STUDIES tab, trace charts, ADDRESS interventions, a research-device layer in the scene (observation array aim and coverage, boundary posts, pulse ring, recovery halo,
   Philosophical module in an expansion bay), two camera presets, truss arches. Extended image statistics for the captures; visual similarity to the references remains partial.
+* Graphics pass (`docs/ECOSYSTEM_MEOS_STAGE2.md` section 9): displaced wet-rock terrain with gravel and reflective puddles, a dark studio reflection environment, bloom / vignette / grain and a high-tier depth of field,
+  two experimental bodies modelled on supplied concept renders (perforated plates, bolts, cable bundles, an actuated observation arm) whose lamps, probes, cable lights and arm answer to the record through a tested pure mapping.
+  Visual similarity to the new references is improved in tone and large-scale structure and **not** in fine structure; the balanced tier no longer holds 60 fps in the heaviest views (16-60 fps headless GPU across tiers).
 * Not integrated: R3 (a separate branch), live engine stepping, any connection to XenoBody / Ziran System / Xenoscience / a language-model Philosophical AI.
 
 ## Unreleased — XENO ECOSYSTEM (MEOS-0)

@@ -2,6 +2,12 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
+import { BokehPass } from 'three/examples/jsm/postprocessing/BokehPass.js';
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
+import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 import Chart from '../../components/Chart';
 import {
   ablation, addressSweep, adAt, boundary, decodeFields, fieldAt, FULL_OBSERVATION, getSpec, historyCompare, mfs as mfsApi, replayMeos, runMeos, sssSweep, STATUS_VALUE,
@@ -13,6 +19,7 @@ import {
 } from './layers';
 import { ANNOTATIONS, CAMERA_PRESETS, WORLD, buildMegastructure, type Megastructure, type Quality, type Trial } from './megastructure';
 import { buildOverlays, disposeGroup, disposeLabels, label as makeLabel } from './overlays';
+import { bodyState, studioEnvironment } from './bodies';
 import { buildDeviceLayer, deviceState, observationCoverage, SPACES, type DeviceLayer } from './researchDevice';
 import ExperimentsPane from './ExperimentsPane';
 import './ecosystem.css';
@@ -73,7 +80,7 @@ export default function EcosystemView() {
   const rec = out?.record ?? null;
   const fields = useMemo(() => (rec ? decodeFields(rec.fields, rec.frames.length) : null), [rec]);
   const live = useRef({ playing, rate, tick, playhead: tick, follow, goal: null as null | { pos: THREE.Vector3; target: THREE.Vector3 }, nFrames: 0 });
-  const eng = useRef<{ device: DeviceLayer; mega: Megastructure; renderer: THREE.WebGLRenderer; scene: THREE.Scene; camera: THREE.PerspectiveCamera; controls: OrbitControls; overlays: THREE.Group; simMs: number[] } | null>(null);
+  const eng = useRef<{ device: DeviceLayer; composer: EffectComposer | null; mega: Megastructure; renderer: THREE.WebGLRenderer; scene: THREE.Scene; camera: THREE.PerspectiveCamera; controls: OrbitControls; overlays: THREE.Group; simMs: number[] } | null>(null);
   const setTickRef = useRef(setTick), setPlayingRef = useRef(setPlaying);
   setTickRef.current = setTick; setPlayingRef.current = setPlaying;
 
@@ -165,12 +172,40 @@ export default function EcosystemView() {
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.target.set(...p0.target);
     controls.enableDamping = true; controls.dampingFactor = 0.08; controls.maxDistance = 600; controls.minDistance = 1.5;
-    const mega = buildMegastructure(q);
+    // local key and rim lights on the experimental bodies (the low-key look of the concept renders): narrow cool spots over the dark ground
+    const spot = (pos: [number, number, number], tgt: [number, number, number], intensity: number, angle: number) => {
+      const l = new THREE.SpotLight(0xe6ecff, intensity, 110, angle, 0.9, 1.3); l.position.set(...pos); l.target.position.set(...tgt); scene.add(l, l.target);
+    };
+    spot([-80, 26, 30], [-104, 2, 4], 330, 0.5); spot([-128, 16, -14], [-104, 3, 4], 260, 0.45); spot([-72, 24, 62], [-86, 4, 36], 200, 0.45);
+    const studio = q === 'performance' ? null : studioEnvironment(renderer);
+    const mega = buildMegastructure(q, 7, studio);
     scene.add(mega.root);
-    for (const a of ANNOTATIONS) { const s = makeLabel(a.text, 0.032, true); s.position.copy(a.at); s.userData = { annotation: a.id }; scene.add(s); }
+    if (url.get('labels') !== '0') for (const a of ANNOTATIONS) { const s = makeLabel(a.text, 0.032, true); s.position.copy(a.at); s.userData = { annotation: a.id }; scene.add(s); }
     const overlays = new THREE.Group(); mega.arena.group.add(overlays);
     const device = buildDeviceLayer(mega.arena.group, 14); mega.root.add(device.group);
-    eng.current = { device, mega, renderer, scene, camera, controls, overlays, simMs: [] };
+    // post-processing (balanced and high): bloom on highlights and lamps, a vignette with fine grain, and at the high tier a depth-of-field pass focused on the orbit target
+    let composer: EffectComposer | null = null, bokeh: BokehPass | null = null;
+    const grade = { uniforms: { tDiffuse: { value: null }, time: { value: 0 }, vignette: { value: 0.52 }, grain: { value: 0.035 } },
+      vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
+      fragmentShader: 'uniform sampler2D tDiffuse; uniform float time; uniform float vignette; uniform float grain; varying vec2 vUv; float h(vec2 p){ return fract(sin(dot(p, vec2(12.9898,78.233)) + time) * 43758.5453); } void main(){ vec4 c = texture2D(tDiffuse, vUv); vec2 d = vUv - 0.5; float v = 1.0 - vignette * dot(d, d) * 2.2; c.rgb *= v; c.rgb += (h(vUv * 1024.0) - 0.5) * grain * (1.0 - c.rgb); gl_FragColor = c; }' };
+    if (q !== 'performance') {
+      const w0 = el.clientWidth, h0 = el.clientHeight;
+      const target = new THREE.WebGLRenderTarget(w0, h0, { type: THREE.HalfFloatType, samples: q === 'high' ? 4 : 2 });
+      composer = new EffectComposer(renderer, target);
+      composer.addPass(new RenderPass(scene, camera));
+      composer.addPass(new UnrealBloomPass(new THREE.Vector2(w0, h0), q === 'high' ? 0.3 : 0.24, 0.5, 1.05));
+      if (q === 'high') { bokeh = new BokehPass(scene, camera, { focus: 60, aperture: 0.00006, maxblur: 0.006 }); composer.addPass(bokeh); }
+      composer.addPass(new ShaderPass(grade));
+      composer.addPass(new OutputPass());
+    }
+    const renderFrame = (now: number) => {
+      if (composer) {
+        grade.uniforms.time.value = (now / 1000) % 10;
+        if (bokeh) (bokeh.uniforms as unknown as { focus: { value: number } }).focus.value = camera.position.distanceTo(controls.target);
+        composer.render();
+      } else renderer.render(scene, camera);
+    };
+    eng.current = { device, composer, mega, renderer, scene, camera, controls, overlays, simMs: [] };
     setReady(true);
 
     const frames: number[] = [];
@@ -198,7 +233,7 @@ export default function EcosystemView() {
         controls.target.add(tmp2); camera.position.add(tmp2);
       }
       controls.update();
-      renderer.render(scene, camera);
+      renderFrame(now);
       if (now - lastHud > 500) {
         lastHud = now;
         const s = [...frames].sort((a, b) => a - b), mean = frames.reduce((a, b) => a + b, 0) / Math.max(1, frames.length);
@@ -212,7 +247,7 @@ export default function EcosystemView() {
       }
     };
     raf = requestAnimationFrame(loop);
-    const ro = new ResizeObserver(() => { renderer.setSize(el.clientWidth, el.clientHeight); camera.aspect = el.clientWidth / Math.max(1, el.clientHeight); camera.updateProjectionMatrix(); });
+    const ro = new ResizeObserver(() => { renderer.setSize(el.clientWidth, el.clientHeight); composer?.setSize(el.clientWidth, el.clientHeight); camera.aspect = el.clientWidth / Math.max(1, el.clientHeight); camera.updateProjectionMatrix(); });
     ro.observe(el);
     // picking: a click (not a drag) on an operational configuration or a trial chamber
     let down: [number, number] | null = null;
@@ -233,12 +268,13 @@ export default function EcosystemView() {
       camera: () => ({ pos: camera.position.toArray(), target: controls.target.toArray() }), stats: () => mega.stats,
       goto: (t: number) => { live.current.playhead = t; live.current.tick = t; setTickRef.current(t); }, play: (on: boolean) => { live.current.playing = on; setPlayingRef.current(on); },
       resetPerf: () => { frames.length = 0; if (eng.current) eng.current.simMs.length = 0; },
-      renderOnce: () => { controls.update(); renderer.render(scene, camera); },
+      setCamera: (pos: [number, number, number], target: [number, number, number]) => { camera.position.set(...pos); controls.target.set(...target); controls.update(); },
+      renderOnce: () => { controls.update(); renderFrame(performance.now()); },
     };
     return () => {
       cancelAnimationFrame(raf); ro.disconnect();
       renderer.domElement.removeEventListener('pointerdown', onDown); renderer.domElement.removeEventListener('pointerup', onUp);
-      disposeGroup(overlays); device.dispose(); mega.dispose(); disposeLabels(); controls.dispose();
+      disposeGroup(overlays); device.dispose(); composer?.dispose(); mega.dispose(); disposeLabels(); controls.dispose();
       scene.traverse((o) => { const m = o as THREE.Mesh; if (m.isMesh && m.geometry) m.geometry.dispose(); });
       renderer.dispose(); renderer.domElement.remove(); eng.current = null; setReady(false);
     };
@@ -271,6 +307,7 @@ export default function EcosystemView() {
     const ds = deviceState(rec, t, obs);
     const aimAt = E.mega.arena.local(ds.array.aim[0], ds.array.aim[1]).clone().add(E.mega.arena.group.position);
     E.mega.array.aim(aimAt, ds.array.sampling, ds.array.activeDishes, f.status === 'ACTIVE' ? 1 : 0.4);
+    E.mega.bodies.set(bodyState(rec, t, obs), aimAt);
     E.device.set(ds, { arenaCell: E.mega.arena.local, selectedTrial: sel?.kind === 'trial' ? sel.i : null, trialPos: E.mega.trials.positions, n: rec.config.grid });
     E.mega.arena.group.updateMatrixWorld(true);
     disposeGroup(E.overlays);

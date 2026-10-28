@@ -34,7 +34,12 @@ import numpy as np
 
 
 def load(path: Path) -> np.ndarray:
-    """Decode any image the system can read to an (h, w, 3) float array in 0..1."""
+    """Decode any image the system can read to an (h, w, 3) float array in 0..1. ``path@x0,y0,x1,y1`` selects a pixel rectangle (e.g. the render half of a sheet)."""
+    crop = None
+    if "@" in str(path):
+        path, box = str(path).rsplit("@", 1)
+        crop = [int(v) for v in box.split(",")]
+        path = Path(path)
     with tempfile.TemporaryDirectory() as d:
         bmp = Path(d) / "x.bmp"
         subprocess.run(["sips", "-s", "format", "bmp", str(path), "--out", str(bmp)], check=True, capture_output=True)
@@ -47,7 +52,11 @@ def load(path: Path) -> np.ndarray:
     stride = ((w * bpp + 31) // 32) * 4
     rows = np.frombuffer(b, dtype=np.uint8, count=stride * abs(h), offset=off).reshape(abs(h), stride)[:, : w * bytes_pp].reshape(abs(h), w, bytes_pp)
     img = rows[:, :, [2, 1, 0]].astype(np.float64) / 255.0  # BGR(A) -> RGB
-    return img[::-1] if h > 0 else img
+    img = img[::-1] if h > 0 else img
+    if crop:
+        x0, y0, x1, y1 = crop
+        img = img[y0:y1, x0:x1]
+    return img
 
 
 def grad(lum: np.ndarray) -> np.ndarray:
@@ -142,7 +151,7 @@ def main() -> None:
     ap.add_argument("--refs", nargs="+", required=True)
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
-    refs = {Path(r).stem: metrics(load(Path(r))) for r in a.refs}
+    refs = {Path(r.split("@")[0]).stem: metrics(load(Path(r))) for r in a.refs}
     caps = {p.stem: metrics(load(p)) for p in sorted(Path(a.captures).glob("*.png"))}
     rows = {}
     for name, m in caps.items():

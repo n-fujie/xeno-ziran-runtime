@@ -31,7 +31,7 @@ describe('the static architecture', () => {
     expect(Object.keys(mid.anchors).sort()).toEqual(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']);
     expect(Object.values(WORLD.levels)).toEqual([0, -34, -68, -104]);
     expect(mid.anchors.B.y).toBe(WORLD.levels.subsurface);
-    expect(Object.keys(CAMERA_PRESETS)).toEqual(['overview', 'core', 'habitat', 'subsurface', 'array', 'socket']);
+    expect(Object.keys(CAMERA_PRESETS)).toEqual(['overview', 'core', 'habitat', 'body', 'observer', 'puddle', 'subsurface', 'array', 'socket']);
   });
 });
 

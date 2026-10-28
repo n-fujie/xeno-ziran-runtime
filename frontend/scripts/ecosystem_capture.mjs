@@ -33,9 +33,17 @@ export const SHOTS = {
   '11-resource-pulse': 'preset=recovery-demo&horizon=360&phil=revision&cam=habitat&layers=physical,meos&tick=154',
   '12-boundary-open': 'preset=recovery-demo&horizon=360&phil=revision&cam=habitat&layers=physical,meos&tick=125',
   '13-recovered': 'preset=recovery-demo&horizon=360&phil=revision&cam=habitat&layers=physical,meos&tick=175',
+  // the experimental bodies and the wet ground (third stage)
+  '14-experimental-body': 'cam=body&layers=physical,meos&tick=120&labels=0',
+  '15-observation-node': 'cam=observer&layers=physical,meos&tick=120&labels=0',
+  '16-wet-ground': 'cam=puddle&layers=physical&tick=120&labels=0',
+  '17-body-coupling-cut': 'preset=recovery-demo&horizon=360&phil=revision&cam=body&layers=physical,meos&tick=125&labels=0',
+  '18-body-renewal': 'preset=recovery-demo&horizon=360&phil=revision&cam=body&layers=physical,meos&tick=175&labels=0',
 };
 
-const browser = await chromium.launch({ executablePath: exe, args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--enable-webgl'] });
+// default: the machine's GPU through ANGLE/Metal (frame rates are then those of the GPU); --software forces SwiftShader (slow, a rasteriser on the CPU)
+const software = process.argv.includes('--software');
+const browser = await chromium.launch({ executablePath: exe, args: software ? ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--enable-webgl'] : ['--use-angle=metal', '--ignore-gpu-blocklist', '--enable-gpu', '--enable-webgl'] });
 const perf = {};
 for (const [name, q] of Object.entries(SHOTS)) {
   if (only && !only.split(',').some((o) => name.includes(o))) continue;
@@ -49,7 +57,7 @@ for (const [name, q] of Object.entries(SHOTS)) {
   perf[name] = await page.evaluate(() => ({ ...window.__meos.perf(), camera: window.__meos.camera(), stats: window.__meos.stats() }));
   await (await page.$('.eco-stage')).screenshot({ path: join(out, `${name}.png`), timeout: 300000 });
   await page.close();
-  console.log(name, 'ok', perf[name].fps.toFixed(1), 'fps (software rendering)');
+  console.log(name, 'ok', perf[name].fps.toFixed(1), software ? 'fps (software rendering)' : 'fps (GPU, headless)');
 }
-writeFileSync(join(out, `perf-${quality}.json`), JSON.stringify({ browser: 'headless Chromium, WebGL on SwiftShader (software)', viewport: [width, height], quality, perf }, null, 1));
+writeFileSync(join(out, `perf-${quality}.json`), JSON.stringify({ browser: software ? 'headless Chromium, WebGL on SwiftShader (software)' : 'headless Chromium, WebGL on ANGLE Metal (GPU)', viewport: [width, height], quality, perf }, null, 1));
 await browser.close();

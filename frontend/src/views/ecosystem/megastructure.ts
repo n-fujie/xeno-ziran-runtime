@@ -11,8 +11,22 @@
 // transport), core layer (experiment / analysis) and a deep subsurface layer, around one vertical shaft.
 import * as THREE from 'three';
 import type { EntityFrame, Frame, Label } from './meosApi';
+import { buildBodies, type BodySet } from './bodies';
+import { buildPebbles, buildRocks, buildTerrain, type Terrain } from './terrain';
 
 export type Quality = 'performance' | 'balanced' | 'high';
+let _dust: THREE.DataTexture | null = null;
+/** A soft round sprite for the suspended dust (so that a particle near the camera is a speck of light and not a square). */
+function dustSprite(): THREE.Texture {
+  if (_dust) return _dust;
+  const N = 32, d = new Uint8Array(N * N * 4);
+  for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+    const r = Math.hypot(x - N / 2 + 0.5, y - N / 2 + 0.5) / (N / 2), a = Math.max(0, 1 - r), o = (y * N + x) * 4;
+    d[o] = d[o + 1] = d[o + 2] = 255; d[o + 3] = Math.round(255 * Math.min(1, a * 1.6));
+  }
+  _dust = new THREE.DataTexture(d, N, N, THREE.RGBAFormat); _dust.needsUpdate = true;
+  return _dust;
+}
 export const DENSITY: Record<Quality, number> = { performance: 0.3, balanced: 0.65, high: 1 };
 
 export const WORLD = {
@@ -38,6 +52,9 @@ export const CAMERA_PRESETS: Record<string, { pos: [number, number, number]; tar
   overview: { pos: [-26, 36, 98], target: [-4, -26, -6], label: 'Overview' },
   core: { pos: [20, -22, 24], target: [-4, -44, -4], label: 'Research Core' },
   habitat: { pos: [-48, 11, 33], target: [-66, 1.2, 16], label: 'Habitat' },
+  body: { pos: [-89, 3.2, 15], target: [-104, 3.0, 3], label: 'Experimental Body' },
+  observer: { pos: [-104, 4.2, 22], target: [-85, 7.5, 37], label: 'Observation Node' },
+  puddle: { pos: [-90, 0.9, 13], target: [-103, 2.6, 2], label: 'Wet Ground' },
   subsurface: { pos: [4, -86, 50], target: [0, -102, 12], label: 'Subsurface Laboratory' },
   array: { pos: [22, 20, 30], target: [54, 9, 52], label: 'Observation Array' },
   socket: { pos: [30, 15, -46], target: [12, 5, -64], label: 'Expansion Socket' },
@@ -153,10 +170,10 @@ export type Mats = ReturnType<typeof materials>;
 // ---------------------------------------------------------------------------------------------------- architecture
 export interface Megastructure {
   root: THREE.Group; arena: Arena; trials: Trials; stats: Stats; carriers: Carriers; gauge: Gauge; stockpile: Stockpile; array: ArrayPulse;
-  anchors: Record<string, THREE.Vector3>; dispose(): void;
+  anchors: Record<string, THREE.Vector3>; terrain: Terrain; bodies: BodySet; heavy: THREE.Object3D[]; dispose(): void;
 }
 
-export function buildMegastructure(quality: Quality, seed = 7): Megastructure {
+export function buildMegastructure(quality: Quality, seed = 7, env: THREE.Texture | null = null): Megastructure {
   const R = rng(seed);
   const dens = DENSITY[quality];
   const M = materials();
@@ -178,10 +195,9 @@ export function buildMegastructure(quality: Quality, seed = 7): Megastructure {
   const beam = (b: Boxes, a: THREE.Vector3, c: THREE.Vector3, t: number, edge = false, shade?: number) => { b.beam(a, c, t, edge, shade); joint(a); };
   const lat = (n: number) => Math.max(4, Math.round(n * dens));
 
-  // --- terrain with the central shaft
-  const ground = new THREE.Mesh(new THREE.RingGeometry(WORLD.pit, 200, 128, 1), new THREE.MeshBasicMaterial({ color: 0x060607 }));
-  ground.rotation.x = -Math.PI / 2; ground.position.y = -0.05; owned.push(ground.geometry, ground.material as THREE.Material);
-  add('terrain', ground);
+  // --- terrain with the central shaft: wet broken rock with puddles (terrain.ts)
+  const terrain = buildTerrain(quality, WORLD.pit, owned, env);
+  root.add(terrain.group); stats.objects++;
   const wall = new THREE.Mesh(new THREE.CylinderGeometry(WORLD.pit, WORLD.pit - 2, WORLD.depth, 96, 1, true), new THREE.MeshStandardMaterial({ color: 0x27292d, roughness: 1, side: THREE.BackSide }));
   wall.position.y = -WORLD.depth / 2; owned.push(wall.geometry, wall.material as THREE.Material);
   add('terrain', wall);
@@ -198,7 +214,7 @@ export function buildMegastructure(quality: Quality, seed = 7): Megastructure {
     rock.box(Math.cos(a) * r, y, Math.sin(a) * r, sx, sy, sz, _q.clone(), false, 0.45 + R() * 0.7);
   }
   const nSurf = lat(5200);
-  const zones: Array<[THREE.Vector3, number]> = [[WORLD.habitat, 24], [WORLD.habitat.clone().add(v3(-8, 0, 40)), 18], [WORLD.depot, 34], [WORLD.processing, 34], [WORLD.array, 28], [WORLD.expansion, 24]];
+  const zones: Array<[THREE.Vector3, number]> = [[v3(-104, 0, 4), 26], [v3(-86, 0, 36), 16], [WORLD.habitat, 24], [WORLD.habitat.clone().add(v3(-8, 0, 40)), 18], [WORLD.depot, 34], [WORLD.processing, 34], [WORLD.array, 28], [WORLD.expansion, 24]];
   for (let i = 0; i < nSurf; i++) {
     const a = R() * Math.PI * 2, r = WORLD.pit + 3 + Math.pow(R(), 1.1) * 150;
     if (zones.some(([c, rad]) => Math.hypot(Math.cos(a) * r - c.x, Math.sin(a) * r - c.z) < rad)) continue;  // building sites stay clear of gravel
@@ -543,7 +559,7 @@ export function buildMegastructure(quality: Quality, seed = 7): Megastructure {
     const a: number[] = [];
     for (let i = 0; i < n; i++) { const p = spread(); a.push(p.x, p.y, p.z); }
     const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(a, 3));
-    const mt = new THREE.PointsMaterial({ color: 0xffffff, size, sizeAttenuation: true, transparent: true, opacity: op, depthWrite: false }); owned.push(mt);
+    const mt = new THREE.PointsMaterial({ color: 0xffffff, size, sizeAttenuation: true, transparent: true, opacity: op, depthWrite: false, map: dustSprite(), alphaTest: 0.05 }); owned.push(mt);
     return new THREE.Points(g, mt);
   };
   add('suspended material', pt(lat(26000), () => { const a = R() * 6.283, r = Math.sqrt(R()) * (WORLD.pit - 3); return v3(Math.cos(a) * r, -R() * WORLD.depth, Math.sin(a) * r); }, 0.28, 0.75));
@@ -553,6 +569,13 @@ export function buildMegastructure(quality: Quality, seed = 7): Megastructure {
   moon.position.set(-300, 210, -460); owned.push(moon.geometry, moon.material as THREE.Material); add('sky', moon);
 
   // --- the simulation-driven parts
+  // wet rocks around the experimental bodies and bodies themselves
+  const rocks = buildRocks([{ x: -104, z: 4, r: 26, n: lat(260) }, { x: -86, z: 36, r: 16, n: lat(110) }, { x: -92, z: 14, r: 7, n: lat(80) }, { x: -80, z: -6, r: 14, n: lat(70) }], terrain.heightAt, env, owned, quality === 'high' ? 4 : quality === 'balanced' ? 3 : 2, [{ x: -104, z: 4, r: 16 }, { x: -92, z: 12, r: 9 }, { x: -86, z: 36, r: 7 }]);
+  add('rocks (wet)', rocks);
+  const peb = quality === 'performance' ? 0.15 : quality === 'balanced' ? 0.6 : 1;
+  add('gravel (wet)', buildPebbles([{ x: -104, z: 4, r: 30, n: Math.round(9000 * peb) }, { x: -86, z: 36, r: 18, n: Math.round(3500 * peb) }, { x: -92, z: 14, r: 10, n: Math.round(2500 * peb) }], terrain.heightAt, env, owned));
+  const bodies = buildBodies(quality, env, terrain.heightAt);
+  root.add(bodies.group); stats.objects++;
   const arena = buildArena(14, M, owned);
   arena.group.position.copy(WORLD.habitat).add(v3(0, 0.15, 0));
   root.add(arena.group);
@@ -567,7 +590,10 @@ export function buildMegastructure(quality: Quality, seed = 7): Megastructure {
   const anchors: Record<string, THREE.Vector3> = {
     A: v3(0, 0, 0), B: v3(0, WORLD.levels.subsurface, 0), C: pro.clone(), D: dep.clone(), E: WORLD.habitat.clone(), F: v3(-20, 0, 62), G: arr.clone(), H: v3(36, 0, 24), I: exp.clone(),
   };
-  return { root, arena, trials, stats, carriers, gauge, stockpile: stock, array: arrayPulse, anchors, dispose: () => { owned.forEach((o) => o.dispose()); } };
+  // what a planar reflection does not need to draw: the distant space frame, cables and points (hidden during the puddles' reflection render)
+  const heavy = root.children.filter((o) => ((o as THREE.InstancedMesh).isInstancedMesh && (o as THREE.InstancedMesh).count > 600) || (o as THREE.LineSegments).isLineSegments || (o as THREE.Points).isPoints);
+  terrain.setReflectionHidden(heavy);
+  return { root, arena, trials, stats, carriers, gauge, stockpile: stock, array: arrayPulse, anchors, terrain, bodies, heavy, dispose: () => { owned.forEach((o) => o.dispose()); } };
 }
 
 // ---------------------------------------------------------------------------------------------------- the habitat arena

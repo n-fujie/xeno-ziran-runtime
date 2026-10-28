@@ -139,7 +139,7 @@ These results say that, in MEOS-0, a norm-sensitive revision coupling can be nee
 * **Research device in the scene** (`researchDevice.ts`; each is a pure function of record, tick and observation, tested without a renderer): Observation Array dishes turn toward the observed region and light in proportion to the cells it covers, flashing on sampled ticks; Boundary Layer posts at the operational boundary (raised while closed, lowered per open channel); resource-pulse ring at the injected cell; recovery halo (bright after a recovery, dim while collapsed); a selected-chamber ring; the Philosophical module in the third expansion bay (lamps for expression / response / score / revision, a renewal-boost bar, a reliability ring and a travelling spark during the channel delay) — present only in a run that configures one. Camera presets added: `array`, `socket`. Deep links: `?preset=recovery-demo&horizon=360&phil=revision&cam=socket&tick=165`.
 * Not state-linked and therefore not animated: the Research Core, gantry arches, rails and towers (static architecture). "Active chamber indication" is the selected-chamber ring over the outcome of a recorded reduction trial; it is **not** a live indicator of which trial is executing (the server computes the trials in one request).
 
-## 4. Visual comparison with the references
+## 4. Visual comparison with the references (second pass; see section 9 for a later graphics pass)
 
 Fixed camera presets (`overview`, `core`, `habitat`, `subsurface`, `array`, `socket`) and fixed deep-link states are used so that captures are comparable between stages. Statistics (`backend/scripts/visual_compare.py`; luminance histogram, edge density, spatial frequency, occupied-area ratio, depth proxy, silhouette density, with the first-stage statistics kept) are crude proxies. **They never establish that a picture matches a reference.** Stage-one values for the same views are in `docs/ecosystem/visual/stage1/`. Results of this stage are in `docs/ecosystem/visual/metrics.json`; the references are the four supplied images (their statistics are stored, the images are not).
 
@@ -199,3 +199,55 @@ The replay script was rebuilt in this stage (the earlier one was not kept) and i
 * **Software implementation completeness: 72 / 100.** Done and tested: engine `meos-0.2`, traces, causal paths, observation separation, M2, Philosophical operations, Address Domain interventions, nine experiment endpoints, the interface for all of them, a state-linked research-device layer, fixtures, 54 new tests (37 backend, 17 frontend), determinism checks. Missing: live engine stepping in the browser, an honest "which trial is executing" indicator, GPU measurement of the high tier, a visual regression gate, the connections to the other systems.
 * **Experimental validation completeness: 52 / 100.** Eleven experiments were run on a fixed default configuration with 3–10 seeds each, deterministic and reproducible, with null, reversed-by-context, seed-dependent and non-monotone results kept. Not done: confirmatory or pre-registered runs, more than one base configuration, sensitivity analysis of the engine's own constants, independent replication, any link to a real system. Several findings (the narrow history-necessity band, the SSS active region, the recovery band) are properties of constants chosen so that the baseline sustains.
 * **XENO ECOSYSTEM project completeness (as the first experimental foundation for XenoBody, Ziran System, Xenoscience and Philosophical AI in one space): 45 / 100.** MEOS-0 is a reproducible space in which two operational sequences generate each other's conditions and persistence, collapse and recovery are measured, and a first Philosophical coupling can be switched on and its necessity tested. The other systems are **not connected**: XenoBody appears only as boundary partitions of MEOS-0, the Ziran System and Xenoscience not at all, and the Philosophical coupling is a small operational module, not the Philosophical AI.
+
+## 9. Graphics pass (third pass on visual similarity)
+
+A new reference pair was supplied: dark concept renders of a *non-central experimental body* (three nodes joined by cable bundles) and an *adaptive observation node* (a column with an actuated arm and an exchangeable probe), each beside a white engineering sheet. This pass tried to reach that level of graphics in the real-time view. **It did not reach it**; it moved the look a measurable way toward it and the gap is stated below.
+
+**What was built** (`terrain.ts`, `bodies.ts`, `researchDevice.ts`, the view):
+
+* *Ground:* a displaced polar mesh of dark broken rock (before this pass the ground was a flat black disc); wet gravel (up to 14 000 glossy instanced pebbles) and wet rocks around the work areas; eight irregular puddles that are planar reflectors at the `balanced` and `high` tiers (the distant space frame is hidden during the reflection render) and polished dark mirrors at `performance`.
+* *Light and reflection:* a dark studio environment map (a black room with long bright strips) for polished metal and wet rock, three narrow cool spot lights on the bodies, bloom on highlights and lamps, a vignette with fine grain, and at `high` a depth-of-field pass focused on the orbit target. The grain is part of the look and was kept small (0.035) so that it does not inflate the edge statistics.
+* *Two experimental bodies,* of real geometry and not textures: perforated plates (extruded shapes with up to several hundred real holes), ported openings with collars, lens assemblies, bolted edges and bolt circles, tubular frames with hub spheres and collars, actuators, sensor pods, greebles, cable bundles (tubes along sagging curves, up to eight strands) with clamps, a ring junction on a post; for the observation node a column with flanges, a lattice arm with a hydraulic ram and cable loops, an elbow, a probe carrier and needle, a tripod-borne sensor head and a module dock.
+* *What moves, and why* (`bodyState` is a pure function of the record, the tick and the observation; tested): node A's lens and lamp light on the ticks the observation samples (scaled by its coverage); node B's lamp flashes for five ticks after an A1 firing; node C's probe sparks for five ticks after an A2 renewal and the node is dark while A2 is absent; a light travels along the B–C bundle after a firing (B→C) and after a renewal (C→B); when the interaction channel is cut the bundle goes dark and the junction ring parts; the observation node's arm turns and reaches toward the observed region (two-link reach) and its probe lowers on sampled ticks. **This mapping is a presentation choice of the view. It does not claim that A1, A2 or the observation are these machines.** The geometry itself is static architecture.
+* New camera presets `body`, `observer`, `puddle`; dust is now round sprites (square points were visible as boxes at close range); `window.__meos.setCamera` for captures; `?labels=0`.
+* Captures now run on the machine's GPU in headless Chromium (ANGLE/Metal) instead of the software rasteriser (seconds instead of minutes per shot; `--software` keeps the old mode).
+
+**Measured similarity.** Statistics are the proxies of section 4 and **do not establish a match**. Two comparisons are given because the supplied renders are 760 px wide and ours 1672 px: *native* (our capture as taken) and *at their resolution* (our capture resampled to 760 px width), the fairer one for edge and frequency statistics. References are the left halves of the two sheets with the title block removed.
+
+| view | distance to the two body renders: native / at their resolution | lum | edge | sf-hi | occ | depth | sil | dark |
+|---|---|---|---|---|---|---|---|---|
+| 01-overview | 0.630 / 0.799 | 0.223 | 0.178 | 0.266 | 0.714 | 0.645 | 0.665 | 0.105 |
+| 09-observation-array | 0.410 / 0.464 | 0.185 | 0.044 | 0.092 | 0.717 | 0.684 | 0.077 | 0.283 |
+| 10-philosophical-socket | 0.516 / 0.598 | 0.219 | 0.082 | 0.131 | 0.819 | 0.743 | 0.155 | 0.181 |
+| 14-experimental-body | 0.205 / 0.337 | 0.134 | 0.116 | 0.129 | 0.435 | 0.631 | 0.561 | 0.565 |
+| 15-observation-node | 0.216 / 0.410 | 0.162 | 0.121 | 0.124 | 0.486 | 0.673 | 0.257 | 0.514 |
+| 16-wet-ground | 0.236 / 0.248 | 0.157 | 0.107 | 0.106 | 0.498 | 0.690 | 0.543 | 0.502 |
+| 17-body-coupling-cut | 0.205 / 0.330 | 0.128 | 0.117 | 0.135 | 0.415 | 0.615 | 0.584 | 0.585 |
+| 18-body-renewal | 0.205 / 0.337 | 0.134 | 0.116 | 0.129 | 0.436 | 0.631 | 0.560 | 0.564 |
+| reference ref21 (render half) | — | 0.111 | 0.203 | 0.284 | 0.322 | 0.580 | 0.956 | 0.678 |
+| reference ref20 (render half) | — | 0.096 | 0.166 | 0.257 | 0.278 | 0.531 | 0.956 | 0.723 |
+
+* Tone is close for the body views: the luminance-histogram total-variation distance to the nearest reference is 0.06–0.08 for views 14, 17 and 18, 0.11 for the wet-ground view and 0.18–0.19 for the observation-node view (whose frame contains lit domes). The proportion of near-black pixels is lower than in the references (0.50–0.59 against 0.68–0.72), the tonal-layer proxy and the occupied area are higher (0.61–0.70 against 0.53–0.58; 0.39–0.50 against 0.28–0.32): the new views are brighter and fuller than the renders.
+* **Fine structure is not matched.** At the references' resolution the edge density is 0.14–0.16 against 0.17–0.20 (fairly close), but the high-frequency power is 0.11–0.15 against 0.26–0.28 and the silhouette density 0.26–0.47 against 0.96 (the references' outlines are far more broken). The distance to the references at their resolution is 0.25–0.41.
+* The existing views (habitat, overview, research core, subsurface) share the same new ground, lighting and post-processing, so their look changed. Their distance to the **four earlier lattice references** fell, but this mainly reflects the darker, textured ground and not a closer match of the lattice itself:
+
+| existing view | distance to the four lattice references: second-stage capture → this pass |
+|---|---|
+| 01-overview | 0.609 → 0.192 |
+| 02-habitat | 0.491 → 0.315 |
+| 03-research-core | 0.236 → 0.194 |
+| 04-meos0-active | 0.468 → 0.317 |
+| 05-meos-collapse | 0.426 → 0.309 |
+| 06-xenobody-boundary | 0.507 → 0.314 |
+| 07-history-overlay | 0.493 → 0.316 |
+| 08-subsurface-laboratory | 0.348 → 0.225 |
+| 09-observation-array | 0.694 → 0.247 |
+| 10-philosophical-socket | 0.656 → 0.220 |
+| 11-resource-pulse | 0.419 → 0.311 |
+| 12-boundary-open | 0.429 → 0.318 |
+| 13-recovered | 0.454 → 0.324 |
+
+**Cost.** The balanced tier no longer holds 60 fps in the heavy views. Headless GPU (Apple M1, 1672 × 808): `performance` 60 fps (display limit) on the overview and the body; `balanced` 23 fps (overview), 27–32 (habitat views), 36–45 (body views), up to 58 (array and socket views); `high` 16–25 fps (`docs/ecosystem/performance_gpu_headless_*.json`). These are headless numbers and are not comparable with the 60 fps measured in the app's browser pane in section 6 (which was vsync-limited and measured the earlier scene); the pane was not available for a re-measurement. Per-frame work rose because of the reflection render, the post-processing chain and ~1 M vertices of body geometry per tier at `balanced`.
+
+**Not done.** The engineering-sheet layout of the right-hand panels (dimensioned drawings, callouts, module detail views) was not reproduced; the images are not photographic (the bodies read as clean CG against the grit of the references, rocks are faceted); no screen-space reflections or volumetric dust; the depth-of-field pass exists only at `high`; no GPU measurement inside the app's browser pane for this pass.
