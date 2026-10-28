@@ -10,6 +10,7 @@ import * as THREE from 'three';
 import { Reflector } from 'three/examples/jsm/objects/Reflector.js';
 import { mergeGeometries, mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import type { Quality } from './megastructure';
+import { buildChunkedField, type ChunkedField, type FieldItem } from './lod';
 
 export function mulberry(seed: number) {
   let a = seed >>> 0;
@@ -50,7 +51,9 @@ export const PUDDLES: Puddle[] = [
 ];
 
 export interface Terrain {
-  group: THREE.Group; puddleMesh: THREE.Mesh | null; heightAt(x: number, z: number): number; setReflectionHidden(hidden: THREE.Object3D[]): void; dispose(): void;
+  group: THREE.Group; puddleMesh: THREE.Mesh | null; heightAt(x: number, z: number): number; setReflectionHidden(hidden: THREE.Object3D[]): void;
+  /** Per-frame: far from the puddles the planar reflection is replaced by a dark polished surface (no extra render of the scene). */
+  update(camera: THREE.Vector3): void; dispose(): void;
 }
 
 const blob = (p: Puddle, R: () => number): THREE.Shape => {
@@ -123,7 +126,8 @@ export function buildTerrain(quality: Quality, pit: number, owned: Array<{ dispo
   }
   const tex = new THREE.DataTexture(data, S, S, THREE.RGBAFormat);  // no canvas: this also builds in a test environment without a DOM
   tex.needsUpdate = true; tex.wrapS = tex.wrapT = THREE.RepeatWrapping; tex.anisotropy = 8; tex.generateMipmaps = true; tex.minFilter = THREE.LinearMipmapLinearFilter;
-  const mat = new THREE.MeshStandardMaterial({ vertexColors: true, roughnessMap: tex, roughness: 1, metalness: 0.08, envMap: env, envMapIntensity: 0.16, bumpMap: tex, bumpScale: 1.5 });
+  // no environment lookup and no bump map on the ground: it covers most of the frame, is nearly black, and its sheen comes from the lights and the roughness map (the puddles carry the reflections)
+  const mat = new THREE.MeshStandardMaterial({ vertexColors: true, roughnessMap: tex, roughness: 1, metalness: 0.08 });
   const ground = new THREE.Mesh(geo, mat);
   group.add(ground);
   owned.push(geo, mat, tex);
@@ -151,69 +155,101 @@ export function buildTerrain(quality: Quality, pit: number, owned: Array<{ dispo
       owned.push((reflector as unknown as { getRenderTarget(): THREE.WebGLRenderTarget }).getRenderTarget());
     }
   }
+  // far fallback: the same blobs as a dark polished surface, used when the puddles are too far to show a reflection worth a second render of the scene
+  let far: THREE.Mesh | null = null;
+  if (reflector && merged) {
+    far = new THREE.Mesh(merged, new THREE.MeshStandardMaterial({ color: 0x040405, roughness: 0.06, metalness: 0.9, envMap: env, envMapIntensity: 1.4 }));
+    far.visible = false; group.add(far); owned.push(far.material as THREE.Material);
+  }
+  const centroid = new THREE.Vector3(PUDDLES.reduce((a, q) => a + q.x, 0) / PUDDLES.length, 0, PUDDLES.reduce((a, q) => a + q.z, 0) / PUDDLES.length);
+  const REFLECT_RANGE = 95;
+  const update = (cam: THREE.Vector3) => {
+    if (!reflector || !far) return;
+    if (group.userData.noReflect) { reflector.visible = false; far.visible = false; return; }  // switched off for a measurement
+    const near = cam.distanceTo(centroid) < REFLECT_RANGE;
+    reflector.visible = near; far.visible = !near;
+  };
+  // the reflection is a second render of the near scene, so it is refreshed every 2nd frame while the camera moves and every 8th while it rests (the scene changes only
+  // by lamps and probes); the texture of the last render is reused in between
   const setReflectionHidden = (hidden: THREE.Object3D[]) => {
     if (!reflector) return;
-    const orig = reflector.onBeforeRender;
+    const orig = reflector.onBeforeRender, lastPos = new THREE.Vector3(1e9, 0, 0), lastQ = new THREE.Quaternion();
+    let frame = 0, rendered = false;
     reflector.onBeforeRender = function (this: THREE.Object3D, ...a: Parameters<typeof orig>) {
+      const cam = a[2];
+      const moved = cam.position.distanceToSquared(lastPos) > 1e-4 || Math.abs(cam.quaternion.dot(lastQ) - 1) > 1e-7;
+      lastPos.copy(cam.position); lastQ.copy(cam.quaternion);
+      frame++;
+      if (rendered && frame % (moved ? 2 : 8) !== 0) return;
+      rendered = true;
       const was = hidden.map((o) => o.visible);
       hidden.forEach((o) => { o.visible = false; });
       orig.apply(this, a);
       hidden.forEach((o, i) => { o.visible = was[i]; });
     } as typeof orig;
   };
-  return { group, puddleMesh, heightAt: groundHeight, setReflectionHidden, dispose: () => { owned.forEach((o) => o.dispose()); } };
+  return { group, puddleMesh, heightAt: groundHeight, setReflectionHidden, update, dispose: () => { owned.forEach((o) => o.dispose()); } };
 }
 
-/** Wet rocks: instanced, displaced icosahedra of several sizes placed with a seeded scatter around given centres; returns the mesh and the instance count. */
-export function buildRocks(centres: Array<{ x: number; z: number; r: number; n: number }>, heightAt: (x: number, z: number) => number, env: THREE.Texture | null,
-  owned: Array<{ dispose(): void }>, detail: number, calm: Array<{ x: number; z: number; r: number }> = []): THREE.InstancedMesh {
+/** One displaced icosahedron at a level of detail. Rounded stones and cut-stone blocks differ in the relief and in the flattening of the underside. */
+function stoneGeometry(detail: number, kind: 'block' | 'round' | 'pebble'): THREE.BufferGeometry {
   const base = mergeVertices(new THREE.IcosahedronGeometry(1, detail).deleteAttribute('uv').deleteAttribute('normal'));  // shared vertices: smooth normals after the displacement
-  const { fbm } = makeNoise(9);
-  const p = base.getAttribute('position');
+  const { fbm } = makeNoise(kind === 'block' ? 9 : kind === 'round' ? 19 : 13), p = base.getAttribute('position');
   for (let i = 0; i < p.count; i++) {
-    // angular, ridged relief: cut-stone forms rather than pebbles
-    const x = p.getX(i), y = p.getY(i), z = p.getZ(i), n1 = fbm(x * 1.7 + 5, y * 1.7 + z * 1.4, 3), ridge = 1 - Math.abs(2 * fbm(x * 2.6 + 9, z * 2.6 + y, 2) - 1);
-    const d = 0.62 + 0.55 * n1 + 0.34 * ridge * ridge;
-    p.setXYZ(i, x * d, Math.max(y * d * 0.7, -0.25), z * d);
+    const x = p.getX(i), y = p.getY(i), z = p.getZ(i);
+    let d: number, sy = 0.7, floor = -0.25;
+    if (kind === 'block') {  // angular, ridged relief: cut-stone forms
+      const n1 = fbm(x * 1.7 + 5, y * 1.7 + z * 1.4, 3), ridge = 1 - Math.abs(2 * fbm(x * 2.6 + 9, z * 2.6 + y, 2) - 1);
+      d = 0.62 + 0.55 * n1 + 0.34 * ridge * ridge;
+    } else if (kind === 'round') {  // a water-worn stone: low relief, a flat underside
+      d = 0.82 + 0.26 * fbm(x * 1.2 + 3, y * 1.1 + z, 3); sy = 0.52; floor = -0.18;
+    } else {
+      d = 0.7 + 0.5 * fbm(x * 2 + 1, y * 2 + z, 2); sy = 0.6; floor = -0.3;
+    }
+    p.setXYZ(i, x * d, Math.max(y * d * sy, floor), z * d);
   }
   base.computeVertexNormals();
-  const total = centres.reduce((a, c) => a + c.n, 0);
-  const mat = new THREE.MeshPhysicalMaterial({ color: 0x0a0b0d, roughness: 0.5, metalness: 0.3, clearcoat: 0.3, clearcoatRoughness: 0.4, flatShading: true, envMap: env, envMapIntensity: 0.45 });
-  const mesh = new THREE.InstancedMesh(base, mat, total);
-  const R = mulberry(21), M = new THREE.Matrix4(), Q = new THREE.Quaternion(), S = new THREE.Vector3(), P = new THREE.Vector3(), E = new THREE.Euler();
-  let k = 0;
-  for (const c of centres) for (let i = 0; i < c.n; i++) {
-    const a = R() * Math.PI * 2, d = Math.sqrt(R()) * c.r, x = c.x + Math.cos(a) * d, z = c.z + Math.sin(a) * d, s = (0.25 + Math.pow(R(), 2.6) * 1.7) * (calm.some((q) => Math.hypot(x - q.x, z - q.z) < q.r) ? 0.3 : 1);
-    P.set(x, heightAt(x, z) + s * 0.18, z); S.set(s * (0.8 + R() * 0.6), s * (0.7 + R() * 0.7), s * (0.8 + R() * 0.6));
-    E.set(R() * 0.5, R() * 6.28, R() * 0.5); Q.setFromEuler(E);
-    mesh.setMatrixAt(k, M.compose(P, Q, S));
-    mesh.setColorAt(k++, new THREE.Color().setScalar(0.5 + R() * 0.9));
-  }
-  mesh.instanceMatrix.needsUpdate = true; mesh.instanceColor!.needsUpdate = true; mesh.frustumCulled = false;
-  owned.push(base, mat);
-  return mesh;
+  return base;
 }
 
-/** Wet gravel: thousands of small glossy pebbles scattered over the ground, which give the foreground its fine speckled highlights. */
-export function buildPebbles(centres: Array<{ x: number; z: number; r: number; n: number }>, heightAt: (x: number, z: number) => number, env: THREE.Texture | null,
-  owned: Array<{ dispose(): void }>): THREE.InstancedMesh {
-  const base = mergeVertices(new THREE.IcosahedronGeometry(1, 1).deleteAttribute('uv').deleteAttribute('normal'));
-  const { fbm } = makeNoise(13), p = base.getAttribute('position');
-  for (let i = 0; i < p.count; i++) { const x = p.getX(i), y = p.getY(i), z = p.getZ(i), d = 0.7 + 0.5 * fbm(x * 2 + 1, y * 2 + z, 2); p.setXYZ(i, x * d, y * d * 0.6, z * d); }
-  base.computeVertexNormals();
-  const total = centres.reduce((a, c) => a + c.n, 0);
-  const mat = new THREE.MeshPhysicalMaterial({ color: 0x151619, roughness: 0.32, metalness: 0.2, clearcoat: 0.9, clearcoatRoughness: 0.12, flatShading: true, envMap: env, envMapIntensity: 0.9 });
-  const mesh = new THREE.InstancedMesh(base, mat, total);
-  const R = mulberry(55), M = new THREE.Matrix4(), Q = new THREE.Quaternion(), S = new THREE.Vector3(), P = new THREE.Vector3(), E = new THREE.Euler();
-  let k = 0;
+/** A multi-scale scatter: wet rocks of two kinds (cut blocks and rounded stones), some of them partly sunk into the ground, in chunks with distance levels of detail. */
+export function buildRocks(centres: Array<{ x: number; z: number; r: number; n: number }>, heightAt: (x: number, z: number) => number, env: THREE.Texture | null,
+  owned: Array<{ dispose(): void }>, detail: number, calm: Array<{ x: number; z: number; r: number }> = []): ChunkedField {
+  const mat = new THREE.MeshPhysicalMaterial({ color: 0x0a0b0d, roughness: 0.5, metalness: 0.3, clearcoat: 0.3, clearcoatRoughness: 0.4, flatShading: true, envMap: env, envMapIntensity: 0.45 });
+  const R = mulberry(21), items: FieldItem[] = [], M = new THREE.Matrix4(), Q = new THREE.Quaternion(), S = new THREE.Vector3(), P = new THREE.Vector3(), E = new THREE.Euler();
   for (const c of centres) for (let i = 0; i < c.n; i++) {
-    const a = R() * Math.PI * 2, d = Math.sqrt(R()) * c.r, x = c.x + Math.cos(a) * d, z = c.z + Math.sin(a) * d, s = 0.05 + Math.pow(R(), 3) * 0.3;
-    P.set(x, heightAt(x, z) + s * 0.3, z); S.set(s * (0.8 + R() * 0.7), s * (0.6 + R() * 0.6), s * (0.8 + R() * 0.7));
-    E.set(R() * 3, R() * 6.28, R() * 3); Q.setFromEuler(E);
-    mesh.setMatrixAt(k, M.compose(P, Q, S));
-    mesh.setColorAt(k++, new THREE.Color().setScalar(0.5 + R() * 1.4));
+    const a = R() * Math.PI * 2, d = Math.sqrt(R()) * c.r, x = c.x + Math.cos(a) * d, z = c.z + Math.sin(a) * d;
+    // sizes follow a heavy-tailed distribution (many small stones, few large blocks); near the bodies they stay small
+    const s = (0.2 + Math.pow(R(), 2.8) * 1.9) * (calm.some((q) => Math.hypot(x - q.x, z - q.z) < q.r) ? 0.3 : 1);
+    const sunk = R() < 0.3 ? 0.35 : 0.0;  // partly submerged or embedded
+    P.set(x, heightAt(x, z) + s * (0.18 - sunk), z); S.set(s * (0.8 + R() * 0.7), s * (0.55 + R() * 0.8), s * (0.8 + R() * 0.7));
+    E.set((R() - 0.5) * 0.7, R() * 6.28, (R() - 0.5) * 0.7); Q.setFromEuler(E);
+    items.push({ matrix: M.clone().compose(P, Q, S), shade: 0.5 + R() * 0.9 });
   }
-  mesh.instanceMatrix.needsUpdate = true; mesh.instanceColor!.needsUpdate = true; mesh.frustumCulled = false;
-  owned.push(base, mat);
-  return mesh;
+  // the two kinds share one field per level: a field is built per kind and the group merged
+  const blocks = items.filter((_, i) => i % 3 !== 0), rounds = items.filter((_, i) => i % 3 === 0);
+  const lv = (kind: 'block' | 'round') => [
+    { geometry: stoneGeometry(detail, kind), range: 55 }, { geometry: stoneGeometry(Math.max(1, detail - 1), kind), range: 120 }, { geometry: stoneGeometry(Math.max(0, detail - 2), kind), range: 200 },
+  ];
+  const fb = buildChunkedField(blocks, lv('block'), mat, 24, 'rocks'), fr = buildChunkedField(rounds, lv('round'), mat, 24, 'rounds');
+  const group = new THREE.Group(); group.name = 'rocks'; group.add(fb.group, fr.group);
+  owned.push(mat);
+  return { group, chunks: fb.chunks + fr.chunks, instances: fb.instances + fr.instances, update: (c) => fb.update(c) + fr.update(c), dispose: () => { fb.dispose(); fr.dispose(); } };
+}
+
+/** Wet gravel: thousands of small glossy pebbles, in chunks: the near ones in full, the middle distance with 20 faces, and none beyond the distance at which they are a speck. */
+export function buildPebbles(centres: Array<{ x: number; z: number; r: number; n: number }>, heightAt: (x: number, z: number) => number, env: THREE.Texture | null,
+  owned: Array<{ dispose(): void }>): ChunkedField {
+  const mat = new THREE.MeshPhysicalMaterial({ color: 0x151619, roughness: 0.32, metalness: 0.2, clearcoat: 0.9, clearcoatRoughness: 0.12, flatShading: true, envMap: env, envMapIntensity: 0.9 });
+  const R = mulberry(55), items: FieldItem[] = [], M = new THREE.Matrix4(), Q = new THREE.Quaternion(), S = new THREE.Vector3(), P = new THREE.Vector3(), E = new THREE.Euler();
+  for (const c of centres) for (let i = 0; i < c.n; i++) {
+    const a = R() * Math.PI * 2, d = Math.sqrt(R()) * c.r, x = c.x + Math.cos(a) * d, z = c.z + Math.sin(a) * d, s = 0.04 + Math.pow(R(), 3.2) * 0.34;
+    const flat = R() < 0.35 ? 0.45 : 1;  // flattened wet stones
+    P.set(x, heightAt(x, z) + s * (R() < 0.2 ? 0.05 : 0.3), z); S.set(s * (0.8 + R() * 0.7), s * flat * (0.6 + R() * 0.6), s * (0.8 + R() * 0.7));
+    E.set(R() * 3, R() * 6.28, R() * 3); Q.setFromEuler(E);
+    items.push({ matrix: M.clone().compose(P, Q, S), shade: 0.5 + R() * 1.4 });
+  }
+  const f = buildChunkedField(items, [{ geometry: stoneGeometry(1, 'pebble'), range: 26 }, { geometry: stoneGeometry(0, 'pebble'), range: 70 }], mat, 12, 'gravel');
+  owned.push(mat);
+  return f;
 }

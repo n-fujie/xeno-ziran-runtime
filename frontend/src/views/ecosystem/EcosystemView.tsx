@@ -157,15 +157,17 @@ export default function EcosystemView() {
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x020202);
     scene.fog = new THREE.FogExp2(0x020202, 0.0034);
+    let sceneEnv: THREE.Texture | null = null;
     if (q !== 'performance') {
       const pm = new THREE.PMREMGenerator(renderer);
-      scene.environment = pm.fromScene(new RoomEnvironment(), 0.04).texture;
+      scene.environment = sceneEnv = pm.fromScene(new RoomEnvironment(), 0.04).texture;
       scene.environmentIntensity = 0.22;
     }
     scene.add(new THREE.HemisphereLight(0xffffff, 0x050505, 0.32));
     const key = new THREE.DirectionalLight(0xffffff, 1.7); key.position.set(120, 180, 80); scene.add(key);
     const rim = new THREE.DirectionalLight(0xffffff, 0.6); rim.position.set(-140, 70, -120); scene.add(rim);
-    for (const y of [-6, -40, -74, -104]) { const l = new THREE.PointLight(0xffffff, 650, 90, 1.6); l.position.set(0, y, 0); scene.add(l); }
+    const shaftLights: THREE.PointLight[] = [];
+    for (const y of [-6, -40, -74, -104]) { const l = new THREE.PointLight(0xffffff, 650, 90, 1.6); l.position.set(0, y, 0); scene.add(l); shaftLights.push(l); }
     const camera = new THREE.PerspectiveCamera(46, el.clientWidth / Math.max(1, el.clientHeight), 0.3, 2500);
     const p0 = CAMERA_PRESETS[cam] ?? CAMERA_PRESETS.overview;
     camera.position.set(...p0.pos);
@@ -173,8 +175,9 @@ export default function EcosystemView() {
     controls.target.set(...p0.target);
     controls.enableDamping = true; controls.dampingFactor = 0.08; controls.maxDistance = 600; controls.minDistance = 1.5;
     // local key and rim lights on the experimental bodies (the low-key look of the concept renders): narrow cool spots over the dark ground
+    const spots: THREE.SpotLight[] = [];
     const spot = (pos: [number, number, number], tgt: [number, number, number], intensity: number, angle: number) => {
-      const l = new THREE.SpotLight(0xe6ecff, intensity, 110, angle, 0.9, 1.3); l.position.set(...pos); l.target.position.set(...tgt); scene.add(l, l.target);
+      const l = new THREE.SpotLight(0xe6ecff, intensity, 110, angle, 0.9, 1.3); l.position.set(...pos); l.target.position.set(...tgt); scene.add(l, l.target); spots.push(l);
     };
     spot([-80, 26, 30], [-104, 2, 4], 330, 0.5); spot([-128, 16, -14], [-104, 3, 4], 260, 0.45); spot([-72, 24, 62], [-86, 4, 36], 200, 0.45);
     const studio = q === 'performance' ? null : studioEnvironment(renderer);
@@ -184,28 +187,67 @@ export default function EcosystemView() {
     const overlays = new THREE.Group(); mega.arena.group.add(overlays);
     const device = buildDeviceLayer(mega.arena.group, 14); mega.root.add(device.group);
     // post-processing (balanced and high): bloom on highlights and lamps, a vignette with fine grain, and at the high tier a depth-of-field pass focused on the orbit target
-    let composer: EffectComposer | null = null, bokeh: BokehPass | null = null;
-    const grade = { uniforms: { tDiffuse: { value: null }, time: { value: 0 }, vignette: { value: 0.52 }, grain: { value: 0.035 } },
+    // The post chain differs by tier because it is the largest fixed cost of a frame (measured: 9 ms of an empty scene at 1672 x 808 with multisampling, bloom, grade, output and FXAA).
+    //   performance  none (the renderer draws to the screen with multisampling)
+    //   balanced     render (half float, no multisampling) -> tone mapping and sRGB -> one final pass: a light edge anti-aliasing, a vignette and fine grain
+    //   high         render (4x multisampling) -> bloom -> depth of field -> tone mapping -> vignette and grain
+    let composer: EffectComposer | null = null, bokeh: BokehPass | null = null, final: ShaderPass | null = null;
+    const finalShader = { uniforms: { tDiffuse: { value: null }, time: { value: 0 }, vignette: { value: 0.52 }, grain: { value: 0.035 }, aa: { value: 1 }, px: { value: new THREE.Vector2(1 / 1672, 1 / 808) } },
       vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
-      fragmentShader: 'uniform sampler2D tDiffuse; uniform float time; uniform float vignette; uniform float grain; varying vec2 vUv; float h(vec2 p){ return fract(sin(dot(p, vec2(12.9898,78.233)) + time) * 43758.5453); } void main(){ vec4 c = texture2D(tDiffuse, vUv); vec2 d = vUv - 0.5; float v = 1.0 - vignette * dot(d, d) * 2.2; c.rgb *= v; c.rgb += (h(vUv * 1024.0) - 0.5) * grain * (1.0 - c.rgb); gl_FragColor = c; }' };
+      fragmentShader: `uniform sampler2D tDiffuse; uniform float time; uniform float vignette; uniform float grain; uniform float aa; uniform vec2 px; varying vec2 vUv;
+        float h(vec2 p){ return fract(sin(dot(p, vec2(12.9898,78.233)) + time) * 43758.5453); }
+        float luma(vec3 c){ return dot(c, vec3(0.299, 0.587, 0.114)); }
+        void main(){
+          vec3 c = texture2D(tDiffuse, vUv).rgb;
+          if (aa > 0.5) {  // a light edge-only anti-aliasing: where the luminance contrast of the four neighbours is high, blend with their mean
+            vec3 n = texture2D(tDiffuse, vUv + vec2(0.0, px.y)).rgb, s = texture2D(tDiffuse, vUv - vec2(0.0, px.y)).rgb, e = texture2D(tDiffuse, vUv + vec2(px.x, 0.0)).rgb, w = texture2D(tDiffuse, vUv - vec2(px.x, 0.0)).rgb;
+            float lc = luma(c), ln = luma(n), ls = luma(s), le = luma(e), lw = luma(w), lmin = min(lc, min(min(ln, ls), min(le, lw))), lmax = max(lc, max(max(ln, ls), max(le, lw))), ct = lmax - lmin;
+            float k = clamp((ct - max(0.05, lmax * 0.12)) * 4.0, 0.0, 0.7);
+            c = mix(c, (n + s + e + w + c) * 0.2, k);
+          }
+          vec2 d = vUv - 0.5; c *= 1.0 - vignette * dot(d, d) * 2.2;
+          c += (h(vUv * 1024.0) - 0.5) * grain * (1.0 - c);
+          gl_FragColor = vec4(c, 1.0);
+        }` };
     if (q !== 'performance') {
-      const w0 = el.clientWidth, h0 = el.clientHeight;
-      const target = new THREE.WebGLRenderTarget(w0, h0, { type: THREE.HalfFloatType, samples: q === 'high' ? 4 : 2 });
+      const w0 = el.clientWidth, h0 = el.clientHeight, high = q === 'high';
+      const target = new THREE.WebGLRenderTarget(w0, h0, { type: THREE.HalfFloatType, samples: Number(url.get('msaa') ?? (high ? 4 : 0)) });
       composer = new EffectComposer(renderer, target);
       composer.addPass(new RenderPass(scene, camera));
-      composer.addPass(new UnrealBloomPass(new THREE.Vector2(w0, h0), q === 'high' ? 0.3 : 0.24, 0.5, 1.05));
-      if (q === 'high') { bokeh = new BokehPass(scene, camera, { focus: 60, aperture: 0.00006, maxblur: 0.006 }); composer.addPass(bokeh); }
-      composer.addPass(new ShaderPass(grade));
+      // bloom (high; at balanced only with ?bloom=1) works at a quarter of the resolution of the frame: it blurs, so nothing is lost, and it is an expensive pass
+      if (high || url.get('bloom') === '1') composer.addPass(new UnrealBloomPass(new THREE.Vector2(w0 * 0.5, h0 * 0.5), high ? 0.3 : 0.24, 0.5, 1.05));
+      if (high) { bokeh = new BokehPass(scene, camera, { focus: 60, aperture: 0.00006, maxblur: 0.006 }); composer.addPass(bokeh); }
       composer.addPass(new OutputPass());
+      final = new ShaderPass(finalShader);
+      final.material.uniforms.aa.value = high ? 0 : 1;
+      final.material.uniforms.px.value.set(1 / (w0 * renderer.getPixelRatio()), 1 / (h0 * renderer.getPixelRatio()));
+      composer.addPass(final);
     }
+    // Every light costs every lit pixel of the frame, so the lights that cannot be seen are switched off: the spot lights on the bodies when the camera is far from the bodies, the
+    // shaft's point lights when the camera is away from the shaft and looks away from it. All four combinations are compiled once at the start, so a switch is not a hitch.
+    const lightState = { spots: true, shaft: true };
+    const bodiesAt = new THREE.Vector3(-98, 2, 14), fwd = new THREE.Vector3(), toShaft = new THREE.Vector3();
+    const applyLights = (force = false) => {
+      const dB = camera.position.distanceTo(bodiesAt);
+      const spotsOn = lightState.spots ? dB < 105 : dB < 95;
+      camera.getWorldDirection(fwd);
+      const dS = camera.position.length(), toS = toShaft.set(-camera.position.x, -40 - camera.position.y, -camera.position.z).normalize(), facing = fwd.dot(toS);  // the shaft stands at the origin
+      const awayFromShaft = lightState.shaft ? (dS > 85 && facing < 0.15) : (dS > 75 && facing < 0.45);
+      if (!force && spotsOn === lightState.spots && !awayFromShaft === lightState.shaft) return;
+      lightState.spots = spotsOn; lightState.shaft = !awayFromShaft;
+      spots.forEach((l) => { l.visible = spotsOn; }); shaftLights.forEach((l) => { l.visible = !awayFromShaft; });
+    };
+    const features = { post: true, reflect: true, bodies: true, gravel: true, rocks: true, structure: true, bloom: true, everything: true, terrain: true, arena: true, lines: true, points: true, spots: true, env: true };
     const renderFrame = (now: number) => {
-      if (composer) {
-        grade.uniforms.time.value = (now / 1000) % 10;
+      if (composer && features.post) {
+        finalShader.uniforms.time.value = (now / 1000) % 10;
         if (bokeh) (bokeh.uniforms as unknown as { focus: { value: number } }).focus.value = camera.position.distanceTo(controls.target);
         composer.render();
       } else renderer.render(scene, camera);
     };
     eng.current = { device, composer, mega, renderer, scene, camera, controls, overlays, simMs: [] };
+    for (const [sp, sh] of [[true, true], [true, false], [false, true], [false, false]] as const) { spots.forEach((l) => { l.visible = sp; }); shaftLights.forEach((l) => { l.visible = sh; }); renderer.compile(scene, camera); }
+    applyLights(true);
     setReady(true);
 
     const frames: number[] = [];
@@ -233,6 +275,8 @@ export default function EcosystemView() {
         controls.target.add(tmp2); camera.position.add(tmp2);
       }
       controls.update();
+      mega.update(camera.position);
+      applyLights();
       renderFrame(now);
       if (now - lastHud > 500) {
         lastHud = now;
@@ -247,7 +291,7 @@ export default function EcosystemView() {
       }
     };
     raf = requestAnimationFrame(loop);
-    const ro = new ResizeObserver(() => { renderer.setSize(el.clientWidth, el.clientHeight); composer?.setSize(el.clientWidth, el.clientHeight); camera.aspect = el.clientWidth / Math.max(1, el.clientHeight); camera.updateProjectionMatrix(); });
+    const ro = new ResizeObserver(() => { renderer.setSize(el.clientWidth, el.clientHeight); composer?.setSize(el.clientWidth, el.clientHeight); final?.material.uniforms.px.value.set(1 / (el.clientWidth * renderer.getPixelRatio()), 1 / (el.clientHeight * renderer.getPixelRatio())); camera.aspect = el.clientWidth / Math.max(1, el.clientHeight); camera.updateProjectionMatrix(); });
     ro.observe(el);
     // picking: a click (not a drag) on an operational configuration or a trial chamber
     let down: [number, number] | null = null;
@@ -265,9 +309,50 @@ export default function EcosystemView() {
     renderer.domElement.addEventListener('pointerdown', onDown); renderer.domElement.addEventListener('pointerup', onUp);
     (window as unknown as { __meos?: unknown }).__meos = {
       ready: () => !!eng.current, perf: () => perfSnapshot(frames, renderer, mega, eng.current?.simMs ?? [], q),
-      camera: () => ({ pos: camera.position.toArray(), target: controls.target.toArray() }), stats: () => mega.stats,
+      camera: () => ({ pos: camera.position.toArray(), target: controls.target.toArray(), fov: camera.fov, near: camera.near, far: camera.far, exposure: renderer.toneMappingExposure, toneMapping: 'ACESFilmic', pixelRatio: renderer.getPixelRatio(), size: [renderer.domElement.width, renderer.domElement.height], quality: q }), stats: () => mega.stats,
       goto: (t: number) => { live.current.playhead = t; live.current.tick = t; setTickRef.current(t); }, play: (on: boolean) => { live.current.playing = on; setPlayingRef.current(on); },
       resetPerf: () => { frames.length = 0; if (eng.current) eng.current.simMs.length = 0; },
+      // measurement hooks (they change nothing in the simulation): switch a graphics feature off to measure its cost, and render n frames back to back with a GPU sync after
+      // each one, which gives the uncapped cost of a frame (the on-screen frame rate is limited by the display)
+      setFeature: (k: keyof typeof features, on: boolean) => {
+        features[k] = on;
+        const by = (n: string) => mega.root.children.find((c) => c.name === n || c.children.some((g) => g.name === n));
+        if (k === 'reflect' && mega.terrain.puddleMesh) { mega.terrain.puddleMesh.visible = on; mega.terrain.group.userData.noReflect = !on; }
+        if (k === 'bodies') mega.bodies.group.visible = on;
+        if (k === 'gravel') { const o = by('gravel'); if (o) o.visible = on; }
+        if (k === 'rocks') { const o = by('rocks'); if (o) o.visible = on; }
+        if (k === 'structure') mega.heavy.forEach((o) => { o.visible = on; });
+        if (k === 'lines') mega.root.traverse((o) => { if ((o as THREE.LineSegments).isLineSegments) o.visible = on; });
+        if (k === 'points') mega.root.traverse((o) => { if ((o as THREE.Points).isPoints) o.visible = on; });
+        if (k === 'env') { scene.environment = on ? sceneEnv : null; scene.traverse((o) => { const m = (o as THREE.Mesh).material as THREE.Material | undefined; if (m) m.needsUpdate = true; }); }
+        if (k === 'spots') scene.children.forEach((c) => { if ((c as THREE.SpotLight).isSpotLight) c.visible = on; });
+        if (k === 'everything') mega.root.visible = on;
+        if (k === 'terrain') mega.terrain.group.visible = on;
+        if (k === 'arena') mega.arena.group.visible = on;
+        if (k === 'bloom') composer?.passes.forEach((p) => { if (p instanceof UnrealBloomPass) p.enabled = on; });
+      },
+      benchmark: (n: number, orbit = false) => {
+        const gl = renderer.getContext() as WebGL2RenderingContext, px = new Uint8Array(4), ms: number[] = [], js: number[] = [], gpu: number[] = [];
+        const tq = gl.getExtension('EXT_disjoint_timer_query_webgl2') as { TIME_ELAPSED_EXT: number } | null;
+        renderer.info.autoReset = false;  // the counters then cover every pass of one frame (the composer renders several)
+        let calls = 0, triangles = 0;
+        for (let i = 0; i < n; i++) {
+          renderer.info.reset();
+          const q = tq ? gl.createQuery() : null;
+          if (q && tq) gl.beginQuery(tq.TIME_ELAPSED_EXT, q);
+          const t0 = performance.now();
+          if (orbit) { const o = camera.position.clone().sub(controls.target), a = 0.004, c = Math.cos(a), sn = Math.sin(a); camera.position.set(controls.target.x + o.x * c - o.z * sn, camera.position.y, controls.target.z + o.x * sn + o.z * c); camera.lookAt(controls.target); }
+          controls.update(); mega.update(camera.position); applyLights(); renderFrame(t0);
+          js.push(performance.now() - t0);  // the CPU side of the frame: scene traversal, state changes and the submission of the draw calls
+          if (q && tq) gl.endQuery(tq.TIME_ELAPSED_EXT);
+          gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px);  // forces the GPU to finish the frame
+          if (q) { if (gl.getQueryParameter(q, gl.QUERY_RESULT_AVAILABLE)) gpu.push(Number(gl.getQueryParameter(q, gl.QUERY_RESULT)) / 1e6); gl.deleteQuery(q); }
+          ms.push(performance.now() - t0);
+          calls = renderer.info.render.calls; triangles = renderer.info.render.triangles;
+        }
+        renderer.info.autoReset = true;
+        return { ms, js, gpu, drawCalls: calls, triangles, geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures };
+      },
       setCamera: (pos: [number, number, number], target: [number, number, number]) => { camera.position.set(...pos); controls.target.set(...target); controls.update(); },
       renderOnce: () => { controls.update(); renderFrame(performance.now()); },
     };

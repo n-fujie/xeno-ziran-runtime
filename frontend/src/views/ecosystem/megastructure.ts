@@ -12,7 +12,9 @@
 import * as THREE from 'three';
 import type { EntityFrame, Frame, Label } from './meosApi';
 import { buildBodies, type BodySet } from './bodies';
+import { applyRanges, chunkBatch, chunkLines } from './lod';
 import { buildPebbles, buildRocks, buildTerrain, type Terrain } from './terrain';
+import type { ChunkedField } from './lod';
 
 export type Quality = 'performance' | 'balanced' | 'high';
 let _dust: THREE.DataTexture | null = null;
@@ -89,6 +91,8 @@ export class Boxes {
   private buf = new Float32Array(16 * 1024);
   private col: number[] = [];
   edges: number[] = [];
+  /** the share of boxes that keep their drawn edges: the lines are an expensive primitive, so a lower tier draws fewer of them */
+  edgeKeep = 1;
   private tint = false;
 
   private grow() {
@@ -103,7 +107,7 @@ export class Boxes {
     if (shade !== undefined) { this.tint = true; }
     this.col.push(shade ?? 1);
     this.count++;
-    if (edge) {
+    if (edge && (this.count * 0.6180339) % 1 < this.edgeKeep) {
       for (const [i, j] of CUBE_EDGES) {
         for (const k of [i, j]) {
           const c = UNIT_CORNERS[k];
@@ -138,6 +142,21 @@ export class Boxes {
     return m;
   }
 
+  /** Like ``mesh`` but, for a large batch, split into spatial chunks that three.js can cull (a single mesh over the whole structure is always drawn in full). */
+  chunked(mat: THREE.Material, geo: THREE.BufferGeometry = new THREE.BoxGeometry(1, 1, 1), cell = 56, maxRange = Infinity): THREE.Object3D | null {
+    if (this.count <= 600) return this.mesh(mat, geo);
+    const g = chunkBatch(geo, mat, this.buf, this.col, this.count, cell, this.tint, maxRange);
+    g.userData.heavy = true;
+    return g;
+  }
+
+  chunkedLines(mat: THREE.LineBasicMaterial, cell = 56, maxRange = Infinity): THREE.Object3D | null {
+    if (this.edges.length < 6000) return this.lines(mat);
+    const g = chunkLines(this.edges, mat, cell, maxRange);
+    g.userData.heavy = true;
+    return g;
+  }
+
   lines(mat: THREE.LineBasicMaterial): THREE.LineSegments | null {
     if (!this.edges.length) return null;
     const g = new THREE.BufferGeometry();
@@ -170,7 +189,9 @@ export type Mats = ReturnType<typeof materials>;
 // ---------------------------------------------------------------------------------------------------- architecture
 export interface Megastructure {
   root: THREE.Group; arena: Arena; trials: Trials; stats: Stats; carriers: Carriers; gauge: Gauge; stockpile: Stockpile; array: ArrayPulse;
-  anchors: Record<string, THREE.Vector3>; terrain: Terrain; bodies: BodySet; heavy: THREE.Object3D[]; dispose(): void;
+  anchors: Record<string, THREE.Vector3>; terrain: Terrain; bodies: BodySet; heavy: THREE.Object3D[];
+  /** Per-frame level-of-detail selection for the chunked fields; returns the instances drawn. */
+  update(camera: THREE.Vector3): number; dispose(): void;
 }
 
 export function buildMegastructure(quality: Quality, seed = 7, env: THREE.Texture | null = null): Megastructure {
@@ -181,16 +202,23 @@ export function buildMegastructure(quality: Quality, seed = 7, env: THREE.Textur
   root.name = 'xenoscience';
   const owned: Array<{ dispose(): void }> = [...Object.values(M)];
   const stats: Stats = { instances: 0, edgeSegments: 0, objects: 0, byKind: {} };
+  const seen = new Set<THREE.BufferGeometry>();
   const add = (kind: string, o: THREE.Object3D | null) => {
     if (!o) return;
     root.add(o);
     stats.objects++;
-    const n = (o as THREE.InstancedMesh).isInstancedMesh ? (o as THREE.InstancedMesh).count : 0;
-    const seg = (o as THREE.LineSegments).isLineSegments ? ((o as THREE.LineSegments).geometry.getAttribute('position').count / 2) : 0;
+    let n = 0, seg = 0;
+    o.traverse((c) => {
+      const im = c as THREE.InstancedMesh, ls = c as THREE.LineSegments;
+      if (im.isInstancedMesh) n += im.count;
+      if (ls.isLineSegments) seg += ls.geometry.getAttribute('position').count / 2;
+      const g = (c as THREE.Mesh).geometry;
+      if (g && !seen.has(g)) { seen.add(g); owned.push(g); }
+    });
     stats.instances += n; stats.edgeSegments += seg; stats.byKind[kind] = (stats.byKind[kind] ?? 0) + n + seg;
-    if ((o as THREE.Mesh).geometry) owned.push((o as THREE.Mesh).geometry);
   };
   const metal = new Boxes(), dark = new Boxes(), plate = new Boxes(), rock = new Boxes(), glass = new Boxes(), bolts = new Boxes();
+  for (const b of [metal, dark, plate, rock, glass, bolts]) b.edgeKeep = quality === 'high' ? 1 : quality === 'balanced' ? 0.72 : 0.5;
   const joint = (p: THREE.Vector3) => { if (R() < 0.55 * dens) bolts.box(p.x, p.y, p.z, 0.22, 0.22, 0.22); };
   const beam = (b: Boxes, a: THREE.Vector3, c: THREE.Vector3, t: number, edge = false, shade?: number) => { b.beam(a, c, t, edge, shade); joint(a); };
   const lat = (n: number) => Math.max(4, Math.round(n * dens));
@@ -276,8 +304,9 @@ export function buildMegastructure(quality: Quality, seed = 7, env: THREE.Textur
     })));
   }
   const nodeGeo = new THREE.SphereGeometry(0.62, 8, 6);
-  const nodeMesh = nodes.mesh(new THREE.MeshStandardMaterial({ color: 0x0b0b0d, metalness: 0.95, roughness: 0.14 }), nodeGeo);
-  if (nodeMesh) { add('nodes', nodeMesh); owned.push(nodeGeo, nodeMesh.material as THREE.Material); }
+  const nodeMat = new THREE.MeshStandardMaterial({ color: 0x0b0b0d, metalness: 0.95, roughness: 0.14 });
+  const nodeMesh = nodes.chunked(nodeMat, nodeGeo);
+  if (nodeMesh) { add('nodes', nodeMesh); owned.push(nodeGeo, nodeMat); }
 
   // --- the shaft columns: a lattice from the surface to the subsurface layer
   const columns = lat(28);
@@ -536,7 +565,7 @@ export function buildMegastructure(quality: Quality, seed = 7, env: THREE.Textur
     _q.setFromEuler(new THREE.Euler(0, -a + (R() - 0.5), 0));
     greeb.box(Math.cos(a) * r, y, Math.sin(a) * r, s2 * (0.6 + R()), s2 * (0.4 + R()), s2 * (0.6 + R()), _q.clone(), R() < 0.12, 0.25 + R() * 0.75);
   }
-  add('greebles', greeb.mesh(M.plate)); add('greebles edges', greeb.lines(M.edgeDim));
+  add('greebles', greeb.chunked(M.plate, undefined, 40, 105)); add('greebles edges', greeb.chunkedLines(M.edgeDim, 40, 105));
   const grid: number[] = [];
   const step = 2.2;
   for (let y = 0; y > -WORLD.depth; y -= step) for (let i = 0; i < 96; i++) {
@@ -547,12 +576,12 @@ export function buildMegastructure(quality: Quality, seed = 7, env: THREE.Textur
   { const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(grid, 3)); add('wall grid', new THREE.LineSegments(g, M.edgeDim)); }
 
   // --- flush the batches into instanced meshes and edge lines
-  const flush = (kind: string, b: Boxes, mat: THREE.Material, edgeMat: THREE.LineBasicMaterial | null) => { add(kind, b.mesh(mat)); if (edgeMat) add(kind + ' edges', b.lines(edgeMat)); };
+  const flush = (kind: string, b: Boxes, mat: THREE.Material, edgeMat: THREE.LineBasicMaterial | null) => { add(kind, b.chunked(mat)); if (edgeMat) add(kind + ' edges', b.chunkedLines(edgeMat)); };
   flush('trusses', metal, M.metal, M.edge); flush('panels', dark, M.dark, M.edgeDim); flush('plates', plate, M.plate, M.edge);
   flush('rock', rock, M.rock, null); flush('glazing', glass, M.glass, null);
   // bolts and joints: the micro-structure that gives the density of the reference imagery
-  flush('fittings', bolts, M.plate, null);
-  if (cables.length) { const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(cables, 3)); add('cables', new THREE.LineSegments(g, M.cable)); }
+  add('fittings', bolts.chunked(M.plate, undefined, 40, 95));
+  if (cables.length) { const cg = chunkLines(cables, M.cable, 56); cg.userData.heavy = true; add('cables', cg); }
 
   // --- suspended material in the shaft and stars
   const pt = (n: number, spread: () => THREE.Vector3, size: number, op: number) => {
@@ -562,7 +591,7 @@ export function buildMegastructure(quality: Quality, seed = 7, env: THREE.Textur
     const mt = new THREE.PointsMaterial({ color: 0xffffff, size, sizeAttenuation: true, transparent: true, opacity: op, depthWrite: false, map: dustSprite(), alphaTest: 0.05 }); owned.push(mt);
     return new THREE.Points(g, mt);
   };
-  add('suspended material', pt(lat(26000), () => { const a = R() * 6.283, r = Math.sqrt(R()) * (WORLD.pit - 3); return v3(Math.cos(a) * r, -R() * WORLD.depth, Math.sin(a) * r); }, 0.28, 0.75));
+  add('suspended material', pt(lat(19000), () => { const a = R() * 6.283, r = Math.sqrt(R()) * (WORLD.pit - 3); return v3(Math.cos(a) * r, -R() * WORLD.depth, Math.sin(a) * r); }, 0.28, 0.75));
   add('suspended material', pt(lat(9000), () => { const a = R() * 6.283, r = WORLD.pit + R() * 70; return v3(Math.cos(a) * r, R() * 40, Math.sin(a) * r); }, 0.3, 0.55));
   add('sky', pt(900, () => { const a = R() * 6.283, e = R() * 1.2 + 0.1, r = 700; return v3(Math.cos(a) * Math.cos(e) * r, Math.sin(e) * r, Math.sin(a) * Math.cos(e) * r); }, 1.6, 0.8));
   const moon = new THREE.Mesh(new THREE.SphereGeometry(26, 32, 16), new THREE.MeshStandardMaterial({ color: 0xb9bbc0, roughness: 1, emissive: 0x2a2b2e }));
@@ -571,9 +600,11 @@ export function buildMegastructure(quality: Quality, seed = 7, env: THREE.Textur
   // --- the simulation-driven parts
   // wet rocks around the experimental bodies and bodies themselves
   const rocks = buildRocks([{ x: -104, z: 4, r: 26, n: lat(260) }, { x: -86, z: 36, r: 16, n: lat(110) }, { x: -92, z: 14, r: 7, n: lat(80) }, { x: -80, z: -6, r: 14, n: lat(70) }], terrain.heightAt, env, owned, quality === 'high' ? 4 : quality === 'balanced' ? 3 : 2, [{ x: -104, z: 4, r: 16 }, { x: -92, z: 12, r: 9 }, { x: -86, z: 36, r: 7 }]);
-  add('rocks (wet)', rocks);
+  const addField = (kind: string, f: ChunkedField) => { root.add(f.group); stats.objects++; stats.instances += f.instances; stats.byKind[kind] = f.instances; };  // a field is counted once, not once per level of detail
+  addField('rocks (wet)', rocks);
   const peb = quality === 'performance' ? 0.15 : quality === 'balanced' ? 0.6 : 1;
-  add('gravel (wet)', buildPebbles([{ x: -104, z: 4, r: 30, n: Math.round(9000 * peb) }, { x: -86, z: 36, r: 18, n: Math.round(3500 * peb) }, { x: -92, z: 14, r: 10, n: Math.round(2500 * peb) }], terrain.heightAt, env, owned));
+  const gravel = buildPebbles([{ x: -104, z: 4, r: 30, n: Math.round(9000 * peb) }, { x: -86, z: 36, r: 18, n: Math.round(3500 * peb) }, { x: -92, z: 14, r: 10, n: Math.round(2500 * peb) }], terrain.heightAt, env, owned);
+  addField('gravel (wet)', gravel);
   const bodies = buildBodies(quality, env, terrain.heightAt);
   root.add(bodies.group); stats.objects++;
   const arena = buildArena(14, M, owned);
@@ -591,9 +622,10 @@ export function buildMegastructure(quality: Quality, seed = 7, env: THREE.Textur
     A: v3(0, 0, 0), B: v3(0, WORLD.levels.subsurface, 0), C: pro.clone(), D: dep.clone(), E: WORLD.habitat.clone(), F: v3(-20, 0, 62), G: arr.clone(), H: v3(36, 0, 24), I: exp.clone(),
   };
   // what a planar reflection does not need to draw: the distant space frame, cables and points (hidden during the puddles' reflection render)
-  const heavy = root.children.filter((o) => ((o as THREE.InstancedMesh).isInstancedMesh && (o as THREE.InstancedMesh).count > 600) || (o as THREE.LineSegments).isLineSegments || (o as THREE.Points).isPoints);
+  const heavy = root.children.filter((o) => o.userData.heavy === true || ((o as THREE.InstancedMesh).isInstancedMesh && (o as THREE.InstancedMesh).count > 600) || (o as THREE.LineSegments).isLineSegments || (o as THREE.Points).isPoints);
   terrain.setReflectionHidden(heavy);
-  return { root, arena, trials, stats, carriers, gauge, stockpile: stock, array: arrayPulse, anchors, terrain, bodies, heavy, dispose: () => { owned.forEach((o) => o.dispose()); } };
+  const rangeGroups = root.children.filter((o) => Number.isFinite(o.userData.maxRange));
+  return { root, arena, trials, stats, carriers, gauge, stockpile: stock, array: arrayPulse, anchors, terrain, bodies, heavy, update: (cam) => { terrain.update(cam); applyRanges(rangeGroups, cam); return rocks.update(cam) + gravel.update(cam); }, dispose: () => { owned.forEach((o) => o.dispose()); } };
 }
 
 // ---------------------------------------------------------------------------------------------------- the habitat arena
