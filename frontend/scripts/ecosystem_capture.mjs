@@ -47,7 +47,7 @@ for (const [name, q] of Object.entries(SHOTS)) {
   await page.evaluate(() => window.__meos.resetPerf());  // measure after warm-up: the scene build and shader compilation are not steady state
   await page.waitForTimeout(+arg('measure', 5000));
   perf[name] = await page.evaluate(() => ({ ...window.__meos.perf(), camera: window.__meos.camera(), stats: window.__meos.stats() }));
-  await (await page.$('.eco-stage')).screenshot({ path: join(out, `${name}.png`) });
+  await (await page.$('.eco-stage')).screenshot({ path: join(out, `${name}.png`), timeout: 300000 });
   await page.close();
   console.log(name, 'ok', perf[name].fps.toFixed(1), 'fps (software rendering)');
 }

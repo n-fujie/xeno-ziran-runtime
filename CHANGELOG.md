@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased — XENO ECOSYSTEM, second stage (MEOS-0, engine meos-0.2)
+
+* Engine: intermediate traces and causal paths (separate block and digest; the status never reads them), operational / observed / observability status with five observation parameters, optional M2 sensing,
+  per-entity history access, renewal efficiency, Address Domain interventions, first-stage Philosophical operations (expression, scorekeeping, norm-sensitive revision, inference, correction) as operational couplings.
+  Every new feature is absent from the default configuration: the baseline result digest is unchanged.
+* Experiments (`docs/ECOSYSTEM_MEOS_STAGE2.md`, `docs/ecosystem/experiments_stage2.json`): history x gradient x power, where history is necessary, all minimal operational configurations (full 2^9 search),
+  XenoBody boundaries, collapse / recovery phase, SSS phase regions, Address Domain, M2 connection, Philosophical operations. Null, seed-dependent, context-reversed and non-monotone results are recorded as found.
+* Interface: observation controls, connections, a STUDIES tab, trace charts, ADDRESS interventions, a research-device layer in the scene (observation array aim and coverage, boundary posts, pulse ring, recovery halo,
+  Philosophical module in an expansion bay), two camera presets, truss arches. Extended image statistics for the captures; visual similarity to the references remains partial.
+* Not integrated: R3 (a separate branch), live engine stepping, any connection to XenoBody / Ziran System / Xenoscience / a language-model Philosophical AI.
+
 ## Unreleased — XENO ECOSYSTEM (MEOS-0)
 
 * New view `ecosystem` (local runtime only): a real-time 3D megastructure organised like the XENOSCIENCE drawing around a deterministic simulation of MEOS-0, the first

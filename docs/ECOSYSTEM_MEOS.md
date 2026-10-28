@@ -1,5 +1,7 @@
 # XENO ECOSYSTEM — MEOS-0 and the XENOSCIENCE megastructure
 
+> Second stage (engine `meos-0.2`: traces, observation separation, M2, Philosophical operations, Address Domain interventions, new experiments, research-device layer): see `docs/ECOSYSTEM_MEOS_STAGE2.md`. The statement in section 9 below that the philosophical-AI connection is not implemented is superseded there only in the narrow sense that first-stage Philosophical operations exist inside MEOS-0; the Philosophical AI itself is not connected.
+
 A new view of XENO ZIRAN SIMULATOR (`?view=ecosystem`, local runtime only) that draws a deterministic simulation of **MEOS — Minimal Ecosystem Operational Shape**
 in a navigable megastructure organised like the XENOSCIENCE drawing. It was added on a separate branch; no existing view, test or stored result was changed
 (the only edits to existing files are the view registration, one i18n label, the layering declaration of the new layer, the enumeration of the new API routes in

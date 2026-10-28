@@ -251,7 +251,7 @@ def sss_sweep(config: dict, values: dict[str, list[float]] | None = None) -> dic
 
 def address_sweep(config: dict) -> dict:
     """One-at-a-time Address Domain perturbation of A1 and A2 (position, sensing boundary, temporal window, speed) from tick 0."""
-    changes = [
+    changes: list[tuple[str, list[float]]] = [
         ("entities.A2.x", [4, 7, 9]),
         ("entities.A2.y", [3, 9]),
         ("entities.A2.sensor_radius", [0, 1, 3]),
@@ -261,7 +261,7 @@ def address_sweep(config: dict) -> dict:
         ("entities.A2.persist", [1, 6]),
         ("entities.A2.speed", [0.5, 2.0]),
     ]
-    rows = []
+    rows: list[dict[str, Any]] = []
     for path, vals in changes:
         for v in vals:
             s = experiment(config, [{"tick": 0, "op": "RECONFIGURE", "path": path, "value": v}], f"{path}={v}")

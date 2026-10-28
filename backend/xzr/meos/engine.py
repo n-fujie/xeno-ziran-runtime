@@ -344,7 +344,7 @@ class Run:
         self.frames: list[dict] = []
         self.field_bytes = bytearray()
         self.intervention_log: list[dict] = []
-        self.status = {"label": "DEGRADED", "reason": "forming", "dependency": None, "cycles_in_window": 0}
+        self.status: dict[str, Any] = {"label": "DEGRADED", "reason": "forming", "dependency": None, "cycles_in_window": 0}
         self.pending_chain: dict[int, dict] = {}  # fire-event id -> chain info for cycle detection
         self.end_reason: str | None = None
         # optional features: all inert unless configured or intervened, and none of them draws from the main random stream

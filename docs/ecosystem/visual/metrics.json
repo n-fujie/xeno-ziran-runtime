@@ -7,6 +7,15 @@
   "uniformity",
   "dark_share"
  ],
+ "statistics_stage2": [
+  "edge_density",
+  "occupied_area_ratio",
+  "depth_proxy",
+  "silhouette_density",
+  "luminance_histogram",
+  "spatial_frequency_hi",
+  "spatial_frequency_vhi"
+ ],
  "references": {
   "1": {
    "size": [
@@ -19,7 +28,23 @@
    "detail_density": 0.4943,
    "fine_over_coarse": 0.778,
    "uniformity": 0.7334,
-   "dark_share": 0.0167
+   "dark_share": 0.0167,
+   "luminance_histogram": [
+    0.026,
+    0.0325,
+    0.0491,
+    0.0644,
+    0.0721,
+    0.0793,
+    0.0895,
+    0.5872
+   ],
+   "edge_density": 0.4179,
+   "spatial_frequency_hi": 0.32159,
+   "spatial_frequency_vhi": 0.14638,
+   "occupied_area_ratio": 0.9242,
+   "depth_proxy": 0.7719,
+   "silhouette_density": 0.2073
   },
   "2": {
    "size": [
@@ -32,7 +57,23 @@
    "detail_density": 0.3477,
    "fine_over_coarse": 0.533,
    "uniformity": 0.8516,
-   "dark_share": 0.2554
+   "dark_share": 0.2554,
+   "luminance_histogram": [
+    0.3495,
+    0.2404,
+    0.1548,
+    0.0841,
+    0.0503,
+    0.0388,
+    0.0347,
+    0.0475
+   ],
+   "edge_density": 0.3006,
+   "spatial_frequency_hi": 0.20774,
+   "spatial_frequency_vhi": 0.0529,
+   "occupied_area_ratio": 0.7358,
+   "depth_proxy": 0.8276,
+   "silhouette_density": 0.3429
   },
   "3": {
    "size": [
@@ -45,7 +86,23 @@
    "detail_density": 0.4404,
    "fine_over_coarse": 0.697,
    "uniformity": 0.9252,
-   "dark_share": 0.2817
+   "dark_share": 0.2817,
+   "luminance_histogram": [
+    0.4088,
+    0.2344,
+    0.1088,
+    0.0701,
+    0.0499,
+    0.042,
+    0.0389,
+    0.047
+   ],
+   "edge_density": 0.3286,
+   "spatial_frequency_hi": 0.25255,
+   "spatial_frequency_vhi": 0.10196,
+   "occupied_area_ratio": 0.7067,
+   "depth_proxy": 0.8185,
+   "silhouette_density": 0.4171
   },
   "4": {
    "size": [
@@ -58,7 +115,23 @@
    "detail_density": 0.3787,
    "fine_over_coarse": 0.585,
    "uniformity": 0.8515,
-   "dark_share": 0.2491
+   "dark_share": 0.2491,
+   "luminance_histogram": [
+    0.3096,
+    0.153,
+    0.2435,
+    0.1471,
+    0.0588,
+    0.0326,
+    0.0227,
+    0.0328
+   ],
+   "edge_density": 0.3117,
+   "spatial_frequency_hi": 0.19721,
+   "spatial_frequency_vhi": 0.05755,
+   "occupied_area_ratio": 0.7441,
+   "depth_proxy": 0.824,
+   "silhouette_density": 0.3293
   }
  },
  "captures": {
@@ -68,21 +141,59 @@
      1672,
      808
     ],
-    "luminance_mean": 0.1214,
-    "luminance_std": 0.1849,
-    "chroma": 0.0059,
-    "detail_density": 0.2232,
-    "fine_over_coarse": 0.569,
-    "uniformity": 0.3991,
-    "dark_share": 0.623
+    "luminance_mean": 0.1297,
+    "luminance_std": 0.1918,
+    "chroma": 0.0063,
+    "detail_density": 0.2299,
+    "fine_over_coarse": 0.564,
+    "uniformity": 0.3918,
+    "dark_share": 0.6039,
+    "luminance_histogram": [
+     0.6482,
+     0.1321,
+     0.088,
+     0.0709,
+     0.0354,
+     0.0143,
+     0.0064,
+     0.0048
+    ],
+    "edge_density": 0.1799,
+    "spatial_frequency_hi": 0.13956,
+    "spatial_frequency_vhi": 0.05082,
+    "occupied_area_ratio": 0.3961,
+    "depth_proxy": 0.6162,
+    "silhouette_density": 0.3661
    },
    "distance_to_reference": {
-    "1": 1.0065,
-    "2": 0.619,
-    "3": 0.6823,
-    "4": 0.631
+    "1": 0.9896,
+    "2": 0.6092,
+    "3": 0.6741,
+    "4": 0.6209
    },
-   "nearest_reference": "2"
+   "nearest_reference": "2",
+   "distance2_to_reference": {
+    "1": {
+     "tone_tv": 0.7672,
+     "structure": 0.6205,
+     "frequency": 0.20559
+    },
+    "2": {
+     "tone_tv": 0.2987,
+     "structure": 0.4186,
+     "frequency": 0.06821
+    },
+    "3": {
+     "tone_tv": 0.2401,
+     "structure": 0.4026,
+     "frequency": 0.12402
+    },
+    "4": {
+     "tone_tv": 0.3386,
+     "structure": 0.4278,
+     "frequency": 0.05804
+    }
+   }
   },
   "02-habitat": {
    "metrics": {
@@ -90,21 +201,59 @@
      1672,
      808
     ],
-    "luminance_mean": 0.2853,
-    "luminance_std": 0.2034,
-    "chroma": 0.0097,
-    "detail_density": 0.1441,
-    "fine_over_coarse": 0.474,
-    "uniformity": 0.4746,
-    "dark_share": 0.0625
+    "luminance_mean": 0.2874,
+    "luminance_std": 0.2069,
+    "chroma": 0.0096,
+    "detail_density": 0.14,
+    "fine_over_coarse": 0.466,
+    "uniformity": 0.4536,
+    "dark_share": 0.0621,
+    "luminance_histogram": [
+     0.2335,
+     0.3064,
+     0.1708,
+     0.0965,
+     0.1305,
+     0.0252,
+     0.0231,
+     0.0139
+    ],
+    "edge_density": 0.1082,
+    "spatial_frequency_hi": 0.06449,
+    "spatial_frequency_vhi": 0.02485,
+    "occupied_area_ratio": 0.9377,
+    "depth_proxy": 0.8412,
+    "silhouette_density": 0.0111
    },
    "distance_to_reference": {
-    "1": 0.6748,
-    "2": 0.473,
-    "3": 0.5856,
-    "4": 0.4826
+    "1": 0.6833,
+    "2": 0.4915,
+    "3": 0.6038,
+    "4": 0.501
    },
-   "nearest_reference": "2"
+   "nearest_reference": "2",
+   "distance2_to_reference": {
+    "1": {
+     "tone_tv": 0.6937,
+     "structure": 0.3734,
+     "frequency": 0.28438
+    },
+    "2": {
+     "tone_tv": 0.1747,
+     "structure": 0.4337,
+     "frequency": 0.14597
+    },
+    "3": {
+     "tone_tv": 0.241,
+     "structure": 0.517,
+     "frequency": 0.20325
+    },
+    "4": {
+     "tone_tv": 0.2256,
+     "structure": 0.4248,
+     "frequency": 0.13669
+    }
+   }
   },
   "03-research-core": {
    "metrics": {
@@ -112,21 +261,59 @@
      1672,
      808
     ],
-    "luminance_mean": 0.3753,
-    "luminance_std": 0.2525,
-    "chroma": 0.0162,
-    "detail_density": 0.1933,
-    "fine_over_coarse": 0.424,
-    "uniformity": 0.801,
-    "dark_share": 0.1162
+    "luminance_mean": 0.3574,
+    "luminance_std": 0.2402,
+    "chroma": 0.0161,
+    "detail_density": 0.1801,
+    "fine_over_coarse": 0.427,
+    "uniformity": 0.8401,
+    "dark_share": 0.1145,
+    "luminance_histogram": [
+     0.1622,
+     0.2302,
+     0.2009,
+     0.1384,
+     0.1213,
+     0.0679,
+     0.041,
+     0.0381
+    ],
+    "edge_density": 0.1585,
+    "spatial_frequency_hi": 0.07405,
+    "spatial_frequency_vhi": 0.02604,
+    "occupied_area_ratio": 0.8729,
+    "depth_proxy": 0.891,
+    "silhouette_density": 0.074
    },
    "distance_to_reference": {
-    "1": 0.5305,
-    "2": 0.2378,
-    "3": 0.3426,
-    "4": 0.2513
+    "1": 0.5585,
+    "2": 0.236,
+    "3": 0.3361,
+    "4": 0.2511
    },
-   "nearest_reference": "2"
+   "nearest_reference": "2",
+   "distance2_to_reference": {
+    "1": {
+     "tone_tv": 0.6089,
+     "structure": 0.3192,
+     "frequency": 0.27524
+    },
+    "2": {
+     "tone_tv": 0.2069,
+     "structure": 0.3396,
+     "frequency": 0.13636
+    },
+    "3": {
+     "tone_tv": 0.2598,
+     "structure": 0.4237,
+     "frequency": 0.19397
+    },
+    "4": {
+     "tone_tv": 0.1986,
+     "structure": 0.3313,
+     "frequency": 0.12713
+    }
+   }
   },
   "04-meos0-active": {
    "metrics": {
@@ -134,21 +321,59 @@
      1672,
      808
     ],
-    "luminance_mean": 0.2858,
-    "luminance_std": 0.2046,
-    "chroma": 0.0097,
-    "detail_density": 0.1424,
-    "fine_over_coarse": 0.47,
-    "uniformity": 0.5057,
-    "dark_share": 0.062
+    "luminance_mean": 0.2879,
+    "luminance_std": 0.2081,
+    "chroma": 0.0096,
+    "detail_density": 0.1384,
+    "fine_over_coarse": 0.462,
+    "uniformity": 0.4839,
+    "dark_share": 0.0617,
+    "luminance_histogram": [
+     0.2341,
+     0.3064,
+     0.1696,
+     0.0962,
+     0.1303,
+     0.0251,
+     0.0234,
+     0.0149
+    ],
+    "edge_density": 0.1065,
+    "spatial_frequency_hi": 0.06236,
+    "spatial_frequency_vhi": 0.02403,
+    "occupied_area_ratio": 0.9382,
+    "depth_proxy": 0.843,
+    "silhouette_density": 0.0099
    },
    "distance_to_reference": {
-    "1": 0.6639,
-    "2": 0.4494,
-    "3": 0.563,
-    "4": 0.4597
+    "1": 0.6718,
+    "2": 0.468,
+    "3": 0.5813,
+    "4": 0.4782
    },
-   "nearest_reference": "2"
+   "nearest_reference": "2",
+   "distance2_to_reference": {
+    "1": {
+     "tone_tv": 0.6926,
+     "structure": 0.3757,
+     "frequency": 0.28665
+    },
+    "2": {
+     "tone_tv": 0.1729,
+     "structure": 0.4356,
+     "frequency": 0.14822
+    },
+    "3": {
+     "tone_tv": 0.2393,
+     "structure": 0.519,
+     "frequency": 0.20554
+    },
+    "4": {
+     "tone_tv": 0.2257,
+     "structure": 0.4268,
+     "frequency": 0.13895
+    }
+   }
   },
   "05-meos-collapse": {
    "metrics": {
@@ -156,21 +381,59 @@
      1672,
      808
     ],
-    "luminance_mean": 0.2774,
-    "luminance_std": 0.1958,
+    "luminance_mean": 0.2795,
+    "luminance_std": 0.1992,
     "chroma": 0.0097,
-    "detail_density": 0.1437,
-    "fine_over_coarse": 0.467,
-    "uniformity": 0.5493,
-    "dark_share": 0.0744
+    "detail_density": 0.1403,
+    "fine_over_coarse": 0.459,
+    "uniformity": 0.5316,
+    "dark_share": 0.0739,
+    "luminance_histogram": [
+     0.2505,
+     0.2951,
+     0.1692,
+     0.0997,
+     0.132,
+     0.0262,
+     0.0208,
+     0.0064
+    ],
+    "edge_density": 0.1085,
+    "spatial_frequency_hi": 0.06801,
+    "spatial_frequency_vhi": 0.02837,
+    "occupied_area_ratio": 0.9251,
+    "depth_proxy": 0.8288,
+    "silhouette_density": 0.0184
    },
    "distance_to_reference": {
-    "1": 0.658,
-    "2": 0.4116,
-    "3": 0.5262,
-    "4": 0.4226
+    "1": 0.6629,
+    "2": 0.4262,
+    "3": 0.5407,
+    "4": 0.4372
    },
-   "nearest_reference": "2"
+   "nearest_reference": "2",
+   "distance2_to_reference": {
+    "1": {
+     "tone_tv": 0.7025,
+     "structure": 0.3669,
+     "frequency": 0.27969
+    },
+    "2": {
+     "tone_tv": 0.1665,
+     "structure": 0.4219,
+     "frequency": 0.14187
+    },
+    "3": {
+     "tone_tv": 0.2328,
+     "structure": 0.5052,
+     "frequency": 0.19867
+    },
+    "4": {
+     "tone_tv": 0.2154,
+     "structure": 0.4132,
+     "frequency": 0.13245
+    }
+   }
   },
   "06-xenobody-boundary": {
    "metrics": {
@@ -178,21 +441,59 @@
      1672,
      808
     ],
-    "luminance_mean": 0.2864,
-    "luminance_std": 0.2056,
-    "chroma": 0.0097,
-    "detail_density": 0.1464,
-    "fine_over_coarse": 0.478,
-    "uniformity": 0.4527,
-    "dark_share": 0.0632
+    "luminance_mean": 0.2886,
+    "luminance_std": 0.2092,
+    "chroma": 0.0096,
+    "detail_density": 0.1422,
+    "fine_over_coarse": 0.471,
+    "uniformity": 0.4332,
+    "dark_share": 0.0628,
+    "luminance_histogram": [
+     0.2342,
+     0.3058,
+     0.1698,
+     0.0949,
+     0.1294,
+     0.0263,
+     0.0252,
+     0.0143
+    ],
+    "edge_density": 0.1093,
+    "spatial_frequency_hi": 0.06512,
+    "spatial_frequency_vhi": 0.02535,
+    "occupied_area_ratio": 0.937,
+    "depth_proxy": 0.8448,
+    "silhouette_density": 0.0129
    },
    "distance_to_reference": {
-    "1": 0.6813,
-    "2": 0.4892,
-    "3": 0.601,
-    "4": 0.4984
+    "1": 0.6898,
+    "2": 0.5068,
+    "3": 0.6184,
+    "4": 0.516
    },
-   "nearest_reference": "2"
+   "nearest_reference": "2",
+   "distance2_to_reference": {
+    "1": {
+     "tone_tv": 0.6901,
+     "structure": 0.3722,
+     "frequency": 0.28359
+    },
+    "2": {
+     "tone_tv": 0.1704,
+     "structure": 0.4316,
+     "frequency": 0.14526
+    },
+    "3": {
+     "tone_tv": 0.2367,
+     "structure": 0.515,
+     "frequency": 0.20248
+    },
+    "4": {
+     "tone_tv": 0.226,
+     "structure": 0.4228,
+     "frequency": 0.13596
+    }
+   }
   },
   "07-history-overlay": {
    "metrics": {
@@ -200,21 +501,59 @@
      1672,
      808
     ],
-    "luminance_mean": 0.2858,
-    "luminance_std": 0.2046,
+    "luminance_mean": 0.2879,
+    "luminance_std": 0.208,
     "chroma": 0.0097,
-    "detail_density": 0.1425,
-    "fine_over_coarse": 0.471,
-    "uniformity": 0.4752,
-    "dark_share": 0.0624
+    "detail_density": 0.1385,
+    "fine_over_coarse": 0.463,
+    "uniformity": 0.4529,
+    "dark_share": 0.0619,
+    "luminance_histogram": [
+     0.2339,
+     0.307,
+     0.1696,
+     0.0953,
+     0.1302,
+     0.026,
+     0.024,
+     0.014
+    ],
+    "edge_density": 0.1064,
+    "spatial_frequency_hi": 0.06194,
+    "spatial_frequency_vhi": 0.0241,
+    "occupied_area_ratio": 0.938,
+    "depth_proxy": 0.843,
+    "silhouette_density": 0.0104
    },
    "distance_to_reference": {
-    "1": 0.6749,
-    "2": 0.4731,
-    "3": 0.5858,
-    "4": 0.4828
+    "1": 0.6839,
+    "2": 0.4926,
+    "3": 0.6051,
+    "4": 0.5023
    },
-   "nearest_reference": "2"
+   "nearest_reference": "2",
+   "distance2_to_reference": {
+    "1": {
+     "tone_tv": 0.692,
+     "structure": 0.3756,
+     "frequency": 0.287
+    },
+    "2": {
+     "tone_tv": 0.1726,
+     "structure": 0.4352,
+     "frequency": 0.14862
+    },
+    "3": {
+     "tone_tv": 0.2389,
+     "structure": 0.5185,
+     "frequency": 0.2059
+    },
+    "4": {
+     "tone_tv": 0.2268,
+     "structure": 0.4264,
+     "frequency": 0.13934
+    }
+   }
   },
   "08-subsurface-laboratory": {
    "metrics": {
@@ -222,21 +561,359 @@
      1672,
      808
     ],
-    "luminance_mean": 0.3191,
+    "luminance_mean": 0.3188,
     "luminance_std": 0.1789,
-    "chroma": 0.0229,
-    "detail_density": 0.1187,
-    "fine_over_coarse": 0.388,
-    "uniformity": 0.7014,
-    "dark_share": 0.0518
+    "chroma": 0.0228,
+    "detail_density": 0.1186,
+    "fine_over_coarse": 0.389,
+    "uniformity": 0.714,
+    "dark_share": 0.0513,
+    "luminance_histogram": [
+     0.0978,
+     0.3494,
+     0.2157,
+     0.1603,
+     0.1276,
+     0.025,
+     0.0126,
+     0.0115
+    ],
+    "edge_density": 0.1066,
+    "spatial_frequency_hi": 0.08285,
+    "spatial_frequency_vhi": 0.02992,
+    "occupied_area_ratio": 0.8667,
+    "depth_proxy": 0.7786,
+    "silhouette_density": 0.0603
    },
    "distance_to_reference": {
-    "1": 0.6146,
-    "2": 0.3534,
-    "3": 0.4658,
-    "4": 0.3655
+    "1": 0.6143,
+    "2": 0.3485,
+    "3": 0.4602,
+    "4": 0.3608
    },
-   "nearest_reference": "2"
+   "nearest_reference": "2",
+   "distance2_to_reference": {
+    "1": {
+     "tone_tv": 0.7068,
+     "structure": 0.3491,
+     "frequency": 0.26563
+    },
+    "2": {
+     "tone_tv": 0.3235,
+     "structure": 0.3702,
+     "frequency": 0.12699
+    },
+    "3": {
+     "tone_tv": 0.3898,
+     "structure": 0.4514,
+     "frequency": 0.18436
+    },
+    "4": {
+     "tone_tv": 0.2785,
+     "structure": 0.3627,
+     "frequency": 0.11765
+    }
+   }
+  },
+  "09-observation-array": {
+   "metrics": {
+    "size": [
+     1672,
+     808
+    ],
+    "luminance_mean": 0.101,
+    "luminance_std": 0.1891,
+    "chroma": 0.0048,
+    "detail_density": 0.0588,
+    "fine_over_coarse": 0.317,
+    "uniformity": 0.4878,
+    "dark_share": 0.7363,
+    "luminance_histogram": [
+     0.749,
+     0.0706,
+     0.075,
+     0.0615,
+     0.0138,
+     0.0113,
+     0.011,
+     0.0079
+    ],
+    "edge_density": 0.0564,
+    "spatial_frequency_hi": 0.04296,
+    "spatial_frequency_vhi": 0.01578,
+    "occupied_area_ratio": 0.2637,
+    "depth_proxy": 0.5017,
+    "silhouette_density": 0.2494
+   },
+   "distance_to_reference": {
+    "1": 1.1203,
+    "2": 0.6935,
+    "3": 0.7577,
+    "4": 0.7129
+   },
+   "nearest_reference": "2",
+   "distance2_to_reference": {
+    "1": {
+     "tone_tv": 0.787,
+     "structure": 0.8011,
+     "frequency": 0.30772
+    },
+    "2": {
+     "tone_tv": 0.3995,
+     "structure": 0.6304,
+     "frequency": 0.16891
+    },
+    "3": {
+     "tone_tv": 0.3401,
+     "structure": 0.6315,
+     "frequency": 0.22662
+    },
+    "4": {
+     "tone_tv": 0.4394,
+     "structure": 0.6374,
+     "frequency": 0.15981
+    }
+   }
+  },
+  "10-philosophical-socket": {
+   "metrics": {
+    "size": [
+     1672,
+     808
+    ],
+    "luminance_mean": 0.1303,
+    "luminance_std": 0.2021,
+    "chroma": 0.0065,
+    "detail_density": 0.0858,
+    "fine_over_coarse": 0.4,
+    "uniformity": 0.4311,
+    "dark_share": 0.6578,
+    "luminance_histogram": [
+     0.6871,
+     0.0668,
+     0.0479,
+     0.1508,
+     0.0292,
+     0.0078,
+     0.0047,
+     0.0057
+    ],
+    "edge_density": 0.067,
+    "spatial_frequency_hi": 0.04659,
+    "spatial_frequency_vhi": 0.01868,
+    "occupied_area_ratio": 0.3422,
+    "depth_proxy": 0.5601,
+    "silhouette_density": 0.2416
+   },
+   "distance_to_reference": {
+    "1": 1.0559,
+    "2": 0.6561,
+    "3": 0.7292,
+    "4": 0.6744
+   },
+   "nearest_reference": "2",
+   "distance2_to_reference": {
+    "1": {
+     "tone_tv": 0.7818,
+     "structure": 0.7127,
+     "frequency": 0.3032
+    },
+    "2": {
+     "tone_tv": 0.4044,
+     "structure": 0.5397,
+     "frequency": 0.16474
+    },
+    "3": {
+     "tone_tv": 0.359,
+     "structure": 0.5467,
+     "frequency": 0.22216
+    },
+    "4": {
+     "tone_tv": 0.3813,
+     "structure": 0.5466,
+     "frequency": 0.15555
+    }
+   }
+  },
+  "11-resource-pulse": {
+   "metrics": {
+    "size": [
+     1672,
+     808
+    ],
+    "luminance_mean": 0.2813,
+    "luminance_std": 0.2036,
+    "chroma": 0.0096,
+    "detail_density": 0.1406,
+    "fine_over_coarse": 0.459,
+    "uniformity": 0.5396,
+    "dark_share": 0.0751,
+    "luminance_histogram": [
+     0.2528,
+     0.2929,
+     0.1689,
+     0.0967,
+     0.1304,
+     0.0266,
+     0.0219,
+     0.0098
+    ],
+    "edge_density": 0.1085,
+    "spatial_frequency_hi": 0.06602,
+    "spatial_frequency_vhi": 0.02731,
+    "occupied_area_ratio": 0.9239,
+    "depth_proxy": 0.8372,
+    "silhouette_density": 0.018
+   },
+   "distance_to_reference": {
+    "1": 0.6586,
+    "2": 0.419,
+    "3": 0.5339,
+    "4": 0.4304
+   },
+   "nearest_reference": "2",
+   "distance2_to_reference": {
+    "1": {
+     "tone_tv": 0.6976,
+     "structure": 0.3685,
+     "frequency": 0.28195
+    },
+    "2": {
+     "tone_tv": 0.1593,
+     "structure": 0.4218,
+     "frequency": 0.14401
+    },
+    "3": {
+     "tone_tv": 0.2256,
+     "structure": 0.5052,
+     "frequency": 0.20091
+    },
+    "4": {
+     "tone_tv": 0.2115,
+     "structure": 0.4132,
+     "frequency": 0.13463
+    }
+   }
+  },
+  "12-boundary-open": {
+   "metrics": {
+    "size": [
+     1672,
+     808
+    ],
+    "luminance_mean": 0.283,
+    "luminance_std": 0.2011,
+    "chroma": 0.0097,
+    "detail_density": 0.1326,
+    "fine_over_coarse": 0.453,
+    "uniformity": 0.5402,
+    "dark_share": 0.0616,
+    "luminance_histogram": [
+     0.2354,
+     0.3092,
+     0.1696,
+     0.0983,
+     0.1326,
+     0.026,
+     0.0184,
+     0.0105
+    ],
+    "edge_density": 0.1011,
+    "spatial_frequency_hi": 0.0619,
+    "spatial_frequency_vhi": 0.02439,
+    "occupied_area_ratio": 0.9382,
+    "depth_proxy": 0.8323,
+    "silhouette_density": 0.0099
+   },
+   "distance_to_reference": {
+    "1": 0.6606,
+    "2": 0.4288,
+    "3": 0.5437,
+    "4": 0.4402
+   },
+   "nearest_reference": "2",
+   "distance2_to_reference": {
+    "1": {
+     "tone_tv": 0.7011,
+     "structure": 0.3784,
+     "frequency": 0.28692
+    },
+    "2": {
+     "tone_tv": 0.1801,
+     "structure": 0.4378,
+     "frequency": 0.1486
+    },
+    "3": {
+     "tone_tv": 0.2465,
+     "structure": 0.5209,
+     "frequency": 0.20583
+    },
+    "4": {
+     "tone_tv": 0.23,
+     "structure": 0.4291,
+     "frequency": 0.13931
+    }
+   }
+  },
+  "13-recovered": {
+   "metrics": {
+    "size": [
+     1672,
+     808
+    ],
+    "luminance_mean": 0.2929,
+    "luminance_std": 0.2158,
+    "chroma": 0.0096,
+    "detail_density": 0.1381,
+    "fine_over_coarse": 0.453,
+    "uniformity": 0.5019,
+    "dark_share": 0.0616,
+    "luminance_histogram": [
+     0.2346,
+     0.3023,
+     0.1665,
+     0.0952,
+     0.1302,
+     0.0258,
+     0.0247,
+     0.0207
+    ],
+    "edge_density": 0.1072,
+    "spatial_frequency_hi": 0.05998,
+    "spatial_frequency_vhi": 0.02315,
+    "occupied_area_ratio": 0.9382,
+    "depth_proxy": 0.8518,
+    "silhouette_density": 0.0099
+   },
+   "distance_to_reference": {
+    "1": 0.6611,
+    "2": 0.4537,
+    "3": 0.5676,
+    "4": 0.4644
+   },
+   "nearest_reference": "2",
+   "distance2_to_reference": {
+    "1": {
+     "tone_tv": 0.6847,
+     "structure": 0.3769,
+     "frequency": 0.28918
+    },
+    "2": {
+     "tone_tv": 0.1647,
+     "structure": 0.4357,
+     "frequency": 0.15073
+    },
+    "3": {
+     "tone_tv": 0.231,
+     "structure": 0.5192,
+     "frequency": 0.20807
+    },
+    "4": {
+     "tone_tv": 0.2228,
+     "structure": 0.4269,
+     "frequency": 0.14148
+    }
+   }
   }
  },
  "note": "crude image statistics, not a perceptual judgement; see the module docstring"

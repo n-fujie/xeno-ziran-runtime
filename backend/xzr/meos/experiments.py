@@ -196,7 +196,7 @@ def condition_ivs(c: dict) -> list[dict]:
 def factorial_history_gradient_power(cfg: dict, seeds: tuple[int, ...] = tuple(range(1, 11))) -> dict:
     """The eight conditions of history (on/off) x resource gradient (on/off) x power (finite/unlimited): same initial conditions, the same seed set, the same 240-tick
     evaluation. Recovery possibility = the interaction channel cut at 100 and restored at 150 with a resource pulse of 2.0 at 151 (horizon 360): is the operation back?"""
-    rows = []
+    rows: list[dict[str, Any]] = []
     for c in _conditions():
         base = cfg_with(cfg, power=POWER_UNLIMITED if c["power"] == "unlimited" else POWER_FINITE, horizon=240)
         long = cfg_with(base, horizon=360)
@@ -231,8 +231,8 @@ def factorial_history_gradient_power(cfg: dict, seeds: tuple[int, ...] = tuple(r
                 "result_digests": [p["result_digest"] for p in per],
             }
         )
-    lookup = {(r["condition"]["history"], r["condition"]["gradient"], r["condition"]["power"]): r for r in rows}
-    effects = []
+    lookup: dict[Any, dict[str, Any]] = {(r["condition"]["history"], r["condition"]["gradient"], r["condition"]["power"]): r for r in rows}
+    effects: list[dict[str, Any]] = []
     for g in (True, False):
         for pw in ("finite", "unlimited"):
             on, off = lookup[(True, g, pw)], lookup[(False, g, pw)]
@@ -470,7 +470,7 @@ def boundary_experiments(cfg: dict, seeds: tuple[int, ...] = (1, 2, 3)) -> dict:
             "observation": obs_all,
         },
     ]
-    rows = []
+    rows: list[dict[str, Any]] = []
     for k in kinds:
         per = []
         for sd in seeds:
@@ -576,7 +576,7 @@ def _recovery_metrics(rec: dict, t_event: int, base_rec: dict) -> dict:
         if pre
         else None,
         "energy_reserve_at_recovery": [round(T["power_reserve"][rec_tick], 3), round(T["a1_energy"][rec_tick], 3)],
-        "a1_a2_lag_after_recovery": round(float(np.mean(lag)), 3) if lag else None,
+        "a1_a2_lag_after_recovery": round(float(np.mean([x for x in lag if x is not None])), 3) if lag else None,
         "a1_a2_lag_unperturbed": None,
     }
 
@@ -596,7 +596,7 @@ def recovery_phase(
         else [{"tick": 100, "op": "REMOVE", "target": "A2"}, {"tick": 150, "op": "RECONNECT", "target": "A2"}]
     )
     base_by_seed = {sd: E.run_record(cfg_with(cfg, seed=sd, horizon=360), []) for sd in seeds}
-    rows = []
+    rows: list[dict[str, Any]] = []
     for a in amounts:
         per = []
         for sd in seeds:
@@ -763,7 +763,7 @@ def address_experiments(cfg: dict, seeds: tuple[int, ...] = (1, 2, 3)) -> dict:
             [{"tick": 130, "op": "ADDRESS", "target": "A2", "mode": "reassign", "x": 5, "y": 6}],
         )
     )
-    rows = []
+    rows: list[dict[str, Any]] = []
     for name, fault, restore in cases:
         per = []
         for sd in seeds:
@@ -787,7 +787,7 @@ def address_experiments(cfg: dict, seeds: tuple[int, ...] = (1, 2, 3)) -> dict:
 def m2_experiment(cfg: dict, seeds: tuple[int, ...] = (1, 2, 3)) -> dict:
     """Does connecting A2's alteration M2 to A1's sensing make any difference? Four conditions (none, direct, delayed, noisy) at three weights, over scenarios that test
     persistence and reconstitution. A difference is reported only if the outcome or the measured quantities differ from ``none``; otherwise it is "no difference"."""
-    scenarios = {
+    scenarios: dict[str, tuple[list[dict[str, Any]], dict[str, Any]]] = {
         "unperturbed": ([], {}),
         "interaction cut 100-150 + pulse 2.0": ([*INTERRUPTION, pulse(151, 2.0)], {"horizon": 360}),
         "interaction cut 100-150, no pulse": (INTERRUPTION, {"horizon": 360}),
@@ -802,19 +802,19 @@ def m2_experiment(cfg: dict, seeds: tuple[int, ...] = (1, 2, 3)) -> dict:
             {},
         ),
     }
-    conds = [("none", 0.0, {"sense": "none"})]
+    conds: list[tuple[str, float, dict[str, Any]]] = [("none", 0.0, {"sense": "none"})]
     for w in (0.25, 0.5, 1.0, 2.0, 4.0):
         conds += [
             (f"direct w={w}", w, {"sense": "direct", "weight": w}),
             (f"delayed(3) w={w}", w, {"sense": "delayed", "weight": w, "delay": 3}),
             (f"noisy(0.05) w={w}", w, {"sense": "noisy", "weight": w, "noise": 0.05}),
         ]
-    rows = []
+    rows: list[dict[str, Any]] = []
     for sname, (ivs, over) in scenarios.items():
-        ref = None
+        ref: dict[str, Any] | None = None
         for cname, _w, m2 in conds:
             per = [run_summary(cfg_with(cfg, seed=sd, m2=m2, **over), ivs) for sd in seeds]
-            agg = {
+            agg: dict[str, Any] = {
                 "persists_seeds": sum(1 for p in per if p["persists"]),
                 "cycles": _agg([p["cycles"] for p in per]),
                 "resource_throughput": _agg([p["resource_throughput"] for p in per]),
@@ -910,8 +910,8 @@ def phil_experiment(cfg: dict, seeds: tuple[int, ...] = (1, 2, 3)) -> dict:
     renewal efficiency is stable, steps, drifts, or shifts, is restored and shifts again; with finite and unlimited power and with a clean, noisy or slow channel."""
     envs = ["stable", "step0.85", "step0.7", "drift0.7", "drift0.5", "shift-restore-shift:0.6"]
     modes = ("none", "expression", "scorekeeping", "revision")
-    channels = {"clean": {}, "noisy": {"noise": 0.6}, "slow": {"delay": 15}}
-    rows = []
+    channels: dict[str, dict[str, Any]] = {"clean": {}, "noisy": {"noise": 0.6}, "slow": {"delay": 15}}
+    rows: list[dict[str, Any]] = []
     for power_name, power in (("finite power", POWER_FINITE), ("unlimited power", POWER_UNLIMITED)):
         for env in envs:
             ivs, horizon = _shift(env)

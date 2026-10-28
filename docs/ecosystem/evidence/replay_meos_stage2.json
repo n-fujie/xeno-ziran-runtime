@@ -1,0 +1,85 @@
+{
+ "backend": "/Users/user/Desktop/BIM/xeno-ziran-runtime-meos/backend",
+ "seconds": 362.4,
+ "total_runs": 264,
+ "total_agree": 264,
+ "studies": [
+  {
+   "environment": "HPO / Ziran",
+   "experiment_id": "S20261023-455de16c-8195",
+   "runs": 6,
+   "agree": 6,
+   "mismatch": []
+  },
+  {
+   "environment": "Total Observation (v2)",
+   "experiment_id": "S20261023-2311be9b-b9aa",
+   "runs": 16,
+   "agree": 16,
+   "mismatch": []
+  },
+  {
+   "environment": "Planetary-Scale Observation (v2)",
+   "experiment_id": "S20261023-c39f962b-ff5d",
+   "runs": 10,
+   "agree": 10,
+   "mismatch": []
+  },
+  {
+   "environment": "SSS (v2)",
+   "experiment_id": "S20261023-5273a397-443d",
+   "runs": 16,
+   "agree": 16,
+   "mismatch": []
+  },
+  {
+   "environment": "Autonomous research loop (v2)",
+   "experiment_id": "S20261023-4a489b45-ed13",
+   "runs": 9,
+   "agree": 9,
+   "mismatch": []
+  },
+  {
+   "environment": "ARDS (env2 bridge)",
+   "experiment_id": "S20261023-970d1342-3557",
+   "runs": 3,
+   "agree": 3,
+   "mismatch": []
+  },
+  {
+   "environment": "ARDS-HPO shared (env3)",
+   "experiment_id": "S20261023-0c30f43b-feef",
+   "runs": 4,
+   "agree": 4,
+   "mismatch": []
+  },
+  {
+   "environment": "v1 compat: total-observation (first release)",
+   "experiment_id": "S20261023-a6ce61ef-7ffe",
+   "runs": 84,
+   "agree": 84,
+   "mismatch": []
+  },
+  {
+   "environment": "v1 compat: autonomous-loop (first release)",
+   "experiment_id": "S20261023-3112b368-55f4",
+   "runs": 36,
+   "agree": 36,
+   "mismatch": []
+  },
+  {
+   "environment": "v1 compat: planetary (first release)",
+   "experiment_id": "S20261023-d64d110e-74f4",
+   "runs": 48,
+   "agree": 48,
+   "mismatch": []
+  },
+  {
+   "environment": "v1 compat: sss (first release)",
+   "experiment_id": "S20261023-1a599fc1-433f",
+   "runs": 32,
+   "agree": 32,
+   "mismatch": []
+  }
+ ]
+}
