@@ -285,6 +285,30 @@ OBSERVABILITY = {
     "aggregation": "AGGREGATION_SCALE_MISMATCH",
     "window": "OBSERVATION_WINDOW_MISMATCH",
 }
+# The fourth stage's vocabulary (the primary one in the interface and the run logs). The first-stage names above stay in ``observability_status`` of every result, so that
+# records and tests that read them are unchanged; ``observability`` carries the new name beside it.
+OBSERVABILITY_V4 = {
+    "sampling_interval": "INSUFFICIENT_TEMPORAL_RESOLUTION",
+    "aggregation": "INSUFFICIENT_TEMPORAL_RESOLUTION",
+    "spatial_stride": "INSUFFICIENT_SPATIAL_RESOLUTION",
+    "region": "OUTSIDE_OBSERVATION_REGION",
+    "occluder": "BOUNDARY_OCCLUDED",
+    "address_resolution": "ADDRESS_UNRESOLVED",
+    "window": "WINDOW_TOO_SHORT",
+    "threshold": "SIGNAL_BELOW_THRESHOLD",
+}
+OBSERVABILITY_STATUSES = (
+    "SUFFICIENT",
+    "INSUFFICIENT_TEMPORAL_RESOLUTION",
+    "INSUFFICIENT_SPATIAL_RESOLUTION",
+    "OUTSIDE_OBSERVATION_REGION",
+    "BOUNDARY_OCCLUDED",
+    "ADDRESS_UNRESOLVED",
+    "WINDOW_TOO_SHORT",
+    "SIGNAL_BELOW_THRESHOLD",
+    "COMBINED_LIMITS",
+    "OBSERVATION_OVERESTIMATES",
+)
 FULL_OBSERVATION = {
     "sampling_interval": 1,
     "spatial_stride": 1,
@@ -293,24 +317,54 @@ FULL_OBSERVATION = {
     "aggregation": 1,
     "window": 48,
 }
+# Opt-in observation limits of the fourth stage; absent (None) they do nothing, so an observation that does not name them is the first-stage observation.
+OPTIONAL_LIMITS: dict[str, Any] = {"threshold": None, "occluder": None, "address_resolution": None}
+_RELAX = (
+    ("sampling_interval", 1),
+    ("spatial_stride", 1),
+    ("region", None),
+    ("aggregation", 1),
+    ("window", 48),
+    ("threshold", None),
+    ("occluder", None),
+    ("address_resolution", None),
+)
+
+
+def _signal(e: dict) -> float:
+    """The amplitude an observer with a detection threshold compares: a fire's differentiated stimulus, an action's larger flow, a reconfiguration's signal."""
+    if "differentiated" in e:
+        return float(e["differentiated"])
+    return max((float(e[k]) for k in ("consumed", "deposited", "amount", "signal") if k in e), default=1.0)
 
 
 def _observed_cycle_ticks(rec: dict, obs: dict) -> list[int]:
     """The cycles an observation resolves. It sees an event only at a sampled tick, on its sampling lattice (every ``spatial_stride``-th cell from ``spatial_offset``),
-    inside its region; a cycle is observed if all four of its events are seen; with an aggregation scale a, cycles inside one block of a ticks are one observed cycle."""
+    inside its region and outside its occluder, above its detection threshold and while the Address Domain still lets it attribute the event to an actor; a cycle is
+    observed if all four of its events are seen; with an aggregation scale a, cycles inside one block of a ticks are one observed cycle."""
     k, s, a = max(1, int(obs["sampling_interval"])), max(1, int(obs["spatial_stride"])), max(1, int(obs["aggregation"]))
     ox, oy = obs["spatial_offset"]
-    region = obs["region"]
+    region, occluder = obs["region"], obs.get("occluder")
+    thr, res = obs.get("threshold"), obs.get("address_resolution")
     ev = {e["id"]: e for e in rec["events"]}
+    integ: dict[str, list[float]] = {
+        n: t for n in ("A1", "A2") if (t := (rec.get("traces") or {}).get(f"address_integrity_{n.lower()}")) is not None
+    }
 
     def seen(e: dict | None) -> bool:
         if e is None or e["tick"] % k != 0:
+            return False
+        if thr is not None and _signal(e) < float(thr):
+            return False
+        if res is not None and e.get("actor") in integ and float(integ[e["actor"]][e["tick"]]) < float(res):
             return False
         cell = e.get("cell")
         if cell is None:
             return True
         x, y = cell
         if (x - ox) % s or (y - oy) % s:
+            return False
+        if occluder and occluder[0] <= x <= occluder[2] and occluder[1] <= y <= occluder[3]:
             return False
         return not region or (region[0] <= x <= region[2] and region[1] <= y <= region[3])
 
@@ -337,14 +391,28 @@ def _label_trajectory(cycles: list[int], n: int, win: int) -> list[str]:
     return out
 
 
+def _v4_status(obs: dict, causes: list[str], agrees: bool, observed: str, true_final: str) -> str:
+    if agrees:
+        return "SUFFICIENT"
+    if observed == "ACTIVE" and true_final != "ACTIVE":
+        return "OBSERVATION_OVERESTIMATES"
+    if len(causes) == 1:
+        c = causes[0]
+        return "WINDOW_MISMATCH" if c == "window" and int(obs["window"]) >= 48 else OBSERVABILITY_V4[c]
+    return "COMBINED_LIMITS"
+
+
 def observe(rec: dict, obs: dict | None = None) -> dict:
     """What an observation array with the configured temporal sampling interval, spatial resolution (sampling lattice), region, aggregation scale and observation window
     would conclude about the same run, kept apart from what the run did.
 
     ``operational_state`` is the status of the run itself; ``observed_state`` is the status computed with the same criteria from the observed cycles only;
     ``observability_status`` says why they differ — found by relaxing each observation parameter in turn to full resolution and seeing which restores agreement. An
-    observation that cannot resolve the operation does not show that the operation is gone: it shows a limit of the observation."""
-    obs = {**FULL_OBSERVATION, **(obs or {})}
+    observation that cannot resolve the operation does not show that the operation is gone: it shows a limit of the observation.
+
+    The fourth stage adds three opt-in limits (``threshold``, ``occluder``, ``address_resolution``), the ``observability`` block with the new status vocabulary and the per-tick
+    ``timeline`` (operational, observed and observability state at every tick)."""
+    obs = {**FULL_OBSERVATION, **OPTIONAL_LIMITS, **(obs or {})}
     n = len(rec["frames"])
     true_final = rec["final_status"]["label"]
 
@@ -356,30 +424,62 @@ def observe(rec: dict, obs: dict | None = None) -> dict:
     observed, traj, cycles = state(obs)
     agrees = observed == true_final
     causes: list[str] = []
+    relaxed_traj: dict[str, list[str]] = {}
+    for key, full in _RELAX:
+        if obs[key] != full:
+            r = state({**obs, key: full})
+            relaxed_traj[key] = r[1]
+            if not agrees and r[0] == true_final:
+                causes.append(key)
     if agrees:
         status = "OBSERVABLE"
     else:
-        for key, full in (("sampling_interval", 1), ("spatial_stride", 1), ("region", None), ("aggregation", 1), ("window", 48)):
-            relaxed = {**obs, key: full}
-            if obs[key] != full and state(relaxed)[0] == true_final:
-                causes.append(key)
+        legacy = {**OBSERVABILITY, **{k: v for k, v in OBSERVABILITY_V4.items() if k not in OBSERVABILITY}}
         if observed == "ACTIVE" and true_final != "ACTIVE":
             status = "OBSERVATION_OVERESTIMATES"
         elif len(causes) == 1:
-            status = OBSERVABILITY[causes[0]]
+            status = legacy[causes[0]]
         elif causes:
-            status = "MULTIPLE_LIMITS: " + ", ".join(OBSERVABILITY[c] for c in causes)
+            status = "MULTIPLE_LIMITS: " + ", ".join(legacy[c] for c in causes)
         else:
             status = "COMBINED_LIMITS: no single parameter restores agreement"
+    v4 = _v4_status(obs, causes, agrees, observed, true_final)
+    frames = rec["frames"]
+    timeline = []
+    for t in range(n):
+        op = frames[t]["status"]
+        ob = traj[t]
+        if ob == op:
+            tl_status, tl_causes = "SUFFICIENT", []
+        else:
+            tl_causes = [k for k, tr in relaxed_traj.items() if tr[t] == op]
+            if ob == "ACTIVE" and op != "ACTIVE":
+                tl_status = "OBSERVATION_OVERESTIMATES"
+            elif len(tl_causes) == 1:
+                tl_status = (
+                    "WINDOW_MISMATCH" if tl_causes[0] == "window" and int(obs["window"]) >= 48 else OBSERVABILITY_V4[tl_causes[0]]
+                )
+            else:
+                tl_status = "COMBINED_LIMITS"
+        timeline.append({"t": t, "operational": op, "observed": ob, "observability": tl_status, "limiting": tl_causes})
     return {
         "observation": obs,
         "operational_state": true_final,
         "observed_state": observed,
         "observability_status": status,
+        "observability": {
+            "status": v4,
+            "limiting_parameters": causes,
+            "legacy_status": status,
+            # an observed COLLAPSED against an operational non-collapse is a limit of the observation, not a collapse of the run
+            "observed_collapse_is_operational": observed == "COLLAPSED" and true_final == "COLLAPSED",
+            "observed_collapse_is_artifact": observed == "COLLAPSED" and true_final != "COLLAPSED",
+        },
         "limiting_parameters": causes,
         "observed_cycles": len(cycles),
         "true_cycles": len(rec["cycles"]),
         "observed_trajectory": traj,
+        "timeline": timeline,
         # kept for the interface and earlier records
         "observed_status": observed,
         "true_status": true_final,

@@ -11,10 +11,12 @@ import copy
 from typing import Any
 
 from fastapi import APIRouter, HTTPException, Request
+from fastapi.responses import PlainTextResponse
 
 from ..meos import analysis as A
 from ..meos import engine as E
 from ..meos import experiments as X
+from ..meos import stage4 as S4
 from .studies import local_only
 
 router = APIRouter(prefix="/api/meos")
@@ -92,6 +94,8 @@ def run(request: Request, body: dict[str, Any]) -> dict:
     out: dict[str, Any] = {"record": rec, "summary": A.summarize(rec)}
     if body.get("observation") is not None:
         out["observed"] = A.observe(rec, body["observation"])
+    if body.get("paths"):
+        out["paths"] = S4.path_activity(rec)
     return out
 
 
@@ -286,3 +290,78 @@ def observe(request: Request, body: dict[str, Any]) -> dict:
         raise HTTPException(422, "observation must be an object")
     rec = _guard(E.run_record, cfg, ivs)
     return A.observe(rec, obs)
+
+
+# ---------------------------------------------------------------------------------------------- fourth stage (research readings; nothing here changes a run)
+def _obs(body: dict) -> dict | None:
+    obs = body.get("observation")
+    if obs is not None and not isinstance(obs, dict):
+        raise HTTPException(422, "observation must be an object")
+    return obs
+
+
+@router.post("/paths")
+def paths(request: Request, body: dict[str, Any]) -> dict:
+    """The five operational paths of a run (resource, coupling, history access, observation, recovery): components, signal per tick, intervals of cut / quiet / active."""
+    local_only(request)
+    return S4.path_activity(_guard(E.run_record, _config(body), _ivs(body)))
+
+
+@router.post("/boundary-perturbation")
+def boundary_perturbation(request: Request, body: dict[str, Any]) -> dict:
+    """Perturb one XenoBody boundary (observation, coupling, resource exchange, history access, Address Domain) and report before / after state, affected paths and
+    components, collapse, recovery possibility, observability effect and the B1 / B2 / B3 relation closure."""
+    local_only(request)
+    kind = body.get("kind")
+    if kind not in S4.BOUNDARY_KINDS:
+        raise HTTPException(422, f"kind must be one of {S4.BOUNDARY_KINDS}")
+    cfg = _config(body)
+    tick, duration = body.get("tick", 100), body.get("duration", 40)
+    if not (isinstance(tick, int) and 20 <= tick <= 300 and isinstance(duration, int) and 1 <= duration <= 200):
+        raise HTTPException(422, "tick must be an integer in 20..300 and duration an integer in 1..200")
+    params = body.get("params") or {}
+    if not isinstance(params, dict):
+        raise HTTPException(422, "params must be an object")
+    return _guard(S4.boundary_perturbation, cfg, kind, tick, duration, _seeds(body, (1,), 3), params)
+
+
+@router.post("/address-intervention")
+def address_intervention(request: Request, body: dict[str, Any]) -> dict:
+    """One Address Domain intervention (loss, reassign, fragment, collision, partial, delayed, stale), restored after ``duration`` ticks, with its recorded effects."""
+    local_only(request)
+    mode, target = body.get("mode"), body.get("target", "A2")
+    if mode not in E.ADDRESS_MODES or mode == "restore":
+        raise HTTPException(422, f"mode must be one of {tuple(m for m in E.ADDRESS_MODES if m != 'restore')}")
+    if target not in (*E.ENTITIES, "both"):
+        raise HTTPException(422, "target must be A1, A2 or both")
+    tick, duration, seed = body.get("tick", 100), body.get("duration", 40), body.get("seed", 1)
+    if not (isinstance(tick, int) and 20 <= tick <= 300 and isinstance(duration, int) and 1 <= duration <= 200 and isinstance(seed, int)):
+        raise HTTPException(422, "tick must be an integer in 20..300, duration in 1..200, seed an integer")
+    params = body.get("params") or {}
+    if not isinstance(params, dict):
+        raise HTTPException(422, "params must be an object")
+    return _guard(S4.address_intervention, _config(body), mode, target, tick, duration, seed, params, _obs(body))
+
+
+@router.post("/run-log")
+def run_log(request: Request, body: dict[str, Any]) -> Any:
+    """The per-run log of a run (``format``: json, csv). The JSON log carries seed, configuration, intervention schedule, the observation / boundary / Address / SSS / M2
+    configuration, the operational, observed and observability timelines, collapse and recovery ticks and the digests; the CSV is the per-tick table."""
+    local_only(request)
+    fmt = body.get("format", "json")
+    if fmt not in ("json", "csv"):
+        raise HTTPException(422, "format must be json or csv")
+    rec = _guard(E.run_record, _config(body), _ivs(body))
+    if fmt == "csv":
+        return PlainTextResponse(S4.run_log_csv(rec, _obs(body)), media_type="text/csv")
+    return S4.run_log(rec, _obs(body))
+
+
+@router.post("/sss-classify")
+def sss_classify(request: Request, body: dict[str, Any]) -> dict:
+    """The SSS region (ACTIVE / COLLAPSED / METASTABLE / RECOVERY-CAPABLE / OBSERVATION-SENSITIVE) of one scale, size, speed point."""
+    local_only(request)
+    vals = [body.get(k, 1.0) for k in ("scale", "size", "speed")]
+    if not all(isinstance(v, int | float) and not isinstance(v, bool) and 0.25 <= v <= 4 for v in vals):
+        raise HTTPException(422, "scale, size and speed must be numbers in 0.25..4")
+    return _guard(S4.sss_classify, _config(body), *[float(v) for v in vals], _seeds(body, (1, 2), 3))

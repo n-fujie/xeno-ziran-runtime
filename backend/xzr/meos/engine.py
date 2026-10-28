@@ -35,7 +35,7 @@ from typing import Any
 
 import numpy as np
 
-ENGINE_VERSION = "meos-0.2"
+ENGINE_VERSION = "meos-0.3"
 SCHEMA = "xzr.meos/1"
 ENTITIES = ("A1", "A2")
 
@@ -160,8 +160,8 @@ OPS = (
     "ALTER_RESOURCE",
     "ADDRESS",
 )
-ADDRESS_MODES = ("loss", "reassign", "fragment", "collision", "partial", "restore")
-M2_SENSE = ("none", "direct", "delayed", "noisy")
+ADDRESS_MODES = ("loss", "reassign", "fragment", "collision", "partial", "restore", "delayed", "stale")
+M2_SENSE = ("none", "direct", "delayed", "noisy", "threshold")
 PHIL_MODES = ("none", "expression", "scorekeeping", "revision")
 
 
@@ -216,6 +216,8 @@ def validate_config(cfg: dict) -> list[str]:
     m2 = cfg.get("m2")
     if m2 is not None and not (isinstance(m2, dict) and m2.get("sense", "none") in M2_SENSE):
         issues.append(f"m2.sense must be one of {M2_SENSE}")
+    if isinstance(m2, dict) and "threshold" in m2 and not (isinstance(m2["threshold"], int | float) and 0 <= m2["threshold"] <= 2):
+        issues.append("m2.threshold must be a number in 0..2")
     ph = cfg.get("phil")
     if ph is not None and not (isinstance(ph, dict) and ph.get("mode", "none") in PHIL_MODES):
         issues.append(f"phil.mode must be one of {PHIL_MODES}")
@@ -260,8 +262,12 @@ def validate_interventions(ivs: list[dict], horizon: int) -> list[str]:
             mode = iv.get("mode")
             if mode not in ADDRESS_MODES or iv.get("target") not in (*ENTITIES, "both"):
                 issues.append(f"interventions[{i}] needs mode in {ADDRESS_MODES} and target A1 / A2 / both")
-            elif mode == "reassign" and not all(isinstance(iv.get(k), int) and 0 <= iv[k] < 24 for k in ("x", "y")):
-                issues.append(f"interventions[{i}] reassign needs integer cell x, y")
+            elif mode in ("reassign", "delayed") and not all(isinstance(iv.get(k), int) and 0 <= iv[k] < 24 for k in ("x", "y")):
+                issues.append(f"interventions[{i}] {mode} needs integer cell x, y")
+            elif mode == "delayed" and not (isinstance(iv.get("delay"), int) and 1 <= iv["delay"] <= 100):
+                issues.append(f"interventions[{i}] delayed needs an integer delay in 1..100 ticks")
+            elif mode == "stale" and "duration" in iv and not (isinstance(iv["duration"], int) and 1 <= iv["duration"] <= 400):
+                issues.append(f"interventions[{i}] stale takes an optional integer duration in 1..400 ticks")
             elif mode in ("fragment", "partial") and not (
                 isinstance(iv.get("fraction"), int | float) and 0 <= iv["fraction"] <= 1
             ):
@@ -368,6 +374,19 @@ class Run:
 
     def _renew_efficiency(self) -> float:
         return float(self.cfg["environment"].get("renew_efficiency", 1.0))
+
+    def _cell(self, name: str) -> tuple[int, int]:
+        """The cell a configuration senses and acts at: its own position, or, while its address is stale or its update is delayed, the cell its address still names."""
+        at = self.addr[name].get("at")
+        return (int(at[0]), int(at[1])) if at is not None else (self.ent[name]["x"], self.ent[name]["y"])
+
+    def _expire_addresses(self) -> None:
+        """A delayed address update arrives, or a stale address's duration ends: the address names the configuration's own position again."""
+        for name in ENTITIES:
+            a = self.addr[name]
+            if a.get("until") is not None and self.t >= a["until"]:
+                a.update(mode=None, fraction=1.0, mask=None, at=None, until=None)
+                self._event("address_update", name, action="the address is updated to the configuration's position")
 
     def _addressable(self, name: str) -> bool:
         return self.addr[name]["mode"] != "loss"
@@ -519,13 +538,21 @@ class Run:
         for name in names:
             a, e = self.addr[name], self.ent[name]
             if mode == "restore":
-                a.update(mode=None, fraction=1.0, mask=None)
+                a.update(mode=None, fraction=1.0, mask=None, at=None, until=None)
             elif mode == "loss":
                 a.update(mode="loss", fraction=0.0, mask=None)
             elif mode == "reassign":
                 e["x"], e["y"] = self._clamp_arena(int(iv["x"]), int(iv["y"]))
                 self.cfg["entities"][name]["pos"] = [e["x"], e["y"]]
-                a.update(mode=None, fraction=1.0, mask=None)
+                a.update(mode=None, fraction=1.0, mask=None, at=None, until=None)
+            elif mode == "delayed":
+                # the body moves at once; the address that names where it is arrives ``delay`` ticks later: until then it names the old cell
+                a.update(mode="delayed", fraction=1.0, mask=None, at=(e["x"], e["y"]), until=self.t + int(iv["delay"]))
+                e["x"], e["y"] = self._clamp_arena(int(iv["x"]), int(iv["y"]))
+                self.cfg["entities"][name]["pos"] = [e["x"], e["y"]]
+            elif mode == "stale":
+                # the address stops following the configuration: it keeps naming the cell the configuration was in when this began
+                a.update(mode="stale", fraction=1.0, mask=None, at=(e["x"], e["y"]), until=(self.t + int(iv["duration"])) if "duration" in iv else None)
             elif mode == "collision":
                 other = self.ent["A1" if name == "A2" else "A2"]
                 e["x"], e["y"] = other["x"], other["y"]
@@ -534,7 +561,7 @@ class Run:
                 a.update(mode="fragment", fraction=float(iv["fraction"]), mask=g.random((self.n, self.n)) < float(iv["fraction"]))
             elif mode == "partial":
                 a.update(mode="partial", fraction=float(iv["fraction"]), mask=None)
-        return {"address_mode": mode, "target": iv["target"], **{k: iv[k] for k in ("x", "y", "fraction") if k in iv}}
+        return {"address_mode": mode, "target": iv["target"], **{k: iv[k] for k in ("x", "y", "fraction", "delay", "duration") if k in iv}}
 
     # ------------------------------------------------------------------------------------------------ one tick
     def _history_theta(self, name: str, theta0: float) -> tuple[float, float]:
@@ -557,7 +584,7 @@ class Run:
         chk("present", e["present"])
         if not e["present"]:
             return {"fire": False, "checks": checks}
-        x, y = e["x"], e["y"]
+        x, y = self._cell(name)
         r = self._scaled_radius(name)
         if name == "A1":
             chan_ok = ch["sensor_resource"]
@@ -617,6 +644,8 @@ class Run:
         v = float(self._window(field, x, y, r).max())
         if sense == "noisy":
             v = max(0.0, v + float(self.rng_aux.normal(0.0, float(m2.get("noise", 0.05)))))
+        if sense == "threshold" and v < float(m2.get("threshold", 0.05)):  # a thresholded tap passes only a variation above the threshold
+            v = 0.0
         return float(m2.get("weight", 0.5)) * v
 
     def _source_event(self, name: str, signal: float) -> int | None:
@@ -624,10 +653,10 @@ class Run:
         within LAG_MAX ticks, provided the sensed signal itself (before sensor noise) rose above the noise."""
         if signal < 2.0 * self.cfg["noise"]:
             return None
-        e = self.ent[name]
         r = self._scaled_radius(name)
         prov = self.prov_r if name == "A1" else self.prov_m1
-        ident = int(self._window(prov, e["x"], e["y"], r).max())
+        cx, cy = self._cell(name)
+        ident = int(self._window(prov, cx, cy, r).max())
         if ident == 0 or self.t - self.ev_tick[ident] > self.LAG_MAX:
             return None
         return ident
@@ -653,8 +682,8 @@ class Run:
         """An action that cannot reach its address (lost, or a partial step that missed) has no effect on the environment; the firing still ran."""
         if self.addr[name]["mode"] is None or (self._addressable(name) and self._partial_ok(name)):
             return False
-        e = self.ent[name]
-        self._event("act", name, action="blocked: not addressable", fire=fid, cell=[e["x"], e["y"]])
+        cx, cy = self._cell(name)
+        self._event("act", name, action="blocked: not addressable", fire=fid, cell=[cx, cy])
         return True
 
     def _act_a1(self, fid: int) -> None:
@@ -663,7 +692,7 @@ class Run:
         e, c = self.ent["A1"], self.cfg["entities"]["A1"]
         fp = self._footprint("A1")
         size = float(c["size"]) * self.cfg["sss"]["size"]
-        x, y = e["x"], e["y"]
+        x, y = self._cell("A1")
         reg = (slice(max(0, x - fp), min(self.n, x + fp + 1)), slice(max(0, y - fp), min(self.n, y + fp + 1)))
         want = c["consume"] * size
         avail = float(self.R[reg].sum())
@@ -682,11 +711,11 @@ class Run:
     def _act_a2(self, fid: int) -> None:
         if self._blocked("A2", fid):
             return
-        e, c = self.ent["A2"], self.cfg["entities"]["A2"]
+        c = self.cfg["entities"]["A2"]
         self._move_toward("A2", self.M1)
         fp = self._footprint("A2")
         size = float(c["size"]) * self.cfg["sss"]["size"]
-        x, y = e["x"], e["y"]
+        x, y = self._cell("A2")
         reg = (slice(max(0, x - fp), min(self.n, x + fp + 1)), slice(max(0, y - fp), min(self.n, y + fp + 1)))
         self.M2[reg] += c["deposit"] / self.M2[reg].size
         amt = 0.0
@@ -776,6 +805,7 @@ class Run:
         self.t += 1
         self.tick_acc = {}
         self._apply_due()
+        self._expire_addresses()
         for name in ENTITIES:
             self.ent[name]["fired_now"] = False
         evals = {name: self._evaluate(name) for name in ENTITIES}
@@ -933,6 +963,8 @@ class Run:
             return float(a["fraction"])
         if a["mode"] == "fragment":
             return float(a["mask"].mean())
+        if a["mode"] in ("stale", "delayed"):
+            return 0.0 if a.get("at") is not None and tuple(a["at"]) != (self.ent[name]["x"], self.ent[name]["y"]) else 1.0  # the address names somewhere else than the body
         return 1.0
 
     def _trace(self) -> None:
@@ -1018,7 +1050,12 @@ class Run:
         ad = {name: self._ad_static(name) for name in ENTITIES}
         if any(a["mode"] is not None for a in self.addr.values()):
             fr["address"] = {
-                name: {"mode": self.addr[name]["mode"], "integrity": round(self._address_integrity(name), 4)} for name in ENTITIES
+                name: {
+                    "mode": self.addr[name]["mode"],
+                    "integrity": round(self._address_integrity(name), 4),
+                    **({"at": list(self.addr[name]["at"])} if self.addr[name].get("at") is not None else {}),
+                }
+                for name in ENTITIES
             }
         if ad != self._last_ad:
             fr["ad"] = ad
