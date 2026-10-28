@@ -50,6 +50,35 @@ export const PUDDLES: Puddle[] = [
   { x: -84, z: 28, r: 6 }, { x: -92, z: 44, r: 6 }, { x: -78, z: 36, r: 4 },
 ];
 
+/** Small puddles scattered round the work areas (a few tenths to a metre and a half across), deterministic. */
+export function microPuddles(): Puddle[] {
+  const R = mulberry(88), out: Puddle[] = [];
+  const centres: Array<[number, number, number]> = [[-104, 4, 24], [-86, 36, 14], [-92, 14, 8]];
+  for (const [cx, cz, cr] of centres) for (let i = 0; i < 16; i++) { const a = R() * 6.28, d = Math.sqrt(R()) * cr; out.push({ x: cx + Math.cos(a) * d, z: cz + Math.sin(a) * d, r: 0.3 + Math.pow(R(), 2) * 1.3 }); }
+  return out;
+}
+/** Narrow reflective channels where water ran between puddles: wavy strips of 0.25-0.5 across. */
+export function channelPaths(): Array<Array<[number, number, number]>> {
+  const R = mulberry(41), out: Array<Array<[number, number, number]>> = [];
+  const links: Array<[number, number]> = [[0, 3], [0, 2], [1, 0], [3, 4], [5, 6], [0, 4]];
+  for (const [i, j] of links) {
+    const a = PUDDLES[i], b = PUDDLES[j], n = 14, path: Array<[number, number, number]> = [];
+    for (let k = 0; k <= n; k++) { const t = k / n, w = Math.sin(t * Math.PI), wob = (Math.sin(t * 9 + i) + Math.sin(t * 17 + j) * 0.5) * 0.35 * w; path.push([a.x + (b.x - a.x) * t + wob, a.z + (b.z - a.z) * t - wob * 0.6, (0.22 + 0.2 * R()) * (0.6 + 0.8 * w)]); }
+    out.push(path);
+  }
+  return out;
+}
+const channelShape = (path: Array<[number, number, number]>): THREE.Shape => {
+  const left: Array<[number, number]> = [], right: Array<[number, number]> = [];
+  path.forEach(([x, z, w], i) => {
+    const [x2, z2] = path[Math.min(path.length - 1, i + 1)], [x1, z1] = path[Math.max(0, i - 1)], dx = x2 - x1, dz = z2 - z1, l = Math.hypot(dx, dz) || 1, nx = -dz / l, nz = dx / l;
+    left.push([x + nx * w, -(z + nz * w)]); right.push([x - nx * w, -(z - nz * w)]);
+  });
+  const s = new THREE.Shape();
+  s.moveTo(left[0][0], left[0][1]); left.slice(1).forEach(([x, y]) => s.lineTo(x, y)); right.reverse().forEach(([x, y]) => s.lineTo(x, y));
+  return s;
+};
+
 export interface Terrain {
   group: THREE.Group; puddleMesh: THREE.Mesh | null; heightAt(x: number, z: number): number; setReflectionHidden(hidden: THREE.Object3D[]): void;
   /** Per-frame: far from the puddles the planar reflection is replaced by a dark polished surface (no extra render of the scene). */
@@ -74,6 +103,11 @@ export function buildTerrain(quality: Quality, pit: number, owned: Array<{ dispo
     let m = 0;
     for (const p of PUDDLES) { const d = Math.hypot(x - p.x, (z - p.z) / 0.8) / (p.r * 1.7); m = Math.max(m, 1 - d); }
     return Math.max(0, Math.min(1, m * 3));
+  };
+  const puddleDist = (x: number, z: number): number => {  // the distance from the nearest puddle's edge (0 inside)
+    let d = 1e9;
+    for (const p of PUDDLES) d = Math.min(d, Math.max(0, Math.hypot(x - p.x, (z - p.z) / 0.8) - p.r * 1.1));
+    return d;
   };
   const height = (x: number, z: number): number => {
     const r = Math.hypot(x, z);
@@ -104,8 +138,8 @@ export function buildTerrain(quality: Quality, pit: number, owned: Array<{ dispo
       const a = (j / ANG) * Math.PI * 2, x = Math.cos(a) * r, z = Math.sin(a) * r, k = i * (ANG + 1) + j;
       const y = groundHeight(x, z);
       pos.set([x, y, z], k * 3);
-      const wet = puddleAt(x, z), tone = 0.022 + 0.04 * fbm(x * 0.25 + 3, z * 0.25, 4) + 0.03 * fbm(x * 1.4, z * 1.4, 2);
-      const v = tone * (1 - 0.5 * wet);
+      const wet = puddleAt(x, z), halo = Math.max(0, Math.min(1, 1 - puddleDist(x, z) / 3.2)), mud = Math.max(0, Math.min(1, (fbm(x * 0.35 + 21, z * 0.35, 3) - 0.56) * 5)) * Math.min(1, halo * 1.4 + 0.15), tone = 0.022 + 0.04 * fbm(x * 0.25 + 3, z * 0.25, 4) + 0.03 * fbm(x * 1.4, z * 1.4, 2);
+      const v = tone * (1 - 0.5 * wet) * (1 - 0.35 * halo) * (1 - 0.55 * mud);  // darker round the water and in mud patches
       col.set([v, v * 1.01, v * 1.04], k * 3);
       uv.set([x / 48, z / 48], k * 2);
       if (i < RAD && j < ANG) { const n = (i + 1) * (ANG + 1) + j; idx.push(k, k + 1, n, k + 1, n + 1, n); }  // counter-clockwise seen from above: the normals point up
@@ -136,7 +170,9 @@ export function buildTerrain(quality: Quality, pit: number, owned: Array<{ dispo
   const R = mulberry(5);
   let puddleMesh: THREE.Mesh | null = null;
   let reflector: Reflector | null = null;
-  const shapes = PUDDLES.map((p) => new THREE.ShapeGeometry(blob(p, R), 6));
+  const microShapes = quality === 'performance' ? [] : microPuddles().map((p) => new THREE.ShapeGeometry(blob(p, R), 4));
+  const channels = quality === 'performance' ? [] : channelPaths().map((c) => new THREE.ShapeGeometry(channelShape(c), 4));
+  const shapes = [...PUDDLES.map((p) => new THREE.ShapeGeometry(blob(p, R), 6)), ...microShapes, ...channels];
   const merged = mergeGeometries(shapes);
   shapes.forEach((s) => s.dispose());
   if (merged) {
@@ -214,7 +250,7 @@ function stoneGeometry(detail: number, kind: 'block' | 'round' | 'pebble'): THRE
 
 /** A multi-scale scatter: wet rocks of two kinds (cut blocks and rounded stones), some of them partly sunk into the ground, in chunks with distance levels of detail. */
 export function buildRocks(centres: Array<{ x: number; z: number; r: number; n: number }>, heightAt: (x: number, z: number) => number, env: THREE.Texture | null,
-  owned: Array<{ dispose(): void }>, detail: number, calm: Array<{ x: number; z: number; r: number }> = []): ChunkedField {
+  owned: Array<{ dispose(): void }>, detail: number, calm: Array<{ x: number; z: number; r: number }> = [], placed: Array<{ x: number; z: number; s: number }> = []): ChunkedField {
   const mat = new THREE.MeshPhysicalMaterial({ color: 0x0a0b0d, roughness: 0.5, metalness: 0.3, clearcoat: 0.3, clearcoatRoughness: 0.4, flatShading: true, envMap: env, envMapIntensity: 0.45 });
   const R = mulberry(21), items: FieldItem[] = [], M = new THREE.Matrix4(), Q = new THREE.Quaternion(), S = new THREE.Vector3(), P = new THREE.Vector3(), E = new THREE.Euler();
   for (const c of centres) for (let i = 0; i < c.n; i++) {
@@ -225,6 +261,11 @@ export function buildRocks(centres: Array<{ x: number; z: number; r: number; n: 
     P.set(x, heightAt(x, z) + s * (0.18 - sunk), z); S.set(s * (0.8 + R() * 0.7), s * (0.55 + R() * 0.8), s * (0.8 + R() * 0.7));
     E.set((R() - 0.5) * 0.7, R() * 6.28, (R() - 0.5) * 0.7); Q.setFromEuler(E);
     items.push({ matrix: M.clone().compose(P, Q, S), shade: 0.5 + R() * 0.9 });
+  }
+  // rocks placed against resting cables, so that a stretch of cable runs under or behind a stone
+  for (const q of placed) {
+    const a = R() * 6.28; P.set(q.x + Math.cos(a) * q.s * 0.5, heightAt(q.x, q.z) + q.s * 0.12, q.z + Math.sin(a) * q.s * 0.5); S.set(q.s * (0.9 + R() * 0.5), q.s * (0.6 + R() * 0.4), q.s * (0.9 + R() * 0.5));
+    E.set((R() - 0.5) * 0.5, R() * 6.28, (R() - 0.5) * 0.5); Q.setFromEuler(E); items.push({ matrix: M.clone().compose(P, Q, S), shade: 0.5 + R() * 0.5 });
   }
   // the two kinds share one field per level: a field is built per kind and the group merged
   const blocks = items.filter((_, i) => i % 3 !== 0), rounds = items.filter((_, i) => i % 3 === 0);
@@ -252,4 +293,24 @@ export function buildPebbles(centres: Array<{ x: number; z: number; r: number; n
   const f = buildChunkedField(items, [{ geometry: stoneGeometry(1, 'pebble'), range: 26 }, { geometry: stoneGeometry(0, 'pebble'), range: 70 }], mat, 12, 'gravel');
   owned.push(mat);
   return f;
+}
+
+/** Embedded debris: shards, pipe offcuts and bent plates lying in the gravel round the bodies, in chunks. Returns one field per kind of piece. */
+export function buildDebris(centres: Array<{ x: number; z: number; r: number; n: number }>, heightAt: (x: number, z: number) => number, env: THREE.Texture | null,
+  owned: Array<{ dispose(): void }>): ChunkedField {
+  const mat = new THREE.MeshStandardMaterial({ color: 0x1a1b1f, roughness: 0.4, metalness: 0.85, flatShading: true, envMap: env, envMapIntensity: 1.1 });
+  const kinds: Array<THREE.BufferGeometry> = [new THREE.BoxGeometry(0.5, 0.04, 0.22), new THREE.CylinderGeometry(0.04, 0.04, 0.6, 7).rotateZ(Math.PI / 2), new THREE.BoxGeometry(0.3, 0.3, 0.03)];
+  const R = mulberry(303), groups: ChunkedField[] = [], M = new THREE.Matrix4(), Q = new THREE.Quaternion(), S = new THREE.Vector3(), P = new THREE.Vector3(), E = new THREE.Euler();
+  kinds.forEach((geo, k) => {
+    const items: FieldItem[] = [];
+    for (const c of centres) for (let i = 0; i < Math.round(c.n / kinds.length); i++) {
+      const a = R() * 6.28, d = Math.sqrt(R()) * c.r, x = c.x + Math.cos(a) * d, z = c.z + Math.sin(a) * d, s = 0.5 + R() * 1.6;
+      P.set(x, heightAt(x, z) + 0.03 + R() * 0.08, z); S.setScalar(s); E.set((R() - 0.5) * 0.5, R() * 6.28, (R() - 0.5) * 0.5); Q.setFromEuler(E);
+      items.push({ matrix: M.clone().compose(P, Q, S), shade: 0.6 + R() * 0.9 });
+    }
+    groups.push(buildChunkedField(items, [{ geometry: geo, range: 55 }], mat, 24, `debris${k}`));
+  });
+  const group = new THREE.Group(); group.name = 'debris'; groups.forEach((g) => group.add(g.group));
+  owned.push(mat);
+  return { group, chunks: groups.reduce((a, g) => a + g.chunks, 0), instances: groups.reduce((a, g) => a + g.instances, 0), update: (c) => groups.reduce((a, g) => a + g.update(c), 0), dispose: () => groups.forEach((g) => g.dispose()) };
 }

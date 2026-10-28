@@ -13,7 +13,7 @@ import * as THREE from 'three';
 import type { EntityFrame, Frame, Label } from './meosApi';
 import { buildBodies, type BodySet } from './bodies';
 import { applyRanges, chunkBatch, chunkLines } from './lod';
-import { buildPebbles, buildRocks, buildTerrain, type Terrain } from './terrain';
+import { buildDebris, buildPebbles, buildRocks, buildTerrain, type Terrain } from './terrain';
 import type { ChunkedField } from './lod';
 
 export type Quality = 'performance' | 'balanced' | 'high';
@@ -57,6 +57,11 @@ export const CAMERA_PRESETS: Record<string, { pos: [number, number, number]; tar
   body: { pos: [-89, 3.2, 15], target: [-104, 3.0, 3], label: 'Experimental Body' },
   observer: { pos: [-104, 4.2, 22], target: [-85, 7.5, 37], label: 'Observation Node' },
   puddle: { pos: [-90, 0.9, 13], target: [-103, 2.6, 2], label: 'Wet Ground' },
+  // close-ups on the bodies (fixed positions: the captures of every pass use the same cameras)
+  probe: { pos: [-90.5, 1.0, 9.0], target: [-92.7, 0.9, 5.7], label: 'Probe and reservoir' },
+  cable: { pos: [-99.5, 2.2, 11.5], target: [-103.3, 2.4, 6.5], label: 'Cable junction' },
+  plate: { pos: [-106.5, 3.4, 19.5], target: [-111.5, 3.0, 12.6], label: 'Plates and ports' },
+  probering: { pos: [-84.5, 2.6, 27.0], target: [-79.8, 2.2, 30.2], label: 'Probe ring' },
   subsurface: { pos: [4, -86, 50], target: [0, -102, 12], label: 'Subsurface Laboratory' },
   array: { pos: [22, 20, 30], target: [54, 9, 52], label: 'Observation Array' },
   socket: { pos: [30, 15, -46], target: [12, 5, -64], label: 'Expansion Socket' },
@@ -599,14 +604,18 @@ export function buildMegastructure(quality: Quality, seed = 7, env: THREE.Textur
 
   // --- the simulation-driven parts
   // wet rocks around the experimental bodies and bodies themselves
-  const rocks = buildRocks([{ x: -104, z: 4, r: 26, n: lat(260) }, { x: -86, z: 36, r: 16, n: lat(110) }, { x: -92, z: 14, r: 7, n: lat(80) }, { x: -80, z: -6, r: 14, n: lat(70) }], terrain.heightAt, env, owned, quality === 'high' ? 4 : quality === 'balanced' ? 3 : 2, [{ x: -104, z: 4, r: 16 }, { x: -92, z: 12, r: 9 }, { x: -86, z: 36, r: 7 }]);
+  const bodies = buildBodies(quality, env, terrain.heightAt);
+  root.add(bodies.group); stats.objects++;
   const addField = (kind: string, f: ChunkedField) => { root.add(f.group); stats.objects++; stats.instances += f.instances; stats.byKind[kind] = f.instances; };  // a field is counted once, not once per level of detail
+  // stones are set against the cables that rest on the ground, so that a stretch of cable runs under or behind one
+  const placed = bodies.restPoints.map((p, i) => ({ x: p.x, z: p.z, s: 0.3 + 0.12 * (i % 4) }));
+  const rocks = buildRocks([{ x: -104, z: 4, r: 26, n: lat(260) }, { x: -86, z: 36, r: 16, n: lat(110) }, { x: -92, z: 14, r: 7, n: lat(80) }, { x: -80, z: -6, r: 14, n: lat(70) }], terrain.heightAt, env, owned, quality === 'high' ? 4 : quality === 'balanced' ? 3 : 2, [{ x: -104, z: 4, r: 16 }, { x: -92, z: 12, r: 9 }, { x: -86, z: 36, r: 7 }], placed);
   addField('rocks (wet)', rocks);
   const peb = quality === 'performance' ? 0.15 : quality === 'balanced' ? 0.6 : 1;
   const gravel = buildPebbles([{ x: -104, z: 4, r: 30, n: Math.round(9000 * peb) }, { x: -86, z: 36, r: 18, n: Math.round(3500 * peb) }, { x: -92, z: 14, r: 10, n: Math.round(2500 * peb) }], terrain.heightAt, env, owned);
   addField('gravel (wet)', gravel);
-  const bodies = buildBodies(quality, env, terrain.heightAt);
-  root.add(bodies.group); stats.objects++;
+  const debris = buildDebris([{ x: -104, z: 4, r: 24, n: Math.round(420 * peb) }, { x: -86, z: 36, r: 14, n: Math.round(160 * peb) }], terrain.heightAt, env, owned);
+  addField('debris', debris);
   const arena = buildArena(14, M, owned);
   arena.group.position.copy(WORLD.habitat).add(v3(0, 0.15, 0));
   root.add(arena.group);
@@ -625,7 +634,7 @@ export function buildMegastructure(quality: Quality, seed = 7, env: THREE.Textur
   const heavy = root.children.filter((o) => o.userData.heavy === true || ((o as THREE.InstancedMesh).isInstancedMesh && (o as THREE.InstancedMesh).count > 600) || (o as THREE.LineSegments).isLineSegments || (o as THREE.Points).isPoints);
   terrain.setReflectionHidden(heavy);
   const rangeGroups = root.children.filter((o) => Number.isFinite(o.userData.maxRange));
-  return { root, arena, trials, stats, carriers, gauge, stockpile: stock, array: arrayPulse, anchors, terrain, bodies, heavy, update: (cam) => { terrain.update(cam); applyRanges(rangeGroups, cam); return rocks.update(cam) + gravel.update(cam); }, dispose: () => { owned.forEach((o) => o.dispose()); } };
+  return { root, arena, trials, stats, carriers, gauge, stockpile: stock, array: arrayPulse, anchors, terrain, bodies, heavy, update: (cam) => { terrain.update(cam); applyRanges(rangeGroups, cam); return rocks.update(cam) + gravel.update(cam) + debris.update(cam); }, dispose: () => { owned.forEach((o) => o.dispose()); } };
 }
 
 // ---------------------------------------------------------------------------------------------------- the habitat arena

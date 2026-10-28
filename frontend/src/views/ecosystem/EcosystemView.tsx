@@ -22,13 +22,14 @@ import { buildOverlays, disposeGroup, disposeLabels, label as makeLabel } from '
 import { bodyState, studioEnvironment } from './bodies';
 import { buildDeviceLayer, deviceState, observationCoverage, SPACES, type DeviceLayer } from './researchDevice';
 import ExperimentsPane from './ExperimentsPane';
+import TechnicalView from './TechnicalView';
 import './ecosystem.css';
 
 // XENO ECOSYSTEM — a real-time view of MEOS-0, a deterministic simulation (backend/xzr/meos). The page draws a record and nothing else: the simulation
 // tick (the record's frames) and the render frame rate are separate clocks, the camera never reaches the simulation, and every value in the panels is
 // read from the record. The surrounding megastructure is static architecture and is labelled as such.
 
-type Tab = 'experiment' | 'inspect' | 'reductions' | 'studies' | 'data';
+type Tab = 'experiment' | 'inspect' | 'reductions' | 'studies' | 'technical' | 'data';
 type Sel = { kind: 'entity'; name: EntityName } | { kind: 'trial'; i: number } | null;
 const QUALITY: Quality[] = ['performance', 'balanced', 'high'];
 const PRESETS: Record<string, Intervention[]> = {
@@ -63,7 +64,9 @@ export default function EcosystemView() {
   const [cam, setCam] = useState(url.get('cam') ?? 'overview');
   const [follow, setFollow] = useState<EntityName | null>(null);
   const [sel, setSel] = useState<Sel>(null);
-  const [tab, setTab] = useState<Tab>('experiment');
+  const [tab, setTab] = useState<Tab>(() => (['ncb', 'observer'].includes(url.get('tech') ?? '') ? 'technical' : 'experiment'));
+  const [techWhich, setTechWhich] = useState<'ncb' | 'observer'>(() => (url.get('tech') === 'observer' ? 'observer' : 'ncb'));
+  const [techProbe, setTechProbe] = useState(() => url.get('probe') ?? (url.get('tech') === 'observer' ? 'O1' : 'A1'));
   const [busy, setBusy] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [replay, setReplay] = useState<string | null>(null);
@@ -392,13 +395,13 @@ export default function EcosystemView() {
     const ds = deviceState(rec, t, obs);
     const aimAt = E.mega.arena.local(ds.array.aim[0], ds.array.aim[1]).clone().add(E.mega.arena.group.position);
     E.mega.array.aim(aimAt, ds.array.sampling, ds.array.activeDishes, f.status === 'ACTIVE' ? 1 : 0.4);
-    E.mega.bodies.set(bodyState(rec, t, obs), aimAt);
+    E.mega.bodies.set(bodyState(rec, t, obs, out?.observed?.observability_status), aimAt);
     E.device.set(ds, { arenaCell: E.mega.arena.local, selectedTrial: sel?.kind === 'trial' ? sel.i : null, trialPos: E.mega.trials.positions, n: rec.config.grid });
     E.mega.arena.group.updateMatrixWorld(true);
     disposeGroup(E.overlays);
     E.overlays.add(...buildOverlays({ rec, t, arena: E.mega.arena, layers, ad, mfs: mfsRes, partitions: spec?.partitions ?? {}, selected: sel?.kind === 'entity' ? sel.name : null }).children.slice());
     E.simMs.push(performance.now() - t0); if (E.simMs.length > 120) E.simMs.shift();
-  }, [rec, fields, tick, layers, ad, mfsRes, spec, sel, obs, ready]);
+  }, [rec, fields, tick, layers, ad, mfsRes, spec, sel, obs, ready, out]);
   useEffect(() => { eng.current?.mega.trials.set(trials); }, [trials, ready]);
   useEffect(() => {
     const E = eng.current;
@@ -434,6 +437,7 @@ export default function EcosystemView() {
     <div className="eco" style={chrome ? undefined : { gridTemplateColumns: '1fr' }}>
       <div className="eco-stage" data-settled={settled ? '1' : '0'}>
         <div ref={mount} style={{ position: 'absolute', inset: 0 }} data-testid="eco-canvas" />
+        {chrome && tab === 'technical' && rec && <TechnicalView rec={rec} tick={tick} obs={obs} observability={out?.observed?.observability_status ?? 'OBSERVABLE'} which={techWhich} setWhich={setTechWhich} probeId={techProbe} setProbeId={setTechProbe} />}
         <div className="eco-hud">
           {mv && <div className={`eco-badge ${mv.label}`}><span>MEOS {mv.label}</span><span className="dim">tick {tick}/{n - 1}</span></div>}
           {mv?.dependency && <div className="eco-dep">failed dependency{mv.dependency.entity ? ` (${mv.dependency.entity})` : ''}: {mv.dependency.detail}</div>}
@@ -448,12 +452,13 @@ export default function EcosystemView() {
       </div>
       {chrome && <aside className="eco-side">
         <div className="eco-tabs" role="tablist">
-          {(['experiment', 'inspect', 'reductions', 'studies', 'data'] as Tab[]).map((t) => <button key={t} role="tab" aria-selected={tab === t} className={tab === t ? 'on' : ''} onClick={() => setTab(t)}>{t.toUpperCase()}</button>)}
+          {(['experiment', 'inspect', 'reductions', 'studies', 'technical', 'data'] as Tab[]).map((t) => <button key={t} role="tab" aria-selected={tab === t} className={tab === t ? 'on' : ''} onClick={() => setTab(t)}>{t.toUpperCase()}</button>)}
         </div>
         <div className="eco-pane">
           {tab === 'experiment' && <ExperimentPane {...{ rec, spec, tick, n, playing, setPlaying, rate, setRate, seed, setSeed, horizon, setHorizon, obs, setObs, conn, setConn, fullObs, layers, toggleLayer, cam, goCam, follow, setFollow, sel, focusSel, ivs, execute, intervene, doReplay, replay, quality, setQuality, out, setTick, live }} />}
           {tab === 'inspect' && rec && <InspectPane rec={rec} tick={tick} sel={sel} setSel={setSel} ad={ad} mfs={mfsRes} trials={trials} />}
           {tab === 'reductions' && <ReductionsPane {...{ spec, abl, mfsRes, bnd, hist, sss, addr, runAblation, runMfs, runBoundary, runHistory, runSss, runAddr, busy }} />}
+          {tab === 'technical' && <div className="eco-note">The technical inspection sheet is shown over the stage: orthographic drawings of the selected body's real geometry in the pose the run gives at the current tick, a probe detail, measured dimensions, component identifiers, cable routing and the state read from the run. Use the playhead to move through the run.</div>}
           {tab === 'studies' && <ExperimentsPane config={runCfg} busy={busy} wrap={wrap} />}
           {tab === 'data' && rec && traj && <DataPane rec={rec} tick={tick} traj={traj} setTick={(t) => { live.current.playhead = t; setTick(t); }} />}
         </div>
