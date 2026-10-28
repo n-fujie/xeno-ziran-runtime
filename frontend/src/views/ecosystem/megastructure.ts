@@ -39,6 +39,8 @@ export const CAMERA_PRESETS: Record<string, { pos: [number, number, number]; tar
   core: { pos: [20, -22, 24], target: [-4, -44, -4], label: 'Research Core' },
   habitat: { pos: [-48, 11, 33], target: [-66, 1.2, 16], label: 'Habitat' },
   subsurface: { pos: [4, -86, 50], target: [0, -102, 12], label: 'Subsurface Laboratory' },
+  array: { pos: [22, 20, 30], target: [54, 9, 52], label: 'Observation Array' },
+  socket: { pos: [30, 15, -46], target: [12, 5, -64], label: 'Expansion Socket' },
 };
 
 // ---------------------------------------------------------------------------------------------------- helpers
@@ -306,6 +308,23 @@ export function buildMegastructure(quality: Quality, seed = 7): Megastructure {
     beam(metal, towerTops[i].clone().setY(towerTops[i].y - 10), o.clone().setY(o.y - 10), 0.6, true);
   }
 
+  // --- gantry arches: truss arches spanning over the shaft (static architecture): vertical scale, depth layering and overlapping silhouettes
+  const arches = lat(14);
+  for (let i = 0; i < arches; i++) {
+    const a = (i / arches) * Math.PI + 0.1, r = WORLD.pit + 6, rise = 48 + (i % 3) * 7, segs = 26;
+    const at = (f: number, off: number) => {
+      const th = f * Math.PI, ca = Math.cos(a), sa = Math.sin(a);
+      const u = Math.cos(th) * r, y = Math.sin(th) * rise + off * 0.9, w = off * 0.0;
+      return v3(u * ca - w * sa, y, u * sa + w * ca);
+    };
+    for (let k = 0; k < segs; k++) {
+      const f0 = k / segs, f1 = (k + 1) / segs;
+      beam(metal, at(f0, 0), at(f1, 0), 0.55, true); beam(metal, at(f0, -3.4), at(f1, -3.4), 0.4, true);
+      beam(dark, at(f0, 0), at(f1, -3.4), 0.2); beam(dark, at(f0, -3.4), at(f1, 0), 0.2);
+      if (k % 2 === 0) beam(dark, at(f0, 0), at(f0, -3.4), 0.24);
+    }
+  }
+
   // --- rails: surface loops and the lines that join the zones, with sleepers and carriages
   const railLine = (pts: THREE.Vector3[], gauge: number, sleepers = true) => {
     for (let i = 0; i < pts.length - 1; i++) {
@@ -466,12 +485,13 @@ export function buildMegastructure(quality: Quality, seed = 7): Megastructure {
   // --- observation array — G (dishes on lattice masts)
   const dishGeo = new THREE.SphereGeometry(1, 20, 10, 0, Math.PI * 2, 0, 0.95);
   const dishes = new Boxes();
-  const dishPos: THREE.Vector3[] = [];
+  const dishPos: THREE.Vector3[] = [], dishSize: number[] = [];
   for (let i = 0; i < 12; i++) {
     const x = arr.x - 20 + (i % 4) * 11, z = arr.z - 12 + Math.floor(i / 4) * 12, h = 7 + (i % 3) * 3;
     dishPos.push(v3(x, h + 2, z));
     for (let y = 0; y < h; y += 2.2) for (const [u, w] of [[0.6, 0.6], [-0.6, 0.6], [0.6, -0.6], [-0.6, -0.6]]) beam(metal, v3(x + u, y, z + w), v3(x + u, y + 2.2, z + w), 0.16, y === 0);
     const s = 2.4 + (i % 3) * 0.6;
+    dishSize.push(s);
     _q.setFromEuler(new THREE.Euler(-0.9, (i * 0.7) % 6.28, 0));
     dishes.box(x, h + 2, z, s, s, s, _q.clone());
     beam(dark, v3(x, h + 2, z), v3(x, h + 4.4, z), 0.12);
@@ -542,7 +562,7 @@ export function buildMegastructure(quality: Quality, seed = 7): Megastructure {
   const gauge = buildGauge(M, owned); gauge.group.position.copy(dep).add(v3(-18, 0, 12)); root.add(gauge.group);
   const stock = buildStockpile(M, owned); stock.group.position.copy(pro).add(v3(22, 0, 0)); root.add(stock.group);
   const carriers = buildCarriers(M, owned, arena); root.add(carriers.group);
-  const arrayPulse = buildArrayPulse(dishPos, owned); root.add(arrayPulse.group);
+  const arrayPulse = buildArrayPulse(dishPos, dishSize, dm, owned); root.add(arrayPulse.group);
   // light structure: static annotations of the nine zones are drawn by the view (sprites), not here.
   const anchors: Record<string, THREE.Vector3> = {
     A: v3(0, 0, 0), B: v3(0, WORLD.levels.subsurface, 0), C: pro.clone(), D: dep.clone(), E: WORLD.habitat.clone(), F: v3(-20, 0, 62), G: arr.clone(), H: v3(36, 0, 24), I: exp.clone(),
@@ -700,12 +720,27 @@ function buildCarriers(M: Mats, owned: Array<{ dispose(): void }>, arena: Arena)
     },
   };
 }
-export interface ArrayPulse { group: THREE.Group; set(on: boolean, intensity: number): void }
-function buildArrayPulse(dishes: THREE.Vector3[], owned: Array<{ dispose(): void }>): ArrayPulse {
+export interface ArrayPulse {
+  group: THREE.Group; count: number; set(on: boolean, intensity: number): void;
+  /** Observation Array: every dish is turned toward ``target``; the first ``active`` lamps are lit (flashing on a sampled tick), the rest are dark. */
+  aim(target: THREE.Vector3, sampling: boolean, active: number, intensity: number): void;
+}
+function buildArrayPulse(dishes: THREE.Vector3[], sizes: number[], mesh: THREE.InstancedMesh | null, owned: Array<{ dispose(): void }>): ArrayPulse {
   const g = new THREE.Group();
   const geo = new THREE.SphereGeometry(0.34, 12, 8), mat = new THREE.MeshBasicMaterial({ color: 0xffffff }); owned.push(geo, mat);
   const lamps = dishes.map((p) => { const m = new THREE.Mesh(geo, mat.clone()); m.position.copy(p).add(v3(0, 2.6, 0)); g.add(m); return m; });
-  return { group: g, set(on, intensity) { lamps.forEach((m) => { (m.material as THREE.MeshBasicMaterial).color.setScalar(on ? 0.35 + 0.65 * intensity : 0.12); }); } };
+  const M = new THREE.Matrix4(), Q = new THREE.Quaternion(), S = new THREE.Vector3(), dir = new THREE.Vector3();
+  return {
+    group: g, count: dishes.length,
+    set(on, intensity) { lamps.forEach((m) => { (m.material as THREE.MeshBasicMaterial).color.setScalar(on ? 0.35 + 0.65 * intensity : 0.12); }); },
+    aim(target, sampling, active, intensity) {
+      dishes.forEach((p, i) => {
+        if (mesh) { dir.subVectors(target, p).normalize(); Q.setFromUnitVectors(_up, dir); mesh.setMatrixAt(i, M.compose(p, Q, S.setScalar(sizes[i]))); }
+        (lamps[i].material as THREE.MeshBasicMaterial).color.setScalar(i < active ? (sampling ? 0.35 + 0.65 * intensity : 0.2) : 0.05);
+      });
+      if (mesh) mesh.instanceMatrix.needsUpdate = true;
+    },
+  };
 }
 
 // ---------------------------------------------------------------------------------------------------- the subsurface trial chambers (B)

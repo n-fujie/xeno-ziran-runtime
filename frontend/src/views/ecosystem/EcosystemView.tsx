@@ -4,8 +4,8 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import Chart from '../../components/Chart';
 import {
-  ablation, addressSweep, adAt, boundary, decodeFields, fieldAt, getSpec, historyCompare, mfs as mfsApi, replayMeos, runMeos, sssSweep, STATUS_VALUE,
-  type AblationRow, type BoundaryOut, type HistoryOut, type Intervention, type Label, type MfsOut, type RunOut, type Spec,
+  ablation, addressSweep, adAt, boundary, decodeFields, fieldAt, FULL_OBSERVATION, getSpec, historyCompare, mfs as mfsApi, replayMeos, runMeos, sssSweep, STATUS_VALUE,
+  type AblationRow, type BoundaryOut, type HistoryOut, type Intervention, type Label, type MfsOut, type Observation, type RunOut, type Spec,
 } from './meosApi';
 import {
   ENTITY_NAMES, LAYERS, addressView, firingView, frameAt, interactionGraph, meosMembership, meosView, mfsMembership, statusSegments, trajectories,
@@ -13,18 +13,26 @@ import {
 } from './layers';
 import { ANNOTATIONS, CAMERA_PRESETS, WORLD, buildMegastructure, type Megastructure, type Quality, type Trial } from './megastructure';
 import { buildOverlays, disposeGroup, disposeLabels, label as makeLabel } from './overlays';
+import { buildDeviceLayer, deviceState, observationCoverage, SPACES, type DeviceLayer } from './researchDevice';
+import ExperimentsPane from './ExperimentsPane';
 import './ecosystem.css';
 
 // XENO ECOSYSTEM — a real-time view of MEOS-0, a deterministic simulation (backend/xzr/meos). The page draws a record and nothing else: the simulation
 // tick (the record's frames) and the render frame rate are separate clocks, the camera never reaches the simulation, and every value in the panels is
 // read from the record. The surrounding megastructure is static architecture and is labelled as such.
 
-type Tab = 'experiment' | 'inspect' | 'reductions' | 'data';
+type Tab = 'experiment' | 'inspect' | 'reductions' | 'studies' | 'data';
 type Sel = { kind: 'entity'; name: EntityName } | { kind: 'trial'; i: number } | null;
 const QUALITY: Quality[] = ['performance', 'balanced', 'high'];
 const PRESETS: Record<string, Intervention[]> = {
   baseline: [], 'a2-removed': [{ tick: 60, op: 'REMOVE', target: 'A2' }], 'no-history': [{ tick: 0, op: 'DISABLE_HISTORY', mode: 'removed' }],
   'interaction-cut': [{ tick: 100, op: 'ISOLATE', target: 'interaction_channel' }],
+  // the second-stage demonstration: a cut, its restoration with a resource pulse, a lowered renewal efficiency, an Address Domain fragmentation and its restoration
+  'recovery-demo': [
+    { tick: 100, op: 'ISOLATE', target: 'interaction_channel' }, { tick: 150, op: 'RECONNECT', target: 'interaction_channel' },
+    { tick: 151, op: 'ALTER_RESOURCE', inject: { x: 3, y: 6, amount: 2 } }, { tick: 190, op: 'RECONFIGURE', path: 'environment.renew_efficiency', value: 0.85 },
+    { tick: 200, op: 'ADDRESS', target: 'A2', mode: 'fragment', fraction: 0.5 }, { tick: 225, op: 'ADDRESS', target: 'both', mode: 'restore' },
+  ],
 };
 
 export interface Perf { fps: number; frameMs: number; p95: number; drawCalls: number; triangles: number; instances: number; edgeSegments: number; simMs: number; heapMB: number | null; frames: number; quality: Quality }
@@ -37,8 +45,10 @@ export default function EcosystemView() {
   const [out, setOut] = useState<RunOut | null>(null);
   const [ivs, setIvs] = useState<Intervention[]>(() => PRESETS[url.get('preset') ?? 'baseline'] ?? []);
   const [seed, setSeed] = useState(1);
-  const [horizon, setHorizon] = useState(240);
-  const [obsInterval, setObsInterval] = useState(1);
+  const [horizon, setHorizon] = useState(() => ([240, 360, 480].includes(Number(url.get('horizon'))) ? Number(url.get('horizon')) : 240));
+  const [obs, setObs] = useState<Observation>(FULL_OBSERVATION);
+  const [conn, setConn] = useState<{ m2: string; m2w: number; phil: string; channel: string }>(() => ({ m2: ['direct', 'delayed', 'noisy'].includes(url.get('m2') ?? '') ? url.get('m2')! : 'none', m2w: 1, phil: ['expression', 'scorekeeping', 'revision'].includes(url.get('phil') ?? '') ? url.get('phil')! : 'none', channel: 'clean' }));
+  const fullObs = JSON.stringify(obs) === JSON.stringify(FULL_OBSERVATION);
   const [tick, setTick] = useState(() => Math.max(0, Number(url.get('tick') ?? 0) || 0));
   const [playing, setPlaying] = useState(url.get('play') === '1');
   const [rate, setRate] = useState(12);
@@ -63,27 +73,33 @@ export default function EcosystemView() {
   const rec = out?.record ?? null;
   const fields = useMemo(() => (rec ? decodeFields(rec.fields, rec.frames.length) : null), [rec]);
   const live = useRef({ playing, rate, tick, playhead: tick, follow, goal: null as null | { pos: THREE.Vector3; target: THREE.Vector3 }, nFrames: 0 });
-  const eng = useRef<{ mega: Megastructure; renderer: THREE.WebGLRenderer; scene: THREE.Scene; camera: THREE.PerspectiveCamera; controls: OrbitControls; overlays: THREE.Group; simMs: number[] } | null>(null);
+  const eng = useRef<{ device: DeviceLayer; mega: Megastructure; renderer: THREE.WebGLRenderer; scene: THREE.Scene; camera: THREE.PerspectiveCamera; controls: OrbitControls; overlays: THREE.Group; simMs: number[] } | null>(null);
   const setTickRef = useRef(setTick), setPlayingRef = useRef(setPlaying);
   setTickRef.current = setTick; setPlayingRef.current = setPlaying;
 
   // ---------------------------------------------------------------------------------------------- run / interventions
+  const runCfg = useMemo(() => {
+    const c: Record<string, unknown> = { seed, horizon };
+    if (conn.m2 !== 'none') c.m2 = { sense: conn.m2, weight: conn.m2w, ...(conn.m2 === 'delayed' ? { delay: 3 } : {}), ...(conn.m2 === 'noisy' ? { noise: 0.05 } : {}) };
+    if (conn.phil !== 'none') c.phil = { mode: conn.phil, ...(conn.channel === 'noisy' ? { noise: 0.15 } : {}), ...(conn.channel === 'slow' ? { delay: 6 } : {}) };
+    return c;
+  }, [seed, horizon, conn]);
   const execute = useCallback(async (list: Intervention[], keepTick: number | null) => {
     setBusy('running the simulation'); setErr(null);
     try {
-      const r = await runMeos({ seed, horizon } as never, list, obsInterval > 1 ? { sampling_interval: obsInterval } : undefined);
+      const r = await runMeos(runCfg, list, fullObs ? undefined : { ...obs });
       setOut(r); setIvs(list); setReplay(null);
       const t = Math.min(keepTick ?? 0, r.record.frames.length - 1);
       live.current.playhead = t; setTick(t);
     } catch (e) { setErr(String(e)); } finally { setBusy(null); }
-  }, [seed, horizon, obsInterval]);
+  }, [runCfg, fullObs, obs]);
 
   useEffect(() => { getSpec().then(setSpec).catch((e) => setErr(`the MEOS API is not available on this server (${e}). XENO ECOSYSTEM needs the local runtime.`)); }, []);
   useEffect(() => {
     void execute(ivs, tick);
     // re-run only when the run's own parameters change (not on every tick or intervention)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [seed, horizon, obsInterval]);
+  }, [runCfg, obs]);
 
   const intervene = (iv: Omit<Intervention, 'tick'>) => {
     if (ivs.length >= 64) { setErr('at most 64 interventions per run'); return; }
@@ -100,7 +116,7 @@ export default function EcosystemView() {
   };
 
   // ---------------------------------------------------------------------------------------------- reductions and experiments
-  const baseCfg = useMemo(() => ({ seed, horizon }), [seed, horizon]);
+  const baseCfg = runCfg;
   const wrap = async (name: string, fn: () => Promise<void>) => { setBusy(name); setErr(null); try { await fn(); } catch (e) { setErr(String(e)); } finally { setBusy(null); } };
   const runAblation = () => wrap('ablation: removing each component in turn', async () => {
     if (!spec) return;
@@ -153,7 +169,8 @@ export default function EcosystemView() {
     scene.add(mega.root);
     for (const a of ANNOTATIONS) { const s = makeLabel(a.text, 0.032, true); s.position.copy(a.at); s.userData = { annotation: a.id }; scene.add(s); }
     const overlays = new THREE.Group(); mega.arena.group.add(overlays);
-    eng.current = { mega, renderer, scene, camera, controls, overlays, simMs: [] };
+    const device = buildDeviceLayer(mega.arena.group, 14); mega.root.add(device.group);
+    eng.current = { device, mega, renderer, scene, camera, controls, overlays, simMs: [] };
     setReady(true);
 
     const frames: number[] = [];
@@ -221,7 +238,7 @@ export default function EcosystemView() {
     return () => {
       cancelAnimationFrame(raf); ro.disconnect();
       renderer.domElement.removeEventListener('pointerdown', onDown); renderer.domElement.removeEventListener('pointerup', onUp);
-      disposeGroup(overlays); mega.dispose(); disposeLabels(); controls.dispose();
+      disposeGroup(overlays); device.dispose(); mega.dispose(); disposeLabels(); controls.dispose();
       scene.traverse((o) => { const m = o as THREE.Mesh; if (m.isMesh && m.geometry) m.geometry.dispose(); });
       renderer.dispose(); renderer.domElement.remove(); eng.current = null; setReady(false);
     };
@@ -251,12 +268,15 @@ export default function EcosystemView() {
     E.mega.stockpile.set(Math.min(1.4, f.R / r0));
     const renew = rec.events.filter((e) => e.kind === 'act' && e.actor === 'A2' && (e.renewed as number) > 0 && e.tick <= t && t - e.tick < 8);
     E.mega.carriers.set(renew.slice(-24).map((e) => ({ progress: (t - e.tick) / 8, amount: e.renewed as number })));
-    E.mega.array.set(t % obsInterval === 0, f.status === 'ACTIVE' ? 1 : 0.4);
+    const ds = deviceState(rec, t, obs);
+    const aimAt = E.mega.arena.local(ds.array.aim[0], ds.array.aim[1]).clone().add(E.mega.arena.group.position);
+    E.mega.array.aim(aimAt, ds.array.sampling, ds.array.activeDishes, f.status === 'ACTIVE' ? 1 : 0.4);
+    E.device.set(ds, { arenaCell: E.mega.arena.local, selectedTrial: sel?.kind === 'trial' ? sel.i : null, trialPos: E.mega.trials.positions, n: rec.config.grid });
     E.mega.arena.group.updateMatrixWorld(true);
     disposeGroup(E.overlays);
     E.overlays.add(...buildOverlays({ rec, t, arena: E.mega.arena, layers, ad, mfs: mfsRes, partitions: spec?.partitions ?? {}, selected: sel?.kind === 'entity' ? sel.name : null }).children.slice());
     E.simMs.push(performance.now() - t0); if (E.simMs.length > 120) E.simMs.shift();
-  }, [rec, fields, tick, layers, ad, mfsRes, spec, sel, obsInterval, ready]);
+  }, [rec, fields, tick, layers, ad, mfsRes, spec, sel, obs, ready]);
   useEffect(() => { eng.current?.mega.trials.set(trials); }, [trials, ready]);
   useEffect(() => {
     const E = eng.current;
@@ -306,12 +326,13 @@ export default function EcosystemView() {
       </div>
       {chrome && <aside className="eco-side">
         <div className="eco-tabs" role="tablist">
-          {(['experiment', 'inspect', 'reductions', 'data'] as Tab[]).map((t) => <button key={t} role="tab" aria-selected={tab === t} className={tab === t ? 'on' : ''} onClick={() => setTab(t)}>{t.toUpperCase()}</button>)}
+          {(['experiment', 'inspect', 'reductions', 'studies', 'data'] as Tab[]).map((t) => <button key={t} role="tab" aria-selected={tab === t} className={tab === t ? 'on' : ''} onClick={() => setTab(t)}>{t.toUpperCase()}</button>)}
         </div>
         <div className="eco-pane">
-          {tab === 'experiment' && <ExperimentPane {...{ rec, spec, tick, n, playing, setPlaying, rate, setRate, seed, setSeed, horizon, setHorizon, obsInterval, setObsInterval, layers, toggleLayer, cam, goCam, follow, setFollow, sel, focusSel, ivs, execute, intervene, doReplay, replay, quality, setQuality, out, setTick, live }} />}
+          {tab === 'experiment' && <ExperimentPane {...{ rec, spec, tick, n, playing, setPlaying, rate, setRate, seed, setSeed, horizon, setHorizon, obs, setObs, conn, setConn, fullObs, layers, toggleLayer, cam, goCam, follow, setFollow, sel, focusSel, ivs, execute, intervene, doReplay, replay, quality, setQuality, out, setTick, live }} />}
           {tab === 'inspect' && rec && <InspectPane rec={rec} tick={tick} sel={sel} setSel={setSel} ad={ad} mfs={mfsRes} trials={trials} />}
           {tab === 'reductions' && <ReductionsPane {...{ spec, abl, mfsRes, bnd, hist, sss, addr, runAblation, runMfs, runBoundary, runHistory, runSss, runAddr, busy }} />}
+          {tab === 'studies' && <ExperimentsPane config={runCfg} busy={busy} wrap={wrap} />}
           {tab === 'data' && rec && traj && <DataPane rec={rec} tick={tick} traj={traj} setTick={(t) => { live.current.playhead = t; setTick(t); }} />}
         </div>
       </aside>}
@@ -331,7 +352,7 @@ function perfSnapshot(frames: number[], renderer: THREE.WebGLRenderer, mega: Meg
 // ------------------------------------------------------------------------------------------------------------------ panes
 type ExpProps = {
   rec: RunOut['record'] | null; spec: Spec | null; tick: number; n: number; playing: boolean; setPlaying: (b: boolean) => void; rate: number; setRate: (n: number) => void;
-  seed: number; setSeed: (n: number) => void; horizon: number; setHorizon: (n: number) => void; obsInterval: number; setObsInterval: (n: number) => void;
+  seed: number; setSeed: (n: number) => void; horizon: number; setHorizon: (n: number) => void; obs: Observation; setObs: (o: Observation) => void; conn: { m2: string; m2w: number; phil: string; channel: string }; setConn: (c: { m2: string; m2w: number; phil: string; channel: string }) => void; fullObs: boolean;
   layers: Set<LayerId>; toggleLayer: (l: LayerId) => void; cam: string; goCam: (n: string) => void; follow: EntityName | null; setFollow: (e: EntityName | null) => void;
   sel: Sel; focusSel: () => void; ivs: Intervention[]; execute: (l: Intervention[], t: number | null) => Promise<void>; intervene: (iv: Omit<Intervention, 'tick'>) => void;
   doReplay: () => void; replay: string | null; quality: Quality; setQuality: (q: Quality) => void; out: RunOut | null; setTick: (t: number) => void;
@@ -349,11 +370,13 @@ function ExperimentPane(p: ExpProps) {
   const [resPath, setResPath] = useState('power.charge');
   const [resVal, setResVal] = useState(0.4);
   const [hMode, setHMode] = useState('removed');
+  const [addr, setAddr] = useState({ mode: 'loss', target: 'A1', x: 9, y: 6, fraction: 0.5 });
   const apply = () => {
     if (op === 'REMOVE' || op === 'ISOLATE' || op === 'RECONNECT') p.intervene({ op, target });
     else if (op === 'RECONFIGURE') p.intervene({ op, path, value });
     else if (op === 'CHANGE_BOUNDARY') p.intervene({ op, arena_radius: radius });
     else if (op === 'DISABLE_HISTORY') p.intervene({ op, mode: hMode });
+    else if (op === 'ADDRESS') p.intervene({ op, target: addr.target, mode: addr.mode, ...(addr.mode === 'reassign' ? { x: addr.x, y: addr.y } : {}), ...(addr.mode === 'fragment' || addr.mode === 'partial' ? { fraction: addr.fraction } : {}) });
     else if (op === 'ALTER_SSS') p.intervene({ op, ...sssV });
     else if (op === 'ALTER_RESOURCE') p.intervene(resPath === 'inject' ? { op, inject: inj } : { op, path: resPath, value: resVal } as never);
   };
@@ -379,8 +402,29 @@ function ExperimentPane(p: ExpProps) {
         <label>horizon <select value={p.horizon} onChange={(e) => p.setHorizon(Number(e.target.value))}>{[240, 360, 480].map((h) => <option key={h}>{h}</option>)}</select></label>
         <label>quality <select value={p.quality} onChange={(e) => p.setQuality(e.target.value as Quality)}>{QUALITY.map((q) => <option key={q}>{q}</option>)}</select></label>
       </div>
-      <div className="eco-row"><label title="Observation Array: the observation's sampling interval (ticks)">observation interval <select value={p.obsInterval} onChange={(e) => p.setObsInterval(Number(e.target.value))}>{[1, 2, 4, 8].map((h) => <option key={h}>{h}</option>)}</select></label>
-        {p.out?.observed && <span className="eco-note">observed {p.out.observed.observed_status} ({p.out.observed.observed_cycles}/{p.out.observed.true_cycles} cycles) {p.out.observed.agrees ? '= true status' : '≠ true ' + p.out.observed.true_status}</span>}</div>
+      <h3>Observation (Observation Array)</h3>
+      <div className="eco-row">
+        <label title="ticks between samples">interval <select value={p.obs.sampling_interval} onChange={(e) => p.setObs({ ...p.obs, sampling_interval: Number(e.target.value) })}>{[1, 2, 3, 4, 6, 8].map((h) => <option key={h}>{h}</option>)}</select></label>
+        <label title="every n-th cell of the arena is resolved">spatial stride <select value={p.obs.spatial_stride} onChange={(e) => p.setObs({ ...p.obs, spatial_stride: Number(e.target.value) })}>{[1, 2, 3, 4].map((h) => <option key={h}>{h}</option>)}</select></label>
+        <label title="events closer in time than this are one observed event">aggregation <select value={p.obs.aggregation} onChange={(e) => p.setObs({ ...p.obs, aggregation: Number(e.target.value) })}>{[1, 2, 4, 8].map((h) => <option key={h}>{h}</option>)}</select></label>
+        <label title="ticks over which the observer counts cycles">window <select value={p.obs.window} onChange={(e) => p.setObs({ ...p.obs, window: Number(e.target.value) })}>{[12, 24, 48, 96].map((h) => <option key={h}>{h}</option>)}</select></label>
+        <label title="the region of the arena the observer looks at">region <select value={p.obs.region ? p.obs.region.join(',') : 'all'} onChange={(e) => p.setObs({ ...p.obs, region: e.target.value === 'all' ? null : e.target.value.split(',').map(Number) })}>
+          <option value="all">whole arena</option><option value="0,0,6,13">left half</option><option value="7,0,13,13">right half</option><option value="3,3,10,10">centre</option><option value="0,0,3,3">corner</option></select></label>
+        <button disabled={p.fullObs} onClick={() => p.setObs(FULL_OBSERVATION)}>full resolution</button>
+      </div>
+      <div className="eco-note">covers {(observationCoverage(p.obs, p.rec?.config.grid ?? 14) * 100).toFixed(0)}% of the arena cells at the sampled ticks. Operational state is the run's own status; observed state is computed from what this observation resolves; observability status says why they differ.</div>
+      {p.out?.observed ? <dl className="eco-kv"><dt>operational state</dt><dd><span className={`eco-chip ${p.out.observed.operational_state}`}>{p.out.observed.operational_state}</span> ({p.out.observed.true_cycles} cycles counted by the engine)</dd>
+        <dt>observed state</dt><dd><span className={`eco-chip ${p.out.observed.observed_state}`}>{p.out.observed.observed_state}</span> ({p.out.observed.observed_cycles} cycles resolved)</dd>
+        <dt>observability</dt><dd>{p.out.observed.observability_status}{p.out.observed.limiting_parameters.length ? ` — limited by ${p.out.observed.limiting_parameters.join(', ')}` : ''}</dd></dl>
+        : <div className="eco-note">full-resolution observation: the observed state is the operational state.</div>}
+      <h3>Connections</h3>
+      <div className="eco-row">
+        <label title="A1 also senses M2, the alteration A2's reconfiguration leaves">M2 → A1 <select value={p.conn.m2} onChange={(e) => p.setConn({ ...p.conn, m2: e.target.value })}>{['none', 'direct', 'delayed', 'noisy'].map((m) => <option key={m}>{m}</option>)}</select></label>
+        <label>weight <input type="number" step="0.25" min={0.25} max={4} value={p.conn.m2w} style={{ width: 54 }} onChange={(e) => p.setConn({ ...p.conn, m2w: Number(e.target.value) })} /></label>
+        <label title="first-stage Philosophical operations: expression, scorekeeping, norm-sensitive revision">philosophical <select value={p.conn.phil} onChange={(e) => p.setConn({ ...p.conn, phil: e.target.value })}>{['none', 'expression', 'scorekeeping', 'revision'].map((m) => <option key={m}>{m}</option>)}</select></label>
+        <label>channel <select value={p.conn.channel} onChange={(e) => p.setConn({ ...p.conn, channel: e.target.value })}>{['clean', 'noisy', 'slow'].map((m) => <option key={m}>{m}</option>)}</select></label>
+      </div>
+      <div className="eco-note">A connection that is off is absent from the run, not switched off inside it: the default run is the baseline. A philosophical operation costs power and is not designed to help; the module appears in the third expansion bay only when one is configured.</div>
       <h3>Camera</h3>
       <div className="eco-row">{Object.entries(CAMERA_PRESETS).map(([k, v]) => <button key={k} className={p.cam === k && !p.follow ? 'on' : ''} onClick={() => p.goCam(k)}>{v.label}</button>)}</div>
       <div className="eco-row"><span className="dim">follow</span>{ENTITY_NAMES.map((e) => <button key={e} className={p.follow === e ? 'on' : ''} onClick={() => p.setFollow(p.follow === e ? null : e)}>{e}</button>)}<button disabled={!p.sel} onClick={p.focusSel}>focus selection</button></div>
@@ -395,6 +439,10 @@ function ExperimentPane(p: ExpProps) {
         {op === 'RECONFIGURE' && <><select value={path} onChange={(e) => setPath(e.target.value)}>{settable.map((k) => <option key={k}>{k}</option>)}</select><input type="number" step="any" value={value} style={{ width: 70 }} onChange={(e) => setValue(Number(e.target.value))} /></>}
         {op === 'CHANGE_BOUNDARY' && <label>arena radius <input type="number" min={1} max={14} value={radius} style={{ width: 54 }} onChange={(e) => setRadius(Number(e.target.value))} /></label>}
         {op === 'DISABLE_HISTORY' && <select value={hMode} onChange={(e) => setHMode(e.target.value)}><option>removed</option><option>prevented</option></select>}
+        {op === 'ADDRESS' && <><select value={addr.mode} onChange={(e) => setAddr({ ...addr, mode: e.target.value })}>{['loss', 'reassign', 'fragment', 'collision', 'partial', 'restore'].map((m) => <option key={m}>{m}</option>)}</select>
+          <select value={addr.target} onChange={(e) => setAddr({ ...addr, target: e.target.value })}>{['A1', 'A2', 'both'].map((m) => <option key={m}>{m}</option>)}</select>
+          {addr.mode === 'reassign' && (['x', 'y'] as const).map((k) => <label key={k}>{k} <input type="number" min={0} max={13} value={addr[k]} style={{ width: 46 }} onChange={(e) => setAddr({ ...addr, [k]: Number(e.target.value) })} /></label>)}
+          {(addr.mode === 'fragment' || addr.mode === 'partial') && <label>fraction <input type="number" step="0.25" min={0} max={1} value={addr.fraction} style={{ width: 54 }} onChange={(e) => setAddr({ ...addr, fraction: Number(e.target.value) })} /></label>}</>}
         {op === 'ALTER_SSS' && (['scale', 'size', 'speed'] as const).map((k) => <label key={k}>{k} <input type="number" step="0.25" min={0.25} max={4} value={sssV[k]} style={{ width: 54 }} onChange={(e) => setSssV({ ...sssV, [k]: Number(e.target.value) })} /></label>)}
         {op === 'ALTER_RESOURCE' && <><select value={resPath} onChange={(e) => setResPath(e.target.value)}><option value="power.charge">power.charge</option><option value="power.reserve">power.reserve</option><option value="environment.regrow">environment.regrow</option><option value="environment.relax">environment.relax</option><option value="inject">inject a resource pulse</option></select>
           {resPath === 'inject' ? (['x', 'y', 'amount'] as const).map((k) => <label key={k}>{k} <input type="number" step="any" value={inj[k]} style={{ width: 54 }} onChange={(e) => setInj({ ...inj, [k]: Number(e.target.value) })} /></label>) : <input type="number" step="any" value={resVal} style={{ width: 70 }} onChange={(e) => setResVal(Number(e.target.value))} />}</>}
@@ -406,6 +454,18 @@ function ExperimentPane(p: ExpProps) {
         <ul className="eco-log">{p.ivs.map((iv, i) => <li key={i}><span>t={iv.tick} {iv.op} {iv.target ?? iv.path ?? ''} {iv.value ?? iv.arena_radius ?? iv.mode ?? (iv.inject ? `pulse ${iv.inject.amount}@(${iv.inject.x},${iv.inject.y})` : '')}{iv.scale || iv.size || iv.speed ? ` sss ${iv.scale ?? ''}/${iv.size ?? ''}/${iv.speed ?? ''}` : ''}</span></li>)}</ul>
       )}
       <div className="eco-row"><button disabled={!p.ivs.length} onClick={() => void p.execute(p.ivs.slice(0, -1), p.tick)}>undo last</button><button disabled={!p.ivs.length} onClick={() => void p.execute([], 0)}>clear all</button></div>
+      <h3>Research device (live state of the structure)</h3>
+      {p.rec && (() => {
+        const d = deviceState(p.rec, p.tick, p.obs);
+        return <dl className="eco-kv">
+          <dt>Observation Array</dt><dd>aimed at cell ({d.array.aim[0].toFixed(1)}, {d.array.aim[1].toFixed(1)}); {d.array.activeDishes}/12 dishes lit (coverage {(d.array.coverage * 100).toFixed(0)}%); {d.array.sampling ? 'sampling at this tick' : 'not a sampled tick'}</dd>
+          <dt>Boundary Layer</dt><dd>{d.boundary.closed ? 'closed: every coupling channel intact' : `open: ${d.boundary.open.join(', ')}`}; arena radius {d.boundary.arenaRadius ?? 'whole grid'}</dd>
+          <dt>Recovery</dt><dd>{d.recovery.phase === 'none' ? 'no collapse so far' : d.recovery.phase === 'collapsed' ? `collapsed since tick ${d.recovery.since}` : `recovered at tick ${d.recovery.since} (${d.recovery.recoveries} recovery event${d.recovery.recoveries === 1 ? '' : 's'})`}</dd>
+          <dt>Resource pulse</dt><dd>{d.pulse.active ? `amount ${d.pulse.amount} at (${d.pulse.x}, ${d.pulse.y}), ${d.pulse.age} ticks ago` : 'none in the last 14 ticks'}</dd>
+          <dt>Philosophical module</dt><dd>{d.phil.enabled ? `mode ${d.phil.mode}; ${d.phil.expressions} expressions, power spent ${d.phil.power.toFixed(2)}; A1 reliability ${d.phil.reliability.toFixed(2)}, A2 trust ${d.phil.trust.toFixed(2)}; measured renewal efficiency ${d.phil.measuredEfficiency.toFixed(2)}; renewal boost ×${d.phil.boost.toFixed(2)}` : 'not configured: the bay is empty'}</dd>
+        </dl>;
+      })()}
+      <details><summary className="dim">which space serves which experimental function</summary><table className="eco-table"><thead><tr><th>space</th><th>function</th><th>driven by</th></tr></thead><tbody>{SPACES.map((x) => <tr key={x.space}><td>{x.space}</td><td>{x.function}</td><td>{x.driven_by}</td></tr>)}</tbody></table></details>
       <h3>MEOS and MFS</h3>
       <div className="eco-note"><b>MFS</b> is the minimal relational operational configuration relative to a specified operation, physical conditions, scale and admissible reductions. <b>MEOS</b> is an ecosystem-level application: several operational sequences recursively modify one another's subsequent conditions. Minimality here is operational and relational (what must be retained for the cycle to persist) and never a count of visible objects. A1 and A2 are operational configurations: a sensing window, a threshold, a firing persistence and an action rule — not organisms, subjects or minds; their operational boundary is a specification you can change.</div>
     </>
@@ -493,6 +553,7 @@ function DataPane({ rec, tick, traj, setTick }: { rec: RunOut['record']; tick: n
       <Chart title="resource: total R and power reserve" series={traj.resource} markers={markers} height={100} onPick={setTick} />
       <Chart title="history traces" series={traj.history} markers={markers} height={90} onPick={setTick} />
       <Chart title="A1 energy" series={traj.energy} markers={markers} height={80} onPick={setTick} />
+      {rec.traces && <Traces rec={rec} markers={markers} setTick={setTick} />}
       <h3>firing events</h3>
       <svg width={W} height={52} style={{ background: '#050507', border: '1px solid #1c1c21' }} role="img" aria-label="firing raster">
         {(['A1', 'A2'] as const).map((a, row) => fires(a).map((t) => <line key={a + t} x1={4 + (t / n) * (W - 8)} x2={4 + (t / n) * (W - 8)} y1={6 + row * 22} y2={22 + row * 22} stroke="#fff" strokeWidth={1} opacity={0.85} />))}
@@ -506,6 +567,25 @@ function DataPane({ rec, tick, traj, setTick }: { rec: RunOut['record']; tick: n
       </svg>
       <h3>resource distribution at tick {tick}</h3>
       <ResourceBars rec={rec} tick={tick} />
+    </>
+  );
+}
+
+/** Intermediate quantities of the run: the status is counted from cycles and never reads these, so they show how the operation is sustained, not whether it is. */
+function Traces({ rec, markers, setTick }: { rec: RunOut['record']; markers: Array<{ t: number; color: string; label: string }>; setTick: (t: number) => void }) {
+  const tr = rec.traces!, t = tr.t ?? rec.frames.map((f) => f.t);
+  const S = (label: string, key: string) => ({ label, t, v: tr[key] ?? [] });
+  return (
+    <>
+      <h3>resource flow</h3>
+      <Chart title="resource consumed / renewed per tick" series={[S('consumed', 'resource_consumed'), S('renewed', 'resource_renewed')]} markers={markers} height={90} onPick={setTick} />
+      <Chart title="energy / power balance (reserve, draw, intake)" series={[S('reserve', 'power_reserve'), S('draw', 'power_draw'), S('in', 'power_in')]} markers={markers} height={90} onPick={setTick} />
+      <h3>activity, interaction and history</h3>
+      <Chart title="A1 / A2 activity (firings in the window)" series={[S('A1', 'a1_activity'), S('A2', 'a2_activity')]} markers={markers} height={80} onPick={setTick} />
+      <Chart title="interaction strength (A2's M1 signal) and reconfiguration signal" series={[S('interaction', 'interaction_strength'), S('reconfiguration', 'reconfiguration_signal')]} markers={markers} height={80} onPick={setTick} />
+      <Chart title="history contribution to the thresholds" series={[S('A1', 'history_contribution_a1'), S('A2', 'history_contribution_a2')]} markers={markers} height={80} onPick={setTick} />
+      <Chart title="target margin (≥ 0 ⇔ ACTIVE)" series={[S('margin', 'target_margin')]} markers={markers} height={80} onPick={setTick} />
+      {tr.phil_boost && <Chart title="Philosophical operations: renewal boost and A1 reliability" series={[S('boost', 'phil_boost'), S('reliability', 'phil_reliability_scarcity'), S('measured efficiency', 'phil_measured_efficiency')]} markers={markers} height={90} onPick={setTick} />}
     </>
   );
 }

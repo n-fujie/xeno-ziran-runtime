@@ -27,6 +27,12 @@ export const SHOTS = {
   '06-xenobody-boundary': 'cam=habitat&layers=physical,xenobody,address&tick=120',
   '07-history-overlay': 'cam=habitat&layers=physical,history&tick=120',
   '08-subsurface-laboratory': 'reductions=1&cam=subsurface&layers=physical&tick=120',
+  // second stage: the research device (fixed camera presets, so that a capture is comparable with the earlier ones)
+  '09-observation-array': 'cam=array&layers=physical,meos&tick=120',
+  '10-philosophical-socket': 'preset=recovery-demo&horizon=360&phil=revision&cam=socket&layers=physical,meos&tick=165',
+  '11-resource-pulse': 'preset=recovery-demo&horizon=360&phil=revision&cam=habitat&layers=physical,meos&tick=154',
+  '12-boundary-open': 'preset=recovery-demo&horizon=360&phil=revision&cam=habitat&layers=physical,meos&tick=125',
+  '13-recovered': 'preset=recovery-demo&horizon=360&phil=revision&cam=habitat&layers=physical,meos&tick=175',
 };
 
 const browser = await chromium.launch({ executablePath: exe, args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--enable-webgl'] });
