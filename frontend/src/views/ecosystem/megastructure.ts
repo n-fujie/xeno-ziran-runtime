@@ -58,9 +58,10 @@ export const CAMERA_PRESETS: Record<string, { pos: [number, number, number]; tar
   observer: { pos: [-104, 4.2, 22], target: [-85, 7.5, 37], label: 'Observation Node' },
   puddle: { pos: [-90, 0.9, 13], target: [-103, 2.6, 2], label: 'Wet Ground' },
   // close-ups on the bodies (fixed positions: the captures of every pass use the same cameras)
-  probe: { pos: [-90.5, 1.0, 9.0], target: [-92.7, 0.9, 5.7], label: 'Probe and reservoir' },
-  cable: { pos: [-99.5, 2.2, 11.5], target: [-103.3, 2.4, 6.5], label: 'Cable junction' },
+  probe: { pos: [-89.8, 0.8, 7.8], target: [-92.7, 1.3, 5.7], label: 'Probe and reservoir' },
+  cable: { pos: [-97.5, 4.6, 10.5], target: [-103.6, 3.0, 4.8], label: 'Cable junction' },
   plate: { pos: [-106.5, 3.4, 19.5], target: [-111.5, 3.0, 12.6], label: 'Plates and ports' },
+  observerhero: { pos: [-93.5, 2.6, 28.5], target: [-85, 2.6, 35], label: 'Observation node (close)' },
   probering: { pos: [-84.5, 2.6, 27.0], target: [-79.8, 2.2, 30.2], label: 'Probe ring' },
   subsurface: { pos: [4, -86, 50], target: [0, -102, 12], label: 'Subsurface Laboratory' },
   array: { pos: [22, 20, 30], target: [54, 9, 52], label: 'Observation Array' },
@@ -561,6 +562,27 @@ export function buildMegastructure(quality: Quality, seed = 7, env: THREE.Textur
   const hm = hexes.mesh(M.plate, hexGeo); if (hm) { add('expansion', hm); owned.push(hexGeo); }
   if (hexEdges.length) { const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(hexEdges, 3)); add('expansion', new THREE.LineSegments(g, M.edge)); }
 
+  // --- the western gantry field: lattice pylons, cross bridges, hanging sample cells and loose frames standing behind the experimental bodies, so that a view from the bodies
+  //     toward the west has mechanical depth (static architecture, far field; its fine parts are range-limited with the rest)
+  for (let k = 0; k < 7; k++) {
+    const gx = -150 - k * 13 - (k % 2) * 6, gz = -42 + k * 17 + (k % 3) * 5, h = 30 + (k % 4) * 8, w = 2.2 + (k % 3) * 0.5;
+    const seg = 2.6;
+    for (let y = 0; y < h; y += seg) {
+      const c = [[w, w], [-w, w], [w, -w], [-w, -w]].map(([u, v]) => (yy: number) => v3(gx + u, yy, gz + v));
+      c.forEach((L) => beam(metal, L(y), L(y + seg), 0.36, true));
+      beam(dark, c[0](y), c[3](y + seg), 0.2); beam(dark, c[1](y), c[2](y + seg), 0.2); beam(dark, c[0](y + seg), c[1](y + seg), 0.22); beam(dark, c[2](y + seg), c[3](y + seg), 0.22);
+      if (R() < 0.4) beam(dark, c[0](y), c[1](y + seg), 0.16);
+    }
+    plate.box(gx, h + 0.4, gz, w * 2.8, 0.5, w * 2.8, undefined, true);
+    // a boom, a hanging cell, and a bridge to the next pylon
+    const ba = (k * 1.9) % 6.28, boom = 10 + R() * 8;
+    beam(metal, v3(gx, h, gz), v3(gx + Math.cos(ba) * boom, h - 2 - R() * 4, gz + Math.sin(ba) * boom), 0.5, true);
+    const cx = gx + Math.cos(ba) * boom, cz = gz + Math.sin(ba) * boom, cy = h - 9 - R() * 5, cs = 3 + R() * 2.5;
+    glass.box(cx, cy, cz, cs, cs, cs); for (let i = 0; i < 8; i++) for (const bit of [1, 2, 4]) if (!(i & bit)) { const q = (n: number) => v3(cx + (n & 1 ? cs / 2 : -cs / 2), cy + (n & 2 ? cs / 2 : -cs / 2), cz + (n & 4 ? cs / 2 : -cs / 2)); beam(metal, q(i), q(i | bit), 0.12, true); }
+    beam(dark, v3(cx, cy + cs / 2, cz), v3(cx, h - 2, cz), 0.07);
+    if (k > 0) { const pg = { x: -150 - (k - 1) * 13 - ((k - 1) % 2) * 6, z: -42 + (k - 1) * 17 + ((k - 1) % 3) * 5 }; const ph = 30 + ((k - 1) % 4) * 8; beam(metal, v3(gx, h - 6, gz), v3(pg.x, ph - 6, pg.z), 0.5, true); beam(dark, v3(gx, h - 9, gz), v3(pg.x, ph - 6, pg.z), 0.14); }
+  }
+
   // --- micro-structure: greeble plating on the rings and columns, and fine grids on the shaft wall and the deck plates (the density of the reference imagery)
   const greeb = new Boxes();
   const nG = lat(16000);
@@ -616,6 +638,7 @@ export function buildMegastructure(quality: Quality, seed = 7, env: THREE.Textur
   addField('gravel (wet)', gravel);
   const debris = buildDebris([{ x: -104, z: 4, r: 24, n: Math.round(420 * peb) }, { x: -86, z: 36, r: 14, n: Math.round(160 * peb) }], terrain.heightAt, env, owned);
   addField('debris', debris);
+  gravel.group.userData.heavy = true; debris.group.userData.heavy = true;  // not drawn in the puddles' reflection: a pebble's reflection is invisible and the pebbles are most of the near triangles
   const arena = buildArena(14, M, owned);
   arena.group.position.copy(WORLD.habitat).add(v3(0, 0.15, 0));
   root.add(arena.group);

@@ -145,12 +145,89 @@ def distance2(a: dict, b: dict) -> dict:
     return {"tone_tv": round(tv, 4), "structure": round(st, 4), "frequency": round(fr, 5)}
 
 
+def crop_metrics(img: np.ndarray) -> dict:
+    """Local statistics of one crop: luminance mean, histogram, edge density, high-frequency share, contour complexity, local contrast, occupied-area ratio."""
+    lum = 0.2126 * img[:, :, 0] + 0.7152 * img[:, :, 1] + 0.0722 * img[:, :, 2]
+    ex = extra_metrics(lum)
+    h, w = lum.shape
+    hh, ww = h - h % 8, w - w % 8
+    blocks = lum[:hh, :ww].reshape(hh // 8, 8, ww // 8, 8).std(axis=(1, 3))
+    return {
+        "size": [w, h],
+        "luminance_mean": round(float(lum.mean()), 4),
+        "luminance_histogram": ex["luminance_histogram"],
+        "edge_density": ex["edge_density"],
+        "high_frequency_share": ex["spatial_frequency_hi"],
+        "contour_complexity": ex["silhouette_density"],
+        "local_contrast": round(float(blocks.mean()), 4),
+        "occupied_area_ratio": ex["occupied_area_ratio"],
+    }
+
+
+def resampled(path: Path, width: int | None) -> Path:
+    """The image resampled to ``width`` pixels (by the system tool ``sips``), so that a capture and a reference of different resolution are compared at the same scale."""
+    if not width:
+        return path
+    d = Path(tempfile.mkdtemp())
+    out = d / path.name
+    subprocess.run(["sips", "--resampleWidth", str(width), str(path), "--out", str(out)], check=True, capture_output=True)
+    return out
+
+
+def crop_compare(spec_path: Path, captures: Path, before: Path | None, refs_dir: Path, out: Path, width: int | None = None) -> None:
+    """Per-crop statistics of every shot in the crop specification, of the same crop of the earlier capture (same camera) where one exists, and of the matching crop of the reference."""
+    spec = json.loads(spec_path.read_text())
+    cache: dict[str, np.ndarray] = {}
+
+    def image(p: Path) -> np.ndarray:
+        if str(p) not in cache:
+            cache[str(p)] = load(p)
+        return cache[str(p)]
+
+    def cut(img: np.ndarray, box: list[float], px: bool) -> np.ndarray:
+        h, w = img.shape[:2]
+        x0, y0, x1, y1 = (int(box[0]), int(box[1]), int(box[2]), int(box[3])) if px else (int(box[0] * w), int(box[1] * h), int(box[2] * w), int(box[3] * h))
+        return img[y0:y1, x0:x1]
+
+    rows: dict = {}
+    for shot, d in spec["shots"].items():
+        after_p = captures / f"{shot}.png"
+        if not after_p.exists():
+            continue
+        after_p = resampled(after_p, width)
+        ref_name = d["ref"]
+        ref_boxes = spec["refs"].get(ref_name, {})
+        bg = spec["refs"].get("ref_modular_lattice.jpg", {}).get("background_mechanical_density")
+        out_s: dict = {}
+        for name, box in d["crops"].items():
+            e: dict = {"after": crop_metrics(cut(image(after_p), box, False))}
+            if before is not None and (before / f"{shot}.png").exists():
+                e["before"] = crop_metrics(cut(image(resampled(before / f"{shot}.png", width)), box, False))
+            if name == "background_mechanical_density" and bg:
+                e["reference"] = {"image": "ref_modular_lattice.jpg", **crop_metrics(cut(image(refs_dir / "ref_modular_lattice.jpg"), bg, True))}
+            elif name in ref_boxes:
+                e["reference"] = {"image": ref_name, **crop_metrics(cut(image(refs_dir / ref_name), ref_boxes[name], True))}
+            out_s[name] = e
+        rows[shot] = out_s
+    out.write_text(json.dumps({"note": "crop statistics are crude proxies; none of them establishes that a picture matches a reference", "captures_resampled_to_width": width, "shots": rows}, indent=1))
+    print("crop comparison:", sum(len(v) for v in rows.values()), "crops in", len(rows), "shots ->", out)
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--captures", required=True)
-    ap.add_argument("--refs", nargs="+", required=True)
+    ap.add_argument("--refs", nargs="*", default=[])
     ap.add_argument("--out", required=True)
+    ap.add_argument("--crop-spec", help="crops.json: compare per crop (with --before and --refs-dir)")
+    ap.add_argument("--before", help="directory of the earlier captures taken with the same cameras")
+    ap.add_argument("--refs-dir", help="directory with the reference images named in the crop spec")
+    ap.add_argument("--resample-width", type=int, help="resample the captures to this width before cropping (766 matches the render panel of the supplied sheets)")
     a = ap.parse_args()
+    if a.crop_spec:
+        crop_compare(Path(a.crop_spec), Path(a.captures), Path(a.before) if a.before else None, Path(a.refs_dir or "."), Path(a.out), a.resample_width)
+        return
+    if not a.refs:
+        ap.error("--refs is required unless --crop-spec is given")
     refs = {Path(r.split("@")[0]).stem: metrics(load(Path(r))) for r in a.refs}
     caps = {p.stem: metrics(load(p)) for p in sorted(Path(a.captures).glob("*.png"))}
     rows = {}

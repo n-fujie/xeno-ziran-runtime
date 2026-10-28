@@ -1,0 +1,306 @@
+{
+ "note": "Crop boxes for the local comparison. 'shots' boxes are fractions [x0,y0,x1,y1] of the capture; 'refs' boxes are pixels of the full reference image. A shot is compared with the reference named in 'ref' crop by crop. The references are the supplied concept renders (left half of each sheet).",
+ "refs": {
+  "ref21_full.png": {
+   "specimen_body": [
+    150,
+    560,
+    520,
+    830
+   ],
+   "probe_region": [
+    570,
+    520,
+    770,
+    680
+   ],
+   "cable_region": [
+    330,
+    380,
+    600,
+    520
+   ],
+   "ground": [
+    0,
+    850,
+    766,
+    1024
+   ],
+   "puddle_reflection": [
+    120,
+    840,
+    560,
+    1000
+   ],
+   "bolt_plate_region": [
+    40,
+    280,
+    290,
+    470
+   ],
+   "silhouette": [
+    0,
+    250,
+    766,
+    830
+   ]
+  },
+  "ref20_full.png": {
+   "specimen_body": [
+    330,
+    420,
+    560,
+    760
+   ],
+   "observation_node": [
+    100,
+    250,
+    768,
+    860
+   ],
+   "probe_region": [
+    110,
+    520,
+    260,
+    700
+   ],
+   "cable_region": [
+    240,
+    260,
+    560,
+    480
+   ],
+   "ground": [
+    0,
+    830,
+    768,
+    1024
+   ],
+   "puddle_reflection": [
+    380,
+    800,
+    768,
+    1000
+   ],
+   "bolt_plate_region": [
+    370,
+    560,
+    560,
+    760
+   ],
+   "silhouette": [
+    0,
+    250,
+    768,
+    860
+   ]
+  },
+  "ref_modular_lattice.jpg": {
+   "background_mechanical_density": [
+    0,
+    0,
+    1536,
+    1024
+   ]
+  }
+ },
+ "shots": {
+  "14-experimental-body": {
+   "ref": "ref21_full.png",
+   "crops": {
+    "specimen_body": [
+     0.66,
+     0.08,
+     0.98,
+     0.8
+    ],
+    "probe_region": [
+     0.78,
+     0.66,
+     0.9,
+     0.88
+    ],
+    "cable_region": [
+     0.28,
+     0.5,
+     0.7,
+     0.8
+    ],
+    "ground": [
+     0.0,
+     0.78,
+     1.0,
+     1.0
+    ],
+    "puddle_reflection": [
+     0.05,
+     0.62,
+     0.45,
+     0.95
+    ],
+    "bolt_plate_region": [
+     0.7,
+     0.2,
+     0.9,
+     0.6
+    ],
+    "silhouette": [
+     0.0,
+     0.1,
+     1.0,
+     0.8
+    ],
+    "background_mechanical_density": [
+     0.3,
+     0.0,
+     0.9,
+     0.28
+    ]
+   }
+  },
+  "15-observation-node": {
+   "ref": "ref20_full.png",
+   "crops": {
+    "observation_node": [
+     0.0,
+     0.3,
+     1.0,
+     0.92
+    ],
+    "probe_region": [
+     0.0,
+     0.45,
+     0.3,
+     0.7
+    ],
+    "cable_region": [
+     0.3,
+     0.45,
+     0.6,
+     0.95
+    ],
+    "ground": [
+     0.0,
+     0.8,
+     1.0,
+     1.0
+    ],
+    "puddle_reflection": [
+     0.4,
+     0.8,
+     1.0,
+     1.0
+    ],
+    "bolt_plate_region": [
+     0.4,
+     0.38,
+     0.75,
+     0.85
+    ],
+    "silhouette": [
+     0.0,
+     0.3,
+     1.0,
+     0.95
+    ],
+    "background_mechanical_density": [
+     0.0,
+     0.0,
+     1.0,
+     0.35
+    ]
+   }
+  },
+  "29-observer-hero": {
+   "ref": "ref20_full.png",
+   "crops": {
+    "observation_node": [
+     0.0,
+     0.25,
+     1.0,
+     1.0
+    ],
+    "probe_region": [
+     0.0,
+     0.35,
+     0.3,
+     0.65
+    ],
+    "cable_region": [
+     0.3,
+     0.4,
+     0.7,
+     1.0
+    ],
+    "ground": [
+     0.0,
+     0.8,
+     1.0,
+     1.0
+    ],
+    "bolt_plate_region": [
+     0.4,
+     0.35,
+     0.75,
+     0.85
+    ],
+    "silhouette": [
+     0.0,
+     0.25,
+     1.0,
+     1.0
+    ]
+   }
+  },
+  "19-close-probe": {
+   "ref": "ref21_full.png",
+   "crops": {
+    "probe_region": [
+     0.0,
+     0.0,
+     1.0,
+     1.0
+    ]
+   }
+  },
+  "20-close-cable": {
+   "ref": "ref21_full.png",
+   "crops": {
+    "cable_region": [
+     0.0,
+     0.0,
+     1.0,
+     1.0
+    ]
+   }
+  },
+  "21-close-plate": {
+   "ref": "ref21_full.png",
+   "crops": {
+    "bolt_plate_region": [
+     0.0,
+     0.0,
+     1.0,
+     1.0
+    ]
+   }
+  },
+  "16-wet-ground": {
+   "ref": "ref21_full.png",
+   "crops": {
+    "ground": [
+     0.0,
+     0.6,
+     1.0,
+     1.0
+    ],
+    "puddle_reflection": [
+     0.0,
+     0.55,
+     0.6,
+     1.0
+    ]
+   }
+  }
+ }
+}

@@ -241,6 +241,13 @@ describe('the bodies answer to the state, mechanically', () => {
     b.set({ ...idle, couplingCut: true }, target); expect(pivot.quaternion.angleTo(new THREE.Quaternion())).toBeGreaterThan(0.5);
     b.set({ ...idle, couplingCut: false }, target); expect(pivot.quaternion.angleTo(new THREE.Quaternion().setFromEuler(a0))).toBeLessThan(1e-6);
   });
+  it('slides the lens covers shut while a node sleeps, and opens them one node after another after a recovery', () => {
+    const open = (n: typeof nodeB) => n.cover!.mesh.position.x, nodeA = b.nodes[0];
+    b.set(idle, target); expect(open(nodeA)).toBeGreaterThan(0.5); expect(open(nodeB)).toBeGreaterThan(0.5);
+    b.set({ ...idle, collapsed: true }, target); expect(open(nodeA)).toBe(0); expect(open(nodeB)).toBe(0);
+    b.set({ ...idle, recovered: true, recoveryAge: 2 }, target); expect(open(nodeA)).toBeGreaterThan(0.5); expect(open(nodeB)).toBe(0);
+    b.set({ ...idle, recovered: true, recoveryAge: REACTIVATE_AT.B }, target); expect(open(nodeB)).toBeGreaterThan(0.5);
+  });
   it('opens the archive latch when history re-entry is disabled and darkens its lamp', () => {
     b.set(idle, target); const closed = nodeB.latch!.lever.rotation.z, lampOn = (nodeB.latch!.lamp.material as THREE.MeshStandardMaterial).emissiveIntensity;
     b.set({ ...idle, historyEnabled: false }, target);

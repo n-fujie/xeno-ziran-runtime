@@ -7,7 +7,7 @@
 import * as THREE from 'three';
 import { Frame, Parts, boxAt, collar, cylAt, discAt, plateThrough, sphere, torusAt, tube, v3 } from './geom';
 import { Fasteners, aperture, blankingPlate, hingePin, inspection, lBracket, passthrough, probeSocket, recessedPort, turnbuckle } from './hardware';
-import { buildProbe, type Probe, type ProbeMats, type ProbeSpec } from './probes';
+import { bake, buildProbe, type Probe, type ProbeMats, type ProbeSpec } from './probes';
 import type { MatKey } from './geom';
 
 export interface PartInfo {
@@ -21,9 +21,10 @@ export interface BodyMats extends ProbeMats {
 }
 export const asMatKeys = (M: BodyMats): Record<MatKey, THREE.Material> => ({ chrome: M.chrome, gun: M.gun, dark: M.dark, rubber: M.rubber, polished: M.polished, sleeve: M.sleeve, glass: M.glass });
 
-export interface NodeSpec { id: 'A' | 'B' | 'C'; r0: number; r1: number; h: number; window: boolean; legs: boolean; seed: number; probes: ProbeSpec[]; reservoir?: boolean; archive?: boolean }
+export interface NodeSpec { id: 'A' | 'B' | 'C'; r0: number; r1: number; h: number; window: boolean; legs: boolean; seed: number; probes: ProbeSpec[]; reservoir?: boolean; archive?: boolean; /** how far the feet stand below the frame's base (the legs are longer by this) */ lift?: number }
 export interface NodeBuild {
   group: THREE.Group; lod: THREE.LOD; spec: NodeSpec; lamp: THREE.Mesh; lens: THREE.Mesh | null; probes: Probe[]; anchors: Record<string, THREE.Vector3>;
+  /** the lens cover: a disc that slides across the lens while the node is asleep and parks beside it while the node works */ cover?: { mesh: THREE.Mesh; open: number };
   reservoir?: { piston: THREE.Mesh; bottom: number; height: number }; latch?: { lever: THREE.Group; lamp: THREE.Mesh }; parts: PartInfo[];
   stats: { vertices: number; fasteners: number; plateDepth: number; plates: number };
   dispose(): void;
@@ -124,7 +125,7 @@ export function buildNode(spec: NodeSpec, M: BodyMats, detail: number): NodeBuil
     parts.add('gun', cylAt(topC, v3(0, 1, 0), spec.r1 * 0.95, 0.34, lo ? 12 : 30, spec.r1 * 0.82), 0.6); parts.add('chrome', torusAt(topC.clone().add(v3(0, 0.18, 0)), v3(0, 1, 0), spec.r1 * 0.9, 0.055, lo ? 14 : 40), 0.7);
     parts.add('chrome', cylAt(topC.clone().add(v3(0, 0.3, 0)), v3(0, 1, 0), 0.07, 0.7, 10, 0.05), 0.6);
     if (spec.legs) for (let i = 0; i < 3; i++) {
-      const foot = B[i].clone().multiplyScalar(1.25).add(v3(0, -0.45, 0));
+      const foot = B[i].clone().multiplyScalar(1.25 + (spec.lift ?? 0) * 0.15).add(v3(0, -0.45 - (spec.lift ?? 0), 0));
       parts.add('chrome', tube(B[i].clone().add(v3(0, 0.05, 0)), foot.clone().add(v3(0, 0.05, 0)), 0.08), 0.6); parts.add('gun', cylAt(foot, v3(0, 1, 0), 0.26, 0.12, 14, 0.2), 0.9);
       if (!lo) for (const o of [[0.2, 0], [-0.1, 0.17], [-0.1, -0.17]]) parts.add('chrome', cylAt(foot.clone().add(v3(o[0], -0.09, o[1])), v3(0, 1, 0), 0.05, 0.1, 6, 0.02), 0.9);  // grip spikes under the pad
     }
@@ -139,7 +140,7 @@ export function buildNode(spec: NodeSpec, M: BodyMats, detail: number): NodeBuil
   // dynamic parts --------------------------------------------------------------------------------------------------------
   const lampMat = spec.id === 'A' ? M.lampA : spec.id === 'B' ? M.lampB : M.lampC;
   const lamp = new THREE.Mesh(new THREE.SphereGeometry(0.17, 14, 10), lampMat); lamp.position.set(0, spec.h + 0.46, 0); group.add(lamp); owned.push(lamp.geometry);
-  let lens: THREE.Mesh | null = null;
+  let lens: THREE.Mesh | null = null, cover: NodeBuild['cover'];
   if (spec.window) {
     const face = [B[0], B[1], T[1], T[0]], [q0, q1, q2] = face, nP = q1.clone().sub(q0).cross(q2.clone().sub(q0)).normalize(), cc = face.reduce((a, b) => a.add(b), v3(0, 0, 0)).multiplyScalar(0.25);
     const nrm = nP.dot(v3(cc.x, 0, cc.z)) < 0 ? nP.clone().negate() : nP, rad = Math.min(spec.h * 0.3, spec.r0 * 0.42);
@@ -148,8 +149,12 @@ export function buildNode(spec: NodeSpec, M: BodyMats, detail: number): NodeBuil
     mk(new THREE.TorusGeometry(rad * 1.02, 0.07, 10, 48), M.chrome, 0.02); mk(new THREE.TorusGeometry(rad * 0.82, 0.05, 10, 48), M.gun, 0.0); mk(new THREE.TorusGeometry(rad * 0.6, 0.05, 10, 40), M.chrome, -0.04);
     mk(new THREE.TorusGeometry(rad * 0.4, 0.035, 8, 36), M.gun, -0.08); mk(new THREE.CylinderGeometry(rad * 0.58, rad * 0.5, 0.12, 36).rotateX(Math.PI / 2), M.dark, -0.1);
     lens = mk(new THREE.CircleGeometry(rad * 0.5, 40), M.glass, -0.14);
-    mk(new THREE.CircleGeometry(rad * 0.2, 28), M.lens, -0.12);  // the lens lamp
+    const cv = mk(new THREE.CylinderGeometry(rad * 0.6, rad * 0.6, 0.05, 36).rotateX(Math.PI / 2), M.gun, 0.07);
+    const cvRing = new THREE.Mesh(new THREE.TorusGeometry(rad * 0.6, 0.03, 8, 36), M.chrome); cvRing.position.z = 0.03; cv.add(cvRing); owned.push(cvRing.geometry);
+    cv.position.x = rad * 1.12; cover = { mesh: cv, open: rad * 1.12 };
+    const lensLamp = mk(new THREE.CircleGeometry(rad * 0.2, 28), M.lens, -0.12);  // the lens lamp
     for (let k = 0; k < 6; k++) { const a = (k / 6) * Math.PI * 2 + 0.4; mk(new THREE.BoxGeometry(0.03, rad * 0.32, 0.02), M.dark, -0.11).position.set(Math.cos(a) * rad * 0.36, Math.sin(a) * rad * 0.36, -0.11); }  // iris blades
+    bake(win, [lens, cv, lensLamp], owned);  // the rings, iris blades and bolts are one mesh per material; the lens, its lamp and the sliding cover stay separate
     info.push({ id: `${spec.id}.lens`, name: `Lens ${spec.id}`, kind: 'lens', body: 'ncb', object: win, params: { radius: +rad.toFixed(3) } });
   }
   const probes: Probe[] = [];
@@ -170,6 +175,7 @@ export function buildNode(spec: NodeSpec, M: BodyMats, detail: number): NodeBuil
     for (let k = 0; k <= 8; k++) add(new THREE.BoxGeometry(0.09, 0.012, 0.05), M.chrome, 0.2 + (k / 8) * (H - 0.06)).position.set(Rr * 1.3, 0.2 + (k / 8) * (H - 0.06), 0);  // gauge ticks
     const piston = add(new THREE.CylinderGeometry(Rr * 0.94, Rr * 0.94, 0.1, 24), M.lens, 0.3);
     const rod = tube(v3(0, 0.1, 0), v3(0, H + 0.1, 0), 0.03); const rm = new THREE.Mesh(rod, M.chrome); rg.add(rm); owned.push(rod);
+    bake(rg, [piston], owned);
     reservoir = { piston, bottom: 0.25, height: H - 0.15 };
     info.push({ id: 'C.reservoir', name: 'Reservoir C', kind: 'reservoir', body: 'ncb', object: rg, params: { height: H, radius: Rr } });
     anchors.reservoirTop = at.clone().add(v3(0, H + 0.3, 0)); anchors.reservoirBottom = at.clone().add(v3(0, 0.2, 0));
@@ -184,9 +190,10 @@ export function buildNode(spec: NodeSpec, M: BodyMats, detail: number): NodeBuil
     const pin = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.1, 10).rotateX(Math.PI / 2), M.chrome); hinge.add(pin); owned.push(pin.geometry);
     const keeper = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.09, 0.07), M.gun); keeper.position.set(0.3, -0.07, 0.2); ag.add(keeper); owned.push(keeper.geometry);
     const al = new THREE.Mesh(new THREE.SphereGeometry(0.045, 10, 8), M.lampB.clone()); al.position.set(0.28, 0.17, 0.19); ag.add(al); owned.push(al.geometry);
+    bake(ag, [hinge, al], owned);
     latch = { lever: hinge, lamp: al };
     info.push({ id: 'B.archive', name: 'Archive unit B', kind: 'archive', body: 'ncb', object: ag, params: { width: 0.72, height: 0.46, depth: 0.36 } });
     anchors.archive = at.clone();
   }
-  return { group, lod, spec, lamp, lens, probes, anchors, reservoir, latch, parts: info, stats, dispose: () => { owned.forEach((o) => o.dispose()); probes.forEach((p) => p.dispose()); } };
+  return { group, lod, spec, lamp, lens, probes, anchors, reservoir, latch, cover, parts: info, stats, dispose: () => { owned.forEach((o) => o.dispose()); probes.forEach((p) => p.dispose()); } };
 }

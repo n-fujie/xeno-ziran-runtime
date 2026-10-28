@@ -9,7 +9,8 @@
 //
 // Geometry is a pure function of a ``ProbeSpec``; the dimensions are read back from it (``probeDimensions``) by the technical view, so what is drawn there is what is built here.
 import * as THREE from 'three';
-import { localBox } from './geom';
+import { localBox, normalise } from './geom';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 
 export type TipKind = 'needle' | 'hollow' | 'hook' | 'bead';
 export type ProbeState = 'extended' | 'retracted' | 'sampling' | 'inactive' | 'overloaded';
@@ -25,6 +26,21 @@ export interface ProbeMats { chrome: THREE.Material; gun: THREE.Material; rubber
 
 const v3 = (x: number, y: number, z: number) => new THREE.Vector3(x, y, z);
 const HOUSING = 0.55;  // the housing's share of the length
+
+/** Merge the meshes directly below ``parent`` (except those in ``keep``) into one mesh per material, with their own transforms baked into the geometry: a probe has dozens of small parts
+ * and would otherwise cost dozens of draw calls. */
+export function bake(parent: THREE.Object3D, keep: THREE.Object3D[], owned: Array<{ dispose(): void }>): void {
+  const by = new Map<THREE.Material, THREE.BufferGeometry[]>();
+  for (const c of [...parent.children]) {
+    const m = c as THREE.Mesh;
+    if (!m.isMesh || keep.includes(c)) continue;
+    c.updateMatrix();
+    const g = m.geometry.clone().applyMatrix4(c.matrix);
+    (by.get(m.material as THREE.Material) ?? (by.set(m.material as THREE.Material, []), by.get(m.material as THREE.Material)!)).push(normalise(g, 0.3));
+    parent.remove(c); m.geometry.dispose();
+  }
+  for (const [mat, gs] of by) { const merged = mergeGeometries(gs); gs.forEach((g) => g.dispose()); if (merged) { parent.add(new THREE.Mesh(merged, mat)); owned.push(merged); } }
+}
 
 /** The lathe profile of the polished section as (radius, y) pairs from ``upper`` (the bottom of the insulated section) down to the tip at y = -length. */
 export function tipProfile(kind: TipKind, length: number, r: number, upper: number): THREE.Vector2[] {
@@ -79,6 +95,8 @@ export function buildProbe(spec: ProbeSpec, M: ProbeMats, detail: number): Probe
     const boot = mesh(new THREE.CylinderGeometry(0.03, 0.05, 0.12, 8), M.rubber); boot.position.set(-hr * 1.02, -hh * 0.55, 0); boot.rotation.z = Math.PI / 2;
     const clamp = mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.04, 8), M.chrome); clamp.position.set(-hr * 1.55, -hh * 0.2, 0.08); clamp.rotation.x = Math.PI / 2;
   }
+  bake(group, [rod], owned);
+  bake(rod, [bead, polished], owned);
   const setState = (state: ProbeState, tick: number) => {
     const lampMat = bead.material as THREE.MeshStandardMaterial;
     let e = 1, lamp = 0.25, tremble = 0;

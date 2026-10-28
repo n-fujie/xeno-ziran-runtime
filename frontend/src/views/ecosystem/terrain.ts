@@ -184,7 +184,7 @@ export function buildTerrain(quality: Quality, pit: number, owned: Array<{ dispo
       owned.push(puddleMesh.material as THREE.Material);
       group.add(puddleMesh);
     } else {
-      const size = quality === 'high' ? 1024 : 512;
+      const size = quality === 'high' ? 1024 : 384;
       reflector = new Reflector(merged, { textureWidth: size, textureHeight: size, color: 0x44464a, clipBias: 0.003 });
       puddleMesh = reflector;
       group.add(reflector);
@@ -205,7 +205,7 @@ export function buildTerrain(quality: Quality, pit: number, owned: Array<{ dispo
     const near = cam.distanceTo(centroid) < REFLECT_RANGE;
     reflector.visible = near; far.visible = !near;
   };
-  // the reflection is a second render of the near scene, so it is refreshed every 2nd frame while the camera moves and every 8th while it rests (the scene changes only
+  // the reflection is a second render of the near scene, so it is refreshed every 3rd frame while the camera moves and every 30th while it rests (the scene changes only
   // by lamps and probes); the texture of the last render is reused in between
   const setReflectionHidden = (hidden: THREE.Object3D[]) => {
     if (!reflector) return;
@@ -216,7 +216,7 @@ export function buildTerrain(quality: Quality, pit: number, owned: Array<{ dispo
       const moved = cam.position.distanceToSquared(lastPos) > 1e-4 || Math.abs(cam.quaternion.dot(lastQ) - 1) > 1e-7;
       lastPos.copy(cam.position); lastQ.copy(cam.quaternion);
       frame++;
-      if (rendered && frame % (moved ? 2 : 8) !== 0) return;
+      if (rendered && frame % (moved ? 3 : 30) !== 0) return;
       rendered = true;
       const was = hidden.map((o) => o.visible);
       hidden.forEach((o) => { o.visible = false; });

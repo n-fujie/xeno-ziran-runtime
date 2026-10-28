@@ -39,25 +39,42 @@ export const SHOTS = {
   '16-wet-ground': 'cam=puddle&layers=physical&tick=120&labels=0',
   '17-body-coupling-cut': 'preset=recovery-demo&horizon=360&phil=revision&cam=body&layers=physical,meos&tick=125&labels=0',
   '18-body-renewal': 'preset=recovery-demo&horizon=360&phil=revision&cam=body&layers=physical,meos&tick=175&labels=0',
+  // stage three: close-ups, states of the run, the probe ring
+  '19-close-probe': 'cam=probe&layers=physical,meos&tick=120&labels=0',
+  '20-close-cable': 'cam=cable&layers=physical,meos&tick=120&labels=0',
+  '21-close-plate': 'cam=plate&layers=physical,meos&tick=120&labels=0',
+  '22-probe-ring': 'cam=probering&layers=physical,meos&tick=120&labels=0',
+  '29-observer-hero': 'cam=observerhero&layers=physical,meos&tick=120&labels=0',
+  '23-state-collapse': 'preset=recovery-demo&horizon=360&phil=revision&cam=body&layers=physical,meos&tick=153&labels=0',
+  '24-state-recovery': 'preset=recovery-demo&horizon=360&phil=revision&cam=body&layers=physical,meos&tick=170&labels=0',
+  '25-state-pulse': 'preset=recovery-demo&horizon=360&phil=revision&cam=probe&layers=physical,meos&tick=154&labels=0',
+  // technical inspection sheets (the sheet element is photographed, not the stage)
+  '26-technical-ncb': 'tech=ncb&probe=C1&tick=120&preset=recovery-demo&horizon=360&phil=revision',
+  '27-technical-observer': 'tech=observer&probe=O1&tick=120&preset=recovery-demo&horizon=360&phil=revision',
+  '28-technical-cut': 'tech=ncb&probe=B1&tick=125&preset=recovery-demo&horizon=360&phil=revision',
 };
 
 // default: the machine's GPU through ANGLE/Metal (frame rates are then those of the GPU); --software forces SwiftShader (slow, a rasteriser on the CPU)
 const software = process.argv.includes('--software');
 const browser = await chromium.launch({ executablePath: exe, args: software ? ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--enable-webgl'] : ['--use-angle=metal', '--ignore-gpu-blocklist', '--enable-gpu', '--enable-webgl'] });
-const perf = {};
+const perf = {}, cameras = {};
 for (const [name, q] of Object.entries(SHOTS)) {
   if (only && !only.split(',').some((o) => name.includes(o))) continue;
-  const page = await browser.newPage({ viewport: { width, height } });
+  const page = await browser.newPage({ viewport: { width, height: q.includes('tech=') ? 1500 : height } });
   page.on('pageerror', (e) => console.error('pageerror', String(e).slice(0, 300)));
-  await page.goto(`${base}/?view=ecosystem&${q}&quality=${quality}&chrome=0&capture=1`, { waitUntil: 'load' });
+  const tech = q.includes('tech=');
+  await page.goto(`${base}/?view=ecosystem&${q}&quality=${quality}${tech ? '' : '&chrome=0'}&capture=1`, { waitUntil: 'load' });
   await page.waitForFunction(() => document.querySelector('.eco-stage')?.getAttribute('data-settled') === '1' && window.__meos?.ready?.(), null, { timeout: 120000 });
-  await page.waitForTimeout(wait);
+  await page.waitForTimeout(tech ? 2500 : wait);
   await page.evaluate(() => window.__meos.resetPerf());  // measure after warm-up: the scene build and shader compilation are not steady state
   await page.waitForTimeout(+arg('measure', 5000));
   perf[name] = await page.evaluate(() => ({ ...window.__meos.perf(), camera: window.__meos.camera(), stats: window.__meos.stats() }));
-  await (await page.$('.eco-stage')).screenshot({ path: join(out, `${name}.png`), timeout: 300000 });
+  cameras[name] = { query: q, viewport: [width, height], quality, camera: perf[name].camera };
+  const target = tech ? await page.$('[data-testid=eco-sheet]') : await page.$('.eco-stage');
+  await target.screenshot({ path: join(out, `${name}.png`), timeout: 300000 });
   await page.close();
   console.log(name, 'ok', perf[name].fps.toFixed(1), software ? 'fps (software rendering)' : 'fps (GPU, headless)');
 }
+writeFileSync(join(out, `cameras-${quality}.json`), JSON.stringify({ note: 'the exact camera of every capture: position, target, field of view, clipping, exposure, tone mapping, pixel ratio, drawing-buffer size and quality tier', shots: cameras }, null, 1));
 writeFileSync(join(out, `perf-${quality}.json`), JSON.stringify({ browser: software ? 'headless Chromium, WebGL on SwiftShader (software)' : 'headless Chromium, WebGL on ANGLE Metal (GPU)', viewport: [width, height], quality, perf }, null, 1));
 await browser.close();

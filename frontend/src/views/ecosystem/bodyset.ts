@@ -72,10 +72,10 @@ export function buildBodies(quality: 'performance' | 'balanced' | 'high', env: T
 
   // ---- non-central body: three nodes
   const ncb = new THREE.Group(); ncb.position.set(NCB_AT.x, groundAt(NCB_AT.x, NCB_AT.z), NCB_AT.z); ncb.rotation.y = 0.35; group.add(ncb);
-  const spots = { A: v3(0, 5.6, -8.5), B: v3(-10, 1.0, 5.5), C: v3(10, 1.0, 5.5) };
+  const spots = { A: v3(0, 5.6, -8.5), B: v3(-10, 2.2, 5.5), C: v3(10, 2.2, 5.5) };  // B and C stand 1.2 higher than the frame's own feet, so that their probes hang above the ground
   const nodeA = buildNode({ id: 'A', r0: 2.4, r1: 1.2, h: 3.8, window: true, legs: false, seed: 1, probes: [{ id: 'A1', length: 1.9, radius: 0.09, tip: 'hollow', insulated: 0.25, retractor: true, strain: true }] }, M, detail);
-  const nodeB = buildNode({ id: 'B', r0: 2.2, r1: 1.2, h: 3.4, window: true, legs: true, seed: 2, archive: true, probes: [{ id: 'B1', length: 1.5, radius: 0.07, tip: 'needle', insulated: 0.3, retractor: true, strain: true }, { id: 'B2', length: 0.9, radius: 0.045, tip: 'bead', insulated: 0.2, retractor: false, strain: false }] }, M, detail);
-  const nodeC = buildNode({ id: 'C', r0: 2.2, r1: 1.1, h: 3.4, window: false, legs: true, seed: 3, reservoir: true, probes: [{ id: 'C1', length: 2.3, radius: 0.11, tip: 'hook', insulated: 0.35, retractor: true, strain: true }, { id: 'C2', length: 1.1, radius: 0.05, tip: 'needle', insulated: 0.0, retractor: true, strain: false }] }, M, detail);
+  const nodeB = buildNode({ id: 'B', r0: 2.2, r1: 1.2, h: 3.4, window: true, legs: true, seed: 2, archive: true, lift: 1.2, probes: [{ id: 'B1', length: 1.5, radius: 0.07, tip: 'needle', insulated: 0.3, retractor: true, strain: true }, { id: 'B2', length: 0.9, radius: 0.045, tip: 'bead', insulated: 0.2, retractor: false, strain: false }] }, M, detail);
+  const nodeC = buildNode({ id: 'C', r0: 2.2, r1: 1.1, h: 3.4, window: false, legs: true, seed: 3, reservoir: true, lift: 1.2, probes: [{ id: 'C1', length: 2.3, radius: 0.11, tip: 'hook', insulated: 0.35, retractor: true, strain: true }, { id: 'C2', length: 1.1, radius: 0.05, tip: 'needle', insulated: 0.0, retractor: true, strain: false }] }, M, detail);
   nodeA.group.position.copy(spots.A); nodeB.group.position.copy(spots.B); nodeC.group.position.copy(spots.C);
   nodeB.group.rotation.y = 2.3; nodeC.group.rotation.y = -0.9; nodeA.group.rotation.y = 0.2;
   ncb.add(nodeA.group, nodeB.group, nodeC.group);
@@ -144,8 +144,18 @@ export function buildBodies(quality: 'performance' | 'balanced' | 'high', env: T
   const spk = new THREE.SphereGeometry(0.2, 10, 8); owned.push(spk);
   const mkPulse = () => { const m = new THREE.Mesh(spk, M.pulse.clone()); m.visible = false; ncb.add(m); owned.push(m.material as THREE.Material); return m; };
   const pBC = mkPulse(), pCB = mkPulse(), pAJ = mkPulse(), pJB = mkPulse();
-  const sparkC = new THREE.Mesh(new THREE.SphereGeometry(0.55, 12, 10), M.spark.clone()); sparkC.visible = false; nodeC.group.add(sparkC); owned.push(sparkC.geometry, sparkC.material as THREE.Material);
-  sparkC.position.set(0, -2.0, 0);
+  // sparks at the tip of node C's probe: eight tiny beads thrown out and falling, placed from the tick (so that the same tick always shows the same sparks)
+  const sparkGeo = new THREE.SphereGeometry(0.035, 6, 5), sparkMat = M.spark.clone();
+  const sparkC = new THREE.InstancedMesh(sparkGeo, sparkMat, 10); sparkC.visible = false; sparkC.frustumCulled = false; nodeC.group.add(sparkC); owned.push(sparkGeo, sparkMat);
+  const sparkM = new THREE.Matrix4();
+  const placeSparks = (tick: number, k: number) => {
+    for (let i = 0; i < 10; i++) {
+      const h = Math.sin((tick * 12.9898 + i * 78.233) * 43758.5453) * 43758.5453, r1 = h - Math.floor(h), r2 = Math.sin(h * 91.7) * 0.5 + 0.5, a = r1 * 6.28, life = (k * 5 + i * 0.37) % 1;
+      sparkM.compose(v3(Math.cos(a) * 0.35 * life, -2.36 - life * life * 0.7 + 0.25 * r2 * (1 - life), Math.sin(a) * 0.35 * life), new THREE.Quaternion(), v3(1, 1, 1).multiplyScalar(0.6 + r2 * k));
+      sparkC.setMatrixAt(i, sparkM);
+    }
+    sparkC.instanceMatrix.needsUpdate = true;
+  };
 
   // ---- adaptive observation node
   const observer = buildObserver(M, detail, (x, z) => groundAt(OBSERVER_AT.x + x, OBSERVER_AT.z + z));
@@ -172,7 +182,9 @@ export function buildBodies(quality: 'performance' | 'balanced' | 'high', env: T
       n.probes[0].setState(st, s.tick);
       if (n.probes[1]) n.probes[1].setState(st === 'sampling' ? 'sampling' : st === 'extended' ? 'retracted' : st, s.tick);
     });
-    (sparkC.material as THREE.MeshBasicMaterial).opacity = renF * 0.8; sparkC.visible = renF > 0.05; sparkC.scale.setScalar(0.5 + renF);
+    sparkMat.opacity = Math.min(1, renF * 1.4); sparkC.visible = renF > 0.05; if (sparkC.visible) placeSparks(s.tick, renF);
+    // the lens covers slide shut while a node sleeps (a collapsed run, or a node not yet reactivated after a recovery) and open when it works
+    for (const [n, id] of [[nodeA, 'A'], [nodeB, 'B']] as const) if (n.cover) n.cover.mesh.position.x = nodeAwake(s, id) ? n.cover.open : 0;
     // reservoir level and the archive latch
     if (nodeC.reservoir) nodeC.reservoir.piston.position.y = nodeC.reservoir.bottom + reservoirLevel(s) * nodeC.reservoir.height;
     if (nodeB.latch) { nodeB.latch.lever.rotation.z = s.historyEnabled ? 0 : 1.25; (nodeB.latch.lamp.material as THREE.MeshStandardMaterial).emissiveIntensity = s.historyEnabled && awakeB ? 1.6 : 0; }
