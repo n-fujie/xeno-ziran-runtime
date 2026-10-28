@@ -1,0 +1,334 @@
+{
+ "measured_with": "headless Chromium, ANGLE Metal",
+ "viewport": [
+  1672,
+  808
+ ],
+ "frames": 100,
+ "rows": [
+  {
+   "tier": "balanced",
+   "camera": "overview",
+   "camera_spec": {
+    "pos": [
+     -26.000000000000007,
+     35.99999999999998,
+     98.00000000000001
+    ],
+    "target": [
+     -4,
+     -26,
+     -6
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1672,
+     674
+    ],
+    "quality": "balanced"
+   },
+   "instances": 53405,
+   "full": {
+    "label": "full",
+    "median": 34.1,
+    "p95": 50.4,
+    "mean": 36.14,
+    "max": 72.8,
+    "fps_from_median": 29.3,
+    "drawCalls": 404,
+    "triangles": 2157419,
+    "geometries": 175,
+    "textures": 20
+   },
+   "ablation": {
+    "reflect": {
+     "label": "without reflect",
+     "median": 29.1,
+     "p95": 52.2,
+     "mean": 31.87,
+     "max": 107.3,
+     "fps_from_median": 34.4,
+     "drawCalls": 214,
+     "triangles": 1734071,
+     "geometries": 175,
+     "textures": 20
+    },
+    "post": {
+     "label": "without post",
+     "median": 31.9,
+     "p95": 46.9,
+     "mean": 36.33,
+     "max": 411.2,
+     "fps_from_median": 31.3,
+     "drawCalls": 389,
+     "triangles": 2157404,
+     "geometries": 175,
+     "textures": 20
+    },
+    "bloom": {
+     "label": "without bloom",
+     "median": 32.9,
+     "p95": 45.5,
+     "mean": 34.26,
+     "max": 97.7,
+     "fps_from_median": 30.4,
+     "drawCalls": 391,
+     "triangles": 2157406,
+     "geometries": 175,
+     "textures": 20
+    },
+    "gravel": {
+     "label": "without gravel",
+     "median": 33.6,
+     "p95": 40.9,
+     "mean": 34.9,
+     "max": 117.7,
+     "fps_from_median": 29.8,
+     "drawCalls": 403,
+     "triangles": 1437419,
+     "geometries": 175,
+     "textures": 20
+    },
+    "rocks": {
+     "label": "without rocks",
+     "median": 35.1,
+     "p95": 52.4,
+     "mean": 38.7,
+     "max": 105.8,
+     "fps_from_median": 28.5,
+     "drawCalls": 402,
+     "triangles": 1940459,
+     "geometries": 175,
+     "textures": 20
+    },
+    "bodies": {
+     "label": "without bodies",
+     "median": 33.5,
+     "p95": 42.6,
+     "mean": 35.12,
+     "max": 112.1,
+     "fps_from_median": 29.9,
+     "drawCalls": 265,
+     "triangles": 1860299,
+     "geometries": 175,
+     "textures": 20
+    },
+    "structure": {
+     "label": "without structure",
+     "median": 29.1,
+     "p95": 34.9,
+     "mean": 30.57,
+     "max": 180.5,
+     "fps_from_median": 34.4,
+     "drawCalls": 387,
+     "triangles": 837211,
+     "geometries": 175,
+     "textures": 20
+    },
+    "terrain": {
+     "label": "without terrain",
+     "median": 24.7,
+     "p95": 33.9,
+     "mean": 25.88,
+     "max": 96.6,
+     "fps_from_median": 40.5,
+     "drawCalls": 213,
+     "triangles": 1657271,
+     "geometries": 175,
+     "textures": 20
+    },
+    "arena": {
+     "label": "without arena",
+     "median": 33.3,
+     "p95": 38.3,
+     "mean": 36.13,
+     "max": 300.9,
+     "fps_from_median": 30,
+     "drawCalls": 346,
+     "triangles": 2107655,
+     "geometries": 175,
+     "textures": 20
+    },
+    "everything": {
+     "label": "without everything",
+     "median": 7.7,
+     "p95": 14.6,
+     "mean": 8.8,
+     "max": 40.4,
+     "fps_from_median": 129.9,
+     "drawCalls": 15,
+     "triangles": 15,
+     "geometries": 175,
+     "textures": 20
+    }
+   }
+  },
+  {
+   "tier": "balanced",
+   "camera": "body",
+   "camera_spec": {
+    "pos": [
+     -88.99999999999999,
+     3.200000000000002,
+     14.99999999999999
+    ],
+    "target": [
+     -103.99999999999999,
+     2.9999999999999996,
+     2.9999999999999996
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1672,
+     674
+    ],
+    "quality": "balanced"
+   },
+   "instances": 53405,
+   "full": {
+    "label": "full",
+    "median": 25.9,
+    "p95": 37.3,
+    "mean": 27.32,
+    "max": 75.1,
+    "fps_from_median": 38.6,
+    "drawCalls": 297,
+    "triangles": 2416021,
+    "geometries": 178,
+    "textures": 19
+   },
+   "ablation": {
+    "reflect": {
+     "label": "without reflect",
+     "median": 23,
+     "p95": 29.7,
+     "mean": 23.66,
+     "max": 57.1,
+     "fps_from_median": 43.5,
+     "drawCalls": 181,
+     "triangles": 1921229,
+     "geometries": 178,
+     "textures": 19
+    },
+    "post": {
+     "label": "without post",
+     "median": 20.1,
+     "p95": 24.4,
+     "mean": 22.28,
+     "max": 253.1,
+     "fps_from_median": 49.8,
+     "drawCalls": 282,
+     "triangles": 2416006,
+     "geometries": 178,
+     "textures": 19
+    },
+    "bloom": {
+     "label": "without bloom",
+     "median": 23.4,
+     "p95": 46.1,
+     "mean": 25.16,
+     "max": 65.2,
+     "fps_from_median": 42.7,
+     "drawCalls": 284,
+     "triangles": 2416008,
+     "geometries": 178,
+     "textures": 19
+    },
+    "gravel": {
+     "label": "without gravel",
+     "median": 23.1,
+     "p95": 26.4,
+     "mean": 23.18,
+     "max": 45.2,
+     "fps_from_median": 43.3,
+     "drawCalls": 296,
+     "triangles": 1696021,
+     "geometries": 178,
+     "textures": 19
+    },
+    "rocks": {
+     "label": "without rocks",
+     "median": 27.5,
+     "p95": 57.5,
+     "mean": 30.38,
+     "max": 71.5,
+     "fps_from_median": 36.4,
+     "drawCalls": 295,
+     "triangles": 2199061,
+     "geometries": 178,
+     "textures": 19
+    },
+    "bodies": {
+     "label": "without bodies",
+     "median": 17.9,
+     "p95": 36.3,
+     "mean": 20.58,
+     "max": 92.5,
+     "fps_from_median": 55.9,
+     "drawCalls": 65,
+     "triangles": 1829383,
+     "geometries": 178,
+     "textures": 19
+    },
+    "structure": {
+     "label": "without structure",
+     "median": 22.8,
+     "p95": 32.8,
+     "mean": 24.29,
+     "max": 57.4,
+     "fps_from_median": 43.9,
+     "drawCalls": 283,
+     "triangles": 1095813,
+     "geometries": 178,
+     "textures": 19
+    },
+    "terrain": {
+     "label": "without terrain",
+     "median": 20.9,
+     "p95": 23.9,
+     "mean": 21.15,
+     "max": 53.1,
+     "fps_from_median": 47.8,
+     "drawCalls": 180,
+     "triangles": 1844429,
+     "geometries": 178,
+     "textures": 19
+    },
+    "arena": {
+     "label": "without arena",
+     "median": 25.4,
+     "p95": 36.9,
+     "mean": 27.56,
+     "max": 191.3,
+     "fps_from_median": 39.4,
+     "drawCalls": 283,
+     "triangles": 2378805,
+     "geometries": 178,
+     "textures": 19
+    },
+    "everything": {
+     "label": "without everything",
+     "median": 8,
+     "p95": 13.6,
+     "mean": 8.92,
+     "max": 39.1,
+     "fps_from_median": 125,
+     "drawCalls": 15,
+     "triangles": 15,
+     "geometries": 178,
+     "textures": 19
+    }
+   }
+  }
+ ]
+}

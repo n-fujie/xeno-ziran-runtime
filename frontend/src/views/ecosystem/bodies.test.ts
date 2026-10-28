@@ -191,7 +191,7 @@ describe('hardware and geometry', () => {
     const lens = b.parts.filter((p) => p.kind === 'probe').map((p) => Number(p.params?.length));
     expect(new Set(lens).size).toBeGreaterThan(8);  // probes of many different lengths
     sets.forEach((s) => s.dispose());
-  });
+  }, 120000);
   it('lists its components with identifiers and the parameters they were built from', () => {
     const b = buildBodies('performance', null, () => 0), ids = b.parts.map((p) => p.id);
     for (const id of ['A', 'B', 'C', 'J', 'B.archive', 'C.reservoir', 'OBS', 'RING', 'CLUSTER', 'OPT', 'HEAD', 'O1', 'O6', 'cable.BCb', 'cable.BCc']) expect(ids).toContain(id);

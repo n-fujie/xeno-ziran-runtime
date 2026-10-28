@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased — XENO ECOSYSTEM, third stage (mechanical density, readable states, technical inspection, performance)
+
+* Bodies: real hardware (four fastener kinds laid out unevenly, brackets, tension brackets, hinge pins, ports, slots, apertures, grommets), a cable network (routes anchored at the machines, clamps, boots, connectors, braided sleeves, slack, branches), probes with five identifiable
+  states, an asymmetric observation node (five unequal legs, offset turret, telescoping boom, side optics, ring of six retractable probes), a spatially biased weathering shader, wet ground with micro-puddles, channels, mud, debris and stones against resting cables.
+* State mapping extended to mechanical change (coupling cut separates the coupling, history loss opens a latch, a resource pulse raises a reservoir, collapse closes lens covers and retracts probes, recovery reactivates the nodes in sequence); tested. A presentation of the run, not an identification of A1, A2 or the observation with the machines.
+* Technical inspection sheet: orthographic drawings of the real geometry in the pose of the run, with measured dimensions (scene units), identifiers, cable routing and the state panel (`docs/ECOSYSTEM_MEOS_STAGE3.md`).
+* Performance: culling and distance levels of detail, a throttled reflection, lights switched off when unseen, a lighter balanced pipeline. Balanced 34 / 26 ms → 14.0 / 14.7 ms (overview / body) on the same benchmark while the bodies carry far more detail. Full regression re-run: 650 passed and the same two known failures; 264 / 264 replay.
+
 ## Unreleased — XENO ECOSYSTEM, second stage (MEOS-0, engine meos-0.2)
 
 * Engine: intermediate traces and causal paths (separate block and digest; the status never reads them), operational / observed / observability status with five observation parameters, optional M2 sensing,

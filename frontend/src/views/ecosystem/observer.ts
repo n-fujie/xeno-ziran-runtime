@@ -125,7 +125,10 @@ export function buildObserver(M: BodyMats, detail: number, groundAt: (x: number,
   const boomParts = new Parts(), rb = seeded(91);
   const sq = (len: number, w: number, z0: number, parts: Parts, wear = 0.5) => {  // a square section: four rails, cross bracing, collars and perforated side plates
     for (const [x, y] of [[w, w], [-w, w], [w, -w], [-w, -w]]) parts.add('chrome', tube(v3(x, y, z0), v3(x, y, z0 + len), 0.06), wear);
-    for (let z = z0; z < z0 + len - 0.2; z += 0.5) parts.add('gun', tube(v3(-w, w, z), v3(w, -w, z + 0.5), 0.028), 0.6), parts.add('gun', tube(v3(w, w, z), v3(-w, -w, z + 0.5), 0.028), 0.6);
+    for (let z = z0; z < z0 + len - 0.2; z += 0.5) {
+      parts.add('gun', tube(v3(-w, w, z), v3(w, -w, z + 0.5), 0.028), 0.6);
+      parts.add('gun', tube(v3(w, w, z), v3(-w, -w, z + 0.5), 0.028), 0.6);
+    }
     for (const z of [z0 + 0.1, z0 + len * 0.5, z0 + len - 0.1]) parts.add('chrome', boxAt(v3(0, 0, z), v3(1, 0, 0), v3(0, 1, 0), v3(0, 0, 1), w * 2.5, w * 2.5, 0.08), 0.9);
     const sidePlate = plateThrough([v3(w * 1.05, -w, z0 + 0.1), v3(w * 1.05, -w, z0 + len - 0.1), v3(w * 1.05, w, z0 + len - 0.1), v3(w * 1.05, w, z0 + 0.1)], { hole: 0.04, pitch: 0.16, margin: 0.1, depth: 0.03, seg: 6 }, 0.95);
     parts.add('gun', sidePlate, 0.4);

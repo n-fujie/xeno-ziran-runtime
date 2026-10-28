@@ -317,6 +317,7 @@ export default function EcosystemView() {
       resetPerf: () => { frames.length = 0; if (eng.current) eng.current.simMs.length = 0; },
       // measurement hooks (they change nothing in the simulation): switch a graphics feature off to measure its cost, and render n frames back to back with a GPU sync after
       // each one, which gives the uncapped cost of a frame (the on-screen frame rate is limited by the display)
+      pipeline: () => ({ quality: q, passes: composer ? composer.passes.map((p) => (p instanceof RenderPass ? 'RenderPass' : p instanceof UnrealBloomPass ? 'UnrealBloomPass' : p instanceof BokehPass ? 'BokehPass' : p instanceof OutputPass ? 'OutputPass' : 'ShaderPass')) : [], reflection: mega.terrain.puddleMesh?.type ?? null, gravel: mega.stats.byKind['gravel (wet)'] ?? 0, instances: mega.stats.instances, bodies: mega.bodies.stats }),
       setFeature: (k: keyof typeof features, on: boolean) => {
         features[k] = on;
         const by = (n: string) => mega.root.children.find((c) => c.name === n || c.children.some((g) => g.name === n));

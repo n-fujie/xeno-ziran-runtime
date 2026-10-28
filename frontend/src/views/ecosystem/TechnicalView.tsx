@@ -96,6 +96,8 @@ export default function TechnicalView({ rec, tick, obs, observability, which, se
       lines.forEach((t, i) => { g.fillStyle = i === 0 ? INK : ACTIVE; g.fillText(t, W - 118, 24 + i * 13); });
       g.fillStyle = INK; g.font = '10px ui-monospace, Menlo, monospace'; g.fillText('DETAIL', 8, 12);
     }
+    // the drawing depends on the data, the body, the selection and the states; W, H, root and views are constants of this component
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, body, which, states, probeId]);
 
   const probes = body.nodes.flatMap((n) => n.probes).concat(body.observer.probes).map((p) => p.spec.id).filter((id) => (which === 'ncb' ? !id.startsWith('O') : id.startsWith('O')));
