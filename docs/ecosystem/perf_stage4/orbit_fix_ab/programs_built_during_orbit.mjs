@@ -6,6 +6,6 @@ const page = await browser.newPage({ viewport: { width: 1672, height: 808 } });
 await page.goto('http://127.0.0.1:3031/?view=ecosystem&cam=overview&layers=physical,meos&tick=120&quality=balanced&chrome=0&capture=1&labels=0', { waitUntil: 'load' });
 await page.waitForFunction(() => document.querySelector('.eco-stage')?.getAttribute('data-settled') === '1' && window.__meos?.ready?.(), null, { timeout: 120000 });
 await page.waitForTimeout(2500); await page.evaluate(() => window.__meos.benchmark(40, true));
-const r = await page.evaluate(() => { const x = window.__meos.benchmark(300, true); return { built: x.programsBuilt, programs: [Math.min(...x.series.programs), Math.max(...x.series.programs)] }; });
+const r = await page.evaluate(() => { const x = window.__meos.benchmark(300, true, true); return { built: x.programsBuilt, programs: [Math.min(...x.series.programs), Math.max(...x.series.programs)] }; });
 console.log(JSON.stringify(r, null, 1));
 await browser.close();

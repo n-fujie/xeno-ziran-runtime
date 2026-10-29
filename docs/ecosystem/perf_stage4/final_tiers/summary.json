@@ -1,0 +1,674 @@
+{
+ "performance/overview": {
+  "3032": {
+   "static_median": 7.699999999999999,
+   "static_p95": 12.649999999999999,
+   "orbit_median": 10.45,
+   "orbit_p95": 17.85,
+   "drawCalls": 437,
+   "triangles": 376038,
+   "reps": 2,
+   "raw": {
+    "sm": [
+     7.6,
+     7.8
+    ],
+    "sp": [
+     15.2,
+     10.1
+    ],
+    "om": [
+     11.6,
+     9.3
+    ],
+    "op": [
+     23.5,
+     12.2
+    ]
+   }
+  },
+  "3031": {
+   "static_median": 8.2,
+   "static_p95": 10.7,
+   "orbit_median": 9.25,
+   "orbit_p95": 13.0,
+   "drawCalls": 439,
+   "triangles": 395384,
+   "reps": 2,
+   "raw": {
+    "sm": [
+     8.5,
+     7.9
+    ],
+    "sp": [
+     10.9,
+     10.5
+    ],
+    "om": [
+     10.3,
+     8.2
+    ],
+    "op": [
+     14.9,
+     11.1
+    ]
+   }
+  }
+ },
+ "performance/habitat": {
+  "3032": {
+   "static_median": 9.45,
+   "static_p95": 12.600000000000001,
+   "orbit_median": 10.7,
+   "orbit_p95": 13.25,
+   "drawCalls": 416,
+   "triangles": 545234,
+   "reps": 2,
+   "raw": {
+    "sm": [
+     10.3,
+     8.6
+    ],
+    "sp": [
+     13.8,
+     11.4
+    ],
+    "om": [
+     11.3,
+     10.1
+    ],
+    "op": [
+     13,
+     13.5
+    ]
+   }
+  },
+  "3031": {
+   "static_median": 9.6,
+   "static_p95": 14.1,
+   "orbit_median": 9.95,
+   "orbit_p95": 12.6,
+   "drawCalls": 417,
+   "triangles": 577006,
+   "reps": 2,
+   "raw": {
+    "sm": [
+     10.6,
+     8.6
+    ],
+    "sp": [
+     16.9,
+     11.3
+    ],
+    "om": [
+     10.7,
+     9.2
+    ],
+    "op": [
+     12.1,
+     13.1
+    ]
+   }
+  }
+ },
+ "performance/body": {
+  "3032": {
+   "static_median": 6.4,
+   "static_p95": 10.4,
+   "orbit_median": 6.7,
+   "orbit_p95": 9.8,
+   "drawCalls": 255,
+   "triangles": 457964,
+   "reps": 2,
+   "raw": {
+    "sm": [
+     7,
+     5.8
+    ],
+    "sp": [
+     11.8,
+     9
+    ],
+    "om": [
+     7.2,
+     6.2
+    ],
+    "op": [
+     10.2,
+     9.4
+    ]
+   }
+  },
+  "3031": {
+   "static_median": 6.75,
+   "static_p95": 9.850000000000001,
+   "orbit_median": 5.75,
+   "orbit_p95": 8.7,
+   "drawCalls": 255,
+   "triangles": 478400,
+   "reps": 2,
+   "raw": {
+    "sm": [
+     6.4,
+     7.1
+    ],
+    "sp": [
+     9.9,
+     9.8
+    ],
+    "om": [
+     5.5,
+     6
+    ],
+    "op": [
+     8.2,
+     9.2
+    ]
+   }
+  }
+ },
+ "performance/observer": {
+  "3032": {
+   "static_median": 7.449999999999999,
+   "static_p95": 10.0,
+   "orbit_median": 6.9,
+   "orbit_p95": 9.5,
+   "drawCalls": 307,
+   "triangles": 423684,
+   "reps": 2,
+   "raw": {
+    "sm": [
+     7.6,
+     7.3
+    ],
+    "sp": [
+     10.1,
+     9.9
+    ],
+    "om": [
+     7.4,
+     6.4
+    ],
+    "op": [
+     9.5,
+     9.5
+    ]
+   }
+  },
+  "3031": {
+   "static_median": 7.4,
+   "static_p95": 10.2,
+   "orbit_median": 7.25,
+   "orbit_p95": 10.0,
+   "drawCalls": 308,
+   "triangles": 435020,
+   "reps": 2,
+   "raw": {
+    "sm": [
+     7.3,
+     7.5
+    ],
+    "sp": [
+     10.1,
+     10.3
+    ],
+    "om": [
+     7.5,
+     7
+    ],
+    "op": [
+     10.3,
+     9.7
+    ]
+   }
+  }
+ },
+ "balanced/overview": {
+  "3032": {
+   "static_median": 15.25,
+   "static_p95": 20.45,
+   "orbit_median": 16.55,
+   "orbit_p95": 29.1,
+   "drawCalls": 455,
+   "triangles": 653420,
+   "reps": 2,
+   "raw": {
+    "sm": [
+     15.7,
+     14.8
+    ],
+    "sp": [
+     24.4,
+     16.5
+    ],
+    "om": [
+     16.3,
+     16.8
+    ],
+    "op": [
+     31.2,
+     27
+    ]
+   }
+  },
+  "3031": {
+   "static_median": 17.85,
+   "static_p95": 30.15,
+   "orbit_median": 17.25,
+   "orbit_p95": 24.85,
+   "drawCalls": 457,
+   "triangles": 679592,
+   "reps": 2,
+   "raw": {
+    "sm": [
+     20.5,
+     15.2
+    ],
+    "sp": [
+     43.1,
+     17.2
+    ],
+    "om": [
+     18,
+     16.5
+    ],
+    "op": [
+     24.8,
+     24.9
+    ]
+   }
+  }
+ },
+ "balanced/habitat": {
+  "3032": {
+   "static_median": 17.450000000000003,
+   "static_p95": 22.4,
+   "orbit_median": 18.45,
+   "orbit_p95": 23.55,
+   "drawCalls": 427,
+   "triangles": 1033428,
+   "reps": 2,
+   "raw": {
+    "sm": [
+     17.6,
+     17.3
+    ],
+    "sp": [
+     23.7,
+     21.1
+    ],
+    "om": [
+     18.4,
+     18.5
+    ],
+    "op": [
+     23.6,
+     23.5
+    ]
+   }
+  },
+  "3031": {
+   "static_median": 19.35,
+   "static_p95": 31.05,
+   "orbit_median": 21.25,
+   "orbit_p95": 34.95,
+   "drawCalls": 428,
+   "triangles": 1073126,
+   "reps": 2,
+   "raw": {
+    "sm": [
+     19,
+     19.7
+    ],
+    "sp": [
+     31.1,
+     31
+    ],
+    "om": [
+     23.1,
+     19.4
+    ],
+    "op": [
+     40,
+     29.9
+    ]
+   }
+  }
+ },
+ "balanced/body": {
+  "3032": {
+   "static_median": 16.35,
+   "static_p95": 22.299999999999997,
+   "orbit_median": 16.15,
+   "orbit_p95": 24.55,
+   "drawCalls": 264,
+   "triangles": 999878,
+   "reps": 2,
+   "raw": {
+    "sm": [
+     16.3,
+     16.4
+    ],
+    "sp": [
+     20.4,
+     24.2
+    ],
+    "om": [
+     16.1,
+     16.2
+    ],
+    "op": [
+     22.6,
+     26.5
+    ]
+   }
+  },
+  "3031": {
+   "static_median": 16.450000000000003,
+   "static_p95": 19.95,
+   "orbit_median": 17.25,
+   "orbit_p95": 26.35,
+   "drawCalls": 264,
+   "triangles": 1027440,
+   "reps": 2,
+   "raw": {
+    "sm": [
+     16.6,
+     16.3
+    ],
+    "sp": [
+     22,
+     17.9
+    ],
+    "om": [
+     16.7,
+     17.8
+    ],
+    "op": [
+     23.3,
+     29.4
+    ]
+   }
+  }
+ },
+ "balanced/observer": {
+  "3032": {
+   "static_median": 14.75,
+   "static_p95": 19.3,
+   "orbit_median": 14.1,
+   "orbit_p95": 22.55,
+   "drawCalls": 322,
+   "triangles": 874586,
+   "reps": 2,
+   "raw": {
+    "sm": [
+     15.3,
+     14.2
+    ],
+    "sp": [
+     19.1,
+     19.5
+    ],
+    "om": [
+     12.6,
+     15.6
+    ],
+    "op": [
+     14.9,
+     30.2
+    ]
+   }
+  },
+  "3031": {
+   "static_median": 14.45,
+   "static_p95": 22.35,
+   "orbit_median": 12.55,
+   "orbit_p95": 21.049999999999997,
+   "drawCalls": 323,
+   "triangles": 886722,
+   "reps": 2,
+   "raw": {
+    "sm": [
+     13.9,
+     15
+    ],
+    "sp": [
+     16.3,
+     28.4
+    ],
+    "om": [
+     12.8,
+     12.3
+    ],
+    "op": [
+     23.2,
+     18.9
+    ]
+   }
+  }
+ },
+ "high/overview": {
+  "3032": {
+   "static_median": 35.95,
+   "static_p95": 47.65,
+   "orbit_median": 39.85,
+   "orbit_p95": 75.05,
+   "drawCalls": 963,
+   "triangles": 1997340,
+   "reps": 2,
+   "raw": {
+    "sm": [
+     35.5,
+     36.4
+    ],
+    "sp": [
+     44,
+     51.3
+    ],
+    "om": [
+     40.7,
+     39
+    ],
+    "op": [
+     78.1,
+     72
+    ]
+   }
+  },
+  "3031": {
+   "static_median": 36.1,
+   "static_p95": 45.85,
+   "orbit_median": 39.3,
+   "orbit_p95": 61.8,
+   "drawCalls": 967,
+   "triangles": 2059484,
+   "reps": 2,
+   "raw": {
+    "sm": [
+     37.1,
+     35.1
+    ],
+    "sp": [
+     50.2,
+     41.5
+    ],
+    "om": [
+     39.4,
+     39.2
+    ],
+    "op": [
+     66.6,
+     57
+    ]
+   }
+  }
+ },
+ "high/habitat": {
+  "3032": {
+   "static_median": 38.75,
+   "static_p95": 48.849999999999994,
+   "orbit_median": 41.2,
+   "orbit_p95": 59.8,
+   "drawCalls": 880,
+   "triangles": 3012252,
+   "reps": 2,
+   "raw": {
+    "sm": [
+     38.9,
+     38.6
+    ],
+    "sp": [
+     53.3,
+     44.4
+    ],
+    "om": [
+     40.3,
+     42.1
+    ],
+    "op": [
+     55.1,
+     64.5
+    ]
+   }
+  },
+  "3031": {
+   "static_median": 40.099999999999994,
+   "static_p95": 52.75,
+   "orbit_median": 44.05,
+   "orbit_p95": 73.94999999999999,
+   "drawCalls": 882,
+   "triangles": 3104168,
+   "reps": 2,
+   "raw": {
+    "sm": [
+     39.3,
+     40.9
+    ],
+    "sp": [
+     55.5,
+     50
+    ],
+    "om": [
+     41.9,
+     46.2
+    ],
+    "op": [
+     57.3,
+     90.6
+    ]
+   }
+  }
+ },
+ "high/body": {
+  "3032": {
+   "static_median": 40.55,
+   "static_p95": 50.2,
+   "orbit_median": 40.849999999999994,
+   "orbit_p95": 70.05000000000001,
+   "drawCalls": 557,
+   "triangles": 3087756,
+   "reps": 2,
+   "raw": {
+    "sm": [
+     36.3,
+     44.8
+    ],
+    "sp": [
+     40.1,
+     60.3
+    ],
+    "om": [
+     37.9,
+     43.8
+    ],
+    "op": [
+     54.2,
+     85.9
+    ]
+   }
+  },
+  "3031": {
+   "static_median": 43.05,
+   "static_p95": 52.5,
+   "orbit_median": 40.55,
+   "orbit_p95": 56.3,
+   "drawCalls": 557,
+   "triangles": 3152860,
+   "reps": 2,
+   "raw": {
+    "sm": [
+     48.2,
+     37.9
+    ],
+    "sp": [
+     59,
+     46
+    ],
+    "om": [
+     40.9,
+     40.2
+    ],
+    "op": [
+     58.9,
+     53.7
+    ]
+   }
+  }
+ },
+ "high/observer": {
+  "3032": {
+   "static_median": 32.85,
+   "static_p95": 36.4,
+   "orbit_median": 34.349999999999994,
+   "orbit_p95": 42.85,
+   "drawCalls": 684,
+   "triangles": 2736772,
+   "reps": 2,
+   "raw": {
+    "sm": [
+     33,
+     32.7
+    ],
+    "sp": [
+     36.5,
+     36.3
+    ],
+    "om": [
+     36.8,
+     31.9
+    ],
+    "op": [
+     50.2,
+     35.5
+    ]
+   }
+  },
+  "3031": {
+   "static_median": 32.95,
+   "static_p95": 39.8,
+   "orbit_median": 35.1,
+   "orbit_p95": 43.95,
+   "drawCalls": 686,
+   "triangles": 2763584,
+   "reps": 2,
+   "raw": {
+    "sm": [
+     32.2,
+     33.7
+    ],
+    "sp": [
+     36.8,
+     42.8
+    ],
+    "om": [
+     31.7,
+     38.5
+    ],
+    "op": [
+     38.8,
+     49.1
+    ]
+   }
+  }
+ }
+}

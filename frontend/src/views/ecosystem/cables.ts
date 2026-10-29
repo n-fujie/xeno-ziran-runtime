@@ -102,11 +102,11 @@ export function buildCables(routes: CableRoute[], M: CableMats, detail: number, 
     // the conductors of a harness (they bow out between the ties and are drawn in at each tie): thin cables that wind slowly round the main one (each its own silhouette on the outline of the cable)
     const ns = r.strands ?? 0;
     if (ns > 0) {
-      const L = curve.getLength(), n = Math.max(16, Math.round(L * 7 * detail)), fr = curve.computeFrenetFrames(n, false), turns = Math.max(1.2, L * 0.32);
+      const L = curve.getLength(), n = Math.max(12, Math.round(L * 5 * detail)), fr = curve.computeFrenetFrames(n, false), turns = Math.max(1.2, L * 0.32);
       for (let q = 0; q < ns; q++) {
         const pts: THREE.Vector3[] = [], ph = (q / ns) * Math.PI * 2, off = rad * (1.7 + 0.45 * (q % 2));
         for (let i = 0; i <= n; i++) { const t = i / n, ang = t * turns * Math.PI * 2 + ph, e = Math.min(1, t * 8, (1 - t) * 8) * off * (1 + 1.9 * Math.abs(Math.sin(Math.PI * t * ((r.ties ?? 0) + 1))) * (0.7 + 0.3 * (q % 2))); pts.push(curve.getPoint(t).addScaledVector(fr.normals[i], Math.cos(ang) * e).addScaledVector(fr.binormals[i], Math.sin(ang) * e)); }
-        rubber.push(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts, false, 'catmullrom', 0.5), n, rad * (0.24 + 0.05 * (q % 2)), 5, false));
+        rubber.push(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts, false, 'catmullrom', 0.5), n, rad * (0.24 + 0.05 * (q % 2)), 4, false));
       }
     }
     // cable ties: a flat band round the cable with a tail that was cut off at an angle (a laced harness; each tie is a separate small silhouette on the cable's outline)

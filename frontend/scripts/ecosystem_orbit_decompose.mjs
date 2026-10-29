@@ -31,7 +31,7 @@ for (const cam of cams) {
     await page.waitForTimeout(2500); await page.evaluate(() => window.__meos.benchmark(40, true));
     return page;
   };
-  const orbit = (page) => page.evaluate((n) => window.__meos.benchmark(n, true), frames);
+  const orbit = (page) => page.evaluate((n) => window.__meos.benchmark(n, true, true), frames);
   const page = await open(0), r = await orbit(page), ms = r.ms, thr = pct(ms, 0.9), slow = ms.map((v) => v >= thr);
   const S = r.series, cams_ = { calls: S.calls, triangles: S.triangles, geometries: S.geometries, textures: S.textures, programs: S.programs, lod_switches: S.lodSwitches, visibility_flips: S.visibilityFlips };
   const rows = {};

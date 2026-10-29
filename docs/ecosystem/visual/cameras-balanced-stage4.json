@@ -373,6 +373,68 @@
     "quality": "balanced"
    }
   },
+  "43-address-loss-map": {
+   "query": "tech=ncb&tick=120&preset=address-loss&horizon=360&maplayers=boundary.address,boundary.xenobody,path.coupling,path.observation,interventions&|eco-research-map",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -26.000000000000007,
+     35.99999999999998,
+     98.00000000000001
+    ],
+    "target": [
+     -4,
+     -26,
+     -6
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1280,
+     1366
+    ],
+    "quality": "balanced"
+   }
+  },
+  "44-address-recovery-map": {
+   "query": "tech=ncb&tick=185&preset=address-loss&horizon=360&maplayers=boundary.address,boundary.xenobody,path.coupling,path.observation,path.recovery,interventions&|eco-research-map",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -26.000000000000007,
+     35.99999999999998,
+     98.00000000000001
+    ],
+    "target": [
+     -4,
+     -26,
+     -6
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1280,
+     1366
+    ],
+    "quality": "balanced"
+   }
+  },
   "42-compare-baseline-intervention-recovered": {
    "query": "tech=ncb&compare=1&preset=recovery-demo&horizon=360&phil=revision&tick=165&&|eco-compare",
    "viewport": [

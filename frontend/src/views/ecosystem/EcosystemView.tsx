@@ -365,7 +365,7 @@ export default function EcosystemView() {
         if (k === 'arena') mega.arena.group.visible = on;
         if (k === 'bloom') composer?.passes.forEach((p) => { if (p instanceof UnrealBloomPass) p.enabled = on; });
       },
-      benchmark: (n: number, orbit = false) => {
+      benchmark: (n: number, orbit = false, withSeries = false) => {  // the per-frame series (decomposition of slow frames) cost scene traversals between frames, so they are opt-in
         const gl = renderer.getContext() as WebGL2RenderingContext, px = new Uint8Array(4), ms: number[] = [], js: number[] = [], gpu: number[] = [];
         const tq = gl.getExtension('EXT_disjoint_timer_query_webgl2') as { TIME_ELAPSED_EXT: number } | null;
         renderer.info.autoReset = false;  // the counters then cover every pass of one frame (the composer renders several)
@@ -374,7 +374,7 @@ export default function EcosystemView() {
         // and textures held by the renderer (an increase is an upload), LOD levels that changed, objects whose visibility flipped
         const seriesCalls: number[] = [], seriesTris: number[] = [], seriesGeo: number[] = [], seriesTex: number[] = [], seriesLod: number[] = [], seriesFlip: number[] = [], seriesProg: number[] = [];
         const lods: THREE.LOD[] = [], objs: THREE.Object3D[] = [];
-        scene.traverse((o) => { if ((o as THREE.LOD).isLOD) lods.push(o as THREE.LOD); else if ((o as THREE.Mesh).isMesh || (o as THREE.Line).isLine || (o as THREE.Points).isPoints) objs.push(o); });
+        if (withSeries) scene.traverse((o) => { if ((o as THREE.LOD).isLOD) lods.push(o as THREE.LOD); else if ((o as THREE.Mesh).isMesh || (o as THREE.Line).isLine || (o as THREE.Points).isPoints) objs.push(o); });
         let prevLevels = lods.map((l) => l.getCurrentLevel()), prevVis = objs.map((o) => o.visible);
         const programsAt = () => (renderer.info.programs ?? []).map((p) => `${p.name}#${p.id}`);  // the programs the renderer holds, to name those built during the run
         const before = new Set(programsAt());
@@ -391,6 +391,7 @@ export default function EcosystemView() {
           if (q) { if (gl.getQueryParameter(q, gl.QUERY_RESULT_AVAILABLE)) gpu.push(Number(gl.getQueryParameter(q, gl.QUERY_RESULT)) / 1e6); gl.deleteQuery(q); }
           ms.push(performance.now() - t0);
           calls = renderer.info.render.calls; triangles = renderer.info.render.triangles;
+          if (!withSeries) continue;
           seriesCalls.push(calls); seriesTris.push(triangles); seriesGeo.push(renderer.info.memory.geometries); seriesTex.push(renderer.info.memory.textures); seriesProg.push(renderer.info.programs?.length ?? 0);
           const lv = lods.map((l) => l.getCurrentLevel()), vis = objs.map((o) => o.visible);
           seriesLod.push(lv.reduce((a, v, k) => a + (v !== prevLevels[k] ? 1 : 0), 0)); seriesFlip.push(vis.reduce((a, v, k) => a + (v !== prevVis[k] ? 1 : 0), 0)); prevLevels = lv; prevVis = vis;

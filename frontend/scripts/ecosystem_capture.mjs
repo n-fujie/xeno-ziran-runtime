@@ -65,6 +65,8 @@ export const SHOTS = {
   '39-technical-paths': 'tech=ncb&tick=125&preset=recovery-demo&horizon=360&phil=revision&maplayers=path.resource,path.coupling,path.history_access,path.observation,path.recovery&|eco-research-map',
   '40-technical-observation-region': 'tech=ncb&tick=120&obs=interval:3,stride:2,region:2.4.6.8,occluder:3.5.5.7&maplayers=boundary.observation,observation&|eco-research-map',
   '41-replay-markers': 'tab=research&preset=recovery-demo&horizon=360&phil=revision&obs=interval:3&tick=165&cam=habitat&layers=physical,meos&&|.eco',
+  '43-address-loss-map': 'tech=ncb&tick=120&preset=address-loss&horizon=360&maplayers=boundary.address,boundary.xenobody,path.coupling,path.observation,interventions&|eco-research-map',
+  '44-address-recovery-map': 'tech=ncb&tick=185&preset=address-loss&horizon=360&maplayers=boundary.address,boundary.xenobody,path.coupling,path.observation,path.recovery,interventions&|eco-research-map',
   '42-compare-baseline-intervention-recovered': 'tech=ncb&compare=1&preset=recovery-demo&horizon=360&phil=revision&tick=165&&|eco-compare',
 };
 

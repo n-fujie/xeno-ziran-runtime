@@ -1,0 +1,234 @@
+{
+ "measured_with": "headless Chromium, ANGLE Metal",
+ "viewport": [
+  1672,
+  808
+ ],
+ "frames": 120,
+ "rows": [
+  {
+   "tier": "balanced",
+   "camera": "overview",
+   "camera_spec": {
+    "pos": [
+     -26.000000000000007,
+     35.99999999999998,
+     98.00000000000001
+    ],
+    "target": [
+     -4,
+     -26,
+     -6
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1672,
+     674
+    ],
+    "quality": "balanced"
+   },
+   "instances": 55195,
+   "full": {
+    "label": "full (static camera)",
+    "median": 15.7,
+    "p95": 24.4,
+    "mean": 16.28,
+    "max": 34.7,
+    "fps_from_median": 63.7,
+    "cpu_submit_median": 2.9,
+    "gpu_time": null,
+    "drawCalls": 455,
+    "triangles": 653420,
+    "geometries": 278,
+    "textures": 8
+   },
+   "orbiting": {
+    "label": "full (camera orbiting: the reflection refreshes every 2nd frame)",
+    "median": 16.3,
+    "p95": 31.2,
+    "mean": 20.05,
+    "max": 291.7,
+    "fps_from_median": 61.3,
+    "cpu_submit_median": 3,
+    "gpu_time": null,
+    "drawCalls": 663,
+    "triangles": 1020970,
+    "geometries": 320,
+    "textures": 9
+   }
+  },
+  {
+   "tier": "balanced",
+   "camera": "habitat",
+   "camera_spec": {
+    "pos": [
+     -48.00000000000001,
+     11,
+     33.00000000000001
+    ],
+    "target": [
+     -66,
+     1.2,
+     16
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1672,
+     674
+    ],
+    "quality": "balanced"
+   },
+   "instances": 55195,
+   "full": {
+    "label": "full (static camera)",
+    "median": 17.6,
+    "p95": 23.7,
+    "mean": 18.63,
+    "max": 35.6,
+    "fps_from_median": 56.8,
+    "cpu_submit_median": 3.6,
+    "gpu_time": null,
+    "drawCalls": 427,
+    "triangles": 1033428,
+    "geometries": 320,
+    "textures": 9
+   },
+   "orbiting": {
+    "label": "full (camera orbiting: the reflection refreshes every 2nd frame)",
+    "median": 18.4,
+    "p95": 23.6,
+    "mean": 18.74,
+    "max": 36.8,
+    "fps_from_median": 54.3,
+    "cpu_submit_median": 3.6,
+    "gpu_time": null,
+    "drawCalls": 433,
+    "triangles": 1167960,
+    "geometries": 335,
+    "textures": 9
+   }
+  },
+  {
+   "tier": "balanced",
+   "camera": "body",
+   "camera_spec": {
+    "pos": [
+     -88.99999999999999,
+     3.200000000000002,
+     14.99999999999999
+    ],
+    "target": [
+     -103.99999999999999,
+     2.9999999999999996,
+     2.9999999999999996
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1672,
+     674
+    ],
+    "quality": "balanced"
+   },
+   "instances": 55195,
+   "full": {
+    "label": "full (static camera)",
+    "median": 16.3,
+    "p95": 20.4,
+    "mean": 16.52,
+    "max": 28.3,
+    "fps_from_median": 61.3,
+    "cpu_submit_median": 2.8,
+    "gpu_time": null,
+    "drawCalls": 264,
+    "triangles": 999878,
+    "geometries": 192,
+    "textures": 8
+   },
+   "orbiting": {
+    "label": "full (camera orbiting: the reflection refreshes every 2nd frame)",
+    "median": 16.1,
+    "p95": 22.6,
+    "mean": 17.01,
+    "max": 55.2,
+    "fps_from_median": 62.1,
+    "cpu_submit_median": 2.8,
+    "gpu_time": null,
+    "drawCalls": 258,
+    "triangles": 1039106,
+    "geometries": 275,
+    "textures": 8
+   }
+  },
+  {
+   "tier": "balanced",
+   "camera": "observer",
+   "camera_spec": {
+    "pos": [
+     -104,
+     4.200000000000013,
+     22.000000000000007
+    ],
+    "target": [
+     -85,
+     7.499999999999999,
+     37
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1672,
+     674
+    ],
+    "quality": "balanced"
+   },
+   "instances": 55195,
+   "full": {
+    "label": "full (static camera)",
+    "median": 15.3,
+    "p95": 19.1,
+    "mean": 14.96,
+    "max": 21.6,
+    "fps_from_median": 65.4,
+    "cpu_submit_median": 2.6,
+    "gpu_time": null,
+    "drawCalls": 322,
+    "triangles": 874586,
+    "geometries": 219,
+    "textures": 8
+   },
+   "orbiting": {
+    "label": "full (camera orbiting: the reflection refreshes every 2nd frame)",
+    "median": 12.6,
+    "p95": 14.9,
+    "mean": 12.68,
+    "max": 28.2,
+    "fps_from_median": 79.4,
+    "cpu_submit_median": 2.5,
+    "gpu_time": null,
+    "drawCalls": 310,
+    "triangles": 1004714,
+    "geometries": 223,
+    "textures": 8
+   }
+  }
+ ]
+}
