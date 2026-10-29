@@ -315,3 +315,20 @@ def evaluate(rec: dict, ref: dict, repairs: list[dict], t_act: int = T_ACT) -> d
 def run_eval(stress: Stress | None, repairs: list[dict], seed: int, t_act: int = T_ACT, onset: int = STRESS_TICK) -> dict:
     rec = run(stress, repairs, seed, HORIZON, onset)
     return evaluate(rec, reference(seed), repairs, t_act)
+
+
+# ---------------------------------------------------------------------------------------------------- failure taxonomy
+FAILURE_IDS = {
+    "no effective action": "NO_EFFECTIVE_ACTION", "no effective action at this setting (action too weak or the wrong target)": "NO_EFFECTIVE_ACTION", "action too weak": "ACTION_TOO_WEAK",
+    "action too late": "ACTION_TOO_LATE", "action too late (after the collapse)": "ACTION_TOO_LATE", "overshoot": "OVERSHOOT", "secondary collapse (overshoot)": "OVERSHOOT",
+    "secondary collapse": "SECONDARY_COLLAPSE", "detection failure": "DETECTION_FAILURE", "Address unresolved": "ADDRESS_UNRESOLVED",
+    "insufficient resource": "INSUFFICIENT_RESOURCE", "insufficient resource (resource field exhausted)": "INSUFFICIENT_RESOURCE", "action cost too high": "EXCESSIVE_COST",
+    "action destabilized system": "DESTABILIZED_BY_ACTION", "action destabilized the system (recovered short, not long)": "DESTABILIZED_BY_ACTION", "outside tested action space": "OUTSIDE_TESTED_ACTION_SPACE",
+    "partial: effective on some seeds only": "SEED_DEPENDENT",
+}
+FAILURE_ID_LIST = ("NO_EFFECTIVE_ACTION", "ACTION_TOO_WEAK", "ACTION_TOO_LATE", "OVERSHOOT", "SECONDARY_COLLAPSE", "DETECTION_FAILURE", "ADDRESS_UNRESOLVED", "INSUFFICIENT_RESOURCE", "EXCESSIVE_COST", "DESTABILIZED_BY_ACTION", "OUTSIDE_TESTED_ACTION_SPACE", "SEED_DEPENDENT")  # SEED_DEPENDENT is an addition: a setting effective on some seeds only
+
+
+def failure_id(text: str | None) -> str | None:
+    return None if text in (None, "effective") else FAILURE_IDS.get(text, "NO_EFFECTIVE_ACTION")
+

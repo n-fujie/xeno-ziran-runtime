@@ -11,6 +11,7 @@ import { PATH_IDS } from './meosApi';
 import { pathStatesAt, type Inspect, type Marker, type PathState } from './research';
 import type { PathActivity } from './meosApi';
 import type { RejectedCandidate, RouteState } from './routeGraph';
+import type { RepairState } from './repair';
 
 export type LineStyle = 'solid' | 'dash' | 'dashdot' | 'dot';
 export type Ink = 'ink' | 'active' | 'cut' | 'mute' | 'green' | 'violet';
@@ -22,7 +23,7 @@ export type Prim =
   | { t: 'text'; id: string; x: number; y: number; text: string; ink: Ink; align?: 'left' | 'center'; /** a line of text under the arena (0 is the first), in rows and not in cells */ row?: number }
   | { t: 'flag'; id: string; x: number; y: number; text: string; ink: Ink };
 
-export type MapLayer = 'boundary.xenobody' | 'boundary.address' | 'boundary.observation' | 'observation' | 'interventions' | `path.${PathId}` | 'route.active' | 'route.dormant' | 'route.failed' | 'route.fallback' | 'route.adaptive' | 'mfs.current' | 'mfs.alternative' | 'mfs.rejected';
+export type MapLayer = 'boundary.xenobody' | 'boundary.address' | 'boundary.observation' | 'observation' | 'interventions' | `path.${PathId}` | 'route.active' | 'route.dormant' | 'route.failed' | 'route.fallback' | 'route.adaptive' | 'mfs.current' | 'mfs.alternative' | 'mfs.rejected' | 'repair.damaged' | 'repair.repairable' | 'repair.repaired' | 'repair.bypass' | 'repair.world' | 'repair.internal' | 'repair.failed';
 export const MAP_LAYERS: Array<{ id: MapLayer; label: string; what: string }> = [
   { id: 'boundary.xenobody', label: 'XenoBody boundary', what: 'solid heavy line round the operational body (A1, A2 and their sensing windows)' },
   { id: 'boundary.address', label: 'Address Domain', what: 'dash-dot: the addressable arena; pointers to the cell a stale, delayed or lost address names' },
@@ -41,6 +42,13 @@ export const MAP_LAYERS: Array<{ id: MapLayer; label: string; what: string }> = 
   { id: 'route.adaptive', label: 'adaptive route', what: 'paths the adaptive controller switched on (violet, dash-dot)' },
   { id: 'mfs.current', label: 'current MFS', what: 'the MFS the run is known to be (a deep link, a controller decision), or whose retained components are exactly the enabled ones, or the one the last transition moved to; "none" when it is none of these' },
   { id: 'mfs.alternative', label: 'alternative MFS (validated)', what: 'the validated MFS of the current MFS\'s condition, and those a controller considered, whose components have not failed (dashed rule)' },
+  { id: 'repair.damaged', label: 'damaged path', what: 'the path the stress damaged, while no repair has acted on it (red dotted, crossed)' },
+  { id: 'repair.repairable', label: 'repairable path', what: 'the damaged path of a stress for which a tested repair was validated (violet dashed, beside the damaged line)' },
+  { id: 'repair.repaired', label: 'repaired path', what: 'the damaged path after a sustained recovery (green)' },
+  { id: 'repair.bypass', label: 'temporary bypass', what: 'a path a temporary repair (a bridge, a temporary renewal, an inflow) strengthens while it lasts (green dash-dot)' },
+  { id: 'repair.world', label: 'world-state intervention', what: 'the path a world-state repair acts on, which need not be the damaged one (violet, thick)' },
+  { id: 'repair.internal', label: 'internal reconfiguration', what: 'an internal reconfiguration (a component switched on or off) used as a repair, in words' },
+  { id: 'repair.failed', label: 'failed repair', what: 'the damaged path after a repair that did not recover the run, or after a secondary collapse (red, crossed twice)' },
   { id: 'mfs.rejected', label: 'rejected candidate', what: 'candidate retaining sets of this condition that failed the search criterion or validation (dotted rule); never an MFS' },
 ];
 export const ALL_MAP_LAYERS = new Set<MapLayer>(MAP_LAYERS.map((l) => l.id));
@@ -57,7 +65,7 @@ export interface BodiesSpec { partitions: Record<string, { label: string; compon
 export const legsClosed = (components: string[], legs: Record<string, string[]>): string[] => Object.entries(legs).filter(([, needs]) => needs.every((c) => components.includes(c))).map(([k]) => k);
 
 /** The research map at ``tick``. ``inspect`` is the state at that tick (``research.inspectAt``); ``paths`` are the run's path activity; ``markers`` its event markers. */
-export function buildResearchMap(o: { rec: MeosRecord; tick: number; obs: Partial<Observation>; inspect: Inspect; paths: PathActivity | null | undefined; markers: Marker[]; layers?: Set<MapLayer>; body?: string; bodies?: BodiesSpec | null; route?: RouteState | null; rejected?: RejectedCandidate[] }): MapSpec {
+export function buildResearchMap(o: { rec: MeosRecord; tick: number; obs: Partial<Observation>; inspect: Inspect; paths: PathActivity | null | undefined; markers: Marker[]; layers?: Set<MapLayer>; body?: string; bodies?: BodiesSpec | null; route?: RouteState | null; rejected?: RejectedCandidate[]; repair?: { state: RepairState; repairable?: boolean } | null }): MapSpec {
   const { rec, inspect: ins } = o, L = o.layers ?? DEFAULT_MAP_LAYERS, n = rec.config.grid, t = ins.tick, f = rec.frames[t];
   const P: Prim[] = [], on = (l: MapLayer) => L.has(l), ps = pathStatesAt(o.paths, t);
   const a1 = [f.A1.x + 0.5, f.A1.y + 0.5] as [number, number], a2 = [f.A2.x + 0.5, f.A2.y + 0.5] as [number, number];
@@ -166,6 +174,27 @@ export function buildResearchMap(o: { rec: MeosRecord; tick: number; obs: Partia
     const rej = (o.rejected ?? []).filter((c) => conds.has(c.condition_id));
     P.push({ t: 'text', id: 'mfs.rejected', x: 0.1, y: n, row: 5, text: `┈ rejected candidates (not MFS): ${rej.map((c) => `${c.condition_id} {${c.retained.length} components, ${c.persists_in_search_seeds}/${c.search_seeds.length} search, ${c.persists_in_validation_seeds}/${c.validation_seeds.length} validation}`).join('; ') || 'none for this condition'}`, ink: 'cut', align: 'left' });
   }
+  // the repair (sixth stage): the damaged path, the repairs acting and where, from the run's own repair events
+  if (o.repair) {
+    const rs = o.repair.state;
+    const cut = (p: string, layer: MapLayer, style: LineStyle, ink: Ink, w: number, text: string, cross = false) => {
+      const pts = PTS[p];
+      if (!pts || !on(layer)) return;
+      const sh = pts.map(([x, y]) => [x, y + 0.34] as [number, number]);
+      P.push({ t: 'poly', id: layer, pts: sh, style, w, ink, arrow: true }, { t: 'text', id: layer, x: sh[Math.floor(sh.length / 2)][0], y: sh[Math.floor(sh.length / 2)][1] + 0.38, text, ink, align: 'center' });
+      if (cross) P.push({ t: 'cross', id: layer, x: sh[1][0], y: sh[1][1], ink: 'cut' });
+    };
+    for (const [p, st] of Object.entries(rs.paths)) {
+      if (st === 'damaged') { cut(p, 'repair.damaged', 'dot', 'cut', 2.4, `${p} damaged`, true); if (o.repair.repairable) cut(p, 'repair.repairable', 'dash', 'violet', 1.4, `${p}: a tested repair exists`); }
+      else if (st === 'repaired') cut(p, 'repair.repaired', 'solid', 'green', 2.8, `${p} repaired`);
+      else if (st === 'failed') { cut(p, 'repair.failed', 'dot', 'cut', 2.6, `${p}: repair failed`, true); if (on('repair.failed')) P.push({ t: 'cross', id: 'repair.failed', x: PTS[p]?.[0]?.[0] ?? 0, y: (PTS[p]?.[0]?.[1] ?? 0) + 0.34, ink: 'cut' }); }
+      else if (st === 'bypass') cut(p, 'repair.bypass', 'dashdot', 'green', 2.6, `${p}: temporary bypass`);
+      else if (st === 'repair-active') cut(p, 'repair.world', 'solid', 'violet', 3.2, `${p}: world-state repair acting`);
+    }
+    if (on('repair.world') && rs.worldActions.length) P.push({ t: 'text', id: 'repair.world', x: 0.1, y: n, row: 6, text: `world-state: ${rs.worldActions.map((a) => `${a.action} ${a.magnitude ?? ''} @${a.tick}`).join('; ')}${rs.repairSiteDiffers ? ' (the repair site is not the damage site)' : ''}`, ink: 'violet', align: 'left' });
+    if (on('repair.internal') && rs.internalActions.length) P.push({ t: 'text', id: 'repair.internal', x: 0.1, y: n, row: 7, text: `internal reconfiguration: ${rs.internalActions.map((a) => `${a.action} @${a.tick}`).join('; ')}`, ink: 'active', align: 'left' });
+    if (on('repair.failed') && (rs.secondary || rs.failed.length)) P.push({ t: 'text', id: 'repair.failed', x: 0.1, y: n, row: 8, text: rs.secondary ? 'SECONDARY COLLAPSE after the repair' : `failed: ${rs.failed.map((f) => f.detail).join('; ')}`, ink: 'cut', align: 'left' });
+  }
   // interventions: flags at the cells they name; the others in a strip under the map
   if (on('interventions')) {
     let strip = 0;
@@ -174,7 +203,7 @@ export function buildResearchMap(o: { rec: MeosRecord; tick: number; obs: Partia
       const inj = iv.inject as { x: number; y: number; amount: number } | undefined, label = `t${iv.tick} ${iv.op}${iv.target ? ' ' + String(iv.target) : ''}`;
       if (inj) P.push({ t: 'flag', id: 'interventions', x: inj.x + 0.5, y: inj.y + 0.5, text: `t${iv.tick} pulse ${inj.amount}`, ink: 'green' });
       else if (iv.op === 'ADDRESS' && typeof iv.x === 'number') P.push({ t: 'flag', id: 'interventions', x: (iv.x as number) + 0.5, y: (iv.y as number) + 0.5, text: `t${iv.tick} ${String(iv.address_mode)} → (${iv.x},${iv.y})`, ink: 'violet' });
-      else P.push({ t: 'text', id: 'interventions', x: 0.1, y: n, row: 6 + strip++, text: `${label}${iv.address_mode ? ' ' + String(iv.address_mode) : ''} → ${affected(iv)}`, ink: iv.tick === t ? 'cut' : 'ink', align: 'left' });
+      else P.push({ t: 'text', id: 'interventions', x: 0.1, y: n, row: 10 + strip++, text: `${label}${iv.address_mode ? ' ' + String(iv.address_mode) : ''} → ${affected(iv)}`, ink: iv.tick === t ? 'cut' : 'ink', align: 'left' });
     }
   }
   return { n, prims: P, summary: { tick: String(t), operational: ins.operational, observed: String(ins.observed ?? 'full observation'), observability: String(ins.observability ?? 'full observation'), xenobody: ins.boundary.open.length ? `open: ${ins.boundary.open.join(', ')}` : 'closed' } };

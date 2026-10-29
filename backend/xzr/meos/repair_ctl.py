@@ -156,6 +156,12 @@ class RepairController:
         elif not self.plan_queue:
             self.done = True  # nothing left to try
             return
+        if not self.plan_queue:  # something was detected and no action is available: recorded, not hidden (the stress is outside the tested action space of this controller)
+            base = self._first or {"sensed": sensed, "firm": firm, "available": [], "rejected": []}
+            self.log.append({"tick": t, "kind": "decide", "attempt": 0, "detected": base["firm"], "sensed": base["sensed"], "available": [], "rejected": base["rejected"], "remaining_after": [], "selected": None, "actions": [], "class": None,
+                             "estimated_cost": None, "expected_recovery": None, "actual": {"tick": t, "recovered_so_far": False, "status_now": status}, "note": "no action available for what was detected"})
+            self.done = True
+            return
         plan = self.plan_queue.pop(0)
         self.tried.add(plan["id"])
         base = self._first or {"sensed": sensed, "firm": firm, "available": [], "rejected": []}

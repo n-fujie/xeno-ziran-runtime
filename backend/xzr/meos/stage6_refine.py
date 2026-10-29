@@ -87,7 +87,10 @@ def window(stress_id: str, parts: list[tuple[str, float, int]], ticks: tuple[int
             "ticks_tested": [ticks[0], ticks[-1]], "per_tick": {str(t): {"exploration": c["exploration"], "validation": c["validation"], "outcomes_long": c["outcomes_long"]} for t, c in cells.items()}}
 
 
-def pulse_sweep(stress_id: str, t: int = R.T_ACT, magnitudes: tuple[float, ...] = tuple(round(0.1 * i, 1) for i in range(1, 61))) -> dict:
+PULSE_MAGNITUDES: tuple[float, ...] = tuple(round(0.1 * k, 1) for k in range(1, 61))
+
+
+def pulse_sweep(stress_id: str, t: int = R.T_ACT, magnitudes: tuple[float, ...] = PULSE_MAGNITUDES) -> dict:
     """B2: classify every pulse magnitude at tick ``t``: insufficient / effective / overshoot / delayed secondary collapse."""
     g = grid(stress_id, lambda m: [("resource.pulse", m, 0)], (t,), magnitudes)
     rows = []
@@ -102,10 +105,12 @@ def pulse_sweep(stress_id: str, t: int = R.T_ACT, magnitudes: tuple[float, ...] 
     for r in rows:
         if r["effective"]:
             r["phase"] = "effective recovery"
+        elif hi is None:  # no magnitude of the sweep is effective on this stress at this tick
+            r["phase"] = "transient recovery, then secondary collapse" if r["secondary_collapse_runs"] else "no effect (no magnitude of the sweep recovers)"
         elif r["secondary_collapse_runs"]:
-            r["phase"] = "delayed secondary collapse" if (r["median_active_stretch_before_secondary"] or 0) >= 60 else "overshoot" if hi is not None and r["magnitude"] > hi else "secondary collapse (below the effective band)" if hi is not None else "secondary collapse"
+            r["phase"] = "delayed secondary collapse" if (r["median_active_stretch_before_secondary"] or 0) >= 60 else "overshoot" if r["magnitude"] > hi else "secondary collapse (below the effective band)"
         else:
-            r["phase"] = "insufficient intervention" if hi is None or r["magnitude"] < lo else "overshoot (no recovery)"
+            r["phase"] = "insufficient intervention" if r["magnitude"] < lo else "overshoot (no recovery)"
     return {"stress": stress_id, "tick": t, "effective_band": [lo, hi], "effective_magnitudes": eff_m, "rows": rows}
 
 
@@ -127,3 +132,11 @@ def stage5_consistency(seeds: tuple[int, ...] = R.SEARCH_SEEDS + R.VALIDATION_SE
     return {"stress": "history lost", "action": "internal.m2_tap", "tick": R.T_ACT, "same_in_both": {"stress_onset": 100, "action_tick": 113, "m2_spec": {"sense": "direct", "weight": 4.0}, "engine": "meos-0.4", "dormant tap installed at tick 0 (ROUTE m2 none)": True},
             "differs": {"horizon": "stage 5: 300; stage 6: 480 (short 180, medium 300, long 480)", "criterion": "stage 5: final status ACTIVE; stage 6: ACTIVE on the last 30 ticks, no secondary collapse, resource field not exhausted"},
             "by_seed_set": {name: {key: k(key, sel) for key in ("stage5_style_active_at_300", "stage5_style_active_at_end_of_480", "stage6_short", "stage6_medium", "stage6_long")} for name, sel in (("exploration 1-5", R.SEARCH_SEEDS), ("validation 6-10", R.VALIDATION_SEEDS), ("evaluation 11-30", R.EVAL_SEEDS))}}
+
+
+def cycle_period(seed: int = 1) -> dict:
+    """The period of the operational cycle of the undamaged run (for reading the timing windows: an effective tick depends on where in the cycle the action lands)."""
+    cyc = R.reference(seed)["cycles"]
+    ticks = [c["tick"] for c in cyc]
+    d = sorted(b - a for a, b in zip(ticks, ticks[1:], strict=False))
+    return {"seed": seed, "cycles": len(cyc), "horizon": R.HORIZON, "median_interval": d[len(d) // 2] if d else None, "min_interval": d[0] if d else None, "max_interval": d[-1] if d else None, "first_cycle_ticks": ticks[:6]}

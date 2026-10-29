@@ -21,6 +21,9 @@ from ..meos import engine as E
 from ..meos import experiments as X
 from ..meos import mfs5 as M5
 from ..meos import reconf as RC
+from ..meos import repair6 as R6
+from ..meos import repair_ctl as RCTL
+from ..meos import repair_events as RE
 from ..meos import routes5 as R5
 from ..meos import stage4 as S4
 from .studies import local_only
@@ -442,7 +445,7 @@ def route_topology(request: Request, body: dict[str, Any]) -> dict:
     """The route topology of a run (when each component was enabled or cut, the route changes, the transitions) with the library entries to read it against."""
     local_only(request)
     rec = _guard(E.run_record, _config(body), _ivs(body))
-    out = {"topology": R5.topology(rec), "summary": A.summarize(rec)}
+    out: dict[str, Any] = {"topology": R5.topology(rec), "summary": A.summarize(rec)}
     if STAGE5_FILE.exists():
         out["library"] = _library_entries(_stage5()["F"])
     return out
@@ -467,3 +470,99 @@ def reconfigure(request: Request, body: dict[str, Any]) -> dict:
     rec = _guard(RC.run_controlled, cfg, ivs, ctl)
     return {"record": rec, "summary": A.summarize(rec), "paths": S4.path_activity(rec), "controller": rec["controller"], "outcomes": RC.switch_outcomes(rec, X5.STRESS_TICK), "topology": R5.topology(rec),
             "replay_identical": E.replay(rec)["identical"]}
+
+
+# ---------------------------------------------------------------------------------------------------- stage 6: world-state repair
+S6_DIR = Path(os.environ.get("XZR_MEOS_STAGE6", Path(__file__).resolve().parents[3] / "docs" / "ecosystem"))
+_S6_CACHE: dict[str, Any] = {}
+
+
+def _s6(name: str) -> dict | None:
+    """A saved stage 6 result file (experiments_stage6.json, _refine, _controllers), or None when that experiment has not been run on this server."""
+    f = S6_DIR / f"experiments_stage6{name}.json"
+    if not f.exists():
+        return None
+    key = f"{f}:{f.stat().st_mtime_ns}"
+    if key not in _S6_CACHE:
+        _S6_CACHE.clear()
+        _S6_CACHE[key] = json.loads(f.read_text())
+    return _S6_CACHE[key]
+
+
+def _all_stresses() -> dict[str, tuple[R6.Stress, int]]:
+    from ..meos import stage6_controllers as C6
+
+    out = {sid: (st, R6.STRESS_TICK) for sid, st in R6.STRESSES.items()}
+    for sid, st, onset, _ in C6.unknown_stresses():
+        out[sid] = (st, onset)
+    return out
+
+
+_LIBRARY: dict[str, Any] = {}
+
+
+def _repair_library() -> list[dict]:
+    a = _s6("")
+    if a is None:
+        return []
+    if _LIBRARY.get("from") != id(a):
+        from ..meos import stage6_controllers as C6
+
+        _LIBRARY.update({"from": id(a), "lib": C6.build_library(a)[0]})
+    return _LIBRARY["lib"]
+
+
+@router.get("/repair-library")
+def repair_library(request: Request) -> dict:
+    """The repair action space (what each action is, whether the engine can do it, its declared cost model), the stresses (the six of the library and the held-out variations), and, where the experiments have been run, their results: repairability, timing windows, minimum
+    interventions, the resource sweeps, the controllers."""
+    local_only(request)
+    from ..meos import stage6_controllers as C6
+
+    a, b, c = _s6(""), _s6("_refine"), _s6("_controllers")
+    return {"actions": R6.action_table(), "stresses": {sid: {"family": st.family, "label": st.label, "onset": on} for sid, (st, on) in _all_stresses().items()}, "controllers": list(RCTL.KINDS), "failure_classes": list(C6.FAILURE_CLASSES),
+            "horizons": R6.HORIZONS, "recovery_window": R6.W, "decision_tick": R6.T_ACT, "stress_tick": R6.STRESS_TICK, "results": a, "refine": b, "controller_results": c, "has_results": a is not None}
+
+
+@router.post("/repair-run")
+def repair_run(request: Request, body: dict[str, Any]) -> dict:
+    """One repaired run: a stress (by id; ``no stress`` for none), repair actions at given ticks and/or a repair controller, a seed. Returns the record, its summary, the path activity, the evaluation at the three horizons with the costs, and the events of the repair (from the schedule, the
+    status record and the controller log). A controller's recorded schedule (the injected interventions included) replays the same run without it."""
+    local_only(request)
+    sid, seed, kind = body.get("stress", "history lost"), body.get("seed", 1), body.get("controller")
+    stresses = _all_stresses()
+    if (sid != "no stress" and sid not in stresses) or not isinstance(seed, int) or isinstance(seed, bool) or (kind is not None and kind not in RCTL.KINDS):
+        raise HTTPException(422, f"stress must be one of {list(stresses)} or 'no stress', seed an integer, controller one of {list(RCTL.KINDS)}")
+    acts = body.get("actions") or []
+    if not isinstance(acts, list) or len(acts) > 4:
+        raise HTTPException(422, "actions: a list of at most 4 {action, magnitude, duration, t}")
+    st, onset = (None, R6.STRESS_TICK) if sid == "no stress" else stresses[sid]
+    reps: list[dict] = []
+    norm: list[dict] = []
+    for a in acts:
+        aid = a.get("action")
+        if aid not in R6.ACTIONS or R6.ACTIONS[aid].status == "not implemented" or R6.ACTIONS[aid].klass == "C":
+            raise HTTPException(422, f"unknown or non-runnable action {aid!r}")
+        m, d, t = float(a.get("magnitude", 0.0)), int(a.get("duration", 0)), int(a.get("t", R6.T_ACT))
+        reps += R6.build_action(aid, st or R6.STRESSES["history lost"], m, t, d)
+        norm.append({"action": aid, "magnitude": m, "duration": d, "t": t})
+    ctl = None
+    if kind and kind != "none":
+        lib = _repair_library() if kind in ("cost_aware", "delayed", "noisy") else []
+        if kind in ("cost_aware", "delayed", "noisy") and not lib:
+            raise HTTPException(503, "the repair library needs experiments_stage6.json: run backend/scripts/meos_experiments_stage6.py")
+        ctl = RCTL.RepairController(kind, lib, seed=seed, noise=0.1)
+    base = R6.schedule(st, sorted(reps, key=lambda i: i["tick"]), onset)
+    cfg = R6.config(seed)
+    rec = _guard(RCTL.run_repaired, cfg, base, ctl)
+    injected = [i for i in rec["interventions"] if i not in base]
+    t_act = min([a["t"] for a in norm] + [onset + 13])
+    ev = R6.evaluate(rec, R6.reference(seed), [*reps, *injected], t_act)
+    b = _s6("_refine")
+    irr = None
+    if b and st:
+        eff_ticks = [t for w in b["B1_windows"] if w["stress"] == sid for t in w["effective_ticks"]]
+        irr = (max(eff_ticks) + 1) if eff_ticks else None
+    rep = RE.build(st, onset, norm, rec, ev, rec["controller"]["log"] if ctl else None, irr)
+    return {"record": rec, "summary": A.summarize(rec), "paths": S4.path_activity(rec), "topology": R5.topology(rec), "repair": rep, "replay_identical": E.replay(rec)["identical"]}
+

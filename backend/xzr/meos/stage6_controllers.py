@@ -110,7 +110,7 @@ def build_library(results: dict) -> tuple[list[dict], dict[str, dict]]:
 
 
 # ---------------------------------------------------------------------------------------------------- failure classes
-FAILURE_CLASSES = ("no effective action", "action too weak", "action too late", "overshoot", "action destabilized system", "insufficient resource", "Address unresolved", "detection failure", "action cost too high", "secondary collapse")
+FAILURE_CLASSES = ("no effective action", "action too weak", "action too late", "overshoot", "secondary collapse", "detection failure", "Address unresolved", "insufficient resource", "action cost too high", "action destabilized system", "outside tested action space")
 
 
 def failure_class(o: dict, ctx: dict) -> str | None:
@@ -120,7 +120,7 @@ def failure_class(o: dict, ctx: dict) -> str | None:
         c = o["costs"]
         return "action cost too high" if c["normalised"]["persistence_energy_rate"] > 1.5 or c["raw"]["collateral"] > 1.0 else None
     if ctx["attempts"] == 0:
-        return "detection failure"
+        return "outside tested action space" if any(e.get("selected") is None for e in ctx["log"]) else "detection failure"
     if long["resource_exhausted"]:
         return "insufficient resource"
     if long["secondary_collapse"]:
@@ -137,8 +137,7 @@ def failure_class(o: dict, ctx: dict) -> str | None:
 # ---------------------------------------------------------------------------------------------------- running controllers
 def _job(a: tuple) -> dict:
     sid, onset, kind, seed, library, latest = a
-    st = R.STRESSES.get(sid) or next(s for i, s, o, _ in unknown_stresses() if i == sid)
-    stress = None if sid == "no stress" else st
+    stress = None if sid == "no stress" else (R.STRESSES.get(sid) or next(s for i, s, o, _ in unknown_stresses() if i == sid))
     ctl = RCTL.RepairController(kind, library, seed=seed, noise=0.1)
     cfg = R.config(seed)
     base = R.schedule(stress, [], onset)
@@ -148,10 +147,10 @@ def _job(a: tuple) -> dict:
     o = R.evaluate(rec, R.reference(seed), injected, t_act)
     log = rec["controller"]["log"]
     first = next((e["tick"] for e in log), None)
-    ctx = {"attempts": rec["controller"]["attempts"], "log": log, "family": st.family if stress else "none", "first_action_tick": first, "latest_effective_tick": latest.get(sid, 0)}
+    ctx = {"attempts": rec["controller"]["attempts"], "log": log, "family": stress.family if stress else "none", "first_action_tick": first, "latest_effective_tick": latest.get(sid, 0)}
     h = o["horizons"]
     return {"stress": sid, "onset": onset, "controller": kind, "seed": seed, "ok": [h[k]["success"] for k in ("short", "medium", "long")], "outcome": [h[k]["outcome"] for k in ("short", "medium", "long")], "latency": h["long"]["latency"], "attempts": ctx["attempts"],
-            "injected": len(injected), "first_decision": first, "raw": o["costs"]["raw"], "norm": o["costs"]["normalised"], "failure": failure_class(o, ctx), "selected": [e["selected"] for e in log], "actual": [e["actual"]["recovered_so_far"] if e["actual"] else None for e in log]}
+            "injected": len(injected), "first_decision": first, "raw": o["costs"]["raw"], "norm": o["costs"]["normalised"], "failure": failure_class(o, ctx), "selected": [e["selected"] for e in log if e["selected"]], "actual": [e["actual"]["recovered_so_far"] if e["actual"] else None for e in log]}
 
 
 def run_controllers(library: list[dict], stresses: list[tuple[str, int]], kinds: tuple[str, ...] = KINDS, seeds: tuple[int, ...] = R.EVAL_SEEDS, latest: dict | None = None, processes: int | None = None) -> list[dict]:

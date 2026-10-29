@@ -185,3 +185,27 @@ export const mfsLibrary = async () => { const r = await fetch(`${API}/mfs-librar
 export const mfsRun = (mfsId: string, seed: number) => post<{ record: MeosRecord; summary: Summary; paths: PathActivity; topology: Topology; mfs: { id: string; condition_id: string; retained: string[]; removed: string[] } }>('/mfs-run', { mfs: mfsId, seed });
 export const routeTopology = (config: unknown, interventions: Intervention[]) => post<{ topology: Topology; summary: Summary; library?: LibraryMfs[] }>('/route-topology', { config, interventions });
 export const reconfigure = (body: { controller: string; scenario: string; seed?: number }) => post<ReconfigureOut>('/reconfigure', body);
+
+// ------------------------------------------------------------------------------------------------ sixth stage: world-state repair
+export interface RepairActionSpec { id: string; class: 'A' | 'B' | 'C'; family: string; label: string; status: 'implemented' | 'proxy' | 'not implemented'; magnitudes: number[]; magnitude_meaning: string; durations: number[]; latency: string; side_effect: string; reversibility: string; declared_cost: Record<string, string>; note: string }
+export interface RepairEvent { tick: number; kind: string; label: string; detail: string; source: string; family?: string; klass?: 'A' | 'B' | 'C'; action?: string; magnitude?: number; duration?: number; path?: string | null; expected_recovery?: number | null; estimated_cost?: number | null; attempt?: number; actual?: { tick: number; recovered_so_far: boolean; status_now: string } | null }
+export interface RepairHorizon { outcome: string; success: boolean; collapsed_after_action: boolean; secondary_collapse: boolean; stable_from: number | null; latency: number | null; resource_exhausted: boolean }
+export interface RepairBlock {
+  stress: string; label: string; family: string; onset: number; actions: Array<{ action: string; magnitude: number; duration: number; t: number }>; events: RepairEvent[];
+  evaluation: { horizons: Record<'short' | 'medium' | 'long', RepairHorizon>; costs: { raw: Record<string, number>; normalised: Record<string, number> }; final_status: string }; controller: { attempts: number; log: Array<Record<string, unknown>> };
+}
+export interface RepairRunOut { record: MeosRecord; summary: Summary; paths: PathActivity; topology: Topology; repair: RepairBlock; replay_identical: boolean }
+export interface StressRow {
+  stress: string; label: string; family: string; classification_at_decision_tick_113: string; classification_at_any_tested_tick: string; flags: string[];
+  internal_reconfiguration: { effective: boolean; windows: number[][] }; world_single: { effective: boolean; windows: number[][] }; combined: { effective: boolean; windows: number[][] };
+  minimum_effective: Array<{ action: string; magnitude: number; ticks: number[] | null }>; timing_window_fragments: number[][]; first_window: number[] | null; earliest_effective_tick: number | null; latest_successful_repair_tick: number | null; earliest_irreversible_tick: number | null;
+  irreversible_from_first_tested_tick: boolean; unrepaired_collapse_tick: number | null; window_closes_before_collapse: boolean; reference_repair: { parts: Array<[string, number, number]>; t: number; klass: string; normalised_cost_equal_weights: number; costs: Record<string, unknown>; evaluation: { k: number; n: number } | null } | null;
+  failure_reasons_in_the_tested_grid: Record<string, number>; near_miss: boolean;
+}
+export interface RepairLibraryOut {
+  actions: RepairActionSpec[]; stresses: Record<string, { family: string; label: string; onset: number }>; controllers: string[]; failure_classes: string[]; horizons: Record<'short' | 'medium' | 'long', number>; recovery_window: number; decision_tick: number; stress_tick: number;
+  has_results: boolean; results: Record<string, unknown> | null; refine: Record<string, unknown> | null; controller_results: Record<string, unknown> | null; final: { stress_table: StressRow[]; resource_non_monotonicity: Record<string, { effective_band: [number | null, number | null]; phases: Array<{ phase: string; from: number; to: number }> }> } | null;
+}
+export const repairLibrary = async () => { const r = await fetch(`${API}/repair-library`); if (!r.ok) throw new Error(`repair-library: ${r.status}`); return r.json() as Promise<RepairLibraryOut>; };
+export const repairRun = (body: { stress: string; seed?: number; controller?: string | null; actions?: Array<{ action: string; magnitude: number; duration: number; t: number }> }) => post<RepairRunOut>('/repair-run', body);
+

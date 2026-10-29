@@ -7,6 +7,7 @@ Writes docs/ecosystem/experiments_stage6_refine.json. See xzr/meos/stage6_refine
 from __future__ import annotations
 
 import json
+import sys
 import time
 from pathlib import Path
 
@@ -50,6 +51,13 @@ def settings_for_windows(a: dict) -> list[tuple[str, list[tuple[str, float, int]
 
 def main() -> None:
     t0 = time.time()
+    if "--b2-only" in sys.argv:  # recompute the pulse sweeps (and the cycle period) only, keeping the rest of the saved result
+        res = json.loads(OUT.read_text())
+        res["B2_pulse_sweeps"] = [RF.pulse_sweep(sid) for sid in R.STRESS_ORDER]
+        res["cycle_period"] = RF.cycle_period()
+        OUT.write_text(json.dumps(res, indent=0))
+        print("B2 recomputed in", round(time.time() - t0), "s")
+        return
     a = json.loads((DOCS / "experiments_stage6.json").read_text())
     res: dict = {"engine": E.ENGINE_VERSION, "protocol": RF.__doc__, "seeds": {"exploration": list(R.SEARCH_SEEDS), "validation": list(R.VALIDATION_SEEDS)}, "decision_tick": R.T_ACT, "stress_tick": R.STRESS_TICK}
     wins = []
@@ -77,6 +85,7 @@ def main() -> None:
     sweep("renewal restart + pulse", RENEW_STOP, lambda m: [("renewal.restart", 0.0, 0), ("resource.pulse", m, 0)], tuple(range(105, 155, 5)), tuple(round(0.25 * i, 2) for i in range(1, 13)))
     res["B3_minimum_intervention"] = b3
     res["B4_stage5_consistency"] = RF.stage5_consistency()
+    res["cycle_period"] = RF.cycle_period()
     res["seconds"] = round(time.time() - t0, 1)
     OUT.write_text(json.dumps(res, indent=0))
     print(f"wrote {OUT} in {res['seconds']} s")

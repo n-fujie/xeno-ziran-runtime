@@ -16,12 +16,10 @@ from __future__ import annotations
 import gzip
 import json
 import time
-from collections import defaultdict
 from pathlib import Path
 
 from xzr.meos import engine as E
 from xzr.meos import repair6 as R
-from xzr.meos import stage5_experiments as X5
 from xzr.meos import stage6_experiments as S6
 
 DOCS = Path(__file__).resolve().parents[2] / "docs" / "ecosystem"
@@ -67,7 +65,7 @@ def main() -> None:
     mins = S6.minimum_effective(table, validated)
     rep = {}
     for sid in R.STRESS_ORDER:
-        def has(klass: str, tick: int | None) -> bool:
+        def has(klass: str, tick: int | None, sid: str = sid) -> bool:
             return any(k[0] == sid and R.ACTIONS[k[1]].klass == klass and (tick is None or k[4] == tick) for k in validated)
         comb = {tick: any(k[0] == sid and (tick is None or k[2] == tick) for k in csyn) for tick in (None, R.T_ACT)}
         near = any(k[0] == sid for k in s_near | c_near)

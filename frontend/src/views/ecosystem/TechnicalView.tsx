@@ -6,6 +6,9 @@ import type { MeosRecord, Observation, Observed, PathActivity, PathId } from './
 import { deltaSnapshots, inspectAt, pathStatesAt, snapshotTicks, type Marker, type Snapshot, type SssRegion } from './research';
 import { ALL_MAP_LAYERS, DEFAULT_MAP_LAYERS, buildResearchMap, MAP_LAYERS, affected, type BodiesSpec, type MapLayer } from './researchMap';
 import { drawResearchMap } from './researchMapDraw';
+import type { RepairBlock } from './meosApi';
+import { repairStateAt } from './repair';
+import { drawRepairFigure } from './repairFigureDraw';
 import { routeGraph, topologyAt, type LibraryMfs, type Outcome, type RejectedCandidate, type Topology } from './routeGraph';
 import { drawRouteGraph, ROUTE_TOGGLES, type RouteToggle } from './routeGraphDraw';
 import { probeDimensions } from './probes';
@@ -19,7 +22,7 @@ const COLOR: Record<PartState, string> = { active: ACTIVE, idle: INK, inactive: 
 const LABELLED = ['node', 'probe', 'ring', 'cluster', 'optic', 'reservoir', 'archive', 'joint', 'module', 'sensor', 'chassis'];
 
 /** The research readings the sheet adds to the drawings (all computed from the record by the view): the observed state, the path activity, the event markers and the SSS region. */
-export interface SheetResearch { observed: Observed | null; paths: PathActivity | null; markers: Marker[]; sssRegion: SssRegion; compare: boolean; bodies: BodiesSpec | null; body: string; setBody: (b: string) => void; topology: Topology | null; library: LibraryMfs[]; rejected?: RejectedCandidate[]; outcomes: Outcome[] }
+export interface SheetResearch { observed: Observed | null; paths: PathActivity | null; markers: Marker[]; sssRegion: SssRegion; compare: boolean; bodies: BodiesSpec | null; body: string; setBody: (b: string) => void; topology: Topology | null; library: LibraryMfs[]; rejected?: RejectedCandidate[]; outcomes: Outcome[]; repair?: RepairBlock | null }
 // cable id -> the operational path it carries (the cable network of the non-central body, by what moves along it)
 const CABLE_PATH: Record<string, PathId> = { BCb: 'coupling', BCc: 'coupling', BCa: 'coupling', JB: 'coupling', JC: 'resource', AC: 'resource', AB: 'resource', AJ: 'resource', CRES: 'resource', ARCH: 'history_access', OBSV: 'observation', REC: 'recovery' };
 
@@ -30,7 +33,7 @@ export default function TechnicalView({ rec, tick, obs, observability, which, se
   const toggleLayer = (id: MapLayer) => setMapLayers((l) => { const n = new Set(l); if (n.has(id)) n.delete(id); else n.add(id); return n; });
   const [routeOn, setRouteOn] = useState<Set<RouteToggle>>(() => { const q = new URLSearchParams(location.search).get('routelayers'); return new Set((q ? q.split(',') : ROUTE_TOGGLES.map((x) => x.id)).filter((x) => ROUTE_TOGGLES.some((r) => r.id === x)) as RouteToggle[]); });  // ?routelayers=a,b limits the route toggles (the captures)
   const toggleRoute = (id: RouteToggle) => setRouteOn((l) => { const n = new Set(l); if (n.has(id)) n.delete(id); else n.add(id); return n; });
-  const routeCanvas = useRef<HTMLCanvasElement | null>(null), mapCanvas = useRef<HTMLCanvasElement | null>(null), compareCanvases = useRef<Array<HTMLCanvasElement | null>>([]);
+  const repairCanvas = useRef<HTMLCanvasElement | null>(null), routeCanvas = useRef<HTMLCanvasElement | null>(null), mapCanvas = useRef<HTMLCanvasElement | null>(null), compareCanvases = useRef<Array<HTMLCanvasElement | null>>([]);
   const body = useMemo<BodySet>(() => buildBodies('performance', null, () => 0), []);
   useEffect(() => () => body.dispose(), [body]);
   const region = research?.sssRegion ?? 'ACTIVE';
@@ -138,6 +141,8 @@ export default function TechnicalView({ rec, tick, obs, observability, which, se
     };
     draw(mapCanvas.current, tick, inspect, 760, 700);
     snapshots.forEach((sn, i) => draw(compareCanvases.current[i], sn.tick, sn.inspect, 500, 470));
+    const pc = repairCanvas.current, rstate = repairStateAt(research?.repair, tick);
+    if (pc && research?.repair && rstate) { pc.width = 1060 * dpr; pc.height = 300 * dpr; const g = pc.getContext('2d')!; g.scale(dpr, dpr); drawRepairFigure(g, research.repair, rstate, 1060, 300); }
     const rc = routeCanvas.current;
     if (rc && research?.topology) { rc.width = 1060 * dpr; rc.height = 440 * dpr; const g = rc.getContext('2d')!; g.scale(dpr, dpr); drawRouteGraph(g, routeGraph(research.topology, research.library, tick, research.rejected), 1060, 440, routeOn); }
     // the map depends on the record, the tick, the observation, the layers and the research readings
@@ -161,6 +166,8 @@ export default function TechnicalView({ rec, tick, obs, observability, which, se
         {research && <figure className="eco-sheet-wide" data-testid="eco-research-map"><div className="eco-map-row"><canvas ref={mapCanvas} style={{ width: 760, height: 700 }} aria-label="research map" />
           <dl className="eco-map-legend">{MAP_LAYERS.map((l) => <><dt key={l.id + 't'} className={mapLayers.has(l.id) ? 'on' : ''}>{l.label}</dt><dd key={l.id}>{l.what}</dd></>)}</dl></div>
           <figcaption>research map · plan of the arena at tick {tick} · MODEL RESULT: boundaries, paths, observation and interventions are read from the record · solid heavy = XenoBody boundary · dash-dot = Address Domain · dashed = observation boundary · path arrows: solid active, dotted quiet, red dashed cut</figcaption></figure>}
+        {research?.repair && <figure className="eco-sheet-wide" data-testid="eco-repair-figure"><canvas ref={repairCanvas} style={{ width: 1060, height: 300 }} aria-label="repair" />
+          <figcaption>repair at tick {tick} · MODEL RESULT, drawn from the events of this run (the stress, the repair actions with their ticks and magnitudes, the status record): a damaged path is red dotted and crossed, a world-state action violet, an internal reconfiguration blue, a temporary bypass green dash-dot, a repaired path green; the repair site is where the action acted and need not be the damaged path.</figcaption></figure>}
         {research?.topology && <figure className="eco-sheet-wide" data-testid="eco-route-topology"><div className="eco-map-row"><canvas ref={routeCanvas} style={{ width: 1060, height: 440 }} aria-label="route topology" />
           <div className="eco-map-legend"><b>Route topology · MODEL RESULT</b><div className="eco-layers">{ROUTE_TOGGLES.map((l) => <button key={l.id} title={l.what} className={routeOn.has(l.id) ? 'on' : ''} onClick={() => toggleRoute(l.id)}>{l.label}</button>)}</div>
             {routeState && <dl><dt>current MFS</dt><dd>{routeState.currentMfs}</dd><dt>enabled</dt><dd>{routeState.enabled.join(', ')}</dd><dt>dormant</dt><dd>{routeState.dormant.join(', ') || 'none'}</dd><dt>failed</dt><dd>{routeState.failed.join(', ') || 'none'}</dd><dt>alternative routes</dt><dd>{routeState.alternative.map((m) => m.id).join(', ') || 'none'} ({routeState.available.length} of {routeState.available.length + routeState.disabled.length} library MFS are open)</dd><dt>routes closed</dt><dd>{routeState.disabled.filter((d) => routeState.named.includes(d.mfs.id)).map((d) => `${d.mfs.id} (needs ${d.because.join(', ')})`).join('; ') || 'none'}</dd><dt>last transition</dt><dd>{routeState.lastTransition ? `t${routeState.lastTransition.tick}: ${routeState.lastTransition.from} → ${routeState.lastTransition.to}, trigger ${routeState.lastTransition.trigger.join(', ')}, cost ${routeState.lastTransition.cost}` : 'none'}</dd></dl>}</div></div>
