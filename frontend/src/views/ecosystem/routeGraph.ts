@@ -67,7 +67,7 @@ export function topologyOf(rec: RecWithController, universe: readonly string[] =
 
 export type PathRouteState = 'active' | 'dormant' | 'failed' | 'fallback' | 'adaptive' | 'absent';
 export interface RouteState {
-  tick: number; enabled: string[]; dormant: string[]; failed: string[]; paths: Record<string, PathRouteState>; currentMfs: string; alternative: LibraryMfs[]; available: LibraryMfs[]; disabled: Array<{ mfs: LibraryMfs; because: string[] }>;
+  tick: number; enabled: string[]; dormant: string[]; failed: string[]; paths: Record<string, PathRouteState>; currentMfs: string; alternative: LibraryMfs[]; available: LibraryMfs[]; disabled: Array<{ mfs: LibraryMfs; because: string[] }>; /** the ids this run is concerned with: the current MFS, those a controller considered or moved between, and the validated MFS of the current MFS's condition */ named: string[];
   lastTransition: Transition | null; lastEvent: RouteEvent | null; triggers: string[];
 }
 const enabledAt = (tl: Array<[number, boolean]>, t: number): boolean => { let v = tl[0][1]; for (const [k, s] of tl) if (k <= t) v = s; return v; };
@@ -92,11 +92,18 @@ export function topologyAt(topo: Topology, tick: number, library: LibraryMfs[] =
   for (const tr of topo.transitions) if (tr.tick <= t) lastTransition = tr;
   let lastEvent: RouteEvent | null = null;
   for (const e of topo.route_events) if (e.tick <= t) lastEvent = e;
-  const inside = library.filter((m) => m.retained.every((c) => enabled.includes(c)));
-  const currentMfs = lastTransition ? lastTransition.to : (topo.initial_mfs && topo.initial_mfs !== 'none' ? topo.initial_mfs : (inside.sort((a, b) => a.cardinality - b.cardinality || a.id.localeCompare(b.id))[0]?.id ?? 'none'));
+  const sameSet = (x: string[], y: string[]) => x.length === y.length && x.every((c) => y.includes(c));
+  const known = topo.initial_mfs && topo.initial_mfs !== 'none' ? topo.initial_mfs : null;
+  // the current MFS: the one the last transition moved to, else the one the run is known to be (a controller's first decision, or the MFS a deep link ran), else the library MFS whose retained
+  // components are exactly the enabled ones; a run that is none of these is not an MFS (the full arrangement contains every MFS, so containment says nothing)
+  const currentMfs = lastTransition ? lastTransition.to : (known ?? library.find((m) => sameSet(m.retained, enabled))?.id ?? 'none');
+  const cur = library.find((m) => m.id === currentMfs);
+  const ids = new Set<string>([currentMfs, ...topo.transitions.flatMap((x) => [x.from, x.to]), ...(cur ? library.filter((m) => m.condition_id === cur.condition_id).map((m) => m.id) : [])]);
+  for (const d of topo.decisions) { for (const k of ['chosen', 'current_mfs'] as const) if (typeof d[k] === 'string') ids.add(d[k] as string); for (const c of (d.candidates as Array<{ mfs: string }> | undefined) ?? []) ids.add(c.mfs); }
+  const named = [...ids].filter((id) => library.some((m) => m.id === id));
   const open = library.filter((m) => !m.retained.some((c) => failed.includes(c)));
   const closed = library.filter((m) => m.retained.some((c) => failed.includes(c))).map((m) => ({ mfs: m, because: m.retained.filter((c) => failed.includes(c)) }));
-  return { tick: t, enabled, dormant, failed, paths, currentMfs, alternative: open.filter((m) => m.id !== currentMfs), available: open, disabled: closed, lastTransition, lastEvent, triggers: lastTransition?.trigger ?? [] };
+  return { tick: t, enabled, dormant, failed, paths, currentMfs, alternative: open.filter((m) => named.includes(m.id) && m.id !== currentMfs), available: open, disabled: closed, named, lastTransition, lastEvent, triggers: lastTransition?.trigger ?? [] };
 }
 
 export type EdgeKind = 'path' | 'reconfiguration' | 'membership' | 'candidate';
@@ -116,7 +123,7 @@ export function routeGraph(topo: Topology, library: LibraryMfs[], tick: number, 
     for (let i = 0; i + 1 < known.length; i++) edges.push({ from: known[i], to: known[i + 1], kind: 'path', path: p, state: st.paths[p] });
     if (known.length === 1) edges.push({ from: known[0], to: known[0], kind: 'path', path: p, state: st.paths[p] });
   }
-  const named = new Set<string>([st.currentMfs, ...st.alternative.map((m) => m.id), ...topo.transitions.flatMap((t) => [t.from, t.to])]);
+  const named = new Set<string>([st.currentMfs, ...st.alternative.map((m) => m.id), ...st.disabled.map((d) => d.mfs.id).filter((id) => st.named.includes(id)), ...topo.transitions.flatMap((t) => [t.from, t.to])]);
   const mfsList = [...named].filter((id) => id !== 'none' && id !== 'fixed fallback');
   mfsList.forEach((id, i) => { const m = library.find((x) => x.id === id); nodes.push({ id, label: id, kind: 'mfs', state: id === st.currentMfs ? 'enabled' : m && m.retained.some((c) => st.failed.includes(c)) ? 'failed' : 'dormant', x: (i + 0.5) / mfsList.length, y: 0.16 }); });
   for (const tr of topo.transitions) if (tr.tick <= tick) edges.push({ from: tr.from, to: tr.to, kind: 'reconfiguration', state: 'transition', label: `t${tr.tick} cost ${tr.cost}` });

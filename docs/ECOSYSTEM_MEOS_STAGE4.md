@@ -550,3 +550,26 @@ The machine was less loaded than during Stage 4 but not idle (load average 3.0�
 **Result: no regression is established, and the question is not closed for the static median.** No interval lies wholly above 1.05. Five of the twelve measures are "no meaningful regression" (including the orbit 95th percentile of habitat and body, whose intervals lie wholly below 1.0: Stage 4's orbit tail is *better* than Stage 3's there, as the program-build fix predicts; overview's orbit tail is inconclusive),
 and seven are inconclusive: the static median of habitat (CI up to 1.074) and body (up to 1.126) cannot exclude a cost of 7–13 %. The Stage 4 statement "a cost of up to about 8–10 % is not excluded" stands for the static median; the earlier suspicion of a worse orbit 95th percentile is not supported (it was measured under a load of about 8).
 Acceptance status of Stage 4 performance: **inconclusive for the static median (no regression shown, a small one not excluded); no meaningful regression for the orbit tail.**
+
+## 19. Final acceptance of the performance question (14 paired repetitions, added at the end of Stage 5)
+
+Section 18 left the static median open with 8 repetitions. Stage 5 measured Stage 3 and Stage 4 again, interleaved with Stage 5, **6 more paired repetitions** (`docs/ecosystem/perf_stage5/paired/`). The pre-fixed rule of section 18 (lower CI bound > 1.05: regression; upper bound < 1.05: no meaningful regression; otherwise inconclusive) was applied to the **14 repetitions together** (`perf_paired_analysis.py --pool`).
+The load of the six new repetitions was 3.1-6.8 at the start of each run except two runs of repetition 1 (16-18); the pooled figures contain all 14.
+
+| camera | mode | measure | Stage 3 (ms) | Stage 4 (ms) | paired ratio S4/S3 | 95 % CI | verdict |
+|---|---|---|---|---|---|---|---|
+| body | static | median | 15.95 | 16.45 | 1.038 | [1.012, 1.085] | inconclusive |
+| body | static | p95 | 19.6 | 20.4 | 1.123 | [0.835, 1.343] | inconclusive |
+| body | orbit | median | 16.85 | 16.65 | 1.013 | [0.944, 1.058] | inconclusive |
+| body | orbit | p95 | 26.6 | 24.4 | 0.954 | [0.789, 1.146] | inconclusive |
+| habitat | static | median | 17.9 | 18.25 | 1.03 | [0.989, 1.077] | inconclusive |
+| habitat | static | p95 | 23.05 | 29.6 | 1.043 | [0.896, 1.465] | inconclusive |
+| habitat | orbit | median | 19.45 | 19.4 | 1.003 | [0.959, 1.022] | no meaningful regression |
+| habitat | orbit | p95 | 29.1 | 25.85 | 0.932 | [0.862, 0.996] | no meaningful regression |
+| overview | static | median | 15.35 | 15.75 | 1.007 | [0.986, 1.044] | no meaningful regression |
+| overview | static | p95 | 19.95 | 21.1 | 0.975 | [0.925, 1.14] | inconclusive |
+| overview | orbit | median | 16.75 | 17.7 | 1.018 | [0.982, 1.043] | no meaningful regression |
+| overview | orbit | p95 | 29.05 | 26.35 | 0.994 | [0.75, 1.107] | inconclusive |
+
+**Result: 0 regression, 4 no meaningful regression, 8 inconclusive.** No regression is established. The static median of body (1.038 [1.012, 1.085]) and habitat (1.030 [0.989, 1.077]) is *inconclusive*: a cost of up to about 8 % is not excluded, and for body the whole interval is above 1.0 (a small cost is probable). The orbit median of habitat and overview, and the orbit p95 of habitat, are *no meaningful regression* (the habitat orbit tail is better than Stage 3's: 0.932 [0.862, 0.996]).
+Acceptance status of Stage 4 performance: **no regression established; inconclusive (a small cost not excluded) for the static median of body and habitat; no meaningful regression for the orbit median and the habitat orbit tail.** The first 8 repetitions were measured at a load of 3.0-5.3, the last 6 as stated in section 20 of the Stage 5 document.

@@ -24,7 +24,7 @@ describe('the saved-results panel', () => {
   it('states the thesis, counts every class, and lists F1-F16-style rows with their classification', () => {
     const h = html({ mfs: 'MFS-F14-1' });
     expect(h).toContain('local to particular conditions'); expect(h).toContain('>NO_MFS 1<'); expect(h).toContain('>MULTIPLE_MFS 1<'); expect(h).toContain('>UNSTABLE_CANDIDATE 0<');
-    expect(h).toContain('condition F9'); expect(h).toContain('<b>NO_MFS</b>');
+    expect(h).toContain('condition F9'); expect(h).toContain('<b>NO_MFS</b>'); expect(h).toContain('data-testid="eco-f-compact"');
   });
   it('selects the MFS a deep link names and compares it with another, stating the saved equivalence', () => {
     const h = html({ mfs: 'MFS-F14-1' });
@@ -39,8 +39,9 @@ describe('the saved-results panel', () => {
   });
   it('draws the SSS map of the named MFS from tested points only, with the fixed statement', () => {
     const h = html({ sssmap: 'MFS-F14-1' });
-    expect(h).toContain('data-testid="eco-sss-map"'); expect(h).toContain('On the tested grid, all ACTIVE points were also observation-sensitive.'); expect(h).toContain('Blank cells were not tested.');
-    expect(h).toContain('title="COLLAPSED"'); expect(h).toContain('title="not tested"'.replace('not tested', 'OBSERVATION-SENSITIVE'));
+    expect(h).toContain('data-testid="eco-sss-map"'); expect(h).toContain('On the tested grid, all ACTIVE points were also observation-sensitive.'); expect(h).toContain('a dot is a point that was not tested');
+    expect(h).toContain('title="COLLAPSED"'); expect(h).toContain('title="OBSERVATION-SENSITIVE"');
+    expect(h).toContain('title="COLLAPSED"'); 
   });
   it('highlights the condition of an experiment link', () => {
     expect(html({ experiment: 'F9' })).toContain('data-focus="true"');

@@ -29,8 +29,16 @@ export function compareMfs(a: LibraryMfs, b: LibraryMfs): CompareRow[] {
     row('operational robustness', f2(A?.operational_robustness), f2(B?.operational_robustness)), row('addressability', f2(A?.addressability), f2(B?.addressability)), row('recoverability', f2(A?.recoverability), f2(B?.recoverability)),
   ];
 }
-/** The saved equivalence verdict for a pair of MFS, in either order; ``undefined`` when the pair was not compared (then the interface says so rather than inferring one). */
-export const equivalenceOf = (table: RouteEquivalenceRow[], x: string, y: string): RouteEquivalenceRow | undefined => table.find((r) => (r.a === x && r.b === y) || (r.a === y && r.b === x));
+/** The saved equivalence verdict for a pair of MFS, in either order; ``undefined`` when the pair was not compared (then the interface says so rather than inferring one). The saved table compares
+ * distinct retaining sets, each under the id of the first MFS that has it: given the library, an MFS is resolved to that first one (``via`` says so) before the table is read. */
+export function equivalenceOf(table: RouteEquivalenceRow[], x: string, y: string, library: LibraryMfs[] = []): (RouteEquivalenceRow & { via?: string }) | undefined {
+  const canon = (id: string) => { const m = library.find((l) => l.id === id); return m ? library.find((l) => l.retained.length === m.retained.length && l.retained.every((c) => m.retained.includes(c)))?.id ?? id : id; };
+  const cx = canon(x), cy = canon(y);
+  if (cx === cy) return undefined;  // the same retaining set: not two routes
+  const row = table.find((r) => (r.a === cx && r.b === cy) || (r.a === cy && r.b === cx));
+  if (!row) return undefined;
+  return cx !== x || cy !== y ? { ...row, via: `compared on ${cx !== x ? `${cx} (same components as ${x})` : x} and ${cy !== y ? `${cy} (same components as ${y})` : y}` } : row;
+}
 
 export type CandidateMark = 'validated MFS' | 'rejected candidate' | 'near miss';
 export interface CandidateRow { id: string; condition_id: string; retained: string[]; cardinality: number; mark: CandidateMark; search: string; validation: string; status: string }

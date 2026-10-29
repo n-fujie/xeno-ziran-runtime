@@ -1,0 +1,3 @@
+- Stage 4 strict nulls (collision on A1/A2, stale address) are unchanged in `experiments_stage4.json`; they are not overwritten by Stage 5.
+- Adaptive reconfiguration and the shedding variant: no effect against no reconfiguration (section 13/14).
+- The first complete run of F (3 search seeds) is kept as `experiments_stage5_first_full_run.json` with its F8 second set; it is superseded, not deleted.

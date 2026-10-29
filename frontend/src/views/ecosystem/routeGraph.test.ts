@@ -50,6 +50,24 @@ describe('the routes at a tick', () => {
   });
 });
 
+describe('which MFS a run is', () => {
+  const mk = (id: string, cond: string, retained: string[]): LibraryMfs => ({ id, condition_id: cond, condition: cond, features: {}, retained, removed: [], cardinality: retained.length, route_kind: '', retained_paths: [], lost_paths: [], digest: '' });
+  const lib = [mk('X-1', 'X', ['A2', 'feedback']), mk('X-2', 'X', ['A2', 'history']), mk('Y-1', 'Y', ['A2', 'resource_renewal'])];
+  const plain: Topology = { ...topo, universe: ['A2', 'history', 'feedback', 'resource_renewal'], component_timeline: { A2: [[0, true]], history: [[0, true]], feedback: [[0, true]], resource_renewal: [[0, true]] }, failure_intervals: [], failed_components: {}, route_events: [], transitions: [], decisions: [], initial_mfs: null, installed_m2_tap: false, controller: 'none', paths: {} };
+  it('is none for the full arrangement: it contains every MFS, which says nothing about which one it is', () => {
+    expect(topologyAt(plain, 0, lib).currentMfs).toBe('none');
+  });
+  it('is the MFS whose retained components are exactly the enabled ones', () => {
+    const cut: Topology = { ...plain, component_timeline: { ...plain.component_timeline, history: [[0, false]], resource_renewal: [[0, false]] } };
+    expect(topologyAt(cut, 0, lib).currentMfs).toBe('X-1');
+  });
+  it('is the MFS a run is known to be, and its alternatives are the validated MFS of its own condition (not the rest of the library)', () => {
+    const s = topologyAt({ ...plain, initial_mfs: 'X-1' }, 0, lib);
+    expect(s.currentMfs).toBe('X-1'); expect(s.alternative.map((m) => m.id)).toEqual(['X-2']); expect(s.named.sort()).toEqual(['X-1', 'X-2']);
+    expect(routeGraph({ ...plain, initial_mfs: 'X-1' }, lib, 0).nodes.filter((n) => n.kind === 'mfs').map((n) => n.id).sort()).toEqual(['X-1', 'X-2']);
+  });
+});
+
 describe('the route graph', () => {
   const g = routeGraph(topo, fx.library, 200);
   it('has a node for every component and an edge only where a path, a transition or a library membership says so', () => {

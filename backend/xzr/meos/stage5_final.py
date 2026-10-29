@@ -284,7 +284,7 @@ def finalize(doc: dict, preliminary: dict | None) -> dict:
         "class_counts": counts, "F_table": table, "candidates": cands,
         "F8_candidate_rejection": {"preliminary_3seed_sets": [{"id": m["id"], "retained": m["retained_components"], "route_kind": m["route_kind"]} for m in prelim_f8], "candidates_and_status": f8["candidates"],
                                    "statement": "The first search (seeds 1-3) reported two inclusion-minimal sets under F8. Under the search criterion of five seeds only one remains; the other did not persist in every search seed. F8 is therefore SINGLE_MFS, not MULTIPLE_MFS."},
-        "F9_no_mfs": {"statement": "Under the allowed reductions, the specified preservation criterion and these seeds, no validated inclusion-minimal retaining set was found. This does not say that no retaining set exists in general.",
+        "F9_no_mfs": {"statement": "Under the allowed reductions and specified preservation criterion, no validated inclusion-minimal retaining set was found. This is a result about these seeds (search 1-5) and these reductions only; it does not say that no retaining set exists in general.",
                       "persisting_subsets_in_search": f["by_condition"]["F9"]["persisting_subsets"], "subsets_evaluated": f["by_condition"]["F9"]["subsets_evaluated"], "candidates": cands["F9"]["candidates"], "classification": next(r["classification"] for r in table if r["condition_id"] == "F9")},
         "F14_comparison": f14_comparison(f, j, k),
         "history_role": [{"condition": r["condition_id"], "role": r["history_role"], "classification": r["classification"]} for r in table],

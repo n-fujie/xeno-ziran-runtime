@@ -39,8 +39,8 @@ export const MAP_LAYERS: Array<{ id: MapLayer; label: string; what: string }> = 
   { id: 'route.failed', label: 'failed route', what: 'paths with a removed or isolated component (red dotted, crossed)' },
   { id: 'route.fallback', label: 'fixed fallback route', what: 'paths the fixed M2 fallback switched on (green, double line)' },
   { id: 'route.adaptive', label: 'adaptive route', what: 'paths the adaptive controller switched on (violet, dash-dot)' },
-  { id: 'mfs.current', label: 'current MFS', what: 'the MFS the enabled components contain, or the one the last transition moved to' },
-  { id: 'mfs.alternative', label: 'alternative MFS (validated)', what: 'the validated library MFS whose components have not failed, other than the current one (dashed rule)' },
+  { id: 'mfs.current', label: 'current MFS', what: 'the MFS the run is known to be (a deep link, a controller decision), or whose retained components are exactly the enabled ones, or the one the last transition moved to; "none" when it is none of these' },
+  { id: 'mfs.alternative', label: 'alternative MFS (validated)', what: 'the validated MFS of the current MFS\'s condition, and those a controller considered, whose components have not failed (dashed rule)' },
   { id: 'mfs.rejected', label: 'rejected candidate', what: 'candidate retaining sets of this condition that failed the search criterion or validation (dotted rule); never an MFS' },
 ];
 export const ALL_MAP_LAYERS = new Set<MapLayer>(MAP_LAYERS.map((l) => l.id));
@@ -159,10 +159,10 @@ export function buildResearchMap(o: { rec: MeosRecord; tick: number; obs: Partia
       if (state === 'failed') P.push({ t: 'cross', id: layer, x: shifted[1][0], y: shifted[1][1], ink: 'cut' });
     }
     if (on('mfs.current')) P.push({ t: 'text', id: 'mfs.current', x: 0.1, y: n, row: 3, text: `━ current MFS ${rs.currentMfs}${rs.lastTransition ? ` (moved at tick ${rs.lastTransition.tick}, trigger ${rs.lastTransition.trigger.join(', ')}, cost ${rs.lastTransition.cost})` : ''}`, ink: 'active', align: 'left' });
-    if (on('mfs.alternative')) P.push({ t: 'text', id: 'mfs.alternative', x: 0.1, y: n, row: 4, text: `╌ alternative MFS (validated): ${rs.alternative.map((m) => m.id).join(', ') || 'none open'}${rs.disabled.length ? `; closed by a failure: ${rs.disabled.map((d) => d.mfs.id).join(', ')}` : ''}`, ink: 'mute', align: 'left' });
+    if (on('mfs.alternative')) P.push({ t: 'text', id: 'mfs.alternative', x: 0.1, y: n, row: 4, text: `╌ alternative MFS (validated): ${rs.alternative.map((m) => m.id).join(', ') || 'none open'}${rs.disabled.some((d) => rs.named.includes(d.mfs.id)) ? `; closed by a failure: ${rs.disabled.filter((d) => rs.named.includes(d.mfs.id)).map((d) => d.mfs.id).join(', ')}` : ''}`, ink: 'mute', align: 'left' });
   }
   if (o.route && on('mfs.rejected')) {
-    const conds = new Set([o.route.currentMfs, ...o.route.available.map((m) => m.id)].map((id) => o.route!.available.find((m) => m.id === id)?.condition_id ?? o.route!.disabled.find((d) => d.mfs.id === id)?.mfs.condition_id).filter(Boolean));
+    const conds = new Set(o.route.named.map((id) => o.route!.available.find((m) => m.id === id)?.condition_id ?? o.route!.disabled.find((d) => d.mfs.id === id)?.mfs.condition_id).filter(Boolean));
     const rej = (o.rejected ?? []).filter((c) => conds.has(c.condition_id));
     P.push({ t: 'text', id: 'mfs.rejected', x: 0.1, y: n, row: 5, text: `┈ rejected candidates (not MFS): ${rej.map((c) => `${c.condition_id} {${c.retained.length} components, ${c.persists_in_search_seeds}/${c.search_seeds.length} search, ${c.persists_in_validation_seeds}/${c.validation_seeds.length} validation}`).join('; ') || 'none for this condition'}`, ink: 'cut', align: 'left' });
   }

@@ -68,6 +68,22 @@ export const SHOTS = {
   '43-address-loss-map': 'tech=ncb&tick=120&preset=address-loss&horizon=360&maplayers=boundary.address,boundary.xenobody,path.coupling,path.observation,interventions&|eco-research-map',
   '44-address-recovery-map': 'tech=ncb&tick=185&preset=address-loss&horizon=360&maplayers=boundary.address,boundary.xenobody,path.coupling,path.observation,path.recovery,interventions&|eco-research-map',
   '42-compare-baseline-intervention-recovered': 'tech=ncb&compare=1&preset=recovery-demo&horizon=360&phil=revision&tick=165&&|eco-compare',
+  // fifth stage: the saved MFS library, the routes, the reconfiguration controllers (state restored from a deep link: deeplink.ts)
+  '45-f14-history-mfs': 'tech=ncb&mfs=MFS-F14-1&seed=1&tick=120&layer=route.active,route.dormant,mfs.current,mfs.alternative,path.history_access,path.coupling&|eco-research-map',
+  '46-f14-m2-mfs': 'tech=ncb&mfs=MFS-F14-2&seed=1&tick=120&layer=route.active,route.dormant,mfs.current,mfs.alternative,path.coupling&|eco-research-map',
+  '47-f9-no-mfs': 'tab=research&experiment=F9&tick=120&|eco-f-compact',
+  '48-adaptive-failure': 'tab=research&route=adaptive:renewal disabled&seed=1&tick=240&|eco-reconfiguration',
+  '49-fixed-fallback-success': 'tab=research&route=fixed:history lost&seed=1&tick=200&|eco-reconfiguration',
+  '50-sss-map-mfs-a': 'tab=research&sssmap=MFS-F14-1&tick=120&|eco-sss-map',
+  '51-sss-map-mfs-b': 'tab=research&sssmap=MFS-F14-2&tick=120&|eco-sss-map',
+  '52-observation-sensitive-active': 'tech=ncb&tick=120&obs=interval:3,stride:2&layer=boundary.observation,observation,path.observation&|eco-research-map',
+  '53-dynamic-address-attempt': 'tech=ncb&tick=130&address=reassign@100:A2:11,6&layer=boundary.address,interventions,path.coupling&|eco-research-map',
+  '54-route-topology': 'tech=ncb&mfs=MFS-F14-2&seed=1&tick=120&|eco-route-topology',
+  '55-mfs-comparison': 'tab=research&mfs=MFS-F14-1&tick=120&|eco-mfs-compare',
+  '56-replay-transition-inspection': 'tab=research&route=adaptive:renewal disabled&seed=1&tick=240&|.eco',
+  '57-technical-view-alternate-route': 'tech=ncb&route=fixed:history lost&seed=1&tick=200&layer=route.active,route.fallback,route.failed,route.dormant,mfs.current,mfs.alternative&|eco-research-map',
+  '58-rejected-candidate-route': 'tech=ncb&mfs=MFS-F8-1&seed=1&tick=120&layer=mfs.current,mfs.alternative,mfs.rejected,route.active&|eco-route-topology',
+  '59-current-alternative-mfs-map': 'tech=ncb&mfs=MFS-F14-1&seed=1&tick=120&layer=mfs.current,mfs.alternative,mfs.rejected,route.active,route.dormant&|eco-research-map',
 };
 
 // default: the machine's GPU through ANGLE/Metal (frame rates are then those of the GPU); --software forces SwiftShader (slow, a rasteriser on the CPU)

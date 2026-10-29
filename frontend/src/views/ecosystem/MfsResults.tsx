@@ -15,7 +15,7 @@ export default function MfsPanels({ lib, initial, seed, busy, onRun }: { lib: Li
   const pick = (id: string, fallback: number) => lib.mfs.find((m) => m.id === id) ?? lib.mfs[Math.min(fallback, lib.mfs.length - 1)];
   const A = pick(a, 0), S = pick(sssId, 0);
   const B = lib.mfs.find((m) => m.id === b) ?? lib.mfs.find((m) => m.condition_id === A.condition_id && m.id !== A.id) ?? pick('', 1);  // B starts as the other MFS of A's condition, when it has one
-  const counts = classCounts(lib.classification_table), eq = A && B && A.id !== B.id ? equivalenceOf(lib.route_equivalence, A.id, B.id) : undefined;
+  const counts = classCounts(lib.classification_table), eq = A && B && A.id !== B.id ? equivalenceOf(lib.route_equivalence, A.id, B.id, lib.mfs) : undefined;
   const grid = S?.sss_points?.length ? sssGrid(S.sss_points) : null;
   const focus = initial.experiment?.toUpperCase();
   return (
@@ -24,10 +24,15 @@ export default function MfsPanels({ lib, initial, seed, busy, onRun }: { lib: Li
       <div className="eco-row" data-testid="eco-class-counts">{CLASSES.map((k) => <span key={k} className="eco-chip">{`${k} ${counts[k]}`}</span>)}</div>
 
       <details open={!!focus}><summary className="dim">conditions F1-F16 · classification</summary>
-        <div style={{ overflowX: 'auto' }}><table className="eco-table" data-testid="eco-f-table"><thead><tr><th>id</th><th>condition</th><th>candidates</th><th>validated MFS</th><th>MFS</th><th>cardinality</th><th>history</th><th>M2</th><th>Address</th><th>coupling</th><th>resource</th><th>renewal</th><th>SSS region</th><th>obs. robustness</th><th>class</th></tr></thead>
+        <table className="eco-table" data-testid="eco-f-compact"><thead><tr><th>id</th><th>condition</th><th>cand.</th><th>MFS</th><th>history</th><th>class</th></tr></thead>
           <tbody>{lib.classification_table.map((r) => <tr key={r.condition_id} data-focus={focus === r.condition_id ? 'true' : undefined} style={focus === r.condition_id ? { outline: '2px solid #2f8fd0' } : undefined}>
+            <td>{r.condition_id}</td><td>{r.description}</td><td>{r.candidate_retaining_sets}</td><td>{r.validated_mfs}</td><td>{r.history_role}</td><td><b>{r.classification}</b></td></tr>)}</tbody></table>
+        <details><summary className="dim">all columns (roles, SSS region, observational robustness, MFS ids)</summary>
+        <div style={{ overflowX: 'auto', maxWidth: '100%' }}><table className="eco-table" data-testid="eco-f-table"><thead><tr><th>id</th><th>condition</th><th>candidates</th><th>validated MFS</th><th>MFS</th><th>cardinality</th><th>history</th><th>M2</th><th>Address</th><th>coupling</th><th>resource</th><th>renewal</th><th>SSS region</th><th>obs. robustness</th><th>class</th></tr></thead>
+          <tbody>{lib.classification_table.map((r) => <tr key={r.condition_id} data-fullfocus={focus === r.condition_id ? 'true' : undefined} style={focus === r.condition_id ? { outline: '2px solid #2f8fd0' } : undefined}>
             <td>{r.condition_id}</td><td>{r.description}</td><td>{r.candidate_retaining_sets}</td><td>{r.validated_mfs}</td><td>{r.mfs_ids.join(', ') || '—'}</td><td>{r.cardinality.join(', ') || '—'}</td><td>{r.history_role}</td><td>{r.m2_role}</td><td>{r.address_role}</td><td>{r.coupling_role}</td><td>{r.resource_role}</td><td>{r.renewal_role}</td>
             <td>{r.sss_region_default_setting.join(', ') || '—'}</td><td>{r.observational_robustness.map((v) => (v === null ? '—' : v.toFixed(2))).join(', ') || '—'}</td><td><b>{r.classification}</b></td></tr>)}</tbody></table></div>
+        </details>
         <div className="eco-note">search seeds {lib.classification_table[0]?.search_seeds.join(', ')} · validation seeds {lib.classification_table[0]?.validation_seeds.join(', ')}</div></details>
 
       <details><summary className="dim">candidates: validated MFS and rejected candidate sets</summary>
@@ -38,14 +43,15 @@ export default function MfsPanels({ lib, initial, seed, busy, onRun }: { lib: Li
       <details open={!!initial.mfs}><summary className="dim">compare two MFS</summary>
         <div className="eco-row"><label>A <select value={A.id} onChange={(e) => setA(e.target.value)}>{ids.map((i) => <option key={i}>{i}</option>)}</select></label><label>B <select value={B.id} onChange={(e) => setB(e.target.value)}>{ids.map((i) => <option key={i}>{i}</option>)}</select></label>
           <button disabled={busy} onClick={() => onRun(A.id)} title={`run the configuration of ${A.id} on seed ${seed}`}>RUN A</button><button disabled={busy} onClick={() => onRun(B.id)}>RUN B</button></div>
-        {<table className="eco-table" data-testid="eco-mfs-compare"><thead><tr><th>measure</th><th>{A.id}</th><th>{B.id}</th></tr></thead><tbody>{compareMfs(A, B).map((r) => <tr key={r.measure} className={r.differs ? 'diff' : ''}><td>{r.measure}</td><td>{r.a}</td><td>{r.b}</td></tr>)}</tbody></table>}
-        {A.id !== B.id && <div className="eco-note" data-testid="eco-equivalence">{eq ? <><b>{eq.class}</b>: {eq.verdict}</> : 'This pair was not compared in the saved results: no equivalence is stated.'}</div>}</details>
+        <table className="eco-table" data-testid="eco-mfs-compare"><thead><tr><th>measure</th><th>{A.id}</th><th>{B.id}</th></tr></thead><tbody>{compareMfs(A, B).map((r) => <tr key={r.measure} className={r.differs ? 'diff' : ''}><td>{r.measure}</td><td>{r.a}</td><td>{r.b}</td></tr>)}</tbody></table>
+        {A.id !== B.id && <div className="eco-note" data-testid="eco-equivalence">{eq ? <><b>{eq.class}</b>: {eq.verdict}{eq.via ? ` (${eq.via})` : ''}</> : 'This pair was not compared in the saved results: no equivalence is stated.'}</div>}</details>
 
       <details open={!!initial.sssmap}><summary className="dim">SSS map of an MFS</summary>
         <div className="eco-row"><label>MFS <select value={S.id} onChange={(e) => setSssId(e.target.value)}>{ids.map((i) => <option key={i}>{i}</option>)}</select></label></div>
-        {grid ? <div data-testid="eco-sss-map">{grid.speeds.map((sp) => <div key={sp}><div className="dim">speed {sp}</div><table className="eco-table"><thead><tr><th>size \ scale</th>{grid.scales.map((x) => <th key={x}>{x}</th>)}</tr></thead>
-          <tbody>{grid.sizes.map((sz) => <tr key={sz}><td>{sz}</td>{grid.scales.map((x) => { const r = sssAt(grid, x, sz, sp); return <td key={x} title={r ?? 'not tested'} style={{ background: r ? REGION_COLOR[r] ?? '#999' : 'transparent', color: r ? '#111' : undefined }}>{r ? r.slice(0, 3) : '·'}</td>; })}</tr>)}</tbody></table></div>)}
-          <div className="eco-note">{sssStatement(S.sss_points ?? [])} Blank cells were not tested.</div></div> : <div className="eco-note">No SSS points are saved for {S.id}.</div>}</details>
+        {grid ? <div data-testid="eco-sss-map"><div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>{grid.speeds.map((sp) => { const g = sssGrid((S.sss_points ?? []).filter((p) => p.speed === sp)); return <div key={sp}><div className="dim">speed {sp}</div><table className="eco-table"><thead><tr><th>size \ scale</th>{g.scales.map((x) => <th key={x}>{x}</th>)}</tr></thead>
+          <tbody>{g.sizes.map((sz) => <tr key={sz}><td>{sz}</td>{g.scales.map((x) => { const r = sssAt(g, x, sz, sp); return <td key={x} title={r ?? 'not tested'} style={{ background: r ? REGION_COLOR[r] ?? '#999' : 'transparent', color: r ? '#111' : undefined }}>{r ? r.slice(0, 3) : '·'}</td>; })}</tr>)}</tbody></table></div>; })}</div>
+          <div className="eco-note">{sssStatement(S.sss_points ?? [])} Each table lists only the scales and sizes tested at its speed; a dot is a point that was not tested. OBS = OBSERVATION-SENSITIVE, COL = COLLAPSED.</div></div> : <div className="eco-note">No SSS points are saved for {S.id}.</div>}
+      </details>
     </fieldset>
   );
 }

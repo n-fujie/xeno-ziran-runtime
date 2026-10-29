@@ -19,7 +19,7 @@ export interface ResearchCtx {
   sssClass: SssClassOut | null; sssRegion: string; compare: boolean; setCompare: (b: boolean) => void; busy: string | null; wrap: (name: string, fn: () => Promise<void>) => Promise<void>;
   setTab: (t: 'technical') => void; openMarker: Marker | null; setOpenMarker: (m: Marker | null) => void;
   library: LibraryMfs[]; routeState: RouteState | null; outcomes: Outcome[]; runControlled: (controller: string, scenario: string) => Promise<void>;
-  libraryOut: LibraryOut | null; initialMfs: MfsInitial; runMfs: (id: string) => Promise<void>;
+  libraryOut: LibraryOut | null; initialMfs: MfsInitial; runMfs: (id: string) => Promise<void>; initialRoute?: { controller: string; scenario: string };
 }
 
 const REGIONS: Array<[string, number[] | null]> = [['whole arena', null], ['left half', [0, 0, 6, 13]], ['right half', [7, 0, 13, 13]], ['centre', [3, 3, 10, 10]], ['around A1 and A2', [2, 4, 6, 8]], ['A1 cell only', [3, 6, 3, 6]], ['away from both', [8, 8, 12, 12]], ['corner', [0, 0, 3, 3]]];
@@ -34,7 +34,7 @@ export default function ResearchPane(c: ResearchCtx) {
   const [am, setAm] = useState({ mode: 'loss', target: 'A2', x: 9, y: 6, fraction: 0.5, delay: 20, duration: 40, restoreAfter: 40 }), [adr, setAdr] = useState<AddressInterventionOut | null>(null);
   const [sss, setSss] = useState({ scale: 1, size: 1, speed: 1 }), [pulse, setPulse] = useState(2), [renew, setRenew] = useState(0.8);
   const [snap, setSnap] = useState<'baseline' | 'intervention' | 'recovered'>('baseline');
-  const [ctlKind, setCtlKind] = useState('adaptive'), [scen, setScen] = useState('coupling weakened (gain 0.5)');
+  const [ctlKind, setCtlKind] = useState(c.initialRoute?.controller ?? 'adaptive'), [scen, setScen] = useState(c.initialRoute?.scenario ?? 'coupling weakened (gain 0.5)');  // a deep link names them
   const tk = useMemo(() => (rec ? snapshotTicks(rec) : null), [rec]);
   const disabled = !rec || !!c.busy;
   const at = Math.min(c.tick, (rec?.frames.length ?? 1) - 1);
@@ -133,7 +133,7 @@ export default function ResearchPane(c: ResearchCtx) {
           weight {num(conn.m2w, (m2w) => setConn({ ...conn, m2w }), 0.25, 0.25, 4)}{conn.m2 === 'threshold' && <>threshold {num(conn.m2t, (m2t) => setConn({ ...conn, m2t }), 0.05, 0, 2)}</>}</div>
       </fieldset>
 
-      <fieldset className="eco-group"><legend>reconfiguration (fifth stage)</legend>
+      <fieldset className="eco-group" data-testid="eco-reconfiguration"><legend>reconfiguration (fifth stage)</legend>
         <div className="eco-row"><label>scenario <select value={scen} onChange={(e) => setScen(e.target.value)}>{SCENARIO_NAMES.map((x) => <option key={x}>{x}</option>)}</select></label>
           <label>controller <select value={ctlKind} onChange={(e) => setCtlKind(e.target.value)}>{['none', 'fixed', 'adaptive', 'adaptive_shed', 'delayed', 'noisy'].map((x) => <option key={x}>{x}</option>)}</select></label>
           <button disabled={!c.library.length || !!c.busy} onClick={() => void c.wrap('controlled run', () => c.runControlled(ctlKind, scen))} title="a stress at tick 100 on an arrangement with the M2 tap installed and dormant; the controller senses, matches the saved MFS library and moves between known MFS">RUN</button></div>
@@ -152,7 +152,7 @@ export default function ResearchPane(c: ResearchCtx) {
             <dt>energy</dt><dd>A1 {ins.energy.a1.toFixed(2)} · power {ins.energy.power.toFixed(2)}</dd><dt>resource</dt><dd>total {ins.resource.total.toFixed(1)} · flow {ins.resource.flow.toFixed(3)}</dd>
             <dt>history</dt><dd>{ins.history.enabled ? 'on' : 'off'} · trace A1 {ins.history.trace.A1.toFixed(2)} A2 {ins.history.trace.A2.toFixed(2)}</dd><dt>paths</dt><dd>{Object.entries(ins.paths).map(([k, v]) => `${k} ${v}`).join(' · ')}</dd>
             <dt>M2</dt><dd>{ins.m2.sense === 'none' ? 'not connected' : `${ins.m2.sense}; A1 senses ${ins.m2.sensed?.toFixed(3)}`}</dd>
-            {ins.route && <><dt>current MFS</dt><dd>{ins.route.currentMfs}</dd><dt>active route</dt><dd>{Object.entries(ins.route.paths).filter(([, v]) => v === 'active' || v === 'fallback').map(([k, v]) => `${k}${v === 'fallback' ? ' (fallback)' : ''}`).join(', ')}</dd><dt>available routes</dt><dd>{ins.route.available.map((m) => m.id).join(', ') || 'none'}</dd><dt>disabled routes</dt><dd>{ins.route.disabled.map((d) => `${d.mfs.id} (needs ${d.because.join(', ')})`).join('; ') || 'none'}</dd>
+            {ins.route && <><dt>current MFS</dt><dd>{ins.route.currentMfs}</dd><dt>active route</dt><dd>{Object.entries(ins.route.paths).filter(([, v]) => v === 'active' || v === 'fallback').map(([k, v]) => `${k}${v === 'fallback' ? ' (fallback)' : ''}`).join(', ')}</dd><dt>alternative routes</dt><dd>{ins.route.alternative.map((m) => m.id).join(', ') || 'none'} ({ins.route.available.length} of {ins.route.available.length + ins.route.disabled.length} library MFS are open)</dd><dt>closed routes</dt><dd>{ins.route.disabled.filter((d) => ins.route!.named.includes(d.mfs.id)).map((d) => `${d.mfs.id} (needs ${d.because.join(', ')})`).join('; ') || 'none of the routes named above'}</dd>
               <dt>transition</dt><dd>{ins.route.lastTransition ? `t${ins.route.lastTransition.tick}: ${ins.route.lastTransition.from} → ${ins.route.lastTransition.to}; cost ${ins.route.lastTransition.cost}; trigger ${ins.route.lastTransition.trigger.join(', ')}` : 'none'}</dd></>}</dl> : <div className="eco-note">no record</div>}</div>
         <div className="vr"><h4>VISUAL REPRESENTATION · the pose</h4>
           <div className="eco-note">The bodies are drawn from the state on the left by fixed rules (bodyState.ts, mechanics.ts): lamps and probes follow the run; SSS scale preloads the observer's boom, size sets the probe ring's posture, speed sets the coupling's tension and the reservoir regulation; the SSS region leaves the archive latch ajar; the M2 tap is node B's probe B2. A pose is a presentation. It cannot show anything the left panel does not already say.</div></div>

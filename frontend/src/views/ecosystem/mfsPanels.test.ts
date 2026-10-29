@@ -21,6 +21,13 @@ describe('MFS comparison', () => {
     expect(equivalenceOf(tbl, 'MFS-F14-2', 'MFS-F14-1')?.class).toBe('non-equivalent');
     expect(equivalenceOf(tbl, 'MFS-F14-1', 'MFS-F1-1')).toBeUndefined();
   });
+  it('resolves an MFS to the first MFS with the same components, and says so; two MFS with the same components are not a pair', () => {
+    const twin: LibraryMfs = { ...A, id: 'MFS-F8-1', condition_id: 'F8' };  // same components as MFS-F14-1, listed first
+    const tbl: RouteEquivalenceRow[] = [{ a: 'MFS-F8-1', b: 'MFS-F14-2', level: 3, class: 'non-equivalent', verdict: 'differs in history dependence', differences: [] }];
+    const r = equivalenceOf(tbl, 'MFS-F14-1', 'MFS-F14-2', [twin, A, B]);
+    expect(r?.class).toBe('non-equivalent'); expect(r?.via).toContain('same components as MFS-F14-1');
+    expect(equivalenceOf(tbl, 'MFS-F14-1', 'MFS-F8-1', [twin, A, B])).toBeUndefined();
+  });
 });
 
 describe('candidates versus validated MFS', () => {

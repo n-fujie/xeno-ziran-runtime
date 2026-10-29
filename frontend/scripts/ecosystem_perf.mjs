@@ -16,9 +16,12 @@ const { chromium } = require('playwright');
 const browser = await chromium.launch({ executablePath: process.env.CHROME, args: software ? ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--enable-webgl'] : ['--use-angle=metal', '--ignore-gpu-blocklist', '--enable-gpu', '--enable-webgl'] });
 const stat = (ms) => { const s = [...ms].sort((a, b) => a - b), q = (f) => s[Math.min(s.length - 1, Math.floor(s.length * f))]; return { median: +q(0.5).toFixed(2), p95: +q(0.95).toFixed(2), p99: +q(0.99).toFixed(2), mean: +(ms.reduce((a, b) => a + b, 0) / ms.length).toFixed(2), max: +s[s.length - 1].toFixed(2), fps_from_median: +(1000 / q(0.5)).toFixed(1) }; };
 const result = { measured_with: software ? 'headless Chromium, SwiftShader' : 'headless Chromium, ANGLE Metal', viewport: [width, height], frames, rows: [] };
-for (const tier of tiers) for (const cam of cams) {
+// a camera token may carry a research UI to hold open while the stage is measured: ``habitat+research`` (the RESEARCH tab) or ``habitat+technical`` (the technical sheet with the research map and the route topology);
+// the page then keeps its chrome (the panels are part of the cost). The Stage 3 build has neither, so there the same token measures the stage alone.
+for (const tier of tiers) for (const token of cams) {
+  const [cam, ui] = token.split('+');
   const page = await browser.newPage({ viewport: { width, height } });
-  await page.goto(`${base}/?view=ecosystem&cam=${cam}&layers=physical,meos&tick=120&quality=${tier}&chrome=0&capture=1&labels=0`, { waitUntil: 'load' });
+  await page.goto(`${base}/?view=ecosystem&cam=${cam}&layers=physical,meos&tick=120&quality=${tier}${ui === 'research' ? '&tab=research&obs=interval:3' : ui === 'technical' ? '&tech=ncb&layer=route.active,route.dormant,mfs.current,mfs.alternative' : '&chrome=0'}&capture=1&labels=0`, { waitUntil: 'load' });
   await page.waitForFunction(() => document.querySelector('.eco-stage')?.getAttribute('data-settled') === '1' && window.__meos?.ready?.(), null, { timeout: 120000 });
   await page.waitForTimeout(2500);
   await page.evaluate(() => window.__meos.benchmark(30));  // warm-up: shader compilation, first uploads
@@ -29,7 +32,7 @@ for (const tier of tiers) for (const cam of cams) {
   // the fifth-stage additions: for the orbit, how many shader programs the renderer built, how many geometries were uploaded and how many LOD levels / visibilities flipped (from the benchmark
   // hook's per-frame series; the Stage 3 build has no such hook, so for it these are null)
   const series = async () => page.evaluate((n) => { const r = window.__meos.benchmark(n, true, true); const s = r.series; return s ? { programs_built: (r.programsBuilt ?? []).length, geometry_uploads: Math.max(0, Math.max(...s.geometries) - Math.min(...s.geometries)), lod_switches: s.lodSwitches.reduce((a, b) => a + b, 0), visibility_flips: s.visibilityFlips.reduce((a, b) => a + b, 0) } : null; }, frames);
-  const row = { tier, camera: cam, camera_spec: await page.evaluate(() => window.__meos.camera()), instances: await page.evaluate(() => window.__meos.stats().instances), full: await run('full (static camera)'), orbiting: await run('full (camera orbiting: the reflection refreshes every 2nd frame)', true) };
+  const row = { tier, camera: token, ui: ui ?? null, camera_spec: await page.evaluate(() => window.__meos.camera()), instances: await page.evaluate(() => window.__meos.stats().instances), full: await run('full (static camera)'), orbiting: await run('full (camera orbiting: the reflection refreshes every 2nd frame)', true) };
   row.orbit_series = await series();
   if (ablate) {
     row.ablation = {};
@@ -40,7 +43,7 @@ for (const tier of tiers) for (const cam of cams) {
     }
   }
   result.rows.push(row);
-  console.log(tier, cam, 'static', JSON.stringify({ m: row.full.median, p95: row.full.p95, calls: row.full.drawCalls, tris: row.full.triangles }), 'orbit', JSON.stringify({ m: row.orbiting.median, p95: row.orbiting.p95 }));
+  console.log(tier, token, 'static', JSON.stringify({ m: row.full.median, p95: row.full.p95, calls: row.full.drawCalls, tris: row.full.triangles }), 'orbit', JSON.stringify({ m: row.orbiting.median, p95: row.orbiting.p95 }));
   await page.close();
 }
 writeFileSync(out, JSON.stringify(result, null, 1));
