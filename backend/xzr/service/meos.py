@@ -391,13 +391,50 @@ def _library_entries(f: dict) -> list[dict]:
 
 @router.get("/mfs-library")
 def mfs_library(request: Request) -> dict:
-    """The MFS found by experiment F (saved), the conditions they were found under, and the scenarios of experiment I."""
+    """The MFS found by experiment F (saved) with, for each, its profile, its SSS points and its robustness scores; the candidate sets that were rejected or are near misses; the final table of
+    conditions F1-F16; the scenarios and controllers of experiment I."""
     local_only(request)
     ex = _stage5()
-    f = ex["F"]
+    f, j, k = ex["F"], ex.get("J", {"rows": [], "points": []}), ex.get("K", {"rows": []})
     from ..meos import stage5_experiments as X5
 
-    return {"mfs": _library_entries(f), "conditions": [r["condition"] for r in f["by_condition"].values()], "scenarios": list(X5.SCENARIOS), "controllers": list(X5.CONTROLLERS), "levels": f.get("levels", [])}
+    final = json.loads(STAGE5_FILE.read_text()).get("final", {})
+    pts: dict[str, list[dict]] = {}
+    for p in j.get("points", []):
+        pts.setdefault(p["mfs"], []).append({"scale": p["scale"], "size": p["size"], "speed": p["speed"], "region": p["region"]})
+    jr = {r["mfs"]: r for r in j.get("rows", [])}
+    kr = {r["mfs"]: r for r in k.get("rows", [])}
+    entries = _library_entries(f)
+    for m in entries:
+        pr = f.get("profiles", {}).get(m["id"], {})
+        sens = pr.get("perturbation_sensitivity") or {}
+        m["card"] = {
+            "preserved_operation": pr.get("preserved_operation"), "energy_use": pr.get("energy_use"), "resource_throughput": pr.get("resource_throughput"), "recovery_latency": pr.get("recovery_latency"),
+            "perturbation_collapse_share": (sum(sens.values()) / len(sens)) if sens else None, "history_dependence": pr.get("history_dependence"), "address_dependence": pr.get("address_dependence"),
+            "observational_robustness": pr.get("observational_robustness"), "sss_region": pr.get("sss_region"), "ranges_along_axes": jr.get(m["id"], {}).get("ranges_along_axes"),
+            "operational_robustness": kr.get(m["id"], {}).get("operational_robustness"), "addressability": kr.get(m["id"], {}).get("addressability"), "recoverability": kr.get(m["id"], {}).get("recoverability"),
+        }
+        m["sss_points"] = pts.get(m["id"], [])
+    rejected = [{"condition_id": cid, **c} for cid, v in final.get("candidates", {}).items() for c in [*v["rejected"], *v["near_misses"]]]
+    return {"mfs": entries, "rejected_candidates": rejected, "conditions": [r["condition"] for r in f["by_condition"].values()], "classification_table": final.get("F_table", []), "scenarios": list(X5.SCENARIOS),
+            "controllers": list(X5.CONTROLLERS), "levels": f.get("levels", []), "route_equivalence": final.get("route_equivalence", [])}
+
+
+@router.post("/mfs-run")
+def mfs_run(request: Request, body: dict[str, Any]) -> dict:
+    """Run the configuration of one saved MFS (its condition, with only its retained components in place) on a seed: the record, its summary, the path activity and the route topology."""
+    local_only(request)
+    mid, seed = body.get("mfs"), body.get("seed", 1)
+    if not isinstance(mid, str) or not isinstance(seed, int) or isinstance(seed, bool):
+        raise HTTPException(422, "mfs must be an MFS id and seed an integer")
+    ex = _stage5()
+    found = next(((cid, m) for cid, r in ex["F"]["by_condition"].items() for m in r["mfs"] if m["id"] == mid), None)
+    if found is None:
+        raise HTTPException(404, f"unknown MFS {mid}")
+    cond = next(c for c in M5.conditions_f() if c["id"] == found[0])
+    rec = _guard(E.run_record, M5._config(cond, seed, 240), M5.retained_interventions(cond, frozenset(found[1]["retained_components"])))
+    return {"record": rec, "summary": A.summarize(rec), "paths": S4.path_activity(rec), "topology": R5.topology(rec),
+            "mfs": {"id": mid, "condition_id": found[0], "retained": found[1]["retained_components"], "removed": found[1]["removed_components"]}}
 
 
 @router.post("/route-topology")

@@ -171,3 +171,16 @@ def test_a_shedding_controller_also_removes_what_the_destination_does_not_retain
     assert "resource_gradient" in sw["shed"] and sw["enabled"] == []
     assert any(i["op"] == "REMOVE" and i["target"] == "resource_gradient" for i in shed["intervention_log"])
     assert E.replay(shed)["identical"]
+
+
+def test_the_saved_library_is_served_with_cards_rejected_candidates_and_the_mfs_can_be_run(client):
+    if not svc.STAGE5_FILE.exists() or "final" not in json.loads(svc.STAGE5_FILE.read_text()):
+        pytest.skip("experiments are not finalised")
+    lib = client.get("/api/meos/mfs-library").json()
+    ids = {m["id"] for m in lib["mfs"]}
+    assert {"MFS-F14-1", "MFS-F14-2"} <= ids and all(m["card"]["preserved_operation"] == 1.0 for m in lib["mfs"] if m["id"].startswith("MFS-F14"))
+    assert any(m["sss_points"] for m in lib["mfs"]) and [r["condition_id"] for r in lib["classification_table"]][:3] == ["F1", "F2", "F3"]
+    assert any(c["status"] == "failed the search criterion" for c in lib["rejected_candidates"])  # a rejected candidate is served as rejected
+    r = client.post("/api/meos/mfs-run", json={"mfs": "MFS-F14-2", "seed": 6}).json()
+    assert "m2_tap" in r["mfs"]["retained"] and r["summary"]["status"] == "ACTIVE" and r["topology"]["controller"] == "none"
+    assert client.post("/api/meos/mfs-run", json={"mfs": "nope"}).status_code == 404 and client.post("/api/meos/mfs-run", json={"mfs": 3}).status_code == 422

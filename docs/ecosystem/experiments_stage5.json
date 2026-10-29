@@ -20912,6 +20912,13 @@
    ],
    "conditions_with_more_than_one_mfs": [
     "F14"
+   ],
+   "validation_seeds": [
+    6,
+    7,
+    8,
+    9,
+    10
    ]
   },
   "G": {
@@ -28653,7 +28660,8 @@
      },
      "mean_cycles": 2.0
     }
-   ]
+   ],
+   "validation_seeds": "not used: the experiment compares conditions, it does not search for sets"
   },
   "H": {
    "experiment": "H: dynamic Address dependence",
@@ -34155,7 +34163,8 @@
      "target": "A2",
      "class": "null (dynamics identical to the control)"
     }
-   ]
+   ],
+   "validation_seeds": "not used: the experiment compares conditions, it does not search for sets"
   },
   "K": {
    "experiment": "K: observation robustness across MFS",
@@ -34639,7 +34648,8 @@
    "spread": {
     "observational_robustness_min": 0.0,
     "max": 0.0
-   }
+   },
+   "validation_seeds": "not used: the experiment compares conditions, it does not search for sets"
   },
   "J": {
    "experiment": "J: MFS x SSS region",
@@ -41035,7 +41045,8 @@
       ]
      }
     }
-   ]
+   ],
+   "validation_seeds": "not used: the experiment compares conditions, it does not search for sets"
   },
   "I": {
    "experiment": "I: adaptive reconfiguration between known MFS",
@@ -44316,7 +44327,3700 @@
       "revisions_in_collapsed_runs_that_could_not_help": 0
      }
     ]
+   },
+   "validation_seeds": "not used: the experiment compares conditions, it does not search for sets"
+  }
+ },
+ "final": {
+  "protocol": {
+   "search_seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "validation_seeds": [
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "text": "MEOS-0, fifth stage: the final, derived reading of experiments F\u2013K. Everything here is computed from the saved raw results (``experiments_stage5.json``) and, where a question needs new\nruns (the validation of a candidate set, the stability of the two F14 sets across the validation seeds, a confirmation of the fixed fallback on fresh seeds), from real runs of the engine.\nRaw data and interpretation are kept apart: the raw rows stay where the experiments put them, and ``final`` carries the derived classification, the effect sizes, the intervals and the words.\n\nProtocol (fixed in code, not tuned after the fact):\n  search seeds 1-5       a set *persists* only if it persists in every one of them; the inclusion-minimal persisting sets are the discovered MFS\n  validation seeds 6-10  every discovered MFS is run again on seeds the search never saw; it is *validated* only if it persists in all of them\n  candidate              an inclusion-minimal set under the relaxed criterion \"persists in at least 3 of the 5 search seeds\", or a minimal set of the first (3-seed) search; its status says why\n                         it is or is not an MFS: validated, failed the search criterion, failed validation, near miss (4 of 5 on both sets of seeds: the data cannot separate it)\n  condition class        NO_MFS, SINGLE_MFS, MULTIPLE_MFS (two or more validated sets of different composition), UNSTABLE_CANDIDATE (no validated set, candidates exist),\n                         INCONCLUSIVE (a near-miss candidate exists)\n"
+  },
+  "headline": "Multiple operational realisations are not a general law in this model; they are local. Of the sixteen conditions 1 INCONCLUSIVE, 1 MULTIPLE_MFS, 1 NO_MFS, 13 SINGLE_MFS. Where one validated set exists it is usually the only one; where none exists, no retaining set was found under the allowed reductions, the specified criterion and these seeds.",
+  "class_counts": {
+   "SINGLE_MFS": 13,
+   "NO_MFS": 1,
+   "MULTIPLE_MFS": 1,
+   "INCONCLUSIVE": 1
+  },
+  "F_table": [
+   {
+    "condition_id": "F1",
+    "description": "finite power, no M2 tap",
+    "search_seeds": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "validation_seeds": [
+     6,
+     7,
+     8,
+     9,
+     10
+    ],
+    "candidate_retaining_sets": 1,
+    "validated_mfs": 1,
+    "rejected_candidates": 0,
+    "near_miss_candidates": 0,
+    "mfs_ids": [
+     "MFS-F1-1"
+    ],
+    "cardinality": [
+     7
+    ],
+    "history_role": "contributes in some contexts only",
+    "m2_role": "not available under this condition",
+    "coupling_role": "necessary",
+    "resource_role": "destabilizing",
+    "renewal_role": "necessary",
+    "address_role": "not a removable component; collapse share under the Address fault battery (mean over the MFS): 0.72",
+    "sss_region_default_setting": [
+     "OBSERVATION-SENSITIVE"
+    ],
+    "observational_robustness": [
+     0.0
+    ],
+    "classification": "SINGLE_MFS",
+    "persisting_subsets_in_search": 3,
+    "seed_disagreeing_subsets": 0
+   },
+   {
+    "condition_id": "F2",
+    "description": "unlimited power, no M2 tap",
+    "search_seeds": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "validation_seeds": [
+     6,
+     7,
+     8,
+     9,
+     10
+    ],
+    "candidate_retaining_sets": 1,
+    "validated_mfs": 1,
+    "rejected_candidates": 0,
+    "near_miss_candidates": 0,
+    "mfs_ids": [
+     "MFS-F2-1"
+    ],
+    "cardinality": [
+     6
+    ],
+    "history_role": "redundant",
+    "m2_role": "not available under this condition",
+    "coupling_role": "necessary",
+    "resource_role": "redundant",
+    "renewal_role": "necessary/redundant",
+    "address_role": "not a removable component; collapse share under the Address fault battery (mean over the MFS): 0.72",
+    "sss_region_default_setting": [
+     "OBSERVATION-SENSITIVE"
+    ],
+    "observational_robustness": [
+     0.0
+    ],
+    "classification": "SINGLE_MFS",
+    "persisting_subsets_in_search": 8,
+    "seed_disagreeing_subsets": 0
+   },
+   {
+    "condition_id": "F3",
+    "description": "finite power, direct M2 tap (weight 4)",
+    "search_seeds": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "validation_seeds": [
+     6,
+     7,
+     8,
+     9,
+     10
+    ],
+    "candidate_retaining_sets": 1,
+    "validated_mfs": 1,
+    "rejected_candidates": 0,
+    "near_miss_candidates": 0,
+    "mfs_ids": [
+     "MFS-F3-1"
+    ],
+    "cardinality": [
+     7
+    ],
+    "history_role": "substitutable",
+    "m2_role": "substitutable",
+    "coupling_role": "necessary",
+    "resource_role": "destabilizing",
+    "renewal_role": "necessary",
+    "address_role": "not a removable component; collapse share under the Address fault battery (mean over the MFS): 0.72",
+    "sss_region_default_setting": [
+     "OBSERVATION-SENSITIVE"
+    ],
+    "observational_robustness": [
+     0.0
+    ],
+    "classification": "SINGLE_MFS",
+    "persisting_subsets_in_search": 7,
+    "seed_disagreeing_subsets": 0
+   },
+   {
+    "condition_id": "F4",
+    "description": "unlimited power, direct M2 tap",
+    "search_seeds": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "validation_seeds": [
+     6,
+     7,
+     8,
+     9,
+     10
+    ],
+    "candidate_retaining_sets": 1,
+    "validated_mfs": 1,
+    "rejected_candidates": 0,
+    "near_miss_candidates": 0,
+    "mfs_ids": [
+     "MFS-F4-1"
+    ],
+    "cardinality": [
+     6
+    ],
+    "history_role": "redundant",
+    "m2_role": "redundant",
+    "coupling_role": "necessary",
+    "resource_role": "redundant",
+    "renewal_role": "necessary/redundant",
+    "address_role": "not a removable component; collapse share under the Address fault battery (mean over the MFS): 0.72",
+    "sss_region_default_setting": [
+     "OBSERVATION-SENSITIVE"
+    ],
+    "observational_robustness": [
+     0.0
+    ],
+    "classification": "SINGLE_MFS",
+    "persisting_subsets_in_search": 16,
+    "seed_disagreeing_subsets": 0
+   },
+   {
+    "condition_id": "F5",
+    "description": "finite power, noisy M2 tap (0.05, weight 4)",
+    "search_seeds": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "validation_seeds": [
+     6,
+     7,
+     8,
+     9,
+     10
+    ],
+    "candidate_retaining_sets": 1,
+    "validated_mfs": 1,
+    "rejected_candidates": 0,
+    "near_miss_candidates": 0,
+    "mfs_ids": [
+     "MFS-F5-1"
+    ],
+    "cardinality": [
+     7
+    ],
+    "history_role": "contributes in some contexts only",
+    "m2_role": "redundant",
+    "coupling_role": "necessary",
+    "resource_role": "destabilizing",
+    "renewal_role": "necessary",
+    "address_role": "not a removable component; collapse share under the Address fault battery (mean over the MFS): 0.72",
+    "sss_region_default_setting": [
+     "OBSERVATION-SENSITIVE"
+    ],
+    "observational_robustness": [
+     0.0
+    ],
+    "classification": "SINGLE_MFS",
+    "persisting_subsets_in_search": 6,
+    "seed_disagreeing_subsets": 2
+   },
+   {
+    "condition_id": "F6",
+    "description": "finite power, delayed M2 tap (3 ticks, weight 4)",
+    "search_seeds": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "validation_seeds": [
+     6,
+     7,
+     8,
+     9,
+     10
+    ],
+    "candidate_retaining_sets": 1,
+    "validated_mfs": 1,
+    "rejected_candidates": 0,
+    "near_miss_candidates": 0,
+    "mfs_ids": [
+     "MFS-F6-1"
+    ],
+    "cardinality": [
+     7
+    ],
+    "history_role": "contributes in some contexts only",
+    "m2_role": "redundant",
+    "coupling_role": "necessary",
+    "resource_role": "destabilizing",
+    "renewal_role": "necessary",
+    "address_role": "not a removable component; collapse share under the Address fault battery (mean over the MFS): 0.72",
+    "sss_region_default_setting": [
+     "OBSERVATION-SENSITIVE"
+    ],
+    "observational_robustness": [
+     0.0
+    ],
+    "classification": "SINGLE_MFS",
+    "persisting_subsets_in_search": 6,
+    "seed_disagreeing_subsets": 0
+   },
+   {
+    "condition_id": "F7",
+    "description": "direct tap, history unavailable",
+    "search_seeds": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "validation_seeds": [
+     6,
+     7,
+     8,
+     9,
+     10
+    ],
+    "candidate_retaining_sets": 1,
+    "validated_mfs": 1,
+    "rejected_candidates": 0,
+    "near_miss_candidates": 0,
+    "mfs_ids": [
+     "MFS-F7-1"
+    ],
+    "cardinality": [
+     7
+    ],
+    "history_role": "not available under this condition",
+    "m2_role": "contributes in some contexts only",
+    "coupling_role": "necessary",
+    "resource_role": "destabilizing",
+    "renewal_role": "necessary",
+    "address_role": "not a removable component; collapse share under the Address fault battery (mean over the MFS): 0.72",
+    "sss_region_default_setting": [
+     "OBSERVATION-SENSITIVE"
+    ],
+    "observational_robustness": [
+     0.0
+    ],
+    "classification": "SINGLE_MFS",
+    "persisting_subsets_in_search": 3,
+    "seed_disagreeing_subsets": 0
+   },
+   {
+    "condition_id": "F8",
+    "description": "direct tap, coupling weakened (gain 0.6)",
+    "search_seeds": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "validation_seeds": [
+     6,
+     7,
+     8,
+     9,
+     10
+    ],
+    "candidate_retaining_sets": 2,
+    "validated_mfs": 1,
+    "rejected_candidates": 1,
+    "near_miss_candidates": 0,
+    "mfs_ids": [
+     "MFS-F8-1"
+    ],
+    "cardinality": [
+     8
+    ],
+    "history_role": "compensatory",
+    "m2_role": "redundant",
+    "coupling_role": "necessary",
+    "resource_role": "redundant",
+    "renewal_role": "necessary",
+    "address_role": "not a removable component; collapse share under the Address fault battery (mean over the MFS): 0.72",
+    "sss_region_default_setting": [
+     "OBSERVATION-SENSITIVE"
+    ],
+    "observational_robustness": [
+     0.0
+    ],
+    "classification": "SINGLE_MFS",
+    "persisting_subsets_in_search": 4,
+    "seed_disagreeing_subsets": 1
+   },
+   {
+    "condition_id": "F9",
+    "description": "direct tap, resource reduced (regrow 0.01, charge 0.2)",
+    "search_seeds": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "validation_seeds": [
+     6,
+     7,
+     8,
+     9,
+     10
+    ],
+    "candidate_retaining_sets": 0,
+    "validated_mfs": 0,
+    "rejected_candidates": 0,
+    "near_miss_candidates": 0,
+    "mfs_ids": [],
+    "cardinality": [],
+    "history_role": "null",
+    "m2_role": "null",
+    "coupling_role": "null",
+    "resource_role": "null",
+    "renewal_role": "null",
+    "address_role": "no MFS to test",
+    "sss_region_default_setting": [],
+    "observational_robustness": [],
+    "classification": "NO_MFS",
+    "persisting_subsets_in_search": 0,
+    "seed_disagreeing_subsets": 0
+   },
+   {
+    "condition_id": "F10",
+    "description": "direct tap, renewal efficiency 0.7",
+    "search_seeds": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "validation_seeds": [
+     6,
+     7,
+     8,
+     9,
+     10
+    ],
+    "candidate_retaining_sets": 1,
+    "validated_mfs": 1,
+    "rejected_candidates": 0,
+    "near_miss_candidates": 0,
+    "mfs_ids": [
+     "MFS-F10-1"
+    ],
+    "cardinality": [
+     8
+    ],
+    "history_role": "compensatory",
+    "m2_role": "null",
+    "coupling_role": "necessary",
+    "resource_role": "destabilizing",
+    "renewal_role": "necessary",
+    "address_role": "not a removable component; collapse share under the Address fault battery (mean over the MFS): 0.64",
+    "sss_region_default_setting": [
+     "OBSERVATION-SENSITIVE"
+    ],
+    "observational_robustness": [
+     0.0
+    ],
+    "classification": "SINGLE_MFS",
+    "persisting_subsets_in_search": 2,
+    "seed_disagreeing_subsets": 0
+   },
+   {
+    "condition_id": "F11",
+    "description": "direct tap, history delayed (lag 8)",
+    "search_seeds": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "validation_seeds": [
+     6,
+     7,
+     8,
+     9,
+     10
+    ],
+    "candidate_retaining_sets": 1,
+    "validated_mfs": 1,
+    "rejected_candidates": 0,
+    "near_miss_candidates": 0,
+    "mfs_ids": [
+     "MFS-F11-1"
+    ],
+    "cardinality": [
+     7
+    ],
+    "history_role": "substitutable",
+    "m2_role": "substitutable",
+    "coupling_role": "necessary",
+    "resource_role": "destabilizing",
+    "renewal_role": "necessary",
+    "address_role": "not a removable component; collapse share under the Address fault battery (mean over the MFS): 0.72",
+    "sss_region_default_setting": [
+     "OBSERVATION-SENSITIVE"
+    ],
+    "observational_robustness": [
+     0.0
+    ],
+    "classification": "SINGLE_MFS",
+    "persisting_subsets_in_search": 7,
+    "seed_disagreeing_subsets": 0
+   },
+   {
+    "condition_id": "F12",
+    "description": "SSS scale 1.5, no M2 tap",
+    "search_seeds": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "validation_seeds": [
+     6,
+     7,
+     8,
+     9,
+     10
+    ],
+    "candidate_retaining_sets": 1,
+    "validated_mfs": 1,
+    "rejected_candidates": 0,
+    "near_miss_candidates": 0,
+    "mfs_ids": [
+     "MFS-F12-1"
+    ],
+    "cardinality": [
+     8
+    ],
+    "history_role": "necessary",
+    "m2_role": "not available under this condition",
+    "coupling_role": "necessary",
+    "resource_role": "destabilizing",
+    "renewal_role": "necessary",
+    "address_role": "not a removable component; collapse share under the Address fault battery (mean over the MFS): 0.72",
+    "sss_region_default_setting": [
+     "OBSERVATION-SENSITIVE"
+    ],
+    "observational_robustness": [
+     0.0
+    ],
+    "classification": "SINGLE_MFS",
+    "persisting_subsets_in_search": 1,
+    "seed_disagreeing_subsets": 0
+   },
+   {
+    "condition_id": "F13",
+    "description": "SSS scale 1.5, direct M2 tap",
+    "search_seeds": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "validation_seeds": [
+     6,
+     7,
+     8,
+     9,
+     10
+    ],
+    "candidate_retaining_sets": 1,
+    "validated_mfs": 1,
+    "rejected_candidates": 0,
+    "near_miss_candidates": 0,
+    "mfs_ids": [
+     "MFS-F13-1"
+    ],
+    "cardinality": [
+     8
+    ],
+    "history_role": "necessary",
+    "m2_role": "null",
+    "coupling_role": "necessary",
+    "resource_role": "destabilizing",
+    "renewal_role": "necessary",
+    "address_role": "not a removable component; collapse share under the Address fault battery (mean over the MFS): 0.72",
+    "sss_region_default_setting": [
+     "OBSERVATION-SENSITIVE"
+    ],
+    "observational_robustness": [
+     0.0
+    ],
+    "classification": "SINGLE_MFS",
+    "persisting_subsets_in_search": 2,
+    "seed_disagreeing_subsets": 0
+   },
+   {
+    "condition_id": "F14",
+    "description": "SSS scale 1.5, delayed M2 tap (3 ticks)",
+    "search_seeds": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "validation_seeds": [
+     6,
+     7,
+     8,
+     9,
+     10
+    ],
+    "candidate_retaining_sets": 2,
+    "validated_mfs": 2,
+    "rejected_candidates": 0,
+    "near_miss_candidates": 0,
+    "mfs_ids": [
+     "MFS-F14-1",
+     "MFS-F14-2"
+    ],
+    "cardinality": [
+     8,
+     8
+    ],
+    "history_role": "substitutable",
+    "m2_role": "substitutable",
+    "coupling_role": "necessary",
+    "resource_role": "destabilizing",
+    "renewal_role": "necessary",
+    "address_role": "not a removable component; collapse share under the Address fault battery (mean over the MFS): 0.72, 0.72",
+    "sss_region_default_setting": [
+     "OBSERVATION-SENSITIVE",
+     "OBSERVATION-SENSITIVE"
+    ],
+    "observational_robustness": [
+     0.0,
+     0.0
+    ],
+    "classification": "MULTIPLE_MFS",
+    "persisting_subsets_in_search": 4,
+    "seed_disagreeing_subsets": 0
+   },
+   {
+    "condition_id": "F15",
+    "description": "SSS scale 1.5, noisy M2 tap (0.05)",
+    "search_seeds": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "validation_seeds": [
+     6,
+     7,
+     8,
+     9,
+     10
+    ],
+    "candidate_retaining_sets": 2,
+    "validated_mfs": 1,
+    "rejected_candidates": 1,
+    "near_miss_candidates": 0,
+    "mfs_ids": [
+     "MFS-F15-1"
+    ],
+    "cardinality": [
+     8
+    ],
+    "history_role": "necessary",
+    "m2_role": "contributes in some contexts only",
+    "coupling_role": "necessary",
+    "resource_role": "destabilizing",
+    "renewal_role": "necessary",
+    "address_role": "not a removable component; collapse share under the Address fault battery (mean over the MFS): 0.72",
+    "sss_region_default_setting": [
+     "OBSERVATION-SENSITIVE"
+    ],
+    "observational_robustness": [
+     0.0
+    ],
+    "classification": "SINGLE_MFS",
+    "persisting_subsets_in_search": 3,
+    "seed_disagreeing_subsets": 3
+   },
+   {
+    "condition_id": "F16",
+    "description": "renewal efficiency 0.7, noisy M2 tap",
+    "search_seeds": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "validation_seeds": [
+     6,
+     7,
+     8,
+     9,
+     10
+    ],
+    "candidate_retaining_sets": 2,
+    "validated_mfs": 1,
+    "rejected_candidates": 0,
+    "near_miss_candidates": 1,
+    "mfs_ids": [
+     "MFS-F16-1"
+    ],
+    "cardinality": [
+     8
+    ],
+    "history_role": "compensatory",
+    "m2_role": "contributes in some contexts only",
+    "coupling_role": "necessary",
+    "resource_role": "destabilizing",
+    "renewal_role": "necessary",
+    "address_role": "not a removable component; collapse share under the Address fault battery (mean over the MFS): 0.64",
+    "sss_region_default_setting": [
+     "OBSERVATION-SENSITIVE"
+    ],
+    "observational_robustness": [
+     0.0
+    ],
+    "classification": "INCONCLUSIVE",
+    "persisting_subsets_in_search": 3,
+    "seed_disagreeing_subsets": 3
    }
+  ],
+  "candidates": {
+   "F1": {
+    "candidates": [
+     {
+      "retained": [
+       "A2",
+       "interaction_channel",
+       "sensor_resource",
+       "sensor_alteration",
+       "environmental_persistence",
+       "feedback",
+       "resource_renewal"
+      ],
+      "cardinality": 7,
+      "found_by": [
+       "inclusion-minimal under the relaxed criterion (>= 3 of 5 search seeds)",
+       "inclusion-minimal under the search criterion (all 5 search seeds)",
+       "minimal set of the first search (seeds 1-3 only)"
+      ],
+      "search_seeds": [
+       1,
+       2,
+       3,
+       4,
+       5
+      ],
+      "persists_in_search_seeds": 5,
+      "validation_seeds": [
+       6,
+       7,
+       8,
+       9,
+       10
+      ],
+      "persists_in_validation_seeds": 5,
+      "status": "validated",
+      "per_validation_seed": [
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      "discovered_in_search": true,
+      "survived_validation": true
+     }
+    ],
+    "validated": 1,
+    "rejected": [],
+    "near_misses": []
+   },
+   "F2": {
+    "candidates": [
+     {
+      "retained": [
+       "A2",
+       "interaction_channel",
+       "sensor_resource",
+       "sensor_alteration",
+       "environmental_persistence",
+       "feedback"
+      ],
+      "cardinality": 6,
+      "found_by": [
+       "inclusion-minimal under the relaxed criterion (>= 3 of 5 search seeds)",
+       "inclusion-minimal under the search criterion (all 5 search seeds)",
+       "minimal set of the first search (seeds 1-3 only)"
+      ],
+      "search_seeds": [
+       1,
+       2,
+       3,
+       4,
+       5
+      ],
+      "persists_in_search_seeds": 5,
+      "validation_seeds": [
+       6,
+       7,
+       8,
+       9,
+       10
+      ],
+      "persists_in_validation_seeds": 5,
+      "status": "validated",
+      "per_validation_seed": [
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      "discovered_in_search": true,
+      "survived_validation": true
+     }
+    ],
+    "validated": 1,
+    "rejected": [],
+    "near_misses": []
+   },
+   "F3": {
+    "candidates": [
+     {
+      "retained": [
+       "A2",
+       "interaction_channel",
+       "sensor_resource",
+       "sensor_alteration",
+       "environmental_persistence",
+       "feedback",
+       "resource_renewal"
+      ],
+      "cardinality": 7,
+      "found_by": [
+       "inclusion-minimal under the relaxed criterion (>= 3 of 5 search seeds)",
+       "inclusion-minimal under the search criterion (all 5 search seeds)",
+       "minimal set of the first search (seeds 1-3 only)"
+      ],
+      "search_seeds": [
+       1,
+       2,
+       3,
+       4,
+       5
+      ],
+      "persists_in_search_seeds": 5,
+      "validation_seeds": [
+       6,
+       7,
+       8,
+       9,
+       10
+      ],
+      "persists_in_validation_seeds": 5,
+      "status": "validated",
+      "per_validation_seed": [
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      "discovered_in_search": true,
+      "survived_validation": true
+     }
+    ],
+    "validated": 1,
+    "rejected": [],
+    "near_misses": []
+   },
+   "F4": {
+    "candidates": [
+     {
+      "retained": [
+       "A2",
+       "interaction_channel",
+       "sensor_resource",
+       "sensor_alteration",
+       "environmental_persistence",
+       "feedback"
+      ],
+      "cardinality": 6,
+      "found_by": [
+       "inclusion-minimal under the relaxed criterion (>= 3 of 5 search seeds)",
+       "inclusion-minimal under the search criterion (all 5 search seeds)",
+       "minimal set of the first search (seeds 1-3 only)"
+      ],
+      "search_seeds": [
+       1,
+       2,
+       3,
+       4,
+       5
+      ],
+      "persists_in_search_seeds": 5,
+      "validation_seeds": [
+       6,
+       7,
+       8,
+       9,
+       10
+      ],
+      "persists_in_validation_seeds": 5,
+      "status": "validated",
+      "per_validation_seed": [
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      "discovered_in_search": true,
+      "survived_validation": true
+     }
+    ],
+    "validated": 1,
+    "rejected": [],
+    "near_misses": []
+   },
+   "F5": {
+    "candidates": [
+     {
+      "retained": [
+       "A2",
+       "interaction_channel",
+       "sensor_resource",
+       "sensor_alteration",
+       "environmental_persistence",
+       "feedback",
+       "resource_renewal"
+      ],
+      "cardinality": 7,
+      "found_by": [
+       "inclusion-minimal under the relaxed criterion (>= 3 of 5 search seeds)",
+       "inclusion-minimal under the search criterion (all 5 search seeds)",
+       "minimal set of the first search (seeds 1-3 only)"
+      ],
+      "search_seeds": [
+       1,
+       2,
+       3,
+       4,
+       5
+      ],
+      "persists_in_search_seeds": 5,
+      "validation_seeds": [
+       6,
+       7,
+       8,
+       9,
+       10
+      ],
+      "persists_in_validation_seeds": 5,
+      "status": "validated",
+      "per_validation_seed": [
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      "discovered_in_search": true,
+      "survived_validation": true
+     }
+    ],
+    "validated": 1,
+    "rejected": [],
+    "near_misses": []
+   },
+   "F6": {
+    "candidates": [
+     {
+      "retained": [
+       "A2",
+       "interaction_channel",
+       "sensor_resource",
+       "sensor_alteration",
+       "environmental_persistence",
+       "feedback",
+       "resource_renewal"
+      ],
+      "cardinality": 7,
+      "found_by": [
+       "inclusion-minimal under the relaxed criterion (>= 3 of 5 search seeds)",
+       "inclusion-minimal under the search criterion (all 5 search seeds)",
+       "minimal set of the first search (seeds 1-3 only)"
+      ],
+      "search_seeds": [
+       1,
+       2,
+       3,
+       4,
+       5
+      ],
+      "persists_in_search_seeds": 5,
+      "validation_seeds": [
+       6,
+       7,
+       8,
+       9,
+       10
+      ],
+      "persists_in_validation_seeds": 5,
+      "status": "validated",
+      "per_validation_seed": [
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      "discovered_in_search": true,
+      "survived_validation": true
+     }
+    ],
+    "validated": 1,
+    "rejected": [],
+    "near_misses": []
+   },
+   "F7": {
+    "candidates": [
+     {
+      "retained": [
+       "A2",
+       "interaction_channel",
+       "sensor_resource",
+       "sensor_alteration",
+       "environmental_persistence",
+       "feedback",
+       "resource_renewal"
+      ],
+      "cardinality": 7,
+      "found_by": [
+       "inclusion-minimal under the relaxed criterion (>= 3 of 5 search seeds)",
+       "inclusion-minimal under the search criterion (all 5 search seeds)",
+       "minimal set of the first search (seeds 1-3 only)"
+      ],
+      "search_seeds": [
+       1,
+       2,
+       3,
+       4,
+       5
+      ],
+      "persists_in_search_seeds": 5,
+      "validation_seeds": [
+       6,
+       7,
+       8,
+       9,
+       10
+      ],
+      "persists_in_validation_seeds": 5,
+      "status": "validated",
+      "per_validation_seed": [
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      "discovered_in_search": true,
+      "survived_validation": true
+     }
+    ],
+    "validated": 1,
+    "rejected": [],
+    "near_misses": []
+   },
+   "F8": {
+    "candidates": [
+     {
+      "retained": [
+       "A2",
+       "resource_gradient",
+       "interaction_channel",
+       "sensor_resource",
+       "sensor_alteration",
+       "environmental_persistence",
+       "feedback",
+       "resource_renewal"
+      ],
+      "cardinality": 8,
+      "found_by": [
+       "inclusion-minimal under the relaxed criterion (>= 3 of 5 search seeds)",
+       "minimal set of the first search (seeds 1-3 only)"
+      ],
+      "search_seeds": [
+       1,
+       2,
+       3,
+       4,
+       5
+      ],
+      "persists_in_search_seeds": 4,
+      "validation_seeds": [
+       6,
+       7,
+       8,
+       9,
+       10
+      ],
+      "persists_in_validation_seeds": 1,
+      "status": "failed the search criterion",
+      "per_validation_seed": [
+       false,
+       false,
+       false,
+       true,
+       false
+      ],
+      "discovered_in_search": true,
+      "survived_validation": false
+     },
+     {
+      "retained": [
+       "A2",
+       "history",
+       "interaction_channel",
+       "sensor_resource",
+       "sensor_alteration",
+       "environmental_persistence",
+       "feedback",
+       "resource_renewal"
+      ],
+      "cardinality": 8,
+      "found_by": [
+       "inclusion-minimal under the relaxed criterion (>= 3 of 5 search seeds)",
+       "inclusion-minimal under the search criterion (all 5 search seeds)",
+       "minimal set of the first search (seeds 1-3 only)"
+      ],
+      "search_seeds": [
+       1,
+       2,
+       3,
+       4,
+       5
+      ],
+      "persists_in_search_seeds": 5,
+      "validation_seeds": [
+       6,
+       7,
+       8,
+       9,
+       10
+      ],
+      "persists_in_validation_seeds": 5,
+      "status": "validated",
+      "per_validation_seed": [
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      "discovered_in_search": true,
+      "survived_validation": true
+     }
+    ],
+    "validated": 1,
+    "rejected": [
+     {
+      "retained": [
+       "A2",
+       "resource_gradient",
+       "interaction_channel",
+       "sensor_resource",
+       "sensor_alteration",
+       "environmental_persistence",
+       "feedback",
+       "resource_renewal"
+      ],
+      "cardinality": 8,
+      "found_by": [
+       "inclusion-minimal under the relaxed criterion (>= 3 of 5 search seeds)",
+       "minimal set of the first search (seeds 1-3 only)"
+      ],
+      "search_seeds": [
+       1,
+       2,
+       3,
+       4,
+       5
+      ],
+      "persists_in_search_seeds": 4,
+      "validation_seeds": [
+       6,
+       7,
+       8,
+       9,
+       10
+      ],
+      "persists_in_validation_seeds": 1,
+      "status": "failed the search criterion",
+      "per_validation_seed": [
+       false,
+       false,
+       false,
+       true,
+       false
+      ],
+      "discovered_in_search": true,
+      "survived_validation": false
+     }
+    ],
+    "near_misses": []
+   },
+   "F9": {
+    "candidates": [],
+    "validated": 0,
+    "rejected": [],
+    "near_misses": []
+   },
+   "F10": {
+    "candidates": [
+     {
+      "retained": [
+       "A2",
+       "history",
+       "interaction_channel",
+       "sensor_resource",
+       "sensor_alteration",
+       "environmental_persistence",
+       "feedback",
+       "resource_renewal"
+      ],
+      "cardinality": 8,
+      "found_by": [
+       "inclusion-minimal under the relaxed criterion (>= 3 of 5 search seeds)",
+       "inclusion-minimal under the search criterion (all 5 search seeds)",
+       "minimal set of the first search (seeds 1-3 only)"
+      ],
+      "search_seeds": [
+       1,
+       2,
+       3,
+       4,
+       5
+      ],
+      "persists_in_search_seeds": 5,
+      "validation_seeds": [
+       6,
+       7,
+       8,
+       9,
+       10
+      ],
+      "persists_in_validation_seeds": 5,
+      "status": "validated",
+      "per_validation_seed": [
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      "discovered_in_search": true,
+      "survived_validation": true
+     }
+    ],
+    "validated": 1,
+    "rejected": [],
+    "near_misses": []
+   },
+   "F11": {
+    "candidates": [
+     {
+      "retained": [
+       "A2",
+       "interaction_channel",
+       "sensor_resource",
+       "sensor_alteration",
+       "environmental_persistence",
+       "feedback",
+       "resource_renewal"
+      ],
+      "cardinality": 7,
+      "found_by": [
+       "inclusion-minimal under the relaxed criterion (>= 3 of 5 search seeds)",
+       "inclusion-minimal under the search criterion (all 5 search seeds)",
+       "minimal set of the first search (seeds 1-3 only)"
+      ],
+      "search_seeds": [
+       1,
+       2,
+       3,
+       4,
+       5
+      ],
+      "persists_in_search_seeds": 5,
+      "validation_seeds": [
+       6,
+       7,
+       8,
+       9,
+       10
+      ],
+      "persists_in_validation_seeds": 5,
+      "status": "validated",
+      "per_validation_seed": [
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      "discovered_in_search": true,
+      "survived_validation": true
+     }
+    ],
+    "validated": 1,
+    "rejected": [],
+    "near_misses": []
+   },
+   "F12": {
+    "candidates": [
+     {
+      "retained": [
+       "A2",
+       "history",
+       "interaction_channel",
+       "sensor_resource",
+       "sensor_alteration",
+       "environmental_persistence",
+       "feedback",
+       "resource_renewal"
+      ],
+      "cardinality": 8,
+      "found_by": [
+       "inclusion-minimal under the relaxed criterion (>= 3 of 5 search seeds)",
+       "inclusion-minimal under the search criterion (all 5 search seeds)"
+      ],
+      "search_seeds": [
+       1,
+       2,
+       3,
+       4,
+       5
+      ],
+      "persists_in_search_seeds": 5,
+      "validation_seeds": [
+       6,
+       7,
+       8,
+       9,
+       10
+      ],
+      "persists_in_validation_seeds": 5,
+      "status": "validated",
+      "per_validation_seed": [
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      "discovered_in_search": true,
+      "survived_validation": true
+     }
+    ],
+    "validated": 1,
+    "rejected": [],
+    "near_misses": []
+   },
+   "F13": {
+    "candidates": [
+     {
+      "retained": [
+       "A2",
+       "history",
+       "interaction_channel",
+       "sensor_resource",
+       "sensor_alteration",
+       "environmental_persistence",
+       "feedback",
+       "resource_renewal"
+      ],
+      "cardinality": 8,
+      "found_by": [
+       "inclusion-minimal under the relaxed criterion (>= 3 of 5 search seeds)",
+       "inclusion-minimal under the search criterion (all 5 search seeds)"
+      ],
+      "search_seeds": [
+       1,
+       2,
+       3,
+       4,
+       5
+      ],
+      "persists_in_search_seeds": 5,
+      "validation_seeds": [
+       6,
+       7,
+       8,
+       9,
+       10
+      ],
+      "persists_in_validation_seeds": 5,
+      "status": "validated",
+      "per_validation_seed": [
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      "discovered_in_search": true,
+      "survived_validation": true
+     }
+    ],
+    "validated": 1,
+    "rejected": [],
+    "near_misses": []
+   },
+   "F14": {
+    "candidates": [
+     {
+      "retained": [
+       "A2",
+       "history",
+       "interaction_channel",
+       "sensor_resource",
+       "sensor_alteration",
+       "environmental_persistence",
+       "feedback",
+       "resource_renewal"
+      ],
+      "cardinality": 8,
+      "found_by": [
+       "inclusion-minimal under the relaxed criterion (>= 3 of 5 search seeds)",
+       "inclusion-minimal under the search criterion (all 5 search seeds)"
+      ],
+      "search_seeds": [
+       1,
+       2,
+       3,
+       4,
+       5
+      ],
+      "persists_in_search_seeds": 5,
+      "validation_seeds": [
+       6,
+       7,
+       8,
+       9,
+       10
+      ],
+      "persists_in_validation_seeds": 5,
+      "status": "validated",
+      "per_validation_seed": [
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      "discovered_in_search": true,
+      "survived_validation": true
+     },
+     {
+      "retained": [
+       "A2",
+       "interaction_channel",
+       "sensor_resource",
+       "sensor_alteration",
+       "environmental_persistence",
+       "feedback",
+       "resource_renewal",
+       "m2_tap"
+      ],
+      "cardinality": 8,
+      "found_by": [
+       "inclusion-minimal under the relaxed criterion (>= 3 of 5 search seeds)",
+       "inclusion-minimal under the search criterion (all 5 search seeds)"
+      ],
+      "search_seeds": [
+       1,
+       2,
+       3,
+       4,
+       5
+      ],
+      "persists_in_search_seeds": 5,
+      "validation_seeds": [
+       6,
+       7,
+       8,
+       9,
+       10
+      ],
+      "persists_in_validation_seeds": 5,
+      "status": "validated",
+      "per_validation_seed": [
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      "discovered_in_search": true,
+      "survived_validation": true
+     }
+    ],
+    "validated": 2,
+    "rejected": [],
+    "near_misses": []
+   },
+   "F15": {
+    "candidates": [
+     {
+      "retained": [
+       "A2",
+       "history",
+       "interaction_channel",
+       "sensor_resource",
+       "sensor_alteration",
+       "environmental_persistence",
+       "feedback",
+       "resource_renewal"
+      ],
+      "cardinality": 8,
+      "found_by": [
+       "inclusion-minimal under the relaxed criterion (>= 3 of 5 search seeds)",
+       "inclusion-minimal under the search criterion (all 5 search seeds)"
+      ],
+      "search_seeds": [
+       1,
+       2,
+       3,
+       4,
+       5
+      ],
+      "persists_in_search_seeds": 5,
+      "validation_seeds": [
+       6,
+       7,
+       8,
+       9,
+       10
+      ],
+      "persists_in_validation_seeds": 5,
+      "status": "validated",
+      "per_validation_seed": [
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      "discovered_in_search": true,
+      "survived_validation": true
+     },
+     {
+      "retained": [
+       "A2",
+       "interaction_channel",
+       "sensor_resource",
+       "sensor_alteration",
+       "environmental_persistence",
+       "feedback",
+       "resource_renewal",
+       "m2_tap"
+      ],
+      "cardinality": 8,
+      "found_by": [
+       "inclusion-minimal under the relaxed criterion (>= 3 of 5 search seeds)"
+      ],
+      "search_seeds": [
+       1,
+       2,
+       3,
+       4,
+       5
+      ],
+      "persists_in_search_seeds": 3,
+      "validation_seeds": [
+       6,
+       7,
+       8,
+       9,
+       10
+      ],
+      "persists_in_validation_seeds": 2,
+      "status": "failed the search criterion",
+      "per_validation_seed": [
+       false,
+       true,
+       false,
+       false,
+       true
+      ],
+      "discovered_in_search": true,
+      "survived_validation": false
+     }
+    ],
+    "validated": 1,
+    "rejected": [
+     {
+      "retained": [
+       "A2",
+       "interaction_channel",
+       "sensor_resource",
+       "sensor_alteration",
+       "environmental_persistence",
+       "feedback",
+       "resource_renewal",
+       "m2_tap"
+      ],
+      "cardinality": 8,
+      "found_by": [
+       "inclusion-minimal under the relaxed criterion (>= 3 of 5 search seeds)"
+      ],
+      "search_seeds": [
+       1,
+       2,
+       3,
+       4,
+       5
+      ],
+      "persists_in_search_seeds": 3,
+      "validation_seeds": [
+       6,
+       7,
+       8,
+       9,
+       10
+      ],
+      "persists_in_validation_seeds": 2,
+      "status": "failed the search criterion",
+      "per_validation_seed": [
+       false,
+       true,
+       false,
+       false,
+       true
+      ],
+      "discovered_in_search": true,
+      "survived_validation": false
+     }
+    ],
+    "near_misses": []
+   },
+   "F16": {
+    "candidates": [
+     {
+      "retained": [
+       "A2",
+       "history",
+       "interaction_channel",
+       "sensor_resource",
+       "sensor_alteration",
+       "environmental_persistence",
+       "feedback",
+       "resource_renewal"
+      ],
+      "cardinality": 8,
+      "found_by": [
+       "inclusion-minimal under the relaxed criterion (>= 3 of 5 search seeds)",
+       "inclusion-minimal under the search criterion (all 5 search seeds)"
+      ],
+      "search_seeds": [
+       1,
+       2,
+       3,
+       4,
+       5
+      ],
+      "persists_in_search_seeds": 5,
+      "validation_seeds": [
+       6,
+       7,
+       8,
+       9,
+       10
+      ],
+      "persists_in_validation_seeds": 5,
+      "status": "validated",
+      "per_validation_seed": [
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      "discovered_in_search": true,
+      "survived_validation": true
+     },
+     {
+      "retained": [
+       "A2",
+       "interaction_channel",
+       "sensor_resource",
+       "sensor_alteration",
+       "environmental_persistence",
+       "feedback",
+       "resource_renewal",
+       "m2_tap"
+      ],
+      "cardinality": 8,
+      "found_by": [
+       "inclusion-minimal under the relaxed criterion (>= 3 of 5 search seeds)"
+      ],
+      "search_seeds": [
+       1,
+       2,
+       3,
+       4,
+       5
+      ],
+      "persists_in_search_seeds": 4,
+      "validation_seeds": [
+       6,
+       7,
+       8,
+       9,
+       10
+      ],
+      "persists_in_validation_seeds": 5,
+      "status": "near miss",
+      "per_validation_seed": [
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      "discovered_in_search": true,
+      "survived_validation": false
+     }
+    ],
+    "validated": 1,
+    "rejected": [],
+    "near_misses": [
+     {
+      "retained": [
+       "A2",
+       "interaction_channel",
+       "sensor_resource",
+       "sensor_alteration",
+       "environmental_persistence",
+       "feedback",
+       "resource_renewal",
+       "m2_tap"
+      ],
+      "cardinality": 8,
+      "found_by": [
+       "inclusion-minimal under the relaxed criterion (>= 3 of 5 search seeds)"
+      ],
+      "search_seeds": [
+       1,
+       2,
+       3,
+       4,
+       5
+      ],
+      "persists_in_search_seeds": 4,
+      "validation_seeds": [
+       6,
+       7,
+       8,
+       9,
+       10
+      ],
+      "persists_in_validation_seeds": 5,
+      "status": "near miss",
+      "per_validation_seed": [
+       true,
+       true,
+       true,
+       true,
+       true
+      ],
+      "discovered_in_search": true,
+      "survived_validation": false
+     }
+    ]
+   }
+  },
+  "F8_candidate_rejection": {
+   "preliminary_3seed_sets": [
+    {
+     "id": "MFS-F8-1",
+     "retained": [
+      "A2",
+      "resource_gradient",
+      "interaction_channel",
+      "sensor_resource",
+      "sensor_alteration",
+      "environmental_persistence",
+      "feedback",
+      "resource_renewal"
+     ],
+     "route_kind": "history-free, resource-mediated, renewal-mediated, coupling-mediated"
+    },
+    {
+     "id": "MFS-F8-2",
+     "retained": [
+      "A2",
+      "history",
+      "interaction_channel",
+      "sensor_resource",
+      "sensor_alteration",
+      "environmental_persistence",
+      "feedback",
+      "resource_renewal"
+     ],
+     "route_kind": "history-mediated, renewal-mediated, coupling-mediated"
+    }
+   ],
+   "candidates_and_status": [
+    {
+     "retained": [
+      "A2",
+      "resource_gradient",
+      "interaction_channel",
+      "sensor_resource",
+      "sensor_alteration",
+      "environmental_persistence",
+      "feedback",
+      "resource_renewal"
+     ],
+     "cardinality": 8,
+     "found_by": [
+      "inclusion-minimal under the relaxed criterion (>= 3 of 5 search seeds)",
+      "minimal set of the first search (seeds 1-3 only)"
+     ],
+     "search_seeds": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "persists_in_search_seeds": 4,
+     "validation_seeds": [
+      6,
+      7,
+      8,
+      9,
+      10
+     ],
+     "persists_in_validation_seeds": 1,
+     "status": "failed the search criterion",
+     "per_validation_seed": [
+      false,
+      false,
+      false,
+      true,
+      false
+     ],
+     "discovered_in_search": true,
+     "survived_validation": false
+    },
+    {
+     "retained": [
+      "A2",
+      "history",
+      "interaction_channel",
+      "sensor_resource",
+      "sensor_alteration",
+      "environmental_persistence",
+      "feedback",
+      "resource_renewal"
+     ],
+     "cardinality": 8,
+     "found_by": [
+      "inclusion-minimal under the relaxed criterion (>= 3 of 5 search seeds)",
+      "inclusion-minimal under the search criterion (all 5 search seeds)",
+      "minimal set of the first search (seeds 1-3 only)"
+     ],
+     "search_seeds": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "persists_in_search_seeds": 5,
+     "validation_seeds": [
+      6,
+      7,
+      8,
+      9,
+      10
+     ],
+     "persists_in_validation_seeds": 5,
+     "status": "validated",
+     "per_validation_seed": [
+      true,
+      true,
+      true,
+      true,
+      true
+     ],
+     "discovered_in_search": true,
+     "survived_validation": true
+    }
+   ],
+   "statement": "The first search (seeds 1-3) reported two inclusion-minimal sets under F8. Under the search criterion of five seeds only one remains; the other did not persist in every search seed. F8 is therefore SINGLE_MFS, not MULTIPLE_MFS."
+  },
+  "F9_no_mfs": {
+   "statement": "Under the allowed reductions, the specified preservation criterion and these seeds, no validated inclusion-minimal retaining set was found. This does not say that no retaining set exists in general.",
+   "persisting_subsets_in_search": 0,
+   "subsets_evaluated": 1024,
+   "candidates": [],
+   "classification": "NO_MFS"
+  },
+  "F14_comparison": {
+   "condition": {
+    "id": "F14",
+    "label": "SSS scale 1.5, delayed M2 tap (3 ticks)",
+    "config": {
+     "sss": {
+      "scale": 1.5
+     },
+     "m2": {
+      "sense": "delayed",
+      "weight": 4.0,
+      "delay": 3
+     }
+    },
+    "unavailable": [],
+    "features": {
+     "history": "ok",
+     "coupling": "normal",
+     "resource": "normal",
+     "power": "finite",
+     "tap": "delayed",
+     "address": "ok",
+     "renewal": "normal"
+    },
+    "degrades": null
+   },
+   "mfs_a": {
+    "id": "MFS-F14-1",
+    "retained": [
+     "A2",
+     "history",
+     "interaction_channel",
+     "sensor_resource",
+     "sensor_alteration",
+     "environmental_persistence",
+     "feedback",
+     "resource_renewal"
+    ],
+    "route_kind": "history-mediated, renewal-mediated, coupling-mediated"
+   },
+   "mfs_b": {
+    "id": "MFS-F14-2",
+    "retained": [
+     "A2",
+     "interaction_channel",
+     "sensor_resource",
+     "sensor_alteration",
+     "environmental_persistence",
+     "feedback",
+     "resource_renewal",
+     "m2_tap"
+    ],
+    "route_kind": "M2-mediated, renewal-mediated, coupling-mediated"
+   },
+   "same_cardinality": true,
+   "rows": [
+    {
+     "measure": "preserved operation (share of seeds ACTIVE, confirmation seeds)",
+     "MFS-F14-1": 1.0,
+     "MFS-F14-2": 1.0,
+     "differs": false
+    },
+    {
+     "measure": "energy use (mean cumulative)",
+     "MFS-F14-1": 119.08,
+     "MFS-F14-2": 119.08,
+     "differs": false
+    },
+    {
+     "measure": "resource throughput",
+     "MFS-F14-1": 107.561,
+     "MFS-F14-2": 107.49,
+     "differs": true
+    },
+    {
+     "measure": "recovery capability (recovered with a pulse after an interruption, of 5)",
+     "MFS-F14-1": 5,
+     "MFS-F14-2": 5,
+     "differs": false
+    },
+    {
+     "measure": "recovery latency after the pulse (ticks)",
+     "MFS-F14-1": 11.0,
+     "MFS-F14-2": 12.0,
+     "differs": true
+    },
+    {
+     "measure": "perturbation sensitivity (collapse share per perturbation)",
+     "MFS-F14-1": {
+      "address loss of A2 (40 ticks)": 1.0,
+      "resource pulse 4.0 (oversupply)": 1.0,
+      "renewal efficiency 0.7": 0.0,
+      "coupling weakened (gain 0.5)": 1.0,
+      "SSS scale 1.15": 0.0,
+      "sensing noise 0.05": 0.0
+     },
+     "MFS-F14-2": {
+      "address loss of A2 (40 ticks)": 1.0,
+      "resource pulse 4.0 (oversupply)": 1.0,
+      "renewal efficiency 0.7": 1.0,
+      "coupling weakened (gain 0.5)": 1.0,
+      "SSS scale 1.15": 0.0,
+      "sensing noise 0.05": 0.2
+     },
+     "differs": true
+    },
+    {
+     "measure": "collapse modes",
+     "MFS-F14-1": {
+      "address loss of A2 (40 ticks)": "differentiated stimulus >= threshold",
+      "resource pulse 4.0 (oversupply)": "differentiated stimulus >= threshold",
+      "renewal efficiency 0.7": null,
+      "coupling weakened (gain 0.5)": "differentiated stimulus >= threshold",
+      "SSS scale 1.15": null,
+      "sensing noise 0.05": null
+     },
+     "MFS-F14-2": {
+      "address loss of A2 (40 ticks)": "differentiated stimulus >= threshold",
+      "resource pulse 4.0 (oversupply)": "differentiated stimulus >= threshold",
+      "renewal efficiency 0.7": "differentiated stimulus >= threshold",
+      "coupling weakened (gain 0.5)": "differentiated stimulus >= threshold",
+      "SSS scale 1.15": null,
+      "sensing noise 0.05": "differentiated stimulus >= threshold"
+     },
+     "differs": true
+    },
+    {
+     "measure": "history dependence (share of seeds that collapse without history)",
+     "MFS-F14-1": 1.0,
+     "MFS-F14-2": null,
+     "differs": true
+    },
+    {
+     "measure": "M2 dependence (persists without the tap, of 5)",
+     "MFS-F14-1": "n/a: the set has no tap",
+     "MFS-F14-2": "0 of 5 persist without the tap",
+     "differs": true
+    },
+    {
+     "measure": "Address dependence (mean collapse share under the Address fault battery)",
+     "MFS-F14-1": 0.72,
+     "MFS-F14-2": 0.72,
+     "differs": false
+    },
+    {
+     "measure": "Address faults (collapse share per fault)",
+     "MFS-F14-1": {
+      "loss of A1": 1.0,
+      "loss of A2": 1.0,
+      "partial A2 (50 %)": 1.0,
+      "fragment of A2 (50 %)": 0.6,
+      "delayed update of A2 (to 9,6; 20 ticks)": 0.0
+     },
+     "MFS-F14-2": {
+      "loss of A1": 1.0,
+      "loss of A2": 1.0,
+      "partial A2 (50 %)": 1.0,
+      "fragment of A2 (50 %)": 0.6,
+      "delayed update of A2 (to 9,6; 20 ticks)": 0.0
+     },
+     "differs": false
+    },
+    {
+     "measure": "SSS region at the default setting",
+     "MFS-F14-1": "OBSERVATION-SENSITIVE",
+     "MFS-F14-2": "OBSERVATION-SENSITIVE",
+     "differs": false
+    },
+    {
+     "measure": "operationally active range along scale",
+     "MFS-F14-1": [
+      0.5,
+      1.5
+     ],
+     "MFS-F14-2": [
+      0.5,
+      1.5
+     ],
+     "differs": false
+    },
+    {
+     "measure": "operationally active range along size",
+     "MFS-F14-1": [
+      0.5,
+      1.25
+     ],
+     "MFS-F14-2": [
+      0.75,
+      1.25
+     ],
+     "differs": true
+    },
+    {
+     "measure": "operationally active range along speed",
+     "MFS-F14-1": [
+      0.75,
+      2.0
+     ],
+     "MFS-F14-2": [
+      0.5,
+      1.1
+     ],
+     "differs": true
+    },
+    {
+     "measure": "metastable settings on the axes",
+     "MFS-F14-1": {
+      "scale": null,
+      "size": null,
+      "speed": null
+     },
+     "MFS-F14-2": {
+      "scale": null,
+      "size": null,
+      "speed": null
+     },
+     "differs": false
+    },
+    {
+     "measure": "observational robustness",
+     "MFS-F14-1": 0.0,
+     "MFS-F14-2": 0.0,
+     "differs": false
+    },
+    {
+     "measure": "stability across the validation seeds (persisting seeds of 5; mean cycles; mean cycle-interval CV)",
+     "MFS-F14-1": [
+      5,
+      47.0,
+      0.0
+     ],
+     "MFS-F14-2": [
+      5,
+      47.0,
+      0.0
+     ],
+     "differs": false
+    }
+   ],
+   "dependence_runs": {
+    "MFS-F14-1": {
+     "component": "history",
+     "persists_without_it": 0,
+     "seeds": 5
+    },
+    "MFS-F14-2": {
+     "component": "m2_tap",
+     "persists_without_it": 0,
+     "seeds": 5
+    }
+   },
+   "stability": {
+    "MFS-F14-1": {
+     "per_seed": [
+      {
+       "seed": 6,
+       "active_at_end": true,
+       "cycles": 47,
+       "cycle_interval_cv": 0.0
+      },
+      {
+       "seed": 7,
+       "active_at_end": true,
+       "cycles": 47,
+       "cycle_interval_cv": 0.0
+      },
+      {
+       "seed": 8,
+       "active_at_end": true,
+       "cycles": 47,
+       "cycle_interval_cv": 0.0
+      },
+      {
+       "seed": 9,
+       "active_at_end": true,
+       "cycles": 47,
+       "cycle_interval_cv": 0.0
+      },
+      {
+       "seed": 10,
+       "active_at_end": true,
+       "cycles": 47,
+       "cycle_interval_cv": 0.0
+      }
+     ],
+     "persists": 5,
+     "mean_cycles": 47.0,
+     "mean_cycle_interval_cv": 0.0
+    },
+    "MFS-F14-2": {
+     "per_seed": [
+      {
+       "seed": 6,
+       "active_at_end": true,
+       "cycles": 47,
+       "cycle_interval_cv": 0.0
+      },
+      {
+       "seed": 7,
+       "active_at_end": true,
+       "cycles": 47,
+       "cycle_interval_cv": 0.0
+      },
+      {
+       "seed": 8,
+       "active_at_end": true,
+       "cycles": 47,
+       "cycle_interval_cv": 0.0
+      },
+      {
+       "seed": 9,
+       "active_at_end": true,
+       "cycles": 47,
+       "cycle_interval_cv": 0.0
+      },
+      {
+       "seed": 10,
+       "active_at_end": true,
+       "cycles": 47,
+       "cycle_interval_cv": 0.0
+      }
+     ],
+     "persists": 5,
+     "mean_cycles": 47.0,
+     "mean_cycle_interval_cv": 0.0
+    }
+   },
+   "equivalence": {
+    "equivalent_through_level": 2,
+    "verdict": "operationally equivalent at level L2; non-equivalent at level L3 (differs in: perturbation sensitivity (Jaccard 0.60), history dependence)",
+    "differences_at_first_failed_level": [
+     "perturbation sensitivity (Jaccard 0.60)",
+     "history dependence"
+    ]
+   },
+   "claim": "route non-equivalence: both sets preserve the same specified operation in every validation seed, and they differ in internal operating form, dependence and stable region (resource throughput; recovery latency after the pulse (ticks); perturbation sensitivity (collapse share per perturbation); collapse modes; history dependence (share of seeds that collapse without history); M2 dependence (persists without the tap, of 5))"
+  },
+  "history_role": [
+   {
+    "condition": "F1",
+    "role": "contributes in some contexts only",
+    "classification": "SINGLE_MFS"
+   },
+   {
+    "condition": "F2",
+    "role": "redundant",
+    "classification": "SINGLE_MFS"
+   },
+   {
+    "condition": "F3",
+    "role": "substitutable",
+    "classification": "SINGLE_MFS"
+   },
+   {
+    "condition": "F4",
+    "role": "redundant",
+    "classification": "SINGLE_MFS"
+   },
+   {
+    "condition": "F5",
+    "role": "contributes in some contexts only",
+    "classification": "SINGLE_MFS"
+   },
+   {
+    "condition": "F6",
+    "role": "contributes in some contexts only",
+    "classification": "SINGLE_MFS"
+   },
+   {
+    "condition": "F7",
+    "role": "not available under this condition",
+    "classification": "SINGLE_MFS"
+   },
+   {
+    "condition": "F8",
+    "role": "compensatory",
+    "classification": "SINGLE_MFS"
+   },
+   {
+    "condition": "F9",
+    "role": "null",
+    "classification": "NO_MFS"
+   },
+   {
+    "condition": "F10",
+    "role": "compensatory",
+    "classification": "SINGLE_MFS"
+   },
+   {
+    "condition": "F11",
+    "role": "substitutable",
+    "classification": "SINGLE_MFS"
+   },
+   {
+    "condition": "F12",
+    "role": "necessary",
+    "classification": "SINGLE_MFS"
+   },
+   {
+    "condition": "F13",
+    "role": "necessary",
+    "classification": "SINGLE_MFS"
+   },
+   {
+    "condition": "F14",
+    "role": "substitutable",
+    "classification": "MULTIPLE_MFS"
+   },
+   {
+    "condition": "F15",
+    "role": "necessary",
+    "classification": "SINGLE_MFS"
+   },
+   {
+    "condition": "F16",
+    "role": "compensatory",
+    "classification": "INCONCLUSIVE"
+   }
+  ],
+  "route_equivalence": [
+   {
+    "a": "MFS-F1-1",
+    "b": "MFS-F2-1",
+    "level": 1,
+    "class": "non-equivalent",
+    "verdict": "operationally equivalent at level L1; non-equivalent at level L2 (differs in: energy use)",
+    "differences": [
+     "energy use"
+    ],
+    "preserved_operation": [
+     1.0,
+     1.0
+    ],
+    "energy": [
+     119.08,
+     71.5
+    ],
+    "resource": [
+     110.177,
+     121.154
+    ],
+    "recovery_latency": [
+     11.0,
+     11.0
+    ],
+    "history_dependence": [
+     null,
+     null
+    ],
+    "address_dependence": [
+     0.72,
+     0.72
+    ],
+    "sss_region": [
+     "OBSERVATION-SENSITIVE",
+     "OBSERVATION-SENSITIVE"
+    ],
+    "observation_robustness": [
+     0.0,
+     0.0
+    ]
+   },
+   {
+    "a": "MFS-F1-1",
+    "b": "MFS-F8-1",
+    "level": 2,
+    "class": "non-equivalent",
+    "verdict": "operationally equivalent at level L2; non-equivalent at level L3 (differs in: perturbation sensitivity (Jaccard 0.60), history dependence)",
+    "differences": [
+     "perturbation sensitivity (Jaccard 0.60)",
+     "history dependence"
+    ],
+    "preserved_operation": [
+     1.0,
+     1.0
+    ],
+    "energy": [
+     119.08,
+     119.08
+    ],
+    "resource": [
+     110.177,
+     110.191
+    ],
+    "recovery_latency": [
+     11.0,
+     11.0
+    ],
+    "history_dependence": [
+     null,
+     1.0
+    ],
+    "address_dependence": [
+     0.72,
+     0.72
+    ],
+    "sss_region": [
+     "OBSERVATION-SENSITIVE",
+     "OBSERVATION-SENSITIVE"
+    ],
+    "observation_robustness": [
+     0.0,
+     0.0
+    ]
+   },
+   {
+    "a": "MFS-F1-1",
+    "b": "MFS-F14-2",
+    "level": 4,
+    "class": "equivalent at tested preservation level",
+    "verdict": "operationally equivalent at level L4",
+    "differences": [],
+    "preserved_operation": [
+     1.0,
+     1.0
+    ],
+    "energy": [
+     119.08,
+     119.08
+    ],
+    "resource": [
+     110.177,
+     107.49
+    ],
+    "recovery_latency": [
+     11.0,
+     12.0
+    ],
+    "history_dependence": [
+     null,
+     null
+    ],
+    "address_dependence": [
+     0.72,
+     0.72
+    ],
+    "sss_region": [
+     "OBSERVATION-SENSITIVE",
+     "OBSERVATION-SENSITIVE"
+    ],
+    "observation_robustness": [
+     0.0,
+     0.0
+    ]
+   },
+   {
+    "a": "MFS-F2-1",
+    "b": "MFS-F8-1",
+    "level": 1,
+    "class": "non-equivalent",
+    "verdict": "operationally equivalent at level L1; non-equivalent at level L2 (differs in: energy use)",
+    "differences": [
+     "energy use"
+    ],
+    "preserved_operation": [
+     1.0,
+     1.0
+    ],
+    "energy": [
+     71.5,
+     119.08
+    ],
+    "resource": [
+     121.154,
+     110.191
+    ],
+    "recovery_latency": [
+     11.0,
+     11.0
+    ],
+    "history_dependence": [
+     null,
+     1.0
+    ],
+    "address_dependence": [
+     0.72,
+     0.72
+    ],
+    "sss_region": [
+     "OBSERVATION-SENSITIVE",
+     "OBSERVATION-SENSITIVE"
+    ],
+    "observation_robustness": [
+     0.0,
+     0.0
+    ]
+   },
+   {
+    "a": "MFS-F2-1",
+    "b": "MFS-F14-2",
+    "level": 1,
+    "class": "non-equivalent",
+    "verdict": "operationally equivalent at level L1; non-equivalent at level L2 (differs in: energy use)",
+    "differences": [
+     "energy use"
+    ],
+    "preserved_operation": [
+     1.0,
+     1.0
+    ],
+    "energy": [
+     71.5,
+     119.08
+    ],
+    "resource": [
+     121.154,
+     107.49
+    ],
+    "recovery_latency": [
+     11.0,
+     12.0
+    ],
+    "history_dependence": [
+     null,
+     null
+    ],
+    "address_dependence": [
+     0.72,
+     0.72
+    ],
+    "sss_region": [
+     "OBSERVATION-SENSITIVE",
+     "OBSERVATION-SENSITIVE"
+    ],
+    "observation_robustness": [
+     0.0,
+     0.0
+    ]
+   },
+   {
+    "a": "MFS-F8-1",
+    "b": "MFS-F14-2",
+    "level": 2,
+    "class": "non-equivalent",
+    "verdict": "operationally equivalent at level L2; non-equivalent at level L3 (differs in: perturbation sensitivity (Jaccard 0.60), history dependence)",
+    "differences": [
+     "perturbation sensitivity (Jaccard 0.60)",
+     "history dependence"
+    ],
+    "preserved_operation": [
+     1.0,
+     1.0
+    ],
+    "energy": [
+     119.08,
+     119.08
+    ],
+    "resource": [
+     110.191,
+     107.49
+    ],
+    "recovery_latency": [
+     11.0,
+     12.0
+    ],
+    "history_dependence": [
+     1.0,
+     null
+    ],
+    "address_dependence": [
+     0.72,
+     0.72
+    ],
+    "sss_region": [
+     "OBSERVATION-SENSITIVE",
+     "OBSERVATION-SENSITIVE"
+    ],
+    "observation_robustness": [
+     0.0,
+     0.0
+    ]
+   }
+  ],
+  "reconfiguration": {
+   "criteria": {
+    "effective": "persistence higher than the no-reconfiguration control by at least 3 of 10 seeds AND Fisher exact p < 0.05 (unadjusted) AND mean switching cost <= 3",
+    "harmful": "persistence lower than the control by at least 3 of 10 seeds AND Fisher exact p < 0.05",
+    "no effect": "otherwise (no difference or a difference too small to separate from the control with 10 seeds)",
+    "note": "a route switch is not a success: success is a better outcome than the control, never that a switch happened. The criteria are generic and were written down in code after the first complete run had been looked at; they are reported with the Holm-adjusted p over all comparisons so that a result that does not survive the correction says so."
+   },
+   "comparisons": 30,
+   "verdicts": [
+    {
+     "scenario": "history lost",
+     "controller": "fixed",
+     "persisted_k_of_n": [
+      5,
+      10
+     ],
+     "control_k_of_n": [
+      0,
+      10
+     ],
+     "difference_in_seeds": 5,
+     "cohens_h": 1.5708,
+     "fisher_p_unadjusted": 0.03251,
+     "holm_p_over_all_comparisons": 0.9753,
+     "survives_correction": false,
+     "verdict": "effective",
+     "switches_per_run": 1.0,
+     "mean_switching_cost": 1.0,
+     "false_switches": 0,
+     "unnecessary_switches": 0,
+     "energy_cost_vs_none": 11.04,
+     "route_switch_occurred_in_runs": true
+    },
+    {
+     "scenario": "history lost",
+     "controller": "adaptive",
+     "persisted_k_of_n": [
+      0,
+      10
+     ],
+     "control_k_of_n": [
+      0,
+      10
+     ],
+     "difference_in_seeds": 0,
+     "cohens_h": 0.0,
+     "fisher_p_unadjusted": 1.0,
+     "holm_p_over_all_comparisons": 1.0,
+     "survives_correction": false,
+     "verdict": "no effect",
+     "switches_per_run": 0.0,
+     "mean_switching_cost": 0.0,
+     "false_switches": 0,
+     "unnecessary_switches": 0,
+     "energy_cost_vs_none": 0.0,
+     "route_switch_occurred_in_runs": false
+    },
+    {
+     "scenario": "history lost",
+     "controller": "adaptive_shed",
+     "persisted_k_of_n": [
+      0,
+      10
+     ],
+     "control_k_of_n": [
+      0,
+      10
+     ],
+     "difference_in_seeds": 0,
+     "cohens_h": 0.0,
+     "fisher_p_unadjusted": 1.0,
+     "holm_p_over_all_comparisons": 1.0,
+     "survives_correction": false,
+     "verdict": "no effect",
+     "switches_per_run": 1.0,
+     "mean_switching_cost": 1.0,
+     "false_switches": 0,
+     "unnecessary_switches": 0,
+     "energy_cost_vs_none": 0.0,
+     "route_switch_occurred_in_runs": true
+    },
+    {
+     "scenario": "history lost",
+     "controller": "delayed",
+     "persisted_k_of_n": [
+      0,
+      10
+     ],
+     "control_k_of_n": [
+      0,
+      10
+     ],
+     "difference_in_seeds": 0,
+     "cohens_h": 0.0,
+     "fisher_p_unadjusted": 1.0,
+     "holm_p_over_all_comparisons": 1.0,
+     "survives_correction": false,
+     "verdict": "no effect",
+     "switches_per_run": 0.0,
+     "mean_switching_cost": 0.0,
+     "false_switches": 0,
+     "unnecessary_switches": 0,
+     "energy_cost_vs_none": 0.0,
+     "route_switch_occurred_in_runs": false
+    },
+    {
+     "scenario": "history lost",
+     "controller": "noisy",
+     "persisted_k_of_n": [
+      1,
+      10
+     ],
+     "control_k_of_n": [
+      0,
+      10
+     ],
+     "difference_in_seeds": 1,
+     "cohens_h": 0.6435,
+     "fisher_p_unadjusted": 1.0,
+     "holm_p_over_all_comparisons": 1.0,
+     "survives_correction": false,
+     "verdict": "no effect",
+     "switches_per_run": 0.1,
+     "mean_switching_cost": 0.1,
+     "false_switches": 1,
+     "unnecessary_switches": 0,
+     "energy_cost_vs_none": 0.0,
+     "route_switch_occurred_in_runs": true
+    },
+    {
+     "scenario": "coupling weakened (gain 0.5)",
+     "controller": "fixed",
+     "persisted_k_of_n": [
+      0,
+      10
+     ],
+     "control_k_of_n": [
+      0,
+      10
+     ],
+     "difference_in_seeds": 0,
+     "cohens_h": 0.0,
+     "fisher_p_unadjusted": 1.0,
+     "holm_p_over_all_comparisons": 1.0,
+     "survives_correction": false,
+     "verdict": "no effect",
+     "switches_per_run": 1.0,
+     "mean_switching_cost": 1.0,
+     "false_switches": 0,
+     "unnecessary_switches": 0,
+     "energy_cost_vs_none": 0.0,
+     "route_switch_occurred_in_runs": true
+    },
+    {
+     "scenario": "coupling weakened (gain 0.5)",
+     "controller": "adaptive",
+     "persisted_k_of_n": [
+      0,
+      10
+     ],
+     "control_k_of_n": [
+      0,
+      10
+     ],
+     "difference_in_seeds": 0,
+     "cohens_h": 0.0,
+     "fisher_p_unadjusted": 1.0,
+     "holm_p_over_all_comparisons": 1.0,
+     "survives_correction": false,
+     "verdict": "no effect",
+     "switches_per_run": 0.0,
+     "mean_switching_cost": 0.0,
+     "false_switches": 0,
+     "unnecessary_switches": 0,
+     "energy_cost_vs_none": 0.0,
+     "route_switch_occurred_in_runs": false
+    },
+    {
+     "scenario": "coupling weakened (gain 0.5)",
+     "controller": "adaptive_shed",
+     "persisted_k_of_n": [
+      0,
+      10
+     ],
+     "control_k_of_n": [
+      0,
+      10
+     ],
+     "difference_in_seeds": 0,
+     "cohens_h": 0.0,
+     "fisher_p_unadjusted": 1.0,
+     "holm_p_over_all_comparisons": 1.0,
+     "survives_correction": false,
+     "verdict": "no effect",
+     "switches_per_run": 1.0,
+     "mean_switching_cost": 1.0,
+     "false_switches": 0,
+     "unnecessary_switches": 0,
+     "energy_cost_vs_none": 0.0,
+     "route_switch_occurred_in_runs": true
+    },
+    {
+     "scenario": "coupling weakened (gain 0.5)",
+     "controller": "delayed",
+     "persisted_k_of_n": [
+      0,
+      10
+     ],
+     "control_k_of_n": [
+      0,
+      10
+     ],
+     "difference_in_seeds": 0,
+     "cohens_h": 0.0,
+     "fisher_p_unadjusted": 1.0,
+     "holm_p_over_all_comparisons": 1.0,
+     "survives_correction": false,
+     "verdict": "no effect",
+     "switches_per_run": 0.0,
+     "mean_switching_cost": 0.0,
+     "false_switches": 0,
+     "unnecessary_switches": 0,
+     "energy_cost_vs_none": 0.0,
+     "route_switch_occurred_in_runs": false
+    },
+    {
+     "scenario": "coupling weakened (gain 0.5)",
+     "controller": "noisy",
+     "persisted_k_of_n": [
+      0,
+      10
+     ],
+     "control_k_of_n": [
+      0,
+      10
+     ],
+     "difference_in_seeds": 0,
+     "cohens_h": 0.0,
+     "fisher_p_unadjusted": 1.0,
+     "holm_p_over_all_comparisons": 1.0,
+     "survives_correction": false,
+     "verdict": "no effect",
+     "switches_per_run": 0.0,
+     "mean_switching_cost": 0.0,
+     "false_switches": 0,
+     "unnecessary_switches": 0,
+     "energy_cost_vs_none": 0.0,
+     "route_switch_occurred_in_runs": false
+    },
+    {
+     "scenario": "resource reduced",
+     "controller": "fixed",
+     "persisted_k_of_n": [
+      0,
+      10
+     ],
+     "control_k_of_n": [
+      0,
+      10
+     ],
+     "difference_in_seeds": 0,
+     "cohens_h": 0.0,
+     "fisher_p_unadjusted": 1.0,
+     "holm_p_over_all_comparisons": 1.0,
+     "survives_correction": false,
+     "verdict": "no effect",
+     "switches_per_run": 1.0,
+     "mean_switching_cost": 1.0,
+     "false_switches": 0,
+     "unnecessary_switches": 0,
+     "energy_cost_vs_none": 0.0,
+     "route_switch_occurred_in_runs": true
+    },
+    {
+     "scenario": "resource reduced",
+     "controller": "adaptive",
+     "persisted_k_of_n": [
+      0,
+      10
+     ],
+     "control_k_of_n": [
+      0,
+      10
+     ],
+     "difference_in_seeds": 0,
+     "cohens_h": 0.0,
+     "fisher_p_unadjusted": 1.0,
+     "holm_p_over_all_comparisons": 1.0,
+     "survives_correction": false,
+     "verdict": "no effect",
+     "switches_per_run": 0.0,
+     "mean_switching_cost": 0.0,
+     "false_switches": 0,
+     "unnecessary_switches": 0,
+     "energy_cost_vs_none": 0.0,
+     "route_switch_occurred_in_runs": false
+    },
+    {
+     "scenario": "resource reduced",
+     "controller": "adaptive_shed",
+     "persisted_k_of_n": [
+      0,
+      10
+     ],
+     "control_k_of_n": [
+      0,
+      10
+     ],
+     "difference_in_seeds": 0,
+     "cohens_h": 0.0,
+     "fisher_p_unadjusted": 1.0,
+     "holm_p_over_all_comparisons": 1.0,
+     "survives_correction": false,
+     "verdict": "no effect",
+     "switches_per_run": 1.0,
+     "mean_switching_cost": 1.0,
+     "false_switches": 0,
+     "unnecessary_switches": 0,
+     "energy_cost_vs_none": 0.0,
+     "route_switch_occurred_in_runs": true
+    },
+    {
+     "scenario": "resource reduced",
+     "controller": "delayed",
+     "persisted_k_of_n": [
+      0,
+      10
+     ],
+     "control_k_of_n": [
+      0,
+      10
+     ],
+     "difference_in_seeds": 0,
+     "cohens_h": 0.0,
+     "fisher_p_unadjusted": 1.0,
+     "holm_p_over_all_comparisons": 1.0,
+     "survives_correction": false,
+     "verdict": "no effect",
+     "switches_per_run": 0.0,
+     "mean_switching_cost": 0.0,
+     "false_switches": 0,
+     "unnecessary_switches": 0,
+     "energy_cost_vs_none": 0.0,
+     "route_switch_occurred_in_runs": false
+    },
+    {
+     "scenario": "resource reduced",
+     "controller": "noisy",
+     "persisted_k_of_n": [
+      0,
+      10
+     ],
+     "control_k_of_n": [
+      0,
+      10
+     ],
+     "difference_in_seeds": 0,
+     "cohens_h": 0.0,
+     "fisher_p_unadjusted": 1.0,
+     "holm_p_over_all_comparisons": 1.0,
+     "survives_correction": false,
+     "verdict": "no effect",
+     "switches_per_run": 0.0,
+     "mean_switching_cost": 0.0,
+     "false_switches": 0,
+     "unnecessary_switches": 0,
+     "energy_cost_vs_none": 0.0,
+     "route_switch_occurred_in_runs": false
+    },
+    {
+     "scenario": "renewal efficiency 0.6",
+     "controller": "fixed",
+     "persisted_k_of_n": [
+      0,
+      10
+     ],
+     "control_k_of_n": [
+      0,
+      10
+     ],
+     "difference_in_seeds": 0,
+     "cohens_h": 0.0,
+     "fisher_p_unadjusted": 1.0,
+     "holm_p_over_all_comparisons": 1.0,
+     "survives_correction": false,
+     "verdict": "no effect",
+     "switches_per_run": 1.0,
+     "mean_switching_cost": 1.0,
+     "false_switches": 0,
+     "unnecessary_switches": 0,
+     "energy_cost_vs_none": 0.0,
+     "route_switch_occurred_in_runs": true
+    },
+    {
+     "scenario": "renewal efficiency 0.6",
+     "controller": "adaptive",
+     "persisted_k_of_n": [
+      0,
+      10
+     ],
+     "control_k_of_n": [
+      0,
+      10
+     ],
+     "difference_in_seeds": 0,
+     "cohens_h": 0.0,
+     "fisher_p_unadjusted": 1.0,
+     "holm_p_over_all_comparisons": 1.0,
+     "survives_correction": false,
+     "verdict": "no effect",
+     "switches_per_run": 0.0,
+     "mean_switching_cost": 0.0,
+     "false_switches": 0,
+     "unnecessary_switches": 0,
+     "energy_cost_vs_none": 0.0,
+     "route_switch_occurred_in_runs": false
+    },
+    {
+     "scenario": "renewal efficiency 0.6",
+     "controller": "adaptive_shed",
+     "persisted_k_of_n": [
+      0,
+      10
+     ],
+     "control_k_of_n": [
+      0,
+      10
+     ],
+     "difference_in_seeds": 0,
+     "cohens_h": 0.0,
+     "fisher_p_unadjusted": 1.0,
+     "holm_p_over_all_comparisons": 1.0,
+     "survives_correction": false,
+     "verdict": "no effect",
+     "switches_per_run": 1.0,
+     "mean_switching_cost": 1.0,
+     "false_switches": 0,
+     "unnecessary_switches": 0,
+     "energy_cost_vs_none": 0.0,
+     "route_switch_occurred_in_runs": true
+    },
+    {
+     "scenario": "renewal efficiency 0.6",
+     "controller": "delayed",
+     "persisted_k_of_n": [
+      0,
+      10
+     ],
+     "control_k_of_n": [
+      0,
+      10
+     ],
+     "difference_in_seeds": 0,
+     "cohens_h": 0.0,
+     "fisher_p_unadjusted": 1.0,
+     "holm_p_over_all_comparisons": 1.0,
+     "survives_correction": false,
+     "verdict": "no effect",
+     "switches_per_run": 0.0,
+     "mean_switching_cost": 0.0,
+     "false_switches": 0,
+     "unnecessary_switches": 0,
+     "energy_cost_vs_none": 0.0,
+     "route_switch_occurred_in_runs": false
+    },
+    {
+     "scenario": "renewal efficiency 0.6",
+     "controller": "noisy",
+     "persisted_k_of_n": [
+      0,
+      10
+     ],
+     "control_k_of_n": [
+      0,
+      10
+     ],
+     "difference_in_seeds": 0,
+     "cohens_h": 0.0,
+     "fisher_p_unadjusted": 1.0,
+     "holm_p_over_all_comparisons": 1.0,
+     "survives_correction": false,
+     "verdict": "no effect",
+     "switches_per_run": 0.0,
+     "mean_switching_cost": 0.0,
+     "false_switches": 0,
+     "unnecessary_switches": 0,
+     "energy_cost_vs_none": 0.0,
+     "route_switch_occurred_in_runs": false
+    },
+    {
+     "scenario": "renewal disabled",
+     "controller": "fixed",
+     "persisted_k_of_n": [
+      0,
+      10
+     ],
+     "control_k_of_n": [
+      0,
+      10
+     ],
+     "difference_in_seeds": 0,
+     "cohens_h": 0.0,
+     "fisher_p_unadjusted": 1.0,
+     "holm_p_over_all_comparisons": 1.0,
+     "survives_correction": false,
+     "verdict": "no effect",
+     "switches_per_run": 1.0,
+     "mean_switching_cost": 1.0,
+     "false_switches": 0,
+     "unnecessary_switches": 0,
+     "energy_cost_vs_none": 0.0,
+     "route_switch_occurred_in_runs": true
+    },
+    {
+     "scenario": "renewal disabled",
+     "controller": "adaptive",
+     "persisted_k_of_n": [
+      0,
+      10
+     ],
+     "control_k_of_n": [
+      0,
+      10
+     ],
+     "difference_in_seeds": 0,
+     "cohens_h": 0.0,
+     "fisher_p_unadjusted": 1.0,
+     "holm_p_over_all_comparisons": 1.0,
+     "survives_correction": false,
+     "verdict": "no effect",
+     "switches_per_run": 1.0,
+     "mean_switching_cost": 1.0,
+     "false_switches": 0,
+     "unnecessary_switches": 0,
+     "energy_cost_vs_none": 0.0,
+     "route_switch_occurred_in_runs": true
+    },
+    {
+     "scenario": "renewal disabled",
+     "controller": "adaptive_shed",
+     "persisted_k_of_n": [
+      0,
+      10
+     ],
+     "control_k_of_n": [
+      0,
+      10
+     ],
+     "difference_in_seeds": 0,
+     "cohens_h": 0.0,
+     "fisher_p_unadjusted": 1.0,
+     "holm_p_over_all_comparisons": 1.0,
+     "survives_correction": false,
+     "verdict": "no effect",
+     "switches_per_run": 1.0,
+     "mean_switching_cost": 2.0,
+     "false_switches": 0,
+     "unnecessary_switches": 0,
+     "energy_cost_vs_none": 0.0,
+     "route_switch_occurred_in_runs": true
+    },
+    {
+     "scenario": "renewal disabled",
+     "controller": "delayed",
+     "persisted_k_of_n": [
+      0,
+      10
+     ],
+     "control_k_of_n": [
+      0,
+      10
+     ],
+     "difference_in_seeds": 0,
+     "cohens_h": 0.0,
+     "fisher_p_unadjusted": 1.0,
+     "holm_p_over_all_comparisons": 1.0,
+     "survives_correction": false,
+     "verdict": "no effect",
+     "switches_per_run": 1.0,
+     "mean_switching_cost": 1.0,
+     "false_switches": 0,
+     "unnecessary_switches": 0,
+     "energy_cost_vs_none": 0.0,
+     "route_switch_occurred_in_runs": true
+    },
+    {
+     "scenario": "renewal disabled",
+     "controller": "noisy",
+     "persisted_k_of_n": [
+      0,
+      10
+     ],
+     "control_k_of_n": [
+      0,
+      10
+     ],
+     "difference_in_seeds": 0,
+     "cohens_h": 0.0,
+     "fisher_p_unadjusted": 1.0,
+     "holm_p_over_all_comparisons": 1.0,
+     "survives_correction": false,
+     "verdict": "no effect",
+     "switches_per_run": 0.7,
+     "mean_switching_cost": 0.7,
+     "false_switches": 0,
+     "unnecessary_switches": 0,
+     "energy_cost_vs_none": 0.0,
+     "route_switch_occurred_in_runs": true
+    },
+    {
+     "scenario": "Address degraded (A2 partial 50 %)",
+     "controller": "fixed",
+     "persisted_k_of_n": [
+      0,
+      10
+     ],
+     "control_k_of_n": [
+      0,
+      10
+     ],
+     "difference_in_seeds": 0,
+     "cohens_h": 0.0,
+     "fisher_p_unadjusted": 1.0,
+     "holm_p_over_all_comparisons": 1.0,
+     "survives_correction": false,
+     "verdict": "no effect",
+     "switches_per_run": 1.0,
+     "mean_switching_cost": 1.0,
+     "false_switches": 0,
+     "unnecessary_switches": 0,
+     "energy_cost_vs_none": 0.0,
+     "route_switch_occurred_in_runs": true
+    },
+    {
+     "scenario": "Address degraded (A2 partial 50 %)",
+     "controller": "adaptive",
+     "persisted_k_of_n": [
+      0,
+      10
+     ],
+     "control_k_of_n": [
+      0,
+      10
+     ],
+     "difference_in_seeds": 0,
+     "cohens_h": 0.0,
+     "fisher_p_unadjusted": 1.0,
+     "holm_p_over_all_comparisons": 1.0,
+     "survives_correction": false,
+     "verdict": "no effect",
+     "switches_per_run": 0.0,
+     "mean_switching_cost": 0.0,
+     "false_switches": 0,
+     "unnecessary_switches": 0,
+     "energy_cost_vs_none": 0.0,
+     "route_switch_occurred_in_runs": false
+    },
+    {
+     "scenario": "Address degraded (A2 partial 50 %)",
+     "controller": "adaptive_shed",
+     "persisted_k_of_n": [
+      0,
+      10
+     ],
+     "control_k_of_n": [
+      0,
+      10
+     ],
+     "difference_in_seeds": 0,
+     "cohens_h": 0.0,
+     "fisher_p_unadjusted": 1.0,
+     "holm_p_over_all_comparisons": 1.0,
+     "survives_correction": false,
+     "verdict": "no effect",
+     "switches_per_run": 1.0,
+     "mean_switching_cost": 1.0,
+     "false_switches": 0,
+     "unnecessary_switches": 0,
+     "energy_cost_vs_none": 0.0,
+     "route_switch_occurred_in_runs": true
+    },
+    {
+     "scenario": "Address degraded (A2 partial 50 %)",
+     "controller": "delayed",
+     "persisted_k_of_n": [
+      0,
+      10
+     ],
+     "control_k_of_n": [
+      0,
+      10
+     ],
+     "difference_in_seeds": 0,
+     "cohens_h": 0.0,
+     "fisher_p_unadjusted": 1.0,
+     "holm_p_over_all_comparisons": 1.0,
+     "survives_correction": false,
+     "verdict": "no effect",
+     "switches_per_run": 0.0,
+     "mean_switching_cost": 0.0,
+     "false_switches": 0,
+     "unnecessary_switches": 0,
+     "energy_cost_vs_none": 0.0,
+     "route_switch_occurred_in_runs": false
+    },
+    {
+     "scenario": "Address degraded (A2 partial 50 %)",
+     "controller": "noisy",
+     "persisted_k_of_n": [
+      0,
+      10
+     ],
+     "control_k_of_n": [
+      0,
+      10
+     ],
+     "difference_in_seeds": 0,
+     "cohens_h": 0.0,
+     "fisher_p_unadjusted": 1.0,
+     "holm_p_over_all_comparisons": 1.0,
+     "survives_correction": false,
+     "verdict": "no effect",
+     "switches_per_run": 0.0,
+     "mean_switching_cost": 0.0,
+     "false_switches": 0,
+     "unnecessary_switches": 0,
+     "energy_cost_vs_none": 0.0,
+     "route_switch_occurred_in_runs": false
+    }
+   ],
+   "by_controller": {
+    "fixed": {
+     "effective": 1,
+     "harmful": 0,
+     "no effect": 5,
+     "scenarios_with_a_switch": 6
+    },
+    "adaptive": {
+     "effective": 0,
+     "harmful": 0,
+     "no effect": 6,
+     "scenarios_with_a_switch": 1
+    },
+    "adaptive_shed": {
+     "effective": 0,
+     "harmful": 0,
+     "no effect": 6,
+     "scenarios_with_a_switch": 6
+    },
+    "delayed": {
+     "effective": 0,
+     "harmful": 0,
+     "no effect": 6,
+     "scenarios_with_a_switch": 1
+    },
+    "noisy": {
+     "effective": 0,
+     "harmful": 0,
+     "no effect": 6,
+     "scenarios_with_a_switch": 2
+    }
+   },
+   "family": "Holm correction over the 30 comparisons (5 controllers x 6 stress scenarios; the no-stress control is the false-switch measure)"
+  },
+  "fixed_fallback_confirmation": {
+   "scenario": "history lost",
+   "seeds": [
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30
+   ],
+   "persisted": {
+    "none": {
+     "k": 0,
+     "n": 20,
+     "p": 0.0,
+     "wilson95": [
+      0.0,
+      0.1611
+     ]
+    },
+    "fixed": {
+     "k": 9,
+     "n": 20,
+     "p": 0.45,
+     "wilson95": [
+      0.2582,
+      0.6579
+     ]
+    },
+    "adaptive": {
+     "k": 0,
+     "n": 20,
+     "p": 0.0,
+     "wilson95": [
+      0.0,
+      0.1611
+     ]
+    },
+    "adaptive_shed": {
+     "k": 0,
+     "n": 20,
+     "p": 0.0,
+     "wilson95": [
+      0.0,
+      0.1611
+     ]
+    }
+   },
+   "fixed_vs_none": {
+    "a": {
+     "k": 9,
+     "n": 20,
+     "p": 0.45,
+     "wilson95": [
+      0.2582,
+      0.6579
+     ]
+    },
+    "b": {
+     "k": 0,
+     "n": 20,
+     "p": 0.0,
+     "wilson95": [
+      0.0,
+      0.1611
+     ]
+    },
+    "cohens_h": 1.4706,
+    "fisher_exact_p": 0.00123
+   },
+   "adaptive_vs_none": {
+    "a": {
+     "k": 0,
+     "n": 20,
+     "p": 0.0,
+     "wilson95": [
+      0.0,
+      0.1611
+     ]
+    },
+    "b": {
+     "k": 0,
+     "n": 20,
+     "p": 0.0,
+     "wilson95": [
+      0.0,
+      0.1611
+     ]
+    },
+    "cohens_h": 0.0,
+    "fisher_exact_p": 1.0
+   },
+   "adaptive_shed_vs_none": {
+    "a": {
+     "k": 0,
+     "n": 20,
+     "p": 0.0,
+     "wilson95": [
+      0.0,
+      0.1611
+     ]
+    },
+    "b": {
+     "k": 0,
+     "n": 20,
+     "p": 0.0,
+     "wilson95": [
+      0.0,
+      0.1611
+     ]
+    },
+    "cohens_h": 0.0,
+    "fisher_exact_p": 1.0
+   }
+  },
+  "address": {
+   "statement": "The present MEOS dynamics did not sustain a long-lived spatially separated configuration suitable for independently testing persistent address dependence. In every persisting arrangement of the 48 screened, the two configurations ended on one cell and A2 stopped moving after tick 60.",
+   "not_concluded": "This is not a finding that Address is unnecessary: with the configurations on one cell, collision, stale and crossing cannot differ from the control, and loss, reassignment and partial addressability collapsed the run.",
+   "persisting_arrangements": [
+    {
+     "id": "A2@5,6 speed 1.0 radii A2 2 A1 2",
+     "a2x": 5,
+     "a2y": 6,
+     "speed": 1.0,
+     "a2r": 2,
+     "a1r": 2,
+     "active_seeds": 5,
+     "mean_separation_after_60": 0.0,
+     "a2_moves_after_60": 0.0,
+     "separated": false,
+     "moving_late": false
+    },
+    {
+     "id": "A2@5,6 speed 1.0 radii A2 4 A1 2",
+     "a2x": 5,
+     "a2y": 6,
+     "speed": 1.0,
+     "a2r": 4,
+     "a1r": 2,
+     "active_seeds": 5,
+     "mean_separation_after_60": 0.0,
+     "a2_moves_after_60": 0.0,
+     "separated": false,
+     "moving_late": false
+    },
+    {
+     "id": "A2@5,6 speed 1.0 radii A2 6 A1 2",
+     "a2x": 5,
+     "a2y": 6,
+     "speed": 1.0,
+     "a2r": 6,
+     "a1r": 2,
+     "active_seeds": 5,
+     "mean_separation_after_60": 0.0,
+     "a2_moves_after_60": 0.0,
+     "separated": false,
+     "moving_late": false
+    },
+    {
+     "id": "A2@7,6 speed 1.0 radii A2 4 A1 2",
+     "a2x": 7,
+     "a2y": 6,
+     "speed": 1.0,
+     "a2r": 4,
+     "a1r": 2,
+     "active_seeds": 5,
+     "mean_separation_after_60": 0.0,
+     "a2_moves_after_60": 0.0,
+     "separated": false,
+     "moving_late": false
+    },
+    {
+     "id": "A2@7,6 speed 1.0 radii A2 6 A1 2",
+     "a2x": 7,
+     "a2y": 6,
+     "speed": 1.0,
+     "a2r": 6,
+     "a1r": 2,
+     "active_seeds": 5,
+     "mean_separation_after_60": 0.0,
+     "a2_moves_after_60": 0.0,
+     "separated": false,
+     "moving_late": false
+    },
+    {
+     "id": "A2@9,6 speed 1.0 radii A2 6 A1 2",
+     "a2x": 9,
+     "a2y": 6,
+     "speed": 1.0,
+     "a2r": 6,
+     "a1r": 2,
+     "active_seeds": 5,
+     "mean_separation_after_60": 0.0,
+     "a2_moves_after_60": 0.0,
+     "separated": false,
+     "moving_late": false
+    }
+   ],
+   "screened": 48,
+   "stage4_strict_nulls_kept": [
+    {
+     "fault": "collision",
+     "target": "A1",
+     "class": "null (dynamics identical to the control)"
+    },
+    {
+     "fault": "collision",
+     "target": "A2",
+     "class": "null (dynamics identical to the control)"
+    },
+    {
+     "fault": "stale (30 ticks)",
+     "target": "A1",
+     "class": "null (dynamics identical to the control)"
+    },
+    {
+     "fault": "stale (30 ticks)",
+     "target": "A2",
+     "class": "null (dynamics identical to the control)"
+    }
+   ],
+   "stage4_fixed_condition_vs_stage5_dynamic_conditions": "Stage 4 (default arrangement, tick 100): collision and stale are strict nulls. Stage 5 (screened arrangements, ticks 12 and 100): collision and stale are again null in every persisting arrangement; no non-null condition for them was produced and none was manufactured."
+  },
+  "sss_x_mfs": {
+   "statement": "On the tested grid, all ACTIVE points were also observation-sensitive: no point was ACTIVE without being OBSERVATION-SENSITIVE (the observation-sensitive set coincides with the operationally active set), so no independent observation-sensitive island is claimed.",
+   "active_only_points": 0,
+   "observation_sensitive_points": 219,
+   "islands": [
+    {
+     "mfs": [
+      "MFS-F1-1",
+      "MFS-F2-1",
+      "MFS-F3-1",
+      "MFS-F4-1",
+      "MFS-F5-1",
+      "MFS-F6-1",
+      "MFS-F7-1",
+      "MFS-F11-1"
+     ],
+     "operationally_active_ranges_along_the_axes": {
+      "scale": [
+       0.5,
+       1.1
+      ],
+      "size": [
+       1.0,
+       1.25
+      ],
+      "speed": [
+       0.9,
+       2.0
+      ]
+     }
+    },
+    {
+     "mfs": [
+      "MFS-F8-1"
+     ],
+     "operationally_active_ranges_along_the_axes": {
+      "scale": [
+       0.5,
+       1.5
+      ],
+      "size": [
+       0.75,
+       1.25
+      ],
+      "speed": [
+       0.75,
+       2.0
+      ]
+     }
+    },
+    {
+     "mfs": [
+      "MFS-F10-1",
+      "MFS-F16-1"
+     ],
+     "operationally_active_ranges_along_the_axes": {
+      "scale": [
+       0.5,
+       1.25
+      ],
+      "size": [
+       1.0,
+       1.25
+      ],
+      "speed": [
+       0.9,
+       1.1
+      ]
+     }
+    },
+    {
+     "mfs": [
+      "MFS-F12-1",
+      "MFS-F13-1",
+      "MFS-F14-1",
+      "MFS-F15-1"
+     ],
+     "operationally_active_ranges_along_the_axes": {
+      "scale": [
+       0.5,
+       1.5
+      ],
+      "size": [
+       0.5,
+       1.25
+      ],
+      "speed": [
+       0.75,
+       2.0
+      ]
+     }
+    },
+    {
+     "mfs": [
+      "MFS-F14-2"
+     ],
+     "operationally_active_ranges_along_the_axes": {
+      "scale": [
+       0.5,
+       1.5
+      ],
+      "size": [
+       0.75,
+       1.25
+      ],
+      "speed": [
+       0.5,
+       1.1
+      ]
+     }
+    }
+   ]
+  },
+  "statistics": {
+   "effect_sizes": "Cohen's h for differences of proportions, Cliff's delta for unpaired samples",
+   "intervals": "Wilson 95 % for proportions; bootstrap 95 % for medians",
+   "tests": "Fisher exact (proportions), Wilcoxon signed-rank (paired), Mann-Whitney (unpaired); few seeds: descriptions, not verdicts",
+   "multiple_comparisons": "Holm over the 30 reconfiguration comparisons; experiments G and H report proportions with intervals and do no hypothesis test across cells"
   }
  }
 }
