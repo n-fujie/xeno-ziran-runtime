@@ -101,7 +101,7 @@ class Controller:
     def __init__(self, kind: str, library: list[dict], arrangement: dict, *, delay: int = 15, noise: float = 0.0, seed: int = 0, start: int = 60, cooldown: int = 30, max_switches: int = 3, debounce: int = 3, fixed_route: str = "m2_tap"):
         self.kind, self.lib, self.arr = kind, library, arrangement
         self.delay = delay if kind == "delayed" else 0
-        self.shed = kind == "adaptive_shed"
+        self.shed = kind in ("adaptive_shed", "adaptive_mid")  # adaptive_mid: a library of actions that survive a stress in mid-run (midrun.py), which mostly remove components
         self.noise = noise if kind == "noisy" else 0.0
         self.rng = np.random.default_rng(seed + 777)
         self.start, self.cooldown, self.max_switches = start, cooldown, max_switches
@@ -134,6 +134,8 @@ class Controller:
         if not scored:
             return {"candidates": [], "distance": None}
         best = min(d for d, _ in scored)
+        if self.kind == "adaptive_mid" and best > 0:
+            return {"candidates": [], "distance": best}  # an action of the mid-run library is valid only for the signature it was found for, not for the nearest other one
         cands = []
         for d, m in scored:
             if d != best:

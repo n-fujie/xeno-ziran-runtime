@@ -1,5 +1,6 @@
 **Unimplemented**
-- Search over mid-run removal and re-entry (MFS are searched for removal at tick 0 only). The adaptive-controller diagnosis (section 13.1) shows this is the missing experiment: a library of sets that survive a stress arriving in mid-run, from which a controller could actually prescribe an action.
+- Search over mid-run removal and re-entry (MFS are searched for removal at tick 0 only). Done for component actions at one tick (experiment L, section 13.2); open for mid-run removal inside the MFS search of F, for other action ticks and for repeated actions.
+- Actions that repair the stress itself (restore coupling gain, renewal efficiency, Address) and a controller that chooses between repair and reconfiguration.
 - Controllers that sense more than five features or enable components outside the library; any learning controller.
 - A clickable replay-marker inspection that can be written in a URL.
 
