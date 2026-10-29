@@ -6,7 +6,7 @@ import type { MeosRecord, Observation, Observed, PathActivity, PathId } from './
 import { deltaSnapshots, inspectAt, pathStatesAt, snapshotTicks, type Marker, type Snapshot, type SssRegion } from './research';
 import { ALL_MAP_LAYERS, DEFAULT_MAP_LAYERS, buildResearchMap, MAP_LAYERS, affected, type BodiesSpec, type MapLayer } from './researchMap';
 import { drawResearchMap } from './researchMapDraw';
-import { routeGraph, topologyAt, type LibraryMfs, type Outcome, type Topology } from './routeGraph';
+import { routeGraph, topologyAt, type LibraryMfs, type Outcome, type RejectedCandidate, type Topology } from './routeGraph';
 import { drawRouteGraph, ROUTE_TOGGLES, type RouteToggle } from './routeGraphDraw';
 import { probeDimensions } from './probes';
 import { cableRoutes, collectInstances, collectSegments, componentRows, dimensionLines, measure, partStates, project, type PartState, type Segments, type ViewName } from './technical';
@@ -19,14 +19,14 @@ const COLOR: Record<PartState, string> = { active: ACTIVE, idle: INK, inactive: 
 const LABELLED = ['node', 'probe', 'ring', 'cluster', 'optic', 'reservoir', 'archive', 'joint', 'module', 'sensor', 'chassis'];
 
 /** The research readings the sheet adds to the drawings (all computed from the record by the view): the observed state, the path activity, the event markers and the SSS region. */
-export interface SheetResearch { observed: Observed | null; paths: PathActivity | null; markers: Marker[]; sssRegion: SssRegion; compare: boolean; bodies: BodiesSpec | null; body: string; setBody: (b: string) => void; topology: Topology | null; library: LibraryMfs[]; outcomes: Outcome[] }
+export interface SheetResearch { observed: Observed | null; paths: PathActivity | null; markers: Marker[]; sssRegion: SssRegion; compare: boolean; bodies: BodiesSpec | null; body: string; setBody: (b: string) => void; topology: Topology | null; library: LibraryMfs[]; rejected?: RejectedCandidate[]; outcomes: Outcome[] }
 // cable id -> the operational path it carries (the cable network of the non-central body, by what moves along it)
 const CABLE_PATH: Record<string, PathId> = { BCb: 'coupling', BCc: 'coupling', BCa: 'coupling', JB: 'coupling', JC: 'resource', AC: 'resource', AB: 'resource', AJ: 'resource', CRES: 'resource', ARCH: 'history_access', OBSV: 'observation', REC: 'recovery' };
 
 export default function TechnicalView({ rec, tick, obs, observability, which, setWhich, probeId, setProbeId, research }: {
   rec: MeosRecord; tick: number; obs: Observation; observability: string; which: 'ncb' | 'observer'; setWhich: (w: 'ncb' | 'observer') => void; probeId: string; setProbeId: (s: string) => void; research?: SheetResearch;
 }) {
-  const [mapLayers, setMapLayers] = useState<Set<MapLayer>>(() => { const q = new URLSearchParams(location.search).get('maplayers'); return q ? new Set(q.split(',').filter((l) => ALL_MAP_LAYERS.has(l as MapLayer)) as MapLayer[]) : new Set(DEFAULT_MAP_LAYERS); });  // ?maplayers=a,b limits the layers (the captures)
+  const [mapLayers, setMapLayers] = useState<Set<MapLayer>>(() => { const q = (new URLSearchParams(location.search).get('layer') ?? new URLSearchParams(location.search).get('maplayers')); return q ? new Set(q.split(',').filter((l) => ALL_MAP_LAYERS.has(l as MapLayer)) as MapLayer[]) : new Set(DEFAULT_MAP_LAYERS); });  // ?maplayers=a,b limits the layers (the captures)
   const toggleLayer = (id: MapLayer) => setMapLayers((l) => { const n = new Set(l); if (n.has(id)) n.delete(id); else n.add(id); return n; });
   const [routeOn, setRouteOn] = useState<Set<RouteToggle>>(() => { const q = new URLSearchParams(location.search).get('routelayers'); return new Set((q ? q.split(',') : ROUTE_TOGGLES.map((x) => x.id)).filter((x) => ROUTE_TOGGLES.some((r) => r.id === x)) as RouteToggle[]); });  // ?routelayers=a,b limits the route toggles (the captures)
   const toggleRoute = (id: RouteToggle) => setRouteOn((l) => { const n = new Set(l); if (n.has(id)) n.delete(id); else n.add(id); return n; });
@@ -134,12 +134,12 @@ export default function TechnicalView({ rec, tick, obs, observability, which, se
     const draw = (cv: HTMLCanvasElement | null, t: number, ins: ReturnType<typeof inspectAt>, w: number, h: number) => {
       if (!cv) return;
       cv.width = w * dpr; cv.height = h * dpr; const g = cv.getContext('2d')!; g.scale(dpr, dpr);
-      drawResearchMap(g, buildResearchMap({ rec, tick: t, obs, inspect: ins, paths: research?.paths, markers: research?.markers ?? [], layers: mapLayers, body: research?.body, bodies: research?.bodies, route: ins.route }), w, h);
+      drawResearchMap(g, buildResearchMap({ rec, tick: t, obs, inspect: ins, paths: research?.paths, markers: research?.markers ?? [], layers: mapLayers, body: research?.body, bodies: research?.bodies, route: ins.route, rejected: research?.rejected }), w, h);
     };
     draw(mapCanvas.current, tick, inspect, 760, 700);
     snapshots.forEach((sn, i) => draw(compareCanvases.current[i], sn.tick, sn.inspect, 500, 470));
     const rc = routeCanvas.current;
-    if (rc && research?.topology) { rc.width = 1060 * dpr; rc.height = 440 * dpr; const g = rc.getContext('2d')!; g.scale(dpr, dpr); drawRouteGraph(g, routeGraph(research.topology, research.library, tick), 1060, 440, routeOn); }
+    if (rc && research?.topology) { rc.width = 1060 * dpr; rc.height = 440 * dpr; const g = rc.getContext('2d')!; g.scale(dpr, dpr); drawRouteGraph(g, routeGraph(research.topology, research.library, tick, research.rejected), 1060, 440, routeOn); }
     // the map depends on the record, the tick, the observation, the layers and the research readings
   }, [rec, tick, obs, inspect, snapshots, mapLayers, research, routeOn]);  // research carries the bodies, the selected body and the route topology
 

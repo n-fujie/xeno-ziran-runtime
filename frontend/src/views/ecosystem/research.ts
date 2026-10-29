@@ -12,10 +12,10 @@ import type { PartState } from './technical';
 export * from './mechanics';
 
 // ---------------------------------------------------------------------------------------------------- event markers
-export type MarkerKind = 'intervention' | 'boundary' | 'address' | 'pulse' | 'collapse' | 'recovery' | 'observation-failure' | 'route-switch' | 'mfs-change' | 'route-ok' | 'route-failed' | 'fallback' | 'm2-takeover' | 'history-loss' | 'address-recovery';
+export type MarkerKind = 'intervention' | 'boundary' | 'address' | 'pulse' | 'collapse' | 'recovery' | 'observation-failure' | 'route-switch' | 'mfs-change' | 'route-ok' | 'route-failed' | 'fallback' | 'adaptive-switch' | 'm2-takeover' | 'history-loss' | 'address-recovery' | 'address-reassign';
 export interface Marker { tick: number; kind: MarkerKind; label: string; detail: string }
-export const MARKER_COLOR: Record<MarkerKind, string> = { intervention: '#e8e8ea', boundary: '#c9a227', address: '#7aa7e0', pulse: '#5fb98a', collapse: '#d04a3a', recovery: '#47c26b', 'observation-failure': '#b07acc', 'route-switch': '#38c9c0', 'mfs-change': '#2f8fd0', 'route-ok': '#7fe08a', 'route-failed': '#e0707a', fallback: '#e0b040', 'm2-takeover': '#d080e0', 'history-loss': '#c07a30', 'address-recovery': '#9ad0f0' };
-export const MARKER_LABEL: Record<MarkerKind, string> = { intervention: 'intervention', boundary: 'boundary change', address: 'Address Domain', pulse: 'resource pulse', collapse: 'collapse', recovery: 'recovery', 'observation-failure': 'observation failure', 'route-switch': 'route switch', 'mfs-change': 'MFS change', 'route-ok': 'successful reconfiguration', 'route-failed': 'failed reconfiguration', fallback: 'fallback activation', 'm2-takeover': 'M2 takeover', 'history-loss': 'history loss', 'address-recovery': 'Address recovery' };
+export const MARKER_COLOR: Record<MarkerKind, string> = { intervention: '#e8e8ea', boundary: '#c9a227', address: '#7aa7e0', pulse: '#5fb98a', collapse: '#d04a3a', recovery: '#47c26b', 'observation-failure': '#b07acc', 'route-switch': '#38c9c0', 'mfs-change': '#2f8fd0', 'route-ok': '#7fe08a', 'route-failed': '#e0707a', fallback: '#e0b040', 'm2-takeover': '#d080e0', 'history-loss': '#c07a30', 'address-recovery': '#9ad0f0', 'adaptive-switch': '#8a5fd0', 'address-reassign': '#5f9fd8' };
+export const MARKER_LABEL: Record<MarkerKind, string> = { intervention: 'intervention', boundary: 'boundary change', address: 'Address Domain', pulse: 'resource pulse', collapse: 'collapse', recovery: 'recovery', 'observation-failure': 'observation failure', 'route-switch': 'route switch', 'mfs-change': 'MFS change', 'route-ok': 'successful reconfiguration', 'route-failed': 'failed reconfiguration', fallback: 'fallback activation', 'm2-takeover': 'M2 takeover', 'history-loss': 'history loss', 'address-recovery': 'Address recovery', 'adaptive-switch': 'adaptive switch', 'address-reassign': 'Address reassignment' };
 const BOUNDARY_TARGETS = new Set(['interaction_channel', 'feedback', 'resource_renewal', 'history', 'sensor_resource', 'sensor_alteration']);
 
 type LogEntry = MeosRecord['intervention_log'][number];
@@ -32,11 +32,14 @@ export function eventMarkers(rec: MeosRecord, observed?: Observed | null, routes
     if (iv.op === 'ROUTE') {
       const m2On = iv.m2 && (iv.m2 as { sense?: string }).sense !== 'none', ctl = 'why' in iv;
       out.push({ tick: iv.tick, kind: ctl ? 'route-switch' : 'route-switch', label: `ROUTE${ctl ? ` ${String(iv.from)} → ${String(iv.to)}` : ' (set by hand)'}`, detail: `${describe(iv)}${ctl ? `; sensed ${String(iv.trigger ?? iv.why)}` : ''}` });
-      if (ctl && (iv.from === 'none' || iv.to === 'fixed fallback')) out.push({ tick: iv.tick, kind: 'fallback', label: 'FALLBACK ACTIVATED', detail: `route ${String(iv.to)}, cost ${String(iv.cost)}` });
+      const kindOf = routes?.topology?.controller;
+      if (ctl && (kindOf === 'fixed' || iv.to === 'fixed fallback')) out.push({ tick: iv.tick, kind: 'fallback', label: 'FIXED FALLBACK ACTIVATED', detail: `route ${String(iv.to)}, cost ${String(iv.cost)}` });
+      else if (ctl && kindOf && kindOf !== 'none') out.push({ tick: iv.tick, kind: 'adaptive-switch', label: 'ADAPTIVE SWITCH', detail: `${String(iv.from)} → ${String(iv.to)}, cost ${String(iv.cost)}; trigger ${String(iv.trigger ?? iv.why)}` });
       if (m2On && histLost(iv.tick)) out.push({ tick: iv.tick, kind: 'm2-takeover', label: 'M2 TAKEOVER', detail: 'M2 sensing switched on after history was removed' });
       continue;
     }
     if (iv.op === 'REMOVE' && iv.target === 'history') out.push({ tick: iv.tick, kind: 'history-loss', label: 'HISTORY LOST', detail: describe(iv) });
+    if (iv.op === 'ADDRESS' && (iv.address_mode === 'reassign' || iv.address_mode === 'delayed')) out.push({ tick: iv.tick, kind: 'address-reassign', label: `ADDRESS REASSIGNED ${String(iv.target)}`, detail: describe(iv) });
     if (iv.op === 'ADDRESS' && iv.address_mode === 'restore') out.push({ tick: iv.tick, kind: 'address-recovery', label: `ADDRESS RECOVERY ${String(iv.target)}`, detail: describe(iv) });
     const kind: MarkerKind = iv.op === 'ADDRESS' ? 'address' : iv.op === 'CHANGE_BOUNDARY' || (['REMOVE', 'ISOLATE', 'RECONNECT'].includes(iv.op) && BOUNDARY_TARGETS.has(String(iv.target))) ? 'boundary' : iv.op === 'ALTER_RESOURCE' && 'inject' in iv ? 'pulse' : 'intervention';
     out.push({ tick: iv.tick, kind, label: kind === 'address' ? `ADDRESS ${String(iv.address_mode)} ${String(iv.target)}` : `${iv.op} ${String(iv.target ?? '')}`.trim(), detail: describe(iv) });

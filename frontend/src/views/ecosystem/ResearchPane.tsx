@@ -6,6 +6,8 @@ import {
 import { deltaSnapshots, inspectAt, MARKER_COLOR, MARKER_LABEL, snapshotTicks, type Inspect, type Marker } from './research';
 import { affected } from './researchMap';
 import type { LibraryMfs, Outcome, RouteState } from './routeGraph';
+import MfsResults, { type MfsInitial } from './MfsResults';
+import type { LibraryOut } from './mfsPanels';
 
 // RESEARCH — the experiment console and the readings of a run. Everything under "MODEL RESULT" is read from the record or returned by the engine; "VISUAL REPRESENTATION" says how the
 // bodies and the sheet are posed for it. The console builds interventions (and the observation configuration) and re-runs the engine; it never edits a run.
@@ -17,6 +19,7 @@ export interface ResearchCtx {
   sssClass: SssClassOut | null; sssRegion: string; compare: boolean; setCompare: (b: boolean) => void; busy: string | null; wrap: (name: string, fn: () => Promise<void>) => Promise<void>;
   setTab: (t: 'technical') => void; openMarker: Marker | null; setOpenMarker: (m: Marker | null) => void;
   library: LibraryMfs[]; routeState: RouteState | null; outcomes: Outcome[]; runControlled: (controller: string, scenario: string) => Promise<void>;
+  libraryOut: LibraryOut | null; initialMfs: MfsInitial; runMfs: (id: string) => Promise<void>;
 }
 
 const REGIONS: Array<[string, number[] | null]> = [['whole arena', null], ['left half', [0, 0, 6, 13]], ['right half', [7, 0, 13, 13]], ['centre', [3, 3, 10, 10]], ['around A1 and A2', [2, 4, 6, 8]], ['A1 cell only', [3, 6, 3, 6]], ['away from both', [8, 8, 12, 12]], ['corner', [0, 0, 3, 3]]];
@@ -132,12 +135,14 @@ export default function ResearchPane(c: ResearchCtx) {
 
       <fieldset className="eco-group"><legend>reconfiguration (fifth stage)</legend>
         <div className="eco-row"><label>scenario <select value={scen} onChange={(e) => setScen(e.target.value)}>{SCENARIO_NAMES.map((x) => <option key={x}>{x}</option>)}</select></label>
-          <label>controller <select value={ctlKind} onChange={(e) => setCtlKind(e.target.value)}>{['none', 'fixed', 'adaptive', 'delayed', 'noisy'].map((x) => <option key={x}>{x}</option>)}</select></label>
+          <label>controller <select value={ctlKind} onChange={(e) => setCtlKind(e.target.value)}>{['none', 'fixed', 'adaptive', 'adaptive_shed', 'delayed', 'noisy'].map((x) => <option key={x}>{x}</option>)}</select></label>
           <button disabled={!c.library.length || !!c.busy} onClick={() => void c.wrap('controlled run', () => c.runControlled(ctlKind, scen))} title="a stress at tick 100 on an arrangement with the M2 tap installed and dormant; the controller senses, matches the saved MFS library and moves between known MFS">RUN</button></div>
         <div className="eco-note">{c.library.length ? `${c.library.length} MFS in the saved library (experiment F). The controller reads only the run's traces; what it senses, the candidates, the choice and its cost are in the timeline markers and the inspection.` : 'The MFS library is not saved on this server: run backend/scripts/meos_experiments_v5.py.'}</div>
         {c.outcomes.length > 0 && <table className="eco-table"><thead><tr><th>tick</th><th>from → to</th><th>trigger</th><th>cost</th><th>lost ticks</th><th>latency</th><th>preserved</th></tr></thead><tbody>{c.outcomes.map((o, i) => <tr key={i}><td>{o.tick}</td><td>{o.from} → {o.to}</td><td>{o.trigger.join(', ')}</td><td>{o.cost}</td><td>{o.operation_lost_ticks_after}</td><td>{o.recovery_latency ?? '-'}</td><td>{o.preserved_at_end ? 'yes' : 'no'}</td></tr>)}</tbody></table>}
         {c.library.length > 0 && <details><summary className="dim">the MFS library</summary><table className="eco-table"><thead><tr><th>MFS</th><th>condition</th><th>route</th><th>retained</th></tr></thead><tbody>{c.library.map((m) => <tr key={m.id}><td>{m.id}</td><td>{m.condition}</td><td>{m.route_kind}</td><td>{m.retained.join(', ')}</td></tr>)}</tbody></table></details>}
       </fieldset>
+
+      <MfsResults lib={c.libraryOut} initial={c.initialMfs} seed={c.seed} busy={!!c.busy} onRun={(id) => void c.wrap(`running ${id}`, () => c.runMfs(id))} />
 
       <div className="eco-two">
         <div className="mr"><h4>MODEL RESULT · the record at tick {c.tick}</h4>

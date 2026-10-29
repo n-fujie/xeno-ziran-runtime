@@ -10,7 +10,20 @@ export const PATHS5: Record<string, string[]> = {
   resource: ['resource_gradient', 'feedback', 'resource_renewal'], coupling: ['interaction_channel'], history_access: ['history'], observation: ['sensor_resource', 'sensor_alteration'],
   recovery: ['resource_renewal', 'feedback'], m2: ['m2_tap'], address: ['A1', 'A2'],
 };
-export interface LibraryMfs { id: string; condition_id: string; condition: string; features: Record<string, string>; retained: string[]; removed: string[]; cardinality: number; route_kind: string; retained_paths: string[]; lost_paths: string[]; digest: string }
+export interface McCard {
+  preserved_operation: string | null; energy_use: number | null; resource_throughput: number | null; recovery_latency: number | null; perturbation_collapse_share: number | null; history_dependence: number | null; address_dependence: number | null;
+  observational_robustness: number | null; sss_region: string | null; ranges_along_axes: Record<string, unknown> | null; operational_robustness: number | null; addressability: number | null; recoverability: number | null;
+}
+export interface SssPoint { scale: number; size: number; speed: number; region: string }
+export interface LibraryMfs {
+  id: string; condition_id: string; condition: string; features: Record<string, string>; retained: string[]; removed: string[]; cardinality: number; route_kind: string; retained_paths: string[]; lost_paths: string[]; digest: string;
+  /** the profile of the saved results (absent in a minimal library) */ card?: McCard; sss_points?: SssPoint[]; seeds_discovered?: number[]; seeds_validated?: number[];
+}
+/** A candidate retaining set that was searched and did not become an MFS: it failed the search criterion, failed validation on the independent seeds, or was a near miss. Never drawn as an MFS. */
+export interface RejectedCandidate {
+  condition_id: string; retained: string[]; cardinality: number; status: string; found_by: string[]; search_seeds: number[]; persists_in_search_seeds: number; validation_seeds: number[]; persists_in_validation_seeds: number;
+  per_validation_seed: boolean[]; discovered_in_search: boolean; survived_validation: boolean;
+}
 export interface RouteEvent { tick: number; m2: { sense?: string; weight?: number; delay?: number; noise?: number; threshold?: number } | null; history: string | null; why: string | null; from: string | null; to: string | null; cost: number | null; trigger: string | null; controlled: boolean }
 export interface Transition { tick: number; from: string; to: string; cost: number; trigger: string[]; enabled: string[] }
 export interface Topology {
@@ -52,7 +65,7 @@ export function topologyOf(rec: RecWithController, universe: readonly string[] =
     paths: Object.fromEntries(Object.entries(PATHS5).map(([k, v]) => [k, [...v]])), controller: rec.controller?.kind ?? 'none', last_tick: rec.frames.length - 1 };
 }
 
-export type PathRouteState = 'active' | 'dormant' | 'failed' | 'fallback' | 'absent';
+export type PathRouteState = 'active' | 'dormant' | 'failed' | 'fallback' | 'adaptive' | 'absent';
 export interface RouteState {
   tick: number; enabled: string[]; dormant: string[]; failed: string[]; paths: Record<string, PathRouteState>; currentMfs: string; alternative: LibraryMfs[]; available: LibraryMfs[]; disabled: Array<{ mfs: LibraryMfs; because: string[] }>;
   lastTransition: Transition | null; lastEvent: RouteEvent | null; triggers: string[];
@@ -73,7 +86,7 @@ export function topologyAt(topo: Topology, tick: number, library: LibraryMfs[] =
   for (const [p, comps] of Object.entries(topo.paths)) {
     const known = comps.filter((c) => topo.universe.includes(c));
     if (!known.length) { paths[p] = 'active'; continue; }  // the address path: both configurations present
-    paths[p] = known.some((c) => failed.includes(c)) ? 'failed' : known.every((c) => enabled.includes(c)) ? (switched.has(p) ? 'fallback' : 'active') : known.every((c) => enabled.includes(c) || dormant.includes(c)) ? 'dormant' : 'absent';
+    paths[p] = known.some((c) => failed.includes(c)) ? 'failed' : known.every((c) => enabled.includes(c)) ? (switched.has(p) ? (topo.controller === 'fixed' ? 'fallback' : 'adaptive') : 'active') : known.every((c) => enabled.includes(c) || dormant.includes(c)) ? 'dormant' : 'absent';
   }
   let lastTransition: Transition | null = null;
   for (const tr of topo.transitions) if (tr.tick <= t) lastTransition = tr;
@@ -86,15 +99,15 @@ export function topologyAt(topo: Topology, tick: number, library: LibraryMfs[] =
   return { tick: t, enabled, dormant, failed, paths, currentMfs, alternative: open.filter((m) => m.id !== currentMfs), available: open, disabled: closed, lastTransition, lastEvent, triggers: lastTransition?.trigger ?? [] };
 }
 
-export type EdgeKind = 'path' | 'reconfiguration' | 'membership';
-export interface GraphNode { id: string; label: string; kind: 'component' | 'mfs'; state: 'enabled' | 'dormant' | 'failed' | 'disabled'; x: number; y: number }
-export interface GraphEdge { from: string; to: string; kind: EdgeKind; path?: string; state: PathRouteState | 'transition'; label?: string }
+export type EdgeKind = 'path' | 'reconfiguration' | 'membership' | 'candidate';
+export interface GraphNode { id: string; label: string; kind: 'component' | 'mfs' | 'candidate'; state: 'enabled' | 'dormant' | 'failed' | 'disabled' | 'rejected'; x: number; y: number }
+export interface GraphEdge { from: string; to: string; kind: EdgeKind; path?: string; state: PathRouteState | 'transition' | 'rejected'; label?: string }
 export interface RouteGraph { nodes: GraphNode[]; edges: GraphEdge[] }
 
 /** The graph drawn on the technical sheet: components as nodes (state from the record), an edge between the consecutive components of each path (state of the path), MFS nodes for the current MFS,
  * the alternatives and every MFS a recorded transition names, edges for the transitions (with their cost) and faint membership edges from the current and the alternative MFS to their
  * components. Every edge is derived from ``topo``, the library and PATHS5. */
-export function routeGraph(topo: Topology, library: LibraryMfs[], tick: number): RouteGraph {
+export function routeGraph(topo: Topology, library: LibraryMfs[], tick: number, rejected: RejectedCandidate[] = []): RouteGraph {
   const st = topologyAt(topo, tick, library);
   const comp = topo.universe, nodes: GraphNode[] = [], edges: GraphEdge[] = [];
   comp.forEach((c, i) => nodes.push({ id: c, label: c, kind: 'component', state: st.failed.includes(c) ? 'failed' : st.enabled.includes(c) ? 'enabled' : st.dormant.includes(c) ? 'dormant' : 'disabled', x: i / Math.max(1, comp.length - 1), y: 0.78 }));
@@ -108,5 +121,13 @@ export function routeGraph(topo: Topology, library: LibraryMfs[], tick: number):
   mfsList.forEach((id, i) => { const m = library.find((x) => x.id === id); nodes.push({ id, label: id, kind: 'mfs', state: id === st.currentMfs ? 'enabled' : m && m.retained.some((c) => st.failed.includes(c)) ? 'failed' : 'dormant', x: (i + 0.5) / mfsList.length, y: 0.16 }); });
   for (const tr of topo.transitions) if (tr.tick <= tick) edges.push({ from: tr.from, to: tr.to, kind: 'reconfiguration', state: 'transition', label: `t${tr.tick} cost ${tr.cost}` });
   for (const id of mfsList) { const m = library.find((x) => x.id === id); if (m) for (const c of m.retained) if (comp.includes(c)) edges.push({ from: id, to: c, kind: 'membership', state: id === st.currentMfs ? 'active' : 'dormant' }); }
+  // the candidate sets that were searched and rejected, for the conditions of the MFS shown: dotted nodes and dotted membership edges, labelled as candidates (never drawn as MFS)
+  const conds = new Set(mfsList.map((id) => library.find((x) => x.id === id)?.condition_id).filter(Boolean));
+  const shown = rejected.filter((c) => conds.has(c.condition_id));
+  shown.forEach((c, i) => {
+    const id = `candidate ${c.condition_id}-${i + 1}`;
+    nodes.push({ id, label: `${id} (not MFS)`, kind: 'candidate', state: 'rejected', x: (i + 0.5) / Math.max(1, shown.length), y: 0.46 });
+    for (const k of c.retained) if (comp.includes(k)) edges.push({ from: id, to: k, kind: 'candidate', state: 'rejected' });
+  });
   return { nodes, edges };
 }

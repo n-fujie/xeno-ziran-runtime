@@ -178,7 +178,10 @@ export async function runLogCsv(config: unknown, interventions: Intervention[], 
 
 // ------------------------------------------------------------------------------------------------ fifth stage: routes, the MFS library, a controlled run
 import type { LibraryMfs, Outcome, Topology } from './routeGraph';
+import type { LibraryOut } from './mfsPanels';
 export interface ReconfigureOut { record: MeosRecord & { controller?: { kind: string; log: Array<Record<string, unknown>>; switches: number } }; summary: Summary; paths: PathActivity; controller: { kind: string; log: Array<Record<string, unknown>>; switches: number }; outcomes: Outcome[]; topology: Topology; replay_identical: boolean }
-export const mfsLibrary = async () => { const r = await fetch(`${API}/mfs-library`); if (!r.ok) throw new Error(`mfs-library: ${r.status}`); return r.json() as Promise<{ mfs: LibraryMfs[]; conditions: Array<Record<string, unknown>>; scenarios: string[]; controllers: string[]; levels: string[] }>; };
+export const mfsLibrary = async () => { const r = await fetch(`${API}/mfs-library`); if (!r.ok) throw new Error(`mfs-library: ${r.status}`); return r.json() as Promise<LibraryOut>; };
+/** Run the configuration of one saved MFS (its condition with only its retained components in place) on a seed. */
+export const mfsRun = (mfsId: string, seed: number) => post<{ record: MeosRecord; summary: Summary; paths: PathActivity; topology: Topology; mfs: { id: string; condition_id: string; retained: string[]; removed: string[] } }>('/mfs-run', { mfs: mfsId, seed });
 export const routeTopology = (config: unknown, interventions: Intervention[]) => post<{ topology: Topology; summary: Summary; library?: LibraryMfs[] }>('/route-topology', { config, interventions });
 export const reconfigure = (body: { controller: string; scenario: string; seed?: number }) => post<ReconfigureOut>('/reconfigure', body);

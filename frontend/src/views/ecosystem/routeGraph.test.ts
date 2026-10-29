@@ -37,9 +37,9 @@ describe('the routes at a tick', () => {
     const s = topologyAt(topo, sw - 1, fx.library);
     expect(s.failed).toEqual(['history']); expect(s.paths.history_access).toBe('failed');
   });
-  it('after the switch: the M2 path is a fallback, the current MFS is the destination, the transition and its trigger are known', () => {
+  it('after the switch: the M2 path is an adaptive route (a fixed controller gives the fixed fallback), the current MFS is the destination, the transition and its trigger are known', () => {
     const s = topologyAt(topo, sw + 5, fx.library);
-    expect(s.paths.m2).toBe('fallback'); expect(s.currentMfs).toBe('L-WEAK'); expect(s.dormant).toEqual([]);
+    expect(s.paths.m2).toBe('adaptive'); expect(topologyAt({ ...topo, controller: 'fixed' }, sw + 5, fx.library).paths.m2).toBe('fallback'); expect(s.currentMfs).toBe('L-WEAK'); expect(s.dormant).toEqual([]);
     expect(s.lastTransition).toMatchObject({ tick: sw, to: 'L-WEAK', cost: 1 }); expect(s.lastTransition!.trigger).toContain('coupling');
     expect(s.alternative.map((m) => m.id)).toEqual(['L-BASE']);
   });
@@ -61,8 +61,8 @@ describe('the route graph', () => {
   it('shows no transition before it happened', () => {
     expect(routeGraph(topo, fx.library, topo.transitions[0].tick - 1).edges.filter((x) => x.kind === 'reconfiguration')).toHaveLength(0);
   });
-  it('is switched by the nine toggles', () => {
-    const all = new Set<RouteToggle>(['active', 'dormant', 'failed', 'fallback', 'reconfiguration', 'mfs', 'address', 'history', 'm2', 'resource']);
+  it('is switched by the toggles', () => {
+    const all = new Set<RouteToggle>(['active', 'dormant', 'failed', 'fallback', 'adaptive', 'rejected', 'reconfiguration', 'mfs', 'address', 'history', 'm2', 'resource']);
     const shown = (on: Set<RouteToggle>) => g.edges.filter((e) => visibleEdge(e, on)).length;
     expect(shown(all)).toBeGreaterThan(shown(new Set<RouteToggle>(['active'])));
     const noM2 = new Set(all); noM2.delete('m2'); expect(g.edges.filter((e) => visibleEdge(e, noM2) && e.path === 'm2')).toHaveLength(0);
@@ -100,20 +100,51 @@ describe('the research map routes', () => {
   const map = (layers: Set<MapLayer>) => buildResearchMap({ rec: fx.record, tick: t, obs: {}, inspect: ins, paths: null, markers: [], layers, route }).prims;
   const ids = (p: Prim[], id: string) => p.filter((x) => x.id === id);
   it('keeps the route layers off by default (they are not all shown at once)', () => {
-    expect(DEFAULT_MAP_LAYERS.has('route.fallback')).toBe(false); expect(DEFAULT_MAP_LAYERS.has('mfs.current')).toBe(false); expect(MAP_LAYERS.some((l) => l.id === 'route.fallback')).toBe(true);
+    expect(DEFAULT_MAP_LAYERS.has('route.fallback')).toBe(false); expect(DEFAULT_MAP_LAYERS.has('route.adaptive')).toBe(false); expect(DEFAULT_MAP_LAYERS.has('mfs.rejected')).toBe(false); expect(DEFAULT_MAP_LAYERS.has('mfs.current')).toBe(false); expect(MAP_LAYERS.some((l) => l.id === 'route.fallback')).toBe(true);
     expect(buildResearchMap({ rec: fx.record, tick: t, obs: {}, inspect: ins, paths: null, markers: [], route }).prims.some((p) => p.id.startsWith('route.') || p.id.startsWith('mfs.'))).toBe(false);
   });
-  it('draws the fallback and the failed route when their layers are on, and the current and alternative MFS in words', () => {
-    const on = new Set<MapLayer>(['route.fallback', 'route.failed', 'route.dormant', 'route.active', 'mfs.current', 'mfs.alternative']);
+  it('draws the adaptive route and the failed route when their layers are on, and the current and alternative MFS in words', () => {
+    const on = new Set<MapLayer>(['route.adaptive', 'route.fallback', 'route.failed', 'route.dormant', 'route.active', 'mfs.current', 'mfs.alternative']);
     const p = map(on);
-    expect(ids(p, 'route.fallback').some((x) => x.t === 'text' && x.text.includes('m2 route fallback'))).toBe(true);
+    expect(ids(p, 'route.adaptive').some((x) => x.t === 'text' && x.text.includes('m2 route adaptive'))).toBe(true); expect(ids(p, 'route.fallback')).toHaveLength(0);
     expect(ids(p, 'route.failed').some((x) => x.t === 'text' && x.text.includes('history_access route failed'))).toBe(true);
     expect(ids(p, 'route.failed').some((x) => x.t === 'cross')).toBe(true);
-    expect((ids(p, 'mfs.current')[0] as Extract<Prim, { t: 'text' }>).text).toContain('current MFS L-WEAK');
+    expect((ids(p, 'mfs.current')[0] as Extract<Prim, { t: 'text' }>).text).toContain('current MFS L-WEAK'); expect((ids(p, 'mfs.current')[0] as Extract<Prim, { t: 'text' }>).text.startsWith('━')).toBe(true);
     expect((ids(p, 'mfs.alternative')[0] as Extract<Prim, { t: 'text' }>).text).toContain('L-BASE');
   });
   it('removes a route layer when it is switched off', () => {
-    const p = map(new Set<MapLayer>(['route.fallback']));
-    expect(ids(p, 'route.failed')).toHaveLength(0); expect(ids(p, 'route.fallback').length).toBeGreaterThan(0);
+    const p = map(new Set<MapLayer>(['route.adaptive']));
+    expect(ids(p, 'route.failed')).toHaveLength(0); expect(ids(p, 'route.adaptive').length).toBeGreaterThan(0);
+  });
+  it('draws a fixed controller\'s route as the fixed fallback, in its own layer', () => {
+    const fixedRoute = topologyAt({ ...topo, controller: 'fixed' }, t, fx.library);
+    const p = buildResearchMap({ rec: fx.record, tick: t, obs: {}, inspect: ins, paths: null, markers: [], layers: new Set<MapLayer>(['route.fallback', 'route.adaptive']), route: fixedRoute }).prims;
+    expect(ids(p, 'route.fallback').length).toBeGreaterThan(0); expect(ids(p, 'route.adaptive')).toHaveLength(0);
+  });
+  const cond = fx.library.find((m) => m.id === 'L-WEAK')!.condition_id;
+  const rejected = [{ condition_id: cond, retained: ['A2', 'history'], cardinality: 2, status: 'failed validation', found_by: ['x'], search_seeds: [1, 2, 3, 4, 5], persists_in_search_seeds: 5, validation_seeds: [6, 7, 8, 9, 10], persists_in_validation_seeds: 2, per_validation_seed: [], discovered_in_search: true, survived_validation: false }];
+  it('shows a rejected candidate only in its own layer, marked as not an MFS, with search and validation counts apart', () => {
+    const p = buildResearchMap({ rec: fx.record, tick: t, obs: {}, inspect: ins, paths: null, markers: [], layers: new Set<MapLayer>(['mfs.rejected', 'mfs.alternative']), route, rejected }).prims;
+    const txt = (ids(p, 'mfs.rejected')[0] as Extract<Prim, { t: 'text' }>).text;
+    expect(txt).toContain('not MFS'); expect(txt).toContain('5/5 search'); expect(txt).toContain('2/5 validation'); expect(txt.startsWith('┈')).toBe(true);
+    expect((ids(p, 'mfs.alternative')[0] as Extract<Prim, { t: 'text' }>).text).not.toContain('{');  // a candidate is not listed among the validated alternatives
+    expect(buildResearchMap({ rec: fx.record, tick: t, obs: {}, inspect: ins, paths: null, markers: [], layers: new Set<MapLayer>(['mfs.alternative']), route, rejected }).prims.some((x) => x.id === 'mfs.rejected')).toBe(false);
+  });
+  it('draws a rejected candidate in the route graph as a dotted candidate node, switchable', () => {
+    const g = routeGraph(topo, fx.library, t, rejected);
+    expect(g.nodes.some((n) => n.kind === 'candidate' && n.state === 'rejected' && n.label.includes('not MFS'))).toBe(true);
+    expect(g.nodes.filter((n) => n.kind === 'mfs').every((n) => !n.label.includes('candidate'))).toBe(true);
+    const ce = g.edges.filter((e) => e.kind === 'candidate');
+    expect(ce.length).toBeGreaterThan(0);
+    expect(ce.every((e) => visibleEdge(e, new Set<RouteToggle>(['mfs'])))).toBe(false); expect(ce.every((e) => visibleEdge(e, new Set<RouteToggle>(['rejected'])))).toBe(true);
+    expect(routeGraph(topo, fx.library, t).nodes.some((n) => n.kind === 'candidate')).toBe(false);
+  });
+  it('marks the adaptive switch, the fixed fallback and an Address reassignment on the timeline', () => {
+    const k = (kind: string, tp: Topology) => eventMarkers(fx.record, null, { topology: tp }).filter((m) => m.kind === kind);
+    expect(k('adaptive-switch', topo)).toHaveLength(1); expect(k('fallback', topo)).toHaveLength(0);
+    expect(k('fallback', { ...topo, controller: 'fixed' })).toHaveLength(1); expect(k('adaptive-switch', { ...topo, controller: 'fixed' })).toHaveLength(0);
+    const rec = { ...fx.record, intervention_log: [...fx.record.intervention_log, { tick: 50, op: 'ADDRESS', target: 'A2', address_mode: 'reassign', x: 11, y: 6, event: 0 }] } as unknown as MeosRecord;
+    expect(eventMarkers(rec).filter((m) => m.kind === 'address-reassign')).toHaveLength(1);
+    for (const kind of ['adaptive-switch', 'address-reassign']) expect(MARKER_COLOR[kind as keyof typeof MARKER_COLOR]).toBeTruthy();
   });
 });

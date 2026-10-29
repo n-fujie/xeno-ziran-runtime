@@ -10,7 +10,7 @@ import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 import Chart from '../../components/Chart';
 import {
-  ablation, addressSweep, adAt, boundary, decodeFields, fieldAt, FULL_OBSERVATION, getSpec, historyCompare, mfs as mfsApi, mfsLibrary, reconfigure, replayMeos, runMeos, sssClassify, sssSweep, STATUS_VALUE,
+  ablation, addressSweep, mfsRun, adAt, boundary, decodeFields, fieldAt, FULL_OBSERVATION, getSpec, historyCompare, mfs as mfsApi, mfsLibrary, reconfigure, replayMeos, runMeos, sssClassify, sssSweep, STATUS_VALUE,
   type AblationRow, type BoundaryOut, type HistoryOut, type Intervention, type Label, type MfsOut, type Observation, type RunOut, type Spec, type SssClassOut,
 } from './meosApi';
 import {
@@ -25,6 +25,8 @@ import ExperimentsPane from './ExperimentsPane';
 import TechnicalView from './TechnicalView';
 import ResearchPane from './ResearchPane';
 import { topologyAt, topologyOf, type LibraryMfs, type Outcome } from './routeGraph';
+import { deepLinkPlan, parseDeepLink } from './deeplink';
+import type { LibraryOut } from './mfsPanels';
 import { eventMarkers, inspectAt, MARKER_COLOR, MARKER_LABEL, type Marker, type SssRegion } from './research';
 import './ecosystem.css';
 
@@ -49,32 +51,23 @@ const PRESETS: Record<string, Intervention[]> = {
   // the XenoBody boundaries: the coupling cut for 40 ticks, restored, with a pulse (experiment B)
   'boundary-cut': [{ tick: 100, op: 'ISOLATE', target: 'interaction_channel' }, { tick: 140, op: 'RECONNECT', target: 'interaction_channel' }, { tick: 141, op: 'ALTER_RESOURCE', inject: { x: 3, y: 6, amount: 2 } }],
 };
-/** ``?sss=scale/size/speed`` sets the SSS from tick 0 (the captures of the SSS regions). */
-const sssFromUrl = (v: string | null): Intervention[] => { const p = (v ?? '').split('/').map(Number); return p.length === 3 && p.every((x) => x >= 0.25 && x <= 4) ? [{ tick: 0, op: 'ALTER_SSS', scale: p[0], size: p[1], speed: p[2] }] : []; };
 
 export interface Perf { fps: number; frameMs: number; p95: number; drawCalls: number; triangles: number; instances: number; edgeSegments: number; simMs: number; heapMB: number | null; frames: number; quality: Quality }
 
 export default function EcosystemView() {
   const url = useMemo(() => new URLSearchParams(location.search), []);
+  const plan = useMemo(() => deepLinkPlan(parseDeepLink(location.search)), []);  // the state a deep link names (deeplink.ts); the same link always gives the same plan
   const [quality, setQuality] = useState<Quality>(() => (QUALITY as string[]).includes(url.get('quality') ?? '') ? (url.get('quality') as Quality) : 'balanced');
   const mount = useRef<HTMLDivElement>(null);
   const [spec, setSpec] = useState<Spec | null>(null);
   const [out, setOut] = useState<RunOut | null>(null);
-  const [ivs, setIvs] = useState<Intervention[]>(() => [...(PRESETS[url.get('preset') ?? 'baseline'] ?? []), ...sssFromUrl(url.get('sss'))]);
-  const [seed, setSeed] = useState(1);
+  const [ivs, setIvs] = useState<Intervention[]>(() => [...(PRESETS[url.get('preset') ?? 'baseline'] ?? []), ...plan.interventions]);
+  const [seed, setSeed] = useState(plan.seed);
   const [horizon, setHorizon] = useState(() => ([240, 360, 480].includes(Number(url.get('horizon'))) ? Number(url.get('horizon')) : 240));
-  const [obs, setObs] = useState<Observation>(() => {
-    // deep links for the captures: ?obs=interval:3,stride:2,region:2.4.6.8,occluder:3.5.5.7,threshold:0.1,window:24,resolution:0.9
-    const o: Observation = { ...FULL_OBSERVATION };
-    for (const kv of (url.get('obs') ?? '').split(',').filter(Boolean)) {
-      const [k, v] = kv.split(':'), list = (v ?? '').split('.').map(Number);
-      if (k === 'interval') o.sampling_interval = Number(v); else if (k === 'stride') o.spatial_stride = Number(v); else if (k === 'window') o.window = Number(v); else if (k === 'region') o.region = list;
-      else if (k === 'occluder') o.occluder = list; else if (k === 'threshold') o.threshold = Number(v); else if (k === 'resolution') o.address_resolution = Number(v);
-    }
-    return o;
-  });
+  const [obs, setObs] = useState<Observation>(() => plan.obs);  // ?obs=interval:3,stride:2,region:2.4.6.8,occluder:3.5.5.7,threshold:0.1,window:24,resolution:0.9
   const [openMarker, setOpenMarker] = useState<Marker | null>(null);
   const [library, setLibrary] = useState<LibraryMfs[]>([]);
+  const [libraryOut, setLibraryOut] = useState<LibraryOut | null>(null);
   const [outcomes, setOutcomes] = useState<Outcome[]>([]);
   const [compare, setCompare] = useState(url.get('compare') === '1');
   const [body, setBody] = useState(() => (['B1', 'B2', 'B3'].includes(url.get('body') ?? '') ? url.get('body')! : 'B3'));
@@ -82,14 +75,14 @@ export default function EcosystemView() {
   type Conn = { m2: string; m2w: number; m2t: number; phil: string; channel: string; power: string };
   const [conn, setConn] = useState<Conn>(() => ({ m2: ['direct', 'delayed', 'noisy', 'threshold'].includes(url.get('m2') ?? '') ? url.get('m2')! : 'none', m2w: Number(url.get('m2w') ?? 1) || 1, m2t: 0.1, phil: ['expression', 'scorekeeping', 'revision'].includes(url.get('phil') ?? '') ? url.get('phil')! : 'none', channel: 'clean', power: 'finite' }));
   const fullObs = JSON.stringify(obs) === JSON.stringify(FULL_OBSERVATION);
-  const [tick, setTick] = useState(() => Math.max(0, Number(url.get('tick') ?? 0) || 0));
+  const [tick, setTick] = useState(() => plan.tick);
   const [playing, setPlaying] = useState(url.get('play') === '1');
   const [rate, setRate] = useState(12);
   const [layers, setLayers] = useState<Set<LayerId>>(() => new Set((url.get('layers') ?? 'physical,meos').split(',').filter((l) => LAYERS.some((x) => x.id === l)) as LayerId[]));
-  const [cam, setCam] = useState(url.get('cam') ?? 'overview');
+  const [cam, setCam] = useState(plan.cam ?? 'overview');
   const [follow, setFollow] = useState<EntityName | null>(null);
   const [sel, setSel] = useState<Sel>(null);
-  const [tab, setTab] = useState<Tab>(() => (['ncb', 'observer'].includes(url.get('tech') ?? '') ? 'technical' : url.get('tab') === 'research' ? 'research' : 'experiment'));
+  const [tab, setTab] = useState<Tab>(() => (['ncb', 'observer'].includes(url.get('tech') ?? '') ? 'technical' : url.get('tab') === 'research' || plan.tab === 'research' ? 'research' : 'experiment'));
   const [techWhich, setTechWhich] = useState<'ncb' | 'observer'>(() => (url.get('tech') === 'observer' ? 'observer' : 'ncb'));
   const [techProbe, setTechProbe] = useState(() => url.get('probe') ?? (url.get('tech') === 'observer' ? 'O1' : 'A1'));
   const [busy, setBusy] = useState<string | null>(null);
@@ -130,7 +123,28 @@ export default function EcosystemView() {
     } catch (e) { setErr(String(e)); } finally { setBusy(null); }
   }, [runCfg, fullObs, obs]);
 
-  useEffect(() => { mfsLibrary().then((l) => setLibrary(l.mfs)).catch(() => undefined); }, []);  // the saved MFS library (fifth stage); absent when experiment F has not been run on this server
+  /** A controlled run of experiment I (a scenario under a controller) shown as the current run. */
+  const runControlled = useCallback(async (controller: string, scenario: string) => {
+    const r = await reconfigure({ controller, scenario, seed });
+    setOut({ record: r.record, summary: r.summary, paths: r.paths }); setIvs(r.record.interventions); setOutcomes(r.outcomes);
+    setReplay(r.replay_identical ? 'controlled run: the recorded schedule replays identically without the controller' : 'REPLAY OF THE CONTROLLED RUN DIFFERS'); live.current.playhead = 0; setTick(0);
+  }, [seed]);
+  /** The configuration of one saved MFS (its condition with only its retained components in place) shown as the current run. */
+  const runMfsConfig = useCallback(async (id: string) => {
+    const r = await mfsRun(id, seed);
+    setOut({ record: r.record, summary: r.summary, paths: r.paths }); setIvs(r.record.interventions); setOutcomes([]);
+    setReplay(`MFS ${id}: ${r.mfs.retained.length} components retained (${r.mfs.removed.join(', ') || 'none'} removed), condition ${r.mfs.condition_id}, seed ${seed}`); live.current.playhead = 0; setTick(plan.tick);
+  }, [seed, plan.tick]);
+  // a deep link that names an MFS or a controlled run: once the first run and the saved library are in, the named run replaces it (once)
+  const deepDone = useRef(false);
+  useEffect(() => {
+    if (deepDone.current || !libraryOut || !out || plan.run.kind === 'plain') return;
+    deepDone.current = true;
+    const run = plan.run;
+    void (run.kind === 'mfs' ? runMfsConfig(run.mfs) : runControlled(run.controller, run.scenario)).catch((e) => setErr(String(e)));
+  }, [libraryOut, out, plan, runMfsConfig, runControlled]);
+
+  useEffect(() => { mfsLibrary().then((l) => { setLibrary(l.mfs); setLibraryOut(l); }).catch(() => undefined); }, []);  // the saved MFS library (fifth stage); absent when experiment F has not been run on this server
   useEffect(() => { getSpec().then(setSpec).catch((e) => setErr(`the MEOS API is not available on this server (${e}). XENO ECOSYSTEM needs the local runtime.`)); }, []);
   useEffect(() => {
     void execute(ivs, tick);
@@ -502,7 +516,7 @@ export default function EcosystemView() {
       <div className="eco-stage" data-settled={settled ? '1' : '0'}>
         <div ref={mount} style={{ position: 'absolute', inset: 0 }} data-testid="eco-canvas" />
         {chrome && tab === 'technical' && rec && <TechnicalView rec={rec} tick={tick} obs={obs} observability={out?.observed?.observability_status ?? 'OBSERVABLE'} which={techWhich} setWhich={setTechWhich} probeId={techProbe} setProbeId={setTechProbe}
-          research={{ observed: out?.observed ?? null, paths: out?.paths ?? null, markers, sssRegion, compare, bodies: spec ? { partitions: spec.partitions, legs: spec.legs } : null, body, setBody, topology: topo, library, outcomes }} />}
+          research={{ observed: out?.observed ?? null, paths: out?.paths ?? null, markers, sssRegion, compare, bodies: spec ? { partitions: spec.partitions, legs: spec.legs } : null, body, setBody, topology: topo, library, rejected: libraryOut?.rejected_candidates, outcomes }} />}
         <div className="eco-hud">
           {mv && <div className={`eco-badge ${mv.label}`}><span>MEOS {mv.label}</span><span className="dim">tick {tick}/{n - 1}</span></div>}
           {mv?.dependency && <div className="eco-dep">failed dependency{mv.dependency.entity ? ` (${mv.dependency.entity})` : ''}: {mv.dependency.detail}</div>}
@@ -524,7 +538,7 @@ export default function EcosystemView() {
         <div className="eco-pane">
           {tab === 'experiment' && <ExperimentPane {...{ rec, spec, tick, n, playing, setPlaying, rate, setRate, seed, setSeed, horizon, setHorizon, obs, setObs, conn, setConn, fullObs, layers, toggleLayer, cam, goCam, follow, setFollow, sel, focusSel, ivs, execute, intervene, doReplay, replay, quality, setQuality, out, setTick, live }} />}
           {tab === 'research' && <ResearchPane {...{ rec, out, tick, setTick: (t: number) => { live.current.playhead = t; setTick(t); }, obs, setObs, conn, setConn, ivs, execute, cfg: runCfg, seed, markers, inspect, sssClass: sssKey ? sssCache[sssKey] ?? null : null, sssRegion, compare, setCompare, busy, wrap, setTab: (t: 'technical') => setTab(t), openMarker, setOpenMarker, library, routeState, outcomes,
-            runControlled: async (controller: string, scenario: string) => { const r = await reconfigure({ controller, scenario, seed }); setOut({ record: r.record, summary: r.summary, paths: r.paths }); setIvs(r.record.interventions); setOutcomes(r.outcomes); setReplay(r.replay_identical ? 'controlled run: the recorded schedule replays identically without the controller' : 'REPLAY OF THE CONTROLLED RUN DIFFERS'); live.current.playhead = 0; setTick(0); } }} />}
+            runControlled, libraryOut, initialMfs: { mfs: plan.run.kind === 'mfs' ? plan.run.mfs : undefined, experiment: plan.experiment ?? undefined, sssmap: plan.sssmap ?? undefined }, runMfs: runMfsConfig }} />}
           {tab === 'inspect' && rec && <InspectPane rec={rec} tick={tick} sel={sel} setSel={setSel} ad={ad} mfs={mfsRes} trials={trials} />}
           {tab === 'reductions' && <ReductionsPane {...{ spec, abl, mfsRes, bnd, hist, sss, addr, runAblation, runMfs, runBoundary, runHistory, runSss, runAddr, busy }} />}
           {tab === 'technical' && <div className="eco-note">The technical inspection sheet is shown over the stage: orthographic drawings of the selected body's real geometry in the pose the run gives at the current tick, a probe detail, measured dimensions, component identifiers, cable routing and the state read from the run. Use the playhead to move through the run.</div>}
