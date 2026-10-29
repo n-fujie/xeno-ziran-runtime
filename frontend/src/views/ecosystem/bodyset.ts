@@ -149,7 +149,7 @@ export function buildBodies(quality: 'performance' | 'balanced' | 'high', env: T
   junctionBlock(jp, J.clone().add(v3(0, -0.15, -0.55)), v3(1, 0, 0), v3(0, 1, 0), v3(0, 0, 1), 0.5);
   junctionBlock(jp, bTop(0).add(v3(0.3, -0.4, 0.2)), v3(1, 0, 0), v3(0, 1, 0), v3(0, 0, 1), 0.34);
   jp.flush(ncb, mk, owned, 'junction');
-  [mainSet, couplingB, couplingC].forEach((cs) => cs.routes.forEach((r) => info.push({ id: `cable.${r.id}`, name: `Cable ${r.id} (${r.kind})`, kind: 'cable', body: 'ncb', object: cs.group, params: { radius: r.radius, kind: r.kind, length: +cs.curves[r.id].getLength().toFixed(2) } })));
+  [mainSet, couplingB, couplingC].forEach((cs) => cs.routes.forEach((r) => info.push({ id: `cable.${r.id}`, name: `Cable ${r.id} (${r.kind})`, kind: 'cable', body: 'ncb', object: cs.group, params: { radius: r.radius, kind: r.kind, length: +cs.curves[r.id].getLength().toFixed(2), path: r.path ?? '', strands: r.strands ?? 0, ties: r.ties ?? 0 } })));
   // travelling lights
   const spk = new THREE.SphereGeometry(0.2, 10, 8); owned.push(spk);
   const mkPulse = () => { const m = new THREE.Mesh(spk, M.pulse.clone()); m.visible = false; ncb.add(m); owned.push(m.material as THREE.Material); return m; };

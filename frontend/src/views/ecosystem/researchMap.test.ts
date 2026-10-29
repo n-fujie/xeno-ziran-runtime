@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import type { MeosRecord, PathActivity } from './meosApi';
 import { inspectAt } from './research';
-import { ALL_MAP_LAYERS, buildResearchMap, MAP_LAYERS, type MapLayer, type Prim } from './researchMap';
+import { ALL_MAP_LAYERS, buildResearchMap, legsClosed, MAP_LAYERS, type BodiesSpec, type MapLayer, type Prim } from './researchMap';
 
 const rec = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '__fixtures__', 'meos-stage2.json'), 'utf8')) as MeosRecord;
 const paths = { coupling: { state_intervals: [{ from: 0, to: 99, state: 'active' }, { from: 100, to: 149, state: 'cut' }, { from: 150, to: 359, state: 'active' }] }, resource: { state_intervals: [{ from: 0, to: 359, state: 'active' }] } } as unknown as PathActivity;
@@ -59,5 +59,26 @@ describe('the research map', () => {
     const m = map(120, {}, off).prims;
     expect(byId(m, 'path.coupling')).toHaveLength(0); expect(byId(m, 'path.resource').length).toBeGreaterThan(0); expect(byId(m, 'boundary.xenobody').length).toBeGreaterThan(0);
     expect(MAP_LAYERS.map((l) => l.id).sort()).toEqual([...ALL_MAP_LAYERS].sort());
+  });
+
+  // the partitions and legs as the engine's spec gives them (backend/xzr/meos/analysis.py)
+  const bodies: BodiesSpec = {
+    partitions: { B1: { label: 'A1 as one operational body', components: ['A1', 'sensor_resource'] }, B2: { label: 'A1 + the environmental sensor network', components: ['A1', 'sensor_resource', 'sensor_alteration', 'interaction_channel'] },
+      B3: { label: 'A1 + A2 + the resource-transfer loop', components: ['A1', 'A2', 'sensor_resource', 'sensor_alteration', 'interaction_channel', 'feedback', 'resource_renewal', 'history'] } },
+    legs: { 'A1 senses the resource and fires': ['A1', 'sensor_resource'], 'A1 acts and alters the environment': ['A1'], 'the alteration reaches the other configuration': ['interaction_channel'],
+      'A2 detects the alteration and fires': ['A2', 'sensor_alteration'], 'A2 reconfigures the environment': ['A2', 'feedback', 'resource_renewal'], 'history re-enters the next firing': ['history'] },
+  };
+  it('draws B1, B2 and B3 as different retained bodies and names the legs that close inside each', () => {
+    const rect = (b: string) => { const p = byId(buildResearchMap({ rec, tick: 60, obs: {}, inspect: inspectAt(rec, null, 60, paths), paths, markers: [], body: b, bodies }).prims, 'boundary.xenobody').find((q) => q.t === 'poly') as Extract<Prim, { t: 'poly' }>; const xs = p.pts.map((q) => q[0]); return [Math.min(...xs), Math.max(...xs)]; };
+    const [b1, b2, b3] = ['B1', 'B2', 'B3'].map(rect);
+    expect(b1[1] - b1[0]).toBeLessThanOrEqual(b3[1] - b3[0]); expect(b2[1]).toBeGreaterThanOrEqual(b1[1]);
+    expect(legsClosed(bodies.partitions.B1.components, bodies.legs)).toHaveLength(2); expect(legsClosed(bodies.partitions.B2.components, bodies.legs)).toHaveLength(3); expect(legsClosed(bodies.partitions.B3.components, bodies.legs)).toHaveLength(6);
+    const label = (b: string) => (byId(buildResearchMap({ rec, tick: 60, obs: {}, inspect: inspectAt(rec, null, 60, paths), paths, markers: [], body: b, bodies }).prims, 'boundary.xenobody').find((q) => q.t === 'text') as Extract<Prim, { t: 'text' }>).text;
+    expect(label('B1')).toContain('2/6 legs'); expect(label('B3')).toContain('6/6 legs');
+  });
+  it('opens a body only when a relation it retains is cut', () => {
+    const at120 = (b: string) => byId(buildResearchMap({ rec, tick: 120, obs: {}, inspect: inspectAt(rec, null, 120, paths), paths, markers: [], body: b, bodies }).prims, 'boundary.xenobody').filter((q) => q.t === 'poly').length;
+    expect(at120('B1')).toBe(1);  // the coupling is not part of B1
+    expect(at120('B3')).toBe(2);  // it is part of B3: the boundary opens
   });
 });

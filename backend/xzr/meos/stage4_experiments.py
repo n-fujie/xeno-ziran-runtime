@@ -309,7 +309,7 @@ def experiment_c(cfg: dict, seeds: tuple[int, ...] = SEEDS) -> dict:
                             "min_integrity": integ,
                             "observed": e0["observed_effect"]["observed_state_final"],
                             "observability": e0["observed_effect"]["observability"],
-                            "digest_changed": r["digests"]["intervened"] != r["digests"]["unperturbed"],
+                            "dynamics_changed": r["dynamics_changed"],  # the frames differ (the result digest would differ for any intervention: it covers the intervention log)
                         }
                     )
                 if not per:
@@ -324,17 +324,17 @@ def experiment_c(cfg: dict, seeds: tuple[int, ...] = SEEDS) -> dict:
                     "final_active_with_pulse_seeds": sum(1 for p in per if p["final_with_pulse"] == "ACTIVE"),
                     "mean_collapse_tick": _mean([p["collapse_tick"] for p in per]),
                     "min_integrity": min(p["min_integrity"] for p in per),
-                    "digest_changed_seeds": sum(1 for p in per if p["digest_changed"]),
+                    "dynamics_changed_seeds": sum(1 for p in per if p["dynamics_changed"]),
                     "per_seed": per,
                 }
                 out["rows"].append(row)
-                if row["digest_changed_seeds"] == 0:
+                if row["dynamics_changed_seeds"] == 0:
                     out["null_results"].append(
-                        f"{mode} on {target} for {dur} ticks: the run was bit for bit the unperturbed run in every seed"
+                        f"{mode} on {target} for {dur} ticks: the dynamics (every frame) were bit for bit the unperturbed run's in every seed"
                     )
                 elif row["collapsed_seeds"] == 0:
                     out["null_results"].append(
-                        f"{mode} on {target} for {dur} ticks: the run changed in detail, no seed collapsed"
+                        f"{mode} on {target} for {dur} ticks: the dynamics changed in {row['dynamics_changed_seeds']} of {row['seeds']} seeds, no seed collapsed"
                     )
     return out
 

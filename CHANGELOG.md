@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased — XENO ECOSYSTEM, fourth stage (MEOS-0 as a research apparatus, engine meos-0.3)
+
+* Engine (optional, absent by default: the baseline result digest `b4cf1e52…` and every earlier trace are unchanged): Address Domain `delayed` (the body moves, its address names the old cell until the update arrives) and `stale` (the address stops following the body), a thresholded M2 tap, and an `m2_sensed` trace that exists only when M2 sensing is configured.
+* Observation: operational state, observed state and observability status are three separate fields with a new vocabulary (SUFFICIENT, INSUFFICIENT_TEMPORAL_RESOLUTION, INSUFFICIENT_SPATIAL_RESOLUTION, OUTSIDE_OBSERVATION_REGION, BOUNDARY_OCCLUDED, ADDRESS_UNRESOLVED, WINDOW_TOO_SHORT, SIGNAL_BELOW_THRESHOLD) beside the first-stage names, three opt-in limits (detection threshold, occluder, address resolution) and a per-tick timeline. An unobservable run is never reported as a collapsed run.
+* Readings (`xzr/meos/stage4.py`): operational paths (resource, coupling, history access, observation, recovery), XenoBody boundary perturbation (observation, coupling, resource exchange, history access, Address Domain) with B1/B2/B3 relation closure, Address Domain intervention effects, per-run log (JSON and per-tick CSV), SSS region of one point; routes under `/api/meos`.
+* Experiments A–E (`stage4_experiments.py`, `scripts/meos_experiments_v4.py`, `docs/ecosystem/experiments_stage4.json`): observation resolution sweep, boundary perturbation, Address Domain interventions, SSS boundary sweep, M2 sensing ablation, with seeds, conditions, null results and limits.
+* Interface: a RESEARCH tab (grouped experiment console, model result beside visual representation, run-log export), replay markers on the timeline with click-to-inspect, snapshot comparison (baseline / intervention / recovered) on the technical sheet, and a research map on the sheet (three boundary kinds with three line types, five path layers, observation lattice, interventions). SSS and M2 drive the bodies mechanically; cables carry the five paths (harness conductors, ties).
+* `docs/ECOSYSTEM_MEOS_STAGE4.md`.
+
 ## Unreleased — XENO ECOSYSTEM, third stage (mechanical density, readable states, technical inspection, performance)
 
 * Bodies: real hardware (four fastener kinds laid out unevenly, brackets, tension brackets, hinge pins, ports, slots, apertures, grommets), a cable network (routes anchored at the machines, clamps, boots, connectors, braided sleeves, slack, branches), probes with five identifiable

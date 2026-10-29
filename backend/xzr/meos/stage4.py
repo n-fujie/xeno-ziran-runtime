@@ -145,6 +145,13 @@ def _bodies(affected: list[str]) -> dict[str, Any]:
     return out
 
 
+def dynamics_digest(rec: dict) -> str:
+    """A digest of what the run *did*: its frames without the fields that only record that a fault or a configuration is in force (``ad``, ``address``). The result digest also covers
+    the intervention log, so it differs between any two runs whose interventions differ; this one differs only if the dynamics do."""
+    frames = [{k: v for k, v in f.items() if k not in ("ad", "address")} for f in rec["frames"]]
+    return hashlib.sha256(json.dumps(frames, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+
+
 # ---------------------------------------------------------------------------------------------------- boundary perturbation
 def _perturbation(kind: str, tick: int, duration: int, params: dict) -> dict:
     end = tick + duration
@@ -262,7 +269,7 @@ def boundary_perturbation(
                 "recovers_without_pulse": collapse is not None and back["final_status"]["label"] == "ACTIVE",
                 "recovers_with_pulse": collapse is not None and pulsed["final_status"]["label"] == "ACTIVE",
                 "state_final_unperturbed_and_pulse": control["final_status"]["label"],
-                "operation_changed": back["result_digest"] != base["result_digest"],
+                "operation_changed": dynamics_digest(back) != dynamics_digest(base),  # the dynamics differ, not merely the logged interventions
                 "paths": paths,
                 "observability": {
                     "operational_state": ob["operational_state"],
@@ -384,6 +391,7 @@ def address_intervention(
         "restored_and_pulse_state": pulsed["final_status"]["label"],
         "observed": A.observe(rec, observation) | {"timeline": None},
         "digests": {"unperturbed": base["result_digest"], "intervened": rec["result_digest"], "pulsed": pulsed["result_digest"]},
+        "dynamics_changed": dynamics_digest(rec) != dynamics_digest(base),
         "record": rec,
     }
 

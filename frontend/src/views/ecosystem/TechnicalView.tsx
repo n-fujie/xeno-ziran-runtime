@@ -4,7 +4,7 @@ import { buildBodies, type BodySet } from './bodies';
 import { bodyState } from './bodyState';
 import type { MeosRecord, Observation, Observed, PathActivity, PathId } from './meosApi';
 import { deltaSnapshots, inspectAt, pathStatesAt, snapshotTicks, type Marker, type Snapshot, type SssRegion } from './research';
-import { ALL_MAP_LAYERS, buildResearchMap, MAP_LAYERS, affected, type MapLayer } from './researchMap';
+import { ALL_MAP_LAYERS, buildResearchMap, MAP_LAYERS, affected, type BodiesSpec, type MapLayer } from './researchMap';
 import { drawResearchMap } from './researchMapDraw';
 import { probeDimensions } from './probes';
 import { cableRoutes, collectInstances, collectSegments, componentRows, dimensionLines, measure, partStates, project, type PartState, type Segments, type ViewName } from './technical';
@@ -17,14 +17,14 @@ const COLOR: Record<PartState, string> = { active: ACTIVE, idle: INK, inactive: 
 const LABELLED = ['node', 'probe', 'ring', 'cluster', 'optic', 'reservoir', 'archive', 'joint', 'module', 'sensor', 'chassis'];
 
 /** The research readings the sheet adds to the drawings (all computed from the record by the view): the observed state, the path activity, the event markers and the SSS region. */
-export interface SheetResearch { observed: Observed | null; paths: PathActivity | null; markers: Marker[]; sssRegion: SssRegion; compare: boolean }
+export interface SheetResearch { observed: Observed | null; paths: PathActivity | null; markers: Marker[]; sssRegion: SssRegion; compare: boolean; bodies: BodiesSpec | null; body: string; setBody: (b: string) => void }
 // cable id -> the operational path it carries (the cable network of the non-central body, by what moves along it)
 const CABLE_PATH: Record<string, PathId> = { BCb: 'coupling', BCc: 'coupling', BCa: 'coupling', JB: 'coupling', JC: 'resource', AC: 'resource', AB: 'resource', AJ: 'resource', CRES: 'resource', ARCH: 'history_access', OBSV: 'observation', REC: 'recovery' };
 
 export default function TechnicalView({ rec, tick, obs, observability, which, setWhich, probeId, setProbeId, research }: {
   rec: MeosRecord; tick: number; obs: Observation; observability: string; which: 'ncb' | 'observer'; setWhich: (w: 'ncb' | 'observer') => void; probeId: string; setProbeId: (s: string) => void; research?: SheetResearch;
 }) {
-  const [mapLayers, setMapLayers] = useState<Set<MapLayer>>(() => new Set(ALL_MAP_LAYERS));
+  const [mapLayers, setMapLayers] = useState<Set<MapLayer>>(() => { const q = new URLSearchParams(location.search).get('maplayers'); return q ? new Set(q.split(',').filter((l) => ALL_MAP_LAYERS.has(l as MapLayer)) as MapLayer[]) : new Set(ALL_MAP_LAYERS); });  // ?maplayers=a,b limits the layers (the captures)
   const toggleLayer = (id: MapLayer) => setMapLayers((l) => { const n = new Set(l); if (n.has(id)) n.delete(id); else n.add(id); return n; });
   const mapCanvas = useRef<HTMLCanvasElement | null>(null), compareCanvases = useRef<Array<HTMLCanvasElement | null>>([]);
   const body = useMemo<BodySet>(() => buildBodies('performance', null, () => 0), []);
@@ -129,12 +129,12 @@ export default function TechnicalView({ rec, tick, obs, observability, which, se
     const draw = (cv: HTMLCanvasElement | null, t: number, ins: ReturnType<typeof inspectAt>, w: number, h: number) => {
       if (!cv) return;
       cv.width = w * dpr; cv.height = h * dpr; const g = cv.getContext('2d')!; g.scale(dpr, dpr);
-      drawResearchMap(g, buildResearchMap({ rec, tick: t, obs, inspect: ins, paths: research?.paths, markers: research?.markers ?? [], layers: mapLayers }), w, h);
+      drawResearchMap(g, buildResearchMap({ rec, tick: t, obs, inspect: ins, paths: research?.paths, markers: research?.markers ?? [], layers: mapLayers, body: research?.body, bodies: research?.bodies }), w, h);
     };
     draw(mapCanvas.current, tick, inspect, 760, 700);
-    snapshots.forEach((sn, i) => draw(compareCanvases.current[i], sn.tick, sn.inspect, 560, 500));
+    snapshots.forEach((sn, i) => draw(compareCanvases.current[i], sn.tick, sn.inspect, 500, 470));
     // the map depends on the record, the tick, the observation, the layers and the research readings
-  }, [rec, tick, obs, inspect, snapshots, mapLayers, research]);
+  }, [rec, tick, obs, inspect, snapshots, mapLayers, research]);  // research carries the bodies and the selected body
 
   const probes = body.nodes.flatMap((n) => n.probes).concat(body.observer.probes).map((p) => p.spec.id).filter((id) => (which === 'ncb' ? !id.startsWith('O') : id.startsWith('O')));
   const title = which === 'ncb' ? 'NON-CENTRAL EXPERIMENTAL BODY' : 'ADAPTIVE OBSERVATION NODE';
@@ -155,7 +155,7 @@ export default function TechnicalView({ rec, tick, obs, observability, which, se
           <dl className="eco-map-legend">{MAP_LAYERS.map((l) => <><dt key={l.id + 't'} className={mapLayers.has(l.id) ? 'on' : ''}>{l.label}</dt><dd key={l.id}>{l.what}</dd></>)}</dl></div>
           <figcaption>research map · plan of the arena at tick {tick} · MODEL RESULT: boundaries, paths, observation and interventions are read from the record · solid heavy = XenoBody boundary · dash-dot = Address Domain · dashed = observation boundary · path arrows: solid active, dotted quiet, red dashed cut</figcaption></figure>}
         {research?.compare && snapshots.length === 3 && <figure className="eco-sheet-wide" data-testid="eco-compare">
-          <div className="eco-compare">{snapshots.map((sn, i) => <div key={sn.label}><canvas ref={(el) => { compareCanvases.current[i] = el; }} style={{ width: 560, height: 500 }} aria-label={`${sn.label} map`} /><b>{sn.label} · tick {sn.tick}</b><span>{sn.inspect.operational} · observed {sn.inspect.observed ?? 'full'} · {sn.inspect.observability ?? 'full observation'}</span></div>)}</div>
+          <div className="eco-compare">{snapshots.map((sn, i) => <div key={sn.label}><canvas ref={(el) => { compareCanvases.current[i] = el; }} style={{ width: 500, height: 470 }} aria-label={`${sn.label} map`} /><b>{sn.label} · tick {sn.tick}</b><span>{sn.inspect.operational} · observed {sn.inspect.observed ?? 'full'} · {sn.inspect.observability ?? 'full observation'}</span></div>)}</div>
           <figcaption>comparison of three snapshots of one record (same seed, same configuration) · MODEL RESULT</figcaption>
           <table className="eco-sheet-table"><thead><tr><th>change</th><th>state</th><th>components</th><th>paths</th><th>boundary</th><th>address</th><th>observability</th></tr></thead><tbody>
             {deltas.map((d) => <tr key={d.to}><td>{d.from} → {d.to}</td><td>{d.status[0]} → {d.status[1]}</td><td>{d.components.length ? d.components.map((c) => `${c.id} ${c.from}→${c.to}`).join('; ') : 'none'}</td><td>{d.paths.length ? d.paths.map((c) => `${c.path} ${c.from}→${c.to}`).join('; ') : 'none'}</td>
@@ -180,6 +180,7 @@ export default function TechnicalView({ rec, tick, obs, observability, which, se
           {research && <><h4>VISUAL REPRESENTATION · how the bodies are posed</h4>
           <dl><dt>boom reach</dt><dd>{s.mech.boomPreload.toFixed(2)} (SSS scale)</dd><dt>probe ring tilt</dt><dd>{(s.mech.ringTilt * 57.3).toFixed(1)}° (SSS size)</dd><dt>coupling tension</dt><dd>{s.mech.couplingTension.toFixed(2)} (SSS speed)</dd><dt>archive latch ajar</dt><dd>{(s.mech.archiveAjar * 57.3).toFixed(0)}° (SSS region {region})</dd><dt>reservoir regulation</dt><dd>{s.mech.regulation.toFixed(2)} (SSS speed)</dd></dl>
           <p className="dim">A pose is a rule of this view (mechanics.ts); it is never evidence about the run.</p>
+          <h4>XenoBody (retained operational body)</h4><div className="eco-layers">{['B1', 'B2', 'B3'].map((k) => <button key={k} className={research.body === k ? 'on' : ''} title={research.bodies?.partitions[k]?.label} onClick={() => research.setBody(k)}>{k}</button>)}</div>
           <h4>research map layers</h4><div className="eco-layers">{MAP_LAYERS.map((l) => <button key={l.id} title={l.what} className={mapLayers.has(l.id) ? 'on' : ''} onClick={() => toggleLayer(l.id)}>{l.label}</button>)}</div>
           {research.markers.filter((m) => m.tick <= tick).slice(-6).length > 0 && <ul>{research.markers.filter((m) => m.tick <= tick).slice(-6).map((m, i) => <li key={i}>t{m.tick} {m.label} → {affected(rec.intervention_log.find((iv) => iv.tick === m.tick && m.label.startsWith(iv.op)) ?? { tick: m.tick, op: m.kind, event: 0 })}</li>)}</ul>}</>}
           <h4>lines</h4>

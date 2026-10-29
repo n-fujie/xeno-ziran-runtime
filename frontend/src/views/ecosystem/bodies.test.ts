@@ -291,4 +291,52 @@ describe('the bodies answer to the state, mechanically', () => {
     expect(nodeC.probes[0].rod.position.y).toBeGreaterThan(0.1);
   });
 });
+
+describe('fourth stage: SSS and M2 on the bodies, and the cables of the operational paths', () => {
+  const b = buildBodies('performance', null, () => 0), target = new THREE.Vector3(-66, 0, 16), nodeB = b.nodes[1];
+  const sec2z = (): number => { let z = 0; b.observer.pitch.children.forEach((c) => { if (c.type === 'Group' && c.position.z > 1.5 && c.children.length) z = c.position.z; }); return z; };
+  const withSss = (sss: { scale: number; size: number; speed: number }, region: 'ACTIVE' | 'METASTABLE' | 'RECOVERY-CAPABLE' = 'ACTIVE'): BodyState => ({ ...idle, sss, sssRegion: region, mech: sssMechanics(sss, region) });
+  it('lengthens the observer boom with the SSS scale, and only with it', () => {
+    b.set(withSss({ scale: 1, size: 1, speed: 1 }), target); const z1 = sec2z();
+    b.set(withSss({ scale: 2, size: 1, speed: 1 }), target); const z2 = sec2z();
+    b.set(withSss({ scale: 1, size: 2, speed: 2 }), target); expect(sec2z()).toBe(z1);
+    expect(z2).toBeGreaterThan(z1 + 0.1);
+  });
+  it('tilts the probe ring with the SSS size, and only with it', () => {
+    const cluster = b.parts.find((p) => p.id === 'CLUSTER')!.object;
+    b.set(withSss({ scale: 1, size: 1, speed: 1 }), target); expect(cluster.rotation.x).toBe(0);
+    b.set(withSss({ scale: 1, size: 2, speed: 1 }), target); const big = cluster.rotation.x;
+    b.set(withSss({ scale: 1, size: 0.5, speed: 1 }), target); const small = cluster.rotation.x;
+    expect(big).toBeGreaterThan(0.05); expect(small).toBeLessThan(-0.05);
+    b.set(withSss({ scale: 2, size: 1, speed: 2 }), target); expect(cluster.rotation.x).toBe(0);
+  });
+  it('leaves the archive latch ajar in a metastable or recovery-capable region while history is enabled', () => {
+    b.set(withSss({ scale: 1, size: 1, speed: 1 }), target); const shut = nodeB.latch!.lever.rotation.z;
+    b.set(withSss({ scale: 1.22, size: 1, speed: 1 }, 'METASTABLE'), target); const meta = nodeB.latch!.lever.rotation.z;
+    b.set(withSss({ scale: 1, size: 1, speed: 1 }, 'RECOVERY-CAPABLE'), target); const rec = nodeB.latch!.lever.rotation.z;
+    expect(meta).toBeGreaterThan(shut + 0.3); expect(rec).toBeGreaterThan(meta);
+    b.set({ ...withSss({ scale: 1, size: 1, speed: 1 }), historyEnabled: false }, target); expect(nodeB.latch!.lever.rotation.z).toBeGreaterThan(rec);  // disabled history opens it fully
+  });
+  it('moves the reservoir level with the SSS speed (regulation)', () => {
+    const y = () => b.nodes[2].reservoir!.piston.position.y;
+    b.set(withSss({ scale: 1, size: 1, speed: 1 }), target); const y1 = y();
+    b.set(withSss({ scale: 1, size: 1, speed: 2 }), target); expect(y()).toBeGreaterThan(y1);
+  });
+  it('drives node B\'s second probe as the M2 tap only when M2 sensing is configured', () => {
+    const tap = b.nodes[1].probes[1], rod = () => tap.rod.position.y;
+    b.set(idle, target); const off = rod();  // not configured: the probe follows the node as before
+    b.set({ ...idle, m2: { configured: true, sense: 'direct', sensed: 0.4, state: 'sampling' } }, target); const lit = rod();
+    b.set({ ...idle, m2: { configured: true, sense: 'direct', sensed: 0, state: 'extended' } }, target); const idleTap = rod();
+    b.set({ ...idle, collapsed: true, m2: { configured: true, sense: 'direct', sensed: 0, state: 'retracted' } }, target); const folded = rod();
+    expect(lit).not.toBe(off); expect(lit).not.toBe(idleTap); expect(folded).toBeGreaterThan(idleTap);  // a retracted probe's rod is drawn up into its housing (larger y)
+  });
+  it('carries the five operational paths on named cables: every cable of the body names its path, and each path has a cable', () => {
+    const cables = b.parts.filter((p) => p.kind === 'cable' && p.body === 'ncb'), paths = new Set(cables.map((c) => c.params!.path).filter((x) => typeof x === 'string' && x !== ''));
+    expect([...paths].sort()).toEqual(['coupling', 'history_access', 'observation', 'recovery', 'resource']);
+    for (const id of ['ARCH', 'OBSV', 'REC']) expect(cables.some((c) => c.id === `cable.${id}`)).toBe(true);
+    expect(cables.filter((c) => !c.params!.path).map((c) => c.id)).toEqual(['cable.BG']);  // the ground lead of node B is the one cable that carries no operational path
+    expect(cables.find((c) => c.id === 'cable.BCb')!.params!.strands).toBeGreaterThan(0);
+    expect(cables.find((c) => c.id === 'cable.BCb')!.params!.ties).toBeGreaterThan(0);
+  });
+});
 const lampsNow = (n: { lamp: THREE.Mesh }) => (n.lamp.material as THREE.MeshStandardMaterial).emissiveIntensity;

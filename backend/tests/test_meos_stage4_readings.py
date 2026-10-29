@@ -83,6 +83,13 @@ def test_an_operational_boundary_perturbation_collapses_the_run_and_names_what_i
     )  # with full observation, the collapse is seen as a collapse of the operation
 
 
+def test_a_stale_address_on_a_body_that_does_not_move_leaves_the_dynamics_unchanged():
+    # the result digest differs for any intervention (it covers the intervention log); the dynamics digest differs only if the frames do
+    r = S.address_intervention(E.default_config(), "stale", "A2", duration=40)
+    assert r["digests"]["intervened"] != r["digests"]["unperturbed"]
+    assert r["dynamics_changed"] is False
+
+
 def test_boundary_perturbation_is_deterministic():
     a = S.boundary_perturbation(E.default_config(), "coupling")
     b = S.boundary_perturbation(E.default_config(), "coupling")

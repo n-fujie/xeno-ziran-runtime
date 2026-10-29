@@ -81,6 +81,7 @@ const channelShape = (path: Array<[number, number, number]>): THREE.Shape => {
 
 export interface Terrain {
   group: THREE.Group; puddleMesh: THREE.Mesh | null; heightAt(x: number, z: number): number; setReflectionHidden(hidden: THREE.Object3D[]): void;
+  /** renders the reflection once now (so that its programs are built before the first frame that needs it; measured: the first reflection pass of an orbit built 22 programs in flight) */ warmReflection(renderer: THREE.WebGLRenderer, scene: THREE.Scene, camera: THREE.Camera): void;
   /** Per-frame: far from the puddles the planar reflection is replaced by a dark polished surface (no extra render of the scene). */
   update(camera: THREE.Vector3): void; dispose(): void;
 }
@@ -207,10 +208,18 @@ export function buildTerrain(quality: Quality, pit: number, owned: Array<{ dispo
   };
   // the reflection is a second render of the near scene, so it is refreshed every 3rd frame while the camera moves and every 30th while it rests (the scene changes only
   // by lamps and probes); the texture of the last render is reused in between
+  let warm: ((r: THREE.WebGLRenderer, s: THREE.Scene, c: THREE.Camera) => void) | null = null;
   const setReflectionHidden = (hidden: THREE.Object3D[]) => {
     if (!reflector) return;
     const orig = reflector.onBeforeRender, lastPos = new THREE.Vector3(1e9, 0, 0), lastQ = new THREE.Quaternion();
     let frame = 0, rendered = false;
+    warm = (renderer, scene, camera) => {
+      const was = hidden.map((o) => o.visible), vis = reflector!.visible;
+      hidden.forEach((o) => { o.visible = false; }); reflector!.visible = true;
+      renderer.compile(scene, camera);  // the reflector's own program (it is hidden while the camera is far)
+      (orig as unknown as (r: THREE.WebGLRenderer, s: THREE.Scene, c: THREE.Camera) => void).call(reflector, renderer, scene, camera);
+      hidden.forEach((o, i) => { o.visible = was[i]; }); reflector!.visible = vis;
+    };
     reflector.onBeforeRender = function (this: THREE.Object3D, ...a: Parameters<typeof orig>) {
       const cam = a[2];
       const moved = cam.position.distanceToSquared(lastPos) > 1e-4 || Math.abs(cam.quaternion.dot(lastQ) - 1) > 1e-7;
@@ -224,7 +233,7 @@ export function buildTerrain(quality: Quality, pit: number, owned: Array<{ dispo
       hidden.forEach((o, i) => { o.visible = was[i]; });
     } as typeof orig;
   };
-  return { group, puddleMesh, heightAt: groundHeight, setReflectionHidden, update, dispose: () => { owned.forEach((o) => o.dispose()); } };
+  return { group, puddleMesh, heightAt: groundHeight, setReflectionHidden, warmReflection: (r, s, c) => { warm?.(r, s, c); }, update, dispose: () => { owned.forEach((o) => o.dispose()); } };
 }
 
 /** One displaced icosahedron at a level of detail. Rounded stones and cut-stone blocks differ in the relief and in the flattening of the underside. */

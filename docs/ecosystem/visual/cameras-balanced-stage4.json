@@ -1,0 +1,408 @@
+{
+ "note": "the exact camera of every capture: position, target, field of view, clipping, exposure, tone mapping, pixel ratio, drawing-buffer size and quality tier",
+ "shots": {
+  "30-observation-failure": {
+   "query": "cam=observer&layers=physical,meos&tick=120&labels=0&obs=interval:3",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -104,
+     4.200000000000013,
+     22.000000000000007
+    ],
+    "target": [
+     -85,
+     7.499999999999999,
+     37
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1672,
+     807
+    ],
+    "quality": "balanced"
+   }
+  },
+  "31-boundary-b1": {
+   "query": "tech=ncb&tick=120&body=B1&maplayers=boundary.xenobody,boundary.address,boundary.observation,path.coupling,path.resource&|eco-research-map",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -26.000000000000007,
+     35.99999999999998,
+     98.00000000000001
+    ],
+    "target": [
+     -4,
+     -26,
+     -6
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1280,
+     1366
+    ],
+    "quality": "balanced"
+   }
+  },
+  "32-boundary-b3": {
+   "query": "tech=ncb&tick=120&body=B3&maplayers=boundary.xenobody,boundary.address,boundary.observation,path.coupling,path.resource&|eco-research-map",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -26.000000000000007,
+     35.99999999999998,
+     98.00000000000001
+    ],
+    "target": [
+     -4,
+     -26,
+     -6
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1280,
+     1366
+    ],
+    "quality": "balanced"
+   }
+  },
+  "33-address-loss": {
+   "query": "preset=address-loss&horizon=360&cam=body&layers=physical,meos&tick=120&labels=0",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -88.99999999999999,
+     3.200000000000002,
+     14.99999999999999
+    ],
+    "target": [
+     -103.99999999999999,
+     2.9999999999999996,
+     2.9999999999999996
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1672,
+     807
+    ],
+    "quality": "balanced"
+   }
+  },
+  "34-address-recovery": {
+   "query": "preset=address-loss&horizon=360&cam=body&layers=physical,meos&tick=185&labels=0",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -88.99999999999999,
+     3.200000000000002,
+     14.99999999999999
+    ],
+    "target": [
+     -103.99999999999999,
+     2.9999999999999996,
+     2.9999999999999996
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1672,
+     807
+    ],
+    "quality": "balanced"
+   }
+  },
+  "35-sss-active": {
+   "query": "sss=1/1/1&cam=observer&layers=physical,meos&tick=120&labels=0",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -104,
+     4.200000000000013,
+     22.000000000000007
+    ],
+    "target": [
+     -85,
+     7.499999999999999,
+     37
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1672,
+     807
+    ],
+    "quality": "balanced"
+   }
+  },
+  "36-sss-metastable": {
+   "query": "sss=1.2227/1/1&horizon=480&cam=observer&layers=physical,meos&tick=120&labels=0",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -104,
+     4.200000000000013,
+     22.000000000000007
+    ],
+    "target": [
+     -85,
+     7.499999999999999,
+     37
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1672,
+     807
+    ],
+    "quality": "balanced"
+   }
+  },
+  "37-sss-collapsed": {
+   "query": "sss=1.5/1/1&horizon=480&cam=observer&layers=physical,meos&tick=300&labels=0",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -104,
+     4.200000000000013,
+     22.000000000000007
+    ],
+    "target": [
+     -85,
+     7.499999999999999,
+     37
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1672,
+     807
+    ],
+    "quality": "balanced"
+   }
+  },
+  "38-m2-sensing": {
+   "query": "m2=direct&m2w=4&cam=body&layers=physical,meos&tick=120&labels=0",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -88.99999999999999,
+     3.200000000000002,
+     14.99999999999999
+    ],
+    "target": [
+     -103.99999999999999,
+     2.9999999999999996,
+     2.9999999999999996
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1672,
+     807
+    ],
+    "quality": "balanced"
+   }
+  },
+  "39-technical-paths": {
+   "query": "tech=ncb&tick=125&preset=recovery-demo&horizon=360&phil=revision&maplayers=path.resource,path.coupling,path.history_access,path.observation,path.recovery&|eco-research-map",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -26.000000000000007,
+     35.99999999999998,
+     98.00000000000001
+    ],
+    "target": [
+     -4,
+     -26,
+     -6
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1280,
+     1366
+    ],
+    "quality": "balanced"
+   }
+  },
+  "40-technical-observation-region": {
+   "query": "tech=ncb&tick=120&obs=interval:3,stride:2,region:2.4.6.8,occluder:3.5.5.7&maplayers=boundary.observation,observation&|eco-research-map",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -26.000000000000007,
+     35.99999999999998,
+     98.00000000000001
+    ],
+    "target": [
+     -4,
+     -26,
+     -6
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1280,
+     1366
+    ],
+    "quality": "balanced"
+   }
+  },
+  "41-replay-markers": {
+   "query": "tab=research&preset=recovery-demo&horizon=360&phil=revision&obs=interval:3&tick=165&cam=habitat&layers=physical,meos&&|.eco",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -48.00000000000001,
+     11,
+     33.00000000000001
+    ],
+    "target": [
+     -66,
+     1.2,
+     16
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1280,
+     807
+    ],
+    "quality": "balanced"
+   }
+  },
+  "42-compare-baseline-intervention-recovered": {
+   "query": "tech=ncb&compare=1&preset=recovery-demo&horizon=360&phil=revision&tick=165&&|eco-compare",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -26.000000000000007,
+     35.99999999999998,
+     98.00000000000001
+    ],
+    "target": [
+     -4,
+     -26,
+     -6
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1280,
+     1366
+    ],
+    "quality": "balanced"
+   }
+  }
+ }
+}

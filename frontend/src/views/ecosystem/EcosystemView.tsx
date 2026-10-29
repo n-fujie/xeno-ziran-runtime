@@ -43,7 +43,13 @@ const PRESETS: Record<string, Intervention[]> = {
     { tick: 151, op: 'ALTER_RESOURCE', inject: { x: 3, y: 6, amount: 2 } }, { tick: 190, op: 'RECONFIGURE', path: 'environment.renew_efficiency', value: 0.85 },
     { tick: 200, op: 'ADDRESS', target: 'A2', mode: 'fragment', fraction: 0.5 }, { tick: 225, op: 'ADDRESS', target: 'both', mode: 'restore' },
   ],
+  // fourth stage: A2's address is lost, restored after 40 ticks, and a resource pulse follows (experiment C: the operation recovers in 5 of 5 seeds)
+  'address-loss': [{ tick: 100, op: 'ADDRESS', target: 'A2', mode: 'loss' }, { tick: 140, op: 'ADDRESS', target: 'A2', mode: 'restore' }, { tick: 141, op: 'ALTER_RESOURCE', inject: { x: 3, y: 6, amount: 2 } }],
+  // the XenoBody boundaries: the coupling cut for 40 ticks, restored, with a pulse (experiment B)
+  'boundary-cut': [{ tick: 100, op: 'ISOLATE', target: 'interaction_channel' }, { tick: 140, op: 'RECONNECT', target: 'interaction_channel' }, { tick: 141, op: 'ALTER_RESOURCE', inject: { x: 3, y: 6, amount: 2 } }],
 };
+/** ``?sss=scale/size/speed`` sets the SSS from tick 0 (the captures of the SSS regions). */
+const sssFromUrl = (v: string | null): Intervention[] => { const p = (v ?? '').split('/').map(Number); return p.length === 3 && p.every((x) => x >= 0.25 && x <= 4) ? [{ tick: 0, op: 'ALTER_SSS', scale: p[0], size: p[1], speed: p[2] }] : []; };
 
 export interface Perf { fps: number; frameMs: number; p95: number; drawCalls: number; triangles: number; instances: number; edgeSegments: number; simMs: number; heapMB: number | null; frames: number; quality: Quality }
 
@@ -53,7 +59,7 @@ export default function EcosystemView() {
   const mount = useRef<HTMLDivElement>(null);
   const [spec, setSpec] = useState<Spec | null>(null);
   const [out, setOut] = useState<RunOut | null>(null);
-  const [ivs, setIvs] = useState<Intervention[]>(() => PRESETS[url.get('preset') ?? 'baseline'] ?? []);
+  const [ivs, setIvs] = useState<Intervention[]>(() => [...(PRESETS[url.get('preset') ?? 'baseline'] ?? []), ...sssFromUrl(url.get('sss'))]);
   const [seed, setSeed] = useState(1);
   const [horizon, setHorizon] = useState(() => ([240, 360, 480].includes(Number(url.get('horizon'))) ? Number(url.get('horizon')) : 240));
   const [obs, setObs] = useState<Observation>(() => {
@@ -68,6 +74,7 @@ export default function EcosystemView() {
   });
   const [openMarker, setOpenMarker] = useState<Marker | null>(null);
   const [compare, setCompare] = useState(url.get('compare') === '1');
+  const [body, setBody] = useState(() => (['B1', 'B2', 'B3'].includes(url.get('body') ?? '') ? url.get('body')! : 'B3'));
   const [sssCache, setSssCache] = useState<Record<string, SssClassOut>>({});
   type Conn = { m2: string; m2w: number; m2t: number; phil: string; channel: string; power: string };
   const [conn, setConn] = useState<Conn>(() => ({ m2: ['direct', 'delayed', 'noisy', 'threshold'].includes(url.get('m2') ?? '') ? url.get('m2')! : 'none', m2w: Number(url.get('m2w') ?? 1) || 1, m2t: 0.1, phil: ['expression', 'scorekeeping', 'revision'].includes(url.get('phil') ?? '') ? url.get('phil')! : 'none', channel: 'clean', power: 'finite' }));
@@ -160,7 +167,6 @@ export default function EcosystemView() {
     // a one-time automatic run for deep links (?reductions=1), e.g. the subsurface-laboratory capture
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [spec]);
-  const settled = !!rec && !busy && (url.get('reductions') !== '1' || !!abl);
 
   // ---------------------------------------------------------------------------------------------- scene lifecycle
   useEffect(() => {
@@ -265,7 +271,15 @@ export default function EcosystemView() {
       } else renderer.render(scene, camera);
     };
     eng.current = { device, composer, mega, renderer, scene, camera, controls, overlays, simMs: [] };
-    for (const [sp, sh] of [[true, true], [true, false], [false, true], [false, false]] as const) { spots.forEach((l) => { l.visible = sp; }); shaftLights.forEach((l) => { l.visible = sh; }); renderer.compile(scene, camera); }
+    // A program depends on where it renders: into a render target there is no tone mapping and the output is linear, so the programs of the screen are not the programs of the composer's
+    // target. The compile therefore runs with the composer's target bound (the target the frames are drawn into), and the reflection, which draws the scene into a target of its own, is
+    // rendered once as well: measured, the first reflection pass of an orbit built 22 programs in flight, tens to hundreds of milliseconds each.
+    if (composer) renderer.setRenderTarget(composer.renderTarget1);
+    for (const [sp, sh] of [[true, true], [true, false], [false, true], [false, false]] as const) {
+      spots.forEach((l) => { l.visible = sp; }); shaftLights.forEach((l) => { l.visible = sh; }); renderer.compile(scene, camera);
+      mega.terrain.warmReflection(renderer, scene, camera);
+    }
+    renderer.setRenderTarget(null);
     applyLights(true);
     setReady(true);
 
@@ -356,6 +370,14 @@ export default function EcosystemView() {
         const tq = gl.getExtension('EXT_disjoint_timer_query_webgl2') as { TIME_ELAPSED_EXT: number } | null;
         renderer.info.autoReset = false;  // the counters then cover every pass of one frame (the composer renders several)
         let calls = 0, triangles = 0;
+        // per-frame series for the decomposition of the slow frames of an orbit (taken after the timed part of each frame, so they do not add to it): draw calls, triangles, geometries
+        // and textures held by the renderer (an increase is an upload), LOD levels that changed, objects whose visibility flipped
+        const seriesCalls: number[] = [], seriesTris: number[] = [], seriesGeo: number[] = [], seriesTex: number[] = [], seriesLod: number[] = [], seriesFlip: number[] = [], seriesProg: number[] = [];
+        const lods: THREE.LOD[] = [], objs: THREE.Object3D[] = [];
+        scene.traverse((o) => { if ((o as THREE.LOD).isLOD) lods.push(o as THREE.LOD); else if ((o as THREE.Mesh).isMesh || (o as THREE.Line).isLine || (o as THREE.Points).isPoints) objs.push(o); });
+        let prevLevels = lods.map((l) => l.getCurrentLevel()), prevVis = objs.map((o) => o.visible);
+        const programsAt = () => (renderer.info.programs ?? []).map((p) => `${p.name}#${p.id}`);  // the programs the renderer holds, to name those built during the run
+        const before = new Set(programsAt());
         for (let i = 0; i < n; i++) {
           renderer.info.reset();
           const q = tq ? gl.createQuery() : null;
@@ -369,9 +391,13 @@ export default function EcosystemView() {
           if (q) { if (gl.getQueryParameter(q, gl.QUERY_RESULT_AVAILABLE)) gpu.push(Number(gl.getQueryParameter(q, gl.QUERY_RESULT)) / 1e6); gl.deleteQuery(q); }
           ms.push(performance.now() - t0);
           calls = renderer.info.render.calls; triangles = renderer.info.render.triangles;
+          seriesCalls.push(calls); seriesTris.push(triangles); seriesGeo.push(renderer.info.memory.geometries); seriesTex.push(renderer.info.memory.textures); seriesProg.push(renderer.info.programs?.length ?? 0);
+          const lv = lods.map((l) => l.getCurrentLevel()), vis = objs.map((o) => o.visible);
+          seriesLod.push(lv.reduce((a, v, k) => a + (v !== prevLevels[k] ? 1 : 0), 0)); seriesFlip.push(vis.reduce((a, v, k) => a + (v !== prevVis[k] ? 1 : 0), 0)); prevLevels = lv; prevVis = vis;
         }
         renderer.info.autoReset = true;
-        return { ms, js, gpu, drawCalls: calls, triangles, geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures };
+        const built = programsAt().filter((p) => !before.has(p));
+        return { ms, js, gpu, drawCalls: calls, triangles, geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures, programsBuilt: built, series: { calls: seriesCalls, triangles: seriesTris, geometries: seriesGeo, textures: seriesTex, programs: seriesProg, lodSwitches: seriesLod, visibilityFlips: seriesFlip, lodObjects: lods.length, trackedObjects: objs.length } };
       },
       setCamera: (pos: [number, number, number], target: [number, number, number]) => { camera.position.set(...pos); controls.target.set(...target); controls.update(); },
       renderOnce: () => { controls.update(); renderFrame(performance.now()); },
@@ -408,6 +434,8 @@ export default function EcosystemView() {
     return () => { live = false; };
   }, [sssKey, sssCache]);
   const sssRegion: SssRegion = (sssKey && sssCache[sssKey]?.region) || 'ACTIVE';
+  const settled = !!rec && !busy && (url.get('reductions') !== '1' || !!abl) && (!sssKey || !!sssCache[sssKey]);
+
   useEffect(() => {
     const E = eng.current;
     if (!E || !rec || !fields) return;
@@ -467,7 +495,7 @@ export default function EcosystemView() {
       <div className="eco-stage" data-settled={settled ? '1' : '0'}>
         <div ref={mount} style={{ position: 'absolute', inset: 0 }} data-testid="eco-canvas" />
         {chrome && tab === 'technical' && rec && <TechnicalView rec={rec} tick={tick} obs={obs} observability={out?.observed?.observability_status ?? 'OBSERVABLE'} which={techWhich} setWhich={setTechWhich} probeId={techProbe} setProbeId={setTechProbe}
-          research={{ observed: out?.observed ?? null, paths: out?.paths ?? null, markers, sssRegion, compare }} />}
+          research={{ observed: out?.observed ?? null, paths: out?.paths ?? null, markers, sssRegion, compare, bodies: spec ? { partitions: spec.partitions, legs: spec.legs } : null, body, setBody }} />}
         <div className="eco-hud">
           {mv && <div className={`eco-badge ${mv.label}`}><span>MEOS {mv.label}</span><span className="dim">tick {tick}/{n - 1}</span></div>}
           {mv?.dependency && <div className="eco-dep">failed dependency{mv.dependency.entity ? ` (${mv.dependency.entity})` : ''}: {mv.dependency.detail}</div>}

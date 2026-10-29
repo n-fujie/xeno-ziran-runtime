@@ -52,6 +52,20 @@ export const SHOTS = {
   '26-technical-ncb': 'tech=ncb&probe=C1&tick=120&preset=recovery-demo&horizon=360&phil=revision',
   '27-technical-observer': 'tech=observer&probe=O1&tick=120&preset=recovery-demo&horizon=360&phil=revision',
   '28-technical-cut': 'tech=ncb&probe=B1&tick=125&preset=recovery-demo&horizon=360&phil=revision',
+  // fourth stage (a '|' names the element that is photographed: a data-testid, or a CSS selector beginning with '.')
+  '30-observation-failure': 'cam=observer&layers=physical,meos&tick=120&labels=0&obs=interval:3',
+  '31-boundary-b1': 'tech=ncb&tick=120&body=B1&maplayers=boundary.xenobody,boundary.address,boundary.observation,path.coupling,path.resource&|eco-research-map',
+  '32-boundary-b3': 'tech=ncb&tick=120&body=B3&maplayers=boundary.xenobody,boundary.address,boundary.observation,path.coupling,path.resource&|eco-research-map',
+  '33-address-loss': 'preset=address-loss&horizon=360&cam=body&layers=physical,meos&tick=120&labels=0',
+  '34-address-recovery': 'preset=address-loss&horizon=360&cam=body&layers=physical,meos&tick=185&labels=0',
+  '35-sss-active': 'sss=1/1/1&cam=observer&layers=physical,meos&tick=120&labels=0',
+  '36-sss-metastable': 'sss=1.2227/1/1&horizon=480&cam=observer&layers=physical,meos&tick=120&labels=0',
+  '37-sss-collapsed': 'sss=1.5/1/1&horizon=480&cam=observer&layers=physical,meos&tick=300&labels=0',
+  '38-m2-sensing': 'm2=direct&m2w=4&cam=body&layers=physical,meos&tick=120&labels=0',
+  '39-technical-paths': 'tech=ncb&tick=125&preset=recovery-demo&horizon=360&phil=revision&maplayers=path.resource,path.coupling,path.history_access,path.observation,path.recovery&|eco-research-map',
+  '40-technical-observation-region': 'tech=ncb&tick=120&obs=interval:3,stride:2,region:2.4.6.8,occluder:3.5.5.7&maplayers=boundary.observation,observation&|eco-research-map',
+  '41-replay-markers': 'tab=research&preset=recovery-demo&horizon=360&phil=revision&obs=interval:3&tick=165&cam=habitat&layers=physical,meos&&|.eco',
+  '42-compare-baseline-intervention-recovered': 'tech=ncb&compare=1&preset=recovery-demo&horizon=360&phil=revision&tick=165&&|eco-compare',
 };
 
 // default: the machine's GPU through ANGLE/Metal (frame rates are then those of the GPU); --software forces SwiftShader (slow, a rasteriser on the CPU)
@@ -62,15 +76,16 @@ for (const [name, q] of Object.entries(SHOTS)) {
   if (only && !only.split(',').some((o) => name.includes(o))) continue;
   const page = await browser.newPage({ viewport: { width, height: q.includes('tech=') ? 1500 : height } });
   page.on('pageerror', (e) => console.error('pageerror', String(e).slice(0, 300)));
-  const tech = q.includes('tech=');
-  await page.goto(`${base}/?view=ecosystem&${q}&quality=${quality}${tech ? '' : '&chrome=0'}&capture=1`, { waitUntil: 'load' });
+  const [query, targetSpec] = q.split('|');
+  const tech = query.includes('tech='), chromeOn = query.includes('tab=research');
+  await page.goto(`${base}/?view=ecosystem&${query}&quality=${quality}${tech || chromeOn ? '' : '&chrome=0'}&capture=1`, { waitUntil: 'load' });
   await page.waitForFunction(() => document.querySelector('.eco-stage')?.getAttribute('data-settled') === '1' && window.__meos?.ready?.(), null, { timeout: 120000 });
   await page.waitForTimeout(tech ? 2500 : wait);
   await page.evaluate(() => window.__meos.resetPerf());  // measure after warm-up: the scene build and shader compilation are not steady state
   await page.waitForTimeout(+arg('measure', 5000));
   perf[name] = await page.evaluate(() => ({ ...window.__meos.perf(), camera: window.__meos.camera(), stats: window.__meos.stats() }));
   cameras[name] = { query: q, viewport: [width, height], quality, camera: perf[name].camera };
-  const target = tech ? await page.$('[data-testid=eco-sheet]') : await page.$('.eco-stage');
+  const target = targetSpec ? await page.$(targetSpec.startsWith('.') ? targetSpec : `[data-testid=${targetSpec}]`) : tech ? await page.$('[data-testid=eco-sheet]') : await page.$('.eco-stage');
   await target.screenshot({ path: join(out, `${name}.png`), timeout: 300000 });
   await page.close();
   console.log(name, 'ok', perf[name].fps.toFixed(1), software ? 'fps (software rendering)' : 'fps (GPU, headless)');

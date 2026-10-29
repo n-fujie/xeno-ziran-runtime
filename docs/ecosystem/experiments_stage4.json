@@ -10966,7 +10966,7 @@
      "final_active_with_pulse_seeds": 0,
      "mean_collapse_tick": 144.0,
      "min_integrity": 0.0,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 5,
      "per_seed": [
       {
        "seed": 1,
@@ -10977,7 +10977,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 2,
@@ -10988,7 +10988,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 3,
@@ -10999,7 +10999,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 4,
@@ -11010,7 +11010,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 5,
@@ -11021,7 +11021,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       }
      ]
     },
@@ -11035,7 +11035,7 @@
      "final_active_with_pulse_seeds": 0,
      "mean_collapse_tick": 144.0,
      "min_integrity": 0.0,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 5,
      "per_seed": [
       {
        "seed": 1,
@@ -11046,7 +11046,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 2,
@@ -11057,7 +11057,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 3,
@@ -11068,7 +11068,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 4,
@@ -11079,7 +11079,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 5,
@@ -11090,7 +11090,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       }
      ]
     },
@@ -11104,7 +11104,7 @@
      "final_active_with_pulse_seeds": 5,
      "mean_collapse_tick": 144.0,
      "min_integrity": 0.0,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 5,
      "per_seed": [
       {
        "seed": 1,
@@ -11115,7 +11115,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 2,
@@ -11126,7 +11126,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 3,
@@ -11137,7 +11137,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 4,
@@ -11148,7 +11148,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 5,
@@ -11159,7 +11159,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       }
      ]
     },
@@ -11173,7 +11173,7 @@
      "final_active_with_pulse_seeds": 5,
      "mean_collapse_tick": 144.0,
      "min_integrity": 0.0,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 5,
      "per_seed": [
       {
        "seed": 1,
@@ -11184,7 +11184,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 2,
@@ -11195,7 +11195,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 3,
@@ -11206,7 +11206,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 4,
@@ -11217,7 +11217,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 5,
@@ -11228,7 +11228,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       }
      ]
     },
@@ -11242,7 +11242,7 @@
      "final_active_with_pulse_seeds": 5,
      "mean_collapse_tick": 144.0,
      "min_integrity": 0.0,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 5,
      "per_seed": [
       {
        "seed": 1,
@@ -11253,7 +11253,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 2,
@@ -11264,7 +11264,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 3,
@@ -11275,7 +11275,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 4,
@@ -11286,7 +11286,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 5,
@@ -11297,7 +11297,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       }
      ]
     },
@@ -11311,7 +11311,7 @@
      "final_active_with_pulse_seeds": 5,
      "mean_collapse_tick": 144.0,
      "min_integrity": 0.0,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 5,
      "per_seed": [
       {
        "seed": 1,
@@ -11322,7 +11322,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 2,
@@ -11333,7 +11333,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 3,
@@ -11344,7 +11344,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 4,
@@ -11355,7 +11355,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 5,
@@ -11366,7 +11366,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       }
      ]
     },
@@ -11380,7 +11380,7 @@
      "final_active_with_pulse_seeds": 0,
      "mean_collapse_tick": 144.0,
      "min_integrity": 1.0,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 5,
      "per_seed": [
       {
        "seed": 1,
@@ -11391,7 +11391,7 @@
        "min_integrity": 1.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 2,
@@ -11402,7 +11402,7 @@
        "min_integrity": 1.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 3,
@@ -11413,7 +11413,7 @@
        "min_integrity": 1.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 4,
@@ -11424,7 +11424,7 @@
        "min_integrity": 1.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 5,
@@ -11435,7 +11435,7 @@
        "min_integrity": 1.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       }
      ]
     },
@@ -11449,7 +11449,7 @@
      "final_active_with_pulse_seeds": 0,
      "mean_collapse_tick": 144.0,
      "min_integrity": 1.0,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 5,
      "per_seed": [
       {
        "seed": 1,
@@ -11460,7 +11460,7 @@
        "min_integrity": 1.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 2,
@@ -11471,7 +11471,7 @@
        "min_integrity": 1.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 3,
@@ -11482,7 +11482,7 @@
        "min_integrity": 1.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 4,
@@ -11493,7 +11493,7 @@
        "min_integrity": 1.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 5,
@@ -11504,7 +11504,7 @@
        "min_integrity": 1.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       }
      ]
     },
@@ -11518,7 +11518,7 @@
      "final_active_with_pulse_seeds": 0,
      "mean_collapse_tick": 144.0,
      "min_integrity": 1.0,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 5,
      "per_seed": [
       {
        "seed": 1,
@@ -11529,7 +11529,7 @@
        "min_integrity": 1.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 2,
@@ -11540,7 +11540,7 @@
        "min_integrity": 1.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 3,
@@ -11551,7 +11551,7 @@
        "min_integrity": 1.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 4,
@@ -11562,7 +11562,7 @@
        "min_integrity": 1.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 5,
@@ -11573,7 +11573,7 @@
        "min_integrity": 1.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       }
      ]
     },
@@ -11587,7 +11587,7 @@
      "final_active_with_pulse_seeds": 0,
      "mean_collapse_tick": 144.0,
      "min_integrity": 1.0,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 5,
      "per_seed": [
       {
        "seed": 1,
@@ -11598,7 +11598,7 @@
        "min_integrity": 1.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 2,
@@ -11609,7 +11609,7 @@
        "min_integrity": 1.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 3,
@@ -11620,7 +11620,7 @@
        "min_integrity": 1.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 4,
@@ -11631,7 +11631,7 @@
        "min_integrity": 1.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 5,
@@ -11642,7 +11642,7 @@
        "min_integrity": 1.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       }
      ]
     },
@@ -11656,7 +11656,7 @@
      "final_active_with_pulse_seeds": 0,
      "mean_collapse_tick": 144.0,
      "min_integrity": 1.0,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 5,
      "per_seed": [
       {
        "seed": 1,
@@ -11667,7 +11667,7 @@
        "min_integrity": 1.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 2,
@@ -11678,7 +11678,7 @@
        "min_integrity": 1.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 3,
@@ -11689,7 +11689,7 @@
        "min_integrity": 1.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 4,
@@ -11700,7 +11700,7 @@
        "min_integrity": 1.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 5,
@@ -11711,7 +11711,7 @@
        "min_integrity": 1.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       }
      ]
     },
@@ -11725,7 +11725,7 @@
      "final_active_with_pulse_seeds": 0,
      "mean_collapse_tick": 144.0,
      "min_integrity": 1.0,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 5,
      "per_seed": [
       {
        "seed": 1,
@@ -11736,7 +11736,7 @@
        "min_integrity": 1.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 2,
@@ -11747,7 +11747,7 @@
        "min_integrity": 1.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 3,
@@ -11758,7 +11758,7 @@
        "min_integrity": 1.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 4,
@@ -11769,7 +11769,7 @@
        "min_integrity": 1.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 5,
@@ -11780,7 +11780,7 @@
        "min_integrity": 1.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       }
      ]
     },
@@ -11794,7 +11794,7 @@
      "final_active_with_pulse_seeds": 0,
      "mean_collapse_tick": 144.0,
      "min_integrity": 0.4133,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 4,
      "per_seed": [
       {
        "seed": 1,
@@ -11805,7 +11805,7 @@
        "min_integrity": 0.4133,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 2,
@@ -11816,7 +11816,7 @@
        "min_integrity": 0.5255,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 3,
@@ -11827,7 +11827,7 @@
        "min_integrity": 0.5561,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 4,
@@ -11838,7 +11838,7 @@
        "min_integrity": 0.4949,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 5,
@@ -11849,7 +11849,7 @@
        "min_integrity": 0.5153,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       }
      ]
     },
@@ -11863,7 +11863,7 @@
      "final_active_with_pulse_seeds": 1,
      "mean_collapse_tick": 144.0,
      "min_integrity": 0.4133,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 4,
      "per_seed": [
       {
        "seed": 1,
@@ -11874,7 +11874,7 @@
        "min_integrity": 0.4133,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 2,
@@ -11885,7 +11885,7 @@
        "min_integrity": 0.5255,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 3,
@@ -11896,7 +11896,7 @@
        "min_integrity": 0.5561,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 4,
@@ -11907,7 +11907,7 @@
        "min_integrity": 0.4949,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 5,
@@ -11918,7 +11918,7 @@
        "min_integrity": 0.5153,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       }
      ]
     },
@@ -11932,7 +11932,7 @@
      "final_active_with_pulse_seeds": 4,
      "mean_collapse_tick": null,
      "min_integrity": 0.4133,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 4,
      "per_seed": [
       {
        "seed": 1,
@@ -11943,7 +11943,7 @@
        "min_integrity": 0.4133,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 2,
@@ -11954,7 +11954,7 @@
        "min_integrity": 0.5255,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 3,
@@ -11965,7 +11965,7 @@
        "min_integrity": 0.5561,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 4,
@@ -11976,7 +11976,7 @@
        "min_integrity": 0.4949,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 5,
@@ -11987,7 +11987,7 @@
        "min_integrity": 0.5153,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       }
      ]
     },
@@ -12001,7 +12001,7 @@
      "final_active_with_pulse_seeds": 5,
      "mean_collapse_tick": null,
      "min_integrity": 0.4133,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 4,
      "per_seed": [
       {
        "seed": 1,
@@ -12012,7 +12012,7 @@
        "min_integrity": 0.4133,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 2,
@@ -12023,7 +12023,7 @@
        "min_integrity": 0.5255,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 3,
@@ -12034,7 +12034,7 @@
        "min_integrity": 0.5561,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 4,
@@ -12045,7 +12045,7 @@
        "min_integrity": 0.4949,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 5,
@@ -12056,7 +12056,7 @@
        "min_integrity": 0.5153,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       }
      ]
     },
@@ -12070,7 +12070,7 @@
      "final_active_with_pulse_seeds": 0,
      "mean_collapse_tick": 144.0,
      "min_integrity": 0.4133,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 4,
      "per_seed": [
       {
        "seed": 1,
@@ -12081,7 +12081,7 @@
        "min_integrity": 0.4133,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 2,
@@ -12092,7 +12092,7 @@
        "min_integrity": 0.5255,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 3,
@@ -12103,7 +12103,7 @@
        "min_integrity": 0.5561,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 4,
@@ -12114,7 +12114,7 @@
        "min_integrity": 0.4949,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 5,
@@ -12125,7 +12125,7 @@
        "min_integrity": 0.5153,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       }
      ]
     },
@@ -12139,7 +12139,7 @@
      "final_active_with_pulse_seeds": 1,
      "mean_collapse_tick": 144.0,
      "min_integrity": 0.4133,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 4,
      "per_seed": [
       {
        "seed": 1,
@@ -12150,7 +12150,7 @@
        "min_integrity": 0.4133,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 2,
@@ -12161,7 +12161,7 @@
        "min_integrity": 0.5255,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 3,
@@ -12172,7 +12172,7 @@
        "min_integrity": 0.5561,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 4,
@@ -12183,7 +12183,7 @@
        "min_integrity": 0.4949,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 5,
@@ -12194,7 +12194,7 @@
        "min_integrity": 0.5153,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       }
      ]
     },
@@ -12208,7 +12208,7 @@
      "final_active_with_pulse_seeds": 0,
      "mean_collapse_tick": null,
      "min_integrity": 1.0,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 0,
      "per_seed": [
       {
        "seed": 1,
@@ -12219,7 +12219,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 2,
@@ -12230,7 +12230,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 3,
@@ -12241,7 +12241,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 4,
@@ -12252,7 +12252,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 5,
@@ -12263,7 +12263,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       }
      ]
     },
@@ -12277,7 +12277,7 @@
      "final_active_with_pulse_seeds": 5,
      "mean_collapse_tick": null,
      "min_integrity": 1.0,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 0,
      "per_seed": [
       {
        "seed": 1,
@@ -12288,7 +12288,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 2,
@@ -12299,7 +12299,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 3,
@@ -12310,7 +12310,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 4,
@@ -12321,7 +12321,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 5,
@@ -12332,7 +12332,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       }
      ]
     },
@@ -12346,7 +12346,7 @@
      "final_active_with_pulse_seeds": 0,
      "mean_collapse_tick": null,
      "min_integrity": 1.0,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 0,
      "per_seed": [
       {
        "seed": 1,
@@ -12357,7 +12357,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 2,
@@ -12368,7 +12368,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 3,
@@ -12379,7 +12379,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 4,
@@ -12390,7 +12390,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 5,
@@ -12401,7 +12401,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       }
      ]
     },
@@ -12415,7 +12415,7 @@
      "final_active_with_pulse_seeds": 5,
      "mean_collapse_tick": null,
      "min_integrity": 1.0,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 0,
      "per_seed": [
       {
        "seed": 1,
@@ -12426,7 +12426,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 2,
@@ -12437,7 +12437,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 3,
@@ -12448,7 +12448,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 4,
@@ -12459,7 +12459,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 5,
@@ -12470,7 +12470,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       }
      ]
     },
@@ -12484,7 +12484,7 @@
      "final_active_with_pulse_seeds": 0,
      "mean_collapse_tick": null,
      "min_integrity": 1.0,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 0,
      "per_seed": [
       {
        "seed": 1,
@@ -12495,7 +12495,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 2,
@@ -12506,7 +12506,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 3,
@@ -12517,7 +12517,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 4,
@@ -12528,7 +12528,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 5,
@@ -12539,7 +12539,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       }
      ]
     },
@@ -12553,7 +12553,7 @@
      "final_active_with_pulse_seeds": 5,
      "mean_collapse_tick": null,
      "min_integrity": 1.0,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 0,
      "per_seed": [
       {
        "seed": 1,
@@ -12564,7 +12564,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 2,
@@ -12575,7 +12575,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 3,
@@ -12586,7 +12586,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 4,
@@ -12597,7 +12597,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 5,
@@ -12608,7 +12608,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       }
      ]
     },
@@ -12622,7 +12622,7 @@
      "final_active_with_pulse_seeds": 0,
      "mean_collapse_tick": 148.6,
      "min_integrity": 0.5,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 5,
      "per_seed": [
       {
        "seed": 1,
@@ -12633,7 +12633,7 @@
        "min_integrity": 0.5,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 2,
@@ -12644,7 +12644,7 @@
        "min_integrity": 0.5,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 3,
@@ -12655,7 +12655,7 @@
        "min_integrity": 0.5,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 4,
@@ -12666,7 +12666,7 @@
        "min_integrity": 0.5,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 5,
@@ -12677,7 +12677,7 @@
        "min_integrity": 0.5,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       }
      ]
     },
@@ -12691,7 +12691,7 @@
      "final_active_with_pulse_seeds": 0,
      "mean_collapse_tick": 148.6,
      "min_integrity": 0.5,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 5,
      "per_seed": [
       {
        "seed": 1,
@@ -12702,7 +12702,7 @@
        "min_integrity": 0.5,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 2,
@@ -12713,7 +12713,7 @@
        "min_integrity": 0.5,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 3,
@@ -12724,7 +12724,7 @@
        "min_integrity": 0.5,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 4,
@@ -12735,7 +12735,7 @@
        "min_integrity": 0.5,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 5,
@@ -12746,7 +12746,7 @@
        "min_integrity": 0.5,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       }
      ]
     },
@@ -12760,7 +12760,7 @@
      "final_active_with_pulse_seeds": 5,
      "mean_collapse_tick": 146.0,
      "min_integrity": 0.5,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 5,
      "per_seed": [
       {
        "seed": 1,
@@ -12771,7 +12771,7 @@
        "min_integrity": 0.5,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 2,
@@ -12782,7 +12782,7 @@
        "min_integrity": 0.5,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 3,
@@ -12793,7 +12793,7 @@
        "min_integrity": 0.5,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 4,
@@ -12804,7 +12804,7 @@
        "min_integrity": 0.5,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 5,
@@ -12815,7 +12815,7 @@
        "min_integrity": 0.5,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       }
      ]
     },
@@ -12829,7 +12829,7 @@
      "final_active_with_pulse_seeds": 0,
      "mean_collapse_tick": 146.0,
      "min_integrity": 0.5,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 5,
      "per_seed": [
       {
        "seed": 1,
@@ -12840,7 +12840,7 @@
        "min_integrity": 0.5,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 2,
@@ -12851,7 +12851,7 @@
        "min_integrity": 0.5,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 3,
@@ -12862,7 +12862,7 @@
        "min_integrity": 0.5,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 4,
@@ -12873,7 +12873,7 @@
        "min_integrity": 0.5,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 5,
@@ -12884,7 +12884,7 @@
        "min_integrity": 0.5,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       }
      ]
     },
@@ -12898,7 +12898,7 @@
      "final_active_with_pulse_seeds": 3,
      "mean_collapse_tick": 145.2,
      "min_integrity": 0.5,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 5,
      "per_seed": [
       {
        "seed": 1,
@@ -12909,7 +12909,7 @@
        "min_integrity": 0.5,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 2,
@@ -12920,7 +12920,7 @@
        "min_integrity": 0.5,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 3,
@@ -12931,7 +12931,7 @@
        "min_integrity": 0.5,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 4,
@@ -12942,7 +12942,7 @@
        "min_integrity": 0.5,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 5,
@@ -12953,7 +12953,7 @@
        "min_integrity": 0.5,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       }
      ]
     },
@@ -12967,7 +12967,7 @@
      "final_active_with_pulse_seeds": 0,
      "mean_collapse_tick": 145.2,
      "min_integrity": 0.5,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 5,
      "per_seed": [
       {
        "seed": 1,
@@ -12978,7 +12978,7 @@
        "min_integrity": 0.5,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 2,
@@ -12989,7 +12989,7 @@
        "min_integrity": 0.5,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 3,
@@ -13000,7 +13000,7 @@
        "min_integrity": 0.5,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 4,
@@ -13011,7 +13011,7 @@
        "min_integrity": 0.5,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 5,
@@ -13022,7 +13022,7 @@
        "min_integrity": 0.5,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       }
      ]
     },
@@ -13036,7 +13036,7 @@
      "final_active_with_pulse_seeds": 0,
      "mean_collapse_tick": 154.0,
      "min_integrity": 0.0,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 5,
      "per_seed": [
       {
        "seed": 1,
@@ -13047,7 +13047,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 2,
@@ -13058,7 +13058,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 3,
@@ -13069,7 +13069,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 4,
@@ -13080,7 +13080,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 5,
@@ -13091,7 +13091,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       }
      ]
     },
@@ -13105,7 +13105,7 @@
      "final_active_with_pulse_seeds": 0,
      "mean_collapse_tick": 184.0,
      "min_integrity": 0.0,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 5,
      "per_seed": [
       {
        "seed": 1,
@@ -13116,7 +13116,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 2,
@@ -13127,7 +13127,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 3,
@@ -13138,7 +13138,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 4,
@@ -13149,7 +13149,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 5,
@@ -13160,7 +13160,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       }
      ]
     },
@@ -13174,7 +13174,7 @@
      "final_active_with_pulse_seeds": 0,
      "mean_collapse_tick": null,
      "min_integrity": 0.0,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 5,
      "per_seed": [
       {
        "seed": 1,
@@ -13185,7 +13185,7 @@
        "min_integrity": 0.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 2,
@@ -13196,7 +13196,7 @@
        "min_integrity": 0.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 3,
@@ -13207,7 +13207,7 @@
        "min_integrity": 0.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 4,
@@ -13218,7 +13218,7 @@
        "min_integrity": 0.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 5,
@@ -13229,7 +13229,7 @@
        "min_integrity": 0.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       }
      ]
     },
@@ -13243,7 +13243,7 @@
      "final_active_with_pulse_seeds": 5,
      "mean_collapse_tick": null,
      "min_integrity": 0.0,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 5,
      "per_seed": [
       {
        "seed": 1,
@@ -13254,7 +13254,7 @@
        "min_integrity": 0.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 2,
@@ -13265,7 +13265,7 @@
        "min_integrity": 0.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 3,
@@ -13276,7 +13276,7 @@
        "min_integrity": 0.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 4,
@@ -13287,7 +13287,7 @@
        "min_integrity": 0.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 5,
@@ -13298,7 +13298,7 @@
        "min_integrity": 0.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       }
      ]
     },
@@ -13312,7 +13312,7 @@
      "final_active_with_pulse_seeds": 0,
      "mean_collapse_tick": 154.0,
      "min_integrity": 0.0,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 5,
      "per_seed": [
       {
        "seed": 1,
@@ -13323,7 +13323,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 2,
@@ -13334,7 +13334,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 3,
@@ -13345,7 +13345,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 4,
@@ -13356,7 +13356,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 5,
@@ -13367,7 +13367,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       }
      ]
     },
@@ -13381,7 +13381,7 @@
      "final_active_with_pulse_seeds": 0,
      "mean_collapse_tick": 184.0,
      "min_integrity": 0.0,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 5,
      "per_seed": [
       {
        "seed": 1,
@@ -13392,7 +13392,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 2,
@@ -13403,7 +13403,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 3,
@@ -13414,7 +13414,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 4,
@@ -13425,7 +13425,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       },
       {
        "seed": 5,
@@ -13436,7 +13436,7 @@
        "min_integrity": 0.0,
        "observed": "COLLAPSED",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": true
       }
      ]
     },
@@ -13450,7 +13450,7 @@
      "final_active_with_pulse_seeds": 0,
      "mean_collapse_tick": null,
      "min_integrity": 1.0,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 0,
      "per_seed": [
       {
        "seed": 1,
@@ -13461,7 +13461,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 2,
@@ -13472,7 +13472,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 3,
@@ -13483,7 +13483,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 4,
@@ -13494,7 +13494,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 5,
@@ -13505,7 +13505,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       }
      ]
     },
@@ -13519,7 +13519,7 @@
      "final_active_with_pulse_seeds": 5,
      "mean_collapse_tick": null,
      "min_integrity": 1.0,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 0,
      "per_seed": [
       {
        "seed": 1,
@@ -13530,7 +13530,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 2,
@@ -13541,7 +13541,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 3,
@@ -13552,7 +13552,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 4,
@@ -13563,7 +13563,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 5,
@@ -13574,7 +13574,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       }
      ]
     },
@@ -13588,7 +13588,7 @@
      "final_active_with_pulse_seeds": 0,
      "mean_collapse_tick": null,
      "min_integrity": 1.0,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 0,
      "per_seed": [
       {
        "seed": 1,
@@ -13599,7 +13599,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 2,
@@ -13610,7 +13610,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 3,
@@ -13621,7 +13621,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 4,
@@ -13632,7 +13632,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 5,
@@ -13643,7 +13643,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       }
      ]
     },
@@ -13657,7 +13657,7 @@
      "final_active_with_pulse_seeds": 5,
      "mean_collapse_tick": null,
      "min_integrity": 1.0,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 0,
      "per_seed": [
       {
        "seed": 1,
@@ -13668,7 +13668,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 2,
@@ -13679,7 +13679,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 3,
@@ -13690,7 +13690,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 4,
@@ -13701,7 +13701,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 5,
@@ -13712,7 +13712,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       }
      ]
     },
@@ -13726,7 +13726,7 @@
      "final_active_with_pulse_seeds": 0,
      "mean_collapse_tick": null,
      "min_integrity": 1.0,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 0,
      "per_seed": [
       {
        "seed": 1,
@@ -13737,7 +13737,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 2,
@@ -13748,7 +13748,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 3,
@@ -13759,7 +13759,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 4,
@@ -13770,7 +13770,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 5,
@@ -13781,7 +13781,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       }
      ]
     },
@@ -13795,7 +13795,7 @@
      "final_active_with_pulse_seeds": 5,
      "mean_collapse_tick": null,
      "min_integrity": 1.0,
-     "digest_changed_seeds": 5,
+     "dynamics_changed_seeds": 0,
      "per_seed": [
       {
        "seed": 1,
@@ -13806,7 +13806,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 2,
@@ -13817,7 +13817,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 3,
@@ -13828,7 +13828,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 4,
@@ -13839,7 +13839,7 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       },
       {
        "seed": 5,
@@ -13850,28 +13850,28 @@
        "min_integrity": 1.0,
        "observed": "ACTIVE",
        "observability": "SUFFICIENT",
-       "digest_changed": true
+       "dynamics_changed": false
       }
      ]
     }
    ],
    "null_results": [
-    "fragment on A2 for 10 ticks: the run changed in detail, no seed collapsed",
-    "fragment on A2 for 40 ticks: the run changed in detail, no seed collapsed",
-    "collision on A1 for 10 ticks: the run changed in detail, no seed collapsed",
-    "collision on A1 for 40 ticks: the run changed in detail, no seed collapsed",
-    "collision on A2 for 10 ticks: the run changed in detail, no seed collapsed",
-    "collision on A2 for 40 ticks: the run changed in detail, no seed collapsed",
-    "collision on both for 10 ticks: the run changed in detail, no seed collapsed",
-    "collision on both for 40 ticks: the run changed in detail, no seed collapsed",
-    "delayed on A2 for 10 ticks: the run changed in detail, no seed collapsed",
-    "delayed on A2 for 40 ticks: the run changed in detail, no seed collapsed",
-    "stale on A1 for 10 ticks: the run changed in detail, no seed collapsed",
-    "stale on A1 for 40 ticks: the run changed in detail, no seed collapsed",
-    "stale on A2 for 10 ticks: the run changed in detail, no seed collapsed",
-    "stale on A2 for 40 ticks: the run changed in detail, no seed collapsed",
-    "stale on both for 10 ticks: the run changed in detail, no seed collapsed",
-    "stale on both for 40 ticks: the run changed in detail, no seed collapsed"
+    "fragment on A2 for 10 ticks: the dynamics changed in 4 of 5 seeds, no seed collapsed",
+    "fragment on A2 for 40 ticks: the dynamics changed in 4 of 5 seeds, no seed collapsed",
+    "collision on A1 for 10 ticks: the dynamics (every frame) were bit for bit the unperturbed run's in every seed",
+    "collision on A1 for 40 ticks: the dynamics (every frame) were bit for bit the unperturbed run's in every seed",
+    "collision on A2 for 10 ticks: the dynamics (every frame) were bit for bit the unperturbed run's in every seed",
+    "collision on A2 for 40 ticks: the dynamics (every frame) were bit for bit the unperturbed run's in every seed",
+    "collision on both for 10 ticks: the dynamics (every frame) were bit for bit the unperturbed run's in every seed",
+    "collision on both for 40 ticks: the dynamics (every frame) were bit for bit the unperturbed run's in every seed",
+    "delayed on A2 for 10 ticks: the dynamics changed in 5 of 5 seeds, no seed collapsed",
+    "delayed on A2 for 40 ticks: the dynamics changed in 5 of 5 seeds, no seed collapsed",
+    "stale on A1 for 10 ticks: the dynamics (every frame) were bit for bit the unperturbed run's in every seed",
+    "stale on A1 for 40 ticks: the dynamics (every frame) were bit for bit the unperturbed run's in every seed",
+    "stale on A2 for 10 ticks: the dynamics (every frame) were bit for bit the unperturbed run's in every seed",
+    "stale on A2 for 40 ticks: the dynamics (every frame) were bit for bit the unperturbed run's in every seed",
+    "stale on both for 10 ticks: the dynamics (every frame) were bit for bit the unperturbed run's in every seed",
+    "stale on both for 40 ticks: the dynamics (every frame) were bit for bit the unperturbed run's in every seed"
    ],
    "failures": [],
    "interpretation_limit": "An Address Domain fault here is a fault of the attribution of a configuration to a cell; it is not a model of any network or naming system. A formal model: the numbers describe how this engine's specified operations (a recursive cycle of two configurations, status ACTIVE / DEGRADED / COLLAPSED) respond to the manipulation. They are not evidence about any physical, biological or ecological system, and a visual representation of a run is never evidence of the run."

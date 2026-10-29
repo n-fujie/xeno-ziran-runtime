@@ -6,7 +6,7 @@ const DASH: Record<LineStyle, number[]> = { solid: [], dash: [7, 4], dashdot: [9
 
 /** Draw ``spec`` into a ``W`` x ``H`` box of ``g`` (paper background included). Cell coordinates are mapped so that the arena fills the box with a margin for the text. */
 export function drawResearchMap(g: CanvasRenderingContext2D, spec: MapSpec, W: number, H: number, paper = '#f4f4f1'): void {
-  const top = 26, bottom = 78, left = 14, right = 14, sc = Math.min((W - left - right) / spec.n, (H - top - bottom) / spec.n);
+  const top = 26, bottom = 110, left = 14, right = 14, sc = Math.min((W - left - right) / spec.n, (H - top - bottom) / spec.n);
   const X = (x: number) => left + x * sc, Y = (y: number) => top + y * sc;
   g.save(); g.fillStyle = paper; g.fillRect(0, 0, W, H); g.lineCap = 'round'; g.textBaseline = 'middle';
   for (const p of spec.prims) {
@@ -27,7 +27,7 @@ export function drawResearchMap(g: CanvasRenderingContext2D, spec: MapSpec, W: n
     } else if (p.t === 'cross') {
       g.strokeStyle = INKS[p.ink]; g.lineWidth = 2; g.beginPath(); g.moveTo(X(p.x) - 6, Y(p.y) - 6); g.lineTo(X(p.x) + 6, Y(p.y) + 6); g.moveTo(X(p.x) + 6, Y(p.y) - 6); g.lineTo(X(p.x) - 6, Y(p.y) + 6); g.stroke();
     } else if (p.t === 'text') {
-      g.fillStyle = INKS[p.ink]; g.font = '10px ui-monospace, Menlo, monospace'; g.textAlign = p.align === 'center' ? 'center' : 'left'; g.fillText(p.text, p.align === 'center' ? X(p.x) : X(p.x), Y(p.y));
+      g.fillStyle = INKS[p.ink]; g.font = '10px ui-monospace, Menlo, monospace'; g.textAlign = p.align === 'center' ? 'center' : 'left'; g.fillText(p.text, X(p.x), p.row !== undefined ? top + spec.n * sc + 16 + p.row * 13 : Y(p.y));
     } else if (p.t === 'flag') {
       g.strokeStyle = INKS[p.ink]; g.fillStyle = INKS[p.ink]; g.lineWidth = 1.2; g.beginPath(); g.moveTo(X(p.x), Y(p.y)); g.lineTo(X(p.x), Y(p.y) - 14); g.lineTo(X(p.x) + 8, Y(p.y) - 11); g.lineTo(X(p.x), Y(p.y) - 8); g.stroke(); g.beginPath(); g.arc(X(p.x), Y(p.y), 2, 0, Math.PI * 2); g.fill();
       g.font = '8px ui-monospace, Menlo, monospace'; g.textAlign = 'left'; g.fillText(p.text, X(p.x) + 10, Y(p.y) - 15);

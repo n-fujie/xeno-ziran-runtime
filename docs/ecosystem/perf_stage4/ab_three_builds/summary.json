@@ -1,0 +1,287 @@
+{
+ "stage3": {
+  "overview": {
+   "static_median": 19.9,
+   "static_p95": 32.2,
+   "orbit_median": 23.2,
+   "orbit_p95": 37.9,
+   "repetitions": 3,
+   "drawCalls": 455,
+   "triangles": 653420,
+   "all": {
+    "static_median": [
+     19.9,
+     16,
+     21.2
+    ],
+    "static_p95": [
+     27.2,
+     39.3,
+     32.2
+    ],
+    "orbit_median": [
+     24,
+     16.8,
+     23.2
+    ],
+    "orbit_p95": [
+     70.8,
+     30.4,
+     37.9
+    ]
+   }
+  },
+  "habitat": {
+   "static_median": 23,
+   "static_p95": 30.6,
+   "orbit_median": 25.2,
+   "orbit_p95": 43,
+   "repetitions": 3,
+   "drawCalls": 427,
+   "triangles": 1033428,
+   "all": {
+    "static_median": [
+     20.6,
+     23.2,
+     23
+    ],
+    "static_p95": [
+     30.6,
+     35.5,
+     29.9
+    ],
+    "orbit_median": [
+     18.3,
+     27.9,
+     25.2
+    ],
+    "orbit_p95": [
+     27.3,
+     48.6,
+     43
+    ]
+   }
+  },
+  "body": {
+   "static_median": 20.2,
+   "static_p95": 27.9,
+   "orbit_median": 20.8,
+   "orbit_p95": 34.4,
+   "repetitions": 3,
+   "drawCalls": 264,
+   "triangles": 999878,
+   "all": {
+    "static_median": [
+     22.3,
+     20.2,
+     18
+    ],
+    "static_p95": [
+     36.5,
+     27.9,
+     25.1
+    ],
+    "orbit_median": [
+     20.8,
+     24.6,
+     18.4
+    ],
+    "orbit_p95": [
+     34.4,
+     40.5,
+     30.6
+    ]
+   }
+  }
+ },
+ "stage4_before_precompile": {
+  "overview": {
+   "static_median": 17.7,
+   "static_p95": 30.4,
+   "orbit_median": 23.7,
+   "orbit_p95": 46.5,
+   "repetitions": 3,
+   "drawCalls": 457,
+   "triangles": 679592,
+   "all": {
+    "static_median": [
+     20.8,
+     15.7,
+     17.7
+    ],
+    "static_p95": [
+     30.4,
+     23.3,
+     34.7
+    ],
+    "orbit_median": [
+     23.7,
+     19.2,
+     24.5
+    ],
+    "orbit_p95": [
+     46.5,
+     48.6,
+     44.7
+    ]
+   }
+  },
+  "habitat": {
+   "static_median": 25.1,
+   "static_p95": 33.9,
+   "orbit_median": 25.2,
+   "orbit_p95": 44.2,
+   "repetitions": 3,
+   "drawCalls": 427,
+   "triangles": 1060990,
+   "all": {
+    "static_median": [
+     25.2,
+     25.1,
+     23.5
+    ],
+    "static_p95": [
+     36.4,
+     33.9,
+     31.4
+    ],
+    "orbit_median": [
+     28.3,
+     24.1,
+     25.2
+    ],
+    "orbit_p95": [
+     44.2,
+     37.7,
+     45.7
+    ]
+   }
+  },
+  "body": {
+   "static_median": 24,
+   "static_p95": 42.1,
+   "orbit_median": 24.1,
+   "orbit_p95": 43.5,
+   "repetitions": 3,
+   "drawCalls": 264,
+   "triangles": 1027440,
+   "all": {
+    "static_median": [
+     24,
+     17,
+     25.9
+    ],
+    "static_p95": [
+     42.1,
+     23.7,
+     59
+    ],
+    "orbit_median": [
+     27.6,
+     23.8,
+     24.1
+    ],
+    "orbit_p95": [
+     56.1,
+     43.5,
+     38.9
+    ]
+   }
+  }
+ },
+ "stage4_precompile": {
+  "overview": {
+   "static_median": 21.8,
+   "static_p95": 34.1,
+   "orbit_median": 24,
+   "orbit_p95": 40.6,
+   "repetitions": 3,
+   "drawCalls": 457,
+   "triangles": 679592,
+   "all": {
+    "static_median": [
+     18.9,
+     22.1,
+     21.8
+    ],
+    "static_p95": [
+     30.5,
+     34.1,
+     36.2
+    ],
+    "orbit_median": [
+     22.5,
+     24.3,
+     24
+    ],
+    "orbit_p95": [
+     41.9,
+     39.7,
+     40.6
+    ]
+   }
+  },
+  "habitat": {
+   "static_median": 27.2,
+   "static_p95": 38.8,
+   "orbit_median": 28.6,
+   "orbit_p95": 58.6,
+   "repetitions": 3,
+   "drawCalls": 427,
+   "triangles": 1060990,
+   "all": {
+    "static_median": [
+     25.3,
+     27.2,
+     27.3
+    ],
+    "static_p95": [
+     34.1,
+     38.8,
+     48.5
+    ],
+    "orbit_median": [
+     28.1,
+     31.5,
+     28.6
+    ],
+    "orbit_p95": [
+     58.6,
+     62.1,
+     43.4
+    ]
+   }
+  },
+  "body": {
+   "static_median": 26.1,
+   "static_p95": 37.7,
+   "orbit_median": 25.7,
+   "orbit_p95": 44.4,
+   "repetitions": 3,
+   "drawCalls": 264,
+   "triangles": 1027440,
+   "all": {
+    "static_median": [
+     23.5,
+     27.9,
+     26.1
+    ],
+    "static_p95": [
+     36.3,
+     58.2,
+     37.7
+    ],
+    "orbit_median": [
+     24.3,
+     25.7,
+     25.8
+    ],
+    "orbit_p95": [
+     44.4,
+     51.3,
+     43.2
+    ]
+   }
+  }
+ }
+}

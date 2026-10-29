@@ -89,7 +89,7 @@ export function buildObserver(M: BodyMats, detail: number, groundAt: (x: number,
           turnbuckle(parts, hip.clone().add(v3(0, 0.1, 0.25)), knee.clone().add(v3(0, 0.15, 0.25)), 0.04);
         }
         // exposed cables along the limb
-        legRoutes.push({ id: `L${i}`, kind: i % 2 ? 'data' : 'power', points: [hip.clone().add(v3(0.1, 0.2, 0.18)), hip.clone().lerp(knee, 0.5).add(v3(0, 0.3, 0.25)), knee.clone().add(v3(0, 0.2, 0.2)), knee.clone().lerp(foot, 0.5).add(v3(0, 0, 0.22))], radius: 0.035 + (i % 3) * 0.012, sag: 0.1, ends: ['strain', 'anchor'], clamps: [0.3, 0.62, 0.9] });
+        legRoutes.push({ id: `L${i}`, kind: i % 2 ? 'data' : 'power', points: [hip.clone().add(v3(0.1, 0.2, 0.18)), hip.clone().lerp(knee, 0.5).add(v3(0, 0.3, 0.25)), knee.clone().add(v3(0, 0.2, 0.2)), knee.clone().lerp(foot, 0.5).add(v3(0, 0, 0.22))], radius: 0.035 + (i % 3) * 0.012, sag: 0.1, path: 'observation', strands: 2, ties: 4, ends: ['strain', 'anchor'], clamps: [0.3, 0.62, 0.9] });
       }
     });
     // docked modules of different sizes, each on a latch and rail, with a ringed port
@@ -103,7 +103,7 @@ export function buildObserver(M: BodyMats, detail: number, groundAt: (x: number,
         for (let k = 0; k < 4; k++) fast.add(k % 2 ? 'hex' : 'socket', m.at.clone().addScaledVector(up, m.size[1] / 2 + 0.02).addScaledVector(ex, -m.size[0] * 0.3 + k * m.size[0] * 0.2).addScaledVector(nz, (k % 2 ? 1 : -1) * m.size[2] * 0.3), up, 0.9);
       }
       info.push({ id: `M${i + 1}`, name: `Module M${i + 1}`, kind: 'module', body: 'observer', object: g, params: { width: m.size[0], height: m.size[1], depth: m.size[2] } });
-      if (!lo) legRoutes.push({ id: `M${i}`, kind: 'resource', points: [m.at.clone().add(v3(0, m.size[1] / 2, 0)), m.at.clone().lerp(v3(-0.5, H + 0.4, 0.2), 0.5).add(v3(0, 0.5, 0)), v3(-0.5, H + 0.4, 0.2)], radius: 0.05 + i * 0.015, sag: 0.14, ends: ['connector', 'strain'], clamps: [0.45] });
+      if (!lo) legRoutes.push({ id: `M${i}`, kind: 'resource', points: [m.at.clone().add(v3(0, m.size[1] / 2, 0)), m.at.clone().lerp(v3(-0.5, H + 0.4, 0.2), 0.5).add(v3(0, 0.5, 0)), v3(-0.5, H + 0.4, 0.2)], radius: 0.05 + i * 0.015, sag: 0.14, path: 'observation', strands: 2, ties: 3, fan: 0.1, ends: ['connector', 'strain'], clamps: [0.45] });
     });
     // the turret base, off the centre
     parts.add('gun', cylAt(v3(0.6, H + 0.55, -0.6), v3(0, 1, 0), 0.95, 0.5, lo ? 12 : 30, 0.85), 0.6); parts.add('chrome', torusAt(v3(0.6, H + 0.82, -0.6), v3(0, 1, 0), 0.9, 0.07, lo ? 14 : 36), 0.7);
@@ -188,8 +188,8 @@ export function buildObserver(M: BodyMats, detail: number, groundAt: (x: number,
   info.push({ id: 'CLUSTER', name: 'Probe ring (retractable array)', kind: 'cluster', body: 'observer', object: cluster, params: { probes: RING_PROBES.length } });
   // slack loops bridging the sections: authored for the full extension and stretched along z with the sections
   const loops = buildCables([
-    { id: 'W1', kind: 'power', points: [v3(0.3, 0.3, 0.6), v3(0.34, 0.1, BOOM.sec1 * 0.6), v3(0.3, 0.28, BOOM.sec1)], radius: 0.05, sag: 0.2, sleeve: [0.2, 0.8], ends: ['anchor', 'connector'], clamps: [0.2] },
-    { id: 'W2', kind: 'data', points: [v3(-0.3, 0.3, 0.6), v3(-0.34, 0.05, BOOM.sec1 * 0.55), v3(-0.3, 0.26, BOOM.sec1 * 0.95)], radius: 0.032, sag: 0.25, ends: ['strain', 'strain'], clamps: [0.15, 0.85] },
+    { id: 'W1', kind: 'power', points: [v3(0.3, 0.3, 0.6), v3(0.34, 0.1, BOOM.sec1 * 0.6), v3(0.3, 0.28, BOOM.sec1)], radius: 0.05, sag: 0.2, sleeve: [0.2, 0.8], path: 'observation', strands: 3, ties: 5, fan: 0.12, ends: ['anchor', 'connector'], clamps: [0.2] },
+    { id: 'W2', kind: 'data', points: [v3(-0.3, 0.3, 0.6), v3(-0.34, 0.05, BOOM.sec1 * 0.55), v3(-0.3, 0.26, BOOM.sec1 * 0.95)], radius: 0.032, sag: 0.25, path: 'observation', strands: 2, ties: 4, ends: ['strain', 'strain'], clamps: [0.15, 0.85] },
   ], { rubber: M.rubber, sleeve: M.sleeve, chrome: M.chrome, gun: M.gun, dark: M.dark }, detail, rb);
   pitch.add(loops.group); owned.push({ dispose: () => loops.dispose() }); cableSets.push(loops);
   info.push(...loops.routes.map((r) => ({ id: `cable.${r.id}`, name: `Cable ${r.id} (${r.kind})`, kind: 'cable', body: 'observer' as const, object: loops.group, params: { radius: r.radius, kind: r.kind } })));

@@ -18,7 +18,7 @@ export type Prim =
   | { t: 'rect'; id: string; x0: number; y0: number; x1: number; y1: number; style: LineStyle; w: number; ink: Ink; hatch?: boolean }
   | { t: 'dots'; id: string; pts: Array<[number, number]>; ink: Ink }
   | { t: 'cross'; id: string; x: number; y: number; ink: Ink }
-  | { t: 'text'; id: string; x: number; y: number; text: string; ink: Ink; align?: 'left' | 'center' }
+  | { t: 'text'; id: string; x: number; y: number; text: string; ink: Ink; align?: 'left' | 'center'; /** a line of text under the arena (0 is the first), in rows and not in cells */ row?: number }
   | { t: 'flag'; id: string; x: number; y: number; text: string; ink: Ink };
 
 export type MapLayer = 'boundary.xenobody' | 'boundary.address' | 'boundary.observation' | 'observation' | 'interventions' | `path.${PathId}`;
@@ -40,9 +40,13 @@ const style = (s: PathState): LineStyle => (s === 'active' ? 'solid' : s === 'cu
 const ink = (s: PathState, base: Ink): Ink => (s === 'cut' ? 'cut' : s === 'quiet' ? 'mute' : base);
 
 export interface MapSpec { n: number; prims: Prim[]; summary: Record<string, string> }
+/** The partitions of the arrangement into operational bodies (B1, B2, B3) and the legs of the recursion, as the engine's spec gives them (``/api/meos/spec``). */
+export interface BodiesSpec { partitions: Record<string, { label: string; components: string[] }>; legs: Record<string, string[]> }
+/** The legs of the recursion that lie wholly inside a body: its closure. */
+export const legsClosed = (components: string[], legs: Record<string, string[]>): string[] => Object.entries(legs).filter(([, needs]) => needs.every((c) => components.includes(c))).map(([k]) => k);
 
 /** The research map at ``tick``. ``inspect`` is the state at that tick (``research.inspectAt``); ``paths`` are the run's path activity; ``markers`` its event markers. */
-export function buildResearchMap(o: { rec: MeosRecord; tick: number; obs: Partial<Observation>; inspect: Inspect; paths: PathActivity | null | undefined; markers: Marker[]; layers?: Set<MapLayer> }): MapSpec {
+export function buildResearchMap(o: { rec: MeosRecord; tick: number; obs: Partial<Observation>; inspect: Inspect; paths: PathActivity | null | undefined; markers: Marker[]; layers?: Set<MapLayer>; body?: string; bodies?: BodiesSpec | null }): MapSpec {
   const { rec, inspect: ins } = o, L = o.layers ?? ALL_MAP_LAYERS, n = rec.config.grid, t = ins.tick, f = rec.frames[t];
   const P: Prim[] = [], on = (l: MapLayer) => L.has(l), ps = pathStatesAt(o.paths, t);
   const a1 = [f.A1.x + 0.5, f.A1.y + 0.5] as [number, number], a2 = [f.A2.x + 0.5, f.A2.y + 0.5] as [number, number];
@@ -75,13 +79,19 @@ export function buildResearchMap(o: { rec: MeosRecord; tick: number; obs: Partia
     }
   }
 
-  // XenoBody boundary: round the retained operational body; the coupling's cut opens a gap between the two halves
+  // XenoBody boundary: round the retained operational body (B1: A1 and its resource sensor; B2: plus the sensor network and the interaction channel; B3: both configurations and the
+  // resource-transfer loop); the coupling's cut opens a gap in it. What lies outside the retained body is drawn in the mute ink, and the legs of the recursion that close inside it are named.
   if (on('boundary.xenobody')) {
-    const x0 = Math.min(a1[0] - r1, a2[0] - r2) - 0.2, x1 = Math.max(a1[0] + r1, a2[0] + r2) + 0.2, y0 = Math.min(a1[1] - r1, a2[1] - r2) - 0.2, y1 = Math.max(a1[1] + r1, a2[1] + r2) + 0.2;
-    const cut = ins.boundary.open.includes('interaction_channel') || ins.boundary.open.includes('feedback'), mx = (x0 + x1) / 2;
+    const body = o.body ?? 'B3', part = o.bodies?.partitions[body], comps = part?.components ?? ['A1', 'A2', 'sensor_resource', 'sensor_alteration', 'interaction_channel', 'feedback', 'resource_renewal', 'history'];
+    const withA2 = comps.includes('A2'), reach = !withA2 && comps.includes('interaction_channel');
+    const xs = [a1[0] - r1, a1[0] + r1, ...(withA2 ? [a2[0] - r2, a2[0] + r2] : reach ? [a2[0] - 0.5] : [])], ys = [a1[1] - r1, a1[1] + r1, ...(withA2 ? [a2[1] - r2, a2[1] + r2] : [])];
+    const x0 = Math.min(...xs) - 0.2, x1 = Math.max(...xs) + 0.2, y0 = Math.min(...ys) - 0.2, y1 = Math.max(...ys) + 0.2;
+    const cut = ins.boundary.open.some((c) => comps.includes(c)), mx = (x0 + x1) / 2;
     const half = (xa: number, xb: number, id: string) => P.push({ t: 'poly', id, pts: [[xa, y0], [xb, y0], [xb, y1], [xa, y1], [xa, y0]], style: 'solid', w: 2.4, ink: cut ? 'cut' : 'ink' });
-    if (cut) { half(x0, mx - 0.25, 'boundary.xenobody'); half(mx + 0.25, x1, 'boundary.xenobody'); } else half(x0, x1, 'boundary.xenobody');
-    P.push({ t: 'text', id: 'boundary.xenobody', x: x0, y: y0 - 0.35, text: `XenoBody ${cut ? '(coupling cut: open)' : '(closed)'}${ins.boundary.open.length ? ` · cut: ${ins.boundary.open.join(', ')}` : ''}`, ink: cut ? 'cut' : 'ink', align: 'left' });
+    if (cut && withA2) { half(x0, mx - 0.25, 'boundary.xenobody'); half(mx + 0.25, x1, 'boundary.xenobody'); } else half(x0, x1, 'boundary.xenobody');
+    const closed = o.bodies ? legsClosed(comps, o.bodies.legs).length : null;
+    P.push({ t: 'text', id: 'boundary.xenobody', x: x0, y: y0 - 0.35, text: `XenoBody ${body}${part ? ` (${part.label})` : ''} ${cut ? '· a retained relation is cut: open' : '· closed'}${closed !== null ? ` · ${closed}/${Object.keys(o.bodies!.legs).length} legs of the recursion close inside` : ''}`, ink: cut ? 'cut' : 'ink', align: 'left' });
+    if (!withA2) P.push({ t: 'text', id: 'boundary.xenobody', x: a2[0] - 0.4, y: a2[1] + 1.0, text: 'A2 outside the body', ink: 'mute', align: 'left' });
   }
 
   // observation: region, lattice, occluder
@@ -95,14 +105,15 @@ export function buildResearchMap(o: { rec: MeosRecord; tick: number; obs: Partia
     for (let x = 0; x < n; x++) for (let y = 0; y < n; y++) if ((x - ox) % stride === 0 && (y - oy) % stride === 0 && x >= reg[0] && x <= reg[2] && y >= reg[1] && y <= reg[3]) dots.push([x + 0.5, y + 0.5]);
     P.push({ t: 'dots', id: 'observation', pts: dots, ink: 'active' });
     const sampled = t % Math.max(1, obs.sampling_interval) === 0;
-    P.push({ t: 'text', id: 'observation', x: n, y: n + 0.9, text: `interval ${obs.sampling_interval} · stride ${stride} · window ${obs.window}${obs.aggregation > 1 ? ` · aggregation ${obs.aggregation}` : ''}${obs.threshold != null ? ` · threshold ${obs.threshold}` : ''}${obs.address_resolution != null ? ` · address resolution ${obs.address_resolution}` : ''} · ${sampled ? 'sampled tick' : 'not a sampled tick'}`, ink: 'active', align: 'left' });
-    P.push({ t: 'text', id: 'observation', x: 0.1, y: n + 0.9, text: `observability ${ins.observability ?? 'full observation'}${ins.limiting.length ? ` (${ins.limiting.join(', ')})` : ''}`, ink: ins.observability && ins.observability !== 'SUFFICIENT' ? 'cut' : 'active', align: 'left' });
+    P.push({ t: 'text', id: 'observation', x: 0.1, y: n, row: 1, text: `interval ${obs.sampling_interval} · stride ${stride} · window ${obs.window}${obs.aggregation > 1 ? ` · aggregation ${obs.aggregation}` : ''}${obs.threshold != null ? ` · threshold ${obs.threshold}` : ''}${obs.address_resolution != null ? ` · address resolution ${obs.address_resolution}` : ''} · ${sampled ? 'sampled tick' : 'not a sampled tick'}`, ink: 'active', align: 'left' });
+    P.push({ t: 'text', id: 'observation', x: 0.1, y: n, row: 0, text: `observability ${ins.observability ?? 'full observation'}${ins.limiting.length ? ` (${ins.limiting.join(', ')})` : ''}`, ink: ins.observability && ins.observability !== 'SUFFICIENT' ? 'cut' : 'active', align: 'left' });
   }
 
   // the configurations
-  for (const [nm, p] of [['A1', a1], ['A2', a2]] as const) {
+  // A1 and A2 may stand on the same cell (A2 walks to A1): A2's box is the smaller one inside, A1's label is above its box and A2's below it
+  for (const [nm, p, half, dy] of [['A1', a1, 0.46, -0.78], ['A2', a2, 0.3, 0.95]] as const) {
     const present = f[nm].present;
-    P.push({ t: 'rect', id: `entity.${nm}`, x0: p[0] - 0.42, y0: p[1] - 0.42, x1: p[0] + 0.42, y1: p[1] + 0.42, style: present ? 'solid' : 'dot', w: 1.6, ink: present ? 'ink' : 'mute' }, { t: 'text', id: `entity.${nm}`, x: p[0], y: p[1] + 0.28, text: nm, ink: present ? 'ink' : 'mute', align: 'center' });
+    P.push({ t: 'rect', id: `entity.${nm}`, x0: p[0] - half, y0: p[1] - half, x1: p[0] + half, y1: p[1] + half, style: present ? 'solid' : 'dot', w: 1.6, ink: present ? 'ink' : 'mute' }, { t: 'text', id: `entity.${nm}`, x: p[0], y: p[1] + dy, text: nm, ink: present ? 'ink' : 'mute', align: 'center' });
   }
 
   // operational paths
@@ -127,7 +138,7 @@ export function buildResearchMap(o: { rec: MeosRecord; tick: number; obs: Partia
       const inj = iv.inject as { x: number; y: number; amount: number } | undefined, label = `t${iv.tick} ${iv.op}${iv.target ? ' ' + String(iv.target) : ''}`;
       if (inj) P.push({ t: 'flag', id: 'interventions', x: inj.x + 0.5, y: inj.y + 0.5, text: `t${iv.tick} pulse ${inj.amount}`, ink: 'green' });
       else if (iv.op === 'ADDRESS' && typeof iv.x === 'number') P.push({ t: 'flag', id: 'interventions', x: (iv.x as number) + 0.5, y: (iv.y as number) + 0.5, text: `t${iv.tick} ${String(iv.address_mode)} → (${iv.x},${iv.y})`, ink: 'violet' });
-      else P.push({ t: 'text', id: 'interventions', x: 0.1, y: n + 1.9 + 0.8 * strip++, text: `${label}${iv.address_mode ? ' ' + String(iv.address_mode) : ''} → ${affected(iv)}`, ink: iv.tick === t ? 'cut' : 'ink', align: 'left' });
+      else P.push({ t: 'text', id: 'interventions', x: 0.1, y: n, row: 2 + strip++, text: `${label}${iv.address_mode ? ' ' + String(iv.address_mode) : ''} → ${affected(iv)}`, ink: iv.tick === t ? 'cut' : 'ink', align: 'left' });
     }
   }
   return { n, prims: P, summary: { tick: String(t), operational: ins.operational, observed: String(ins.observed ?? 'full observation'), observability: String(ins.observability ?? 'full observation'), xenobody: ins.boundary.open.length ? `open: ${ins.boundary.open.join(', ')}` : 'closed' } };

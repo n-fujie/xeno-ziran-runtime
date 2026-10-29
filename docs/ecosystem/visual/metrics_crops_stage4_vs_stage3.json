@@ -1,0 +1,1120 @@
+{
+ "note": "crop statistics are crude proxies; none of them establishes that a picture matches a reference",
+ "captures_resampled_to_width": 766,
+ "shots": {
+  "14-experimental-body": {
+   "specimen_body": {
+    "after": {
+     "size": [
+      245,
+      267
+     ],
+     "luminance_mean": 0.1202,
+     "luminance_histogram": [
+      0.7003,
+      0.1174,
+      0.076,
+      0.0454,
+      0.0268,
+      0.0264,
+      0.0077,
+      0.0001
+     ],
+     "edge_density": 0.2572,
+     "high_frequency_share": 0.24813,
+     "contour_complexity": 0.9834,
+     "local_contrast": 0.097,
+     "occupied_area_ratio": 0.3627
+    },
+    "before": {
+     "size": [
+      245,
+      267
+     ],
+     "luminance_mean": 0.1164,
+     "luminance_histogram": [
+      0.7159,
+      0.1079,
+      0.0693,
+      0.0452,
+      0.0271,
+      0.0267,
+      0.0078,
+      0.0001
+     ],
+     "edge_density": 0.2441,
+     "high_frequency_share": 0.2415,
+     "contour_complexity": 0.9601,
+     "local_contrast": 0.0945,
+     "occupied_area_ratio": 0.3429
+    }
+   },
+   "probe_region": {
+    "after": {
+     "size": [
+      92,
+      81
+     ],
+     "luminance_mean": 0.1085,
+     "luminance_histogram": [
+      0.6936,
+      0.1418,
+      0.1111,
+      0.0303,
+      0.0106,
+      0.0121,
+      0.0004,
+      0.0
+     ],
+     "edge_density": 0.2064,
+     "high_frequency_share": 0.26844,
+     "contour_complexity": 0.8588,
+     "local_contrast": 0.0766,
+     "occupied_area_ratio": 0.3596
+    },
+    "before": {
+     "size": [
+      92,
+      81
+     ],
+     "luminance_mean": 0.0962,
+     "luminance_histogram": [
+      0.7476,
+      0.1193,
+      0.0734,
+      0.034,
+      0.0113,
+      0.0138,
+      0.0007,
+      0.0
+     ],
+     "edge_density": 0.1735,
+     "high_frequency_share": 0.26919,
+     "contour_complexity": 0.9404,
+     "local_contrast": 0.0751,
+     "occupied_area_ratio": 0.3018
+    }
+   },
+   "cable_region": {
+    "after": {
+     "size": [
+      322,
+      111
+     ],
+     "luminance_mean": 0.2023,
+     "luminance_histogram": [
+      0.4365,
+      0.1958,
+      0.2128,
+      0.0858,
+      0.0321,
+      0.0225,
+      0.0123,
+      0.0023
+     ],
+     "edge_density": 0.3477,
+     "high_frequency_share": 0.25623,
+     "contour_complexity": 0.613,
+     "local_contrast": 0.1176,
+     "occupied_area_ratio": 0.6337
+    },
+    "before": {
+     "size": [
+      322,
+      111
+     ],
+     "luminance_mean": 0.1973,
+     "luminance_histogram": [
+      0.4702,
+      0.1752,
+      0.1908,
+      0.0894,
+      0.0351,
+      0.0235,
+      0.0135,
+      0.0023
+     ],
+     "edge_density": 0.3348,
+     "high_frequency_share": 0.2375,
+     "contour_complexity": 0.625,
+     "local_contrast": 0.1178,
+     "occupied_area_ratio": 0.5983
+    }
+   },
+   "ground": {
+    "after": {
+     "size": [
+      766,
+      82
+     ],
+     "luminance_mean": 0.1141,
+     "luminance_histogram": [
+      0.6882,
+      0.1444,
+      0.1056,
+      0.0387,
+      0.0139,
+      0.0079,
+      0.0013,
+      0.0
+     ],
+     "edge_density": 0.1819,
+     "high_frequency_share": 0.19897,
+     "contour_complexity": 0.8329,
+     "local_contrast": 0.0739,
+     "occupied_area_ratio": 0.3709
+    },
+    "before": {
+     "size": [
+      766,
+      82
+     ],
+     "luminance_mean": 0.1106,
+     "luminance_histogram": [
+      0.7027,
+      0.1388,
+      0.0967,
+      0.0382,
+      0.0144,
+      0.0079,
+      0.0013,
+      0.0
+     ],
+     "edge_density": 0.1687,
+     "high_frequency_share": 0.19053,
+     "contour_complexity": 0.8398,
+     "local_contrast": 0.0716,
+     "occupied_area_ratio": 0.3556
+    }
+   },
+   "puddle_reflection": {
+    "after": {
+     "size": [
+      306,
+      122
+     ],
+     "luminance_mean": 0.1332,
+     "luminance_histogram": [
+      0.6186,
+      0.1933,
+      0.109,
+      0.0459,
+      0.0168,
+      0.0111,
+      0.0051,
+      0.0002
+     ],
+     "edge_density": 0.2191,
+     "high_frequency_share": 0.21734,
+     "contour_complexity": 0.77,
+     "local_contrast": 0.0828,
+     "occupied_area_ratio": 0.4447
+    },
+    "before": {
+     "size": [
+      306,
+      122
+     ],
+     "luminance_mean": 0.1304,
+     "luminance_histogram": [
+      0.6365,
+      0.1809,
+      0.0988,
+      0.0498,
+      0.0175,
+      0.0112,
+      0.0052,
+      0.0002
+     ],
+     "edge_density": 0.2134,
+     "high_frequency_share": 0.20993,
+     "contour_complexity": 0.7867,
+     "local_contrast": 0.083,
+     "occupied_area_ratio": 0.4263
+    }
+   },
+   "bolt_plate_region": {
+    "after": {
+     "size": [
+      153,
+      148
+     ],
+     "luminance_mean": 0.1544,
+     "luminance_histogram": [
+      0.6502,
+      0.113,
+      0.076,
+      0.0656,
+      0.0394,
+      0.0379,
+      0.0178,
+      0.0
+     ],
+     "edge_density": 0.3555,
+     "high_frequency_share": 0.29398,
+     "contour_complexity": 1.0686,
+     "local_contrast": 0.1285,
+     "occupied_area_ratio": 0.4164
+    },
+    "before": {
+     "size": [
+      153,
+      148
+     ],
+     "luminance_mean": 0.1539,
+     "luminance_histogram": [
+      0.6531,
+      0.1105,
+      0.0749,
+      0.0661,
+      0.0397,
+      0.0379,
+      0.0178,
+      0.0
+     ],
+     "edge_density": 0.3533,
+     "high_frequency_share": 0.29262,
+     "contour_complexity": 1.0636,
+     "local_contrast": 0.1283,
+     "occupied_area_ratio": 0.4128
+    }
+   },
+   "silhouette": {
+    "after": {
+     "size": [
+      766,
+      259
+     ],
+     "luminance_mean": 0.1219,
+     "luminance_histogram": [
+      0.6544,
+      0.1636,
+      0.0949,
+      0.0428,
+      0.021,
+      0.0168,
+      0.0061,
+      0.0005
+     ],
+     "edge_density": 0.2383,
+     "high_frequency_share": 0.23529,
+     "contour_complexity": 0.783,
+     "local_contrast": 0.0859,
+     "occupied_area_ratio": 0.4111
+    },
+    "before": {
+     "size": [
+      766,
+      259
+     ],
+     "luminance_mean": 0.1181,
+     "luminance_histogram": [
+      0.6721,
+      0.152,
+      0.0864,
+      0.0438,
+      0.0217,
+      0.0171,
+      0.0063,
+      0.0005
+     ],
+     "edge_density": 0.2286,
+     "high_frequency_share": 0.22765,
+     "contour_complexity": 0.7729,
+     "local_contrast": 0.0847,
+     "occupied_area_ratio": 0.3897
+    }
+   },
+   "background_mechanical_density": {
+    "after": {
+     "size": [
+      460,
+      103
+     ],
+     "luminance_mean": 0.061,
+     "luminance_histogram": [
+      0.8322,
+      0.0789,
+      0.0462,
+      0.0182,
+      0.0113,
+      0.0106,
+      0.0026,
+      0.0
+     ],
+     "edge_density": 0.1454,
+     "high_frequency_share": 0.23972,
+     "contour_complexity": 0.9854,
+     "local_contrast": 0.0509,
+     "occupied_area_ratio": 0.1947
+    },
+    "before": {
+     "size": [
+      460,
+      103
+     ],
+     "luminance_mean": 0.061,
+     "luminance_histogram": [
+      0.8327,
+      0.0782,
+      0.0459,
+      0.0184,
+      0.0115,
+      0.0107,
+      0.0026,
+      0.0
+     ],
+     "edge_density": 0.1447,
+     "high_frequency_share": 0.2384,
+     "contour_complexity": 0.9737,
+     "local_contrast": 0.0509,
+     "occupied_area_ratio": 0.1937
+    }
+   }
+  },
+  "15-observation-node": {
+   "observation_node": {
+    "after": {
+     "size": [
+      766,
+      229
+     ],
+     "luminance_mean": 0.1658,
+     "luminance_histogram": [
+      0.4645,
+      0.2333,
+      0.1812,
+      0.0874,
+      0.025,
+      0.0067,
+      0.0016,
+      0.0003
+     ],
+     "edge_density": 0.1285,
+     "high_frequency_share": 0.10687,
+     "contour_complexity": 0.1493,
+     "local_contrast": 0.0554,
+     "occupied_area_ratio": 0.5727
+    },
+    "before": {
+     "size": [
+      766,
+      229
+     ],
+     "luminance_mean": 0.1659,
+     "luminance_histogram": [
+      0.4646,
+      0.2331,
+      0.1812,
+      0.0875,
+      0.0251,
+      0.0067,
+      0.0017,
+      0.0003
+     ],
+     "edge_density": 0.1288,
+     "high_frequency_share": 0.10697,
+     "contour_complexity": 0.1491,
+     "local_contrast": 0.0555,
+     "occupied_area_ratio": 0.5725
+    }
+   },
+   "probe_region": {
+    "after": {
+     "size": [
+      229,
+      93
+     ],
+     "luminance_mean": 0.2879,
+     "luminance_histogram": [
+      0.1081,
+      0.2559,
+      0.3986,
+      0.1992,
+      0.0307,
+      0.0038,
+      0.0036,
+      0.0
+     ],
+     "edge_density": 0.1239,
+     "high_frequency_share": 0.1743,
+     "contour_complexity": 0.0297,
+     "local_contrast": 0.0608,
+     "occupied_area_ratio": 0.8957
+    },
+    "before": {
+     "size": [
+      229,
+      93
+     ],
+     "luminance_mean": 0.2879,
+     "luminance_histogram": [
+      0.1081,
+      0.2559,
+      0.3986,
+      0.1992,
+      0.0307,
+      0.0038,
+      0.0036,
+      0.0
+     ],
+     "edge_density": 0.1239,
+     "high_frequency_share": 0.1743,
+     "contour_complexity": 0.0297,
+     "local_contrast": 0.0608,
+     "occupied_area_ratio": 0.8957
+    }
+   },
+   "cable_region": {
+    "after": {
+     "size": [
+      230,
+      185
+     ],
+     "luminance_mean": 0.1758,
+     "luminance_histogram": [
+      0.4877,
+      0.1906,
+      0.1575,
+      0.0993,
+      0.0462,
+      0.0159,
+      0.0026,
+      0.0004
+     ],
+     "edge_density": 0.2111,
+     "high_frequency_share": 0.15432,
+     "contour_complexity": 0.3213,
+     "local_contrast": 0.077,
+     "occupied_area_ratio": 0.5488
+    },
+    "before": {
+     "size": [
+      230,
+      185
+     ],
+     "luminance_mean": 0.1761,
+     "luminance_histogram": [
+      0.4878,
+      0.1897,
+      0.1576,
+      0.0996,
+      0.0463,
+      0.0159,
+      0.0028,
+      0.0004
+     ],
+     "edge_density": 0.212,
+     "high_frequency_share": 0.15428,
+     "contour_complexity": 0.322,
+     "local_contrast": 0.0772,
+     "occupied_area_ratio": 0.5483
+    }
+   },
+   "ground": {
+    "after": {
+     "size": [
+      766,
+      74
+     ],
+     "luminance_mean": 0.1702,
+     "luminance_histogram": [
+      0.4787,
+      0.2608,
+      0.1355,
+      0.0763,
+      0.0392,
+      0.0093,
+      0.0002,
+      0.0
+     ],
+     "edge_density": 0.1626,
+     "high_frequency_share": 0.13066,
+     "contour_complexity": 0.3773,
+     "local_contrast": 0.0718,
+     "occupied_area_ratio": 0.6299
+    },
+    "before": {
+     "size": [
+      766,
+      74
+     ],
+     "luminance_mean": 0.1703,
+     "luminance_histogram": [
+      0.4788,
+      0.2605,
+      0.1355,
+      0.0764,
+      0.0393,
+      0.0093,
+      0.0002,
+      0.0
+     ],
+     "edge_density": 0.1629,
+     "high_frequency_share": 0.13085,
+     "contour_complexity": 0.3773,
+     "local_contrast": 0.0718,
+     "occupied_area_ratio": 0.6297
+    }
+   },
+   "puddle_reflection": {
+    "after": {
+     "size": [
+      460,
+      74
+     ],
+     "luminance_mean": 0.1608,
+     "luminance_histogram": [
+      0.5528,
+      0.2047,
+      0.1076,
+      0.0717,
+      0.0478,
+      0.0151,
+      0.0003,
+      0.0
+     ],
+     "edge_density": 0.176,
+     "high_frequency_share": 0.13116,
+     "contour_complexity": 0.4887,
+     "local_contrast": 0.0754,
+     "occupied_area_ratio": 0.5558
+    },
+    "before": {
+     "size": [
+      460,
+      74
+     ],
+     "luminance_mean": 0.1608,
+     "luminance_histogram": [
+      0.553,
+      0.2044,
+      0.1075,
+      0.0719,
+      0.0479,
+      0.0151,
+      0.0003,
+      0.0
+     ],
+     "edge_density": 0.1763,
+     "high_frequency_share": 0.13137,
+     "contour_complexity": 0.488,
+     "local_contrast": 0.0755,
+     "occupied_area_ratio": 0.5556
+    }
+   },
+   "bolt_plate_region": {
+    "after": {
+     "size": [
+      268,
+      174
+     ],
+     "luminance_mean": 0.1987,
+     "luminance_histogram": [
+      0.3595,
+      0.2923,
+      0.1913,
+      0.104,
+      0.0384,
+      0.0107,
+      0.003,
+      0.0009
+     ],
+     "edge_density": 0.1839,
+     "high_frequency_share": 0.1411,
+     "contour_complexity": 0.1269,
+     "local_contrast": 0.0708,
+     "occupied_area_ratio": 0.6655
+    },
+    "before": {
+     "size": [
+      268,
+      174
+     ],
+     "luminance_mean": 0.1989,
+     "luminance_histogram": [
+      0.3596,
+      0.2915,
+      0.1912,
+      0.1042,
+      0.0386,
+      0.0107,
+      0.0032,
+      0.0009
+     ],
+     "edge_density": 0.1847,
+     "high_frequency_share": 0.14121,
+     "contour_complexity": 0.1267,
+     "local_contrast": 0.0709,
+     "occupied_area_ratio": 0.665
+    }
+   },
+   "silhouette": {
+    "after": {
+     "size": [
+      766,
+      240
+     ],
+     "luminance_mean": 0.167,
+     "luminance_histogram": [
+      0.4647,
+      0.231,
+      0.1828,
+      0.0865,
+      0.0255,
+      0.0077,
+      0.0015,
+      0.0002
+     ],
+     "edge_density": 0.1292,
+     "high_frequency_share": 0.10568,
+     "contour_complexity": 0.1582,
+     "local_contrast": 0.0561,
+     "occupied_area_ratio": 0.5768
+    },
+    "before": {
+     "size": [
+      766,
+      240
+     ],
+     "luminance_mean": 0.1671,
+     "luminance_histogram": [
+      0.4647,
+      0.2307,
+      0.1828,
+      0.0866,
+      0.0256,
+      0.0077,
+      0.0016,
+      0.0002
+     ],
+     "edge_density": 0.1295,
+     "high_frequency_share": 0.10579,
+     "contour_complexity": 0.1581,
+     "local_contrast": 0.0561,
+     "occupied_area_ratio": 0.5767
+    }
+   },
+   "background_mechanical_density": {
+    "after": {
+     "size": [
+      766,
+      129
+     ],
+     "luminance_mean": 0.0542,
+     "luminance_histogram": [
+      0.8504,
+      0.0659,
+      0.0534,
+      0.0148,
+      0.0041,
+      0.0019,
+      0.001,
+      0.0085
+     ],
+     "edge_density": 0.0667,
+     "high_frequency_share": 0.11069,
+     "contour_complexity": 0.5383,
+     "local_contrast": 0.0307,
+     "occupied_area_ratio": 0.1682
+    },
+    "before": {
+     "size": [
+      766,
+      129
+     ],
+     "luminance_mean": 0.0542,
+     "luminance_histogram": [
+      0.8504,
+      0.0659,
+      0.0534,
+      0.0148,
+      0.0041,
+      0.0019,
+      0.001,
+      0.0085
+     ],
+     "edge_density": 0.0667,
+     "high_frequency_share": 0.11069,
+     "contour_complexity": 0.5383,
+     "local_contrast": 0.0307,
+     "occupied_area_ratio": 0.1682
+    }
+   }
+  },
+  "29-observer-hero": {
+   "observation_node": {
+    "after": {
+     "size": [
+      766,
+      278
+     ],
+     "luminance_mean": 0.1596,
+     "luminance_histogram": [
+      0.4873,
+      0.2591,
+      0.1385,
+      0.0744,
+      0.0274,
+      0.0079,
+      0.004,
+      0.0014
+     ],
+     "edge_density": 0.155,
+     "high_frequency_share": 0.14502,
+     "contour_complexity": 0.2896,
+     "local_contrast": 0.0668,
+     "occupied_area_ratio": 0.5609
+    },
+    "before": {
+     "size": [
+      766,
+      278
+     ],
+     "luminance_mean": 0.16,
+     "luminance_histogram": [
+      0.4869,
+      0.2583,
+      0.1389,
+      0.0747,
+      0.0276,
+      0.0081,
+      0.0041,
+      0.0015
+     ],
+     "edge_density": 0.1554,
+     "high_frequency_share": 0.14382,
+     "contour_complexity": 0.2869,
+     "local_contrast": 0.067,
+     "occupied_area_ratio": 0.5599
+    }
+   },
+   "probe_region": {
+    "after": {
+     "size": [
+      229,
+      111
+     ],
+     "luminance_mean": 0.2445,
+     "luminance_histogram": [
+      0.263,
+      0.2618,
+      0.2825,
+      0.1062,
+      0.0666,
+      0.0174,
+      0.0024,
+      0.0002
+     ],
+     "edge_density": 0.2151,
+     "high_frequency_share": 0.18669,
+     "contour_complexity": 0.2225,
+     "local_contrast": 0.0827,
+     "occupied_area_ratio": 0.7857
+    },
+    "before": {
+     "size": [
+      229,
+      111
+     ],
+     "luminance_mean": 0.2445,
+     "luminance_histogram": [
+      0.263,
+      0.2617,
+      0.2825,
+      0.1062,
+      0.0666,
+      0.0174,
+      0.0024,
+      0.0002
+     ],
+     "edge_density": 0.2151,
+     "high_frequency_share": 0.18671,
+     "contour_complexity": 0.2225,
+     "local_contrast": 0.0827,
+     "occupied_area_ratio": 0.7856
+    }
+   },
+   "cable_region": {
+    "after": {
+     "size": [
+      307,
+      222
+     ],
+     "luminance_mean": 0.1478,
+     "luminance_histogram": [
+      0.5914,
+      0.1747,
+      0.097,
+      0.0854,
+      0.0266,
+      0.0119,
+      0.0086,
+      0.0042
+     ],
+     "edge_density": 0.2056,
+     "high_frequency_share": 0.20078,
+     "contour_complexity": 0.4888,
+     "local_contrast": 0.0851,
+     "occupied_area_ratio": 0.4653
+    },
+    "before": {
+     "size": [
+      307,
+      222
+     ],
+     "luminance_mean": 0.1485,
+     "luminance_histogram": [
+      0.5929,
+      0.171,
+      0.0973,
+      0.0858,
+      0.027,
+      0.0126,
+      0.0088,
+      0.0047
+     ],
+     "edge_density": 0.2073,
+     "high_frequency_share": 0.19736,
+     "contour_complexity": 0.4839,
+     "local_contrast": 0.0856,
+     "occupied_area_ratio": 0.4619
+    }
+   },
+   "ground": {
+    "after": {
+     "size": [
+      766,
+      74
+     ],
+     "luminance_mean": 0.1217,
+     "luminance_histogram": [
+      0.6103,
+      0.1933,
+      0.0997,
+      0.0815,
+      0.0116,
+      0.0028,
+      0.0008,
+      0.0
+     ],
+     "edge_density": 0.1015,
+     "high_frequency_share": 0.11109,
+     "contour_complexity": 0.3554,
+     "local_contrast": 0.0467,
+     "occupied_area_ratio": 0.4425
+    },
+    "before": {
+     "size": [
+      766,
+      74
+     ],
+     "luminance_mean": 0.1217,
+     "luminance_histogram": [
+      0.6103,
+      0.1933,
+      0.0997,
+      0.0815,
+      0.0116,
+      0.0028,
+      0.0008,
+      0.0
+     ],
+     "edge_density": 0.1015,
+     "high_frequency_share": 0.11109,
+     "contour_complexity": 0.3554,
+     "local_contrast": 0.0467,
+     "occupied_area_ratio": 0.4425
+    }
+   },
+   "bolt_plate_region": {
+    "after": {
+     "size": [
+      268,
+      185
+     ],
+     "luminance_mean": 0.1611,
+     "luminance_histogram": [
+      0.5308,
+      0.2344,
+      0.1015,
+      0.0639,
+      0.041,
+      0.0126,
+      0.0109,
+      0.0049
+     ],
+     "edge_density": 0.2154,
+     "high_frequency_share": 0.19385,
+     "contour_complexity": 0.3805,
+     "local_contrast": 0.0883,
+     "occupied_area_ratio": 0.5107
+    },
+    "before": {
+     "size": [
+      268,
+      185
+     ],
+     "luminance_mean": 0.162,
+     "luminance_histogram": [
+      0.5323,
+      0.2303,
+      0.1019,
+      0.0645,
+      0.0412,
+      0.0132,
+      0.0111,
+      0.0055
+     ],
+     "edge_density": 0.2163,
+     "high_frequency_share": 0.18922,
+     "contour_complexity": 0.378,
+     "local_contrast": 0.0886,
+     "occupied_area_ratio": 0.5073
+    }
+   },
+   "silhouette": {
+    "after": {
+     "size": [
+      766,
+      278
+     ],
+     "luminance_mean": 0.1596,
+     "luminance_histogram": [
+      0.4873,
+      0.2591,
+      0.1385,
+      0.0744,
+      0.0274,
+      0.0079,
+      0.004,
+      0.0014
+     ],
+     "edge_density": 0.155,
+     "high_frequency_share": 0.14502,
+     "contour_complexity": 0.2896,
+     "local_contrast": 0.0668,
+     "occupied_area_ratio": 0.5609
+    },
+    "before": {
+     "size": [
+      766,
+      278
+     ],
+     "luminance_mean": 0.16,
+     "luminance_histogram": [
+      0.4869,
+      0.2583,
+      0.1389,
+      0.0747,
+      0.0276,
+      0.0081,
+      0.0041,
+      0.0015
+     ],
+     "edge_density": 0.1554,
+     "high_frequency_share": 0.14382,
+     "contour_complexity": 0.2869,
+     "local_contrast": 0.067,
+     "occupied_area_ratio": 0.5599
+    }
+   }
+  },
+  "19-close-probe": {
+   "probe_region": {
+    "after": {
+     "size": [
+      766,
+      370
+     ],
+     "luminance_mean": 0.1017,
+     "luminance_histogram": [
+      0.7626,
+      0.0966,
+      0.0644,
+      0.024,
+      0.0243,
+      0.0153,
+      0.007,
+      0.0059
+     ],
+     "edge_density": 0.1541,
+     "high_frequency_share": 0.14534,
+     "contour_complexity": 0.7748,
+     "local_contrast": 0.0677,
+     "occupied_area_ratio": 0.2973
+    },
+    "before": {
+     "size": [
+      766,
+      370
+     ],
+     "luminance_mean": 0.0975,
+     "luminance_histogram": [
+      0.7779,
+      0.0899,
+      0.0548,
+      0.0241,
+      0.0248,
+      0.0155,
+      0.007,
+      0.0059
+     ],
+     "edge_density": 0.1472,
+     "high_frequency_share": 0.14518,
+     "contour_complexity": 0.7651,
+     "local_contrast": 0.0652,
+     "occupied_area_ratio": 0.279
+    }
+   }
+  },
+  "20-close-cable": {
+   "cable_region": {
+    "after": {
+     "size": [
+      766,
+      370
+     ],
+     "luminance_mean": 0.1155,
+     "luminance_histogram": [
+      0.6624,
+      0.1665,
+      0.1042,
+      0.0316,
+      0.0163,
+      0.0111,
+      0.0045,
+      0.0034
+     ],
+     "edge_density": 0.1304,
+     "high_frequency_share": 0.12848,
+     "contour_complexity": 0.4738,
+     "local_contrast": 0.0549,
+     "occupied_area_ratio": 0.3866
+    },
+    "before": {
+     "size": [
+      766,
+      370
+     ],
+     "luminance_mean": 0.1112,
+     "luminance_histogram": [
+      0.6793,
+      0.1585,
+      0.0962,
+      0.0299,
+      0.0166,
+      0.0113,
+      0.0047,
+      0.0035
+     ],
+     "edge_density": 0.1154,
+     "high_frequency_share": 0.11943,
+     "contour_complexity": 0.4438,
+     "local_contrast": 0.0516,
+     "occupied_area_ratio": 0.3687
+    }
+   }
+  }
+ }
+}
