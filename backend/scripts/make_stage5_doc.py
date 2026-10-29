@@ -106,6 +106,12 @@ def ff_table() -> str:
         f"\nfixed against none: Cohen's h {ff['fixed_vs_none']['cohens_h']}, Fisher exact p {ff['fixed_vs_none']['fisher_exact_p']}; adaptive against none: p {ff['adaptive_vs_none']['fisher_exact_p']}; adaptive_shed against none: p {ff['adaptive_shed_vs_none']['fisher_exact_p']}.\n")
 
 
+def diagnosis_table() -> str:
+    d = json.loads((ROOT / "docs/ecosystem/experiments_stage5_adaptive_diagnosis.json").read_text())
+    rows = [[r["scenario"], ", ".join(f"{k}: {v}" for k, v in r["first_decision"].items()), ", ".join(f"{k}: {v}" for k, v in r["decisions"].items()), r["switches"]] for r in d["rows"]]
+    return tbl(["scenario", "first decision (10 seeds)", "all decisions (10 seeds, several per run)", "switches"], rows) + f"\n{d['reading']}\n\n*Limit:* {d['limit']}\n"
+
+
 def sss_table() -> str:
     rows = []
     for isl in FIN["sss_x_mfs"]["islands"]:
@@ -247,6 +253,14 @@ Success is defined by **pre-defined metrics, not by a switch occurring**: persis
 {ff_table()}
 The fixed fallback helped in one scenario ('history lost') and in no other; that success is kept separate, does not overwrite the adaptive failure, and is not evidence that adaptive reconfiguration works.
 
+### 13.1 Why the adaptive controller did not act (diagnosis from its own log)
+
+`backend/scripts/diagnose_adaptive_stage5.py` tallies the outcome of every decision of the adaptive controller (`docs/ecosystem/experiments_stage5_adaptive_diagnosis.json`; the main results file is unchanged):
+
+{diagnosis_table()}
+So the negative result of section 13 is mostly **structural**: the library lists sets that suffice when everything else is removed at tick 0; in the full arrangement they are already enabled, the cost of "switching" is 0, and the controller does nothing while the run collapses. This separates two questions the F-K experiments had run together: *which configurations can be sustained from the start of a condition* (answered by F: mostly one, sometimes none)
+and *whether a run can pass through a stress that arrives in mid-run* (not answered: the library does not prescribe an action for it). It also explains why only the fixed fallback ever helped: it adds a component that is in no MFS of the condition (the M2 tap). This is a statement about this controller and this library, not about reconfiguration in general.
+
 ## 14. Shedding controller
 
 `adaptive_shed` (the adaptive controller that may also shed components) is reported separately from the original adaptive controller, the fixed fallback and no reconfiguration (survival, collapse, time to recovery, switches, false and unnecessary switches, switching cost, energy cost):
@@ -314,7 +328,7 @@ Only distinct retaining sets are compared (each under the id of its first MFS; t
 
 1. **Multiple MFS is not widespread.** One condition of 16 (F14) has two validated MFS; 13 have one, one has none, one is inconclusive.
 2. **The F8 second candidate failed validation** (persisted on 4/5 search and 1/5 validation seeds) and is not counted.
-3. **Adaptive reconfiguration did not beat the controls**, nor did the shedding variant; only the fixed M2 fallback helped, in one scenario.
+3. **Adaptive reconfiguration did not beat the controls**, nor did the shedding variant; only the fixed M2 fallback helped, in one scenario. The diagnosis (section 13.1) shows the adaptive controller mostly never acted (its matched MFS was already wholly enabled), so the result is about this controller and library, not about reconfiguration in general.
 4. **Persistent spatial separation was not sustained:** A2 walked to A1 in every persisting arrangement, so persistent Address dependence could not be tested independently.
 5. **The observation-sensitive region did not separate from ACTIVE** on the tested grid.
 6. **Cable visual complexity is far below the reference** (measured in Stage 4: close-cable contour complexity 0.47 against 1.59 for the reference; not re-measured in Stage 5, whose changes did not touch the cable geometry): the visual representation does not reach the reference and says nothing about the model.
@@ -324,7 +338,7 @@ Only distinct retaining sets are compared (each under the id of its first MFS; t
 - The model is a formal one; MFS are relative to the specified operation, the allowed reductions, the preservation criterion, the seeds and the 14 x 14 grid. "No MFS" or "single MFS" means this, not that no other realisation exists.
 - Five search and five validation seeds: proportions with wide intervals; near-misses are reported as INCONCLUSIVE, not resolved.
 - Experiments G and H do no hypothesis test across cells; the reconfiguration verdicts use Holm over 30 comparisons and several effective results do not survive it.
-- The controller senses five features and can only enable components of library MFS; a negative result is about this controller.
+- The controller senses five features and can only enable components of library MFS; the library holds from-start sufficiency sets, so in mid-run stress the matched MFS is usually already enabled and the controller does not act (section 13.1). A negative result is about this controller.
 - Only the removal of components at tick 0 is explored for MFS search; mid-run removal and re-entry are covered in other experiments only.
 - The route topology reads enable/disable operations; a parameter stress (e.g. renewal disabled by efficiency) does not appear as a failed component.
 - Performance measurements are in a headless browser on one machine that was not idle (see section 20).

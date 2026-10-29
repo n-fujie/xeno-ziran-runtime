@@ -110,3 +110,16 @@ def test_f14_claims_route_non_equivalence_only_when_both_sets_persist_in_every_v
     assert c["same_cardinality"] and all(s["persists"] == 5 for s in c["stability"].values())
     assert c["claim"].startswith("route non-equivalence") and c["equivalence"]["equivalent_through_level"] < 4
     assert any(r["differs"] for r in c["rows"])
+
+
+def test_the_adaptive_controller_did_not_act_because_the_matched_mfs_was_already_enabled():
+    """The saved diagnosis of the adaptive controller's own log: outside 'renewal disabled' its first decision was always 'already wholly enabled' and it never switched."""
+    d = json.loads((Path(__file__).resolve().parents[2] / "docs/ecosystem/experiments_stage5_adaptive_diagnosis.json").read_text())
+    rows = {r["scenario"]: r for r in d["rows"]}
+    assert len(rows) == 6
+    for scen, r in rows.items():
+        if scen == "renewal disabled":
+            assert r["first_decision"] == {"switch": 10} and r["switches"] == 10
+        else:
+            assert r["first_decision"] == {"already wholly enabled (cost 0, no action)": 10} and r["switches"] == 0
+    assert "not a finding that reconfiguration cannot help" in d["limit"]

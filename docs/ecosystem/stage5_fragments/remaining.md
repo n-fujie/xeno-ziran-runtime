@@ -1,5 +1,5 @@
 **Unimplemented**
-- Search over mid-run removal and re-entry (MFS are searched for removal at tick 0 only).
+- Search over mid-run removal and re-entry (MFS are searched for removal at tick 0 only). The adaptive-controller diagnosis (section 13.1) shows this is the missing experiment: a library of sets that survive a stress arriving in mid-run, from which a controller could actually prescribe an action.
 - Controllers that sense more than five features or enable components outside the library; any learning controller.
 - A clickable replay-marker inspection that can be written in a URL.
 
