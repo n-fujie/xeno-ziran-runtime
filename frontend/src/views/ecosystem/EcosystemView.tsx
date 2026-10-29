@@ -10,7 +10,7 @@ import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 import Chart from '../../components/Chart';
 import {
-  ablation, addressSweep, adAt, boundary, decodeFields, fieldAt, FULL_OBSERVATION, getSpec, historyCompare, mfs as mfsApi, replayMeos, runMeos, sssClassify, sssSweep, STATUS_VALUE,
+  ablation, addressSweep, adAt, boundary, decodeFields, fieldAt, FULL_OBSERVATION, getSpec, historyCompare, mfs as mfsApi, mfsLibrary, reconfigure, replayMeos, runMeos, sssClassify, sssSweep, STATUS_VALUE,
   type AblationRow, type BoundaryOut, type HistoryOut, type Intervention, type Label, type MfsOut, type Observation, type RunOut, type Spec, type SssClassOut,
 } from './meosApi';
 import {
@@ -24,6 +24,7 @@ import { buildDeviceLayer, deviceState, observationCoverage, SPACES, type Device
 import ExperimentsPane from './ExperimentsPane';
 import TechnicalView from './TechnicalView';
 import ResearchPane from './ResearchPane';
+import { topologyAt, topologyOf, type LibraryMfs, type Outcome } from './routeGraph';
 import { eventMarkers, inspectAt, MARKER_COLOR, MARKER_LABEL, type Marker, type SssRegion } from './research';
 import './ecosystem.css';
 
@@ -73,6 +74,8 @@ export default function EcosystemView() {
     return o;
   });
   const [openMarker, setOpenMarker] = useState<Marker | null>(null);
+  const [library, setLibrary] = useState<LibraryMfs[]>([]);
+  const [outcomes, setOutcomes] = useState<Outcome[]>([]);
   const [compare, setCompare] = useState(url.get('compare') === '1');
   const [body, setBody] = useState(() => (['B1', 'B2', 'B3'].includes(url.get('body') ?? '') ? url.get('body')! : 'B3'));
   const [sssCache, setSssCache] = useState<Record<string, SssClassOut>>({});
@@ -121,12 +124,13 @@ export default function EcosystemView() {
     setBusy('running the simulation'); setErr(null);
     try {
       const r = await runMeos(runCfg, list, fullObs ? undefined : { ...obs });
-      setOut(r); setIvs(list); setReplay(null);
+      setOut(r); setIvs(list); setReplay(null); setOutcomes([]);
       const t = Math.min(keepTick ?? 0, r.record.frames.length - 1);
       live.current.playhead = t; setTick(t);
     } catch (e) { setErr(String(e)); } finally { setBusy(null); }
   }, [runCfg, fullObs, obs]);
 
+  useEffect(() => { mfsLibrary().then((l) => setLibrary(l.mfs)).catch(() => undefined); }, []);  // the saved MFS library (fifth stage); absent when experiment F has not been run on this server
   useEffect(() => { getSpec().then(setSpec).catch((e) => setErr(`the MEOS API is not available on this server (${e}). XENO ECOSYSTEM needs the local runtime.`)); }, []);
   useEffect(() => {
     void execute(ivs, tick);
@@ -424,8 +428,10 @@ export default function EcosystemView() {
   }, [abl]);
   const ad = useMemo(() => (rec ? adAt(rec.frames, tick) : null), [rec, tick]);
   // the research readings: event markers, the inspected state, and the SSS region of the setting in force at this tick (classified by the engine, cached)
-  const markers = useMemo(() => (rec ? eventMarkers(rec, out?.observed) : []), [rec, out]);
-  const inspect = useMemo(() => (rec ? inspectAt(rec, out?.observed, tick, out?.paths, markers) : null), [rec, out, tick, markers]);
+  const topo = useMemo(() => (rec ? topologyOf(rec) : null), [rec]);
+  const markers = useMemo(() => (rec ? eventMarkers(rec, out?.observed, { topology: topo, outcomes }) : []), [rec, out, topo, outcomes]);
+  const routeState = useMemo(() => (topo ? topologyAt(topo, tick, library) : null), [topo, tick, library]);
+  const inspect = useMemo(() => (rec ? inspectAt(rec, out?.observed, tick, out?.paths, markers, routeState) : null), [rec, out, tick, markers, routeState]);
   const sssKey = inspect ? `${inspect.sss.scale}/${inspect.sss.size}/${inspect.sss.speed}` : null;
   useEffect(() => {
     if (!sssKey || sssCache[sssKey]) return;
@@ -496,7 +502,7 @@ export default function EcosystemView() {
       <div className="eco-stage" data-settled={settled ? '1' : '0'}>
         <div ref={mount} style={{ position: 'absolute', inset: 0 }} data-testid="eco-canvas" />
         {chrome && tab === 'technical' && rec && <TechnicalView rec={rec} tick={tick} obs={obs} observability={out?.observed?.observability_status ?? 'OBSERVABLE'} which={techWhich} setWhich={setTechWhich} probeId={techProbe} setProbeId={setTechProbe}
-          research={{ observed: out?.observed ?? null, paths: out?.paths ?? null, markers, sssRegion, compare, bodies: spec ? { partitions: spec.partitions, legs: spec.legs } : null, body, setBody }} />}
+          research={{ observed: out?.observed ?? null, paths: out?.paths ?? null, markers, sssRegion, compare, bodies: spec ? { partitions: spec.partitions, legs: spec.legs } : null, body, setBody, topology: topo, library, outcomes }} />}
         <div className="eco-hud">
           {mv && <div className={`eco-badge ${mv.label}`}><span>MEOS {mv.label}</span><span className="dim">tick {tick}/{n - 1}</span></div>}
           {mv?.dependency && <div className="eco-dep">failed dependency{mv.dependency.entity ? ` (${mv.dependency.entity})` : ''}: {mv.dependency.detail}</div>}
@@ -517,7 +523,8 @@ export default function EcosystemView() {
         </div>
         <div className="eco-pane">
           {tab === 'experiment' && <ExperimentPane {...{ rec, spec, tick, n, playing, setPlaying, rate, setRate, seed, setSeed, horizon, setHorizon, obs, setObs, conn, setConn, fullObs, layers, toggleLayer, cam, goCam, follow, setFollow, sel, focusSel, ivs, execute, intervene, doReplay, replay, quality, setQuality, out, setTick, live }} />}
-          {tab === 'research' && <ResearchPane {...{ rec, out, tick, setTick: (t: number) => { live.current.playhead = t; setTick(t); }, obs, setObs, conn, setConn, ivs, execute, cfg: runCfg, seed, markers, inspect, sssClass: sssKey ? sssCache[sssKey] ?? null : null, sssRegion, compare, setCompare, busy, wrap, setTab: (t: 'technical') => setTab(t), openMarker, setOpenMarker }} />}
+          {tab === 'research' && <ResearchPane {...{ rec, out, tick, setTick: (t: number) => { live.current.playhead = t; setTick(t); }, obs, setObs, conn, setConn, ivs, execute, cfg: runCfg, seed, markers, inspect, sssClass: sssKey ? sssCache[sssKey] ?? null : null, sssRegion, compare, setCompare, busy, wrap, setTab: (t: 'technical') => setTab(t), openMarker, setOpenMarker, library, routeState, outcomes,
+            runControlled: async (controller: string, scenario: string) => { const r = await reconfigure({ controller, scenario, seed }); setOut({ record: r.record, summary: r.summary, paths: r.paths }); setIvs(r.record.interventions); setOutcomes(r.outcomes); setReplay(r.replay_identical ? 'controlled run: the recorded schedule replays identically without the controller' : 'REPLAY OF THE CONTROLLED RUN DIFFERS'); live.current.playhead = 0; setTick(0); } }} />}
           {tab === 'inspect' && rec && <InspectPane rec={rec} tick={tick} sel={sel} setSel={setSel} ad={ad} mfs={mfsRes} trials={trials} />}
           {tab === 'reductions' && <ReductionsPane {...{ spec, abl, mfsRes, bnd, hist, sss, addr, runAblation, runMfs, runBoundary, runHistory, runSss, runAddr, busy }} />}
           {tab === 'technical' && <div className="eco-note">The technical inspection sheet is shown over the stage: orthographic drawings of the selected body's real geometry in the pose the run gives at the current tick, a probe detail, measured dimensions, component identifiers, cable routing and the state read from the run. Use the playhead to move through the run.</div>}

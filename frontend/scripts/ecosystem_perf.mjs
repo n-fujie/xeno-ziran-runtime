@@ -14,7 +14,7 @@ const tiers = arg('tiers', 'performance,balanced,high').split(','), cams = arg('
 const require = createRequire((process.env.PLAYWRIGHT_DIR ?? process.cwd()) + '/package.json');
 const { chromium } = require('playwright');
 const browser = await chromium.launch({ executablePath: process.env.CHROME, args: software ? ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--enable-webgl'] : ['--use-angle=metal', '--ignore-gpu-blocklist', '--enable-gpu', '--enable-webgl'] });
-const stat = (ms) => { const s = [...ms].sort((a, b) => a - b), q = (f) => s[Math.min(s.length - 1, Math.floor(s.length * f))]; return { median: +q(0.5).toFixed(2), p95: +q(0.95).toFixed(2), mean: +(ms.reduce((a, b) => a + b, 0) / ms.length).toFixed(2), max: +s[s.length - 1].toFixed(2), fps_from_median: +(1000 / q(0.5)).toFixed(1) }; };
+const stat = (ms) => { const s = [...ms].sort((a, b) => a - b), q = (f) => s[Math.min(s.length - 1, Math.floor(s.length * f))]; return { median: +q(0.5).toFixed(2), p95: +q(0.95).toFixed(2), p99: +q(0.99).toFixed(2), mean: +(ms.reduce((a, b) => a + b, 0) / ms.length).toFixed(2), max: +s[s.length - 1].toFixed(2), fps_from_median: +(1000 / q(0.5)).toFixed(1) }; };
 const result = { measured_with: software ? 'headless Chromium, SwiftShader' : 'headless Chromium, ANGLE Metal', viewport: [width, height], frames, rows: [] };
 for (const tier of tiers) for (const cam of cams) {
   const page = await browser.newPage({ viewport: { width, height } });
@@ -26,7 +26,11 @@ for (const tier of tiers) for (const cam of cams) {
     const r = await page.evaluate(([n, o]) => window.__meos.benchmark(n, o), [frames, orbit]);
     return { label, ...stat(r.ms), cpu_submit_median: stat(r.js).median, gpu_time: r.gpu.length ? stat(r.gpu) : null, drawCalls: r.drawCalls, triangles: r.triangles, geometries: r.geometries, textures: r.textures };
   };
+  // the fifth-stage additions: for the orbit, how many shader programs the renderer built, how many geometries were uploaded and how many LOD levels / visibilities flipped (from the benchmark
+  // hook's per-frame series; the Stage 3 build has no such hook, so for it these are null)
+  const series = async () => page.evaluate((n) => { const r = window.__meos.benchmark(n, true, true); const s = r.series; return s ? { programs_built: (r.programsBuilt ?? []).length, geometry_uploads: Math.max(0, Math.max(...s.geometries) - Math.min(...s.geometries)), lod_switches: s.lodSwitches.reduce((a, b) => a + b, 0), visibility_flips: s.visibilityFlips.reduce((a, b) => a + b, 0) } : null; }, frames);
   const row = { tier, camera: cam, camera_spec: await page.evaluate(() => window.__meos.camera()), instances: await page.evaluate(() => window.__meos.stats().instances), full: await run('full (static camera)'), orbiting: await run('full (camera orbiting: the reflection refreshes every 2nd frame)', true) };
+  row.orbit_series = await series();
   if (ablate) {
     row.ablation = {};
     for (const f of ['reflect', 'post', 'bloom', 'gravel', 'rocks', 'bodies', 'structure', 'terrain', 'arena', 'lines', 'points', 'everything']) {

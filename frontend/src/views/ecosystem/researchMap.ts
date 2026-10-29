@@ -10,6 +10,7 @@ import type { Observation, MeosRecord, PathId } from './meosApi';
 import { PATH_IDS } from './meosApi';
 import { pathStatesAt, type Inspect, type Marker, type PathState } from './research';
 import type { PathActivity } from './meosApi';
+import type { RouteState } from './routeGraph';
 
 export type LineStyle = 'solid' | 'dash' | 'dashdot' | 'dot';
 export type Ink = 'ink' | 'active' | 'cut' | 'mute' | 'green' | 'violet';
@@ -21,7 +22,7 @@ export type Prim =
   | { t: 'text'; id: string; x: number; y: number; text: string; ink: Ink; align?: 'left' | 'center'; /** a line of text under the arena (0 is the first), in rows and not in cells */ row?: number }
   | { t: 'flag'; id: string; x: number; y: number; text: string; ink: Ink };
 
-export type MapLayer = 'boundary.xenobody' | 'boundary.address' | 'boundary.observation' | 'observation' | 'interventions' | `path.${PathId}`;
+export type MapLayer = 'boundary.xenobody' | 'boundary.address' | 'boundary.observation' | 'observation' | 'interventions' | `path.${PathId}` | 'route.active' | 'route.dormant' | 'route.failed' | 'route.fallback' | 'mfs.current' | 'mfs.alternative';
 export const MAP_LAYERS: Array<{ id: MapLayer; label: string; what: string }> = [
   { id: 'boundary.xenobody', label: 'XenoBody boundary', what: 'solid heavy line round the operational body (A1, A2 and their sensing windows)' },
   { id: 'boundary.address', label: 'Address Domain', what: 'dash-dot: the addressable arena; pointers to the cell a stale, delayed or lost address names' },
@@ -33,8 +34,16 @@ export const MAP_LAYERS: Array<{ id: MapLayer; label: string; what: string }> = 
   { id: 'path.observation', label: 'observation path', what: 'the stimulus each configuration senses (not the research observer)' },
   { id: 'path.recovery', label: 'recovery path', what: 'renewal and the pulse that restores a collapsed operation' },
   { id: 'interventions', label: 'interventions', what: 'flags at the cells an intervention names; a strip for the others' },
+  { id: 'route.active', label: 'active route', what: 'paths made of enabled components (heavy blue)' },
+  { id: 'route.dormant', label: 'inactive (dormant) route', what: 'paths that need a component that is installed and not in use, e.g. the M2 tap (grey dashed)' },
+  { id: 'route.failed', label: 'failed route', what: 'paths with a removed or isolated component (red dotted, crossed)' },
+  { id: 'route.fallback', label: 'fallback route', what: 'paths a controller switched on (green, double line)' },
+  { id: 'mfs.current', label: 'current MFS', what: 'the MFS the enabled components contain, or the one the last transition moved to' },
+  { id: 'mfs.alternative', label: 'alternative MFS', what: 'the library MFS whose components have not failed, other than the current one' },
 ];
 export const ALL_MAP_LAYERS = new Set<MapLayer>(MAP_LAYERS.map((l) => l.id));
+/** What is shown at first: the route and MFS layers are switched on by hand (they are not all shown at once). */
+export const DEFAULT_MAP_LAYERS = new Set<MapLayer>(MAP_LAYERS.map((l) => l.id).filter((l) => !l.startsWith('route.') && !l.startsWith('mfs.')));
 
 const style = (s: PathState): LineStyle => (s === 'active' ? 'solid' : s === 'cut' ? 'dash' : 'dot');
 const ink = (s: PathState, base: Ink): Ink => (s === 'cut' ? 'cut' : s === 'quiet' ? 'mute' : base);
@@ -46,8 +55,8 @@ export interface BodiesSpec { partitions: Record<string, { label: string; compon
 export const legsClosed = (components: string[], legs: Record<string, string[]>): string[] => Object.entries(legs).filter(([, needs]) => needs.every((c) => components.includes(c))).map(([k]) => k);
 
 /** The research map at ``tick``. ``inspect`` is the state at that tick (``research.inspectAt``); ``paths`` are the run's path activity; ``markers`` its event markers. */
-export function buildResearchMap(o: { rec: MeosRecord; tick: number; obs: Partial<Observation>; inspect: Inspect; paths: PathActivity | null | undefined; markers: Marker[]; layers?: Set<MapLayer>; body?: string; bodies?: BodiesSpec | null }): MapSpec {
-  const { rec, inspect: ins } = o, L = o.layers ?? ALL_MAP_LAYERS, n = rec.config.grid, t = ins.tick, f = rec.frames[t];
+export function buildResearchMap(o: { rec: MeosRecord; tick: number; obs: Partial<Observation>; inspect: Inspect; paths: PathActivity | null | undefined; markers: Marker[]; layers?: Set<MapLayer>; body?: string; bodies?: BodiesSpec | null; route?: RouteState | null }): MapSpec {
+  const { rec, inspect: ins } = o, L = o.layers ?? DEFAULT_MAP_LAYERS, n = rec.config.grid, t = ins.tick, f = rec.frames[t];
   const P: Prim[] = [], on = (l: MapLayer) => L.has(l), ps = pathStatesAt(o.paths, t);
   const a1 = [f.A1.x + 0.5, f.A1.y + 0.5] as [number, number], a2 = [f.A2.x + 0.5, f.A2.y + 0.5] as [number, number];
   const r1 = Number(rec.final_config.entities.A1.sensor_radius ?? 2) * ins.sss.scale, r2 = Number(rec.final_config.entities.A2.sensor_radius ?? 2) * ins.sss.scale;
@@ -124,12 +133,32 @@ export function buildResearchMap(o: { rec: MeosRecord; tick: number; obs: Partia
     P.push({ t: 'poly', id: `path.${id}`, pts, style: style(s), w: s === 'active' ? 1.6 : 1.2, ink: ink(s, base), arrow: true }, { t: 'text', id: `path.${id}`, x: pts[Math.floor(pts.length / 2)][0], y: pts[Math.floor(pts.length / 2)][1] - 0.22, text: `${label} ${s}`, ink: ink(s, base), align: 'center' });
     if (s === 'cut') P.push({ t: 'cross', id: `path.${id}`, x: (pts[0][0] + pts[pts.length - 1][0]) / 2, y: (pts[0][1] + pts[pts.length - 1][1]) / 2, ink: 'cut' });
   };
+  const PTS: Record<string, Array<[number, number]>> = {
+    resource: [[0.2, a1[1] + 1.1], [(0.2 + a1[0]) / 2, a1[1] + 1.4], [a1[0], a1[1] + 0.5]], coupling: [[a1[0] + 0.45, a1[1]], [(a1[0] + a2[0]) / 2, a1[1] - 0.15], [a2[0] - 0.45, a2[1]]],
+    history_access: [[a1[0] - 0.3, a1[1] - 0.45], [a1[0] - 0.9, a1[1] - 1.3], [a1[0] + 0.3, a1[1] - 1.3], [a1[0] + 0.1, a1[1] - 0.45]], observation: [[n / 2, -0.15], [(reg[0] + reg[2] + 1) / 2, 0.8]],
+    recovery: [[a2[0] + 0.3, a2[1] + 0.5], [mid[0] + 1.5, mid[1] + 1.1], [a1[0] + 0.4, a1[1] + 0.5]], m2: [[a2[0] + 0.5, a2[1] - 0.5], [(a1[0] + a2[0]) / 2 + 0.8, a1[1] - 1.9], [a1[0] + 0.5, a1[1] - 0.5]], address: [[a1[0] - 0.6, a1[1] + 0.5], [a1[0] - 1.3, a1[1] + 1.5], [a2[0] - 0.4, a2[1] + 0.5]],
+  };
   path('resource', [[0.2, a1[1] + 1.1], [(0.2 + a1[0]) / 2, a1[1] + 1.4], [a1[0], a1[1] + 0.5]], 'green', 'resource');
   path('coupling', [[a1[0] + 0.45, a1[1]], [(a1[0] + a2[0]) / 2, a1[1] - 0.15], [a2[0] - 0.45, a2[1]]], 'active', 'coupling');
   path('history_access', [[a1[0] - 0.3, a1[1] - 0.45], [a1[0] - 0.9, a1[1] - 1.3], [a1[0] + 0.3, a1[1] - 1.3], [a1[0] + 0.1, a1[1] - 0.45]], 'violet', 'history');
   path('observation', [[n / 2, -0.15], [(reg[0] + reg[2] + 1) / 2, 0.8]], 'active', 'observation');
   path('recovery', [[a2[0] + 0.3, a2[1] + 0.5], [mid[0] + 1.5, mid[1] + 1.1], [a1[0] + 0.4, a1[1] + 0.5]], 'green', 'recovery');
 
+  // the routes (fifth stage): the state of each path from the record, drawn over the path polylines; and the current and alternative MFS in words
+  if (o.route) {
+    const rs = o.route, LAYER: Record<string, MapLayer> = { active: 'route.active', dormant: 'route.dormant', failed: 'route.failed', fallback: 'route.fallback' };
+    for (const [p, state] of Object.entries(rs.paths)) {
+      const layer = LAYER[state], pts = PTS[p];
+      if (!layer || !on(layer) || !pts) continue;
+      const shifted = pts.map(([x, y]) => [x, y + 0.18] as [number, number]);
+      P.push({ t: 'poly', id: layer, pts: shifted, style: state === 'dormant' ? 'dash' : state === 'failed' ? 'dot' : 'solid', w: state === 'fallback' ? 3.2 : state === 'active' ? 2.6 : 1.4, ink: state === 'failed' ? 'cut' : state === 'dormant' ? 'mute' : state === 'fallback' ? 'green' : 'active', arrow: true },
+        { t: 'text', id: layer, x: shifted[Math.floor(shifted.length / 2)][0], y: shifted[Math.floor(shifted.length / 2)][1] + 0.38, text: `${p} route ${state}`, ink: state === 'failed' ? 'cut' : 'mute', align: 'center' });
+      if (state === 'fallback') P.push({ t: 'poly', id: layer, pts: shifted.map(([x, y]) => [x, y + 0.14] as [number, number]), style: 'solid', w: 1.2, ink: 'green' });
+      if (state === 'failed') P.push({ t: 'cross', id: layer, x: shifted[1][0], y: shifted[1][1], ink: 'cut' });
+    }
+    if (on('mfs.current')) P.push({ t: 'text', id: 'mfs.current', x: 0.1, y: n, row: 3, text: `current MFS ${rs.currentMfs}${rs.lastTransition ? ` (moved at tick ${rs.lastTransition.tick}, trigger ${rs.lastTransition.trigger.join(', ')}, cost ${rs.lastTransition.cost})` : ''}`, ink: 'active', align: 'left' });
+    if (on('mfs.alternative')) P.push({ t: 'text', id: 'mfs.alternative', x: 0.1, y: n, row: 4, text: `alternative MFS: ${rs.alternative.map((m) => m.id).join(', ') || 'none open'}${rs.disabled.length ? `; closed by a failure: ${rs.disabled.map((d) => d.mfs.id).join(', ')}` : ''}`, ink: 'mute', align: 'left' });
+  }
   // interventions: flags at the cells they name; the others in a strip under the map
   if (on('interventions')) {
     let strip = 0;
@@ -138,7 +167,7 @@ export function buildResearchMap(o: { rec: MeosRecord; tick: number; obs: Partia
       const inj = iv.inject as { x: number; y: number; amount: number } | undefined, label = `t${iv.tick} ${iv.op}${iv.target ? ' ' + String(iv.target) : ''}`;
       if (inj) P.push({ t: 'flag', id: 'interventions', x: inj.x + 0.5, y: inj.y + 0.5, text: `t${iv.tick} pulse ${inj.amount}`, ink: 'green' });
       else if (iv.op === 'ADDRESS' && typeof iv.x === 'number') P.push({ t: 'flag', id: 'interventions', x: (iv.x as number) + 0.5, y: (iv.y as number) + 0.5, text: `t${iv.tick} ${String(iv.address_mode)} → (${iv.x},${iv.y})`, ink: 'violet' });
-      else P.push({ t: 'text', id: 'interventions', x: 0.1, y: n, row: 2 + strip++, text: `${label}${iv.address_mode ? ' ' + String(iv.address_mode) : ''} → ${affected(iv)}`, ink: iv.tick === t ? 'cut' : 'ink', align: 'left' });
+      else P.push({ t: 'text', id: 'interventions', x: 0.1, y: n, row: 5 + strip++, text: `${label}${iv.address_mode ? ' ' + String(iv.address_mode) : ''} → ${affected(iv)}`, ink: iv.tick === t ? 'cut' : 'ink', align: 'left' });
     }
   }
   return { n, prims: P, summary: { tick: String(t), operational: ins.operational, observed: String(ins.observed ?? 'full observation'), observability: String(ins.observability ?? 'full observation'), xenobody: ins.boundary.open.length ? `open: ${ins.boundary.open.join(', ')}` : 'closed' } };

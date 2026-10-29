@@ -35,7 +35,7 @@ from typing import Any
 
 import numpy as np
 
-ENGINE_VERSION = "meos-0.3"
+ENGINE_VERSION = "meos-0.4"
 SCHEMA = "xzr.meos/1"
 ENTITIES = ("A1", "A2")
 
@@ -147,6 +147,10 @@ for _e in ENTITIES:
     SETTABLE[f"entities.{_e}.x"] = (0, 13)
     SETTABLE[f"entities.{_e}.y"] = (0, 13)
 
+# Fifth-stage parameters (all absent from the default configuration, so a run that does not set them is the run of the earlier stages)
+SETTABLE["coupling.gain"] = (0.0, 2.0)  # the share of A1's alteration M1 that A2's sensor receives (a weakened or strengthened coupling; absent = 1)
+SETTABLE["environment.renew_delay"] = (0, 40)  # ticks between A2's renewal action and the renewed resource reaching the field (absent = 0)
+SETTABLE["history.lag"] = (0, 40)  # ticks of delay of the history trace that lowers a threshold (absent = 0)
 SETTABLE["entities.A2.renew"] = (0.05, 3.0)  # how much resource A2 transfers per action step (a configuration parameter of A2)
 
 OPS = (
@@ -159,6 +163,7 @@ OPS = (
     "ALTER_SSS",
     "ALTER_RESOURCE",
     "ADDRESS",
+    "ROUTE",
 )
 ADDRESS_MODES = ("loss", "reassign", "fragment", "collision", "partial", "restore", "delayed", "stale")
 M2_SENSE = ("none", "direct", "delayed", "noisy", "threshold")
@@ -198,7 +203,7 @@ def _set(cfg: dict, path: str, value: Any) -> None:
     parts = path.split(".")
     node = cfg
     for p in parts[:-1]:
-        node = node[p]
+        node = node.setdefault(p, {}) if p == "coupling" else node[p]  # ``coupling`` is an optional block: created when first set
     node[parts[-1]] = value
 
 
@@ -256,6 +261,14 @@ def validate_interventions(ivs: list[dict], horizon: int) -> list[str]:
             v = iv.get("value")
             if not (isinstance(v, int | float) and not isinstance(v, bool) and lo <= v <= hi):
                 issues.append(f"interventions[{i}].value must be a number in {lo}..{hi}")
+        if op == "ROUTE":
+            m2r, hr = iv.get("m2"), iv.get("history")
+            if m2r is None and hr is None:
+                issues.append(f"interventions[{i}] ROUTE needs an m2 block and / or a history setting")
+            if m2r is not None and not (isinstance(m2r, dict) and m2r.get("sense", "none") in M2_SENSE):
+                issues.append(f"interventions[{i}].m2.sense must be one of {M2_SENSE}")
+            if hr is not None and hr not in ("on", "off"):
+                issues.append(f"interventions[{i}].history must be on or off")
         if op == "CHANGE_BOUNDARY" and not (isinstance(iv.get("arena_radius"), int) and 1 <= iv["arena_radius"] <= 14):
             issues.append(f"interventions[{i}].arena_radius must be an integer in 1..14")
         if op == "ADDRESS":
@@ -358,6 +371,8 @@ class Run:
         self.addr: dict[str, dict] = {name: {"mode": None, "fraction": 1.0, "mask": None} for name in ENTITIES}
         self.addr_events = 0
         self.m2_hist: collections.deque = collections.deque(maxlen=64)
+        self.h_hist: dict[str, collections.deque] = {name: collections.deque(maxlen=64) for name in ENTITIES}  # history trace per tick (for a delayed history)
+        self.renew_queue: list[tuple[int, tuple, float]] = []  # (due tick, cells, amount per cell) of renewals not yet delivered (a delayed renewal)
         self.m2_sensed = 0.0  # what A1's M2 tap added to its sensor signal at the latest evaluation (recorded as a trace only when M2 sensing is configured)
         self.tick_acc: dict[str, float] = {}
         self.traces: dict[str, list] = collections.defaultdict(list)
@@ -526,6 +541,16 @@ class Run:
             detail = {k: cfg["sss"][k] for k in ("scale", "size", "speed")}
         elif op == "ADDRESS":
             detail = self._apply_address(iv)
+        elif op == "ROUTE":
+            # a change of the operational route: which of M2 sensing and history re-entry is in use (the configuration's own components are unchanged); the optional
+            # metadata of a controller (``why``, ``from``, ``to``, ``cost``) is kept in the log and read by nothing in the engine
+            if "m2" in iv:
+                cfg["m2"] = dict(iv["m2"])
+                detail["m2"] = dict(iv["m2"])
+            if "history" in iv:
+                cfg["history"]["enabled"] = iv["history"] == "on"
+                detail["history"] = iv["history"]
+            detail.update({k: iv[k] for k in ("why", "from", "to", "cost", "trigger") if k in iv})
         e = self._event("intervention", None, op=op, **detail)
         self.intervention_log.append({"tick": self.t, "op": op, "event": e["id"], **detail})
 
@@ -570,7 +595,9 @@ class Run:
         if not h["enabled"] or not (h.get("access") or {}).get(name, True):
             return theta0, 0.0
         floor = h["theta_floor"] * theta0  # history can lower a threshold, never remove it
-        theta = max(floor, theta0 - h["kappa"] * self.ent[name]["h"])
+        lag = int(h.get("lag", 0))
+        trace = self.ent[name]["h"] if lag <= 0 else (self.h_hist[name][-lag] if len(self.h_hist[name]) >= lag else 0.0)
+        theta = max(floor, theta0 - h["kappa"] * trace)
         return theta, theta0 - theta
 
     def _evaluate(self, name: str) -> dict:
@@ -602,6 +629,10 @@ class Run:
         if a["mode"] == "fragment":
             win = np.where(self._window(a["mask"], x, y, r), win, 0.0)
         s0 = float(win.max()) if chan_ok and win.size else 0.0  # a peak detector over the sensing window
+        if name == "A2":
+            gain = float((self.cfg.get("coupling") or {}).get("gain", 1.0))
+            if gain != 1.0:  # a weakened (or strengthened) coupling: what A2 receives of A1's alteration
+                s0 *= gain
         if chan_ok and name == "A1":
             self.m2_sensed = self._m2_signal(x, y, r)
             s0 += self.m2_sensed
@@ -728,7 +759,11 @@ class Run:
                 self.power -= amt
             eff = self._renew_efficiency()
             # reconfigure the environment around A1's reach: the renewed resource is placed where this configuration is
-            self.R[reg] += amt * eff / self.R[reg].size
+            delay = int(self.cfg["environment"].get("renew_delay", 0))
+            if delay > 0:
+                self.renew_queue.append((self.t + delay, reg, amt * eff / self.R[reg].size))
+            else:
+                self.R[reg] += amt * eff / self.R[reg].size
             self._acc("renewed", amt * eff)
             self._acc("renew_requested", amt)
             self._acc("power_renew", amt)
@@ -833,6 +868,11 @@ class Run:
                 e["cool"] -= 1
         # environment: diffusion, decay of alterations, renewal from the finite reserve, upkeep of A1
         env = self.cfg["environment"]
+        if self.renew_queue:  # renewals whose delay has run out reach the field
+            due = [q for q in self.renew_queue if q[0] <= self.t]
+            self.renew_queue = [q for q in self.renew_queue if q[0] > self.t]
+            for _, cells, per_cell in due:
+                self.R[cells] += per_cell
         pad = np.pad(self.R, 1, mode="edge")
         lap = pad[:-2, 1:-1] + pad[2:, 1:-1] + pad[1:-1, :-2] + pad[1:-1, 2:] - 4 * self.R
         self.R = np.clip(
@@ -867,6 +907,8 @@ class Run:
             e["h"] = (
                 e["h"] * (1.0 - h["decay"]) + (h["gain"] if e["fired_now"] else 0.0) + (0.2 * h["gain"] if e["d"] > 0.02 else 0.0)
             )
+        for name in ENTITIES:
+            self.h_hist[name].append(self.ent[name]["h"])
         if (self.cfg.get("m2") or {}).get("sense") == "delayed":
             self.m2_hist.append(self.M2.copy())
         if self.phil:
@@ -1013,7 +1055,9 @@ class Run:
         }
         if self.phil:
             cols.update(self.phil.trace_columns())
-        if (self.cfg.get("m2") or {}).get("sense", "none") != "none":
+        if (self.cfg.get("m2") or {}).get("sense", "none") != "none" or "m2_sensed" in T:
+            if "m2_sensed" not in T:  # M2 sensing was switched on during the run (a route change): the ticks before it sensed nothing
+                T["m2_sensed"] = [0.0] * len(T["t"])
             cols["m2_sensed"] = self.m2_sensed  # absent unless M2 sensing is configured, so that the traces of every other run are what they were
         for k, v in cols.items():
             T[k].append(round(float(v), 5) if k != "t" else int(v))
@@ -1072,6 +1116,17 @@ class Run:
         while self.step():
             pass
         return self.record()
+
+    def inject(self, iv: dict) -> None:
+        """Schedule an intervention for the next tick while the run is stepping (a controller reacting to what the run has done so far). The intervention joins the schedule in the
+        order a stored schedule is replayed in, so replaying the recorded schedule without the controller gives the same run."""
+        iv = copy.deepcopy(iv)
+        iv["tick"] = self.t + 1
+        issues = validate_interventions([iv], self.cfg["horizon"])
+        if issues:
+            raise MeosError("; ".join(issues))
+        self.interventions.append(iv)
+        self.interventions.sort(key=lambda i: (i["tick"], _canon(i)))
 
     # ------------------------------------------------------------------------------------------------ record
     def address_domain(self, name: str, t: int | None = None) -> dict:
@@ -1188,7 +1243,11 @@ def input_digest(config: dict, interventions: list[dict] | None = None) -> str:
 def run_record(config: dict, interventions: list[dict] | None = None) -> dict:
     """Run to the horizon and return the full record, with the digest of its inputs and of its outputs (what replay must reproduce)."""
     r = Run(config, interventions)
-    rec = r.run()
+    return finalize(r.run(), config, interventions)
+
+
+def finalize(rec: dict, config: dict, interventions: list[dict] | None) -> dict:
+    """Add the digests of the inputs and of the outputs to a record of a finished run (``run_record`` does this; a controller that stepped the run itself does it with the schedule it recorded)."""
     rec["initial_config_digest"] = input_digest(config, interventions)
     out = {k: rec[k] for k in ("frames", "events", "cycles", "status_log", "final_status", "termination")}
     out["fields"] = rec["fields"]["b64"]

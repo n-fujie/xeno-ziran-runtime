@@ -5,6 +5,7 @@ import {
 } from './meosApi';
 import { deltaSnapshots, inspectAt, MARKER_COLOR, MARKER_LABEL, snapshotTicks, type Inspect, type Marker } from './research';
 import { affected } from './researchMap';
+import type { LibraryMfs, Outcome, RouteState } from './routeGraph';
 
 // RESEARCH — the experiment console and the readings of a run. Everything under "MODEL RESULT" is read from the record or returned by the engine; "VISUAL REPRESENTATION" says how the
 // bodies and the sheet are posed for it. The console builds interventions (and the observation configuration) and re-runs the engine; it never edits a run.
@@ -15,10 +16,12 @@ export interface ResearchCtx {
   ivs: Intervention[]; execute: (l: Intervention[], t: number | null) => Promise<void>; cfg: Record<string, unknown>; seed: number; markers: Marker[]; inspect: Inspect | null;
   sssClass: SssClassOut | null; sssRegion: string; compare: boolean; setCompare: (b: boolean) => void; busy: string | null; wrap: (name: string, fn: () => Promise<void>) => Promise<void>;
   setTab: (t: 'technical') => void; openMarker: Marker | null; setOpenMarker: (m: Marker | null) => void;
+  library: LibraryMfs[]; routeState: RouteState | null; outcomes: Outcome[]; runControlled: (controller: string, scenario: string) => Promise<void>;
 }
 
 const REGIONS: Array<[string, number[] | null]> = [['whole arena', null], ['left half', [0, 0, 6, 13]], ['right half', [7, 0, 13, 13]], ['centre', [3, 3, 10, 10]], ['around A1 and A2', [2, 4, 6, 8]], ['A1 cell only', [3, 6, 3, 6]], ['away from both', [8, 8, 12, 12]], ['corner', [0, 0, 3, 3]]];
 const OCCLUDERS: Array<[string, number[] | null]> = [['none', null], ['over A1', [3, 6, 3, 6]], ['over A1 and A2', [3, 5, 5, 7]], ['left strip', [0, 0, 2, 13]]];
+const SCENARIO_NAMES = ['no stress (control for false switches)', 'history lost', 'coupling weakened (gain 0.5)', 'resource reduced', 'renewal efficiency 0.6', 'renewal disabled', 'Address degraded (A2 partial 50 %)'];
 const Chip = ({ s }: { s: string }) => <span className={`eco-chip ${s}`}>{s}</span>;
 const download = (name: string, text: string, type: string) => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type })); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); };
 
@@ -28,6 +31,7 @@ export default function ResearchPane(c: ResearchCtx) {
   const [am, setAm] = useState({ mode: 'loss', target: 'A2', x: 9, y: 6, fraction: 0.5, delay: 20, duration: 40, restoreAfter: 40 }), [adr, setAdr] = useState<AddressInterventionOut | null>(null);
   const [sss, setSss] = useState({ scale: 1, size: 1, speed: 1 }), [pulse, setPulse] = useState(2), [renew, setRenew] = useState(0.8);
   const [snap, setSnap] = useState<'baseline' | 'intervention' | 'recovered'>('baseline');
+  const [ctlKind, setCtlKind] = useState('adaptive'), [scen, setScen] = useState('coupling weakened (gain 0.5)');
   const tk = useMemo(() => (rec ? snapshotTicks(rec) : null), [rec]);
   const disabled = !rec || !!c.busy;
   const at = Math.min(c.tick, (rec?.frames.length ?? 1) - 1);
@@ -126,6 +130,15 @@ export default function ResearchPane(c: ResearchCtx) {
           weight {num(conn.m2w, (m2w) => setConn({ ...conn, m2w }), 0.25, 0.25, 4)}{conn.m2 === 'threshold' && <>threshold {num(conn.m2t, (m2t) => setConn({ ...conn, m2t }), 0.05, 0, 2)}</>}</div>
       </fieldset>
 
+      <fieldset className="eco-group"><legend>reconfiguration (fifth stage)</legend>
+        <div className="eco-row"><label>scenario <select value={scen} onChange={(e) => setScen(e.target.value)}>{SCENARIO_NAMES.map((x) => <option key={x}>{x}</option>)}</select></label>
+          <label>controller <select value={ctlKind} onChange={(e) => setCtlKind(e.target.value)}>{['none', 'fixed', 'adaptive', 'delayed', 'noisy'].map((x) => <option key={x}>{x}</option>)}</select></label>
+          <button disabled={!c.library.length || !!c.busy} onClick={() => void c.wrap('controlled run', () => c.runControlled(ctlKind, scen))} title="a stress at tick 100 on an arrangement with the M2 tap installed and dormant; the controller senses, matches the saved MFS library and moves between known MFS">RUN</button></div>
+        <div className="eco-note">{c.library.length ? `${c.library.length} MFS in the saved library (experiment F). The controller reads only the run's traces; what it senses, the candidates, the choice and its cost are in the timeline markers and the inspection.` : 'The MFS library is not saved on this server: run backend/scripts/meos_experiments_v5.py.'}</div>
+        {c.outcomes.length > 0 && <table className="eco-table"><thead><tr><th>tick</th><th>from → to</th><th>trigger</th><th>cost</th><th>lost ticks</th><th>latency</th><th>preserved</th></tr></thead><tbody>{c.outcomes.map((o, i) => <tr key={i}><td>{o.tick}</td><td>{o.from} → {o.to}</td><td>{o.trigger.join(', ')}</td><td>{o.cost}</td><td>{o.operation_lost_ticks_after}</td><td>{o.recovery_latency ?? '-'}</td><td>{o.preserved_at_end ? 'yes' : 'no'}</td></tr>)}</tbody></table>}
+        {c.library.length > 0 && <details><summary className="dim">the MFS library</summary><table className="eco-table"><thead><tr><th>MFS</th><th>condition</th><th>route</th><th>retained</th></tr></thead><tbody>{c.library.map((m) => <tr key={m.id}><td>{m.id}</td><td>{m.condition}</td><td>{m.route_kind}</td><td>{m.retained.join(', ')}</td></tr>)}</tbody></table></details>}
+      </fieldset>
+
       <div className="eco-two">
         <div className="mr"><h4>MODEL RESULT · the record at tick {c.tick}</h4>
           {ins ? <dl className="eco-kv"><dt>operational</dt><dd><Chip s={ins.operational} /></dd><dt>observed</dt><dd>{ins.observed ? <Chip s={ins.observed} /> : 'full observation'}</dd><dt>observability</dt><dd>{ins.observability ?? 'full observation'}</dd>
@@ -133,7 +146,9 @@ export default function ResearchPane(c: ResearchCtx) {
             <dt>Address Domain</dt><dd>A1 {ins.address.A1.mode ?? 'intact'} · A2 {ins.address.A2.mode ?? 'intact'}</dd><dt>SSS</dt><dd>{ins.sss.scale}/{ins.sss.size}/{ins.sss.speed} → {c.sssRegion}</dd>
             <dt>energy</dt><dd>A1 {ins.energy.a1.toFixed(2)} · power {ins.energy.power.toFixed(2)}</dd><dt>resource</dt><dd>total {ins.resource.total.toFixed(1)} · flow {ins.resource.flow.toFixed(3)}</dd>
             <dt>history</dt><dd>{ins.history.enabled ? 'on' : 'off'} · trace A1 {ins.history.trace.A1.toFixed(2)} A2 {ins.history.trace.A2.toFixed(2)}</dd><dt>paths</dt><dd>{Object.entries(ins.paths).map(([k, v]) => `${k} ${v}`).join(' · ')}</dd>
-            <dt>M2</dt><dd>{ins.m2.sense === 'none' ? 'not connected' : `${ins.m2.sense}; A1 senses ${ins.m2.sensed?.toFixed(3)}`}</dd></dl> : <div className="eco-note">no record</div>}</div>
+            <dt>M2</dt><dd>{ins.m2.sense === 'none' ? 'not connected' : `${ins.m2.sense}; A1 senses ${ins.m2.sensed?.toFixed(3)}`}</dd>
+            {ins.route && <><dt>current MFS</dt><dd>{ins.route.currentMfs}</dd><dt>active route</dt><dd>{Object.entries(ins.route.paths).filter(([, v]) => v === 'active' || v === 'fallback').map(([k, v]) => `${k}${v === 'fallback' ? ' (fallback)' : ''}`).join(', ')}</dd><dt>available routes</dt><dd>{ins.route.available.map((m) => m.id).join(', ') || 'none'}</dd><dt>disabled routes</dt><dd>{ins.route.disabled.map((d) => `${d.mfs.id} (needs ${d.because.join(', ')})`).join('; ') || 'none'}</dd>
+              <dt>transition</dt><dd>{ins.route.lastTransition ? `t${ins.route.lastTransition.tick}: ${ins.route.lastTransition.from} → ${ins.route.lastTransition.to}; cost ${ins.route.lastTransition.cost}; trigger ${ins.route.lastTransition.trigger.join(', ')}` : 'none'}</dd></>}</dl> : <div className="eco-note">no record</div>}</div>
         <div className="vr"><h4>VISUAL REPRESENTATION · the pose</h4>
           <div className="eco-note">The bodies are drawn from the state on the left by fixed rules (bodyState.ts, mechanics.ts): lamps and probes follow the run; SSS scale preloads the observer's boom, size sets the probe ring's posture, speed sets the coupling's tension and the reservoir regulation; the SSS region leaves the archive latch ajar; the M2 tap is node B's probe B2. A pose is a presentation. It cannot show anything the left panel does not already say.</div></div>
       </div>

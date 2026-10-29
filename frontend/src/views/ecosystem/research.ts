@@ -5,16 +5,17 @@
 // Domain, SSS, energy, resource, history, path activity) is read from the record the engine produced. ``sssMechanics`` and ``m2TapState`` are different in kind: they say how the *bodies*
 // are posed for a run (a design choice of the view, written down here and tested), and a pose is never evidence about the run.
 import type { Label, MeosRecord, Observed, ObservabilityStatus, PathActivity, PathId } from './meosApi';
+import type { Outcome, RouteState, Topology } from './routeGraph';
 import { PATH_IDS } from './meosApi';
 import { RECOVERY_TICKS } from './bodyState';
 import type { PartState } from './technical';
 export * from './mechanics';
 
 // ---------------------------------------------------------------------------------------------------- event markers
-export type MarkerKind = 'intervention' | 'boundary' | 'address' | 'pulse' | 'collapse' | 'recovery' | 'observation-failure';
+export type MarkerKind = 'intervention' | 'boundary' | 'address' | 'pulse' | 'collapse' | 'recovery' | 'observation-failure' | 'route-switch' | 'mfs-change' | 'route-ok' | 'route-failed' | 'fallback' | 'm2-takeover' | 'history-loss' | 'address-recovery';
 export interface Marker { tick: number; kind: MarkerKind; label: string; detail: string }
-export const MARKER_COLOR: Record<MarkerKind, string> = { intervention: '#e8e8ea', boundary: '#c9a227', address: '#7aa7e0', pulse: '#5fb98a', collapse: '#d04a3a', recovery: '#47c26b', 'observation-failure': '#b07acc' };
-export const MARKER_LABEL: Record<MarkerKind, string> = { intervention: 'intervention', boundary: 'boundary change', address: 'Address Domain', pulse: 'resource pulse', collapse: 'collapse', recovery: 'recovery', 'observation-failure': 'observation failure' };
+export const MARKER_COLOR: Record<MarkerKind, string> = { intervention: '#e8e8ea', boundary: '#c9a227', address: '#7aa7e0', pulse: '#5fb98a', collapse: '#d04a3a', recovery: '#47c26b', 'observation-failure': '#b07acc', 'route-switch': '#38c9c0', 'mfs-change': '#2f8fd0', 'route-ok': '#7fe08a', 'route-failed': '#e0707a', fallback: '#e0b040', 'm2-takeover': '#d080e0', 'history-loss': '#c07a30', 'address-recovery': '#9ad0f0' };
+export const MARKER_LABEL: Record<MarkerKind, string> = { intervention: 'intervention', boundary: 'boundary change', address: 'Address Domain', pulse: 'resource pulse', collapse: 'collapse', recovery: 'recovery', 'observation-failure': 'observation failure', 'route-switch': 'route switch', 'mfs-change': 'MFS change', 'route-ok': 'successful reconfiguration', 'route-failed': 'failed reconfiguration', fallback: 'fallback activation', 'm2-takeover': 'M2 takeover', 'history-loss': 'history loss', 'address-recovery': 'Address recovery' };
 const BOUNDARY_TARGETS = new Set(['interaction_channel', 'feedback', 'resource_renewal', 'history', 'sensor_resource', 'sensor_alteration']);
 
 type LogEntry = MeosRecord['intervention_log'][number];
@@ -24,9 +25,19 @@ const describe = (iv: LogEntry): string => {
 };
 
 /** Every point of a run worth looking at: interventions (of their kind), collapse, recovery, Address Domain updates and the starts of observation failures. */
-export function eventMarkers(rec: MeosRecord, observed?: Observed | null): Marker[] {
+export function eventMarkers(rec: MeosRecord, observed?: Observed | null, routes?: { topology?: Topology | null; outcomes?: Outcome[] }): Marker[] {
   const out: Marker[] = [];
+  const histLost = (t: number) => rec.intervention_log.some((x) => x.op === 'REMOVE' && x.target === 'history' && x.tick <= t);
   for (const iv of rec.intervention_log) {
+    if (iv.op === 'ROUTE') {
+      const m2On = iv.m2 && (iv.m2 as { sense?: string }).sense !== 'none', ctl = 'why' in iv;
+      out.push({ tick: iv.tick, kind: ctl ? 'route-switch' : 'route-switch', label: `ROUTE${ctl ? ` ${String(iv.from)} → ${String(iv.to)}` : ' (set by hand)'}`, detail: `${describe(iv)}${ctl ? `; sensed ${String(iv.trigger ?? iv.why)}` : ''}` });
+      if (ctl && (iv.from === 'none' || iv.to === 'fixed fallback')) out.push({ tick: iv.tick, kind: 'fallback', label: 'FALLBACK ACTIVATED', detail: `route ${String(iv.to)}, cost ${String(iv.cost)}` });
+      if (m2On && histLost(iv.tick)) out.push({ tick: iv.tick, kind: 'm2-takeover', label: 'M2 TAKEOVER', detail: 'M2 sensing switched on after history was removed' });
+      continue;
+    }
+    if (iv.op === 'REMOVE' && iv.target === 'history') out.push({ tick: iv.tick, kind: 'history-loss', label: 'HISTORY LOST', detail: describe(iv) });
+    if (iv.op === 'ADDRESS' && iv.address_mode === 'restore') out.push({ tick: iv.tick, kind: 'address-recovery', label: `ADDRESS RECOVERY ${String(iv.target)}`, detail: describe(iv) });
     const kind: MarkerKind = iv.op === 'ADDRESS' ? 'address' : iv.op === 'CHANGE_BOUNDARY' || (['REMOVE', 'ISOLATE', 'RECONNECT'].includes(iv.op) && BOUNDARY_TARGETS.has(String(iv.target))) ? 'boundary' : iv.op === 'ALTER_RESOURCE' && 'inject' in iv ? 'pulse' : 'intervention';
     out.push({ tick: iv.tick, kind, label: kind === 'address' ? `ADDRESS ${String(iv.address_mode)} ${String(iv.target)}` : `${iv.op} ${String(iv.target ?? '')}`.trim(), detail: describe(iv) });
   }
@@ -36,6 +47,8 @@ export function eventMarkers(rec: MeosRecord, observed?: Observed | null): Marke
     else if (s.label === 'ACTIVE' && collapsed) { collapsed = false; out.push({ tick: s.tick, kind: 'recovery', label: 'RECOVERY', detail: s.reason }); }
   }
   for (const e of rec.events) if (e.kind === 'address_update') out.push({ tick: e.tick, kind: 'address', label: `ADDRESS update ${e.actor ?? ''}`.trim(), detail: String(e.action ?? '') });
+  for (const tr of routes?.topology?.transitions ?? []) if (tr.from !== tr.to) out.push({ tick: tr.tick, kind: 'mfs-change', label: `MFS ${tr.from} → ${tr.to}`, detail: `trigger ${tr.trigger.join(', ')}; cost ${tr.cost} (enabled ${tr.enabled.join(', ') || 'nothing'})` });
+  for (const o of routes?.outcomes ?? []) out.push({ tick: o.tick, kind: o.preserved_at_end ? 'route-ok' : 'route-failed', label: o.preserved_at_end ? 'RECONFIGURATION OK' : 'RECONFIGURATION FAILED', detail: `${o.from} → ${o.to}: ${o.preserved_at_end ? 'the operation is preserved at the end' : 'the operation is not preserved at the end'}; ${o.operation_lost_ticks_after} ticks not ACTIVE after the switch; recovery latency ${o.recovery_latency ?? 'none'}` });
   if (observed?.timeline) {
     let start: number | null = null, status: string = '';
     const close = (end: number) => { if (start !== null) out.push({ tick: start, kind: 'observation-failure', label: 'OBSERVATION FAILS', detail: `${status} until tick ${end} (operational state and observed state differ; the run itself is unchanged)` }); start = null; };
@@ -63,6 +76,7 @@ export interface Inspect {
   sss: { scale: number; size: number; speed: number }; energy: { a1: number; power: number }; resource: { total: number; flow: number };
   history: { enabled: boolean; trace: { A1: number; A2: number }; contribution: { A1: number; A2: number } };
   paths: Record<PathId, PathState>; m2: { sense: string; sensed: number | null }; markers: Marker[];
+  /** the routes at this tick (fifth stage): current MFS, active / dormant / failed paths, the routes still open and the routes closed, the last transition and its trigger */ route: RouteState | null;
 }
 /** The components cut at a tick, from the intervention log (REMOVE and ISOLATE cut, RECONNECT restores). */
 export function openComponents(rec: MeosRecord, tick: number): string[] {
@@ -72,7 +86,7 @@ export function openComponents(rec: MeosRecord, tick: number): string[] {
 }
 const at = (a: number[] | undefined, t: number): number => (a && a.length ? a[Math.min(t, a.length - 1)] : 0);
 
-export function inspectAt(rec: MeosRecord, observed: Observed | null | undefined, tick: number, paths: PathActivity | null | undefined, markers: Marker[] = []): Inspect {
+export function inspectAt(rec: MeosRecord, observed: Observed | null | undefined, tick: number, paths: PathActivity | null | undefined, markers: Marker[] = [], route: RouteState | null = null): Inspect {
   const t = Math.min(Math.max(0, tick), rec.frames.length - 1), f = rec.frames[t], tr = rec.traces ?? {};
   let ad = null as null | { A1: { sss: { scale: number; size: number; speed: number }; history_reentry_enabled: boolean; operational_boundary: { arena_radius: number | null } } };
   for (let i = t; i >= 0; i--) if (rec.frames[i].ad) { ad = rec.frames[i].ad as unknown as typeof ad; break; }
@@ -91,7 +105,7 @@ export function inspectAt(rec: MeosRecord, observed: Observed | null | undefined
     address: { A1: addr('A1'), A2: addr('A2') },
     sss: ad?.A1.sss ?? rec.config.sss, energy: { a1: f.A1.energy, power: f.power }, resource: { total: at(tr.resource_total, t) || f.R, flow: at(tr.resource_flow, t) },
     history: { enabled: ad ? ad.A1.history_reentry_enabled : true, trace: { A1: f.A1.h, A2: f.A2.h }, contribution: { A1: at(tr.history_contribution_a1, t), A2: at(tr.history_contribution_a2, t) } },
-    paths: pathStatesAt(paths, t), m2: { sense, sensed: sense === 'none' ? null : at(tr.m2_sensed, t) }, markers: markers.filter((m) => Math.abs(m.tick - t) <= 1),
+    paths: pathStatesAt(paths, t), m2: { sense, sensed: sense === 'none' ? null : at(tr.m2_sensed, t) }, markers: markers.filter((m) => Math.abs(m.tick - t) <= 1), route,
   };
 }
 

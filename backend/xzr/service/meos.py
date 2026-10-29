@@ -8,6 +8,9 @@ of that run (nothing is stored; replay is the same request). Local runtime only,
 from __future__ import annotations
 
 import copy
+import json
+import os
+from pathlib import Path
 from typing import Any
 
 from fastapi import APIRouter, HTTPException, Request
@@ -16,6 +19,9 @@ from fastapi.responses import PlainTextResponse
 from ..meos import analysis as A
 from ..meos import engine as E
 from ..meos import experiments as X
+from ..meos import mfs5 as M5
+from ..meos import reconf as RC
+from ..meos import routes5 as R5
 from ..meos import stage4 as S4
 from .studies import local_only
 
@@ -365,3 +371,62 @@ def sss_classify(request: Request, body: dict[str, Any]) -> dict:
     if not all(isinstance(v, int | float) and not isinstance(v, bool) and 0.25 <= v <= 4 for v in vals):
         raise HTTPException(422, "scale, size and speed must be numbers in 0.25..4")
     return _guard(S4.sss_classify, _config(body), *[float(v) for v in vals], _seeds(body, (1, 2), 3))
+
+
+# ---------------------------------------------------------------------------------------------- fifth stage (routes, the MFS library, a controlled run)
+STAGE5_FILE = Path(os.environ.get("XZR_MEOS_STAGE5", Path(__file__).resolve().parents[3] / "docs" / "ecosystem" / "experiments_stage5.json"))
+
+
+def _stage5() -> dict:
+    """The saved results of experiment F (the MFS library). The routes never run the exhaustive search: it takes minutes and is run by ``scripts/meos_experiments_v5.py``."""
+    if not STAGE5_FILE.exists():
+        raise HTTPException(404, "the fifth-stage results are not saved on this server: run backend/scripts/meos_experiments_v5.py")
+    return json.loads(STAGE5_FILE.read_text())["experiments"]
+
+
+def _library_entries(f: dict) -> list[dict]:
+    return [{"id": m["id"], "condition_id": cid, "condition": r["condition"]["label"], "features": m["environment_condition"]["features"], "retained": m["retained_components"], "removed": m["removed_components"], "cardinality": m["cardinality"],
+             "route_kind": m["route_kind"], "retained_paths": m["retained_paths"], "lost_paths": m["lost_paths"], "digest": m["digest"]} for cid, r in f["by_condition"].items() for m in r["mfs"]]
+
+
+@router.get("/mfs-library")
+def mfs_library(request: Request) -> dict:
+    """The MFS found by experiment F (saved), the conditions they were found under, and the scenarios of experiment I."""
+    local_only(request)
+    ex = _stage5()
+    f = ex["F"]
+    from ..meos import stage5_experiments as X5
+
+    return {"mfs": _library_entries(f), "conditions": [r["condition"] for r in f["by_condition"].values()], "scenarios": list(X5.SCENARIOS), "controllers": list(X5.CONTROLLERS), "levels": f.get("levels", [])}
+
+
+@router.post("/route-topology")
+def route_topology(request: Request, body: dict[str, Any]) -> dict:
+    """The route topology of a run (when each component was enabled or cut, the route changes, the transitions) with the library entries to read it against."""
+    local_only(request)
+    rec = _guard(E.run_record, _config(body), _ivs(body))
+    out = {"topology": R5.topology(rec), "summary": A.summarize(rec)}
+    if STAGE5_FILE.exists():
+        out["library"] = _library_entries(_stage5()["F"])
+    return out
+
+
+@router.post("/reconfigure")
+def reconfigure(request: Request, body: dict[str, Any]) -> dict:
+    """Run a scenario of experiment I under a controller (none, fixed, adaptive, delayed, noisy) that moves between the MFS of the saved library, and return the record, the controller's
+    log, what each switch did and the route topology. The recorded schedule replays the same run without the controller."""
+    local_only(request)
+    from ..meos import stage5_experiments as X5
+
+    kind, scen, seed = body.get("controller", "adaptive"), body.get("scenario", "history lost"), body.get("seed", 1)
+    if kind not in X5.CONTROLLERS or scen not in X5.SCENARIOS or not isinstance(seed, int):
+        raise HTTPException(422, f"controller must be one of {X5.CONTROLLERS}, scenario one of {list(X5.SCENARIOS)}, seed an integer")
+    ex = _stage5()
+    library = RC.library_from(ex["F"]["by_condition"])
+    arrangement = {"tap": M5.M2_BASE, "tap_feature": "direct", "universe": M5.COMPONENTS5}
+    cfg = _config({"config": {"seed": seed, "horizon": 300}})
+    ivs = [{"tick": 0, "op": "ROUTE", "m2": {"sense": "none"}}, *copy.deepcopy(X5.SCENARIOS[scen][0])]
+    ctl = None if kind == "none" else RC.Controller(kind, library, arrangement, noise=0.05, seed=seed)
+    rec = _guard(RC.run_controlled, cfg, ivs, ctl)
+    return {"record": rec, "summary": A.summarize(rec), "paths": S4.path_activity(rec), "controller": rec["controller"], "outcomes": RC.switch_outcomes(rec, X5.STRESS_TICK), "topology": R5.topology(rec),
+            "replay_identical": E.replay(rec)["identical"]}

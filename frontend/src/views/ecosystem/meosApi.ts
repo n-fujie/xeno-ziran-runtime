@@ -43,7 +43,7 @@ export interface MeosConfig {
   channels: Record<string, boolean>; history: Record<string, number | boolean | string>; sss: { scale: number; size: number; speed: number };
   entities: Record<'A1' | 'A2', Record<string, number | boolean | number[]>>;
 }
-export interface Intervention { tick: number; op: string; target?: string; path?: string; value?: number; arena_radius?: number; mode?: string; x?: number; y?: number; fraction?: number; delay?: number; duration?: number;
+export interface Intervention { tick: number; op: string; m2?: { sense: string; weight?: number; delay?: number; noise?: number; threshold?: number }; history?: 'on' | 'off'; why?: string; from?: string; to?: string; cost?: number; trigger?: string; target?: string; path?: string; value?: number; arena_radius?: number; mode?: string; x?: number; y?: number; fraction?: number; delay?: number; duration?: number;
   scale?: number; size?: number; speed?: number; inject?: { x: number; y: number; amount: number } }
 export interface Spec {
   engine: string; defaults: MeosConfig; components: string[]; entities: string[]; operations: string[]; settable: Record<string, [number, number]>;
@@ -175,3 +175,10 @@ export async function runLogCsv(config: unknown, interventions: Intervention[], 
   if (!r.ok) throw new Error(`/run-log: ${r.status}`);
   return r.text();
 }
+
+// ------------------------------------------------------------------------------------------------ fifth stage: routes, the MFS library, a controlled run
+import type { LibraryMfs, Outcome, Topology } from './routeGraph';
+export interface ReconfigureOut { record: MeosRecord & { controller?: { kind: string; log: Array<Record<string, unknown>>; switches: number } }; summary: Summary; paths: PathActivity; controller: { kind: string; log: Array<Record<string, unknown>>; switches: number }; outcomes: Outcome[]; topology: Topology; replay_identical: boolean }
+export const mfsLibrary = async () => { const r = await fetch(`${API}/mfs-library`); if (!r.ok) throw new Error(`mfs-library: ${r.status}`); return r.json() as Promise<{ mfs: LibraryMfs[]; conditions: Array<Record<string, unknown>>; scenarios: string[]; controllers: string[]; levels: string[] }>; };
+export const routeTopology = (config: unknown, interventions: Intervention[]) => post<{ topology: Topology; summary: Summary; library?: LibraryMfs[] }>('/route-topology', { config, interventions });
+export const reconfigure = (body: { controller: string; scenario: string; seed?: number }) => post<ReconfigureOut>('/reconfigure', body);

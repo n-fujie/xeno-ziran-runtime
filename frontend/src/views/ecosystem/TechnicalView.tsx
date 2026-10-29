@@ -4,8 +4,10 @@ import { buildBodies, type BodySet } from './bodies';
 import { bodyState } from './bodyState';
 import type { MeosRecord, Observation, Observed, PathActivity, PathId } from './meosApi';
 import { deltaSnapshots, inspectAt, pathStatesAt, snapshotTicks, type Marker, type Snapshot, type SssRegion } from './research';
-import { ALL_MAP_LAYERS, buildResearchMap, MAP_LAYERS, affected, type BodiesSpec, type MapLayer } from './researchMap';
+import { ALL_MAP_LAYERS, DEFAULT_MAP_LAYERS, buildResearchMap, MAP_LAYERS, affected, type BodiesSpec, type MapLayer } from './researchMap';
 import { drawResearchMap } from './researchMapDraw';
+import { routeGraph, topologyAt, type LibraryMfs, type Outcome, type Topology } from './routeGraph';
+import { drawRouteGraph, ROUTE_TOGGLES, type RouteToggle } from './routeGraphDraw';
 import { probeDimensions } from './probes';
 import { cableRoutes, collectInstances, collectSegments, componentRows, dimensionLines, measure, partStates, project, type PartState, type Segments, type ViewName } from './technical';
 
@@ -17,16 +19,18 @@ const COLOR: Record<PartState, string> = { active: ACTIVE, idle: INK, inactive: 
 const LABELLED = ['node', 'probe', 'ring', 'cluster', 'optic', 'reservoir', 'archive', 'joint', 'module', 'sensor', 'chassis'];
 
 /** The research readings the sheet adds to the drawings (all computed from the record by the view): the observed state, the path activity, the event markers and the SSS region. */
-export interface SheetResearch { observed: Observed | null; paths: PathActivity | null; markers: Marker[]; sssRegion: SssRegion; compare: boolean; bodies: BodiesSpec | null; body: string; setBody: (b: string) => void }
+export interface SheetResearch { observed: Observed | null; paths: PathActivity | null; markers: Marker[]; sssRegion: SssRegion; compare: boolean; bodies: BodiesSpec | null; body: string; setBody: (b: string) => void; topology: Topology | null; library: LibraryMfs[]; outcomes: Outcome[] }
 // cable id -> the operational path it carries (the cable network of the non-central body, by what moves along it)
 const CABLE_PATH: Record<string, PathId> = { BCb: 'coupling', BCc: 'coupling', BCa: 'coupling', JB: 'coupling', JC: 'resource', AC: 'resource', AB: 'resource', AJ: 'resource', CRES: 'resource', ARCH: 'history_access', OBSV: 'observation', REC: 'recovery' };
 
 export default function TechnicalView({ rec, tick, obs, observability, which, setWhich, probeId, setProbeId, research }: {
   rec: MeosRecord; tick: number; obs: Observation; observability: string; which: 'ncb' | 'observer'; setWhich: (w: 'ncb' | 'observer') => void; probeId: string; setProbeId: (s: string) => void; research?: SheetResearch;
 }) {
-  const [mapLayers, setMapLayers] = useState<Set<MapLayer>>(() => { const q = new URLSearchParams(location.search).get('maplayers'); return q ? new Set(q.split(',').filter((l) => ALL_MAP_LAYERS.has(l as MapLayer)) as MapLayer[]) : new Set(ALL_MAP_LAYERS); });  // ?maplayers=a,b limits the layers (the captures)
+  const [mapLayers, setMapLayers] = useState<Set<MapLayer>>(() => { const q = new URLSearchParams(location.search).get('maplayers'); return q ? new Set(q.split(',').filter((l) => ALL_MAP_LAYERS.has(l as MapLayer)) as MapLayer[]) : new Set(DEFAULT_MAP_LAYERS); });  // ?maplayers=a,b limits the layers (the captures)
   const toggleLayer = (id: MapLayer) => setMapLayers((l) => { const n = new Set(l); if (n.has(id)) n.delete(id); else n.add(id); return n; });
-  const mapCanvas = useRef<HTMLCanvasElement | null>(null), compareCanvases = useRef<Array<HTMLCanvasElement | null>>([]);
+  const [routeOn, setRouteOn] = useState<Set<RouteToggle>>(() => { const q = new URLSearchParams(location.search).get('routelayers'); return new Set((q ? q.split(',') : ROUTE_TOGGLES.map((x) => x.id)).filter((x) => ROUTE_TOGGLES.some((r) => r.id === x)) as RouteToggle[]); });  // ?routelayers=a,b limits the route toggles (the captures)
+  const toggleRoute = (id: RouteToggle) => setRouteOn((l) => { const n = new Set(l); if (n.has(id)) n.delete(id); else n.add(id); return n; });
+  const routeCanvas = useRef<HTMLCanvasElement | null>(null), mapCanvas = useRef<HTMLCanvasElement | null>(null), compareCanvases = useRef<Array<HTMLCanvasElement | null>>([]);
   const body = useMemo<BodySet>(() => buildBodies('performance', null, () => 0), []);
   useEffect(() => () => body.dispose(), [body]);
   const region = research?.sssRegion ?? 'ACTIVE';
@@ -114,7 +118,8 @@ export default function TechnicalView({ rec, tick, obs, observability, which, se
   }, [data, body, which, states, probeId, mapLayers, research, tick]);
 
   // the research map (and, in comparison mode, the three snapshots with their differences)
-  const inspect = useMemo(() => inspectAt(rec, research?.observed, tick, research?.paths, research?.markers), [rec, research, tick]);
+  const routeState = useMemo(() => (research?.topology ? topologyAt(research.topology, tick, research.library) : null), [research, tick]);
+  const inspect = useMemo(() => inspectAt(rec, research?.observed, tick, research?.paths, research?.markers, routeState), [rec, research, tick, routeState]);
   const snapshots = useMemo<Snapshot[]>(() => {
     if (!research?.compare) return [];
     const tk = snapshotTicks(rec);
@@ -129,12 +134,14 @@ export default function TechnicalView({ rec, tick, obs, observability, which, se
     const draw = (cv: HTMLCanvasElement | null, t: number, ins: ReturnType<typeof inspectAt>, w: number, h: number) => {
       if (!cv) return;
       cv.width = w * dpr; cv.height = h * dpr; const g = cv.getContext('2d')!; g.scale(dpr, dpr);
-      drawResearchMap(g, buildResearchMap({ rec, tick: t, obs, inspect: ins, paths: research?.paths, markers: research?.markers ?? [], layers: mapLayers, body: research?.body, bodies: research?.bodies }), w, h);
+      drawResearchMap(g, buildResearchMap({ rec, tick: t, obs, inspect: ins, paths: research?.paths, markers: research?.markers ?? [], layers: mapLayers, body: research?.body, bodies: research?.bodies, route: ins.route }), w, h);
     };
     draw(mapCanvas.current, tick, inspect, 760, 700);
     snapshots.forEach((sn, i) => draw(compareCanvases.current[i], sn.tick, sn.inspect, 500, 470));
+    const rc = routeCanvas.current;
+    if (rc && research?.topology) { rc.width = 1060 * dpr; rc.height = 440 * dpr; const g = rc.getContext('2d')!; g.scale(dpr, dpr); drawRouteGraph(g, routeGraph(research.topology, research.library, tick), 1060, 440, routeOn); }
     // the map depends on the record, the tick, the observation, the layers and the research readings
-  }, [rec, tick, obs, inspect, snapshots, mapLayers, research]);  // research carries the bodies and the selected body
+  }, [rec, tick, obs, inspect, snapshots, mapLayers, research, routeOn]);  // research carries the bodies, the selected body and the route topology
 
   const probes = body.nodes.flatMap((n) => n.probes).concat(body.observer.probes).map((p) => p.spec.id).filter((id) => (which === 'ncb' ? !id.startsWith('O') : id.startsWith('O')));
   const title = which === 'ncb' ? 'NON-CENTRAL EXPERIMENTAL BODY' : 'ADAPTIVE OBSERVATION NODE';
@@ -154,6 +161,10 @@ export default function TechnicalView({ rec, tick, obs, observability, which, se
         {research && <figure className="eco-sheet-wide" data-testid="eco-research-map"><div className="eco-map-row"><canvas ref={mapCanvas} style={{ width: 760, height: 700 }} aria-label="research map" />
           <dl className="eco-map-legend">{MAP_LAYERS.map((l) => <><dt key={l.id + 't'} className={mapLayers.has(l.id) ? 'on' : ''}>{l.label}</dt><dd key={l.id}>{l.what}</dd></>)}</dl></div>
           <figcaption>research map · plan of the arena at tick {tick} · MODEL RESULT: boundaries, paths, observation and interventions are read from the record · solid heavy = XenoBody boundary · dash-dot = Address Domain · dashed = observation boundary · path arrows: solid active, dotted quiet, red dashed cut</figcaption></figure>}
+        {research?.topology && <figure className="eco-sheet-wide" data-testid="eco-route-topology"><div className="eco-map-row"><canvas ref={routeCanvas} style={{ width: 1060, height: 440 }} aria-label="route topology" />
+          <div className="eco-map-legend"><b>Route topology · MODEL RESULT</b><div className="eco-layers">{ROUTE_TOGGLES.map((l) => <button key={l.id} title={l.what} className={routeOn.has(l.id) ? 'on' : ''} onClick={() => toggleRoute(l.id)}>{l.label}</button>)}</div>
+            {routeState && <dl><dt>current MFS</dt><dd>{routeState.currentMfs}</dd><dt>enabled</dt><dd>{routeState.enabled.join(', ')}</dd><dt>dormant</dt><dd>{routeState.dormant.join(', ') || 'none'}</dd><dt>failed</dt><dd>{routeState.failed.join(', ') || 'none'}</dd><dt>routes open</dt><dd>{routeState.available.map((m) => m.id).join(', ') || 'none'}</dd><dt>routes closed</dt><dd>{routeState.disabled.map((d) => `${d.mfs.id} (needs ${d.because.join(', ')})`).join('; ') || 'none'}</dd><dt>last transition</dt><dd>{routeState.lastTransition ? `t${routeState.lastTransition.tick}: ${routeState.lastTransition.from} → ${routeState.lastTransition.to}, trigger ${routeState.lastTransition.trigger.join(', ')}, cost ${routeState.lastTransition.cost}` : 'none'}</dd></dl>}</div></div>
+          <figcaption>route topology at tick {tick} · every line is an edge derived from the record, the saved MFS library and the path definitions (a dashed grey line is a path that needs an installed component not in use; a red crossed line a path with a removed component; green a path a controller switched on)</figcaption></figure>}
         {research?.compare && snapshots.length === 3 && <figure className="eco-sheet-wide" data-testid="eco-compare">
           <div className="eco-compare">{snapshots.map((sn, i) => <div key={sn.label}><canvas ref={(el) => { compareCanvases.current[i] = el; }} style={{ width: 500, height: 470 }} aria-label={`${sn.label} map`} /><b>{sn.label} · tick {sn.tick}</b><span>{sn.inspect.operational} · observed {sn.inspect.observed ?? 'full'} · {sn.inspect.observability ?? 'full observation'}</span></div>)}</div>
           <figcaption>comparison of three snapshots of one record (same seed, same configuration) · MODEL RESULT</figcaption>

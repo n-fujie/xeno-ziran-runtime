@@ -525,3 +525,28 @@ Saved in full in `experiments_stage4.json` (`null_results` of each experiment: A
 * A user study of whether the poses of SSS and M2 on the bodies are readable.
 * A cable design that raises the contour complexity at the distance of the comparison camera (more free-standing thin conductors in the air rather than along the ground), and observer-side geometry beyond state-linked poses (none was added in this stage: its cable crops did not change measurably).
 * More seeds for experiment D (two), and a larger grid near the narrow ACTIVE island.
+
+
+## 18. Acceptance of the performance question (added in Stage 5, measured at the start of Stage 5)
+
+Stage 4 left open whether it had regressed against Stage 3. It was re-measured with the Stage 3 build (`93119a0`, port 3032) and the Stage 4 final build (`f61243a`, port 3033) **interleaved in time, 8 repetitions, the order alternating each repetition** (balanced tier, 150 frames, cameras habitat / overview / body; static and orbiting; `docs/ecosystem/perf_stage5/stage4_acceptance/`).
+The machine was less loaded than during Stage 4 but not idle (load average 3.0–5.3, logged per run in the `.load` files), so "quiet" is only relative. **Rule, fixed before looking at the data:** per repetition the ratio Stage 4 / Stage 3 is formed (paired), its 95 % bootstrap confidence interval (10 000 resamples over the repetitions) is computed; *regression exists* if the lower bound exceeds 1.05, *no meaningful regression* if the upper bound is below 1.05, *inconclusive* otherwise.
+
+| camera / measure | Stage 3 median of 8 | Stage 4 median of 8 | paired ratio S4/S3 | 95 % bootstrap CI | verdict |
+|---|---|---|---|---|---|
+| habitat static median | 17.5 | 18.5 | 1.020 | [0.946, 1.074] | inconclusive |
+| habitat static p95 | 23.9 | 30.1 | 1.180 | [0.961, 1.433] | inconclusive |
+| habitat orbit median | 19.4 | 18.9 | 0.996 | [0.925, 1.088] | inconclusive |
+| habitat orbit p95 | 29.9 | 25.6 | 0.887 | [0.828, 0.940] | no meaningful regression |
+| overview static median | 14.9 | 15.6 | 0.998 | [0.931, 1.048] | no meaningful regression |
+| overview static p95 | 20.5 | 22.6 | 1.041 | [0.954, 1.145] | inconclusive |
+| overview orbit median | 16.7 | 17.1 | 1.011 | [0.989, 1.030] | no meaningful regression |
+| overview orbit p95 | 28.4 | 25.4 | 0.967 | [0.831, 1.116] | inconclusive |
+| body static median | 16.0 | 16.4 | 1.059 | [1.011, 1.126] | inconclusive |
+| body static p95 | 20.4 | 18.8 | 0.939 | [0.772, 1.146] | inconclusive |
+| body orbit median | 17.5 | 16.4 | 0.960 | [0.916, 1.000] | no meaningful regression |
+| body orbit p95 | 28.2 | 24.0 | 0.849 | [0.742, 0.993] | no meaningful regression |
+
+**Result: no regression is established, and the question is not closed for the static median.** No interval lies wholly above 1.05. Five of the twelve measures are "no meaningful regression" (including the orbit 95th percentile of habitat and body, whose intervals lie wholly below 1.0: Stage 4's orbit tail is *better* than Stage 3's there, as the program-build fix predicts; overview's orbit tail is inconclusive),
+and seven are inconclusive: the static median of habitat (CI up to 1.074) and body (up to 1.126) cannot exclude a cost of 7–13 %. The Stage 4 statement "a cost of up to about 8–10 % is not excluded" stands for the static median; the earlier suspicion of a worse orbit 95th percentile is not supported (it was measured under a load of about 8).
+Acceptance status of Stage 4 performance: **inconclusive for the static median (no regression shown, a small one not excluded); no meaningful regression for the orbit tail.**
