@@ -1,0 +1,6 @@
+balanced habitat static {"m":18.5,"p95":24.8,"calls":428,"tris":1065364} orbit {"m":21.3,"p95":33.7}
+balanced overview static {"m":16.1,"p95":18.1,"calls":457,"tris":674384} orbit {"m":18,"p95":26.8}
+balanced habitat+research static {"m":16.4,"p95":24.9,"calls":385,"tris":989152} orbit {"m":15.7,"p95":21}
+balanced habitat+technical static {"m":16.5,"p95":19.7,"calls":385,"tris":989152} orbit {"m":15.5,"p95":23.1}
+balanced habitat+repair static {"m":16.6,"p95":24.2,"calls":385,"tris":989152} orbit {"m":16,"p95":22.5}
+balanced habitat+repairtech static {"m":23.2,"p95":36.5,"calls":385,"tris":989152} orbit {"m":19.6,"p95":34.3}
