@@ -190,6 +190,7 @@ export function buildResearchMap(o: { rec: MeosRecord; tick: number; obs: Partia
       else if (st === 'failed') { cut(p, 'repair.failed', 'dot', 'cut', 2.6, `${p}: repair failed`, true); if (on('repair.failed')) P.push({ t: 'cross', id: 'repair.failed', x: PTS[p]?.[0]?.[0] ?? 0, y: (PTS[p]?.[0]?.[1] ?? 0) + 0.34, ink: 'cut' }); }
       else if (st === 'bypass') cut(p, 'repair.bypass', 'dashdot', 'green', 2.6, `${p}: temporary bypass`);
       else if (st === 'repair-active') cut(p, 'repair.world', 'solid', 'violet', 3.2, `${p}: world-state repair acting`);
+      else if (st === 'internal-active') cut(p, 'repair.internal', 'solid', 'active', 2.6, `${p}: internal reconfiguration`);
     }
     if (on('repair.world') && rs.worldActions.length) P.push({ t: 'text', id: 'repair.world', x: 0.1, y: n, row: 6, text: `world-state: ${rs.worldActions.map((a) => `${a.action} ${a.magnitude ?? ''} @${a.tick}`).join('; ')}${rs.repairSiteDiffers ? ' (the repair site is not the damage site)' : ''}`, ink: 'violet', align: 'left' });
     if (on('repair.internal') && rs.internalActions.length) P.push({ t: 'text', id: 'repair.internal', x: 0.1, y: n, row: 7, text: `internal reconfiguration: ${rs.internalActions.map((a) => `${a.action} @${a.tick}`).join('; ')}`, ink: 'active', align: 'left' });

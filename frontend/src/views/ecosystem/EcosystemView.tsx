@@ -10,7 +10,7 @@ import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 import Chart from '../../components/Chart';
 import {
-  ablation, addressSweep, mfsRun, adAt, boundary, decodeFields, fieldAt, FULL_OBSERVATION, getSpec, historyCompare, mfs as mfsApi, mfsLibrary, reconfigure, replayMeos, runMeos, sssClassify, sssSweep, STATUS_VALUE,
+  ablation, addressSweep, mfsRun, adAt, boundary, decodeFields, fieldAt, FULL_OBSERVATION, getSpec, historyCompare, mfs as mfsApi, mfsLibrary, reconfigure, repairLibrary, repairRun, replayMeos, runMeos, sssClassify, sssSweep, STATUS_VALUE,
   type AblationRow, type BoundaryOut, type HistoryOut, type Intervention, type Label, type MfsOut, type Observation, type RunOut, type Spec, type SssClassOut,
 } from './meosApi';
 import {
@@ -26,6 +26,8 @@ import TechnicalView from './TechnicalView';
 import ResearchPane from './ResearchPane';
 import { topologyAt, topologyOf, type LibraryMfs, type Outcome } from './routeGraph';
 import { deepLinkPlan, parseDeepLink } from './deeplink';
+import { repairMarkers } from './repair';
+import type { RepairBlock, RepairLibraryOut } from './meosApi';
 import type { LibraryOut } from './mfsPanels';
 import { eventMarkers, inspectAt, MARKER_COLOR, MARKER_LABEL, type Marker, type SssRegion } from './research';
 import './ecosystem.css';
@@ -68,6 +70,8 @@ export default function EcosystemView() {
   const [openMarker, setOpenMarker] = useState<Marker | null>(null);
   const [library, setLibrary] = useState<LibraryMfs[]>([]);
   const [libraryOut, setLibraryOut] = useState<LibraryOut | null>(null);
+  const [repair, setRepair] = useState<RepairBlock | null>(null);  // the repair of the current run (sixth stage): its stress, actions, controller log and horizon evaluation, from the server
+  const [repairLib, setRepairLib] = useState<RepairLibraryOut | null>(null);
   const [mfsRunId, setMfsRunId] = useState<string | null>(null);  // the saved MFS whose configuration the current run is (a run of the library says which MFS it is; the record alone does not)
   const [outcomes, setOutcomes] = useState<Outcome[]>([]);
   const [compare, setCompare] = useState(url.get('compare') === '1');
@@ -118,7 +122,7 @@ export default function EcosystemView() {
     setBusy('running the simulation'); setErr(null);
     try {
       const r = await runMeos(runCfg, list, fullObs ? undefined : { ...obs });
-      setOut(r); setIvs(list); setReplay(null); setOutcomes([]); setMfsRunId(null);
+      setOut(r); setIvs(list); setReplay(null); setOutcomes([]); setMfsRunId(null); setRepair(null);
       const t = Math.min(keepTick ?? 0, r.record.frames.length - 1);
       live.current.playhead = t; setTick(t);
     } catch (e) { setErr(String(e)); } finally { setBusy(null); }
@@ -127,24 +131,32 @@ export default function EcosystemView() {
   /** A controlled run of experiment I (a scenario under a controller) shown as the current run. */
   const runControlled = useCallback(async (controller: string, scenario: string, at = 0) => {
     const r = await reconfigure({ controller, scenario, seed });
-    setOut({ record: r.record, summary: r.summary, paths: r.paths }); setIvs(r.record.interventions); setOutcomes(r.outcomes); setMfsRunId(null);
+    setOut({ record: r.record, summary: r.summary, paths: r.paths }); setIvs(r.record.interventions); setOutcomes(r.outcomes); setMfsRunId(null); setRepair(null);
     setReplay(r.replay_identical ? 'controlled run: the recorded schedule replays identically without the controller' : 'REPLAY OF THE CONTROLLED RUN DIFFERS'); live.current.playhead = at; setTick(at);
   }, [seed]);
   /** The configuration of one saved MFS (its condition with only its retained components in place) shown as the current run. */
   const runMfsConfig = useCallback(async (id: string) => {
     const r = await mfsRun(id, seed);
-    setOut({ record: r.record, summary: r.summary, paths: r.paths }); setIvs(r.record.interventions); setOutcomes([]); setMfsRunId(id);
+    setOut({ record: r.record, summary: r.summary, paths: r.paths }); setIvs(r.record.interventions); setOutcomes([]); setMfsRunId(id); setRepair(null);
     setReplay(`MFS ${id}: ${r.mfs.retained.length} components retained (${r.mfs.removed.join(', ') || 'none'} removed), condition ${r.mfs.condition_id}, seed ${seed}`); live.current.playhead = 0; setTick(plan.tick);
   }, [seed, plan.tick]);
   // a deep link that names an MFS or a controlled run: once the first run and the saved library are in, the named run replaces it (once)
+  /** A repaired run of the sixth stage (a stress with a controller or explicit actions) shown as the current run. */
+  const runRepair = useCallback(async (body: { stress: string; controller?: string | null; actions?: Array<{ action: string; magnitude: number; duration: number; t: number }> }, at = 0) => {
+    const r = await repairRun({ ...body, seed });
+    setOut({ record: r.record, summary: r.summary, paths: r.paths }); setIvs(r.record.interventions); setOutcomes([]); setMfsRunId(null); setRepair(r.repair);
+    setReplay(`repaired run: ${r.repair.label}; ${body.controller ? `controller ${body.controller}` : `${body.actions?.length ?? 0} action(s)`}; long horizon ${r.repair.evaluation.horizons.long.outcome}${r.replay_identical ? '; the recorded schedule replays identically' : '; REPLAY DIFFERS'}`);
+    live.current.playhead = at; setTick(at);
+  }, [seed]);
   const deepDone = useRef(false);
   useEffect(() => {
     if (deepDone.current || !libraryOut || !out || plan.run.kind === 'plain') return;
     deepDone.current = true;
     const run = plan.run;
-    void (run.kind === 'mfs' ? runMfsConfig(run.mfs) : runControlled(run.controller, run.scenario, plan.tick)).catch((e) => setErr(String(e)));
-  }, [libraryOut, out, plan, runMfsConfig, runControlled]);
+    void (run.kind === 'mfs' ? runMfsConfig(run.mfs) : run.kind === 'repair' ? runRepair({ stress: run.repair.stress, controller: run.repair.controller, actions: run.repair.actions }, plan.tick) : runControlled(run.controller, run.scenario, plan.tick)).catch((e) => setErr(String(e)));
+  }, [libraryOut, out, plan, runMfsConfig, runControlled, runRepair]);
 
+  useEffect(() => { repairLibrary().then(setRepairLib).catch(() => undefined); }, []);  // the repair library of the sixth stage
   useEffect(() => { mfsLibrary().then((l) => { setLibrary(l.mfs); setLibraryOut(l); }).catch(() => undefined); }, []);  // the saved MFS library (fifth stage); absent when experiment F has not been run on this server
   useEffect(() => { getSpec().then(setSpec).catch((e) => setErr(`the MEOS API is not available on this server (${e}). XENO ECOSYSTEM needs the local runtime.`)); }, []);
   useEffect(() => {
@@ -444,7 +456,7 @@ export default function EcosystemView() {
   const ad = useMemo(() => (rec ? adAt(rec.frames, tick) : null), [rec, tick]);
   // the research readings: event markers, the inspected state, and the SSS region of the setting in force at this tick (classified by the engine, cached)
   const topo = useMemo(() => (rec ? { ...topologyOf(rec), ...(mfsRunId ? { initial_mfs: mfsRunId } : {}) } : null), [rec, mfsRunId]);
-  const markers = useMemo(() => (rec ? eventMarkers(rec, out?.observed, { topology: topo, outcomes }) : []), [rec, out, topo, outcomes]);
+  const markers = useMemo(() => (rec ? [...eventMarkers(rec, out?.observed, { topology: topo, outcomes }), ...repairMarkers(repair)].sort((a, b) => a.tick - b.tick) : []), [rec, out, topo, outcomes, repair]);
   const routeState = useMemo(() => (topo ? topologyAt(topo, tick, library) : null), [topo, tick, library]);
   const inspect = useMemo(() => (rec ? inspectAt(rec, out?.observed, tick, out?.paths, markers, routeState) : null), [rec, out, tick, markers, routeState]);
   const sssKey = inspect ? `${inspect.sss.scale}/${inspect.sss.size}/${inspect.sss.speed}` : null;
@@ -517,7 +529,7 @@ export default function EcosystemView() {
       <div className="eco-stage" data-settled={settled ? '1' : '0'}>
         <div ref={mount} style={{ position: 'absolute', inset: 0 }} data-testid="eco-canvas" />
         {chrome && tab === 'technical' && rec && <TechnicalView rec={rec} tick={tick} obs={obs} observability={out?.observed?.observability_status ?? 'OBSERVABLE'} which={techWhich} setWhich={setTechWhich} probeId={techProbe} setProbeId={setTechProbe}
-          research={{ observed: out?.observed ?? null, paths: out?.paths ?? null, markers, sssRegion, compare, bodies: spec ? { partitions: spec.partitions, legs: spec.legs } : null, body, setBody, topology: topo, library, rejected: libraryOut?.rejected_candidates, outcomes }} />}
+          research={{ observed: out?.observed ?? null, paths: out?.paths ?? null, markers, sssRegion, compare, bodies: spec ? { partitions: spec.partitions, legs: spec.legs } : null, body, setBody, topology: topo, library, rejected: libraryOut?.rejected_candidates, outcomes, repair, repairable: !!repairLib?.final?.stress_table.find((r) => r.stress === repair?.stress && r.timing_window_fragments.length) }} />}
         <div className="eco-hud">
           {mv && <div className={`eco-badge ${mv.label}`}><span>MEOS {mv.label}</span><span className="dim">tick {tick}/{n - 1}</span></div>}
           {mv?.dependency && <div className="eco-dep">failed dependency{mv.dependency.entity ? ` (${mv.dependency.entity})` : ''}: {mv.dependency.detail}</div>}
@@ -539,7 +551,7 @@ export default function EcosystemView() {
         <div className="eco-pane">
           {tab === 'experiment' && <ExperimentPane {...{ rec, spec, tick, n, playing, setPlaying, rate, setRate, seed, setSeed, horizon, setHorizon, obs, setObs, conn, setConn, fullObs, layers, toggleLayer, cam, goCam, follow, setFollow, sel, focusSel, ivs, execute, intervene, doReplay, replay, quality, setQuality, out, setTick, live }} />}
           {tab === 'research' && <ResearchPane {...{ rec, out, tick, setTick: (t: number) => { live.current.playhead = t; setTick(t); }, obs, setObs, conn, setConn, ivs, execute, cfg: runCfg, seed, markers, inspect, sssClass: sssKey ? sssCache[sssKey] ?? null : null, sssRegion, compare, setCompare, busy, wrap, setTab: (t: 'technical') => setTab(t), openMarker, setOpenMarker, library, routeState, outcomes,
-            runControlled, libraryOut, initialRoute: plan.run.kind === 'route' ? { controller: plan.run.controller, scenario: plan.run.scenario } : undefined, initialMfs: { mfs: plan.run.kind === 'mfs' ? plan.run.mfs : undefined, experiment: plan.experiment ?? undefined, sssmap: plan.sssmap ?? undefined }, runMfs: runMfsConfig }} />}
+            runControlled, libraryOut, repairLib, repair, runRepair, initialRepair: plan.run.kind === 'repair' ? { stress: plan.run.repair.stress, controller: plan.run.repair.controller, actions: plan.run.repair.actions } : {}, initialRoute: plan.run.kind === 'route' ? { controller: plan.run.controller, scenario: plan.run.scenario } : undefined, initialMfs: { mfs: plan.run.kind === 'mfs' ? plan.run.mfs : undefined, experiment: plan.experiment ?? undefined, sssmap: plan.sssmap ?? undefined }, runMfs: runMfsConfig }} />}
           {tab === 'inspect' && rec && <InspectPane rec={rec} tick={tick} sel={sel} setSel={setSel} ad={ad} mfs={mfsRes} trials={trials} />}
           {tab === 'reductions' && <ReductionsPane {...{ spec, abl, mfsRes, bnd, hist, sss, addr, runAblation, runMfs, runBoundary, runHistory, runSss, runAddr, busy }} />}
           {tab === 'technical' && <div className="eco-note">The technical inspection sheet is shown over the stage: orthographic drawings of the selected body's real geometry in the pose the run gives at the current tick, a probe detail, measured dimensions, component identifiers, cable routing and the state read from the run. Use the playhead to move through the run.</div>}

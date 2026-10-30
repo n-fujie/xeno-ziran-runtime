@@ -521,7 +521,7 @@ def repair_library(request: Request) -> dict:
 
     a, b, c = _s6(""), _s6("_refine"), _s6("_controllers")
     return {"actions": R6.action_table(), "stresses": {sid: {"family": st.family, "label": st.label, "onset": on} for sid, (st, on) in _all_stresses().items()}, "controllers": list(RCTL.KINDS), "failure_classes": list(C6.FAILURE_CLASSES),
-            "horizons": R6.HORIZONS, "recovery_window": R6.W, "decision_tick": R6.T_ACT, "stress_tick": R6.STRESS_TICK, "results": a, "refine": b, "controller_results": c, "has_results": a is not None}
+            "horizons": R6.HORIZONS, "recovery_window": R6.W, "decision_tick": R6.T_ACT, "stress_tick": R6.STRESS_TICK, "results": a, "refine": b, "controller_results": c, "final": _s6("_final"), "cross": _s6("_cross"), "has_results": a is not None}
 
 
 @router.post("/repair-run")
@@ -564,5 +564,6 @@ def repair_run(request: Request, body: dict[str, Any]) -> dict:
         eff_ticks = [t for w in b["B1_windows"] if w["stress"] == sid for t in w["effective_ticks"]]
         irr = (max(eff_ticks) + 1) if eff_ticks else None
     rep = RE.build(st, onset, norm, rec, ev, rec["controller"]["log"] if ctl else None, irr)
-    return {"record": rec, "summary": A.summarize(rec), "paths": S4.path_activity(rec), "topology": R5.topology(rec), "repair": rep, "replay_identical": E.replay(rec)["identical"]}
+    topo_rec = {**rec, "controller": {"kind": rec["controller"]["kind"], "log": [], "attempts": rec["controller"]["attempts"]}}  # the route topology reads the stage 5 controller log; a repair controller's log is returned in ``repair``
+    return {"record": rec, "summary": A.summarize(rec), "paths": S4.path_activity(rec), "topology": R5.topology(topo_rec), "repair": rep, "replay_identical": E.replay(rec)["identical"]}
 

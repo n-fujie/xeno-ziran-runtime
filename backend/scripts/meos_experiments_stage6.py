@@ -27,7 +27,7 @@ OUT = DOCS / "experiments_stage6.json"
 
 
 def eff_seeds(rs: list[dict]) -> int:
-    return sum(1 for r in rs if all(r["ok"]) and not r["secondary"] and not r["exhausted"])
+    return sum(1 for r in rs if S6.row_ok(r))
 
 
 def main() -> None:

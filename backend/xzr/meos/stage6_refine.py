@@ -44,7 +44,7 @@ def S6_runs(s: list[str], lo: int) -> list[tuple[int, int]]:
 
 
 def effective_row(r: dict) -> bool:
-    return all(r["ok"]) and not r["secondary"] and not r["exhausted"]
+    return S6.row_ok(r)
 
 
 def grid(stress_id: str, parts_of: Any, ticks: tuple[int, ...], magnitudes: tuple[float, ...], seeds: tuple[int, ...] = SEEDS_ALL, processes: int | None = None) -> dict[tuple, list[dict]]:

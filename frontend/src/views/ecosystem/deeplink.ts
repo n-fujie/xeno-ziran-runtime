@@ -10,11 +10,15 @@
 //   address=loss@100:A2         an Address Domain fault: mode@tick[:target[:x,y|fraction|delay]]  (reassign@100:A2:11,6, partial@100:A2:0.5, delayed@100:A2:11,6)
 //   obs=interval:3,stride:2     the observation (interval, stride, window, region a.b.c.d, occluder a.b.c.d, threshold, resolution)
 //   layer=route.fallback,mfs.current   the research-map layers   routelayers=active,failed   the route-graph toggles   (``maplayers`` is accepted as an alias of ``layer``)
+//   stress=coupling gain 0.5   repair=cost_aware     a repaired run: a stress of the repair library (or ``no stress``) and a repair controller (none, fixed, rule_based, cost_aware, delayed, noisy)
+//   ract=resource.pulse/1.0/0/113,coupling.restore/1/0/104    the same with explicit actions: action/magnitude/duration/tick (at most 4)
 //   cam=body   quality=balanced   the camera preset and the quality tier
 import type { Intervention, Observation } from './meosApi';
 import { FULL_OBSERVATION } from './meosApi';
 
+export interface RepairLink { stress: string; controller?: string; actions?: Array<{ action: string; magnitude: number; duration: number; t: number }> }
 export interface DeepLink {
+  repair?: RepairLink;
   seed?: number; tick?: number; mfs?: string; route?: { controller: string; scenario: string }; experiment?: string; sssmap?: string; sss?: [number, number, number];
   address?: { mode: string; tick: number; target: string; x?: number; y?: number; fraction?: number; delay?: number }; obs?: Partial<Observation>; layers?: string[]; routelayers?: string[]; cam?: string; quality?: string;
 }
@@ -50,6 +54,11 @@ export function parseDeepLink(search: string): DeepLink {
   if (q.get('mfs')) d.mfs = q.get('mfs')!;
   const route = q.get('route') ?? q.get('reconf');
   if (route && (route.includes(':') || route.includes('|'))) { const i = route.search(/[:|]/); d.route = { controller: route.slice(0, i), scenario: route.slice(i + 1) }; }
+  const stress = q.get('stress'), rc = q.get('repair'), ract = q.get('ract');
+  if (stress && (rc || ract)) {
+    const actions = (ract ?? '').split(',').filter(Boolean).map((x) => { const [action, m, du, t] = x.split('/'); return { action, magnitude: Number(m), duration: Number(du), t: Number(t) }; }).filter((a) => a.action && [a.magnitude, a.duration, a.t].every(Number.isFinite)).slice(0, 4);
+    d.repair = { stress, ...(rc ? { controller: rc } : {}), ...(actions.length ? { actions } : {}) };
+  }
   if (q.get('experiment')) d.experiment = q.get('experiment')!;
   if (q.get('sssmap')) d.sssmap = q.get('sssmap')!;
   const sss = (q.get('sss') ?? '').split('/').map(Number);
@@ -78,6 +87,10 @@ export function formatDeepLink(d: DeepLink): string {
   const put = (k: string, v: string | number | undefined) => { if (v !== undefined && v !== '') q.push(`${k}=${encodeURIComponent(String(v)).replace(/%2C/g, ',').replace(/%2F/g, '/').replace(/%40/g, '@').replace(/%3A/g, ':')}`); };
   put('seed', d.seed); put('tick', d.tick); put('mfs', d.mfs);
   if (d.route) put('route', `${d.route.controller}:${d.route.scenario}`);
+  if (d.repair) {
+    put('stress', d.repair.stress); put('repair', d.repair.controller);
+    if (d.repair.actions?.length) put('ract', d.repair.actions.map((a) => `${a.action}/${a.magnitude}/${a.duration}/${a.t}`).join(','));
+  }
   put('experiment', d.experiment); put('sssmap', d.sssmap);
   if (d.sss) put('sss', d.sss.join('/'));
   if (d.address) { const a = d.address; put('address', `${a.mode}@${a.tick}:${a.target}${a.x !== undefined ? `:${a.x},${a.y}` : a.delay !== undefined ? `:${a.delay}` : a.fraction !== undefined ? `:${a.fraction}` : ''}`); }
@@ -89,7 +102,7 @@ export function formatDeepLink(d: DeepLink): string {
 }
 
 export interface Plan {
-  seed: number; tick: number; obs: Observation; interventions: Intervention[]; run: { kind: 'plain' } | { kind: 'mfs'; mfs: string } | { kind: 'route'; controller: string; scenario: string };
+  seed: number; tick: number; obs: Observation; interventions: Intervention[]; run: { kind: 'plain' } | { kind: 'mfs'; mfs: string } | { kind: 'route'; controller: string; scenario: string } | { kind: 'repair'; repair: RepairLink };
   experiment: string | null; sssmap: string | null; layers: string[] | null; routelayers: string[] | null; cam: string | null; quality: string | null; tab: 'research' | null;
 }
 /** What the view starts from, given a deep link: the same link always gives the same plan. */
@@ -99,8 +112,8 @@ export function deepLinkPlan(d: DeepLink): Plan {
   if (d.address) { const a = d.address; iv.push({ tick: a.tick, op: 'ADDRESS', target: a.target, mode: a.mode, ...(a.x !== undefined ? { x: a.x, y: a.y } : {}), ...(a.fraction !== undefined ? { fraction: a.fraction } : {}), ...(a.delay !== undefined ? { delay: a.delay } : {}) }); }
   return {
     seed: d.seed ?? 1, tick: Math.max(0, d.tick ?? 0), obs: { ...FULL_OBSERVATION, ...(d.obs ?? {}) }, interventions: iv,
-    run: d.mfs ? { kind: 'mfs', mfs: d.mfs } : d.route ? { kind: 'route', ...d.route } : { kind: 'plain' },
+    run: d.mfs ? { kind: 'mfs', mfs: d.mfs } : d.route ? { kind: 'route', ...d.route } : d.repair ? { kind: 'repair', repair: d.repair } : { kind: 'plain' },
     experiment: d.experiment ?? null, sssmap: d.sssmap ?? null, layers: d.layers ?? null, routelayers: d.routelayers ?? null, cam: d.cam ?? null, quality: d.quality ?? null,
-    tab: d.experiment || d.sssmap || d.mfs || d.route ? 'research' : null,
+    tab: d.experiment || d.sssmap || d.mfs || d.route || d.repair ? 'research' : null,
   };
 }

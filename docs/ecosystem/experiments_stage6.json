@@ -1,7 +1,7 @@
 {
 "engine": "meos-0.4",
 "baseline_result_digest": "b4cf1e522e8bee460eab30ee2a3f86ffd703a3f7969dc21271cf0240aa09adc5",
-"seconds": 201.7,
+"seconds": 241.0,
 "seeds": {
 "exploration": [
 1,
@@ -524,8 +524,8 @@
 "counts": {
 "exploration_runs": 12390,
 "exploration_cells": 2478,
-"single_candidates": 25,
-"single_validated": 24,
+"single_candidates": 27,
+"single_validated": 26,
 "single_near_miss": 3,
 "combined_runs": 1350,
 "combined_cells": 270,
@@ -1221,6 +1221,84 @@
 "switching": 1
 },
 "energy_rate_norm": 1.0217
+},
+"costly": false
+},
+{
+"stress": "coupling gain 0.5",
+"action": "resource.pulse",
+"klass": "B",
+"magnitude": 1.0,
+"duration": 0,
+"t": 160,
+"exploration_effective": "5/5",
+"validation_effective": "5/5",
+"status": "validated",
+"evaluation": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"evaluation_outcomes_long": {
+"recovered": 20
+},
+"horizons_exploration": {
+"short": 0,
+"medium": 5,
+"long": 5
+},
+"latency_median": 10,
+"secondary_collapse": 0,
+"costs": {
+"raw": {
+"energy_use": 135.56,
+"collateral": 0.4697,
+"switching": 1
+},
+"energy_rate_norm": 1.0424
+},
+"costly": false
+},
+{
+"stress": "coupling gain 0.5",
+"action": "resource.pulse",
+"klass": "B",
+"magnitude": 1.0,
+"duration": 0,
+"t": 200,
+"exploration_effective": "5/5",
+"validation_effective": "5/5",
+"status": "validated",
+"evaluation": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"evaluation_outcomes_long": {
+"recovered": 20
+},
+"horizons_exploration": {
+"short": 0,
+"medium": 5,
+"long": 5
+},
+"latency_median": 10,
+"secondary_collapse": 0,
+"costs": {
+"raw": {
+"energy_use": 124.36,
+"collateral": 0.8952,
+"switching": 1
+},
+"energy_rate_norm": 1.0932
 },
 "costly": false
 },
@@ -2769,7 +2847,7 @@
 130,
 140
 ],
-"validated_settings": 11,
+"validated_settings": 13,
 "effective_magnitudes": [
 0.5,
 1.0,
@@ -2781,7 +2859,9 @@
 108,
 113,
 130,
-140
+140,
+160,
+200
 ],
 "any_seed_effective": true
 },
@@ -3124,16 +3204,18 @@
 108,
 113,
 130,
-140
+140,
+160,
+200
 ],
 "world_combined_synergistic_ticks": [],
 "world_combined_synergistic": [],
 "earliest_effective_tick_grid": 104,
-"latest_effective_tick_grid": 140,
+"latest_effective_tick_grid": 200,
 "latest_effective_tick_by_action": {
 "coupling.restore": 104,
 "coupling.gradual": 104,
-"resource.pulse": 140
+"resource.pulse": 200
 },
 "near_miss": true
 },
@@ -3560,8 +3642,8 @@
 "1.0@120/d0": "secondary collapse",
 "1.0@130/d0": "effective",
 "1.0@140/d0": "effective",
-"1.0@160/d0": "failed",
-"1.0@200/d0": "failed",
+"1.0@160/d0": "effective",
+"1.0@200/d0": "effective",
 "1.5@104/d0": "failed",
 "1.5@108/d0": "effective",
 "1.5@113/d0": "effective",
@@ -24113,7 +24195,7 @@
 "duration": 0,
 "t": 160,
 "n": 5,
-"effective_seeds": 0,
+"effective_seeds": 5,
 "short": 0,
 "medium": 5,
 "long": 5,
@@ -24126,8 +24208,8 @@
 "collateral": 0.4697,
 "energy_use_raw": 135.56,
 "switching": 1,
-"costly": null,
-"failure": "action too late (after the collapse)"
+"costly": false,
+"failure": "effective"
 },
 {
 "stress": "coupling gain 0.5",
@@ -24136,7 +24218,7 @@
 "duration": 0,
 "t": 200,
 "n": 5,
-"effective_seeds": 0,
+"effective_seeds": 5,
 "short": 0,
 "medium": 5,
 "long": 5,
@@ -24149,8 +24231,8 @@
 "collateral": 0.8952,
 "energy_use_raw": 124.36,
 "switching": 1,
-"costly": null,
-"failure": "action too late (after the collapse)"
+"costly": false,
+"failure": "effective"
 },
 {
 "stress": "coupling gain 0.5",

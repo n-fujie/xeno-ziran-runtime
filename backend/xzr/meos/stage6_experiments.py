@@ -94,13 +94,19 @@ def cells(rows: list[dict]) -> dict[tuple, list[dict]]:
     return out
 
 
+def row_ok(r: dict) -> bool:
+    """Success at every horizon applicable to the action tick (``repair6.horizons_applicable``), no secondary collapse, resource not exhausted."""
+    app = R.horizons_applicable(r["t"])
+    return all(ok for ok, name in zip(r["ok"], ("short", "medium", "long"), strict=True) if app[name]) and not r["secondary"] and not r["exhausted"]
+
+
 def effective(rs: list[dict]) -> bool:
-    return bool(rs) and all(all(r["ok"]) and not r["secondary"] and not r["exhausted"] for r in rs)
+    return bool(rs) and all(row_ok(r) for r in rs)
 
 
 def summarise(rs: list[dict]) -> dict:
     n = len(rs)
-    return {"n": n, "effective_seeds": sum(1 for r in rs if all(r["ok"]) and not r["secondary"] and not r["exhausted"]), "short": sum(r["ok"][0] for r in rs), "medium": sum(r["ok"][1] for r in rs), "long": sum(r["ok"][2] for r in rs),
+    return {"n": n, "effective_seeds": sum(1 for r in rs if row_ok(r)), "short": sum(r["ok"][0] for r in rs), "medium": sum(r["ok"][1] for r in rs), "long": sum(r["ok"][2] for r in rs),
             "secondary_collapse": sum(1 for r in rs if r["secondary"]), "outcomes_long": dict(sorted(_count([r["outcome"][2] for r in rs]).items())), "latency_median": _median([r["latency"] for r in rs if r["latency"] is not None]),
             "energy_rate_norm": _mean([r["norm"]["persistence_energy_rate"] for r in rs]), "collateral": _mean([r["raw"]["collateral"] for r in rs]), "energy_use_raw": _mean([r["raw"]["energy_use"] for r in rs]), "switching": rs[0]["raw"]["switching"]}
 
@@ -134,7 +140,7 @@ def failure_reason(s: dict, rs: list[dict], action_id: str, t: int) -> str:
         return "insufficient resource (resource field exhausted)"
     if s["secondary_collapse"]:
         return "secondary collapse (overshoot)" if action_id.startswith("resource.pulse") or action_id.endswith("pulse") else "secondary collapse"
-    if s["short"] and not s["long"]:
+    if s["short"] and not s["long"] and t <= R.HORIZONS["short"] - 2 * R.W:
         return "action destabilized the system (recovered short, not long)"
     if t >= 160:
         return "action too late (after the collapse)"
@@ -167,7 +173,7 @@ def evaluate_all(candidates: list[tuple], processes: int | None = None) -> dict[
 
 
 def wilson_rate(rs: list[dict]) -> dict:
-    k = sum(1 for r in rs if all(r["ok"]) and not r["secondary"] and not r["exhausted"])
+    k = sum(1 for r in rs if row_ok(r))
     return ST.proportion(k, len(rs))
 
 

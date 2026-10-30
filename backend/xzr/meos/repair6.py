@@ -293,6 +293,13 @@ def costs(rec: dict, ref: dict, repairs: list[dict], t_act: int, H: int, stable_
             "normalised": {"energy_use": round(energy / energy_ref, 4), "resource_mass": round(res / res_ref, 4), "persistence_energy_rate": round(p_rate / p_ref, 5)}, "collateral_by_trace": coll}
 
 
+def horizons_applicable(t_act: int) -> dict[str, bool]:
+    """A horizon is *applicable* to an action at ``t_act`` only if it leaves at least 2W ticks after it: time to recover and to show a sustained stretch of W ticks. Short (180) is applicable up to tick 120; medium and long always. A setting is *effective* if it
+    succeeds at every applicable horizon. (The first version required all three horizons at every tick: a repair after tick 120 could not satisfy the short one by construction, which hid the repairs that recover after the collapse. That version's results are kept
+    as ``*_all_horizons_criterion.json``.)"""
+    return {k: t_act + 2 * W <= H for k, H in HORIZONS.items()}
+
+
 def evaluate(rec: dict, ref: dict, repairs: list[dict], t_act: int = T_ACT) -> dict:
     """One run at the three horizons: the outcome, the latency, and the costs at the long horizon."""
     st = [f["status"] for f in rec["frames"]]
@@ -305,6 +312,7 @@ def evaluate(rec: dict, ref: dict, repairs: list[dict], t_act: int = T_ACT) -> d
         if o["resource_exhausted"]:
             o["success"] = False
             o["outcome"] = "failed (resource exhausted)"
+        o["applicable"] = horizons_applicable(t_act)[name]
         out["horizons"][name] = o
     lo = out["horizons"]["long"]
     out["costs"] = costs(rec, ref, repairs, t_act, HORIZONS["long"], lo["stable_from"])

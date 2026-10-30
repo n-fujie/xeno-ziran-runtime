@@ -5823,6 +5823,6 @@
 }
 ],
 "criteria": "MEOS-0, sixth stage: the repair library, the comparison of repair controllers, unknown stresses and false positives.\n\nThe library is built from the exploration and validation results only (seeds 1-10); the controllers are evaluated on seeds 11-30. Unknown stresses are variations of the stresses the library was built for (a different severity, profile or onset): they test whether a repair found for one\nstress carries over to a nearby one, and nothing is assumed about it.\n\nA controller *succeeds* in a run if the run recovers at the long horizon (``repair6.outcome_at``, ACTIVE on the last 30 ticks, no secondary collapse, resource not exhausted). It is *effective* against a stress if its success rate exceeds that of no repair by at least 0.30 and Fisher's exact p is below 0.05\n(fixed before the runs). Holm's correction over all comparisons is reported beside the unadjusted p. A failure is classified into one of ten classes (``failure_class``) from the run and its controller log.\n",
-"seconds": 128.5,
+"seconds": 184.7,
 "limit": "The library holds the settings validated at the default action tick for the six stresses; the unknown stresses are variations of them. A formal model; a result here is about these controllers and this library."
 }

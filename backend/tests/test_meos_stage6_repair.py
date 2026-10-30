@@ -20,8 +20,10 @@ def outcome(stress: R.Stress, parts: list[tuple[str, float, int]], t: int, seed:
     return R.run_eval(stress, sorted(reps, key=lambda i: i["tick"]), seed, t)["horizons"]
 
 
-def ok(h: dict) -> bool:
-    return all(v["success"] for v in h.values())
+def ok(h: dict, t: int = R.T_ACT) -> bool:
+    """Effective: success at every horizon applicable to the action tick (the short horizon is not applicable after tick 120)."""
+    app = R.horizons_applicable(t)
+    return all(v["success"] for k, v in h.items() if app[k])
 
 
 def test_the_action_space_names_what_the_engine_cannot_do_and_never_runs_it():
@@ -40,7 +42,7 @@ def test_no_repair_collapses_every_stress():
 
 
 def test_coupling_restoration_alone_works_only_early_and_a_pulse_works_later():
-    assert ok(outcome(COUPLING, [("coupling.restore", 1.0, 0)], 104))
+    assert ok(outcome(COUPLING, [("coupling.restore", 1.0, 0)], 104), 104)
     assert not ok(outcome(COUPLING, [("coupling.restore", 1.0, 0)], 113))  # restoring the original parameter alone does not restore the system once the damage has set in
     assert ok(outcome(COUPLING, [("resource.pulse", 1.0, 0)], 113))  # the repair site is not the damage site
 

@@ -1,5 +1,5 @@
 {
-"definitions": "MEOS-0, sixth stage: the derived reading of Pipelines A, B and C, in one place, for the results table, the interface and the document. Everything is computed from the saved raw results (``experiments_stage6*.json``); nothing is typed in.\n\nDefinitions (fixed before the readings were taken):\n\n  effective tick         a tick at which a tested setting recovers sustained to every horizon on all five exploration seeds AND all five validation seeds (Pipeline B, one-tick resolution; ticks 101-170).\n  latest successful repair tick   the last tick at which any tested setting is effective.\n  earliest irreversible tick      the first tick after which no tested setting is effective at any later tested tick (ticks up to 170 at one-tick resolution, up to 200 on the coarse grid). It is the next tick after the latest successful one, and it is a statement about the tested action space only.\n  first window           the first contiguous run of effective ticks of any setting; ``fragments`` are all of them (the windows are not always contiguous: a gap is recorded, not smoothed).\n  reference repair       the validated setting of a stress with the lowest equal-weight normalised cost (switching, collateral disturbance, persistence energy rate, each divided by its maximum over the validated settings): an equal-weight convention, stated, with the raw costs beside it.\n  flags                  window closes before the unrepaired collapse (all repairs are timing-limited); only transiently recoverable (a setting recovers at the short horizon on every exploration seed and not at the long one, and nothing is validated); costly (every validated setting is above the cost limit).\n",
+"definitions": "MEOS-0, sixth stage: the derived reading of Pipelines A, B and C, in one place, for the results table, the interface and the document. Everything is computed from the saved raw results (``experiments_stage6*.json``); nothing is typed in.\n\nDefinitions (fixed before the readings were taken):\n\n  effective tick         a tick at which a tested setting recovers sustained to every horizon on all five exploration seeds AND all five validation seeds (Pipeline B, one-tick resolution; ticks 101-170).\n  latest successful repair tick   the last tick at which any tested setting is effective.\n  earliest irreversible tick      the first tick after which no tested setting is effective at any later tested tick (ticks up to 170 at one-tick resolution; up to 330 for the windows still open at 170; up to 200 on the coarse grid). It is the next tick after the latest successful one, and it is a statement\n                          about the tested action space only. **If a window is still effective at the last tick tested, it has not closed: no irreversible tick is given** (``window_open_at_end_of_tested_range``).\n  first window           the first contiguous run of effective ticks of any setting; ``fragments`` are all of them (the windows are not always contiguous: a gap is recorded, not smoothed).\n  reference repair       the validated setting of a stress with the lowest equal-weight normalised cost (switching, collateral disturbance, persistence energy rate, each divided by its maximum over the validated settings): an equal-weight convention, stated, with the raw costs beside it.\n  flags                  window closes before the unrepaired collapse (all repairs are timing-limited); only transiently recoverable (a setting recovers at the short horizon on every exploration seed and not at the long one, and nothing is validated); costly (every validated setting is above the cost limit).\n",
 "stress_table": [
 {
 "stress": "coupling gain 0.5",
@@ -19,10 +19,12 @@
 118,
 119,
 120,
-121
+121,
+147,
+149
 ],
 "flags": [
-"recoverable only within a timing window"
+"a window is still open at the end of the tested range (tick 330): no closure found"
 ],
 "internal_reconfiguration": {
 "effective": false,
@@ -41,7 +43,7 @@
 ],
 [
 124,
-140
+330
 ]
 ]
 },
@@ -71,7 +73,9 @@
 108,
 113,
 130,
-140
+140,
+160,
+200
 ]
 }
 ],
@@ -86,7 +90,7 @@
 ],
 [
 124,
-140
+330
 ]
 ],
 "first_window": [
@@ -94,8 +98,10 @@
 105
 ],
 "earliest_effective_tick": 101,
-"latest_successful_repair_tick": 140,
-"earliest_irreversible_tick": 141,
+"latest_successful_repair_tick": 330,
+"earliest_irreversible_tick": null,
+"window_open_at_end_of_tested_range": true,
+"tested_range_end": 330,
 "irreversible_from_first_tested_tick": false,
 "tested_ticks": [
 101,
@@ -118,7 +124,7 @@
 "t": 104,
 "klass": "world",
 "kind": "single",
-"normalised_cost_equal_weights": 0.6858,
+"normalised_cost_equal_weights": 0.5486,
 "costs": {
 "raw": {
 "energy_use": 151.24,
@@ -136,16 +142,16 @@
 1.0
 ]
 },
-"n_candidates": 16
+"n_candidates": 18
 },
 "failure_reasons_in_the_tested_grid": {
 "SECONDARY_COLLAPSE": 12,
 "NO_EFFECTIVE_ACTION": 306,
-"ACTION_TOO_LATE": 114,
+"ACTION_TOO_LATE": 112,
 "OVERSHOOT": 7
 },
 "cells_tested": 456,
-"cells_effective": 17,
+"cells_effective": 19,
 "near_miss": true,
 "transient_settings": 0,
 "horizons_of_reference_repair": {
@@ -155,7 +161,7 @@
 "n": 5
 },
 "unrepaired_collapse_tick": 149,
-"window_closes_before_collapse": true
+"window_closes_before_collapse": false
 },
 {
 "stress": "resource regrow 0.01 charge 0.2",
@@ -212,6 +218,8 @@
 "earliest_effective_tick": 101,
 "latest_successful_repair_tick": 109,
 "earliest_irreversible_tick": 110,
+"window_open_at_end_of_tested_range": false,
+"tested_range_end": null,
 "irreversible_from_first_tested_tick": false,
 "tested_ticks": [
 101,
@@ -340,6 +348,8 @@
 "earliest_effective_tick": 101,
 "latest_successful_repair_tick": 111,
 "earliest_irreversible_tick": 112,
+"window_open_at_end_of_tested_range": false,
+"tested_range_end": null,
 "irreversible_from_first_tested_tick": false,
 "tested_ticks": [
 101,
@@ -421,10 +431,13 @@
 126,
 127,
 128,
-129
+129,
+143,
+144,
+145
 ],
 "flags": [
-"recoverable only within a timing window",
+"a window is still open at the end of the tested range (tick 330): no closure found",
 "recovered only by a combination (neither part alone)"
 ],
 "internal_reconfiguration": {
@@ -448,7 +461,7 @@
 ],
 [
 130,
-140
+330
 ]
 ]
 },
@@ -464,7 +477,7 @@
 ],
 [
 130,
-140
+330
 ]
 ],
 "first_window": [
@@ -472,8 +485,10 @@
 106
 ],
 "earliest_effective_tick": 101,
-"latest_successful_repair_tick": 140,
-"earliest_irreversible_tick": 141,
+"latest_successful_repair_tick": 330,
+"earliest_irreversible_tick": null,
+"window_open_at_end_of_tested_range": true,
+"tested_range_end": 330,
 "irreversible_from_first_tested_tick": false,
 "tested_ticks": [
 101,
@@ -539,7 +554,7 @@
 }
 },
 "unrepaired_collapse_tick": 144,
-"window_closes_before_collapse": true
+"window_closes_before_collapse": false
 },
 {
 "stress": "Address partial 0.5",
@@ -584,10 +599,16 @@
 136,
 137,
 138,
-139
+139,
+143,
+144,
+145,
+146,
+147,
+148
 ],
 "flags": [
-"recoverable only within a timing window",
+"a window is still open at the end of the tested range (tick 330): no closure found",
 "near miss at the decision tick (validation 3-4 of 5), nothing effective there",
 "recovered only by a combination (neither part alone)"
 ],
@@ -616,7 +637,7 @@
 ],
 [
 140,
-140
+330
 ]
 ]
 },
@@ -636,7 +657,7 @@
 ],
 [
 140,
-140
+330
 ]
 ],
 "first_window": [
@@ -644,8 +665,10 @@
 109
 ],
 "earliest_effective_tick": 101,
-"latest_successful_repair_tick": 140,
-"earliest_irreversible_tick": 141,
+"latest_successful_repair_tick": 330,
+"earliest_irreversible_tick": null,
+"window_open_at_end_of_tested_range": true,
+"tested_range_end": 330,
 "irreversible_from_first_tested_tick": false,
 "tested_ticks": [
 101,
@@ -671,7 +694,7 @@
 "transient_settings": 0,
 "horizons_of_reference_repair": null,
 "unrepaired_collapse_tick": 149,
-"window_closes_before_collapse": true
+"window_closes_before_collapse": false
 },
 {
 "stress": "history lost",
@@ -749,6 +772,8 @@
 "earliest_effective_tick": 101,
 "latest_successful_repair_tick": 120,
 "earliest_irreversible_tick": 121,
+"window_open_at_end_of_tested_range": false,
+"tested_range_end": null,
 "irreversible_from_first_tested_tick": false,
 "tested_ticks": [
 101,

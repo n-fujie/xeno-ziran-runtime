@@ -43,7 +43,7 @@ export function drawRepairFigure(g: CanvasRenderingContext2D, rb: RepairBlock, s
   for (const it of items) {
     if (it.kind !== 'node') continue;
     const [x, y] = pos.get(it.id) as [number, number], w = 104;
-    const col = it.state === 'damaged' || it.state === 'failed' ? CUT : it.state === 'repaired' ? GREEN : it.state === 'bypass' ? GREEN : it.state === 'repair-active' ? VIOLET : it.state === 'intact' ? MUTE : INK;
+    const col = it.state === 'damaged' || it.state === 'failed' ? CUT : it.state === 'repaired' ? GREEN : it.state === 'bypass' ? GREEN : it.state === 'repair-active' ? VIOLET : it.state === 'internal-active' ? BLUE : it.state === 'intact' ? MUTE : INK;
     g.strokeStyle = col; g.lineWidth = it.state === 'intact' ? 1.1 : 2.2; g.setLineDash(it.state === 'bypass' ? [8, 3, 2, 3] : it.state === 'damaged' ? [1.5, 3] : []);
     g.fillStyle = PAPER; g.beginPath(); g.roundRect(x - w / 2, y - 14, w, 28, 11); g.fill(); g.stroke(); g.setLineDash([]);
     g.fillStyle = col; g.fillText(it.label, x, y - 3); g.fillText(it.state ?? '', x, y + 8);

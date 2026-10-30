@@ -51,6 +51,22 @@ def settings_for_windows(a: dict) -> list[tuple[str, list[tuple[str, float, int]
 
 def main() -> None:
     t0 = time.time()
+    if "--extend" in sys.argv:  # the windows that reach the end of the one-tick range (tick 165 or later) are measured on to tick 330, where the horizons still leave room (long: action tick <= 420)
+        res = json.loads(OUT.read_text())
+        ticks = tuple(range(171, 331))
+        ext = []
+        for w in res["B1_windows"]:
+            if w["latest_effective_tick"] is not None and w["latest_effective_tick"] >= 165:
+                x = RF.window(w["stress"], [tuple(p) for p in w["parts"]], ticks)
+                ext.append(x)
+                w["per_tick"].update(x["per_tick"])
+                eff = sorted({*w["effective_ticks"], *x["effective_ticks"]})
+                w.update(effective_ticks=eff, effective_intervals=RF.intervals(eff), earliest_effective_tick=eff[0], latest_effective_tick=eff[-1], near_miss_ticks=sorted({*w["near_miss_ticks"], *x["near_miss_ticks"]}), ticks_tested=[w["ticks_tested"][0], 330])
+                print("extended", w["stress"][:22], w["parts"], w["effective_intervals"], flush=True)
+        res["B1_extension"] = {"ticks": [171, 330], "windows_extended": len(ext), "note": "windows whose latest effective tick was 165 or later at the end of the first range"}
+        OUT.write_text(json.dumps(res, indent=0))
+        print("extended", len(ext), "windows in", round(time.time() - t0), "s")
+        return
     if "--b2-only" in sys.argv:  # recompute the pulse sweeps (and the cycle period) only, keeping the rest of the saved result
         res = json.loads(OUT.read_text())
         res["B2_pulse_sweeps"] = [RF.pulse_sweep(sid) for sid in R.STRESS_ORDER]

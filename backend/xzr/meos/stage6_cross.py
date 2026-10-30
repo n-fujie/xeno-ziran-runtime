@@ -89,7 +89,7 @@ def _mfs_job(a: tuple) -> dict:
 
 
 def _eff(r: dict) -> bool:
-    return bool(r.get("applicable") and all(r["ok"]) and not r["secondary"] and not r["exhausted"])
+    return bool(r.get("applicable") and S6.row_ok(r))
 
 
 def mfs_cross(a: dict, s5: dict, seeds: tuple[int, ...] = R.SEARCH_SEEDS, processes: int | None = None) -> dict:

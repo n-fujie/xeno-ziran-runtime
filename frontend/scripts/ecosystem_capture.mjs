@@ -84,6 +84,18 @@ export const SHOTS = {
   '57-technical-view-alternate-route': 'tech=ncb&route=fixed:history lost&seed=1&tick=200&layer=route.active,route.fallback,route.failed,route.dormant,mfs.current,mfs.alternative&|eco-research-map',
   '58-rejected-candidate-route': 'tech=ncb&mfs=MFS-F8-1&seed=1&tick=120&layer=mfs.current,mfs.alternative,mfs.rejected,route.active&|eco-route-topology',
   '59-current-alternative-mfs-map': 'tech=ncb&mfs=MFS-F14-1&seed=1&tick=120&layer=mfs.current,mfs.alternative,mfs.rejected,route.active,route.dormant&|eco-research-map',
+  // sixth stage: world-state repair (state restored from a deep link: deeplink.ts)
+  '60-repair-recovered': 'tab=research&stress=coupling gain 0.5&ract=resource.pulse/1/0/113&seed=1&|eco-repair-result',
+  '61-repair-overshoot': 'tab=research&stress=coupling gain 0.5&ract=resource.pulse/4/0/113&seed=1&|eco-repair-result',
+  '62-reachable-recovery-map': 'tab=research&stress=coupling gain 0.5&ract=resource.pulse/1/0/113&seed=1&|eco-recovery-map',
+  '63-stress-table': 'tab=research&stress=history lost&repair=rule_based&seed=1&|eco-stress-table',
+  '64-pulse-phase-bands': 'tab=research&stress=coupling gain 0.5&ract=resource.pulse/1/0/113&seed=1&|eco-pulse-bands',
+  '65-controller-decisions': 'tab=research&stress=history lost&repair=cost_aware&seed=1&|eco-repair-decisions',
+  '66-no-action-available': 'tab=research&stress=Address partial 0.5&repair=cost_aware&seed=1&|eco-repair-decisions',
+  '67-technical-repair-figure': 'tech=ncb&stress=coupling gain 0.5&ract=resource.pulse/1/0/113&seed=1&tick=200&|eco-repair-figure',
+  '68-technical-overshoot-figure': 'tech=ncb&stress=coupling gain 0.5&ract=resource.pulse/4/0/113&seed=1&tick=479&|eco-repair-figure',
+  '69-research-map-repair-layers': 'tech=ncb&stress=coupling gain 0.5&ract=resource.pulse/1/0/113&seed=1&tick=120&layer=repair.damaged,repair.repairable,repair.world,repair.repaired&|eco-research-map',
+  '70-replay-repair-markers': 'tab=research&stress=coupling gain 0.5&ract=resource.pulse/4/0/113&seed=1&|eco-marker-list',
 };
 
 // default: the machine's GPU through ANGLE/Metal (frame rates are then those of the GPU); --software forces SwiftShader (slow, a rasteriser on the CPU)

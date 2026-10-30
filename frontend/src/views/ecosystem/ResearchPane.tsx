@@ -7,6 +7,8 @@ import { deltaSnapshots, inspectAt, MARKER_COLOR, MARKER_LABEL, snapshotTicks, t
 import { affected } from './researchMap';
 import type { LibraryMfs, Outcome, RouteState } from './routeGraph';
 import MfsResults, { type MfsInitial } from './MfsResults';
+import RepairPanel, { type RepairInitial } from './RepairPanel';
+import type { RepairBlock, RepairLibraryOut } from './meosApi';
 import type { LibraryOut } from './mfsPanels';
 
 // RESEARCH — the experiment console and the readings of a run. Everything under "MODEL RESULT" is read from the record or returned by the engine; "VISUAL REPRESENTATION" says how the
@@ -20,6 +22,7 @@ export interface ResearchCtx {
   setTab: (t: 'technical') => void; openMarker: Marker | null; setOpenMarker: (m: Marker | null) => void;
   library: LibraryMfs[]; routeState: RouteState | null; outcomes: Outcome[]; runControlled: (controller: string, scenario: string) => Promise<void>;
   libraryOut: LibraryOut | null; initialMfs: MfsInitial; runMfs: (id: string) => Promise<void>; initialRoute?: { controller: string; scenario: string };
+  repairLib?: RepairLibraryOut | null; repair?: RepairBlock | null; initialRepair?: RepairInitial; runRepair?: (body: { stress: string; controller?: string | null; actions?: Array<{ action: string; magnitude: number; duration: number; t: number }> }) => Promise<void>;
 }
 
 const REGIONS: Array<[string, number[] | null]> = [['whole arena', null], ['left half', [0, 0, 6, 13]], ['right half', [7, 0, 13, 13]], ['centre', [3, 3, 10, 10]], ['around A1 and A2', [2, 4, 6, 8]], ['A1 cell only', [3, 6, 3, 6]], ['away from both', [8, 8, 12, 12]], ['corner', [0, 0, 3, 3]]];
@@ -141,6 +144,8 @@ export default function ResearchPane(c: ResearchCtx) {
         {c.outcomes.length > 0 && <table className="eco-table"><thead><tr><th>tick</th><th>from → to</th><th>trigger</th><th>cost</th><th>lost ticks</th><th>latency</th><th>preserved</th></tr></thead><tbody>{c.outcomes.map((o, i) => <tr key={i}><td>{o.tick}</td><td>{o.from} → {o.to}</td><td>{o.trigger.join(', ')}</td><td>{o.cost}</td><td>{o.operation_lost_ticks_after}</td><td>{o.recovery_latency ?? '-'}</td><td>{o.preserved_at_end ? 'yes' : 'no'}</td></tr>)}</tbody></table>}
         {c.library.length > 0 && <details><summary className="dim">the MFS library</summary><table className="eco-table"><thead><tr><th>MFS</th><th>condition</th><th>route</th><th>retained</th></tr></thead><tbody>{c.library.map((m) => <tr key={m.id}><td>{m.id}</td><td>{m.condition}</td><td>{m.route_kind}</td><td>{m.retained.join(', ')}</td></tr>)}</tbody></table></details>}
       </fieldset>
+
+      <RepairPanel lib={c.repairLib ?? null} repair={c.repair ?? null} initial={c.initialRepair ?? {}} busy={!!c.busy} onRun={(b) => void c.wrap('repaired run', () => c.runRepair!(b))} />
 
       <MfsResults lib={c.libraryOut} initial={c.initialMfs} seed={c.seed} busy={!!c.busy} onRun={(id) => void c.wrap(`running ${id}`, () => c.runMfs(id))} />
 

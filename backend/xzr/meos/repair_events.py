@@ -54,6 +54,8 @@ def status_events(frames: list[dict], t_first: int) -> list[dict]:
             i = j
             continue
         i += 1
+    if not seen_collapse and not stable and len(st) - t_first >= R.W and all(x == "ACTIVE" for x in st[-R.W:]):  # the repair came before any collapse: the run stayed ACTIVE (a prevention, not a recovery)
+        out.append({"tick": min(len(st) - R.W, t_first + R.W), "kind": "partial-recovery", "label": "COLLAPSE PREVENTED", "detail": f"ACTIVE to the end of the run ({len(st)} ticks), no collapse after the repair", "source": "status record"})
     return out
 
 
@@ -87,4 +89,4 @@ def build(stress: R.Stress | None, onset: int, actions: list[dict], rec: dict, e
         ev.append({"tick": irreversible_tick, "kind": "irreversible", "label": "IRREVERSIBLE (tested action space)", "detail": "from this tick no tested repair action was effective (experiments_stage6_refine.json)", "source": "saved result"})
     ev.sort(key=lambda e: (e["tick"], e["kind"]))
     return {"stress": stress.id if stress else "no stress", "label": stress.label if stress else "no stress", "family": stress.family if stress else "none", "onset": onset, "actions": acts, "events": ev,
-            "evaluation": {"horizons": h, "costs": evaluation["costs"], "final_status": evaluation["final_status"]}, "controller": {"attempts": len(controller_log or []), "log": controller_log or []}}
+            "evaluation": {"horizons": h, "costs": evaluation["costs"], "final_status": evaluation["final_status"]}, "controller": {"attempts": sum(1 for e in (controller_log or []) if e["selected"]), "log": controller_log or []}}

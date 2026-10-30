@@ -49,3 +49,20 @@ describe('the plan a link gives', () => {
     expect(deepLinkPlan(parseDeepLink('route=fixed:history lost&mfs=MFS-F1-1')).run.kind).toBe('mfs');
   });
 });
+
+describe('repair links', () => {
+  it('round-trips a stress with a controller, and a stress with explicit actions', () => {
+    const c: DeepLink = { repair: { stress: 'coupling gain 0.5', controller: 'cost_aware' } };
+    expect(parseDeepLink(formatDeepLink(c))).toEqual(c);
+    const a: DeepLink = { repair: { stress: 'Address partial 0.5', actions: [{ action: 'address.restore', magnitude: 0, duration: 0, t: 113 }, { action: 'resource.pulse', magnitude: 1, duration: 0, t: 113 }] } };
+    expect(parseDeepLink(formatDeepLink(a))).toEqual(a);
+  });
+  it('ignores a repair that names no stress, drops malformed actions, keeps at most four, and plans a repaired run in the research tab', () => {
+    expect(parseDeepLink('repair=fixed').repair).toBeUndefined();
+    expect(parseDeepLink('stress=history lost&ract=a/x/0/1,b/1/0/2').repair?.actions).toEqual([{ action: 'b', magnitude: 1, duration: 0, t: 2 }]);
+    expect(parseDeepLink('stress=s&ract=a/1/0/1,a/1/0/2,a/1/0/3,a/1/0/4,a/1/0/5').repair?.actions).toHaveLength(4);
+    const p = deepLinkPlan(parseDeepLink('stress=history lost&repair=rule_based&seed=3'));
+    expect(p.run).toEqual({ kind: 'repair', repair: { stress: 'history lost', controller: 'rule_based' } }); expect(p.tab).toBe('research'); expect(p.seed).toBe(3);
+  });
+});
+

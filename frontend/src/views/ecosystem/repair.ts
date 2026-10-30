@@ -14,7 +14,7 @@ export function repairMarkers(rb: RepairBlock | null | undefined): Marker[] {
   return rb.events.filter((e) => EVENT_MARKER[e.kind] && !(e as { hidden?: boolean }).hidden).map((e) => ({ tick: e.tick, kind: EVENT_MARKER[e.kind], label: e.label, detail: `${e.detail} [${e.source}]` }));
 }
 
-export type RepairPathState = 'intact' | 'damaged' | 'repair-active' | 'repaired' | 'bypass' | 'failed';
+export type RepairPathState = 'intact' | 'damaged' | 'repair-active' | 'internal-active' | 'repaired' | 'bypass' | 'failed';
 export interface RepairState {
   tick: number; damagedPath: string | null; paths: Record<string, RepairPathState>; worldActions: RepairEvent[]; internalActions: RepairEvent[]; failed: RepairEvent[]; lastAction: RepairEvent | null;
   recovered: boolean; collapsed: boolean; secondary: boolean; irreversible: boolean; repairSiteDiffers: boolean;
@@ -37,7 +37,7 @@ export function repairStateAt(rb: RepairBlock | null | undefined, tick: number):
   for (const a of acts) {
     if (!a.path || a.path === damaged) continue;
     const temp = TEMPORARY.has(a.action ?? '') && a.duration && tick < a.tick + a.duration;
-    paths[a.path] = temp ? 'bypass' : 'repair-active';
+    paths[a.path] = a.klass === 'A' ? 'internal-active' : temp ? 'bypass' : 'repair-active';  // an internal reconfiguration is not a world-state repair
   }
   const last = acts.length ? acts[acts.length - 1] : null;
   return { tick, damagedPath: damaged, paths, worldActions: world, internalActions: internal, failed: failedEv, lastAction: last, recovered, collapsed, secondary, irreversible: ev.some((e) => e.kind === 'irreversible'), repairSiteDiffers: !!damaged && acts.some((a) => a.path && a.path !== damaged) };
@@ -47,8 +47,8 @@ export type RecoveryClass = 'internal' | 'world' | 'combined' | 'none';
 export interface StripCell { tick: number; classes: RecoveryClass[] }
 const inside = (w: number[][], t: number) => w.some(([a, b]) => t >= a && t <= b);
 
-/** The reachable-recovery strip of a stress: for every tick of the tested range, which kinds of tested action recover the run (one-tick resolution; a tick no tested action recovers is ``none``). It is a region of the tested action space, not of the world. */
-export function recoveryStrip(row: StressRow, from = 101, to = 170): StripCell[] {
+/** The reachable-recovery strip of a stress: for every tick of the tested range, which kinds of tested action recover the run (one-tick resolution to tick 170, and to tick 330 for the windows that were still open at 170; a tick no tested action recovers is ``none``). It is a region of the tested action space, not of the world. */
+export function recoveryStrip(row: StressRow, from = 101, to = 330): StripCell[] {
   const out: StripCell[] = [];
   for (let t = from; t <= to; t++) {
     const c: RecoveryClass[] = [];

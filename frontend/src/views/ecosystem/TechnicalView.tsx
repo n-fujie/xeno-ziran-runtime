@@ -22,7 +22,7 @@ const COLOR: Record<PartState, string> = { active: ACTIVE, idle: INK, inactive: 
 const LABELLED = ['node', 'probe', 'ring', 'cluster', 'optic', 'reservoir', 'archive', 'joint', 'module', 'sensor', 'chassis'];
 
 /** The research readings the sheet adds to the drawings (all computed from the record by the view): the observed state, the path activity, the event markers and the SSS region. */
-export interface SheetResearch { observed: Observed | null; paths: PathActivity | null; markers: Marker[]; sssRegion: SssRegion; compare: boolean; bodies: BodiesSpec | null; body: string; setBody: (b: string) => void; topology: Topology | null; library: LibraryMfs[]; rejected?: RejectedCandidate[]; outcomes: Outcome[]; repair?: RepairBlock | null }
+export interface SheetResearch { observed: Observed | null; paths: PathActivity | null; markers: Marker[]; sssRegion: SssRegion; compare: boolean; bodies: BodiesSpec | null; body: string; setBody: (b: string) => void; topology: Topology | null; library: LibraryMfs[]; rejected?: RejectedCandidate[]; outcomes: Outcome[]; repair?: RepairBlock | null; repairable?: boolean }
 // cable id -> the operational path it carries (the cable network of the non-central body, by what moves along it)
 const CABLE_PATH: Record<string, PathId> = { BCb: 'coupling', BCc: 'coupling', BCa: 'coupling', JB: 'coupling', JC: 'resource', AC: 'resource', AB: 'resource', AJ: 'resource', CRES: 'resource', ARCH: 'history_access', OBSV: 'observation', REC: 'recovery' };
 
@@ -137,7 +137,7 @@ export default function TechnicalView({ rec, tick, obs, observability, which, se
     const draw = (cv: HTMLCanvasElement | null, t: number, ins: ReturnType<typeof inspectAt>, w: number, h: number) => {
       if (!cv) return;
       cv.width = w * dpr; cv.height = h * dpr; const g = cv.getContext('2d')!; g.scale(dpr, dpr);
-      drawResearchMap(g, buildResearchMap({ rec, tick: t, obs, inspect: ins, paths: research?.paths, markers: research?.markers ?? [], layers: mapLayers, body: research?.body, bodies: research?.bodies, route: ins.route, rejected: research?.rejected }), w, h);
+      drawResearchMap(g, buildResearchMap({ rec, tick: t, obs, inspect: ins, paths: research?.paths, markers: research?.markers ?? [], layers: mapLayers, body: research?.body, bodies: research?.bodies, route: ins.route, rejected: research?.rejected, repair: research?.repair ? { state: repairStateAt(research.repair, t) as NonNullable<ReturnType<typeof repairStateAt>>, repairable: research.repairable } : null }), w, h);
     };
     draw(mapCanvas.current, tick, inspect, 760, 700);
     snapshots.forEach((sn, i) => draw(compareCanvases.current[i], sn.tick, sn.inspect, 500, 470));

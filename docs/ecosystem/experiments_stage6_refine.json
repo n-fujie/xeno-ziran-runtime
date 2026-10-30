@@ -566,7 +566,197 @@
 137,
 138,
 139,
-140
+140,
+141,
+142,
+143,
+144,
+145,
+146,
+147,
+148,
+149,
+150,
+151,
+152,
+153,
+154,
+155,
+156,
+157,
+158,
+159,
+160,
+161,
+162,
+163,
+164,
+165,
+166,
+167,
+168,
+169,
+170,
+171,
+172,
+173,
+174,
+175,
+176,
+177,
+178,
+179,
+180,
+181,
+182,
+183,
+184,
+185,
+186,
+187,
+188,
+189,
+190,
+191,
+192,
+193,
+194,
+195,
+196,
+197,
+198,
+199,
+200,
+201,
+202,
+203,
+204,
+205,
+206,
+207,
+208,
+209,
+210,
+211,
+212,
+213,
+214,
+215,
+216,
+217,
+218,
+219,
+220,
+221,
+222,
+223,
+224,
+225,
+226,
+227,
+228,
+229,
+230,
+231,
+232,
+233,
+234,
+235,
+236,
+237,
+238,
+239,
+240,
+241,
+242,
+243,
+244,
+245,
+246,
+247,
+248,
+249,
+250,
+251,
+252,
+253,
+254,
+255,
+256,
+257,
+258,
+259,
+260,
+261,
+262,
+263,
+264,
+265,
+266,
+267,
+268,
+269,
+270,
+271,
+272,
+273,
+274,
+275,
+276,
+277,
+278,
+279,
+280,
+281,
+282,
+283,
+284,
+285,
+286,
+287,
+288,
+289,
+290,
+291,
+292,
+293,
+294,
+295,
+296,
+297,
+298,
+299,
+300,
+301,
+302,
+303,
+304,
+305,
+306,
+307,
+308,
+309,
+310,
+311,
+312,
+313,
+314,
+315,
+316,
+317,
+318,
+319,
+320,
+321,
+322,
+323,
+324,
+325,
+326,
+327,
+328,
+329,
+330
 ],
 "effective_intervals": [
 [
@@ -575,7 +765,7 @@
 ],
 [
 125,
-140
+330
 ]
 ],
 "near_miss_ticks": [
@@ -586,10 +776,10 @@
 121
 ],
 "earliest_effective_tick": 108,
-"latest_effective_tick": 140,
+"latest_effective_tick": 330,
 "ticks_tested": [
 101,
-170
+330
 ],
 "per_tick": {
 "101": {
@@ -880,211 +1070,1331 @@
 }
 },
 "141": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "prevented": 10
 }
 },
 "142": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "prevented": 10
 }
 },
 "143": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "prevented": 10
 }
 },
 "144": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "prevented": 10
 }
 },
 "145": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "146": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "147": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "148": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "149": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "150": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "151": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "152": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "153": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "154": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "155": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "156": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "157": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "158": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "159": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "160": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "161": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "162": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "163": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "164": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "165": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "166": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "167": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "168": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "169": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "170": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"171": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"172": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"173": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"174": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"175": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"176": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"177": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"178": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"179": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"180": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"181": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"182": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"183": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"184": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"185": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"186": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"187": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"188": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"189": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"190": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"191": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"192": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"193": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"194": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"195": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"196": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"197": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"198": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"199": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"200": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"201": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"202": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"203": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"204": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"205": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"206": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"207": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"208": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"209": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"210": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"211": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"212": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"213": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"214": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"215": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"216": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"217": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"218": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"219": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"220": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"221": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"222": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"223": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"224": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"225": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"226": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"227": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"228": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"229": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"230": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"231": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"232": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"233": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"234": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"235": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"236": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"237": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"238": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"239": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"240": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"241": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"242": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"243": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"244": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"245": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"246": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"247": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"248": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"249": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"250": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"251": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"252": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"253": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"254": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"255": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"256": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"257": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"258": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"259": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"260": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"261": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"262": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"263": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"264": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"265": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"266": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"267": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"268": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"269": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"270": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"271": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"272": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"273": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"274": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"275": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"276": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"277": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"278": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"279": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"280": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"281": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"282": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"283": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"284": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"285": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"286": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"287": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"288": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"289": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"290": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"291": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"292": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"293": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"294": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"295": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"296": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"297": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"298": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"299": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"300": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"301": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"302": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"303": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"304": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"305": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"306": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"307": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"308": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"309": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"310": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"311": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"312": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"313": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"314": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"315": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"316": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"317": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"318": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"319": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"320": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"321": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"322": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"323": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"324": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"325": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"326": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"327": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"328": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"329": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"330": {
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
@@ -7395,7 +8705,13 @@
 137,
 138,
 139,
-140
+140,
+141,
+142,
+143,
+144,
+145,
+146
 ],
 "effective_intervals": [
 [
@@ -7404,7 +8720,7 @@
 ],
 [
 124,
-140
+146
 ]
 ],
 "near_miss_ticks": [
@@ -7412,10 +8728,12 @@
 118,
 119,
 120,
-121
+121,
+147,
+149
 ],
 "earliest_effective_tick": 114,
-"latest_effective_tick": 140,
+"latest_effective_tick": 146,
 "ticks_tested": [
 101,
 170
@@ -7709,97 +9027,97 @@
 }
 },
 "141": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "prevented": 10
 }
 },
 "142": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "prevented": 10
 }
 },
 "143": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "prevented": 10
 }
 },
 "144": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "prevented": 10
 }
 },
 "145": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "146": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "147": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "4/5",
+"validation": "5/5",
 "outcomes_long": {
 "failed": 1,
 "recovered": 9
 }
 },
 "148": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "2/5",
+"validation": "3/5",
 "outcomes_long": {
 "failed": 5,
 "recovered": 5
 }
 },
 "149": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "4/5",
+"validation": "2/5",
 "outcomes_long": {
 "failed": 4,
 "recovered": 6
 }
 },
 "150": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "1/5",
+"validation": "2/5",
 "outcomes_long": {
 "failed": 7,
 "recovered": 3
 }
 },
 "151": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "1/5",
+"validation": "1/5",
 "outcomes_long": {
 "failed": 8,
 "recovered": 2
 }
 },
 "152": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "1/5",
+"validation": "1/5",
 "outcomes_long": {
 "failed": 8,
 "recovered": 2
 }
 },
 "153": {
-"exploration": "0/5",
+"exploration": "1/5",
 "validation": "0/5",
 "outcomes_long": {
 "failed": 9,
@@ -7807,7 +9125,7 @@
 }
 },
 "154": {
-"exploration": "0/5",
+"exploration": "1/5",
 "validation": "0/5",
 "outcomes_long": {
 "failed": 9,
@@ -7815,7 +9133,7 @@
 }
 },
 "155": {
-"exploration": "0/5",
+"exploration": "1/5",
 "validation": "0/5",
 "outcomes_long": {
 "failed": 9,
@@ -9373,7 +10691,7 @@
 }
 },
 "141": {
-"exploration": "0/5",
+"exploration": "1/5",
 "validation": "0/5",
 "outcomes_long": {
 "failed": 9,
@@ -9381,7 +10699,7 @@
 }
 },
 "142": {
-"exploration": "0/5",
+"exploration": "1/5",
 "validation": "0/5",
 "outcomes_long": {
 "failed": 9,
@@ -9389,7 +10707,7 @@
 }
 },
 "143": {
-"exploration": "0/5",
+"exploration": "1/5",
 "validation": "0/5",
 "outcomes_long": {
 "failed": 9,
@@ -9397,7 +10715,7 @@
 }
 },
 "144": {
-"exploration": "0/5",
+"exploration": "1/5",
 "validation": "0/5",
 "outcomes_long": {
 "failed": 9,
@@ -9405,7 +10723,7 @@
 }
 },
 "145": {
-"exploration": "0/5",
+"exploration": "1/5",
 "validation": "0/5",
 "outcomes_long": {
 "failed": 9,
@@ -9413,7 +10731,7 @@
 }
 },
 "146": {
-"exploration": "0/5",
+"exploration": "1/5",
 "validation": "0/5",
 "outcomes_long": {
 "failed": 9,
@@ -9421,15 +10739,15 @@
 }
 },
 "147": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "1/5",
+"validation": "1/5",
 "outcomes_long": {
 "failed": 8,
 "recovered": 2
 }
 },
 "148": {
-"exploration": "0/5",
+"exploration": "1/5",
 "validation": "0/5",
 "outcomes_long": {
 "failed": 9,
@@ -9444,7 +10762,7 @@
 }
 },
 "150": {
-"exploration": "0/5",
+"exploration": "1/5",
 "validation": "0/5",
 "outcomes_long": {
 "failed": 9,
@@ -9459,7 +10777,7 @@
 }
 },
 "152": {
-"exploration": "0/5",
+"exploration": "1/5",
 "validation": "0/5",
 "outcomes_long": {
 "failed": 9,
@@ -9467,7 +10785,7 @@
 }
 },
 "153": {
-"exploration": "0/5",
+"exploration": "1/5",
 "validation": "0/5",
 "outcomes_long": {
 "failed": 9,
@@ -9475,7 +10793,7 @@
 }
 },
 "154": {
-"exploration": "0/5",
+"exploration": "1/5",
 "validation": "0/5",
 "outcomes_long": {
 "failed": 9,
@@ -9483,7 +10801,7 @@
 }
 },
 "155": {
-"exploration": "0/5",
+"exploration": "1/5",
 "validation": "0/5",
 "outcomes_long": {
 "failed": 9,
@@ -9498,7 +10816,7 @@
 }
 },
 "157": {
-"exploration": "0/5",
+"exploration": "1/5",
 "validation": "0/5",
 "outcomes_long": {
 "failed": 9,
@@ -9506,7 +10824,7 @@
 }
 },
 "158": {
-"exploration": "0/5",
+"exploration": "1/5",
 "validation": "0/5",
 "outcomes_long": {
 "failed": 9,
@@ -9514,7 +10832,7 @@
 }
 },
 "159": {
-"exploration": "0/5",
+"exploration": "1/5",
 "validation": "0/5",
 "outcomes_long": {
 "failed": 9,
@@ -9523,7 +10841,7 @@
 },
 "160": {
 "exploration": "0/5",
-"validation": "0/5",
+"validation": "1/5",
 "outcomes_long": {
 "failed": 9,
 "recovered": 1
@@ -9537,7 +10855,7 @@
 }
 },
 "162": {
-"exploration": "0/5",
+"exploration": "1/5",
 "validation": "0/5",
 "outcomes_long": {
 "failed": 9,
@@ -9545,7 +10863,7 @@
 }
 },
 "163": {
-"exploration": "0/5",
+"exploration": "1/5",
 "validation": "0/5",
 "outcomes_long": {
 "failed": 9,
@@ -9553,7 +10871,7 @@
 }
 },
 "164": {
-"exploration": "0/5",
+"exploration": "1/5",
 "validation": "0/5",
 "outcomes_long": {
 "failed": 9,
@@ -9561,15 +10879,15 @@
 }
 },
 "165": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "1/5",
+"validation": "1/5",
 "outcomes_long": {
 "failed": 8,
 "recovered": 2
 }
 },
 "166": {
-"exploration": "0/5",
+"exploration": "1/5",
 "validation": "0/5",
 "outcomes_long": {
 "failed": 9,
@@ -9577,7 +10895,7 @@
 }
 },
 "167": {
-"exploration": "0/5",
+"exploration": "1/5",
 "validation": "0/5",
 "outcomes_long": {
 "failed": 9,
@@ -9585,7 +10903,7 @@
 }
 },
 "168": {
-"exploration": "0/5",
+"exploration": "1/5",
 "validation": "0/5",
 "outcomes_long": {
 "failed": 9,
@@ -9593,7 +10911,7 @@
 }
 },
 "169": {
-"exploration": "0/5",
+"exploration": "1/5",
 "validation": "0/5",
 "outcomes_long": {
 "failed": 9,
@@ -9601,7 +10919,7 @@
 }
 },
 "170": {
-"exploration": "0/5",
+"exploration": "1/5",
 "validation": "0/5",
 "outcomes_long": {
 "failed": 9,
@@ -10195,7 +11513,9 @@
 132,
 133,
 135,
-140
+140,
+141,
+142
 ],
 "effective_intervals": [
 [
@@ -10212,7 +11532,7 @@
 ],
 [
 140,
-140
+142
 ]
 ],
 "near_miss_ticks": [
@@ -10243,10 +11563,16 @@
 136,
 137,
 138,
-139
+139,
+143,
+144,
+145,
+146,
+147,
+148
 ],
 "earliest_effective_tick": 101,
-"latest_effective_tick": 140,
+"latest_effective_tick": 142,
 "ticks_tested": [
 101,
 170
@@ -10569,24 +11895,24 @@
 }
 },
 "141": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "prevented": 5,
 "recovered": 5
 }
 },
 "142": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "prevented": 5,
 "recovered": 5
 }
 },
 "143": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "4/5",
+"validation": "5/5",
 "outcomes_long": {
 "failed": 1,
 "prevented": 5,
@@ -10594,8 +11920,8 @@
 }
 },
 "144": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "4/5",
+"validation": "4/5",
 "outcomes_long": {
 "failed": 2,
 "prevented": 5,
@@ -10603,48 +11929,48 @@
 }
 },
 "145": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "3/5",
+"validation": "4/5",
 "outcomes_long": {
 "failed": 3,
 "recovered": 7
 }
 },
 "146": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "3/5",
+"validation": "4/5",
 "outcomes_long": {
 "failed": 3,
 "recovered": 7
 }
 },
 "147": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "3/5",
+"validation": "4/5",
 "outcomes_long": {
 "failed": 3,
 "recovered": 7
 }
 },
 "148": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "3/5",
+"validation": "3/5",
 "outcomes_long": {
 "failed": 4,
 "recovered": 6
 }
 },
 "149": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "2/5",
+"validation": "1/5",
 "outcomes_long": {
 "failed": 7,
 "recovered": 3
 }
 },
 "150": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "2/5",
+"validation": "2/5",
 "outcomes_long": {
 "failed": 6,
 "recovered": 4
@@ -10820,7 +12146,197 @@
 132,
 133,
 135,
-140
+140,
+141,
+142,
+143,
+144,
+145,
+146,
+147,
+148,
+149,
+150,
+151,
+152,
+153,
+154,
+155,
+156,
+157,
+158,
+159,
+160,
+161,
+162,
+163,
+164,
+165,
+166,
+167,
+168,
+169,
+170,
+171,
+172,
+173,
+174,
+175,
+176,
+177,
+178,
+179,
+180,
+181,
+182,
+183,
+184,
+185,
+186,
+187,
+188,
+189,
+190,
+191,
+192,
+193,
+194,
+195,
+196,
+197,
+198,
+199,
+200,
+201,
+202,
+203,
+204,
+205,
+206,
+207,
+208,
+209,
+210,
+211,
+212,
+213,
+214,
+215,
+216,
+217,
+218,
+219,
+220,
+221,
+222,
+223,
+224,
+225,
+226,
+227,
+228,
+229,
+230,
+231,
+232,
+233,
+234,
+235,
+236,
+237,
+238,
+239,
+240,
+241,
+242,
+243,
+244,
+245,
+246,
+247,
+248,
+249,
+250,
+251,
+252,
+253,
+254,
+255,
+256,
+257,
+258,
+259,
+260,
+261,
+262,
+263,
+264,
+265,
+266,
+267,
+268,
+269,
+270,
+271,
+272,
+273,
+274,
+275,
+276,
+277,
+278,
+279,
+280,
+281,
+282,
+283,
+284,
+285,
+286,
+287,
+288,
+289,
+290,
+291,
+292,
+293,
+294,
+295,
+296,
+297,
+298,
+299,
+300,
+301,
+302,
+303,
+304,
+305,
+306,
+307,
+308,
+309,
+310,
+311,
+312,
+313,
+314,
+315,
+316,
+317,
+318,
+319,
+320,
+321,
+322,
+323,
+324,
+325,
+326,
+327,
+328,
+329,
+330
 ],
 "effective_intervals": [
 [
@@ -10837,7 +12353,7 @@
 ],
 [
 140,
-140
+330
 ]
 ],
 "near_miss_ticks": [
@@ -10865,10 +12381,10 @@
 139
 ],
 "earliest_effective_tick": 101,
-"latest_effective_tick": 140,
+"latest_effective_tick": 330,
 "ticks_tested": [
 101,
-170
+330
 ],
 "per_tick": {
 "101": {
@@ -11180,215 +12696,1335 @@
 }
 },
 "141": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "prevented": 5,
 "recovered": 5
 }
 },
 "142": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "prevented": 5,
 "recovered": 5
 }
 },
 "143": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "prevented": 5,
 "recovered": 5
 }
 },
 "144": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "prevented": 5,
 "recovered": 5
 }
 },
 "145": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "146": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "147": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "148": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "149": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "150": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "151": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "152": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "153": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "154": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "155": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "156": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "157": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "158": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "159": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "160": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "161": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "162": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "163": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "164": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "165": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "166": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "167": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "168": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "169": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "170": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"171": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"172": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"173": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"174": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"175": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"176": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"177": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"178": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"179": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"180": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"181": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"182": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"183": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"184": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"185": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"186": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"187": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"188": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"189": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"190": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"191": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"192": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"193": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"194": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"195": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"196": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"197": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"198": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"199": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"200": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"201": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"202": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"203": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"204": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"205": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"206": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"207": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"208": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"209": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"210": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"211": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"212": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"213": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"214": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"215": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"216": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"217": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"218": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"219": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"220": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"221": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"222": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"223": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"224": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"225": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"226": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"227": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"228": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"229": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"230": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"231": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"232": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"233": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"234": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"235": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"236": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"237": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"238": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"239": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"240": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"241": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"242": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"243": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"244": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"245": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"246": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"247": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"248": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"249": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"250": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"251": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"252": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"253": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"254": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"255": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"256": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"257": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"258": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"259": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"260": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"261": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"262": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"263": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"264": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"265": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"266": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"267": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"268": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"269": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"270": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"271": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"272": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"273": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"274": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"275": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"276": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"277": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"278": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"279": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"280": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"281": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"282": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"283": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"284": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"285": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"286": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"287": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"288": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"289": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"290": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"291": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"292": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"293": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"294": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"295": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"296": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"297": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"298": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"299": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"300": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"301": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"302": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"303": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"304": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"305": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"306": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"307": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"308": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"309": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"310": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"311": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"312": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"313": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"314": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"315": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"316": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"317": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"318": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"319": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"320": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"321": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"322": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"323": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"324": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"325": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"326": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"327": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"328": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"329": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"330": {
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
@@ -16400,7 +19036,9 @@
 137,
 138,
 139,
-140
+140,
+141,
+142
 ],
 "effective_intervals": [
 [
@@ -16413,7 +19051,7 @@
 ],
 [
 130,
-140
+142
 ]
 ],
 "near_miss_ticks": [
@@ -16425,10 +19063,13 @@
 126,
 127,
 128,
-129
+129,
+143,
+144,
+145
 ],
 "earliest_effective_tick": 101,
-"latest_effective_tick": 140,
+"latest_effective_tick": 142,
 "ticks_tested": [
 101,
 170
@@ -16724,69 +19365,69 @@
 }
 },
 "141": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "142": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "143": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "4/5",
+"validation": "3/5",
 "outcomes_long": {
 "failed": 3,
 "recovered": 7
 }
 },
 "144": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "3/5",
+"validation": "3/5",
 "outcomes_long": {
 "failed": 4,
 "recovered": 6
 }
 },
 "145": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "3/5",
+"validation": "2/5",
 "outcomes_long": {
 "failed": 5,
 "recovered": 5
 }
 },
 "146": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "1/5",
+"validation": "2/5",
 "outcomes_long": {
 "failed": 7,
 "recovered": 3
 }
 },
 "147": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "1/5",
+"validation": "1/5",
 "outcomes_long": {
 "failed": 8,
 "recovered": 2
 }
 },
 "148": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "1/5",
+"validation": "1/5",
 "outcomes_long": {
 "failed": 8,
 "recovered": 2
 }
 },
 "149": {
-"exploration": "0/5",
+"exploration": "1/5",
 "validation": "0/5",
 "outcomes_long": {
 "failed": 9,
@@ -16974,7 +19615,197 @@
 137,
 138,
 139,
-140
+140,
+141,
+142,
+143,
+144,
+145,
+146,
+147,
+148,
+149,
+150,
+151,
+152,
+153,
+154,
+155,
+156,
+157,
+158,
+159,
+160,
+161,
+162,
+163,
+164,
+165,
+166,
+167,
+168,
+169,
+170,
+171,
+172,
+173,
+174,
+175,
+176,
+177,
+178,
+179,
+180,
+181,
+182,
+183,
+184,
+185,
+186,
+187,
+188,
+189,
+190,
+191,
+192,
+193,
+194,
+195,
+196,
+197,
+198,
+199,
+200,
+201,
+202,
+203,
+204,
+205,
+206,
+207,
+208,
+209,
+210,
+211,
+212,
+213,
+214,
+215,
+216,
+217,
+218,
+219,
+220,
+221,
+222,
+223,
+224,
+225,
+226,
+227,
+228,
+229,
+230,
+231,
+232,
+233,
+234,
+235,
+236,
+237,
+238,
+239,
+240,
+241,
+242,
+243,
+244,
+245,
+246,
+247,
+248,
+249,
+250,
+251,
+252,
+253,
+254,
+255,
+256,
+257,
+258,
+259,
+260,
+261,
+262,
+263,
+264,
+265,
+266,
+267,
+268,
+269,
+270,
+271,
+272,
+273,
+274,
+275,
+276,
+277,
+278,
+279,
+280,
+281,
+282,
+283,
+284,
+285,
+286,
+287,
+288,
+289,
+290,
+291,
+292,
+293,
+294,
+295,
+296,
+297,
+298,
+299,
+300,
+301,
+302,
+303,
+304,
+305,
+306,
+307,
+308,
+309,
+310,
+311,
+312,
+313,
+314,
+315,
+316,
+317,
+318,
+319,
+320,
+321,
+322,
+323,
+324,
+325,
+326,
+327,
+328,
+329,
+330
 ],
 "effective_intervals": [
 [
@@ -16987,7 +19818,7 @@
 ],
 [
 130,
-140
+330
 ]
 ],
 "near_miss_ticks": [
@@ -17002,10 +19833,10 @@
 129
 ],
 "earliest_effective_tick": 101,
-"latest_effective_tick": 140,
+"latest_effective_tick": 330,
 "ticks_tested": [
 101,
-170
+330
 ],
 "per_tick": {
 "101": {
@@ -17299,211 +20130,1331 @@
 }
 },
 "141": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "142": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "143": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "144": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "145": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "146": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "147": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "148": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "149": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "150": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "151": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "152": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "153": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "154": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "155": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "156": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "157": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "158": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "159": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "160": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "161": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "162": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "163": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "164": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "165": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "166": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "167": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "168": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "169": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
 },
 "170": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"171": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"172": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"173": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"174": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"175": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"176": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"177": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"178": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"179": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"180": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"181": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"182": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"183": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"184": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"185": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"186": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"187": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"188": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"189": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"190": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"191": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"192": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"193": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"194": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"195": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"196": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"197": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"198": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"199": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"200": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"201": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"202": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"203": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"204": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"205": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"206": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"207": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"208": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"209": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"210": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"211": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"212": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"213": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"214": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"215": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"216": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"217": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"218": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"219": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"220": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"221": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"222": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"223": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"224": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"225": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"226": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"227": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"228": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"229": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"230": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"231": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"232": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"233": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"234": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"235": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"236": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"237": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"238": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"239": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"240": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"241": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"242": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"243": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"244": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"245": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"246": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"247": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"248": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"249": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"250": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"251": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"252": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"253": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"254": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"255": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"256": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"257": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"258": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"259": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"260": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"261": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"262": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"263": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"264": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"265": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"266": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"267": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"268": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"269": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"270": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"271": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"272": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"273": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"274": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"275": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"276": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"277": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"278": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"279": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"280": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"281": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"282": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"283": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"284": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"285": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"286": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"287": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"288": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"289": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"290": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"291": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"292": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"293": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"294": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"295": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"296": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"297": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"298": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"299": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"300": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"301": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"302": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"303": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"304": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"305": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"306": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"307": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"308": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"309": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"310": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"311": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"312": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"313": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"314": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"315": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"316": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"317": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"318": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"319": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"320": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"321": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"322": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"323": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"324": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"325": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"326": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"327": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"328": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"329": {
+"exploration": "5/5",
+"validation": "5/5",
+"outcomes_long": {
+"recovered": 10
+}
+},
+"330": {
+"exploration": "5/5",
+"validation": "5/5",
 "outcomes_long": {
 "recovered": 10
 }
@@ -27542,9 +31493,9 @@ null
 "near_miss": false
 },
 "0.5@145": {
-"exploration": "0/5",
-"validation": "0/5",
-"effective": false,
+"exploration": "5/5",
+"validation": "5/5",
+"effective": true,
 "outcomes_long": {
 "recovered": 10
 },
@@ -27633,9 +31584,9 @@ null
 "near_miss": false
 },
 "0.55@145": {
-"exploration": "0/5",
-"validation": "0/5",
-"effective": false,
+"exploration": "5/5",
+"validation": "5/5",
+"effective": true,
 "outcomes_long": {
 "recovered": 10
 },
@@ -27724,9 +31675,9 @@ null
 "near_miss": false
 },
 "0.6@145": {
-"exploration": "0/5",
-"validation": "0/5",
-"effective": false,
+"exploration": "5/5",
+"validation": "5/5",
+"effective": true,
 "outcomes_long": {
 "recovered": 10
 },
@@ -27815,9 +31766,9 @@ null
 "near_miss": false
 },
 "0.65@145": {
-"exploration": "0/5",
-"validation": "0/5",
-"effective": false,
+"exploration": "5/5",
+"validation": "5/5",
+"effective": true,
 "outcomes_long": {
 "recovered": 10
 },
@@ -27906,9 +31857,9 @@ null
 "near_miss": false
 },
 "0.7@145": {
-"exploration": "0/5",
-"validation": "0/5",
-"effective": false,
+"exploration": "5/5",
+"validation": "5/5",
+"effective": true,
 "outcomes_long": {
 "recovered": 10
 },
@@ -27997,9 +31948,9 @@ null
 "near_miss": false
 },
 "0.75@145": {
-"exploration": "0/5",
-"validation": "0/5",
-"effective": false,
+"exploration": "5/5",
+"validation": "5/5",
+"effective": true,
 "outcomes_long": {
 "recovered": 10
 },
@@ -28088,9 +32039,9 @@ null
 "near_miss": false
 },
 "0.8@145": {
-"exploration": "0/5",
-"validation": "0/5",
-"effective": false,
+"exploration": "5/5",
+"validation": "5/5",
+"effective": true,
 "outcomes_long": {
 "recovered": 10
 },
@@ -28179,9 +32130,9 @@ null
 "near_miss": false
 },
 "0.85@145": {
-"exploration": "0/5",
-"validation": "0/5",
-"effective": false,
+"exploration": "5/5",
+"validation": "5/5",
+"effective": true,
 "outcomes_long": {
 "recovered": 10
 },
@@ -28270,9 +32221,9 @@ null
 "near_miss": false
 },
 "0.9@145": {
-"exploration": "0/5",
-"validation": "0/5",
-"effective": false,
+"exploration": "5/5",
+"validation": "5/5",
+"effective": true,
 "outcomes_long": {
 "recovered": 10
 },
@@ -28361,9 +32312,9 @@ null
 "near_miss": false
 },
 "0.95@145": {
-"exploration": "0/5",
-"validation": "0/5",
-"effective": false,
+"exploration": "5/5",
+"validation": "5/5",
+"effective": true,
 "outcomes_long": {
 "recovered": 10
 },
@@ -28452,9 +32403,9 @@ null
 "near_miss": false
 },
 "1.0@145": {
-"exploration": "0/5",
-"validation": "0/5",
-"effective": false,
+"exploration": "5/5",
+"validation": "5/5",
+"effective": true,
 "outcomes_long": {
 "recovered": 10
 },
@@ -28471,7 +32422,7 @@ null
 "130": 0.45,
 "135": 0.5,
 "140": 0.5,
-"145": null
+"145": 0.5
 },
 "minimum_effective_magnitude_overall": 0.45,
 "effective_ticks": [
@@ -28480,7 +32431,8 @@ null
 125,
 130,
 135,
-140
+140,
+145
 ]
 },
 "Address restore + pulse": {
@@ -28692,15 +32644,15 @@ null
 "near_miss": false
 },
 "0.5@145": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "3/5",
+"validation": "4/5",
 "effective": false,
 "outcomes_long": {
 "failed": 3,
 "recovered": 7
 },
 "secondary": 0,
-"near_miss": false
+"near_miss": true
 },
 "0.75@105": {
 "exploration": "4/5",
@@ -28791,9 +32743,9 @@ null
 "near_miss": false
 },
 "0.75@145": {
-"exploration": "0/5",
-"validation": "0/5",
-"effective": false,
+"exploration": "5/5",
+"validation": "5/5",
+"effective": true,
 "outcomes_long": {
 "recovered": 10
 },
@@ -28888,9 +32840,9 @@ null
 "near_miss": false
 },
 "1.0@145": {
-"exploration": "0/5",
-"validation": "0/5",
-"effective": false,
+"exploration": "5/5",
+"validation": "5/5",
+"effective": true,
 "outcomes_long": {
 "recovered": 10
 },
@@ -29656,13 +33608,14 @@ null
 "130": null,
 "135": 0.5,
 "140": 0.5,
-"145": null
+"145": 0.75
 },
 "minimum_effective_magnitude_overall": 0.5,
 "effective_ticks": [
 105,
 135,
-140
+140,
+145
 ]
 },
 "renewal restart + pulse": {
@@ -29876,15 +33829,15 @@ null
 "near_miss": false
 },
 "0.5@145": {
-"exploration": "0/5",
-"validation": "0/5",
+"exploration": "3/5",
+"validation": "2/5",
 "effective": false,
 "outcomes_long": {
 "failed": 5,
 "recovered": 5
 },
 "secondary": 0,
-"near_miss": false
+"near_miss": true
 },
 "0.5@150": {
 "exploration": "0/5",
@@ -29978,9 +33931,9 @@ null
 "near_miss": false
 },
 "0.75@145": {
-"exploration": "0/5",
-"validation": "0/5",
-"effective": false,
+"exploration": "5/5",
+"validation": "5/5",
+"effective": true,
 "outcomes_long": {
 "recovered": 10
 },
@@ -29988,9 +33941,9 @@ null
 "near_miss": false
 },
 "0.75@150": {
-"exploration": "0/5",
-"validation": "0/5",
-"effective": false,
+"exploration": "5/5",
+"validation": "5/5",
+"effective": true,
 "outcomes_long": {
 "recovered": 10
 },
@@ -30080,9 +34033,9 @@ null
 "near_miss": false
 },
 "1.0@145": {
-"exploration": "0/5",
-"validation": "0/5",
-"effective": false,
+"exploration": "5/5",
+"validation": "5/5",
+"effective": true,
 "outcomes_long": {
 "recovered": 10
 },
@@ -30090,9 +34043,9 @@ null
 "near_miss": false
 },
 "1.0@150": {
-"exploration": "0/5",
-"validation": "0/5",
-"effective": false,
+"exploration": "5/5",
+"validation": "5/5",
+"effective": true,
 "outcomes_long": {
 "recovered": 10
 },
@@ -30910,8 +34863,8 @@ null
 "130": 0.5,
 "135": 0.5,
 "140": 0.5,
-"145": null,
-"150": null
+"145": 0.75,
+"150": 0.75
 },
 "minimum_effective_magnitude_overall": 0.5,
 "effective_ticks": [
@@ -30919,7 +34872,9 @@ null
 120,
 130,
 135,
-140
+140,
+145,
+150
 ]
 }
 },
@@ -30965,7 +34920,6 @@ null
 }
 }
 },
-"seconds": 2132.3,
 "cycle_period": {
 "seed": 1,
 "cycles": 95,
@@ -30981,5 +34935,14 @@ null
 26,
 31
 ]
+},
+"seconds": 2108.0,
+"B1_extension": {
+"ticks": [
+171,
+330
+],
+"windows_extended": 3,
+"note": "windows whose latest effective tick was 165 or later at the end of the first range"
 }
 }
