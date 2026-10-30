@@ -22,14 +22,15 @@ describe('markers', () => {
   });
   it('shows the overshoot, the secondary collapse and the irreversible threshold of a pulse that was too large', () => {
     const k = repairMarkers(fx.overshoot).map((m) => m.kind);
-    expect(k).toEqual(expect.arrayContaining(['overshoot', 'secondary-collapse', 'irreversible', 'collapse']));
+    expect(k).toEqual(expect.arrayContaining(['overshoot', 'secondary-collapse', 'irreversible'])); expect(k).not.toContain('collapse');  // the status record's own collapse marker is not repeated
   });
   it('shows a controller decision before its action, and a detected stress with no available action as a failed repair, not as nothing', () => {
     const c = repairMarkers(fx.controller); expect(c.findIndex((m) => m.kind === 'repair-decision')).toBeLessThan(c.findIndex((m) => m.kind === 'repair-action'));
     const n = repairMarkers(fx.no_action_available); expect(n.find((m) => m.kind === 'repair-failed')?.label).toBe('NO ACTION AVAILABLE');
   });
   it('shows a repair after the collapse as a full recovery', () => {
-    const k = repairMarkers(fx.late_recovery).map((m) => m.kind); expect(k.indexOf('collapse')).toBeLessThan(k.indexOf('repair-action')); expect(k).toContain('full-recovery');
+    const ev = fx.late_recovery.events.map((e) => e.kind); expect(ev.indexOf('collapse')).toBeLessThan(ev.indexOf('repair-action'));  // the collapse came before the repair
+    expect(repairMarkers(fx.late_recovery).map((m) => m.kind)).toContain('full-recovery');
   });
 });
 

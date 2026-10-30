@@ -95,7 +95,7 @@ export const SHOTS = {
   '67-technical-repair-figure': 'tech=ncb&stress=coupling gain 0.5&ract=resource.pulse/1/0/113&seed=1&tick=200&|eco-repair-figure',
   '68-technical-overshoot-figure': 'tech=ncb&stress=coupling gain 0.5&ract=resource.pulse/4/0/113&seed=1&tick=479&|eco-repair-figure',
   '69-research-map-repair-layers': 'tech=ncb&stress=coupling gain 0.5&ract=resource.pulse/1/0/113&seed=1&tick=120&layer=repair.damaged,repair.repairable,repair.world,repair.repaired&|eco-research-map',
-  '70-replay-repair-markers': 'tab=research&stress=coupling gain 0.5&ract=resource.pulse/4/0/113&seed=1&|eco-marker-list',
+  '70-replay-repair-markers': 'tab=research&stress=coupling gain 0.5&ract=resource.pulse/4/0/113&seed=1&|eco-replay',
 };
 
 // default: the machine's GPU through ANGLE/Metal (frame rates are then those of the GPU); --software forces SwiftShader (slow, a rasteriser on the CPU)
@@ -115,6 +115,7 @@ for (const [name, q] of Object.entries(SHOTS)) {
   await page.waitForTimeout(+arg('measure', 5000));
   perf[name] = await page.evaluate(() => ({ ...window.__meos.perf(), camera: window.__meos.camera(), stats: window.__meos.stats() }));
   cameras[name] = { query: q, viewport: [width, height], quality, camera: perf[name].camera };
+  if (targetSpec) await page.waitForSelector(targetSpec.startsWith('.') ? targetSpec : `[data-testid=${targetSpec}]`, { timeout: 120000 });  // a run that needs the server to build its library first
   const target = targetSpec ? await page.$(targetSpec.startsWith('.') ? targetSpec : `[data-testid=${targetSpec}]`) : tech ? await page.$('[data-testid=eco-sheet]') : await page.$('.eco-stage');
   await target.screenshot({ path: join(out, `${name}.png`), timeout: 300000 });
   await page.close();

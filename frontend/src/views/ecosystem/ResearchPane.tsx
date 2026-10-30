@@ -163,10 +163,13 @@ export default function ResearchPane(c: ResearchCtx) {
           <div className="eco-note">The bodies are drawn from the state on the left by fixed rules (bodyState.ts, mechanics.ts): lamps and probes follow the run; SSS scale preloads the observer's boom, size sets the probe ring's posture, speed sets the coupling's tension and the reservoir regulation; the SSS region leaves the archive latch ajar; the M2 tap is node B's probe B2. A pose is a presentation. It cannot show anything the left panel does not already say.</div></div>
       </div>
 
+      <div data-testid="eco-replay">
       <h3>Replay · markers and inspection</h3>
       <div className="eco-legend">{(Object.keys(MARKER_COLOR) as Array<keyof typeof MARKER_COLOR>).map((k) => <span key={k}><i style={{ background: MARKER_COLOR[k] }} />{MARKER_LABEL[k]}</span>)}</div>
       <ul className="eco-log" data-testid="eco-marker-list">{c.markers.map((m, i) => <li key={i}><button className={c.openMarker === m ? 'on' : ''} onClick={() => { c.setOpenMarker(m); c.setTick(m.tick); }}><i style={{ display: 'inline-block', width: 7, height: 7, background: MARKER_COLOR[m.kind], marginRight: 5 }} />t={m.tick} {m.label}</button></li>)}</ul>
       {c.openMarker && <div className="eco-note"><b>{MARKER_LABEL[c.openMarker.kind]}</b> at tick {c.openMarker.tick}: {c.openMarker.detail}{rec ? <> → {affected(rec.intervention_log.find((iv) => iv.tick === c.openMarker!.tick && c.openMarker!.label.startsWith(iv.op)) ?? { tick: c.openMarker.tick, op: c.openMarker.kind, event: 0 })}</> : null}</div>}
+
+      </div>
 
       <h3>Compare · baseline / intervention / recovered</h3>
       <div className="eco-row">{(['baseline', 'intervention', 'recovered'] as const).map((k) => <button key={k} className={snap === k ? 'on' : ''} disabled={!tk} onClick={() => jump(k)}>{k}{tk ? ` · tick ${tk[k]}` : ''}</button>)}

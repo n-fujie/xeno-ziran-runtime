@@ -17,8 +17,13 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-D = ROOT / "docs/ecosystem/perf_stage5/paired"
-BUILD = {"3032": "stage3", "3033": "stage4", "3031": "stage5"}
+def _arg(name: str, default: str) -> str:
+    return sys.argv[sys.argv.index(name) + 1] if name in sys.argv else default
+
+
+D = ROOT / _arg("--dir", "docs/ecosystem/perf_stage5/paired")  # --dir docs/ecosystem/perf_stage6/paired --map 3034=stage5,3031=stage6 --pairs stage5:stage6 for the sixth stage
+BUILD = dict(kv.split("=") for kv in _arg("--map", "3032=stage3,3033=stage4,3031=stage5").split(","))
+PAIRS = [tuple(p.split(":")) for p in _arg("--pairs", "stage3:stage4,stage4:stage5,stage3:stage5").split(",")]
 RULE = 1.05
 MEASURES = [("median", "median"), ("p95", "p95"), ("p99", "p99"), ("max", "max")]
 
@@ -65,7 +70,7 @@ def main() -> None:
     res: dict = {"rule": f"ratio CI lower > {RULE}: regression; upper < {RULE}: no meaningful regression; otherwise inconclusive", "repetitions": len(reps), "pairs": {}, "counters": {}, "load": {}}
     for f in sorted(D.glob("*.load")):
         res["load"][f.stem] = f.read_text().strip()
-    for a, b in [("stage3", "stage4")] if pool else [("stage3", "stage4"), ("stage4", "stage5"), ("stage3", "stage5")]:
+    for a, b in [("stage3", "stage4")] if pool else PAIRS:
         rows = []
         for cam in cams:
             ui = "+" in cam
@@ -81,7 +86,7 @@ def main() -> None:
                     mb = statistics.median(data[(b, r)][cam][mode][m] for r in reps if (b, r) in data and cam in data[(b, r)])
                     rows.append({"camera": cam, "mode": label, "measure": ml, f"{a}_median": round(ma, 2), f"{b}_median": round(mb, 2), "paired_ratio_median": round(statistics.median(rs), 3), "ci95": [round(lo, 3), round(hi, 3)], "n": len(rs), "verdict": verdict(lo, hi)})
         res["pairs"][f"{b}/{a}"] = rows
-    for bld in ("stage3", "stage4", "stage5"):
+    for bld in sorted({b for _, b in PAIRS} | {a for a, _ in PAIRS}):
         res["counters"][bld] = {}
         for cam in cams:
             rows = [data[(bld, r)][cam] for r in reps if (bld, r) in data and cam in data[(bld, r)]]

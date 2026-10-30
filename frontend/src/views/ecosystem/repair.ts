@@ -5,8 +5,8 @@ import type { Marker, MarkerKind } from './research';
 
 const EVENT_MARKER: Record<string, MarkerKind> = {
   'stress-onset': 'stress-onset', 'repair-decision': 'repair-decision', 'repair-action': 'repair-action', 'repair-failed': 'repair-failed', 'full-recovery': 'full-recovery', 'partial-recovery': 'partial-recovery',
-  overshoot: 'overshoot', 'secondary-collapse': 'secondary-collapse', irreversible: 'irreversible', collapse: 'collapse',
-};
+  overshoot: 'overshoot', 'secondary-collapse': 'secondary-collapse', irreversible: 'irreversible',
+};  // the collapse and the recovery of the run are already markers of the status record (research.ts): they are not repeated here
 
 /** The replay markers of a repaired run: one per event the server derived from the schedule, the controller log, the status record and the saved results. */
 export function repairMarkers(rb: RepairBlock | null | undefined): Marker[] {

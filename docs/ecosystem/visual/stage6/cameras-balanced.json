@@ -1,0 +1,346 @@
+{
+ "note": "the exact camera of every capture: position, target, field of view, clipping, exposure, tone mapping, pixel ratio, drawing-buffer size and quality tier",
+ "shots": {
+  "60-repair-recovered": {
+   "query": "tab=research&stress=coupling gain 0.5&ract=resource.pulse/1/0/113&seed=1&|eco-repair-result",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -26.000000000000007,
+     35.99999999999998,
+     98.00000000000001
+    ],
+    "target": [
+     -4,
+     -26,
+     -6
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1280,
+     807
+    ],
+    "quality": "balanced"
+   }
+  },
+  "61-repair-overshoot": {
+   "query": "tab=research&stress=coupling gain 0.5&ract=resource.pulse/4/0/113&seed=1&|eco-repair-result",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -26.000000000000007,
+     35.99999999999998,
+     98.00000000000001
+    ],
+    "target": [
+     -4,
+     -26,
+     -6
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1280,
+     807
+    ],
+    "quality": "balanced"
+   }
+  },
+  "62-reachable-recovery-map": {
+   "query": "tab=research&stress=coupling gain 0.5&ract=resource.pulse/1/0/113&seed=1&|eco-recovery-map",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -26.000000000000007,
+     35.99999999999998,
+     98.00000000000001
+    ],
+    "target": [
+     -4,
+     -26,
+     -6
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1280,
+     807
+    ],
+    "quality": "balanced"
+   }
+  },
+  "63-stress-table": {
+   "query": "tab=research&stress=history lost&repair=rule_based&seed=1&|eco-stress-table",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -26.000000000000007,
+     35.99999999999998,
+     98.00000000000001
+    ],
+    "target": [
+     -4,
+     -26,
+     -6
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1280,
+     807
+    ],
+    "quality": "balanced"
+   }
+  },
+  "64-pulse-phase-bands": {
+   "query": "tab=research&stress=coupling gain 0.5&ract=resource.pulse/1/0/113&seed=1&|eco-pulse-bands",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -26.000000000000007,
+     35.99999999999998,
+     98.00000000000001
+    ],
+    "target": [
+     -4,
+     -26,
+     -6
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1280,
+     807
+    ],
+    "quality": "balanced"
+   }
+  },
+  "65-controller-decisions": {
+   "query": "tab=research&stress=history lost&repair=cost_aware&seed=1&|eco-repair-decisions",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -26.000000000000007,
+     35.99999999999998,
+     98.00000000000001
+    ],
+    "target": [
+     -4,
+     -26,
+     -6
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1280,
+     807
+    ],
+    "quality": "balanced"
+   }
+  },
+  "66-no-action-available": {
+   "query": "tab=research&stress=Address partial 0.5&repair=cost_aware&seed=1&|eco-repair-decisions",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -26.000000000000007,
+     35.99999999999998,
+     98.00000000000001
+    ],
+    "target": [
+     -4,
+     -26,
+     -6
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1280,
+     807
+    ],
+    "quality": "balanced"
+   }
+  },
+  "67-technical-repair-figure": {
+   "query": "tech=ncb&stress=coupling gain 0.5&ract=resource.pulse/1/0/113&seed=1&tick=200&|eco-repair-figure",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -26.000000000000007,
+     35.99999999999998,
+     98.00000000000001
+    ],
+    "target": [
+     -4,
+     -26,
+     -6
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1280,
+     1366
+    ],
+    "quality": "balanced"
+   }
+  },
+  "68-technical-overshoot-figure": {
+   "query": "tech=ncb&stress=coupling gain 0.5&ract=resource.pulse/4/0/113&seed=1&tick=479&|eco-repair-figure",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -26.000000000000007,
+     35.99999999999998,
+     98.00000000000001
+    ],
+    "target": [
+     -4,
+     -26,
+     -6
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1280,
+     1366
+    ],
+    "quality": "balanced"
+   }
+  },
+  "69-research-map-repair-layers": {
+   "query": "tech=ncb&stress=coupling gain 0.5&ract=resource.pulse/1/0/113&seed=1&tick=120&layer=repair.damaged,repair.repairable,repair.world,repair.repaired&|eco-research-map",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -26.000000000000007,
+     35.99999999999998,
+     98.00000000000001
+    ],
+    "target": [
+     -4,
+     -26,
+     -6
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1280,
+     1366
+    ],
+    "quality": "balanced"
+   }
+  },
+  "70-replay-repair-markers": {
+   "query": "tab=research&stress=coupling gain 0.5&ract=resource.pulse/4/0/113&seed=1&|eco-replay",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -26.000000000000007,
+     35.99999999999998,
+     98.00000000000001
+    ],
+    "target": [
+     -4,
+     -26,
+     -6
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1280,
+     807
+    ],
+    "quality": "balanced"
+   }
+  }
+ }
+}
