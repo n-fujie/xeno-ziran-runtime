@@ -1,1 +1,3 @@
-(pending)
+- Worktree `/Users/user/Desktop/BIM/xeno-ziran-runtime-meos`, branch `feat/meos-ecosystem`, from the zrs baseline `ec9667e`. **Local only: not pushed, not merged, not deployed.**
+- Stage 5 final commit: `1d1e331`. Stage 6 commits follow it on the same branch (the repair action space, the three pipelines, the corrected criterion, the controllers, the interface, the evidence); the final commit's id is in the final report and in the manifest of the snapshot archive.
+- The baseline result digest, the trace digest and the 264 stored runs are unchanged; every Stage 5 result file is unchanged (the Stage 5 experiments were re-run for the regression and agree with them).

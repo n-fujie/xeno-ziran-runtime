@@ -1,0 +1,121 @@
+{
+ "L_history_lost": {
+  "persisting_on_all_search_seeds": [
+   1,
+   1
+  ],
+  "any_validated": [
+   true,
+   true
+  ],
+  "cheapest_set": [
+   [
+    "A2",
+    "environmental_persistence",
+    "feedback",
+    "interaction_channel",
+    "m2_tap",
+    "resource_gradient",
+    "resource_renewal",
+    "sensor_alteration",
+    "sensor_resource"
+   ],
+   [
+    "A2",
+    "environmental_persistence",
+    "feedback",
+    "interaction_channel",
+    "m2_tap",
+    "resource_gradient",
+    "resource_renewal",
+    "sensor_alteration",
+    "sensor_resource"
+   ]
+  ],
+  "validation": [
+   "5/5",
+   "5/5"
+  ],
+  "identical": true
+ },
+ "F14_search": {
+  "mfs_found": [
+   [
+    "A2",
+    "environmental_persistence",
+    "feedback",
+    "history",
+    "interaction_channel",
+    "resource_renewal",
+    "sensor_alteration",
+    "sensor_resource"
+   ],
+   [
+    "A2",
+    "environmental_persistence",
+    "feedback",
+    "interaction_channel",
+    "m2_tap",
+    "resource_renewal",
+    "sensor_alteration",
+    "sensor_resource"
+   ]
+  ],
+  "mfs_saved": [
+   [
+    "A2",
+    "environmental_persistence",
+    "feedback",
+    "history",
+    "interaction_channel",
+    "resource_renewal",
+    "sensor_alteration",
+    "sensor_resource"
+   ],
+   [
+    "A2",
+    "environmental_persistence",
+    "feedback",
+    "interaction_channel",
+    "m2_tap",
+    "resource_renewal",
+    "sensor_alteration",
+    "sensor_resource"
+   ]
+  ],
+  "identical": true,
+  "digests_identical": true
+ },
+ "F8_search": {
+  "validated_mfs": 1,
+  "saved": 1,
+  "expected": 1,
+  "composition_identical": true,
+  "identical": true
+ },
+ "F9_search": {
+  "validated_mfs": 0,
+  "saved": 0,
+  "expected": 0,
+  "composition_identical": true,
+  "identical": true
+ },
+ "adaptive_controller_first_decisions": {
+  "identical": true
+ },
+ "stage4_strict_nulls": {
+  "collision_and_stale_identical_to_control": {
+   "collision": true,
+   "stale": true
+  },
+  "identical": true
+ },
+ "baseline": {
+  "engine": "meos-0.4",
+  "result_digest": "b4cf1e522e8bee460eab30ee2a3f86ffd703a3f7969dc21271cf0240aa09adc5",
+  "result_digest_unchanged": true,
+  "trace_digest": "bd3e588608139840831c2749b5051ac31a360d91c6a9a0131b9de3f0152ee1b7",
+  "trace_digest_unchanged": true
+ },
+ "all_identical": true
+}

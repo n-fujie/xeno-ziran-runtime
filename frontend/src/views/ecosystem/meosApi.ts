@@ -198,13 +198,18 @@ export interface RepairRunOut { record: MeosRecord; summary: Summary; paths: Pat
 export interface StressRow {
   stress: string; label: string; family: string; classification_at_decision_tick_113: string; classification_at_any_tested_tick: string; flags: string[];
   internal_reconfiguration: { effective: boolean; windows: number[][] }; world_single: { effective: boolean; windows: number[][] }; combined: { effective: boolean; windows: number[][] };
-  minimum_effective: Array<{ action: string; magnitude: number; ticks: number[] | null }>; timing_window_fragments: number[][]; first_window: number[] | null; earliest_effective_tick: number | null; latest_successful_repair_tick: number | null; earliest_irreversible_tick: number | null;
-  irreversible_from_first_tested_tick: boolean; window_open_at_end_of_tested_range: boolean; tested_range_end: number | null; unrepaired_collapse_tick: number | null; window_closes_before_collapse: boolean; reference_repair: { parts: Array<[string, number, number]>; t: number; klass: string; normalised_cost_equal_weights: number; costs: Record<string, unknown>; evaluation: { k: number; n: number } | null } | null;
+  minimum_effective: Array<{ action: string; magnitude: number; ticks: number[] | null }>; timing_window_fragments: number[][]; first_window: number[] | null; earliest_effective_tick: number | null; latest_successful_repair_tick: number | null; irreversible_tick: number | null;
+  irreversible_from_first_tested_tick: boolean; irreversibility: 'OPEN_THROUGH_TESTED_LIMIT' | 'CLOSED' | 'NO_EFFECTIVE_TICK'; window_open_at_end_of_tested_range: boolean; tested_range_end: number | null; unrepaired_collapse_tick: number | null; window_closes_before_collapse: boolean; reference_repair: { parts: Array<[string, number, number]>; t: number; klass: string; normalised_cost_equal_weights: number; costs: Record<string, unknown>; evaluation: { k: number; n: number } | null } | null;
   failure_reasons_in_the_tested_grid: Record<string, number>; near_miss: boolean;
+}
+export interface CrossResults {
+  C1_mfs: { profile: Record<string, Record<string, string>> };
+  C3_observation: { rows: Array<{ run: string; observation: string; operational_state: string; observed_state: string; observability_status: string; operational_recovery: boolean; observed_recovery: boolean }>; operationally_recovered_but_not_observed: number };
+  C4_address_three_restorations: { rows: Array<{ case: string; operational_restoration: string; address_restoration: string; observability_restoration: string; mean_address_integrity: number }> };
 }
 export interface RepairLibraryOut {
   actions: RepairActionSpec[]; stresses: Record<string, { family: string; label: string; onset: number }>; controllers: string[]; failure_classes: string[]; horizons: Record<'short' | 'medium' | 'long', number>; recovery_window: number; decision_tick: number; stress_tick: number;
-  has_results: boolean; results: Record<string, unknown> | null; refine: Record<string, unknown> | null; controller_results: Record<string, unknown> | null; final: { stress_table: StressRow[]; resource_non_monotonicity: Record<string, { effective_band: [number | null, number | null]; phases: Array<{ phase: string; from: number; to: number }> }> } | null;
+  has_results: boolean; results: Record<string, unknown> | null; refine: Record<string, unknown> | null; controller_results: Record<string, unknown> | null; cross: CrossResults | null; final: { stress_table: StressRow[]; resource_non_monotonicity: Record<string, { effective_band: [number | null, number | null]; phases: Array<{ phase: string; from: number; to: number }> }> } | null;
 }
 export const repairLibrary = async () => { const r = await fetch(`${API}/repair-library`); if (!r.ok) throw new Error(`repair-library: ${r.status}`); return r.json() as Promise<RepairLibraryOut>; };
 export const repairRun = (body: { stress: string; seed?: number; controller?: string | null; actions?: Array<{ action: string; magnitude: number; duration: number; t: number }> }) => post<RepairRunOut>('/repair-run', body);

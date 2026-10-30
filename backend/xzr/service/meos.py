@@ -558,11 +558,9 @@ def repair_run(request: Request, body: dict[str, Any]) -> dict:
     injected = [i for i in rec["interventions"] if i not in base]
     t_act = min([a["t"] for a in norm] + [onset + 13])
     ev = R6.evaluate(rec, R6.reference(seed), [*reps, *injected], t_act)
-    b = _s6("_refine")
-    irr = None
-    if b and st:
-        eff_ticks = [t for w in b["B1_windows"] if w["stress"] == sid for t in w["effective_ticks"]]
-        irr = (max(eff_ticks) + 1) if eff_ticks else None
+    fin = _s6("_final")
+    row = next((r for r in (fin or {}).get("stress_table", []) if r["stress"] == sid), None)
+    irr = row["irreversible_tick"] if row else None  # null for a window still open at the end of the tested range (OPEN_THROUGH_TESTED_LIMIT): no irreversible marker is drawn
     rep = RE.build(st, onset, norm, rec, ev, rec["controller"]["log"] if ctl else None, irr)
     topo_rec = {**rec, "controller": {"kind": rec["controller"]["kind"], "log": [], "attempts": rec["controller"]["attempts"]}}  # the route topology reads the stage 5 controller log; a repair controller's log is returned in ``repair``
     return {"record": rec, "summary": A.summarize(rec), "paths": S4.path_activity(rec), "topology": R5.topology(topo_rec), "repair": rep, "replay_identical": E.replay(rec)["identical"]}

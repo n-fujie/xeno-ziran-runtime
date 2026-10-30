@@ -95,6 +95,9 @@ export const SHOTS = {
   '67-technical-repair-figure': 'tech=ncb&stress=coupling gain 0.5&ract=resource.pulse/1/0/113&seed=1&tick=200&|eco-repair-figure',
   '68-technical-overshoot-figure': 'tech=ncb&stress=coupling gain 0.5&ract=resource.pulse/4/0/113&seed=1&tick=479&|eco-repair-figure',
   '69-research-map-repair-layers': 'tech=ncb&stress=coupling gain 0.5&ract=resource.pulse/1/0/113&seed=1&tick=120&layer=repair.damaged,repair.repairable,repair.world,repair.repaired&|eco-research-map',
+  '71-mfs-repairability': 'tab=research&stress=coupling gain 0.5&ract=resource.pulse/1/0/113&seed=1&|eco-mfs-repairability',
+  '72-address-three-restorations': 'tab=research&stress=Address partial 0.5&ract=address.restore/0/0/113&seed=1&|eco-address-three',
+  '73-observation-vs-operational': 'tab=research&stress=coupling gain 0.5&ract=resource.pulse/1/0/113&seed=1&|eco-observation-recovery',
   '70-replay-repair-markers': 'tab=research&stress=coupling gain 0.5&ract=resource.pulse/4/0/113&seed=1&|eco-replay',
 };
 

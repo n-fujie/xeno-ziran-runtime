@@ -5,6 +5,7 @@
 - Combined *stresses* (two stresses at once) and their combined repairs.
 
 **Unverified**
+- The irreversible tick of the three windows that were still open at tick 330: it was not found. The long horizon (480) leaves less than 60 ticks after an action later than tick 420, so the range cannot be extended with the present horizons; a longer horizon is needed.
 - Whether more seeds would turn the near misses (the Address restoration with a pulse at the decision tick; M2 and its neighbours at tick 114-118) into validated settings or reject them.
 - Windows beyond the one-tick range for settings not measured at one-tick resolution; settings outside the grids of magnitudes and durations.
 - The fragmentation of the timing windows (gaps inside a window) is recorded, not explained.

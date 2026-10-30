@@ -311,6 +311,99 @@
     "quality": "balanced"
    }
   },
+  "71-mfs-repairability": {
+   "query": "tab=research&stress=coupling gain 0.5&ract=resource.pulse/1/0/113&seed=1&|eco-mfs-repairability",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -26.000000000000007,
+     35.99999999999998,
+     98.00000000000001
+    ],
+    "target": [
+     -4,
+     -26,
+     -6
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1280,
+     807
+    ],
+    "quality": "balanced"
+   }
+  },
+  "72-address-three-restorations": {
+   "query": "tab=research&stress=Address partial 0.5&ract=address.restore/0/0/113&seed=1&|eco-address-three",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -26.000000000000007,
+     35.99999999999998,
+     98.00000000000001
+    ],
+    "target": [
+     -4,
+     -26,
+     -6
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1280,
+     807
+    ],
+    "quality": "balanced"
+   }
+  },
+  "73-observation-vs-operational": {
+   "query": "tab=research&stress=coupling gain 0.5&ract=resource.pulse/1/0/113&seed=1&|eco-observation-recovery",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -26.000000000000007,
+     35.99999999999998,
+     98.00000000000001
+    ],
+    "target": [
+     -4,
+     -26,
+     -6
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1280,
+     807
+    ],
+    "quality": "balanced"
+   }
+  },
   "70-replay-repair-markers": {
    "query": "tab=research&stress=coupling gain 0.5&ract=resource.pulse/4/0/113&seed=1&|eco-replay",
    "viewport": [

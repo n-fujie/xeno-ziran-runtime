@@ -1,0 +1,109 @@
+"""Stage 6: the saved results say what the document says (the numbers of the document come from these files), and the semantics that were corrected are kept."""
+
+from __future__ import annotations
+
+import csv
+import gzip
+import json
+import subprocess
+import sys
+from pathlib import Path
+
+import pytest
+
+DOCS = Path(__file__).resolve().parents[2] / "docs" / "ecosystem"
+need = pytest.mark.skipif(not (DOCS / "experiments_stage6_final.json").exists(), reason="the stage 6 experiments have not been run")
+
+
+def load(name: str) -> dict:
+    return json.loads((DOCS / f"experiments_stage6{name}.json").read_text())
+
+
+@need
+def test_an_open_window_is_open_through_the_tested_limit_and_has_no_irreversible_tick():
+    rows = {r["stress"]: r for r in load("_final")["stress_table"]}
+    for r in rows.values():
+        if r["irreversibility"] == "OPEN_THROUGH_TESTED_LIMIT":
+            assert r["irreversible_tick"] is None and r["latest_successful_repair_tick"] == r["tested_range_end"] == 330  # the end of the range is not a closure
+        elif r["irreversibility"] == "CLOSED":
+            assert r["irreversible_tick"] == r["latest_successful_repair_tick"] + 1 and r["tested_range_end"] is None
+        else:
+            assert r["irreversibility"] == "NO_EFFECTIVE_TICK" and r["irreversible_tick"] is None and r["latest_successful_repair_tick"] is None
+    assert {k: v["irreversibility"] for k, v in rows.items() if v["irreversibility"] == "OPEN_THROUGH_TESTED_LIMIT"}.keys() == {"coupling gain 0.5", "renewal stopped", "Address partial 0.5"}
+    assert [r["irreversible_tick"] for r in rows.values() if r["irreversibility"] == "CLOSED"] == [110, 112, 121]
+
+
+@need
+def test_the_three_pulse_windows_that_stayed_open_were_measured_to_tick_330():
+    b = load("_refine")
+    assert b["B1_extension"]["ticks"] == [171, 330] and b["B1_extension"]["windows_extended"] == 3
+    want = {("coupling gain 0.5", (("resource.pulse", 1.0, 0),)), ("Address partial 0.5", (("address.restore", 0.0, 0), ("resource.pulse", 1.0, 0))), ("renewal stopped", (("renewal.restart", 0.0, 0), ("resource.pulse", 1.0, 0)))}
+    got = {(w["stress"], tuple(map(tuple, w["parts"]))): w for w in b["B1_windows"] if w["latest_effective_tick"] == 330}
+    assert set(got) == want
+    for w in got.values():
+        assert w["effective_intervals"][-1][1] == 330 and w["ticks_tested"][1] == 330 and len(w["per_tick"]) == 230  # every tick 101-330 has its per-tick result, failures included
+
+
+@need
+def test_every_cell_of_the_grid_is_in_the_csv_whatever_its_outcome():
+    a = load("")
+    rows = list(csv.DictReader((DOCS / "experiments_stage6_cells.csv").open()))
+    assert len(rows) == len(a["table"]) and {"effective", "partial", "not effective"} == {r["status"] for r in rows}
+    assert sum(r["status"] == "not effective" for r in rows) > sum(r["status"] == "effective" for r in rows)  # failures outnumber successes and none was dropped
+    t = list(csv.DictReader((DOCS / "experiments_stage6_results_table.csv").open()))
+    assert [r["irreversibility"] for r in t].count("OPEN_THROUGH_TESTED_LIMIT") == 3 and all(r["irreversible_tick"] == "" for r in t if r["irreversibility"] == "OPEN_THROUGH_TESTED_LIMIT")
+
+
+@need
+def test_the_raw_rows_keep_the_seed_sets_apart_and_every_run():
+    with gzip.open(DOCS / "experiments_stage6_raw.jsonl.gz", "rt") as f:
+        seeds = {json.loads(line)["seed"] for line in f}
+    assert seeds == {1, 2, 3, 4, 5}  # exploration only: validation (6-10) and evaluation (11-30) are never mixed into it
+    a = load("")
+    assert a["seeds"] == {"exploration": [1, 2, 3, 4, 5], "validation": [6, 7, 8, 9, 10], "evaluation": [11, 30]} and a["counts"]["exploration_runs"] == 12390
+    for n in ("", "_refine", "_cross", "_controllers", "_final"):
+        assert (DOCS / f"experiments_stage6{n}_all_horizons_criterion.json").exists()  # the results of the first criterion are kept
+
+
+@need
+def test_the_resource_pulse_is_not_monotone_for_the_coupling_stress():
+    p = next(s for s in load("_refine")["B2_pulse_sweeps"] if s["stress"] == "coupling gain 0.5")
+    assert p["effective_band"] == [0.6, 2.5]
+    ph = {r["magnitude"]: r["phase"] for r in p["rows"]}
+    assert ph[0.5] == "insufficient intervention" and ph[0.6] == "effective recovery" and ph[2.5] == "effective recovery" and ph[2.6] == "overshoot" and ph[6.0] == "overshoot"
+
+
+@need
+def test_stage_5_results_stand_under_the_stage_6_criterion():
+    c = load("_refine")["B4_stage5_consistency"]["by_seed_set"]
+    for v in c.values():
+        n = v["stage6_long"].split("/")[1]
+        assert v["stage5_style_active_at_300"] == v["stage6_short"] == v["stage6_medium"] == v["stage6_long"] == f"{n}/{n}"
+
+
+@need
+def test_the_controllers_say_what_the_document_says():
+    c = load("_controllers")
+    idx = {(s["stress"], s["controller"]): s["success_long"]["k"] for s in c["summary"]}
+    assert (idx[("coupling gain 0.5", "fixed")], idx[("coupling gain 0.5", "cost_aware")], idx[("coupling gain 0.5", "rule_based")]) == (20, 20, 0)  # a known fixed repair equals the cost-aware one; restoring the parameter alone is null
+    assert (idx[("Address partial 0.5", "cost_aware")], idx[("Address partial 0.5", "rule_based")]) == (0, 8)  # the cost-aware controller is worse than the simple rule here
+    assert idx[("history lost", "rule_based")] == idx[("history lost", "cost_aware")] == 9 and idx[("coupling gain 0.3 (stronger drop)", "fixed")] == 0  # a held-out stronger drop is not generalised
+    fp = {s["controller"]: s for s in c["false_positives"]}
+    assert all(fp[k]["mean_attempts"] == 0 for k in ("fixed", "rule_based", "cost_aware", "delayed", "none")) and fp["noisy"]["mean_attempts"] > 0 and all(s["success_long"]["k"] == 20 for s in fp.values())
+    assert c["seeds"]["evaluation"] == [11, 30]
+
+
+@need
+def test_the_address_repair_is_three_restorations_and_the_observation_is_not_the_run():
+    x = load("_cross")
+    rows = {r["case"]: r for r in x["C4_address_three_restorations"]["rows"]}
+    r113 = rows["Address restore at 113"]
+    assert r113["operational_restoration"] == "0/5" and r113["address_restoration"] == "5/5"  # the Address returns, the operation does not
+    assert x["C3_observation"]["operationally_recovered_but_not_observed"] > 0
+    assert all(r["agrees"] for r in x["C3_observation"]["rows"] if r["observation"] == "full observation")
+
+
+@need
+def test_the_document_is_what_the_data_produce():
+    out = subprocess.run([sys.executable, str(Path(__file__).resolve().parents[1] / "scripts" / "make_stage6_doc.py"), "--check"], capture_output=True, text=True, env={"PYTHONPATH": str(Path(__file__).resolve().parents[1]), "PATH": "/usr/bin:/bin"})
+    assert out.returncode == 0, out.stderr[-400:]

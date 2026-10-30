@@ -65,8 +65,8 @@ def stress_table() -> str:
         hz = r["horizons_of_reference_repair"]
         hzt = "-" if not hz else (f"{hz['short']}/{hz['n']}, {hz['medium']}/{hz['n']}, {hz['long']}/{hz['n']}" if "short" in hz else "combined: see section 14")
         rows.append([r["label"], wtext(r["internal_reconfiguration"]["windows"]), wtext(r["world_single"]["windows"]), wtext(r["combined"]["windows"]),
-                     "; ".join(f"{m['action']} {m['magnitude']}" for m in r["minimum_effective"]) or "-", wtext(r["timing_window_fragments"]), (f">= {r['tested_range_end']} (window still open at the end of the tested range)" if r["window_open_at_end_of_tested_range"] else r["latest_successful_repair_tick"] if r["latest_successful_repair_tick"] is not None else "-"),
-                     (f"not reached: no closure found up to tick {r['tested_range_end']}" if r["window_open_at_end_of_tested_range"] else r["earliest_irreversible_tick"] if r["earliest_irreversible_tick"] is not None else "from the first tested tick (101)"), hzt,
+                     "; ".join(f"{m['action']} {m['magnitude']}" for m in r["minimum_effective"]) or "-", wtext(r["timing_window_fragments"]), (f"OPEN_THROUGH_TESTED_LIMIT: effective at every tested tick to {r['tested_range_end']}" if r["irreversibility"] == "OPEN_THROUGH_TESTED_LIMIT" else r["latest_successful_repair_tick"] if r["latest_successful_repair_tick"] is not None else "-"),
+                     ("null (OPEN_THROUGH_TESTED_LIMIT: no closure found up to tick " + str(r["tested_range_end"]) + ")" if r["irreversibility"] == "OPEN_THROUGH_TESTED_LIMIT" else r["irreversible_tick"] if r["irreversible_tick"] is not None else "from the first tested tick (101): NO_EFFECTIVE_TICK"), hzt,
                      (f"{ref['normalised_cost_equal_weights']} ({part_text(ref['parts'])} @{ref['t']})" if ref else "-"), r["unrepaired_collapse_tick"], f"**{r['classification_at_decision_tick_113']}** / **{r['classification_at_any_tested_tick']}**"])
     return tbl(["stress", "internal reconfiguration: effective ticks", "world-state repair (single): effective ticks", "combined repair: effective ticks", "minimum effective action", "all effective ticks", "latest successful repair tick", "earliest irreversible tick",
                 "reference repair, exploration seeds ok at short / medium / long", "cost of the reference repair (equal-weight normalised) and its setting", "unrepaired collapse tick", "classification: at the decision tick 113 / at any tested tick"], rows)
@@ -233,14 +233,14 @@ def delayed_text() -> str:
     lines = []
     for r in ST:
         late = [w for w in r["timing_window_fragments"] if w[1] >= (r["unrepaired_collapse_tick"] or 999)]
-        lines.append(f"- {r['label']}: " + (f"effective ticks at or after the unrepaired collapse ({r['unrepaired_collapse_tick']}): {wtext(late)}" if late else f"no tested setting is effective at any tick from the unrepaired collapse ({r['unrepaired_collapse_tick']}) to 170"))
+        lines.append(f"- {r['label']}: " + (f"effective ticks at or after the unrepaired collapse ({r['unrepaired_collapse_tick']}): {wtext(late)}" if late else f"no tested setting is effective at any tick from the unrepaired collapse ({r['unrepaired_collapse_tick']}) to {r.get('tested_range_end', 330)}"))
     return "\n".join(lines)
 
 
 def orig_vs_new() -> str:
     old = {r["stress"]: r for r in F0["stress_table"]}
     return tbl(["stress", "original criterion (all three horizons at every tick): effective ticks", "latest / earliest irreversible", "corrected criterion (applicable horizons): effective ticks", "latest / earliest irreversible"],
-               [[r["label"], wtext(old[r["stress"]]["timing_window_fragments"]), f"{old[r['stress']]['latest_successful_repair_tick']} / {old[r['stress']]['earliest_irreversible_tick']}", wtext(r["timing_window_fragments"]), f"{r['latest_successful_repair_tick']} / {r['earliest_irreversible_tick']}"] for r in ST])
+               [[r["label"], wtext(old[r["stress"]]["timing_window_fragments"]), f"{old[r['stress']]['latest_successful_repair_tick']} / {old[r['stress']].get('earliest_irreversible_tick', old[r['stress']].get('irreversible_tick'))}", wtext(r["timing_window_fragments"]), f"{r['latest_successful_repair_tick']} / {r['irreversible_tick']} ({r['irreversibility']})"] for r in ST])
 
 
 def build() -> str:

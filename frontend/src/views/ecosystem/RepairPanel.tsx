@@ -18,7 +18,7 @@ export default function RepairPanel({ lib, repair, initial, busy, onRun }: { lib
   const row = (i: number, patch: Partial<Row>) => setRows(rows.map((r, k) => (k === i ? { ...r, ...patch } : r)));
   const spec = (id: string) => lib.actions.find((a) => a.id === id);
   const fail = repair ? failureOf(repair) : null;
-  const ids = Object.keys(lib.stresses);
+  const ids = Object.keys(lib.stresses), cross = lib.cross;
   return (
     <fieldset className="eco-group" data-testid="eco-repair-panel"><legend>world-state repair (sixth stage)</legend>
       <div className="eco-note"><b>Three different things.</b> Internal reconfiguration (a component switched on or off) is class A; world-state repair (the coupling, the resource, the renewal, the Address) is class B; observation repair changes only what is observed and is shown in the observation table of the document. They are never counted as one.</div>
@@ -47,10 +47,10 @@ export default function RepairPanel({ lib, repair, initial, busy, onRun }: { lib
 
       <details open><summary className="dim">reachable recovery · by stress and tick (tested action space)</summary>
         {final.length ? <div data-testid="eco-recovery-map">{final.map((r: StressRow) => (
-          <div key={r.stress} style={{ margin: '6px 0' }}><div className="dim">{`${r.label}: ${r.classification_at_any_tested_tick}${r.window_open_at_end_of_tested_range ? ` · a window is still open at tick ${r.tested_range_end}, the end of the tested range: no closure found` : r.latest_successful_repair_tick !== null ? ` · latest successful repair tick ${r.latest_successful_repair_tick} · earliest irreversible ${r.earliest_irreversible_tick}` : ' · no tested action recovers it at any tested tick'}`}</div>
+          <div key={r.stress} style={{ margin: '6px 0' }}><div className="dim">{`${r.label}: ${r.classification_at_any_tested_tick}${r.irreversibility === 'OPEN_THROUGH_TESTED_LIMIT' ? ` · OPEN_THROUGH_TESTED_LIMIT: still effective at tick ${r.tested_range_end}, the end of the tested range; irreversible tick null` : r.latest_successful_repair_tick !== null ? ` · latest successful repair tick ${r.latest_successful_repair_tick} · earliest irreversible ${r.irreversible_tick}` : ' · no tested action recovers it at any tested tick'}`}</div>
             <div style={{ display: 'flex', height: 12 }} title="ticks 101-330, one cell per tick">{recoveryStrip(r).map((c) => <i key={c.tick} title={`tick ${c.tick}: ${c.classes.join(' + ')}`} style={{ flex: 1, background: CLASS_COLOR[c.classes[0]], opacity: c.classes[0] === 'none' ? 0.35 : 1 }} />)}</div></div>))}
           <div className="eco-legend">{(Object.keys(CLASS_COLOR) as RecoveryClass[]).map((k) => <span key={k}><i style={{ background: CLASS_COLOR[k] }} />{k === 'none' ? 'no tested action recovers' : `recovered by ${k === 'internal' ? 'internal reconfiguration' : k === 'world' ? 'a world-state repair' : 'a combined repair'}`}</span>)}</div>
-          <div className="eco-note">A coloured cell is a tick at which a tested setting recovered the run sustained to all three horizons on all exploration and all validation seeds. The strip is a region of the action space that was tested, not of the world; the collapse of the unrepaired run is at about tick 145.</div></div> : <div className="eco-note">Run backend/scripts/meos_experiments_stage6_final.py to build the table.</div>}
+          <div className="eco-note">A coloured cell is a tick at which a tested setting recovered the run, sustained to every applicable horizon, on all exploration and all validation seeds. The strip is a region of the action space that was tested, not of the world; the unrepaired run collapses at tick 144-159. OPEN_THROUGH_TESTED_LIMIT means the window is still effective at tick 330, the end of the tested range: it has not closed and no irreversible tick is claimed.</div></div> : <div className="eco-note">Run backend/scripts/meos_experiments_stage6_final.py to build the table.</div>}
       </details>
 
       <details open><summary className="dim">stress table: repairability, windows, minimum effective action</summary>
@@ -60,6 +60,20 @@ export default function RepairPanel({ lib, repair, initial, busy, onRun }: { lib
       <details open><summary className="dim">resource pulse: insufficient / effective / overshoot</summary>
         <table className="eco-table" data-testid="eco-pulse-bands"><thead><tr><th>stress</th><th>effective band</th><th>phases by pulse size</th></tr></thead>
           <tbody>{Object.entries(lib.final?.resource_non_monotonicity ?? {}).map(([sid, p]) => <tr key={sid}><td>{lib.stresses[sid]?.label ?? sid}</td><td>{p.effective_band[0] === null ? 'none' : `${p.effective_band[0]} - ${p.effective_band[1]}`}</td><td>{p.phases.map((b) => `${b.phase} ${b.from}-${b.to}`).join('; ')}</td></tr>)}</tbody></table></details>
+
+      {cross && (
+        <>
+          <details open><summary className="dim">repairability by MFS (the repairs validated on the full arrangement, tried on each MFS, seeds 1-5)</summary>
+            <table className="eco-table" data-testid="eco-mfs-repairability" style={{ width: 430, maxWidth: "100%", tableLayout: "fixed", fontSize: 9, wordBreak: "break-word" }}><thead><tr><th>stress</th>{Object.keys(cross.C1_mfs.profile).map((m) => <th key={m}>{m}</th>)}</tr></thead>
+              <tbody>{Object.keys(Object.values(cross.C1_mfs.profile)[0] ?? {}).map((sid) => <tr key={sid}><td>{lib.stresses[sid]?.label ?? sid}</td>{Object.values(cross.C1_mfs.profile).map((p, i) => <td key={i}>{p[sid]}</td>)}</tr>)}</tbody></table></details>
+          <details open><summary className="dim">Address: operational, Address and observability restoration are three measures</summary>
+            <table className="eco-table" data-testid="eco-address-three"><thead><tr><th>case</th><th>operation restored</th><th>Address restored</th><th>observer agrees</th><th>Address integrity</th></tr></thead>
+              <tbody>{cross.C4_address_three_restorations.rows.map((r) => <tr key={r.case}><td>{r.case}</td><td>{r.operational_restoration}</td><td>{r.address_restoration}</td><td>{r.observability_restoration}</td><td>{r.mean_address_integrity}</td></tr>)}</tbody></table></details>
+          <details open><summary className="dim">observation: operational recovery is not observed recovery</summary>
+            <table className="eco-table" data-testid="eco-observation-recovery"><thead><tr><th>run</th><th>observation</th><th>operational</th><th>observed</th><th>observability</th><th>operational recovery</th><th>observed recovery</th></tr></thead>
+              <tbody>{cross.C3_observation.rows.filter((r) => r.run.startsWith('coupling stress, resource pulse')).map((r) => <tr key={r.observation}><td>{r.run.slice(0, 40)}</td><td>{r.observation}</td><td>{r.operational_state}</td><td>{r.observed_state}</td><td>{r.observability_status}</td><td>{r.operational_recovery ? 'yes' : 'no'}</td><td>{r.observed_recovery ? 'yes' : 'no'}</td></tr>)}</tbody></table></details>
+        </>
+      )}
 
       <details><summary className="dim">actions the engine cannot do (never run or simulated by something else)</summary>
         <ul>{notImpl.map((a) => <li key={a.id}><b>{a.id}</b>: {a.note}</li>)}{lib.actions.filter((a) => a.status === 'proxy').map((a) => <li key={a.id}><b>{a.id}</b> (proxy): {a.note}</li>)}</ul></details>

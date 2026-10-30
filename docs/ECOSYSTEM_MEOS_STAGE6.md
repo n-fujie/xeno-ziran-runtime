@@ -12,7 +12,9 @@ recover a sustainable operation, and under what conditions? Recovery is not a fl
 
 ## 2. Repository state
 
-(pending)
+- Worktree `/Users/user/Desktop/BIM/xeno-ziran-runtime-meos`, branch `feat/meos-ecosystem`, from the zrs baseline `ec9667e`. **Local only: not pushed, not merged, not deployed.**
+- Stage 5 final commit: `1d1e331`. Stage 6 commits follow it on the same branch (the repair action space, the three pipelines, the corrected criterion, the controllers, the interface, the evidence); the final commit's id is in the final report and in the manifest of the snapshot archive.
+- The baseline result digest, the trace digest and the 264 stored runs are unchanged; every Stage 5 result file is unchanged (the Stage 5 experiments were re-run for the regression and agree with them).
 
 ## 3. Stage 5 inheritance
 
@@ -79,12 +81,12 @@ The repair cost model is synthetic: it is a measurement of this model's traces, 
 
 | stress | original criterion (all three horizons at every tick): effective ticks | latest / earliest irreversible | corrected criterion (applicable horizons): effective ticks | latest / earliest irreversible |
 |---|---|---|---|---|
-| coupling weakened (gain 0.5) | 101-105, 108-117, 124-140 | 140 / 141 | 101-105, 108-117, 124-330 | 330 / None |
-| resource reduced (regrow 0.01, charge 0.2) | 101-109 | 109 / 110 | 101-109 | 109 / 110 |
-| renewal efficiency 0.6 | 101-111 | 111 / 112 | 101-111 | 111 / 112 |
-| renewal stopped (feedback removed) | 101-106, 121, 130-140 | 140 / 141 | 101-106, 121, 130-330 | 330 / None |
-| Address degraded (A2 partial 50 %) | 101-109, 131-133, 135, 140 | 140 / 141 | 101-109, 131-133, 135, 140-330 | 330 / None |
-| history lost | 101-120 | 120 / 121 | 101-120 | 120 / 121 |
+| coupling weakened (gain 0.5) | 101-105, 108-117, 124-140 | 140 / 141 | 101-105, 108-117, 124-330 | 330 / None (OPEN_THROUGH_TESTED_LIMIT) |
+| resource reduced (regrow 0.01, charge 0.2) | 101-109 | 109 / 110 | 101-109 | 109 / 110 (CLOSED) |
+| renewal efficiency 0.6 | 101-111 | 111 / 112 | 101-111 | 111 / 112 (CLOSED) |
+| renewal stopped (feedback removed) | 101-106, 121, 130-140 | 140 / 141 | 101-106, 121, 130-330 | 330 / None (OPEN_THROUGH_TESTED_LIMIT) |
+| Address degraded (A2 partial 50 %) | 101-109, 131-133, 135, 140 | 140 / 141 | 101-109, 131-133, 135, 140-330 | 330 / None (OPEN_THROUGH_TESTED_LIMIT) |
+| history lost | 101-120 | 120 / 121 | 101-120 | 120 / 121 (CLOSED) |
 
 Counts: 27 single candidates, 26 validated, 3 near misses; 270 combined settings (pairs of different actions at ticks [113, 120, 130]), 21 candidates, 14 validated, 6 of them synergistic (neither part effective alone at that tick), 9 near misses.
 The unrepaired runs: Address degraded (A2 partial 50 %): {'failed': 5}, coupling weakened (gain 0.5): {'failed': 5}, history lost: {'failed': 5}, renewal efficiency 0.6: {'failed': 5}, renewal stopped (feedback removed): {'failed': 5}, resource reduced (regrow 0.01, charge 0.2): {'failed': 5} (all on exploration seeds; no seed recovers without a repair).
@@ -96,11 +98,11 @@ A *combined* recovery counts only at ticks where neither part is effective alone
 
 | stress | internal reconfiguration: effective ticks | world-state repair (single): effective ticks | combined repair: effective ticks | minimum effective action | all effective ticks | latest successful repair tick | earliest irreversible tick | reference repair, exploration seeds ok at short / medium / long | cost of the reference repair (equal-weight normalised) and its setting | unrepaired collapse tick | classification: at the decision tick 113 / at any tested tick |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| coupling weakened (gain 0.5) | none | 101-105, 108-117, 124-330 | none | coupling.gradual 1.0; coupling.restore 0.7; resource.pulse 0.5 | 101-105, 108-117, 124-330 | >= 330 (window still open at the end of the tested range) | not reached: no closure found up to tick 330 | 5/5, 5/5, 5/5 | 0.5486 (coupling.restore 1.0 @104) | 149 | **externally repairable** / **externally repairable** |
+| coupling weakened (gain 0.5) | none | 101-105, 108-117, 124-330 | none | coupling.gradual 1.0; coupling.restore 0.7; resource.pulse 0.5 | 101-105, 108-117, 124-330 | OPEN_THROUGH_TESTED_LIMIT: effective at every tested tick to 330 | null (OPEN_THROUGH_TESTED_LIMIT: no closure found up to tick 330) | 5/5, 5/5, 5/5 | 0.5486 (coupling.restore 1.0 @104) | 149 | **externally repairable** / **externally repairable** |
 | resource reduced (regrow 0.01, charge 0.2) | 101-109 | none | none | internal.m2_tap 0.0 | 101-109 | 109 | 110 | 5/5, 5/5, 5/5 | 0.9895 (internal.m2_tap @104) | 149 | **neither (under the tested actions)** / **internally reconfigurable** |
 | renewal efficiency 0.6 | 101-111 | 101-104 | none | internal.m2_tap 0.0; renewal.restore 1.0 | 101-111 | 111 | 112 | 5/5, 5/5, 5/5 | 0.6668 (renewal.restore 1.0 @104) | 149 | **neither (under the tested actions)** / **both** |
-| renewal stopped (feedback removed) | none | none | 101-106, 121, 130-330 | - | 101-106, 121, 130-330 | >= 330 (window still open at the end of the tested range) | not reached: no closure found up to tick 330 | combined: see section 14 | 0.7246 (renewal.restart + resource.pulse 0.5 @130) | 144 | **neither (under the tested actions)** / **externally repairable** |
-| Address degraded (A2 partial 50 %) | none | none | 101-109, 131-133, 135, 140-330 | - | 101-109, 131-133, 135, 140-330 | >= 330 (window still open at the end of the tested range) | not reached: no closure found up to tick 330 | - | - | 149 | **inconclusive** / **externally repairable** |
+| renewal stopped (feedback removed) | none | none | 101-106, 121, 130-330 | - | 101-106, 121, 130-330 | OPEN_THROUGH_TESTED_LIMIT: effective at every tested tick to 330 | null (OPEN_THROUGH_TESTED_LIMIT: no closure found up to tick 330) | combined: see section 14 | 0.7246 (renewal.restart + resource.pulse 0.5 @130) | 144 | **neither (under the tested actions)** / **externally repairable** |
+| Address degraded (A2 partial 50 %) | none | none | 101-109, 131-133, 135, 140-330 | - | 101-109, 131-133, 135, 140-330 | OPEN_THROUGH_TESTED_LIMIT: effective at every tested tick to 330 | null (OPEN_THROUGH_TESTED_LIMIT: no closure found up to tick 330) | - | - | 149 | **inconclusive** / **externally repairable** |
 | history lost | 101-113 | none | 114-120 | internal.m2_tap 0.0 | 101-120 | 120 | 121 | 5/5, 5/5, 5/5 | 0.4981 (internal.m2_tap @104) | 159 | **internally reconfigurable** / **both** |
 
 | stress | flags | failure ids over the tested grid (cells not effective) |
@@ -174,11 +176,11 @@ Reachable recovery by tick (tested action space, one-tick resolution):
 **Delayed but recoverable** (effective at or after the unrepaired collapse):
 
 - coupling weakened (gain 0.5): effective ticks at or after the unrepaired collapse (149): 124-330
-- resource reduced (regrow 0.01, charge 0.2): no tested setting is effective at any tick from the unrepaired collapse (149) to 170
-- renewal efficiency 0.6: no tested setting is effective at any tick from the unrepaired collapse (149) to 170
+- resource reduced (regrow 0.01, charge 0.2): no tested setting is effective at any tick from the unrepaired collapse (149) to None
+- renewal efficiency 0.6: no tested setting is effective at any tick from the unrepaired collapse (149) to None
 - renewal stopped (feedback removed): effective ticks at or after the unrepaired collapse (144): 130-330
 - Address degraded (A2 partial 50 %): effective ticks at or after the unrepaired collapse (149): 140-330
-- history lost: no tested setting is effective at any tick from the unrepaired collapse (159) to 170
+- history lost: no tested setting is effective at any tick from the unrepaired collapse (159) to None
 
 ## 9. Minimum effective interventions
 
@@ -561,18 +563,115 @@ A route refuses an action that is not implemented, an observation action (class 
 **Research tab: the repair panel** (`RepairPanel.tsx`): stress selector, repair mode (controller or explicit actions: action, magnitude, duration, tick; a second action makes a combined repair), RUN; the three horizons (outcome, latency, secondary collapse, resource exhausted), the raw and normalised costs without a weighted total, the failure class, the controller's decisions (detected, available, rejected, selected, estimated cost, expected recovery, actual result);
 the **reachable-recovery strips** (one cell per tick 101-170 and stress, coloured by what recovers it: internal reconfiguration / world-state repair / combined repair / nothing tested), the stress table (classification at the decision tick and at any tested tick, windows, minimum effective action), the resource-pulse phase bands, and the list of actions the engine cannot do or only approximates.
 
-**Replay timeline** (markers, each with its source: the schedule, the controller log, the status record or a saved result): stress onset, repair decision, repair action, collapse, collapse prevented / full recovery, failed repair, overshoot, secondary collapse, irreversible threshold. A click gives the tick, the detail and the source; the inspection beside it shows the world state (operational, observed, observability), the active route and the MFS of the run.
+**Replay timeline** (markers, each with its source: the schedule, the controller log, the status record or a saved result): stress onset, repair decision, repair action, collapse prevented / full recovery, failed repair, overshoot, secondary collapse, irreversible threshold (only for a window that closed; none for an `OPEN_THROUGH_TESTED_LIMIT` one). The collapse and recovery markers are those of the run's status record and are not repeated by the repair (an earlier version showed the collapse twice). A click gives the tick, the detail and the source; the inspection beside it shows the world state (operational, observed, observability), the active route and the MFS of the run.
 **Research map** layers: damaged path, repairable path, repaired path, temporary bypass, world-state intervention, internal reconfiguration, failed repair (red dotted and crossed for damage and failure, violet for a world-state repair, blue for an internal one, green for a repaired path or a bypass); an internal reconfiguration is never drawn as a world-state repair.
 **Technical view**: a repair figure of seven paths (resource, coupling, history, observation, recovery, Address, M2) with their state at the playhead, the stress with its tick, each repair action that has happened with its tick, magnitude, duration and class, the cost annotation and the operational result at the three horizons; drawn only from the run's events (a repair that did not happen is not drawn; the repair site is where the action acted).
 **Deep links**: `stress=<id>&repair=<controller>` or `stress=<id>&ract=<action>/<magnitude>/<duration>/<tick>[,...]`; parsing, formatting and the plan are tested.
 
+
+**Captures** (`docs/ecosystem/visual/stage6/`, all taken on the final build; camera and viewport records in `cameras-balanced.json`; deep link after `?view=ecosystem&`):
+
+| image | what it shows | deep link |
+|---|---|---|
+| `60-repair-recovered.png` | the three horizons, raw and normalised costs, failure class of a pulse of 1.0 at tick 113 on the coupling stress | `tab=research&stress=coupling gain 0.5&ract=resource.pulse/1/0/113` |
+| `61-repair-overshoot.png` | the same with a pulse of 4.0: secondary collapse at every horizon | `...ract=resource.pulse/4/0/113` |
+| `62-reachable-recovery-map.png` | the strip of each stress over ticks 101-330; `OPEN_THROUGH_TESTED_LIMIT` for three | as 60 |
+| `63-stress-table.png`, `64-pulse-phase-bands.png` | classification and windows per stress; insufficient / effective / overshoot bands | `...&repair=rule_based` |
+| `65-controller-decisions.png`, `66-no-action-available.png` | a cost-aware controller's decisions; a detected Address stress with no available action | `stress=history lost&repair=cost_aware`; `stress=Address partial 0.5&repair=cost_aware` |
+| `67-technical-repair-figure.png`, `68-technical-overshoot-figure.png` | the repair figure of the technical sheet: repaired coupling path with a world-state action on the resource path; the failed path after a pulse of 4.0 | `tech=ncb&...&tick=200`, `...&tick=479` |
+| `69-research-map-repair-layers.png` | damaged, repairable, world-state and repaired layers of the research map at tick 120 | `tech=ncb&...&layer=repair.damaged,...` |
+| `70-replay-repair-markers.png` | the replay markers of an overshooting run: stress, alteration, overshoot, repair, collapse (once) | as 61 |
+| `71-mfs-repairability.png` | repairability of each stress on each MFS | as 60 |
+| `72-address-three-restorations.png` | the Address repair as three measures: operation, Address, observer | `stress=Address partial 0.5&ract=address.restore/0/0/113` |
+| `73-observation-vs-operational.png` | an operationally recovered run observed as collapsed under coarse sampling | as 60 |
+
+Limits of the images: they are pictures of the model's records and of the saved results, not evidence; a click on a marker (tick, source, inspection) is behaviour covered by tests and cannot be written in a URL.
+
 ## 23. Performance
 
-(pending)
+**Method.** The Stage 5 build (`1d1e331`, port 3034) and the Stage 6 build (this tree, port 3031) were measured **interleaved in time**, the order alternating each repetition, balanced tier, 150 frames, 1672 x 808, headless Chromium on the GPU, the preview browser pane closed, nothing built during a run. Conditions: habitat and overview (static, orbit), and with the UI open:
+the RESEARCH tab (`+research`), the technical sheet (`+technical`), the RESEARCH tab with a **repaired run, the repair panel and the recovery map** (`+repair`), the technical sheet with the **repair figure and the repair layers** (`+repairtech`). A build without the repair view ignores the repair parameters, so for Stage 5 the same URLs measure the research tab / technical sheet without a repair; the difference is the cost of what Stage 6 adds.
+Same rule as for Stages 4 and 5, fixed before any of this data: paired ratio per repetition, 95 % bootstrap interval (10 000 resamples, fixed seed); *regression* if the lower bound exceeds 1.05, *no meaningful regression* if the upper bound is below 1.05, otherwise *inconclusive*. Mean FPS is not used.
+
+**The machine was not idle.** The load average at the start of each run is in `perf_stage6/paired/*.load`; three of the 18 runs began at a load of 9-16 (3031_4: 10.86, 3031_7: 9.98, 3034_1: 8.98, 3034_3: 16.42); the others at 3.4-7.3.
+
+| analysis | repetitions | all 48 measures (6 conditions x static/orbit x median/p95/p99/max) |
+|---|---|---|
+| **planned** (repetitions 1-6, fixed in advance) | 6 | 1 regression, 0 no meaningful regression, 47 inconclusive |
+| **extended** (three more repetitions, 7-9, added because the planned ones were noisy) | 9 | 0 regression, 3 no meaningful regression, 45 inconclusive |
+| sensitivity: without the repetitions that contain a high-load run (1, 3, 4) | 6 | 0 regression, 8 no meaningful regression, 40 inconclusive |
+
+**The one flag of the planned analysis is kept:** habitat static p99: 27.05 ms -> 41.65 ms, ratio 1.284 [1.126, 1.727]. It is a 99th-percentile of 150 frames in the plain habitat condition, where the render counters of the two builds are identical (below) and no Stage 6 UI is open; it did **not** reappear with three more repetitions or without the high-load runs. It is reported, not removed, and not explained.
+
+Median and p95, extended analysis (9 repetitions); all measures are in `docs/ecosystem/perf_stage6/paired/analysis_tables.md`:
+
+| condition | mode | measure | Stage 5 (ms) | Stage 6 (ms) | paired ratio S6/S5 | 95 % CI | verdict |
+|---|---|---|---|---|---|---|---|
+| habitat | static | median | 18.5 | 19.1 | 1.038 | [0.935, 1.108] | inconclusive |
+| habitat | static | p95 | 23.8 | 25.4 | 1.043 | [0.921, 1.324] | inconclusive |
+| habitat | orbit | median | 20 | 20.1 | 0.98 | [0.911, 1.052] | inconclusive |
+| habitat | orbit | p95 | 29.8 | 30.4 | 0.973 | [0.884, 1.289] | inconclusive |
+| habitat+repair | static | median | 16.6 | 16.3 | 0.975 | [0.791, 1.11] | inconclusive |
+| habitat+repair | static | p95 | 24.2 | 20 | 0.952 | [0.723, 1.049] | no meaningful regression |
+| habitat+repair | orbit | median | 16.1 | 16.6 | 1.026 | [0.808, 1.16] | inconclusive |
+| habitat+repair | orbit | p95 | 22.5 | 25.7 | 1.058 | [0.899, 1.206] | inconclusive |
+| habitat+repairtech | static | median | 16.4 | 16.4 | 0.994 | [0.777, 1.031] | no meaningful regression |
+| habitat+repairtech | static | p95 | 25.1 | 21.6 | 0.869 | [0.689, 1.296] | inconclusive |
+| habitat+repairtech | orbit | median | 15.8 | 16.2 | 1.013 | [0.778, 1.071] | inconclusive |
+| habitat+repairtech | orbit | p95 | 23 | 24.3 | 1.046 | [0.652, 1.238] | inconclusive |
+| habitat+research | static | median | 16.5 | 16.4 | 0.958 | [0.873, 1.044] | no meaningful regression |
+| habitat+research | static | p95 | 22.3 | 18.7 | 0.889 | [0.751, 1.291] | inconclusive |
+| habitat+research | orbit | median | 16.3 | 16.4 | 1.0 | [0.871, 1.059] | inconclusive |
+| habitat+research | orbit | p95 | 25 | 24.2 | 1.07 | [0.745, 1.114] | inconclusive |
+| habitat+technical | static | median | 16.5 | 16.5 | 1.0 | [0.811, 1.531] | inconclusive |
+| habitat+technical | static | p95 | 19.7 | 20.4 | 0.995 | [0.638, 1.855] | inconclusive |
+| habitat+technical | orbit | median | 16.4 | 16.9 | 0.982 | [0.84, 1.306] | inconclusive |
+| habitat+technical | orbit | p95 | 25.6 | 25.5 | 0.926 | [0.789, 1.505] | inconclusive |
+| overview | static | median | 15.9 | 15.9 | 0.962 | [0.878, 1.118] | inconclusive |
+| overview | static | p95 | 21.5 | 18.2 | 0.805 | [0.558, 1.364] | inconclusive |
+| overview | orbit | median | 17.9 | 17.6 | 0.983 | [0.9, 1.067] | inconclusive |
+| overview | orbit | p95 | 26.8 | 27 | 1.012 | [0.887, 1.474] | inconclusive |
+
+Render counters (median over the repetitions; geometry uploads, programs built, LOD switches and visibility flips are from the orbit's per-frame series):
+
+| condition | build | draw calls | triangles | geometry uploads | programs built | LOD switches | visibility flips |
+|---|---|---|---|---|---|---|---|
+| habitat | stage5 | 428 | 1065364 | 35 | 0 | 144 | 28 |
+| habitat | stage6 | 428 | 1065364 | 35 | 0 | 142 | 28 |
+| overview | stage5 | 457 | 674384 | 21 | 0 | 145 | 64 |
+| overview | stage6 | 457 | 674384 | 21 | 0 | 145 | 64 |
+| habitat+research | stage5 | 385 | 989152 | 38 | 0 | 144 | 28 |
+| habitat+research | stage6 | 385 | 989152 | 38 | 0 | 141 | 28 |
+| habitat+technical | stage5 | 385 | 989152 | 38 | 0 | 143 | 28 |
+| habitat+technical | stage6 | 385 | 989152 | 38 | 0 | 141 | 28 |
+| habitat+repair | stage5 | 385 | 989152 | 38 | 0 | 144 | 28 |
+| habitat+repair | stage6 | 385 | 989288 | 38 | 0 | 144 | 28 |
+| habitat+repairtech | stage5 | 385 | 989152 | 38 | 0 | 142 | 28 |
+| habitat+repairtech | stage6 | 385 | 989288 | 38 | 0 | 143 | 28 |
+
+**Verdict, Stage 6 against Stage 5: no regression is established, and for most measures the data cannot say.** In the extended and the low-load analyses no measure is a regression; in the planned analysis one tail measure was (above). Most intervals are wide (the benchmark was run on a shared machine): the cost of the repair view, the recovery map and the repair figure cannot be separated from noise at this sample size, so a cost of a few percent to
+tens of percent is **not excluded** for the repair and technical conditions. The stage itself is unchanged: draw calls, triangles, geometry uploads, programs built (0 during an orbit), LOD switches and visibility flips are the same in the two builds, except 136 more triangles in the two conditions that open a repaired run (the run's state differs from the unrepaired one; the cause is not investigated). The update cost of the repair overlay itself is not measured separately.
 
 ## 24. Regression
 
-(pending)
+All of it was run on the final tree of this commit (the interface and the document were last changed before the frontend run; the Python code was not changed after the full backend run except the document generator, which only reads saved data).
+
+| check | result |
+|---|---|
+| backend `pytest` (whole suite, 796 tests) | 793 passed, 3 failed. Two are the known failures (below). The third was the document-consistency test, which failed only because the document had not yet been regenerated; after regeneration the three Stage 6 test files (33 tests, including that one) pass. So: 794 passed, 2 known failures |
+| the two known failures | `tests/test_compat.py::test_engine_conformance_against_the_golden_fixture[desktop-scipy]` and `tests/test_lab.py::test_published_records_replay`: same names and same messages as at the baseline (`ec9667e`) and at Stage 5. Neither concerns MEOS-0 or Stage 6; they were not changed or skipped |
+| frontend `vitest` | 275 tests, 0 failures, 0 errors (`evidence/frontend_stage6.junit.xml`) |
+| `tsc -b`, `eslint`, `vite build` | no errors |
+| `ruff`, `mypy` on the MEOS code (`xzr/meos`, `xzr/service/meos.py`, the Stage 6 scripts and tests) | no findings. The whole-repository run reports 39 `ruff` and 89 `mypy` findings in older modules (`hpo`, `study`, `totalobs`, `lab`, `experiments/results`) that this work does not touch; they are not caused by Stage 6 and were not fixed here |
+| replay of the 264 stored runs | 264 / 264 agree (388 s; `evidence/replay_meos_stage6.json`). The runs were not regenerated |
+| baseline result digest | `b4cf1e522e8bee460eab30ee2a3f86ffd703a3f7969dc21271cf0240aa09adc5`, unchanged |
+| baseline trace digest | `bd3e588608139840831c2749b5051ac31a360d91c6a9a0131b9de3f0152ee1b7`, unchanged |
+| Stage 5 reproduction (`reproduce_stage5_subset.py`) | identical: experiment L (history lost), F14 search and its digests, F8 search, F9 search, the first adaptive decisions, the Stage 4 strict nulls (Address collision, stale), the two digests |
+| Stage 6 reproduction (`reproduce_stage6_subset.py`) | identical: 4250 / 4250 rows of the exploration grid, the per-tick window of the coupling pulse, 36 / 36 controller runs (`all_identical: true`) |
+| stored MEOS fixtures | covered by the backend and frontend suites above (the Stage 6 fixture is used by `repair.test.ts` and `RepairPanel.test.tsx`) |
+| engine version | `meos-0.4`, unchanged by Stage 6 |
+
+What this does not show: the reproduction scripts re-run a subset (they are not a re-run of every Stage 6 row); the full results were produced once, and the saved raw rows are for seeds 1-5 only (the other seeds are saved as the summaries derived from them).
 
 ## 25. Failed hypotheses
 
@@ -587,6 +686,8 @@ These hypotheses did **not** hold (or held only in part), and are kept:
 7. **Unknown-stress generalization.** It failed for the stronger coupling drop (0 of 20 for every controller) and for the renewal and resource variations; it held for the tested weaker drop and later onset of the coupling stress.
 8. **A recovery detected by the controller is a skill.** The few recoveries of the noisy controller on history lost are the accidental result of a false detection that acted early.
 9. **The first criterion (all three horizons at every tick) was sound.** It was not: it made every repair after tick 120 impossible by construction and hid the repairs that recover after the collapse. It was corrected after the one-tick results showed it; the first results are kept beside the corrected ones (section 6).
+10. **The end of the tested range is a closure.** The first derived table reported the latest successful tick as 330 and the irreversible tick as 331 for three stresses. 330 is the last tick that was tested, not a place where recovery closed: those windows are `OPEN_THROUGH_TESTED_LIMIT` with `irreversible_tick` null, in the results, the CSV, the interface and this document.
+11. **After the collapse nothing recovers.** It did for three stresses: a pulse-based repair (alone on the coupling stress, with a restart or an Address restoration on the others) recovers at every tested tick after the collapse, to tick 330. The earlier reading was an artefact of the first criterion (section 6).
 
 ## 26. Null results (kept)
 
@@ -615,6 +716,7 @@ These hypotheses did **not** hold (or held only in part), and are kept:
 - Combined *stresses* (two stresses at once) and their combined repairs.
 
 **Unverified**
+- The irreversible tick of the three windows that were still open at tick 330: it was not found. The long horizon (480) leaves less than 60 ticks after an action later than tick 420, so the range cannot be extended with the present horizons; a longer horizon is needed.
 - Whether more seeds would turn the near misses (the Address restoration with a pulse at the decision tick; M2 and its neighbours at tick 114-118) into validated settings or reject them.
 - Windows beyond the one-tick range for settings not measured at one-tick resolution; settings outside the grids of magnitudes and durations.
 - The fragmentation of the timing windows (gaps inside a window) is recorded, not explained.

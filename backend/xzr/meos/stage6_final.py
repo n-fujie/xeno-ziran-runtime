@@ -4,8 +4,8 @@ Definitions (fixed before the readings were taken):
 
   effective tick         a tick at which a tested setting recovers sustained to every horizon on all five exploration seeds AND all five validation seeds (Pipeline B, one-tick resolution; ticks 101-170).
   latest successful repair tick   the last tick at which any tested setting is effective.
-  earliest irreversible tick      the first tick after which no tested setting is effective at any later tested tick (ticks up to 170 at one-tick resolution; up to 330 for the windows still open at 170; up to 200 on the coarse grid). It is the next tick after the latest successful one, and it is a statement
-                          about the tested action space only. **If a window is still effective at the last tick tested, it has not closed: no irreversible tick is given** (``window_open_at_end_of_tested_range``).
+  irreversible tick (``irreversibility``)   the first tick after which no tested setting is effective at any later tested tick (ticks up to 170 at one-tick resolution; up to 330 for the windows still open at 170; up to 200 on the coarse grid). It is the next tick after the latest successful one, and it is a statement
+                          about the tested action space only. **If a window is still effective at the last tick tested, it has not closed: ``irreversibility`` is ``OPEN_THROUGH_TESTED_LIMIT`` and ``irreversible_tick`` is null** (never the next tick). ``CLOSED``: a window ended inside the tested range; ``NO_EFFECTIVE_TICK``: no tested setting is effective at any tested tick.
   first window           the first contiguous run of effective ticks of any setting; ``fragments`` are all of them (the windows are not always contiguous: a gap is recorded, not smoothed).
   reference repair       the validated setting of a stress with the lowest equal-weight normalised cost (switching, collateral disturbance, persistence energy rate, each divided by its maximum over the validated settings): an equal-weight convention, stated, with the raw costs beside it.
   flags                  window closes before the unrepaired collapse (all repairs are timing-limited); only transiently recoverable (a setting recovers at the short horizon on every exploration seed and not at the long one, and nothing is validated); costly (every validated setting is above the cost limit).
@@ -141,7 +141,7 @@ def stress_row(a: dict, b: dict, sid: str) -> dict[str, Any]:
         "internal_reconfiguration": {"effective": bool(win["internal"]), "windows": win["internal"]}, "world_single": {"effective": bool(win["world"]), "windows": win["world"]}, "combined": {"effective": bool(win["combined"]), "windows": win["combined"]},
         "minimum_effective": [{"action": m["action"], "magnitude": m["minimum_effective_magnitude"], "ticks": m.get("effective_ticks")} for m in mins],
         "timing_window_fragments": allw, "first_window": allw[0] if allw else None, "earliest_effective_tick": eff_ticks[0] if eff_ticks else None, "latest_successful_repair_tick": latest,
-        "earliest_irreversible_tick": (latest + 1) if latest is not None and open_end is None else None, "window_open_at_end_of_tested_range": open_end is not None, "tested_range_end": open_end,
+        "irreversible_tick": (latest + 1) if latest is not None and open_end is None else None, "irreversibility": "OPEN_THROUGH_TESTED_LIMIT" if open_end is not None else "CLOSED" if latest is not None else "NO_EFFECTIVE_TICK", "window_open_at_end_of_tested_range": open_end is not None, "tested_range_end": open_end,
         "irreversible_from_first_tested_tick": latest is None, "tested_ticks": [101, 170], "unrepaired_run": {"outcomes_long": na["outcomes_long"], "success": na["long"]},
         "reference_repair": ref,
         "failure_reasons_in_the_tested_grid": dict(failures), "cells_tested": len(rows), "cells_effective": sum(1 for r in rows if r["effective_seeds"] == r["n"]),
