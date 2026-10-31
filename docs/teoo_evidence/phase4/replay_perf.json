@@ -1,0 +1,288 @@
+{
+ "machine": {
+  "platform": "macOS-27.2-arm64-arm-64bit",
+  "python": "3.12.13"
+ },
+ "conditions": [
+  {
+   "targets": 7,
+   "sensors": 4,
+   "time_points": 21,
+   "time_span_s": 24.0,
+   "versions": 4,
+   "repetitions": 15,
+   "every_version_changes_a_sensor": false,
+   "dataset_size_target_sensor_time": 588,
+   "identical_states": true,
+   "cache": {
+    "served_again_same_version": 119,
+    "reused_from_earlier_version": 21,
+    "computed": 7,
+    "computed_fraction": 0.0476
+   },
+   "before_s": {
+    "p50": 0.0045,
+    "p95": 0.0048,
+    "p99": 0.006,
+    "min": 0.0043,
+    "max": 0.006
+   },
+   "after_s": {
+    "p50": 0.0008,
+    "p95": 0.0013,
+    "p99": 0.002,
+    "min": 0.0007,
+    "max": 0.002
+   },
+   "speedup_paired": {
+    "median": 5.58,
+    "min": 2.97,
+    "max": 6.69
+   },
+   "peak_python_memory_mb": {
+    "before": 0.1,
+    "after": 0.1
+   }
+  },
+  {
+   "targets": 50,
+   "sensors": 5,
+   "time_points": 21,
+   "time_span_s": 24.0,
+   "versions": 4,
+   "repetitions": 15,
+   "every_version_changes_a_sensor": false,
+   "dataset_size_target_sensor_time": 5250,
+   "identical_states": true,
+   "cache": {
+    "served_again_same_version": 850,
+    "reused_from_earlier_version": 150,
+    "computed": 50,
+    "computed_fraction": 0.0476
+   },
+   "before_s": {
+    "p50": 0.1379,
+    "p95": 0.4101,
+    "p99": 0.6816,
+    "min": 0.0353,
+    "max": 0.6816
+   },
+   "after_s": {
+    "p50": 0.0145,
+    "p95": 0.0452,
+    "p99": 0.3195,
+    "min": 0.0044,
+    "max": 0.3195
+   },
+   "speedup_paired": {
+    "median": 8.87,
+    "min": 0.82,
+    "max": 26.2
+   },
+   "peak_python_memory_mb": {
+    "before": 0.6,
+    "after": 0.6
+   }
+  },
+  {
+   "targets": 200,
+   "sensors": 20,
+   "time_points": 21,
+   "time_span_s": 24.0,
+   "versions": 4,
+   "repetitions": 7,
+   "every_version_changes_a_sensor": false,
+   "dataset_size_target_sensor_time": 84000,
+   "identical_states": true,
+   "cache": {
+    "served_again_same_version": 3400,
+    "reused_from_earlier_version": 600,
+    "computed": 200,
+    "computed_fraction": 0.0476
+   },
+   "before_s": {
+    "p50": 0.7005,
+    "p95": 1.152,
+    "p99": 1.152,
+    "min": 0.6719,
+    "max": 1.152
+   },
+   "after_s": {
+    "p50": 0.0383,
+    "p95": 0.0846,
+    "p99": 0.0846,
+    "min": 0.0375,
+    "max": 0.0846
+   },
+   "speedup_paired": {
+    "median": 17.91,
+    "min": 12.25,
+    "max": 20.72
+   },
+   "peak_python_memory_mb": {
+    "before": 2.3,
+    "after": 2.3
+   }
+  },
+  {
+   "targets": 1000,
+   "sensors": 100,
+   "time_points": 21,
+   "time_span_s": 24.0,
+   "versions": 4,
+   "repetitions": 3,
+   "every_version_changes_a_sensor": false,
+   "dataset_size_target_sensor_time": 2100000,
+   "identical_states": true,
+   "cache": {
+    "served_again_same_version": 17000,
+    "reused_from_earlier_version": 3000,
+    "computed": 1000,
+    "computed_fraction": 0.0476
+   },
+   "before_s": {
+    "p50": 40.3251,
+    "p95": 42.1058,
+    "p99": 42.1058,
+    "min": 37.7792,
+    "max": 42.1058
+   },
+   "after_s": {
+    "p50": 0.7599,
+    "p95": 0.7664,
+    "p99": 0.7664,
+    "min": 0.75,
+    "max": 0.7664
+   },
+   "speedup_paired": {
+    "median": 52.61,
+    "min": 50.38,
+    "max": 55.41
+   },
+   "peak_python_memory_mb": {
+    "before": 11.3,
+    "after": 11.3
+   }
+  },
+  {
+   "targets": 200,
+   "sensors": 20,
+   "time_points": 201,
+   "time_span_s": 24.0,
+   "versions": 4,
+   "repetitions": 5,
+   "every_version_changes_a_sensor": false,
+   "dataset_size_target_sensor_time": 804000,
+   "identical_states": true,
+   "cache": {
+    "served_again_same_version": 39400,
+    "reused_from_earlier_version": 600,
+    "computed": 200,
+    "computed_fraction": 0.005
+   },
+   "before_s": {
+    "p50": 6.5137,
+    "p95": 6.974,
+    "p99": 6.974,
+    "min": 6.484,
+    "max": 6.974
+   },
+   "after_s": {
+    "p50": 0.2133,
+    "p95": 0.2179,
+    "p99": 0.2179,
+    "min": 0.1818,
+    "max": 0.2179
+   },
+   "speedup_paired": {
+    "median": 30.54,
+    "min": 29.76,
+    "max": 38.36
+   },
+   "peak_python_memory_mb": {
+    "before": 21.9,
+    "after": 19.3
+   }
+  },
+  {
+   "targets": 200,
+   "sensors": 20,
+   "time_points": 21,
+   "time_span_s": 24.0,
+   "versions": 4,
+   "repetitions": 7,
+   "every_version_changes_a_sensor": true,
+   "dataset_size_target_sensor_time": 84000,
+   "identical_states": true,
+   "cache": {
+    "served_again_same_version": 3400,
+    "reused_from_earlier_version": 0,
+    "computed": 800,
+    "computed_fraction": 0.1905
+   },
+   "before_s": {
+    "p50": 0.6764,
+    "p95": 0.6961,
+    "p99": 0.6961,
+    "min": 0.6746,
+    "max": 0.6961
+   },
+   "after_s": {
+    "p50": 0.1035,
+    "p95": 0.1201,
+    "p99": 0.1201,
+    "min": 0.1008,
+    "max": 0.1201
+   },
+   "speedup_paired": {
+    "median": 6.64,
+    "min": 5.63,
+    "max": 6.75
+   },
+   "peak_python_memory_mb": {
+    "before": 2.3,
+    "after": 3.0
+   }
+  },
+  {
+   "targets": 1000,
+   "sensors": 100,
+   "time_points": 21,
+   "time_span_s": 24.0,
+   "versions": 4,
+   "repetitions": 3,
+   "every_version_changes_a_sensor": true,
+   "dataset_size_target_sensor_time": 2100000,
+   "identical_states": true,
+   "cache": {
+    "served_again_same_version": 17000,
+    "reused_from_earlier_version": 0,
+    "computed": 4000,
+    "computed_fraction": 0.1905
+   },
+   "before_s": {
+    "p50": 36.8208,
+    "p95": 38.3418,
+    "p99": 38.3418,
+    "min": 36.7779,
+    "max": 38.3418
+   },
+   "after_s": {
+    "p50": 2.3128,
+    "p95": 2.5836,
+    "p99": 2.5836,
+    "min": 2.3064,
+    "max": 2.5836
+   },
+   "speedup_paired": {
+    "median": 15.9,
+    "min": 14.84,
+    "max": 15.96
+   },
+   "peak_python_memory_mb": {
+    "before": 11.4,
+    "after": 14.6
+   }
+  }
+ ]
+}

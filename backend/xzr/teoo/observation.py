@@ -56,11 +56,23 @@ def energy_remaining(cfg: dict, t: float) -> float | None:
     return b - sum(s["cost_per_s"] for s in cfg["sensors"] if s["health"] > 0) * max(0.0, t - cfg["at"])
 
 
-def assess_target(cfg: dict, spec: dict, t: float, *, measured: bool = True) -> dict:
-    """The observability of one target under a configuration at time t. Several limits can apply at once; undetermined metadata gives UNKNOWN_CAUSE; a spent budget or an overwritten sample is reported with its reason."""
-    rem = energy_remaining(cfg, t)
+class _Ctx:
+    """What is the same for every target under one configuration: the channels that can be carried and the sensors by channel. Built once per configuration, not once per (target, sensor)."""
+
+    __slots__ = ("channels", "by_channel")
+
+    def __init__(self, cfg: dict):
+        self.channels = channels_of(cfg)
+        self.by_channel: dict[str, list[dict]] = {}
+        for s in cfg["sensors"]:
+            for c in s["channels"]:
+                self.by_channel.setdefault(c, []).append(s)
+
+
+def _assess_static(cfg: dict, spec: dict, ctx: _Ctx, measured: bool = True) -> dict:
+    """The part of a target's assessment that does not depend on the time t: the sensors, the couplings, the scale, the window, the boundary, the signal, the memory is applied in :func:`_apply_time`."""
     best: dict | None = None
-    carrying = [s for s in cfg["sensors"] if spec["channel"] in s["channels"]]
+    carrying = ctx.by_channel.get(spec["channel"], [])
     in_reach = [s for s in carrying if s["reach"] is None or spec["id"] in s["reach"]]
     for s in (in_reach or carrying):  # a sensor whose reach excludes the target is not a candidate unless every sensor of the channel excludes it (then the target is outside every reach)
         key = f"{s['id']}:{spec['id']}"
@@ -78,7 +90,7 @@ def assess_target(cfg: dict, spec: dict, t: float, *, measured: bool = True) -> 
             amp = None if spec["amplitude"] is None else spec["amplitude"] * float(cpl.get("gain", 1.0))
             limit = None if s["detection_limit"] is None else s["detection_limit"] / max(s["health"], 1e-9)
             inst = ST.Instrument(s["id"], tuple(s["channels"]), s["resolution"], s["sampling_period_s"], s["window_s"], limit, s["penetration"])
-            r = ST.assess(channels_of(cfg), inst, ST.Target(spec["channel"], spec["scale"], spec["phenomenon_period_s"], amp, spec["opacity"]), measured=measured)
+            r = ST.assess(ctx.channels, inst, ST.Target(spec["channel"], spec["scale"], spec["phenomenon_period_s"], amp, spec["opacity"]), measured=measured)
             if extra:
                 causes = [ST.ObsStatus(c) for c in r["causes"]] + extra
                 st, allc = ST.combine([c for c in causes if c in ST.PRECEDENCE])
@@ -89,14 +101,26 @@ def assess_target(cfg: dict, spec: dict, t: float, *, measured: bool = True) -> 
         if best is None or (r["status"] == "MEASURED_VALID") or (best["status"] != "MEASURED_VALID" and len(r["causes"]) < len(best["causes"])):
             best = r
     if best is None:
-        base = ST.assess(channels_of(cfg), None, ST.Target(spec["channel"], spec["scale"], spec["phenomenon_period_s"], spec["amplitude"], spec["opacity"]), measured=measured)
+        base = ST.assess(ctx.channels, None, ST.Target(spec["channel"], spec["scale"], spec["phenomenon_period_s"], spec["amplitude"], spec["opacity"]), measured=measured)
         best = {**base, "sensor": None, "detail": ["no sensor of this configuration carries the channel"]}
-    if best["status"] == "MEASURED_VALID":
-        if rem is not None and rem <= 0:
-            best = {**best, "status": "UNMEASURED", "causes": [], "detail": best["detail"] + ["the energy budget is spent: it could be measured, it is not"]}
-        elif cfg["memory"].get("buffer_s") is not None and cfg["memory"].get("retrieval_delay_s", 0.0) > cfg["memory"]["buffer_s"]:
-            best = {**best, "status": "MISSING", "causes": [], "cause_known": True, "detail": best["detail"] + ["the sample is overwritten before it is retrieved (memory condition)"]}
     return best
+
+
+def _apply_time(best: dict, cfg: dict, t: float) -> dict:
+    """The time-dependent conditions: a spent energy budget; the memory condition. Returns a fresh dictionary (the static assessment may be shared between times)."""
+    rem = energy_remaining(cfg, t)
+    out = {**best, "causes": list(best["causes"]), "detail": list(best["detail"]), "undetermined": list(best.get("undetermined", []))}
+    if out["status"] == "MEASURED_VALID":
+        if rem is not None and rem <= 0:
+            out = {**out, "status": "UNMEASURED", "causes": [], "detail": out["detail"] + ["the energy budget is spent: it could be measured, it is not"]}
+        elif cfg["memory"].get("buffer_s") is not None and cfg["memory"].get("retrieval_delay_s", 0.0) > cfg["memory"]["buffer_s"]:
+            out = {**out, "status": "MISSING", "causes": [], "cause_known": True, "detail": out["detail"] + ["the sample is overwritten before it is retrieved (memory condition)"]}
+    return out
+
+
+def assess_target(cfg: dict, spec: dict, t: float, *, measured: bool = True) -> dict:
+    """The observability of one target under a configuration at time t. Several limits can apply at once; undetermined metadata gives UNKNOWN_CAUSE; a spent budget or an overwritten sample is reported with its reason."""
+    return _apply_time(_assess_static(cfg, spec, _Ctx(cfg), measured), cfg, t)
 
 
 def version_at(history: list[dict], t: float) -> dict:
@@ -107,14 +131,75 @@ def version_at(history: list[dict], t: float) -> dict:
     return cur
 
 
-def state_at(history: list[dict], specs: list[dict], t: float) -> dict:
+def _freeze(x: Any) -> Any:
+    if isinstance(x, dict):
+        return tuple(sorted((k, _freeze(v)) for k, v in x.items()))
+    if isinstance(x, (list, tuple)):
+        return tuple(_freeze(v) for v in x)
+    return x
+
+
+class _Cache:
+    """The time-independent assessments of one replay. The observation state at many times shares them: the state depends on t only through the configuration in force and the energy budget (applied afterwards).
+    Between versions an assessment is reused when everything it was computed from is equal: the spec of the target, the channels that can be carried at all, the parameters of every sensor carrying the target's channel
+    (reach included) and the couplings of the target. A change to one channel therefore recomputes the targets of that channel and no others. Reuse is by equality of inputs, so a reused assessment is the one that would be
+    computed again; ``tests/test_teoo_observation.py`` checks that against the first implementation on random worlds."""
+
+    def __init__(self) -> None:
+        self.ctx: dict[int, _Ctx] = {}
+        self.static: dict[tuple[int, str], dict] = {}
+        self.digest: dict[int, str] = {}
+        self.chan_sig: dict[tuple[int, str], int] = {}
+        self.cpl_by_target: dict[int, dict[str, tuple]] = {}
+        self.sig_ids: dict[Any, int] = {}
+        self.by_key: dict[tuple, dict] = {}
+        self.hits = 0  # served for this (configuration, target) again (another time in the same version)
+        self.reused = 0  # served from an earlier version with equal inputs
+        self.misses = 0  # computed
+
+    def _id(self, sig: Any) -> int:
+        return self.sig_ids.setdefault(sig, len(self.sig_ids))
+
+    def target(self, cfg: dict, spec: dict) -> dict:
+        key = (id(cfg), spec["id"])
+        got = self.static.get(key)
+        if got is not None:
+            self.hits += 1
+            return got
+        if id(cfg) not in self.ctx:
+            self.ctx[id(cfg)] = _Ctx(cfg)
+            by: dict[str, list] = {}
+            for ck, cv in cfg["couplings"].items():  # a key is "sensor:target"; either id may contain ':', so the key is registered under every suffix (a superset: never misses a coupling)
+                for i, ch in enumerate(ck):
+                    if ch == ":":
+                        by.setdefault(ck[i + 1:], []).append((ck, _freeze(cv)))
+            self.cpl_by_target[id(cfg)] = {t: tuple(sorted(v)) for t, v in by.items()}
+        ctx = self.ctx[id(cfg)]
+        ck2 = (id(cfg), spec["channel"])
+        if ck2 not in self.chan_sig:
+            self.chan_sig[ck2] = self._id(tuple((s["id"], _freeze({k: v for k, v in s.items() if k != "cost_per_s"})) for s in ctx.by_channel.get(spec["channel"], [])))
+        full = (_freeze(spec), self._id(ctx.channels), self.chan_sig[ck2], self.cpl_by_target[id(cfg)].get(spec["id"], ()))
+        got = self.by_key.get(full)
+        if got is None:
+            self.misses += 1
+            got = self.by_key[full] = _assess_static(cfg, spec, ctx)
+        else:
+            self.reused += 1
+        self.static[key] = got
+        return got
+
+
+def state_at(history: list[dict], specs: list[dict], t: float, *, _cache: _Cache | None = None) -> dict:
     """The observation state at time t, replayed from the history: the configuration version in force and the status of every declared target."""
     cfg = version_at(history, t)
-    targets = {s["id"]: assess_target(cfg, s, t) for s in specs}
+    cache = _cache or _Cache()
+    targets = {s["id"]: _apply_time(cache.target(cfg, s), cfg, t) for s in specs}
     counts: dict[str, int] = {}
     for a in targets.values():
         counts[a["status"]] = counts.get(a["status"], 0) + 1
-    return {"t": t, "version": cfg["version"], "config_digest": digest(cfg), "body_version": cfg["body_version"], "targets": targets, "summary": counts, "claim_note": CLAIM_NOTE,
+    if id(cfg) not in cache.digest:
+        cache.digest[id(cfg)] = digest(cfg)
+    return {"t": t, "version": cfg["version"], "config_digest": cache.digest[id(cfg)], "body_version": cfg["body_version"], "targets": targets, "summary": counts, "claim_note": CLAIM_NOTE,
             "declared_targets": len(specs), "observed": counts.get("MEASURED_VALID", 0), "note": "the denominator is the declared targets, not the world"}
 
 
@@ -136,8 +221,9 @@ def diff_states(before: dict, after: dict) -> dict:
     return {"gained": gained, "lost": lost, "changed": changed, "unchanged": same}
 
 
-def replay(history: list[dict], specs: list[dict], times: list[float]) -> list[dict]:
-    return [state_at(history, specs, t) for t in times]
+def replay(history: list[dict], specs: list[dict], times: list[float], *, _cache: _Cache | None = None) -> list[dict]:
+    cache = _cache if _cache is not None else _Cache()
+    return [state_at(history, specs, t, _cache=cache) for t in times]
 
 
 def observability_changes(history: list[dict], specs: list[dict], target_id: str) -> list[dict]:

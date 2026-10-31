@@ -6,9 +6,12 @@ import copy
 
 import pytest
 
+from typing import Any
+
 from xzr.teoo import observation as OB
 from xzr.teoo import revision as RV
 from xzr.teoo import session as SE
+from xzr.teoo import status as ST
 
 
 def sens(sid="s", channels=("angle",), **kw):
@@ -175,3 +178,105 @@ def test_the_revision_log_and_the_versions_agree_on_replay_and_a_broken_log_is_n
     broken = copy.deepcopy(hist)
     broken[1]["change"]["op"] = "scale_change"
     assert not RV.replay_revisions(broken, log, specs)[0]["version_ok"]
+
+
+# ---------------------------------------------------------------------------------------------------- replay: the fast path must reconstruct exactly the same states as the first implementation
+# (the first implementation, kept here unchanged as the reference: it re-derives everything for every target, sensor and time)
+def reference_assess_target(cfg: dict, spec: dict, t: float, *, measured: bool = True) -> dict:
+    """The observability of one target under a configuration at time t. Several limits can apply at once; undetermined metadata gives UNKNOWN_CAUSE; a spent budget or an overwritten sample is reported with its reason."""
+    rem = OB.energy_remaining(cfg, t)
+    best: dict | None = None
+    carrying = [s for s in cfg["sensors"] if spec["channel"] in s["channels"]]
+    in_reach = [s for s in carrying if s["reach"] is None or spec["id"] in s["reach"]]
+    for s in (in_reach or carrying):  # a sensor whose reach excludes the target is not a candidate unless every sensor of the channel excludes it (then the target is outside every reach)
+        key = f"{s['id']}:{spec['id']}"
+        cpl = cfg["couplings"].get(key, {"gain": 1.0, "delay_s": 0.0, "link": True})
+        local_detail: list[str] = []
+        reach = s["reach"]
+        extra: list[ST.ObsStatus] = []
+        if s["health"] <= 0:
+            local_detail.append(f"sensor {s['id']} has failed")
+            r: dict[str, Any] = {"status": "INSTRUMENT_MISMATCH", "causes": ["INSTRUMENT_MISMATCH"], "cause_known": True, "undetermined": []}
+        else:
+            if (reach is not None and spec["id"] not in reach) or not cpl.get("link", True):
+                extra.append(ST.ObsStatus.BOUNDARY_INVISIBLE)
+                local_detail.append("outside the sensor's reach" if reach is not None and spec["id"] not in reach else "the coupling link is down")
+            amp = None if spec["amplitude"] is None else spec["amplitude"] * float(cpl.get("gain", 1.0))
+            limit = None if s["detection_limit"] is None else s["detection_limit"] / max(s["health"], 1e-9)
+            inst = ST.Instrument(s["id"], tuple(s["channels"]), s["resolution"], s["sampling_period_s"], s["window_s"], limit, s["penetration"])
+            r = ST.assess(OB.channels_of(cfg), inst, ST.Target(spec["channel"], spec["scale"], spec["phenomenon_period_s"], amp, spec["opacity"]), measured=measured)
+            if extra:
+                causes = [ST.ObsStatus(c) for c in r["causes"]] + extra
+                st, allc = ST.combine([c for c in causes if c in ST.PRECEDENCE])
+                r = {**r, "status": st.value, "causes": allc, "cause_known": True}
+            if s["health"] < 1.0:
+                local_detail.append(f"sensor health {s['health']}: the detection limit is raised to {limit}")
+        r = {**r, "sensor": s["id"], "detail": local_detail}
+        if best is None or (r["status"] == "MEASURED_VALID") or (best["status"] != "MEASURED_VALID" and len(r["causes"]) < len(best["causes"])):
+            best = r
+    if best is None:
+        base = ST.assess(OB.channels_of(cfg), None, ST.Target(spec["channel"], spec["scale"], spec["phenomenon_period_s"], spec["amplitude"], spec["opacity"]), measured=measured)
+        best = {**base, "sensor": None, "detail": ["no sensor of this configuration carries the channel"]}
+    if best["status"] == "MEASURED_VALID":
+        if rem is not None and rem <= 0:
+            best = {**best, "status": "UNMEASURED", "causes": [], "detail": best["detail"] + ["the energy budget is spent: it could be measured, it is not"]}
+        elif cfg["memory"].get("buffer_s") is not None and cfg["memory"].get("retrieval_delay_s", 0.0) > cfg["memory"]["buffer_s"]:
+            best = {**best, "status": "MISSING", "causes": [], "cause_known": True, "detail": best["detail"] + ["the sample is overwritten before it is retrieved (memory condition)"]}
+    return best
+
+
+
+
+def reference_state_at(history, specs, t):
+    cfg = OB.version_at(history, t)
+    targets = {s["id"]: reference_assess_target(cfg, s, t) for s in specs}
+    counts: dict[str, int] = {}
+    for a in targets.values():
+        counts[a["status"]] = counts.get(a["status"], 0) + 1
+    return {"t": t, "version": cfg["version"], "config_digest": OB.digest(cfg), "body_version": cfg["body_version"], "targets": targets, "summary": counts, "claim_note": OB.CLAIM_NOTE,
+            "declared_targets": len(specs), "observed": counts.get("MEASURED_VALID", 0), "note": "the denominator is the declared targets, not the world"}
+
+
+def random_world(seed: int):
+    import random
+
+    rng = random.Random(seed)
+    chans = ["angle", "temp", "emg"]
+    tids = [f"t{k}" for k in range(rng.randint(5, 30))]
+    sensors = []
+    for k in range(rng.randint(2, 14)):
+        sensors.append(OB.sensor(f"s{k}", rng.sample(chans, rng.randint(1, 2)), resolution=rng.choice([0.2, 1.0, 5.0, None]), sampling_period_s=rng.choice([0.001, 0.02, 1.0, None]), window_s=rng.choice([5.0, 20.0, 600.0, None]),
+                                 detection_limit=rng.choice([0.01, 0.1, 2.0, None]), penetration=rng.choice([0.1, 0.5, 0.95, None]), health=rng.choice([1.0, 1.0, 1.0, 0.5, 0.2, 0.0]),
+                                 reach=rng.choice([None, None, rng.sample(tids, rng.randint(1, len(tids)))]), cost_per_s=rng.choice([0.0, 0.5, 2.0])))
+    specs = [OB.target_spec(tid, rng.choice(chans), scale=rng.choice([0.5, 2.0, 10.0, None]), phenomenon_period_s=rng.choice([0.01, 0.2, 2.0, 600.0, None]), amplitude=rng.choice([0.01, 1.0, 30.0, None]),
+                            opacity=rng.choice([0.0, 0.3, 0.9, None])) for tid in tids]
+    hist = []
+    for v in range(rng.randint(1, 4)):
+        cpl = {f"s{rng.randrange(len(sensors))}:{rng.choice(tids)}": {"gain": rng.choice([0.0005, 0.5, 1.0, 3.0]), "delay_s": 0.0, "link": rng.choice([True, True, False])} for _ in range(rng.randint(0, 6))}
+        hist.append(OB.new_configuration(sensors, couplings=cpl, resources={"energy_budget": rng.choice([None, None, 5.0, 40.0])}, memory=rng.choice([{}, {"buffer_s": 1.0, "retrieval_delay_s": 5.0}, {"buffer_s": 10.0, "retrieval_delay_s": 1.0}]),
+                                          at=float(v * 7), body_version=1))
+    return hist, specs
+
+
+def test_the_fast_replay_reconstructs_exactly_the_same_states_as_the_first_implementation_on_random_worlds():
+    times = [0.0, 3.0, 6.9, 7.0, 12.0, 14.0, 21.0, 35.0, 100.0]
+    n_states = 0
+    for seed in range(60):
+        hist, specs = random_world(seed)
+        fast = OB.replay(hist, specs, times)
+        assert fast == [reference_state_at(hist, specs, t) for t in times], seed
+        assert [OB.state_at(hist, specs, t) for t in times] == fast, seed  # a single call (no shared cache) agrees as well
+        n_states += len(fast)
+        for st in fast:  # no status, cause or detail is dropped to go faster: every target of every state carries all of them
+            assert set(st["targets"]) == {s["id"] for s in specs} and all({"status", "causes", "cause_known", "detail", "sensor"} <= set(a) for a in st["targets"].values())
+    assert n_states == 540
+
+
+def test_the_states_of_a_replay_do_not_share_mutable_parts_with_each_other():
+    hist, specs = random_world(3)
+    a, b = OB.replay(hist, specs, [0.0, 1.0])
+    tid = specs[0]["id"]
+    a["targets"][tid]["detail"].append("changed afterwards")
+    a["targets"][tid]["causes"].append("X")
+    assert "changed afterwards" not in b["targets"][tid]["detail"] and "X" not in b["targets"][tid]["causes"]
+    assert OB.replay(hist, specs, [1.0])[0] == b
