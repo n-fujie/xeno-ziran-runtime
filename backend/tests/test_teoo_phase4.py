@@ -4,6 +4,7 @@ cannot decide, and the pre-registration runs before the data."""
 from __future__ import annotations
 
 import importlib.util
+import json
 import math
 import subprocess
 import sys
