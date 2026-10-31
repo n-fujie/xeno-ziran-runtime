@@ -3,10 +3,9 @@
 from __future__ import annotations
 
 import copy
+from typing import Any
 
 import pytest
-
-from typing import Any
 
 from xzr.teoo import observation as OB
 from xzr.teoo import revision as RV
