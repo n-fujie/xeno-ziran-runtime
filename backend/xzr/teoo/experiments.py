@@ -91,13 +91,15 @@ def run_a(seed: int, trials: int = 8, cases_per_type: int = 3) -> dict:
             orng = np.random.default_rng((seed, ci, int(ts * 1000), int(r * 10), int(lim * 100), int(win)))
             tr0 = [W.observe(w, x, T20, sn, orng, comps) for x in cs["lat0"]]
             tr1 = [W.observe(cs["w1"], x, T20, sn, orng, comps) for x in cs["lat1"]]
+            a0: list[Any]
+            a1: list[Any]
             if cs["kind"] == "coupling":
                 a0, a1 = [(t[comps[0]], t[comps[1]]) for t in tr0], [(t[comps[0]], t[comps[1]]) for t in tr1]
             else:
                 a0, a1 = [t[comps[0]] for t in tr0], [t[comps[0]] for t in tr1]
             d = W.detect(cs["kind"], a0, a1, orng)
             rows.append({"ts": ts, "r": r, "lim": lim, "win": win, "kind": cs["kind"], "truth": cs["truth"], "status_valid": valid, "statuses": [a["status"] for a in sts],
-                         "result": d["result"], "p": d["p"], "amp": float(min(sp["amplitude"] for sp in specs)), "scale_ok": all(sp["scale"] >= r for sp in specs)})
+                         "result": d["result"], "p": d["p"], "effect": d.get("effect"), "true_effect": (0.25 * w.comps[cs["c"]].f if cs["kind"] == "frequency" and cs["truth"] else None), "amp": float(min(sp["amplitude"] for sp in specs)), "scale_ok": all(sp["scale"] >= r for sp in specs)})
     return {"seed": seed, "rows": rows}
 
 
@@ -132,8 +134,8 @@ def components(n: int, edges: dict) -> int:
 
 
 def _edge_stat(obs: list[dict[int, Any]], a: int, b: int) -> float | None:
-    vals = [W.feature("coupling", t[a], t[b]) for t in obs]
-    vals = [v for v in vals if v is not None]
+    raw = [W.feature("coupling", t[a], t[b]) for t in obs]
+    vals = [v for v in raw if v is not None]
     return float(np.mean(vals)) if len(vals) >= 4 else None
 
 
@@ -150,8 +152,8 @@ def _recover(obs: list[dict[int, Any]], n: int, rng: np.random.Generator, status
             nulls = []
             for _ in range(n_null // 40):
                 perm = rng.permutation(len(obs))
-                v = [W.feature("coupling", obs[i][a], obs[perm[i]][b]) for i in range(len(obs))]
-                v = [x for x in v if x is not None]
+                raw = [W.feature("coupling", obs[i][a], obs[perm[i]][b]) for i in range(len(obs))]
+                v = [x for x in raw if x is not None]
                 if len(v) >= 4:
                     nulls.append(float(np.mean(v)))
             p = (sum(x >= s for x in nulls) + 1) / (len(nulls) + 1) if nulls else 1.0
@@ -255,7 +257,8 @@ def _revise_log(p0: dict, seq: list[str], w: W.World, who: str, rule: str) -> tu
     """Apply the options in sequence to a sensor, as Open Revision events (recorded, with what each gained and lost by the TEOO assessment)."""
     specs = [W.spec_of(w, i) for i in range(w.n())]
     hist = [cfg_of(_sensor(p0))]
-    p, log = dict(p0), []
+    p = dict(p0)
+    log: list[dict] = []
     for opt in seq:
         q = step(p, opt)
         rtype, params = {"ts": ("time_window_change", {"sensor": "s", "sampling_period_s": q["ts"]}), "win": ("time_window_change", {"sensor": "s", "window_s": q["win"]}),
@@ -278,21 +281,24 @@ def run_c(seed: int, trials: int = 8) -> dict:
     # fixed
     arms["fixed"] = {"params": dict(INITIAL), "seq": [], "decider": "none", "log": []}
     # pre-specified schedule: the order is fixed in advance, before any status is looked at
-    p, seq = dict(INITIAL), []
+    p = dict(INITIAL)
+    seq: list[str] = []
     for opt in ("ts", "r", "lim", "pen", "win"):
         q = step(p, opt)
         if q != p and fits(q, 0):
             p, seq = q, [*seq, opt]
     arms["prespecified"] = {"params": p, "seq": seq, "decider": "researcher-coded schedule (ts, r, lim, pen, win), fixed before the world was seen"}
     # random order, applied while the budget allows
-    p, seq = dict(INITIAL), []
+    p = dict(INITIAL)
+    seq = []
     for opt in rng.permutation(list(OPTIONS)):
         q = step(p, str(opt))
         if q != p and fits(q, 0):
             p, seq = q, [*seq, str(opt)]
     arms["random"] = {"params": p, "seq": seq, "decider": "seeded random order"}
     # outcome-adaptive: repeatedly fix the cause that most declared targets suffer from (TEOO statuses only; no ground truth)
-    p, seq = dict(INITIAL), []
+    p = dict(INITIAL)
+    seq = []
     for _ in range(12):
         sts = _statuses(w, p)
         counts: dict[str, int] = {}
@@ -389,11 +395,11 @@ def run_e(seed: int) -> dict:
         cfg = cfg_of(sn)
         status_ok = [_valid(OB.assess_target(cfg, W.spec_of(w, i), 0.0)) for i in range(w.n())]
         prior_sd = float(np.sqrt(np.mean([c.amp**2 / 2 for c in w.comps])))
-        per = {"zero": [], "interp": [], "graph": []}
+        per: dict[str, list[dict[str, Any]]] = {"zero": [], "interp": [], "graph": []}
         for i in range(w.n()):
             tr = truth[i]
             sd_i = float(tr.std()) or 1.0
-            cell = {}
+            cell: dict[str, Any] = {}
             cell["zero"] = (np.zeros_like(tr), prior_sd)
             r1 = _interp(*obs[i], Q_T) if i in obs and status_ok[i] else None
             cell["interp"] = r1
@@ -406,9 +412,8 @@ def run_e(seed: int) -> dict:
                 if ra is not None:
                     part += k * ra[0]
                     ok_par += 1
-            cell["graph"] = (part, float(np.sqrt(w.comps[i].amp**2 / 2 + 0.0))) if ok_par else None
-            if r1 is not None:  # a component with its own samples: the interpolation, whose uncertainty is its own leave-one-out error (sensor noise is part of it)
-                cell["graph"] = (r1[0], r1[1]) if cell["graph"] is None else cell["graph"]
+            # a component with its own samples is reconstructed from them (the interpolation, whose uncertainty is its own leave-one-out error); only a component without any is reconstructed from its parents
+            cell["graph"] = (r1[0], r1[1]) if r1 is not None else ((part, float(np.sqrt(w.comps[i].amp**2 / 2))) if ok_par else None)
             for m, v in cell.items():
                 if v is None:
                     per[m].append({"c": i, "identifiable": False})
