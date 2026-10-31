@@ -1,0 +1,348 @@
+{
+ "experiment_id": "TEOO4-EXP-E",
+ "protocol_version": 2,
+ "protocol_digest": "26aa31b0ffa60302d343c0dce705f95c4c23135ac38d316d51617637a690e7af",
+ "protocol": {
+  "analyses": [
+   {
+    "id": "E1",
+    "hypothesis": "HE1",
+    "outcome": "nrmse_zero_minus_interp",
+    "method": "paired-sign-flip",
+    "confirmatory": true,
+    "contrast": "gaps condition"
+   },
+   {
+    "id": "E2",
+    "hypothesis": "HE2",
+    "outcome": "nrmse_zero_minus_graph_on_components_without_own_samples",
+    "method": "paired-sign-flip",
+    "confirmatory": true,
+    "contrast": "partial condition, components the graph method can identify"
+   },
+   {
+    "id": "E3",
+    "hypothesis": "HE3",
+    "outcome": "coverage_minus_0.9",
+    "method": "equivalence",
+    "confirmatory": true,
+    "margin": 0.05,
+    "contrast": "interp, gaps condition"
+   }
+  ],
+  "change_reason": "the pilot (version 1, seeds 1-30, and 101-130 for D) has been seen; version 2 repeats the same hypotheses, analyses, margins and criteria on fresh seeds so that the confirmatory run uses no seed whose outcome was known; also, the pilot showed that the graph method of version 1 ignored a component's own samples when parents were available, which is a defect of the method definition (not of the hypothesis): version 2 reconstructs from own samples when there are any and from the parents only otherwise, and E2 is restricted to components without own samples",
+  "conditions": [
+   "reference",
+   "partial",
+   "gaps",
+   "coarse",
+   "hidden",
+   "noisy",
+   "desync"
+  ],
+  "control_condition": "reference",
+  "experiment_id": "TEOO4-EXP-E",
+  "failure_conditions": [
+   "fewer than 20 worlds with an identifiable cell in the partial condition"
+  ],
+  "hypotheses": [
+   {
+    "id": "HE1",
+    "statement": "Interpolation reconstructs a component with temporal gaps better than the zero predictor"
+   },
+   {
+    "id": "HE2",
+    "statement": "Using the known couplings reconstructs components that have no samples of their own better than the zero predictor"
+   },
+   {
+    "id": "HE3",
+    "statement": "The 90% intervals of the interpolation are calibrated (coverage within 0.05 of 0.90) under temporal gaps"
+   }
+  ],
+  "instrument_conditions": {
+   "degradations": [
+    "reference",
+    "partial",
+    "gaps",
+    "coarse",
+    "hidden",
+    "noisy",
+    "desync"
+   ]
+  },
+  "multiplicity": "holm",
+  "outcomes": {
+   "primary": [
+    "normalised RMSE over identifiable cells",
+    "coverage of 90% intervals",
+    "share of cells declared unidentifiable"
+   ],
+   "secondary": [
+    "all conditions and methods"
+   ]
+  },
+  "parent_version": 1,
+  "reproduction": {
+   "generator": "xzr.teoo.experiments",
+   "steps": [
+    "run_e(seed)",
+    "analyse"
+   ],
+   "world": "xzr.teoo.world (SYNTHETIC)"
+  },
+  "schema": "teoo.protocol/1",
+  "seeds": [
+   1001,
+   1002,
+   1003,
+   1004,
+   1005,
+   1006,
+   1007,
+   1008,
+   1009,
+   1010,
+   1011,
+   1012,
+   1013,
+   1014,
+   1015,
+   1016,
+   1017,
+   1018,
+   1019,
+   1020,
+   1021,
+   1022,
+   1023,
+   1024,
+   1025,
+   1026,
+   1027,
+   1028,
+   1029,
+   1030
+  ],
+  "stopping_rule": {
+   "type": "fixed-n",
+   "units": 30,
+   "no interim analysis": true
+  },
+  "targets": [
+   "latent signal of each component"
+  ],
+  "trials_per_condition": 1,
+  "version": 2
+ },
+ "units": 30,
+ "seeds": [
+  1001,
+  1002,
+  1003,
+  1004,
+  1005,
+  1006,
+  1007,
+  1008,
+  1009,
+  1010,
+  1011,
+  1012,
+  1013,
+  1014,
+  1015,
+  1016,
+  1017,
+  1018,
+  1019,
+  1020,
+  1021,
+  1022,
+  1023,
+  1024,
+  1025,
+  1026,
+  1027,
+  1028,
+  1029,
+  1030
+ ],
+ "evidence_class": "Synthetic-world Result",
+ "seconds": 0.6,
+ "results": {
+  "E1": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.7583762365237557,
+   "sd_diff": 0.029463265577250063,
+   "dz": 25.739721027710274,
+   "ci95": [
+    0.7479867274456767,
+    0.7685550909956221
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 9,
+   "inferential": true,
+   "nrmse_zero": 1.0001367532544894,
+   "nrmse_interp": 0.24176051673073387,
+   "p_holm": 9.99950002499875e-05,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "E2": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.1799969072435052,
+   "sd_diff": 0.06363751161583796,
+   "dz": 2.828471803393205,
+   "ci95": [
+    0.15834366328358745,
+    0.20338249825956006
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 10,
+   "inferential": true,
+   "worlds_with_identifiable_cells": 30,
+   "p_holm": 9.99950002499875e-05,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "E3": {
+   "method": "equivalence",
+   "margin": 0.05,
+   "ci90": [
+    0.07511111111111107,
+    0.07753703703703699
+   ],
+   "mean_diff": 0.07631481481481475,
+   "supported": false,
+   "mean_coverage": 0.9763148148148147,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "table": {
+   "reference": {
+    "zero": {
+     "unidentifiable_share": 0.0,
+     "nrmse": 1.0001367532544898,
+     "coverage90": 0.7906481481481482
+    },
+    "interp": {
+     "unidentifiable_share": 0.0,
+     "nrmse": 0.25509943774608285,
+     "coverage90": 0.9580925925925925
+    },
+    "graph": {
+     "unidentifiable_share": 0.0,
+     "nrmse": 0.25509943774608285,
+     "coverage90": 0.9580925925925925
+    }
+   },
+   "partial": {
+    "zero": {
+     "unidentifiable_share": 0.0,
+     "nrmse": 1.0001367532544898,
+     "coverage90": 0.7906481481481482
+    },
+    "interp": {
+     "unidentifiable_share": 0.5,
+     "nrmse": 0.2643122442713259,
+     "coverage90": 0.9592592592592595
+    },
+    "graph": {
+     "unidentifiable_share": 0.07333333333333336,
+     "nrmse": 0.520804577321944,
+     "coverage90": 0.9436051159072743
+    }
+   },
+   "gaps": {
+    "zero": {
+     "unidentifiable_share": 0.0,
+     "nrmse": 1.0001367532544898,
+     "coverage90": 0.7906481481481482
+    },
+    "interp": {
+     "unidentifiable_share": 0.0,
+     "nrmse": 0.24176051673073387,
+     "coverage90": 0.9763148148148149
+    },
+    "graph": {
+     "unidentifiable_share": 0.0,
+     "nrmse": 0.24176051673073387,
+     "coverage90": 0.9763148148148149
+    }
+   },
+   "coarse": {
+    "zero": {
+     "unidentifiable_share": 0.0,
+     "nrmse": 1.0001367532544898,
+     "coverage90": 0.7906481481481482
+    },
+    "interp": {
+     "unidentifiable_share": 0.9266666666666666,
+     "nrmse": 0.7728071236648314,
+     "coverage90": 0.9863636363636363
+    },
+    "graph": {
+     "unidentifiable_share": 0.8633333333333333,
+     "nrmse": 0.824247871963963,
+     "coverage90": 0.8976964769647697
+    }
+   },
+   "hidden": {
+    "zero": {
+     "unidentifiable_share": 0.0,
+     "nrmse": 1.0001367532544898,
+     "coverage90": 0.7906481481481482
+    },
+    "interp": {
+     "unidentifiable_share": 0.38,
+     "nrmse": 0.2560399413562896,
+     "coverage90": 0.9571983273596177
+    },
+    "graph": {
+     "unidentifiable_share": 0.16000000000000003,
+     "nrmse": 0.4010198370174532,
+     "coverage90": 0.9478615520282189
+    }
+   },
+   "noisy": {
+    "zero": {
+     "unidentifiable_share": 0.0,
+     "nrmse": 1.0001367532544898,
+     "coverage90": 0.7906481481481482
+    },
+    "interp": {
+     "unidentifiable_share": 0.0,
+     "nrmse": 0.5702813616817171,
+     "coverage90": 0.9577592592592593
+    },
+    "graph": {
+     "unidentifiable_share": 0.0,
+     "nrmse": 0.5702813616817171,
+     "coverage90": 0.9577592592592593
+    }
+   },
+   "desync": {
+    "zero": {
+     "unidentifiable_share": 0.0,
+     "nrmse": 1.0001367532544898,
+     "coverage90": 0.7906481481481482
+    },
+    "interp": {
+     "unidentifiable_share": 0.0,
+     "nrmse": 0.21982387805454953,
+     "coverage90": 0.9851851851851852
+    },
+    "graph": {
+     "unidentifiable_share": 0.0,
+     "nrmse": 0.21982387805454953,
+     "coverage90": 0.9851851851851852
+    }
+   }
+  }
+ },
+ "note": "results about a SYNTHETIC world and this implementation; not an observation of any body"
+}

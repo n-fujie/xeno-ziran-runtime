@@ -1,0 +1,67 @@
+{
+ "body": null,
+ "claim": "an illustration of the stated data under the stated conditions; no claim beyond them",
+ "evidence": {
+  "band": [
+   "EVIDENCE: SYNTHETIC  ·  artificial functional-test data, not a measurement",
+   "REAL-WORLD EXPERIMENT: none recorded (no measurement exists behind this figure)",
+   "BODY: none",
+   "RECORDS: 1 (rec-a508abaf24)  ·  generated 2026-10-31  ·  TEOO teoo/0.1"
+  ],
+  "classes": [
+   "SYNTHETIC"
+  ],
+  "real_world_experiment_recorded": false,
+  "watermarks": [
+   "SYNTHETIC"
+  ]
+ },
+ "experiment": {
+  "conditions": [
+   "reference",
+   "partial",
+   "gaps",
+   "coarse",
+   "hidden",
+   "noisy",
+   "desync"
+  ],
+  "protocol_id": "TEOO4-EXP-E",
+  "seeds": [
+   1001,
+   1030
+  ],
+  "trials_per_condition": 1,
+  "version": 2
+ },
+ "figure_id": "fig-ff365333ced8169b",
+ "generated_at": "2026-10-31T00:00:00.000000Z",
+ "kind": "bars",
+ "metadata_digest": "0f3f6248e76f18af1151b798793b03e017fdf7c10062cebc1274e978ca66775a",
+ "observation_limits": {
+  "config_version": null,
+  "note": "These are measurements by a simulated sensor of a synthetic world: the limits are those of the sensor conditions stated here; what lies outside them is unknown, not absent.",
+  "summary": {
+   "observation conditions": "degradations of one fine sensor: partial reach, 40% gaps, 1.0 s sampling, penetration 0.3, 3x noise, 0.12 s desynchronisation"
+  },
+  "t": null
+ },
+ "provenance": {
+  "records": [
+   {
+    "kind": "OBSERVATION",
+    "lineage_classes": [
+     "SYNTHETIC"
+    ],
+    "provenance": "SYNTHETIC",
+    "record_digest": "a508abaf24ad8dcdde5534a37950cad85d216451998f6025a33510dcc76e548a",
+    "record_id": "rec-a508abaf24ad8dcdde5534a3"
+   }
+  ],
+  "source_digest": "ff365333ced8169b44cda9a6e71ddd4f90aa704c36e188a91983002ff8b671eb"
+ },
+ "schema": "teoo.figure/1",
+ "teoo_version": "teoo/0.1",
+ "title": "Fig 6 · Reconstruction limits: what is rebuilt, and what is declared unidentifiable",
+ "units": {}
+}

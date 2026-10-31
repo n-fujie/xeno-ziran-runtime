@@ -1,0 +1,64 @@
+{
+ "body": null,
+ "claim": "an illustration of the stated data under the stated conditions; no claim beyond them",
+ "evidence": {
+  "band": [
+   "EVIDENCE: SYNTHETIC  ·  artificial functional-test data, not a measurement",
+   "REAL-WORLD EXPERIMENT: none recorded (no measurement exists behind this figure)",
+   "BODY: none",
+   "RECORDS: 1 (rec-1d0c053621)  ·  generated 2026-10-31  ·  TEOO teoo/0.1"
+  ],
+  "classes": [
+   "SYNTHETIC"
+  ],
+  "real_world_experiment_recorded": false,
+  "watermarks": [
+   "SYNTHETIC"
+  ]
+ },
+ "experiment": {
+  "conditions": [
+   "connected",
+   "disconnected",
+   "reconnected",
+   "reconfigured"
+  ],
+  "protocol_id": "TEOO4-EXP-D",
+  "seeds": [
+   1101,
+   1130
+  ],
+  "trials_per_condition": 8,
+  "version": 2
+ },
+ "figure_id": "fig-f7254a4281d193b9",
+ "generated_at": "2026-10-31T00:00:00.000000Z",
+ "kind": "bars",
+ "metadata_digest": "8eacaaac23fdd6e7432dda554a131eae861a9baeeccad6dfb139cc09dae7b654",
+ "observation_limits": {
+  "config_version": null,
+  "note": "These are measurements by a simulated sensor of a synthetic world: the limits are those of the sensor conditions stated here; what lies outside them is unknown, not absent.",
+  "summary": {
+   "observation conditions": "fine simulated sensor, 0.02 s, window 20 s"
+  },
+  "t": null
+ },
+ "provenance": {
+  "records": [
+   {
+    "kind": "OBSERVATION",
+    "lineage_classes": [
+     "SYNTHETIC"
+    ],
+    "provenance": "SYNTHETIC",
+    "record_digest": "1d0c05362132a5e305dc6f7c6822238b5980974acbfd6ba99d87a9656d7fd2af",
+    "record_id": "rec-1d0c05362132a5e305dc6f7c"
+   }
+  ],
+  "source_digest": "f7254a4281d193b9db3c1c133d7727d562146fdfe44c4b43f5da5045d4e13b39"
+ },
+ "schema": "teoo.figure/1",
+ "teoo_version": "teoo/0.1",
+ "title": "Fig 5 · Disconnection: observed dependency against simulated operability",
+ "units": {}
+}

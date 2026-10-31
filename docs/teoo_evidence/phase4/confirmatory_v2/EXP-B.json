@@ -1,0 +1,337 @@
+{
+ "experiment_id": "TEOO4-EXP-B",
+ "protocol_version": 2,
+ "protocol_digest": "366092adffa077dbdb2345b35de1feb303b8d79fe51ef0304498e94b4ec93df3",
+ "protocol": {
+  "analyses": [
+   {
+    "confirmatory": true,
+    "contrast": "connected minus disconnected, fine sensor",
+    "hypothesis": "HB1",
+    "id": "B1",
+    "method": "paired-sign-flip",
+    "outcome": "cut_pairs_read_coupled"
+   },
+   {
+    "confirmatory": true,
+    "contrast": "reconnected minus disconnected, fine sensor",
+    "hypothesis": "HB2",
+    "id": "B2",
+    "method": "paired-sign-flip",
+    "outcome": "cut_pairs_read_coupled"
+   },
+   {
+    "confirmatory": true,
+    "contrast": "status-aware minus naive, medium sensor, connected condition",
+    "hypothesis": "HB3",
+    "id": "B3",
+    "method": "paired-sign-flip",
+    "outcome": "precision"
+   }
+  ],
+  "change_reason": "the pilot (version 1, seeds 1-30, and 101-130 for D) has been seen; version 2 repeats the same hypotheses, analyses, margins and criteria on fresh seeds so that the confirmatory run uses no seed whose outcome was known",
+  "conditions": [
+   "connected",
+   "disconnected",
+   "reconnected",
+   "reconfigured"
+  ],
+  "control_condition": "connected",
+  "experiment_id": "TEOO4-EXP-B",
+  "failure_conditions": [
+   "fewer than 10 worlds where both precisions are defined for B3"
+  ],
+  "hypotheses": [
+   {
+    "id": "HB1",
+    "statement": "Cutting couplings lowers the share of the cut pairs that are read as coupled"
+   },
+   {
+    "id": "HB2",
+    "statement": "Restoring them restores that share"
+   },
+   {
+    "id": "HB3",
+    "statement": "Reading with TEOO status (leaving a pair undecided when an endpoint is not MEASURED_VALID) has a higher precision than reading every pair"
+   }
+  ],
+  "instrument_conditions": {
+   "sensors": [
+    "fine",
+    "medium",
+    "limited"
+   ]
+  },
+  "multiplicity": "holm",
+  "outcomes": {
+   "primary": [
+    "share of cut pairs read as coupled",
+    "precision of the read structure"
+   ],
+   "secondary": [
+    "recall, F1, undecided pairs, invisible true couplings, components"
+   ]
+  },
+  "parent_version": 1,
+  "reproduction": {
+   "generator": "xzr.teoo.experiments",
+   "steps": [
+    "run_graph(seed)",
+    "analyse"
+   ],
+   "world": "xzr.teoo.world (SYNTHETIC)"
+  },
+  "schema": "teoo.protocol/1",
+  "seeds": [
+   1001,
+   1002,
+   1003,
+   1004,
+   1005,
+   1006,
+   1007,
+   1008,
+   1009,
+   1010,
+   1011,
+   1012,
+   1013,
+   1014,
+   1015,
+   1016,
+   1017,
+   1018,
+   1019,
+   1020,
+   1021,
+   1022,
+   1023,
+   1024,
+   1025,
+   1026,
+   1027,
+   1028,
+   1029,
+   1030
+  ],
+  "stopping_rule": {
+   "type": "fixed-n",
+   "units": 30,
+   "no interim analysis": true
+  },
+  "targets": [
+   "coupling structure"
+  ],
+  "trials_per_condition": 8,
+  "version": 2
+ },
+ "units": 30,
+ "seeds": [
+  1001,
+  1002,
+  1003,
+  1004,
+  1005,
+  1006,
+  1007,
+  1008,
+  1009,
+  1010,
+  1011,
+  1012,
+  1013,
+  1014,
+  1015,
+  1016,
+  1017,
+  1018,
+  1019,
+  1020,
+  1021,
+  1022,
+  1023,
+  1024,
+  1025,
+  1026,
+  1027,
+  1028,
+  1029,
+  1030
+ ],
+ "evidence_class": "Synthetic-world Result",
+ "seconds": 27.1,
+ "results": {
+  "B1": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.5268386243386244,
+   "sd_diff": 0.26965785653302093,
+   "dz": 1.9537299269235657,
+   "ci95": [
+    0.43489219576719573,
+    0.6237473544973544
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 4,
+   "inferential": true,
+   "share_cut_pairs_read": {
+    "connected": 0.6731349206349206,
+    "disconnected": 0.1462962962962963,
+    "reconnected": 0.6795502645502646,
+    "reconfigured": 0.2969444444444444
+   },
+   "p_holm": 0.00014999250037498125,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "B2": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.5332539682539682,
+   "sd_diff": 0.27767111096102454,
+   "dz": 1.9204517402201726,
+   "ci95": [
+    0.43675661375661373,
+    0.6319540343915342
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 4,
+   "inferential": true,
+   "share_cut_pairs_read": {
+    "connected": 0.6731349206349206,
+    "disconnected": 0.1462962962962963,
+    "reconnected": 0.6795502645502646,
+    "reconfigured": 0.2969444444444444
+   },
+   "p_holm": 0.00014999250037498125,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "B3": {
+   "method": "paired-sign-flip",
+   "n": 19,
+   "mean_diff": 0.061288622636044884,
+   "sd_diff": 0.38563129059806717,
+   "dz": 0.1589306265603958,
+   "ci95": [
+    -0.09853087975698689,
+    0.23919586420444536
+   ],
+   "p": 0.5008249587520623,
+   "n_perm": 20000,
+   "seed": 5,
+   "inferential": true,
+   "worlds_with_both_defined": 19,
+   "mean_undecided_pairs": 39.96666666666667,
+   "p_holm": 0.5008249587520623,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "descriptive": {
+   "connected": {
+    "components_mean": 1.0,
+    "edges_mean": 13.0,
+    "fine": {
+     "f1_mean": 0.48016335597039395,
+     "recall_mean": 0.6871794871794872,
+     "precision_mean": 0.37674653785302664,
+     "invisible_true_edges_mean": 4.066666666666666,
+     "worlds_with_no_pair_decided": 0
+    },
+    "medium": {
+     "f1_mean": 0.2602921729294161,
+     "recall_mean": 0.3102564102564102,
+     "precision_mean": 0.23699537564200818,
+     "invisible_true_edges_mean": 8.966666666666667,
+     "worlds_with_no_pair_decided": 0
+    },
+    "limited": {
+     "f1_mean": 0.09647024695050402,
+     "recall_mean": 0.09487179487179488,
+     "precision_mean": 0.21834618144778573,
+     "invisible_true_edges_mean": 11.766666666666667,
+     "worlds_with_no_pair_decided": 0
+    }
+   },
+   "disconnected": {
+    "components_mean": 3.9,
+    "edges_mean": 6.9,
+    "fine": {
+     "f1_mean": 0.38943389673509105,
+     "recall_mean": 0.5892989417989417,
+     "precision_mean": 0.3033852409013938,
+     "invisible_true_edges_mean": 2.8666666666666667,
+     "worlds_with_no_pair_decided": 0
+    },
+    "medium": {
+     "f1_mean": 0.15602400493827842,
+     "recall_mean": 0.21275132275132277,
+     "precision_mean": 0.12961411681999918,
+     "invisible_true_edges_mean": 5.433333333333334,
+     "worlds_with_no_pair_decided": 0
+    },
+    "limited": {
+     "f1_mean": 0.02318376068376068,
+     "recall_mean": 0.01990740740740741,
+     "precision_mean": 0.0798611111111111,
+     "invisible_true_edges_mean": 6.766666666666667,
+     "worlds_with_no_pair_decided": 0
+    }
+   },
+   "reconnected": {
+    "components_mean": 1.0,
+    "edges_mean": 13.0,
+    "fine": {
+     "f1_mean": 0.4867980253875638,
+     "recall_mean": 0.7000000000000001,
+     "precision_mean": 0.3792587977218627,
+     "invisible_true_edges_mean": 3.9,
+     "worlds_with_no_pair_decided": 0
+    },
+    "medium": {
+     "f1_mean": 0.27631538139621104,
+     "recall_mean": 0.33333333333333337,
+     "precision_mean": 0.249326569944217,
+     "invisible_true_edges_mean": 8.666666666666666,
+     "worlds_with_no_pair_decided": 0
+    },
+    "limited": {
+     "f1_mean": 0.09538305862529467,
+     "recall_mean": 0.0948717948717949,
+     "precision_mean": 0.25130348516218076,
+     "invisible_true_edges_mean": 11.766666666666667,
+     "worlds_with_no_pair_decided": 0
+    }
+   },
+   "reconfigured": {
+    "components_mean": 1.4666666666666666,
+    "edges_mean": 13.0,
+    "fine": {
+     "f1_mean": 0.4823310898037624,
+     "recall_mean": 0.5846153846153846,
+     "precision_mean": 0.41960873692297845,
+     "invisible_true_edges_mean": 5.4,
+     "worlds_with_no_pair_decided": 0
+    },
+    "medium": {
+     "f1_mean": 0.265110276123976,
+     "recall_mean": 0.2871794871794871,
+     "precision_mean": 0.25828564523997966,
+     "invisible_true_edges_mean": 9.266666666666667,
+     "worlds_with_no_pair_decided": 0
+    },
+    "limited": {
+     "f1_mean": 0.10759425442434942,
+     "recall_mean": 0.08717948717948719,
+     "precision_mean": 0.3025132275132275,
+     "invisible_true_edges_mean": 11.866666666666667,
+     "worlds_with_no_pair_decided": 0
+    }
+   }
+  },
+  "reconfigured_new_couplings_recovered_share": 0.5544179894179894
+ },
+ "note": "results about a SYNTHETIC world and this implementation; not an observation of any body"
+}

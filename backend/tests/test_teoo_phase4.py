@@ -201,3 +201,32 @@ def test_the_total_observation_record_of_a_unit_replays_identically_and_keeps_it
     s = {x["t"]: x for x in doc["replayed_states"]}
     assert s[9.9]["config_version"] == 1 and s[10.0]["config_version"] == 2 and s[0.0]["summary"] != s[10.0]["summary"]  # the coarser sensor from t = 10 s changes what is observable
     assert (tmp_path / "total_observation_records.json").exists()
+
+
+def test_the_saved_phase4_figures_verify_carry_their_metadata_and_are_not_removable():
+    from xzr.teoo import export as EX
+
+    d = Path(__file__).resolve().parents[2] / "docs" / "teoo_evidence" / "phase4" / "figures"
+    svgs = sorted(d.glob("fig*.svg"))
+    assert len(svgs) == 8
+    for f in svgs:
+        svg = f.read_text()
+        md = json.loads((d / f"{f.stem}.metadata.json").read_text())
+        assert EX.verify_svg(svg) == [] and md["evidence"]["classes"] == ["SYNTHETIC"] and md["evidence"]["real_world_experiment_recorded"] is False and md["experiment"]["protocol_id"].startswith("TEOO4-EXP-")
+        png = EX.inspect_png((d / f"{f.stem}.png").read_bytes())
+        assert png["ok"] and png["metadata"] == md and (png["width"], png["height"]) == (1600, 840)
+        assert EX.verify_svg(svg.replace('class="teoo-band-bg"', 'class="x"'))  # the band cannot be taken off unnoticed
+
+
+def test_the_saved_confirmatory_results_are_those_of_the_registered_protocol():
+    d = Path(__file__).resolve().parents[2] / "docs" / "teoo_evidence" / "phase4" / "confirmatory_v2"
+    reg = PR.ProtocolRegistry(d / "protocol_registry.jsonl")
+    assert reg.verify() == []
+    for k in "ABCDE":
+        doc = json.loads((d / f"EXP-{k}.json").read_text())
+        p2 = reg.get(doc["experiment_id"], 2)
+        assert PR.body_digest(p2) == doc["protocol_digest"] and doc["protocol_version"] == 2 and p2["parent_version"] == 1 and doc["units"] == len(p2["seeds"]) == 30
+        pilot = json.loads((d.parent / "pilot_seeds_1_30" / f"EXP-{k}.json").read_text())
+        assert set(doc["seeds"]).isdisjoint(pilot["seeds"])  # the confirmatory seeds were not used in the pilot
+        for a in p2["analyses"]:
+            assert doc["results"][a["id"]]["registered_class"] == reg.analysis_class(doc["experiment_id"], 2, a["id"])

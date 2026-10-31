@@ -1,0 +1,560 @@
+{
+ "unit_seed": 1001,
+ "body": {
+  "id": "synthetic-world-1001",
+  "versions": [
+   {
+    "version": 1,
+    "change": {
+     "op": "declare"
+    },
+    "digest": "462db745c232729ee89b4695a578d4e20a484a239b59540eaf6492ed35783cab"
+   },
+   {
+    "version": 2,
+    "change": {
+     "op": "sever",
+     "id": "r0_5",
+     "note": "phase 4 disconnection"
+    },
+    "digest": "64f3e1250fa1cafe26c018d253d9105c7dfcc8f8c36d9c92c7134ee4a177c1dc"
+   },
+   {
+    "version": 3,
+    "change": {
+     "op": "sever",
+     "id": "r2_8",
+     "note": "phase 4 disconnection"
+    },
+    "digest": "50fc5a01076797ea1f36f6c968e3947d5ba0e64a5230f51c3a7906276de13e01"
+   },
+   {
+    "version": 4,
+    "change": {
+     "op": "sever",
+     "id": "r3_5",
+     "note": "phase 4 disconnection"
+    },
+    "digest": "30d62f278504ad98994eefc7f831e61e2a279b875cc0d025d1afe4408884fd70"
+   },
+   {
+    "version": 5,
+    "change": {
+     "op": "sever",
+     "id": "r3_7",
+     "note": "phase 4 disconnection"
+    },
+    "digest": "1e522fee395bc0da111f7e3b4c44cd7ef5955f9236e3846b9a17953b64ad72ca"
+   },
+   {
+    "version": 6,
+    "change": {
+     "op": "sever",
+     "id": "r3_8",
+     "note": "phase 4 disconnection"
+    },
+    "digest": "5ce2fb0eaf4ef0dc6f0a462e3a069d251d04c8521496b08ae443199a5f410f51"
+   },
+   {
+    "version": 7,
+    "change": {
+     "op": "sever",
+     "id": "r4_7",
+     "note": "phase 4 disconnection"
+    },
+    "digest": "a81437065906103458a58162f590b706df62e2896dc1c794309cabcbb30f0073"
+   },
+   {
+    "version": 8,
+    "change": {
+     "op": "rejoin",
+     "id": "r0_5",
+     "note": "phase 4 reconnection"
+    },
+    "digest": "f742a7b0b0084aca27793e695a55080c450188276213ebb42afeb6fce23afb02"
+   },
+   {
+    "version": 9,
+    "change": {
+     "op": "rejoin",
+     "id": "r2_8",
+     "note": "phase 4 reconnection"
+    },
+    "digest": "b7ec483e4964b8b7b8db1bc465820ee6df606e5df7791468ff65b970532d92d8"
+   },
+   {
+    "version": 10,
+    "change": {
+     "op": "rejoin",
+     "id": "r3_5",
+     "note": "phase 4 reconnection"
+    },
+    "digest": "26df25410f2d97cf36654e77d686bbe0cb0ee8422e98ff7ce20a6ebb368cc6c6"
+   },
+   {
+    "version": 11,
+    "change": {
+     "op": "rejoin",
+     "id": "r3_7",
+     "note": "phase 4 reconnection"
+    },
+    "digest": "89bb67bd96aa6a70f3c668fff5fbe6c27dddb13899756afeaec64a18064eeb59"
+   },
+   {
+    "version": 12,
+    "change": {
+     "op": "rejoin",
+     "id": "r3_8",
+     "note": "phase 4 reconnection"
+    },
+    "digest": "f78f020cf0a544d233ab35a142c59aa0a2a6a4d98ee024ca4c839c1816751c6d"
+   },
+   {
+    "version": 13,
+    "change": {
+     "op": "rejoin",
+     "id": "r4_7",
+     "note": "phase 4 reconnection"
+    },
+    "digest": "b89bb103ec0eefc6eeb438a6b48e4a7bcea694c095a9c2f08e051e8eaa5532f2"
+   }
+  ],
+  "version_connected": 1,
+  "version_disconnected": 7,
+  "version_reconnected": 13
+ },
+ "cut_couplings": [
+  "r0_5",
+  "r2_8",
+  "r3_5",
+  "r3_7",
+  "r3_8",
+  "r4_7"
+ ],
+ "interventions": [
+  {
+   "record_id": "rec-765953be0657754c4b0b395f",
+   "kind": "INTERVENTION",
+   "provenance": "SYNTHETIC",
+   "record_digest": "765953be0657754c4b0b395fe14eefe348408a44d38f1a9f4fdcca44619fb111",
+   "issues": []
+  },
+  {
+   "record_id": "rec-c9085746d359c0d2094e3204",
+   "kind": "INTERVENTION",
+   "provenance": "SYNTHETIC",
+   "record_digest": "c9085746d359c0d2094e32043d017366cd49d8955bfcad1366a3ac9fec0189ec",
+   "issues": []
+  }
+ ],
+ "ledger_issues": [],
+ "observation_configurations": [
+  {
+   "version": 1,
+   "at": 0.0,
+   "digest": "9bbe66d8bf43f428dc4fe0084aa3cc4995821fa717dcbf3409cb26eb30eb7745",
+   "change": {
+    "op": "declare"
+   }
+  },
+  {
+   "version": 2,
+   "at": 10.0,
+   "digest": "aa9c1211496383cfd930127a9a84a456741dbb6f42bfbf902572e5aa18a0bc69",
+   "change": {
+    "op": "scale_change",
+    "reason": "a coarser, cheaper sensor from t = 10 s"
+   }
+  }
+ ],
+ "replayed_states": [
+  {
+   "t": 0.0,
+   "config_version": 1,
+   "observed_of_declared": "10/10",
+   "summary": {
+    "MEASURED_VALID": 10
+   },
+   "digest": "7a7edc38856df1c427b41759c7b3dc1527a4c477efeaa44775f853dcbe323d7d"
+  },
+  {
+   "t": 5.0,
+   "config_version": 1,
+   "observed_of_declared": "10/10",
+   "summary": {
+    "MEASURED_VALID": 10
+   },
+   "digest": "f752f217c64a0fd0706c9b2b72c89f108fd8dc817cc585b42546971e7552ede7"
+  },
+  {
+   "t": 9.9,
+   "config_version": 1,
+   "observed_of_declared": "10/10",
+   "summary": {
+    "MEASURED_VALID": 10
+   },
+   "digest": "855ff22a73ee464733e8f1713aa08fac2ddf3f90bf19c7f6880bb264a830414d"
+  },
+  {
+   "t": 10.0,
+   "config_version": 2,
+   "observed_of_declared": "0/10",
+   "summary": {
+    "BOUNDARY_INVISIBLE": 6,
+    "SCALE_MISMATCH": 4
+   },
+   "digest": "3a3920a43068039560389de12a15a8ea3846ad1c126d757b44fadfbd490d9aed"
+  },
+  {
+   "t": 15.0,
+   "config_version": 2,
+   "observed_of_declared": "0/10",
+   "summary": {
+    "BOUNDARY_INVISIBLE": 6,
+    "SCALE_MISMATCH": 4
+   },
+   "digest": "09b973def8d49b6fb3ea1361af86df0778f7b19df729de6df4194fc59425eeac"
+  }
+ ],
+ "replay_is_identical": true,
+ "revision_events_unit": {
+  "seed": 1001,
+  "arms": {
+   "fixed": {
+    "sequence": [],
+    "decider": "none",
+    "events": []
+   },
+   "prespecified": {
+    "sequence": [
+     "ts",
+     "r",
+     "lim",
+     "pen",
+     "win"
+    ],
+    "decider": "researcher-coded schedule (ts, r, lim, pen, win), fixed before the world was seen",
+    "events": [
+     {
+      "seq": 1,
+      "type": "time_window_change",
+      "status": "recorded",
+      "reason": "prespecified: ts",
+      "initiated_by": "researcher",
+      "autonomous_revision_demonstrated": false,
+      "gained": [],
+      "lost": []
+     },
+     {
+      "seq": 2,
+      "type": "scale_change",
+      "status": "recorded",
+      "reason": "prespecified: r",
+      "initiated_by": "researcher",
+      "autonomous_revision_demonstrated": false,
+      "gained": [
+       {
+        "target": "c3",
+        "from": "SCALE_MISMATCH",
+        "causes": [
+         "SCALE_MISMATCH"
+        ]
+       }
+      ],
+      "lost": []
+     },
+     {
+      "seq": 3,
+      "type": "sensor_change",
+      "status": "recorded",
+      "reason": "prespecified: lim",
+      "initiated_by": "researcher",
+      "autonomous_revision_demonstrated": false,
+      "gained": [],
+      "lost": []
+     },
+     {
+      "seq": 4,
+      "type": "boundary_change",
+      "status": "recorded",
+      "reason": "prespecified: pen",
+      "initiated_by": "researcher",
+      "autonomous_revision_demonstrated": false,
+      "gained": [],
+      "lost": []
+     },
+     {
+      "seq": 5,
+      "type": "time_window_change",
+      "status": "recorded",
+      "reason": "prespecified: win",
+      "initiated_by": "researcher",
+      "autonomous_revision_demonstrated": false,
+      "gained": [],
+      "lost": []
+     }
+    ]
+   },
+   "random": {
+    "sequence": [
+     "pen",
+     "lim",
+     "r",
+     "win",
+     "ts"
+    ],
+    "decider": "seeded random order",
+    "events": [
+     {
+      "seq": 1,
+      "type": "boundary_change",
+      "status": "recorded",
+      "reason": "random: pen",
+      "initiated_by": "researcher",
+      "autonomous_revision_demonstrated": false,
+      "gained": [],
+      "lost": []
+     },
+     {
+      "seq": 2,
+      "type": "sensor_change",
+      "status": "recorded",
+      "reason": "random: lim",
+      "initiated_by": "researcher",
+      "autonomous_revision_demonstrated": false,
+      "gained": [],
+      "lost": []
+     },
+     {
+      "seq": 3,
+      "type": "scale_change",
+      "status": "recorded",
+      "reason": "random: r",
+      "initiated_by": "researcher",
+      "autonomous_revision_demonstrated": false,
+      "gained": [],
+      "lost": []
+     },
+     {
+      "seq": 4,
+      "type": "time_window_change",
+      "status": "recorded",
+      "reason": "random: win",
+      "initiated_by": "researcher",
+      "autonomous_revision_demonstrated": false,
+      "gained": [],
+      "lost": []
+     },
+     {
+      "seq": 5,
+      "type": "time_window_change",
+      "status": "recorded",
+      "reason": "random: ts",
+      "initiated_by": "researcher",
+      "autonomous_revision_demonstrated": false,
+      "gained": [
+       {
+        "target": "c3",
+        "from": "TIME_WINDOW_MISMATCH",
+        "causes": [
+         "TIME_WINDOW_MISMATCH"
+        ]
+       }
+      ],
+      "lost": []
+     }
+    ]
+   },
+   "adaptive": {
+    "sequence": [
+     "r",
+     "ts",
+     "ts",
+     "pen",
+     "r",
+     "ts",
+     "pen",
+     "pen"
+    ],
+    "decider": "rule: fix the cause shared by most declared targets whose TEOO status is not MEASURED_VALID; evaluation information: the statuses only",
+    "events": [
+     {
+      "seq": 1,
+      "type": "scale_change",
+      "status": "recorded",
+      "reason": "adaptive: r",
+      "initiated_by": "system",
+      "autonomous_revision_demonstrated": false,
+      "gained": [],
+      "lost": []
+     },
+     {
+      "seq": 2,
+      "type": "time_window_change",
+      "status": "recorded",
+      "reason": "adaptive: ts",
+      "initiated_by": "system",
+      "autonomous_revision_demonstrated": false,
+      "gained": [
+       {
+        "target": "c3",
+        "from": "TIME_WINDOW_MISMATCH",
+        "causes": [
+         "TIME_WINDOW_MISMATCH"
+        ]
+       }
+      ],
+      "lost": []
+     },
+     {
+      "seq": 3,
+      "type": "time_window_change",
+      "status": "recorded",
+      "reason": "adaptive: ts",
+      "initiated_by": "system",
+      "autonomous_revision_demonstrated": false,
+      "gained": [],
+      "lost": []
+     },
+     {
+      "seq": 4,
+      "type": "boundary_change",
+      "status": "recorded",
+      "reason": "adaptive: pen",
+      "initiated_by": "system",
+      "autonomous_revision_demonstrated": false,
+      "gained": [
+       {
+        "target": "c2",
+        "from": "BOUNDARY_INVISIBLE",
+        "causes": [
+         "BOUNDARY_INVISIBLE"
+        ]
+       },
+       {
+        "target": "c7",
+        "from": "BOUNDARY_INVISIBLE",
+        "causes": [
+         "BOUNDARY_INVISIBLE"
+        ]
+       },
+       {
+        "target": "c10",
+        "from": "BOUNDARY_INVISIBLE",
+        "causes": [
+         "BOUNDARY_INVISIBLE"
+        ]
+       }
+      ],
+      "lost": []
+     },
+     {
+      "seq": 5,
+      "type": "scale_change",
+      "status": "recorded",
+      "reason": "adaptive: r",
+      "initiated_by": "system",
+      "autonomous_revision_demonstrated": false,
+      "gained": [
+       {
+        "target": "c1",
+        "from": "SCALE_MISMATCH",
+        "causes": [
+         "SCALE_MISMATCH"
+        ]
+       },
+       {
+        "target": "c6",
+        "from": "SCALE_MISMATCH",
+        "causes": [
+         "SCALE_MISMATCH"
+        ]
+       },
+       {
+        "target": "c9",
+        "from": "SCALE_MISMATCH",
+        "causes": [
+         "SCALE_MISMATCH"
+        ]
+       }
+      ],
+      "lost": []
+     },
+     {
+      "seq": 6,
+      "type": "time_window_change",
+      "status": "recorded",
+      "reason": "adaptive: ts",
+      "initiated_by": "system",
+      "autonomous_revision_demonstrated": false,
+      "gained": [
+       {
+        "target": "c0",
+        "from": "TIME_WINDOW_MISMATCH",
+        "causes": [
+         "TIME_WINDOW_MISMATCH"
+        ]
+       },
+       {
+        "target": "c5",
+        "from": "TIME_WINDOW_MISMATCH",
+        "causes": [
+         "TIME_WINDOW_MISMATCH"
+        ]
+       },
+       {
+        "target": "c8",
+        "from": "TIME_WINDOW_MISMATCH",
+        "causes": [
+         "TIME_WINDOW_MISMATCH"
+        ]
+       },
+       {
+        "target": "c11",
+        "from": "TIME_WINDOW_MISMATCH",
+        "causes": [
+         "TIME_WINDOW_MISMATCH"
+        ]
+       }
+      ],
+      "lost": []
+     },
+     {
+      "seq": 7,
+      "type": "boundary_change",
+      "status": "recorded",
+      "reason": "adaptive: pen",
+      "initiated_by": "system",
+      "autonomous_revision_demonstrated": false,
+      "gained": [],
+      "lost": []
+     },
+     {
+      "seq": 8,
+      "type": "boundary_change",
+      "status": "recorded",
+      "reason": "adaptive: pen",
+      "initiated_by": "system",
+      "autonomous_revision_demonstrated": false,
+      "gained": [
+       {
+        "target": "c4",
+        "from": "BOUNDARY_INVISIBLE",
+        "causes": [
+         "BOUNDARY_INVISIBLE"
+        ]
+       }
+      ],
+      "lost": []
+     }
+    ]
+   },
+   "static_costmatched": {
+    "sequence": [],
+    "decider": "grid search over static sensors with the same total cost, scored by valid statuses",
+    "events": []
+   }
+  }
+ },
+ "scope": "SYNTHETIC; the unobserved are not recorded as 0; autonomous revision is not demonstrated (every event names who initiated it)"
+}

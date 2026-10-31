@@ -41,7 +41,7 @@ def figure_metadata(kind: str, title: str, data: Any, records: list[dict], *, bo
     band = [f"EVIDENCE: {' + '.join(cls) or 'none'}" + ("  ·  " + {"SYNTHETIC": "artificial functional-test data, not a measurement", "RECONSTRUCTED_ESTIMATE": "an estimate, not an observation", "CONCEPTUAL": "a drawing, not data"}.get(cls[0], "") if len(cls) == 1 and cls else ""),
             "REAL-WORLD EXPERIMENT: " + ("MEASURED records are present (declared by their source; not verified here)" if real else "none recorded (no measurement exists behind this figure)"),
             f"BODY: {body['id']} v{ver['version']} ({ver['digest'][:10]})" if body and ver else "BODY: none",
-            f"RECORDS: {', '.join(r['record_id'] for r in records)[:96]}  ·  generated {generated_at}  ·  TEOO {TEOO_VERSION}"]
+            f"RECORDS: {len(records)} ({', '.join(r['record_id'][:14] for r in records[:2])}{'…' if len(records) > 2 else ''})  ·  generated {generated_at[:10]}  ·  TEOO {TEOO_VERSION}"]
     md = {"schema": "teoo.figure/1", "figure_id": "fig-" + src[:16], "kind": kind, "title": title, "generated_at": generated_at, "teoo_version": TEOO_VERSION,
           "evidence": {"classes": cls, "watermarks": [c for c in WATERMARK_CLASSES if c in cls], "real_world_experiment_recorded": real, "band": band},
           "experiment": None if protocol is None else {"protocol_id": protocol["experiment_id"], "version": protocol["version"], "seeds": protocol["seeds"], "conditions": protocol["conditions"], "trials_per_condition": protocol["trials_per_condition"]},
@@ -133,6 +133,75 @@ def _evidence(d: dict) -> str:
 
 
 DRAW = {"timeseries": _timeseries, "body": _body, "limits": _limits, "evidence": _evidence}
+
+# ------------------------------------------------------------------------------------------------ generic result drawings (grouped bars, forest plot, table) for the experiment figures
+PALETTE = ["#9bb0d0", "#c9a227", "#78e696", "#ff8a70", "#b07acc", "#7ad0d0"]
+
+
+def _bars(d: dict) -> str:
+    g, ser = d["groups"], d["series"]
+    x0, x1, y0, y1 = 70, W - 20, 52, H - BAND - 62
+    top = d.get("ymax") or max((v + (e or 0)) for s in ser for v, e in zip(s["values"], s.get("err") or [0] * len(s["values"]), strict=True)) * 1.1 or 1.0
+    out = [f'<text x="20" y="20" fill="#d8d8dc" font-size="12">{escape(d["title"])}</text>', f'<text x="20" y="36" fill="#9a9aa2" font-size="10">{escape(d.get("ylabel", ""))}</text>',
+           f'<line x1="{x0}" y1="{y1}" x2="{x1}" y2="{y1}" stroke="#45454c"/><line x1="{x0}" y1="{y0}" x2="{x0}" y2="{y1}" stroke="#45454c"/>']
+    for k in range(5):
+        v = top * k / 4
+        yy = y1 - v / top * (y1 - y0)
+        out.append(f'<line x1="{x0}" y1="{yy:.1f}" x2="{x1}" y2="{yy:.1f}" stroke="#2a2a30"/><text x="{x0 - 6}" y="{yy + 3:.1f}" fill="#9a9aa2" font-size="9" text-anchor="end">{v:.2f}</text>')
+    gw = (x1 - x0) / len(g)
+    bw = gw * 0.8 / len(ser)
+    for gi, label in enumerate(g):
+        out.append(f'<text x="{x0 + gw * (gi + 0.5):.1f}" y="{y1 + 14}" fill="#cfcfd4" font-size="10" text-anchor="middle">{escape(str(label))}</text>')
+        for si, s in enumerate(ser):
+            v, e = s["values"][gi], (s.get("err") or [None] * len(g))[gi]
+            if v is None:
+                out.append(f'<text x="{x0 + gw * 0.1 + bw * (si + 0.5) + gw * gi:.1f}" y="{y1 - 4}" fill="#ff8a70" font-size="9" text-anchor="middle">n/a</text>')
+                continue
+            xb, h = x0 + gw * gi + gw * 0.1 + bw * si, v / top * (y1 - y0)
+            out.append(f'<rect x="{xb:.1f}" y="{y1 - h:.1f}" width="{bw - 2:.1f}" height="{h:.1f}" fill="{PALETTE[si % len(PALETTE)]}"><title>{escape(s["name"])} / {escape(str(label))}: {v:.3f}</title></rect>')
+            if e:
+                out.append(f'<line x1="{xb + bw / 2 - 1:.1f}" y1="{y1 - (v - e) / top * (y1 - y0):.1f}" x2="{xb + bw / 2 - 1:.1f}" y2="{y1 - (v + e) / top * (y1 - y0):.1f}" stroke="#fff" stroke-width="1"/>')
+    for si, s in enumerate(ser):
+        out.append(f'<rect x="{x0 + si * 150}" y="{H - BAND - 38}" width="10" height="10" fill="{PALETTE[si % len(PALETTE)]}"/><text x="{x0 + si * 150 + 14}" y="{H - BAND - 29}" fill="#cfcfd4" font-size="10">{escape(s["name"])}</text>')
+    out.append(f'<text x="{x0}" y="{H - BAND - 8}" fill="#9a9aa2" font-size="10">{escape(d.get("note", ""))}</text>')
+    return "".join(out)
+
+
+def _forest(d: dict) -> str:
+    rows = d["rows"]
+    lo = min(r["lo"] for r in rows if r["lo"] is not None)
+    hi = max(r["hi"] for r in rows if r["hi"] is not None)
+    lo, hi = min(lo, 0.0), max(hi, 0.0)
+    x0, x1 = 330, W - 30
+    tx = lambda v: x0 + (v - lo) / ((hi - lo) or 1) * (x1 - x0)  # noqa: E731
+    step = min(26, (H - BAND - 70) / max(1, len(rows)))
+    out = [f'<text x="20" y="20" fill="#d8d8dc" font-size="12">{escape(d["title"])}</text>', f'<line x1="{tx(0):.1f}" y1="34" x2="{tx(0):.1f}" y2="{40 + step * len(rows):.1f}" stroke="#8a8a92" stroke-dasharray="3 3"/>',
+           f'<text x="{x0}" y="{H - BAND - 8}" fill="#9a9aa2" font-size="10">{escape(d.get("xlabel", ""))}</text>']
+    for i, r in enumerate(rows):
+        y = 48 + i * step
+        out.append(f'<text x="20" y="{y + 3:.1f}" fill="#e8e8ec" font-size="10">{escape(r["label"])}</text><text x="20" y="{y + 14:.1f}" fill="#9a9aa2" font-size="9">{escape(r.get("note", ""))}</text>')
+        if r["lo"] is None:
+            out.append(f'<text x="{x0}" y="{y + 3:.1f}" fill="#ff8a70" font-size="10">no interval (not computable)</text>')
+            continue
+        col = "#78e696" if r.get("supported") else "#ff8a70" if r.get("supported") is False else "#9bb0d0"
+        out.append(f'<line x1="{tx(r["lo"]):.1f}" y1="{y:.1f}" x2="{tx(r["hi"]):.1f}" y2="{y:.1f}" stroke="{col}" stroke-width="2"/><circle cx="{tx(r["mean"]):.1f}" cy="{y:.1f}" r="3.5" fill="{col}"/>')
+    return "".join(out)
+
+
+def _table(d: dict) -> str:
+    out = [f'<text x="20" y="20" fill="#d8d8dc" font-size="12">{escape(d["title"])}</text>']
+    xs = d["xs"]
+    colors = {(i, j): c for i, j, c in d.get("colors", [])}
+    step = min(19, (H - BAND - 56) / max(1, len(d["rows"]) + 1))
+    for j, h in enumerate(d["header"]):
+        out.append(f'<text x="{xs[j]}" y="40" fill="#c9a227" font-size="10">{escape(h)}</text>')
+    for i, row in enumerate(d["rows"]):
+        for j, c in enumerate(row):
+            out.append(f'<text x="{xs[j]}" y="{40 + step * (i + 1):.1f}" fill="{colors.get((i, j), "#e8e8ec")}" font-size="9.5">{escape(str(c))}</text>')
+    return "".join(out)
+
+
+DRAW.update({"bars": _bars, "forest": _forest, "table": _table})
 
 
 def render_svg(kind: str, data: dict, metadata: dict) -> str:
