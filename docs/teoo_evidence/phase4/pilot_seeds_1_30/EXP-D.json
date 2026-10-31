@@ -1,0 +1,243 @@
+{
+ "experiment_id": "TEOO4-EXP-D",
+ "protocol_digest": "0d6620c143ae55430ed1cafd64991f3e429483b866f0ad9c0cb8bf8f8d679ed9",
+ "protocol": {
+  "experiment_id": "TEOO4-EXP-D",
+  "hypotheses": [
+   {
+    "id": "HD1",
+    "statement": "Observed dependency between a source and a sink falls when their connection is cut"
+   },
+   {
+    "id": "HD2",
+    "statement": "... and returns when it is restored"
+   },
+   {
+    "id": "HD3",
+    "statement": "Observed dependency tracks the simulated operability across conditions"
+   }
+  ],
+  "targets": [
+   "source-sink dependency"
+  ],
+  "instrument_conditions": {
+   "sensors": [
+    "fine"
+   ]
+  },
+  "control_condition": "connected",
+  "conditions": [
+   "connected",
+   "disconnected",
+   "reconnected",
+   "reconfigured"
+  ],
+  "seeds": [
+   101,
+   102,
+   103,
+   104,
+   105,
+   106,
+   107,
+   108,
+   109,
+   110,
+   111,
+   112,
+   113,
+   114,
+   115,
+   116,
+   117,
+   118,
+   119,
+   120,
+   121,
+   122,
+   123,
+   124,
+   125,
+   126,
+   127,
+   128,
+   129,
+   130
+  ],
+  "trials_per_condition": 8,
+  "stopping_rule": {
+   "type": "fixed-n",
+   "units": 30,
+   "no interim analysis": true
+  },
+  "outcomes": {
+   "primary": [
+    "observed dependency (best-lag correlation)",
+    "simulated operability"
+   ],
+   "secondary": [
+    "agreement of sign of change for the reconfigured condition"
+   ]
+  },
+  "analyses": [
+   {
+    "id": "D1",
+    "hypothesis": "HD1",
+    "outcome": "dependency_observed",
+    "method": "paired-sign-flip",
+    "confirmatory": true,
+    "contrast": "connected minus disconnected, fine sensor"
+   },
+   {
+    "id": "D2",
+    "hypothesis": "HD2",
+    "outcome": "dependency_observed",
+    "method": "paired-sign-flip",
+    "confirmatory": true,
+    "contrast": "reconnected minus disconnected, fine sensor"
+   },
+   {
+    "id": "D3",
+    "hypothesis": "HD3",
+    "outcome": "spearman_dependency_operability",
+    "method": "paired-sign-flip",
+    "confirmatory": true,
+    "contrast": "Spearman rho over all world x condition points, bootstrap over worlds"
+   }
+  ],
+  "multiplicity": "holm",
+  "failure_conditions": [
+   "operability of the connected condition equal to 0 in more than half of the worlds"
+  ],
+  "reproduction": {
+   "generator": "xzr.teoo.experiments",
+   "steps": [
+    "run_graph(seed)",
+    "analyse"
+   ],
+   "world": "xzr.teoo.world (SYNTHETIC)"
+  },
+  "schema": "teoo.protocol/1",
+  "version": 1,
+  "parent_version": null,
+  "change_reason": null
+ },
+ "units": 30,
+ "seeds": [
+  101,
+  102,
+  103,
+  104,
+  105,
+  106,
+  107,
+  108,
+  109,
+  110,
+  111,
+  112,
+  113,
+  114,
+  115,
+  116,
+  117,
+  118,
+  119,
+  120,
+  121,
+  122,
+  123,
+  124,
+  125,
+  126,
+  127,
+  128,
+  129,
+  130
+ ],
+ "evidence_class": "Synthetic-world Result",
+ "seconds": 40.0,
+ "results": {
+  "D1": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.30686145612419774,
+   "sd_diff": 0.14464344028688905,
+   "dz": 2.1215027485212037,
+   "ci95": [
+    0.2556604716972702,
+    0.35835029269483115
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 6,
+   "inferential": true,
+   "mean_dependency": {
+    "connected": 0.36435519799331245,
+    "disconnected": 0.05749374186911471,
+    "reconnected": 0.3571556863020772,
+    "reconfigured": 0.1240267585015953
+   },
+   "mean_operability": {
+    "connected": 0.22401388079141457,
+    "disconnected": 0.0,
+    "reconnected": 0.22401388079141457,
+    "reconfigured": 0.019197986150922917
+   },
+   "p_holm": 0.00014999250037498125,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "D2": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.2996619444329625,
+   "sd_diff": 0.1542858936463396,
+   "dz": 1.9422510856362527,
+   "ci95": [
+    0.24467596789939516,
+    0.3523914624281846
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 6,
+   "inferential": true,
+   "mean_dependency": {
+    "connected": 0.36435519799331245,
+    "disconnected": 0.05749374186911471,
+    "reconnected": 0.3571556863020772,
+    "reconfigured": 0.1240267585015953
+   },
+   "mean_operability": {
+    "connected": 0.22401388079141457,
+    "disconnected": 0.0,
+    "reconnected": 0.22401388079141457,
+    "reconfigured": 0.019197986150922917
+   },
+   "p_holm": 0.00014999250037498125,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "D3": {
+   "method": "spearman, bootstrap over worlds",
+   "rho": 0.8806390090497191,
+   "ci95": [
+    0.7966140904776212,
+    0.9314837765181646
+   ],
+   "p": 0.0004997501249375312,
+   "n_points": 120,
+   "inferential": true,
+   "p_holm": 0.0004997501249375312,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "reconfigured_sign_agreement": {
+   "share": 0.9666666666666667,
+   "n": 30,
+   "chance": 0.5
+  },
+  "operability_connected_zero_worlds": 0
+ },
+ "note": "results about a SYNTHETIC world and this implementation; not an observation of any body"
+}

@@ -67,3 +67,46 @@ def cohen_d(y_a: list[float], y_b: list[float]) -> float | None:
         return None
     sp = math.sqrt(((len(a) - 1) * a.var(ddof=1) + (len(b) - 1) * b.var(ddof=1)) / (len(a) + len(b) - 2))
     return None if sp == 0 else float((b.mean() - a.mean()) / sp)
+
+
+# ------------------------------------------------------------------------------------------------ paired designs over independent units (worlds, seeds)
+def bootstrap_ci(x: list[float], *, level: float = 0.95, n: int = 5000, seed: int = 0) -> tuple[float, float] | None:
+    a = np.asarray(x, float)
+    if len(a) < 2:
+        return None
+    rng = np.random.default_rng(seed)
+    m = a[rng.integers(0, len(a), size=(n, len(a)))].mean(axis=1)
+    lo, hi = np.quantile(m, [(1 - level) / 2, 1 - (1 - level) / 2])
+    return float(lo), float(hi)
+
+
+def paired_sign_flip(diffs: list[float], *, n_perm: int = 20000, seed: int = 0) -> dict[str, Any]:
+    """A paired comparison across independent units (e.g. worlds): the p-value is the share of random sign flips of the within-unit differences whose mean is at least as extreme. Valid when the units are independent and
+    the condition order within a unit was exchangeable (it is, by construction, in these experiments). Zero differences are kept (they pull the mean towards 0, they are not dropped)."""
+    d = np.asarray(diffs, float)
+    if len(d) < 3:
+        return {"method": "paired-sign-flip", "n": int(len(d)), "p": None, "mean_diff": None, "ci95": None, "inferential": False, "reason": "fewer than three units"}
+    obs = float(d.mean())
+    rng = np.random.default_rng(seed)
+    signs = rng.choice([-1.0, 1.0], size=(n_perm, len(d)))
+    perm = np.abs((signs * d).mean(axis=1))
+    p = float((np.sum(perm >= abs(obs) - 1e-12) + 1) / (n_perm + 1))
+    sd = float(d.std(ddof=1))
+    return {"method": "paired-sign-flip", "n": int(len(d)), "mean_diff": obs, "sd_diff": sd, "dz": None if sd == 0 else obs / sd, "ci95": bootstrap_ci(list(d), seed=seed), "p": p, "n_perm": n_perm, "seed": seed, "inferential": True}
+
+
+def equivalence(diffs: list[float], margin: float, *, seed: int = 0) -> dict[str, Any]:
+    """Equivalence within +-margin: supported when the 90% bootstrap interval of the mean paired difference lies inside the margin (a TOST-like criterion). Failing it is not evidence of a difference."""
+    ci = bootstrap_ci(diffs, level=0.90, seed=seed)
+    if ci is None:
+        return {"method": "equivalence", "margin": margin, "supported": None, "ci90": None, "mean_diff": None}
+    return {"method": "equivalence", "margin": margin, "ci90": ci, "mean_diff": float(np.mean(diffs)), "supported": bool(ci[0] > -margin and ci[1] < margin)}
+
+
+def upper_bound(k: int, n: int, alpha: float = 0.05) -> float | None:
+    """One-sided exact (Clopper-Pearson) upper confidence bound of a proportion k/n at level 1-alpha."""
+    if n <= 0:
+        return None
+    from scipy.stats import beta
+
+    return 1.0 if k >= n else float(beta.ppf(1 - alpha, k + 1, n - k))

@@ -18,7 +18,7 @@ from .provenance import digest_of, now_iso
 
 REQUIRED = ("experiment_id", "hypotheses", "targets", "instrument_conditions", "control_condition", "conditions", "seeds", "trials_per_condition", "stopping_rule", "outcomes", "analyses", "multiplicity",
             "failure_conditions", "reproduction")
-METHODS = ("randomization-test",)
+METHODS = ("randomization-test", "paired-sign-flip", "equivalence", "exact-upper-bound", "descriptive")
 
 
 def new_protocol(**kw: Any) -> dict:
