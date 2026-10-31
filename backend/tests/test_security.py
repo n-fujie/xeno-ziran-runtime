@@ -322,7 +322,8 @@ def test_no_route_runs_experiments_or_touches_the_filesystem():
         ("POST", "/api/meos/repair-run"),
         # TEOO (BODY / TOTAL OBSERVATION): body-observation data pass through these routes, nothing is stored; local runtime and
         # same origin only, 403 under XZR_PUBLIC (see test_teoo_service.py, the local-only test)
-        ("POST", "/api/teoo/ingest"), ("POST", "/api/teoo/verify"), ("POST", "/api/teoo/coverage"), ("POST", "/api/teoo/figure"), ("POST", "/api/teoo/figure/verify")])
+        ("POST", "/api/teoo/ingest"), ("POST", "/api/teoo/verify"), ("POST", "/api/teoo/coverage"),
+        ("POST", "/api/teoo/figure"), ("POST", "/api/teoo/figure/verify")])
     meos_src = Path(app_mod.__file__).with_name("meos.py").read_text()
     assert meos_src.count("local_only(request)") >= len([1 for r in routes if "/api/meos" in getattr(r, "path", "")])
     teoo_src = Path(app_mod.__file__).with_name("teoo.py").read_text()

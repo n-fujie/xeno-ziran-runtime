@@ -18,7 +18,8 @@ authors = [{ name = "Naoto Fujie" }]
 xzr = "xzr.cli:main"
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "httpx>=0.27", "ruff>=0.8", "mypy>=1.13", "websockets>=13"]
+dev = ["pytest>=8", "httpx>=0.27", "ruff>=0.8", "mypy>=1.13", "websockets>=13", "cryptography>=42,<51"]
+teoo-vault = ["cryptography>=42,<51"]  # xzr.teoo.crypto: AES-256-GCM / ChaCha20-Poly1305 for the local vault (the HTTP service does not need it)
 physics = ["mujoco==3.14.0"]  # xzr.lab.physics (physical laboratory runs); pinned like ziran-xeno-simulator/embodied
 
 [build-system]
@@ -58,7 +59,8 @@ ignore = ["E731", "SIM108", "B905"]
 "xzr/teoo/*.py" = ["E501"]
 "xzr/service/teoo.py" = ["E501"]
 "tests/test_teoo_*.py" = ["E501"]
-"scripts/teoo_perf.py" = ["E501"]
+"scripts/teoo_*.py" = ["E501"]
+"scripts/export_teoo_preview.py" = ["E501"]
 "tests/test_meos.py" = ["E501"]
 "tests/test_meos_stage4*.py" = ["E501"]
 "tests/test_meos_stage5*.py" = ["E501"]

@@ -23,9 +23,9 @@ from pathlib import Path
 from .chainlog import ChainLog
 from .crypto import kdf
 
-PERMISSIONS = ("user.manage", "subject.enroll", "consent.record", "consent.revoke", "data.write", "data.read", "identity.read", "subject.delete", "audit.read", "ledger.verify", "checkpoint.sign")
+PERMISSIONS = ("user.manage", "subject.enroll", "consent.record", "consent.revoke", "data.write", "data.read", "identity.read", "subject.delete", "audit.read", "ledger.verify", "checkpoint.sign", "key.rotate")
 ROLES: dict[str, frozenset[str]] = {
-    "steward": frozenset({"user.manage", "subject.enroll", "consent.record", "consent.revoke", "identity.read", "subject.delete", "audit.read", "ledger.verify", "checkpoint.sign"}),
+    "steward": frozenset({"user.manage", "subject.enroll", "consent.record", "consent.revoke", "identity.read", "subject.delete", "audit.read", "ledger.verify", "checkpoint.sign", "key.rotate"}),
     "researcher": frozenset({"data.write", "data.read", "ledger.verify"}),
     "reviewer": frozenset({"audit.read", "ledger.verify"}),
 }

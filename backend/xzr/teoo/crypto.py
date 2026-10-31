@@ -1,14 +1,20 @@
-"""Cryptographic parts for the local vault, from the Python standard library only (no third-party crypto library is installed in this environment).
+"""Cryptographic parts for the local vault.
 
 * ``kdf``            scrypt (hashlib.scrypt) for passphrases and passwords.
 * ``hkdf``           HKDF-SHA256 (RFC 5869) to derive independent keys from one key.
 * ``seal_bytes`` / ``open_bytes``
-                     authenticated encryption: encrypt-then-MAC with an HMAC-SHA256 counter-mode keystream and an HMAC-SHA256 tag, random 128-bit nonce, associated data bound into the tag.
-                     This is a standard construction (HMAC as a PRF in counter mode, then a MAC over nonce, associated data and ciphertext), built from vetted primitives, and it is tested here; it
-                     is **not a vetted AEAD implementation** (no AES-GCM or ChaCha20-Poly1305), has not been reviewed by a cryptographer and is slow. For production use a vetted library and a KMS.
+                     authenticated encryption with a **vetted AEAD**: AES-256-GCM (default) or ChaCha20-Poly1305, from the ``cryptography`` package (OpenSSL). Format 2:
+                     ``0x02 | algorithm id | key id (4 bytes) | 96-bit random nonce | ciphertext || 128-bit tag``. The whole header is authenticated together with the caller's associated data, so a changed
+                     algorithm or key id is a failed authentication, never a silent downgrade. Nonces are random; a per-key invocation count refuses to seal more than 2**32 messages under one key (NIST SP 800-38D) so
+                     that the key has to be rotated (the count lives in this process: a restarted process starts again, a limit stated in docs/TEOO.md). If the library is missing, sealing **fails closed**
+                     (``CryptoUnavailable``): the old construction is never used for new data.
+                     Format 1 (the earlier stdlib encrypt-then-MAC construction, **not vetted**) can still be *opened* so that existing data can be migrated; it is never written (``legacy_seal_v1`` exists only so that tests can
+                     make old data).
 * ``Lamport``        a hash-based one-time signature (Lamport, SHA-256): a real public-key signature property (verification needs no secret) from a hash function alone, with the limits of
                      one-time keys. ``CheckpointAuthority`` chains the keys (each signed checkpoint commits to the hash of the next public key) so that a trust anchor (the hash of the first public key)
                      published outside the vault is enough to verify a whole series of checkpoints. Key storage, anchor distribution and revocation are not solved here.
+
+Still open: key custody (no KMS or hardware module), review of the integration by a cryptographer, and the persistence of the invocation count.
 """
 
 from __future__ import annotations
@@ -19,13 +25,46 @@ import json
 import secrets
 from typing import Any
 
-CIPHER_NAME = "HMAC-SHA256-CTR + HMAC-SHA256 (encrypt-then-MAC), stdlib; not a vetted AEAD"
+CIPHER_NAME = "AES-256-GCM / ChaCha20-Poly1305 (cryptography package), format 2"
+FORMAT = 2
+ALGORITHMS = {1: "AES-256-GCM", 2: "ChaCha20-Poly1305"}
+MAX_MESSAGES_PER_KEY = 2**32
+HEADER_LEN = 6  # format, algorithm, key id (4)
+AEAD_NONCE_LEN = 12
+# format 1 (legacy, open only)
 VERSION = b"\x01"
 NONCE_LEN, TAG_LEN = 16, 32
 
 
 class AuthError(Exception):
-    """Authentication failed (wrong key, tampered ciphertext or associated data). Carries no data about the content."""
+    """Authentication failed (wrong key, tampered ciphertext, header or associated data). Carries no data about the content."""
+
+
+class CryptoUnavailable(Exception):
+    """The AEAD library is not installed: nothing is sealed (there is no fallback)."""
+
+
+class KeyExhausted(Exception):
+    """A key has sealed the maximum number of messages: rotate it."""
+
+
+def _aead(alg: int, key: bytes):  # type: ignore[no-untyped-def]
+    try:
+        from cryptography.hazmat.primitives.ciphers.aead import AESGCM, ChaCha20Poly1305
+    except ImportError:
+        raise CryptoUnavailable("the 'cryptography' package is required to seal data") from None
+    return AESGCM(key) if alg == 1 else ChaCha20Poly1305(key)
+
+
+def have_aead() -> bool:
+    try:
+        _aead(1, b"\x00" * 32)
+    except CryptoUnavailable:
+        return False
+    return True
+
+
+_COUNTS: dict[bytes, int] = {}
 
 
 def kdf(secret: bytes, salt: bytes, *, n: int = 2**14, r: int = 8, p: int = 1, length: int = 32) -> bytes:
@@ -55,31 +94,78 @@ def _tag(k_mac: bytes, nonce: bytes, aad: bytes, ct: bytes) -> bytes:
     return hmac.digest(k_mac, VERSION + nonce + len(aad).to_bytes(8, "big") + aad + len(ct).to_bytes(8, "big") + ct, "sha256")
 
 
-def seal_bytes(key: bytes, plaintext: bytes, aad: bytes = b"") -> bytes:
-    if len(key) != 32:
-        raise ValueError("the key is 32 bytes")
+def _legacy_tag(k_mac: bytes, nonce: bytes, aad: bytes, ct: bytes) -> bytes:
+    return hmac.digest(k_mac, VERSION + nonce + len(aad).to_bytes(8, "big") + aad + len(ct).to_bytes(8, "big") + ct, "sha256")
+
+
+def legacy_seal_v1(key: bytes, plaintext: bytes, aad: bytes = b"") -> bytes:
+    """Format 1, for tests that need old data. Never used by the vault."""
     k_enc, k_mac = hkdf(key, b"teoo/enc"), hkdf(key, b"teoo/mac")
     nonce = secrets.token_bytes(NONCE_LEN)
     ct = _xor(plaintext, _keystream(k_enc, nonce, len(plaintext)))
-    return VERSION + nonce + ct + _tag(k_mac, nonce, aad, ct)
+    return VERSION + nonce + ct + _legacy_tag(k_mac, nonce, aad, ct)
 
 
-def open_bytes(key: bytes, blob: bytes, aad: bytes = b"") -> bytes:
-    if len(blob) < 1 + NONCE_LEN + TAG_LEN or blob[:1] != VERSION:
+def _legacy_open(key: bytes, blob: bytes, aad: bytes) -> bytes:
+    if len(blob) < 1 + NONCE_LEN + TAG_LEN:
         raise AuthError("malformed ciphertext")
     nonce, ct, tag = blob[1:1 + NONCE_LEN], blob[1 + NONCE_LEN:-TAG_LEN], blob[-TAG_LEN:]
     k_enc, k_mac = hkdf(key, b"teoo/enc"), hkdf(key, b"teoo/mac")
-    if not hmac.compare_digest(tag, _tag(k_mac, nonce, aad, ct)):
+    if not hmac.compare_digest(tag, _legacy_tag(k_mac, nonce, aad, ct)):
         raise AuthError("authentication failed")
     return _xor(ct, _keystream(k_enc, nonce, len(ct)))
 
 
-def seal_json(key: bytes, obj: Any, aad: bytes = b"") -> bytes:
-    return seal_bytes(key, json.dumps(obj, sort_keys=True, separators=(",", ":")).encode(), aad)
+def blob_info(blob: bytes) -> dict:
+    """What a blob says about itself (not authenticated until it is opened): its format, algorithm and key id."""
+    if blob[:1] == VERSION:
+        return {"format": 1, "algorithm": "HMAC-SHA256-CTR + HMAC-SHA256 (legacy, not vetted)", "key_id": None, "legacy": True}
+    if len(blob) >= HEADER_LEN and blob[0] == FORMAT and blob[1] in ALGORITHMS:
+        return {"format": 2, "algorithm": ALGORITHMS[blob[1]], "key_id": int.from_bytes(blob[2:6], "big"), "legacy": False}
+    return {"format": None, "algorithm": None, "key_id": None, "legacy": False}
 
 
-def open_json(key: bytes, blob: bytes, aad: bytes = b"") -> Any:
-    return json.loads(open_bytes(key, blob, aad))
+def seal_bytes(key: bytes, plaintext: bytes, aad: bytes = b"", *, key_id: int = 0, alg: int = 1) -> bytes:
+    if len(key) != 32:
+        raise ValueError("the key is 32 bytes")
+    if alg not in ALGORITHMS or not 0 <= key_id < 2**32:
+        raise ValueError("unknown algorithm or key id")
+    fp = hashlib.sha256(b"teoo/count" + key).digest()[:8]
+    if _COUNTS.get(fp, 0) >= MAX_MESSAGES_PER_KEY:
+        raise KeyExhausted("this key has sealed the maximum number of messages; rotate it")
+    cipher = _aead(alg, key)
+    _COUNTS[fp] = _COUNTS.get(fp, 0) + 1
+    head = bytes([FORMAT, alg]) + key_id.to_bytes(4, "big")
+    nonce = secrets.token_bytes(AEAD_NONCE_LEN)
+    return head + nonce + cipher.encrypt(nonce, plaintext, head + len(aad).to_bytes(8, "big") + aad)
+
+
+def open_bytes(key: bytes | dict[int, bytes], blob: bytes, aad: bytes = b"", *, allow_legacy: bool = True) -> bytes:
+    """Open a blob. ``key`` is one key, or a ring {key id: key} from which the blob's header selects (an id that is not in the ring fails). Every failure is an ``AuthError`` with no detail about the content."""
+    if blob[:1] == VERSION:
+        if not allow_legacy or isinstance(key, dict):
+            raise AuthError("legacy format refused")
+        return _legacy_open(key, blob, aad)
+    if len(blob) < HEADER_LEN + AEAD_NONCE_LEN + 16 or blob[0] != FORMAT or blob[1] not in ALGORITHMS:
+        raise AuthError("malformed ciphertext")
+    head, nonce, body = blob[:HEADER_LEN], blob[HEADER_LEN:HEADER_LEN + AEAD_NONCE_LEN], blob[HEADER_LEN + AEAD_NONCE_LEN:]
+    k = key.get(int.from_bytes(head[2:6], "big")) if isinstance(key, dict) else key
+    if k is None or len(k) != 32:
+        raise AuthError("authentication failed")
+    try:
+        return _aead(blob[1], k).decrypt(nonce, body, head + len(aad).to_bytes(8, "big") + aad)
+    except CryptoUnavailable:
+        raise
+    except Exception:  # noqa: BLE001 - any failure of the AEAD is an authentication failure; nothing about the cause is disclosed
+        raise AuthError("authentication failed") from None
+
+
+def seal_json(key: bytes, obj: Any, aad: bytes = b"", *, key_id: int = 0, alg: int = 1) -> bytes:
+    return seal_bytes(key, json.dumps(obj, sort_keys=True, separators=(",", ":")).encode(), aad, key_id=key_id, alg=alg)
+
+
+def open_json(key: bytes | dict[int, bytes], blob: bytes, aad: bytes = b"", *, allow_legacy: bool = True) -> Any:
+    return json.loads(open_bytes(key, blob, aad, allow_legacy=allow_legacy))
 
 
 def sha256(b: bytes) -> bytes:

@@ -24,11 +24,12 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
+from . import crypto as C
 from . import provenance as P
 from .access import AccessDenied, AuthService, Principal
 from .chainlog import ChainLog
 from .consent import ConsentLog
-from .crypto import AuthError, CheckpointAuthority, hkdf, kdf, open_bytes, open_json, seal_bytes, seal_json, verify_checkpoints
+from .crypto import AuthError, CheckpointAuthority, CryptoUnavailable, hkdf, kdf, open_bytes, verify_checkpoints
 
 
 class VaultError(Exception):
@@ -48,8 +49,10 @@ class Vault:
         self.root, self.auth, self.clock = Path(root), auth, clock
         self.root.mkdir(parents=True, exist_ok=True)
         meta = self.root / "vault.json"
+        self.n = scrypt_n
         if meta.exists():
             m = json.loads(meta.read_text())
+            self.n, self.key_id, self.format = m["n"], m.get("key_id", 0), 1 if m.get("cipher") == "teoo.crypto/1" else 2
             master = kdf(passphrase.encode(), bytes.fromhex(m["salt"]), n=m["n"])
             try:
                 open_bytes(master, bytes.fromhex(m["check"]), b"teoo-vault-check")
@@ -58,7 +61,12 @@ class Vault:
         else:
             salt = secrets.token_bytes(16)
             master = kdf(passphrase.encode(), salt, n=scrypt_n)
-            meta.write_text(json.dumps({"salt": salt.hex(), "n": scrypt_n, "check": seal_bytes(master, b"ok", b"teoo-vault-check").hex(), "cipher": "teoo.crypto/1"}))
+            self.key_id, self.format = 1, 2
+            try:
+                check = C.seal_bytes(master, b"ok", b"teoo-vault-check", key_id=self.key_id)
+            except CryptoUnavailable:
+                raise VaultError("CRYPTO_UNAVAILABLE") from None
+            meta.write_text(json.dumps({"salt": salt.hex(), "n": scrypt_n, "check": check.hex(), "cipher": "teoo.crypto/2", "key_id": self.key_id}))
             os.chmod(meta, 0o600)
         self._wrap, self._idkey = hkdf(master, b"teoo/wrap"), hkdf(master, b"teoo/identity")
         del master
@@ -81,12 +89,32 @@ class Vault:
     def _save_keys(self) -> None:
         self._atomic("keystore.json", json.dumps(self.keystore, sort_keys=True).encode())
 
+    def _seal(self, key: bytes, data: bytes, aad: bytes, key_id: int) -> bytes:
+        try:
+            return C.seal_bytes(key, data, aad, key_id=key_id)
+        except CryptoUnavailable:
+            raise VaultError("CRYPTO_UNAVAILABLE") from None
+        except C.KeyExhausted:
+            raise VaultError("KEY_EXHAUSTED") from None
+
+    def _open(self, key: bytes, blob: bytes, aad: bytes) -> bytes:
+        try:
+            return open_bytes(key, blob, aad)
+        except CryptoUnavailable:
+            raise VaultError("CRYPTO_UNAVAILABLE") from None
+
+    def _open_json(self, key: bytes, blob: bytes, aad: bytes) -> Any:
+        return json.loads(self._open(key, blob, aad))
+
+    def _seal_json(self, key: bytes, obj: Any, aad: bytes, key_id: int) -> bytes:
+        return self._seal(key, json.dumps(obj, sort_keys=True, separators=(",", ":")).encode(), aad, key_id)
+
     def _identities(self) -> dict[str, dict]:
         f = self.root / "identity.enc"
-        return open_json(self._idkey, f.read_bytes(), b"identity") if f.exists() else {}
+        return self._open_json(self._idkey, f.read_bytes(), b"identity") if f.exists() else {}
 
     def _save_identities(self, d: dict[str, dict]) -> None:
-        self._atomic("identity.enc", seal_json(self._idkey, d, b"identity"))
+        self._atomic("identity.enc", self._seal_json(self._idkey, d, b"identity", self.key_id))
 
     def _dek(self, subject: str) -> bytes:
         e = self.keystore.get(subject)
@@ -94,7 +122,7 @@ class Vault:
             raise VaultError("UNKNOWN_SUBJECT")
         if e["state"] != "active":
             raise VaultError("KEY_DESTROYED")
-        return open_bytes(self._wrap, bytes.fromhex(e["wrapped"]), subject.encode())
+        return self._open(self._wrap, bytes.fromhex(e["wrapped"]), subject.encode())
 
     def _blob_dir(self, subject: str) -> Path:
         return self.root / "blobs" / subject
@@ -112,7 +140,7 @@ class Vault:
         ids = self._identities()
         ids[pseudo] = identity
         self._save_identities(ids)
-        self.keystore[pseudo] = {"state": "active", "wrapped": seal_bytes(self._wrap, secrets.token_bytes(32), pseudo.encode()).hex(), "created_at": self.clock()}
+        self.keystore[pseudo] = {"state": "active", "wrapped": self._seal(self._wrap, secrets.token_bytes(32), pseudo.encode(), self.key_id).hex(), "gen": 1, "created_at": self.clock()}
         self._save_keys()
         self.auth.log(p.user, "subject.enroll", "ok", object_id=pseudo)
         return pseudo
@@ -159,7 +187,7 @@ class Vault:
             raise self._deny(p, "data.write", "PARENT_UNKNOWN", subject)
         if record["record_id"] in known:
             raise self._deny(p, "data.write", "ALREADY_RECORDED", subject)
-        blob = seal_json(self._dek(subject), {"record": record, "raw_b64": base64.b64encode(raw).decode() if raw is not None else None}, f"{subject}|{record['record_id']}".encode())
+        blob = self._seal_json(self._dek(subject), {"record": record, "raw_b64": base64.b64encode(raw).decode() if raw is not None else None}, f"{subject}|{record['record_id']}".encode(), self.keystore[subject].get("gen", 0))
         d = self._blob_dir(subject)
         d.mkdir(parents=True, exist_ok=True)
         fd = os.open(d / f"{record['record_id']}.enc", os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
@@ -180,7 +208,7 @@ class Vault:
             raise self._deny(p, "data.read", "NOT_FOUND", record_id)
         blob = (self._blob_dir(subject) / f"{record_id}.enc").read_bytes()
         try:
-            full = open_json(self._dek(subject), blob, f"{subject}|{record_id}".encode())
+            full = self._open_json(self._dek(subject), blob, f"{subject}|{record_id}".encode())
         except AuthError:
             raise self._deny(p, "data.read", "INTEGRITY", record_id) from None
         if P.verify_record(full["record"]) or full["record"]["record_digest"] != sk["record_digest"]:
@@ -251,6 +279,143 @@ class Vault:
             return True
         return False
 
+    def _digest_of(self, sk: dict) -> str:
+        """The digest of a record's blob now: the one in its skeleton, or the newest re-encryption recorded in the ledger (the ledger is append-only, so a re-encryption is an entry, not an edit)."""
+        d = sk["blob_digest"]
+        for b in self.ledger.bodies():
+            if b["type"] == "reseal" and b["record_id"] == sk["record_id"] and b["old_blob_digest"] == d:
+                d = b["new_blob_digest"]
+        return d
+
+    # ------------------------------------------------------------------------------------------------ cryptographic status, migration and rotation
+    def crypto_status(self, token: str) -> dict:
+        """Every encrypted object of the vault by format, algorithm and key id: what is actually stored, not what was intended."""
+        self.auth.require(token, "ledger.verify")
+        counts: dict[str, int] = {}
+
+        def note(kind: str, blob: bytes) -> None:
+            i = C.blob_info(blob)
+            k = f"{kind}: format {i['format']} {i['algorithm']} key {i['key_id']}"
+            counts[k] = counts.get(k, 0) + 1
+        for sub, e in sorted(self.keystore.items()):
+            if e.get("wrapped"):
+                note("wrapped subject key", bytes.fromhex(e["wrapped"]))
+            for f in sorted(self._blob_dir(sub).glob("*.enc")) if self._blob_dir(sub).exists() else []:
+                note("record blob", f.read_bytes())
+        if (self.root / "identity.enc").exists():
+            note("identity store", (self.root / "identity.enc").read_bytes())
+        note("passphrase check", bytes.fromhex(json.loads((self.root / "vault.json").read_text())["check"]))
+        return {"cipher": C.CIPHER_NAME, "vault_format": self.format, "master_key_id": self.key_id, "objects": counts, "legacy_objects": sum(v for k, v in counts.items() if "format 1" in k), "aead_available": C.have_aead()}
+
+    def _reseal_blob(self, subject: str, record_id: str, old_dek: bytes, new_dek: bytes, new_gen: int) -> None:
+        f = self._blob_dir(subject) / f"{record_id}.enc"
+        old = f.read_bytes()
+        aad = f"{subject}|{record_id}".encode()
+        plain = self._open(old_dek, old, aad)  # an AuthError stops the whole operation: nothing is half-converted silently
+        new = self._seal(new_dek, plain, aad, new_gen)
+        if self._open(new_dek, new, aad) != plain:
+            raise VaultError("RESEAL_VERIFY")
+        tmp = f.with_suffix(".enc.tmp")
+        fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+        try:
+            os.write(fd, new)
+        finally:
+            os.close(fd)
+        os.replace(tmp, f)
+        self.ledger.append({"type": "reseal", "subject": subject, "record_id": record_id, "old_blob_digest": hashlib.sha256(old).hexdigest(), "new_blob_digest": hashlib.sha256(new).hexdigest(), "at": self.clock()})
+
+    def _rewrap(self, subject: str, new_wrap: bytes, new_key_id: int, dek: bytes, gen: int | None = None) -> None:
+        e = self.keystore[subject]
+        e["wrapped"] = self._seal(new_wrap, dek, subject.encode(), new_key_id).hex()
+        if gen is not None:
+            e["gen"] = gen
+
+    def migrate(self, token: str, passphrase: str) -> dict:
+        """Convert every legacy (format 1, not vetted) object to the vetted AEAD (format 2) under the same keys: the passphrase check, the identity store, the wrapped subject keys and the record blobs. Verified at the end
+        by reading what is stored. A failed authentication stops the operation and leaves everything it had not yet converted as it was."""
+        p = self.auth.require(token, "key.rotate")
+        if not C.have_aead():
+            raise self._deny(p, "key.migrate", "CRYPTO_UNAVAILABLE")
+        m = json.loads((self.root / "vault.json").read_text())
+        master = kdf(passphrase.encode(), bytes.fromhex(m["salt"]), n=m["n"])
+        try:
+            open_bytes(master, bytes.fromhex(m["check"]), b"teoo-vault-check")
+        except AuthError:
+            raise self._deny(p, "key.migrate", "WRONG_PASSPHRASE") from None
+        done = {"wrapped_keys": 0, "record_blobs": 0, "identity_store": 0, "passphrase_check": 0}
+        for sub, e in sorted(self.keystore.items()):
+            if e.get("state") != "active":
+                continue
+            dek = self._open(self._wrap, bytes.fromhex(e["wrapped"]), sub.encode())
+            if C.blob_info(bytes.fromhex(e["wrapped"]))["legacy"]:
+                self._rewrap(sub, self._wrap, self.key_id, dek, e.get("gen", 1))
+                self._save_keys()
+                done["wrapped_keys"] += 1
+            gen = e.get("gen", 1)
+            for rid in sorted(self._present(sub)):
+                f = self._blob_dir(sub) / f"{rid}.enc"
+                if C.blob_info(f.read_bytes())["legacy"]:
+                    self._reseal_blob(sub, rid, dek, dek, gen)
+                    done["record_blobs"] += 1
+        idf = self.root / "identity.enc"
+        if idf.exists() and C.blob_info(idf.read_bytes())["legacy"]:
+            self._save_identities(self._identities())
+            done["identity_store"] = 1
+        if m.get("cipher") != "teoo.crypto/2" or C.blob_info(bytes.fromhex(m["check"]))["legacy"]:
+            self.key_id = self.key_id or 1
+            m.update({"check": self._seal(master, b"ok", b"teoo-vault-check", self.key_id).hex(), "cipher": "teoo.crypto/2", "key_id": self.key_id})
+            self._atomic("vault.json", json.dumps(m).encode())
+            self.format = 2
+            done["passphrase_check"] = 1
+        left = self.crypto_status(token)["legacy_objects"]
+        self.auth.log(p.user, "key.migrate", "ok" if not left else "partial", code=f"converted-{sum(done.values())}-left-{left}")
+        return {"converted": done, "legacy_objects_left": left}
+
+    def rotate_subject_key(self, token: str, subject: str) -> dict:
+        """A new subject key; every blob of the subject re-encrypted under it; the old wrapped key removed from the key store (copies of the old key store elsewhere still hold it)."""
+        p = self.auth.require(token, "key.rotate")
+        e = self.keystore.get(subject)
+        if e is None or e["state"] != "active":
+            raise self._deny(p, "key.rotate", "UNKNOWN_SUBJECT", subject)
+        old = self._dek(subject)
+        new = secrets.token_bytes(32)
+        gen = e.get("gen", 1) + 1
+        rids = sorted(self._present(subject))
+        for rid in rids:
+            self._reseal_blob(subject, rid, old, new, gen)
+        self._rewrap(subject, self._wrap, self.key_id, new, gen)
+        self._save_keys()
+        self.auth.log(p.user, "key.rotate", "ok", object_id=subject, code=f"gen-{gen}")
+        return {"subject": subject, "generation": gen, "blobs_reencrypted": len(rids), "residual": "a copy of the key store or of the blobs taken before the rotation still holds the old key or the old ciphertext"}
+
+    def rotate_master(self, token: str, passphrase: str, new_passphrase: str) -> dict:
+        """A new passphrase salt and master key (key id + 1); the passphrase check, the identity store and every wrapped subject key re-encrypted under it. The operation is not atomic across files: it converts in an order
+        that keeps the old key usable until the last step, and stops on any failure."""
+        p = self.auth.require(token, "key.rotate")
+        m = json.loads((self.root / "vault.json").read_text())
+        old_master = kdf(passphrase.encode(), bytes.fromhex(m["salt"]), n=m["n"])
+        try:
+            open_bytes(old_master, bytes.fromhex(m["check"]), b"teoo-vault-check")
+        except AuthError:
+            raise self._deny(p, "key.rotate", "WRONG_PASSPHRASE") from None
+        salt = secrets.token_bytes(16)
+        new_master = kdf(new_passphrase.encode(), salt, n=m["n"])
+        nw, ni, kid = hkdf(new_master, b"teoo/wrap"), hkdf(new_master, b"teoo/identity"), self.key_id + 1
+        ids = self._identities()
+        deks = {sub: self._dek(sub) for sub, e in self.keystore.items() if e["state"] == "active"}
+        new_ids = self._seal_json(ni, ids, b"identity", kid) if ids or (self.root / "identity.enc").exists() else None
+        wraps = {sub: self._seal(nw, dek, sub.encode(), kid).hex() for sub, dek in deks.items()}
+        check = self._seal(new_master, b"ok", b"teoo-vault-check", kid)
+        for sub, w in wraps.items():
+            self.keystore[sub]["wrapped"] = w
+        self._save_keys()
+        if new_ids is not None:
+            self._atomic("identity.enc", new_ids)
+        self._atomic("vault.json", json.dumps({**m, "salt": salt.hex(), "check": check.hex(), "cipher": "teoo.crypto/2", "key_id": kid}).encode())
+        self._wrap, self._idkey, self.key_id, self.format = nw, ni, kid, 2
+        self.auth.log(p.user, "key.rotate", "ok", code=f"master-key-id-{kid}")
+        return {"master_key_id": kid, "wrapped_keys": len(wraps), "identity_store": new_ids is not None}
+
     # ------------------------------------------------------------------------------------------------ integrity and checkpoints
     def verify_integrity(self, token: str) -> list[str]:
         self.auth.require(token, "ledger.verify")
@@ -266,11 +431,11 @@ class Vault:
                 continue
             if not f.exists():
                 out.append(f"{b['record_id']}: the encrypted blob is missing")
-            elif hashlib.sha256(f.read_bytes()).hexdigest() != b["blob_digest"]:
+            elif hashlib.sha256(f.read_bytes()).hexdigest() != self._digest_of(b):
                 out.append(f"{b['record_id']}: the encrypted blob does not match its digest")
             else:
                 try:
-                    full = open_json(self._dek(b["subject"]), f.read_bytes(), f"{b['subject']}|{b['record_id']}".encode())
+                    full = self._open_json(self._dek(b["subject"]), f.read_bytes(), f"{b['subject']}|{b['record_id']}".encode())
                     if P.verify_record(full["record"]) or full["record"]["record_digest"] != b["record_digest"]:
                         out.append(f"{b['record_id']}: the record does not match its skeleton or its own digest")
                     if full["raw_b64"] is not None and hashlib.sha256(base64.b64decode(full["raw_b64"])).hexdigest() != b["raw_digest"]:
