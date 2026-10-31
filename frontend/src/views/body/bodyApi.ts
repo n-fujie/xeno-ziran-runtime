@@ -42,6 +42,7 @@ function fixtureOf(path: string, body?: { kind?: string; body_preset?: string })
   if (p === '/demo') return 'demo.json';
   if (p === '/session') return 'session.json';
   if (p === '/safety') return 'safety.json';
+  if (p === '/legal') return 'legal.json';
   if (p.startsWith('/body/')) return `body-${p.slice(6).replace(/[^a-z0-9-]/g, '')}.json`;
   if (p === '/coverage') return `coverage-${String(body?.body_preset ?? '').replace(/[^a-z0-9-]/g, '')}.json`;
   if (p === '/figure') return `figure-${String(body?.kind ?? '').replace(/[^a-z]/g, '')}.json`;
@@ -71,3 +72,12 @@ export const teooFigure = (kind: string, seed = 7) => post<FigureOut>('/figure',
 export interface SafetyOut { production_ready: boolean; human_measurement_ingestion_allowed: boolean; missing: Array<{ id: string; needed: string }>; note: string; capabilities: Array<{ id: number; name: string; implemented: boolean; limits: string }>;
   threats: Array<{ id: string; threat: string; defence: string }>; stored_on_server: boolean }
 export const teooSafety = () => get<SafetyOut>('/safety');
+
+// AI legal governance: the fifteen guarantees (a PROVISIONAL catalogue), the legal translation chain, the comparison of interventions on a synthetic institution
+export interface GuaranteeAssessment { number: number; title: string; provision: string; applicable: boolean; required_evidence: string; institutional_function: string; state: 'SECURED' | 'PARTIAL' | 'ABSENT' | 'INDETERMINATE' | 'INAPPLICABLE'; reason: string; remedy_path: string; effectiveness_indicator: number | null; catalogue_verified: boolean }
+export interface ChainStage { stage: string; legal_basis: string | null; scope: string; responsible: string; evidence: string; uncertainty: string; authority: string | null; contest_path: string | null; by_ai: boolean }
+export interface ChainAssessment { stages: Array<{ stage: string; valid: boolean; why_not: string[]; uncertainty: string; responsible: string }>; valid_legal_decision: boolean; first_invalid_stage: string | null; issues: string[]; reading: string }
+export interface InterventionRow { exclusion_qualified: number; exclusion_persistence: number; tpr_gap: number; group_exclusion_gap: number; downstream_access_qualified: number; overturn_rate_of_wrongful: number; formal_appeal_rate: number; burden_subject: number; burden_institution: number; series_exclusion: number[] }
+export interface LegalBundle { synthetic: boolean; catalogue: { source: string; verified_against_original: boolean; note: string }; states: string[]; guarantees: Array<{ number: number; title: string; description: string }>; assessments: Record<string, GuaranteeAssessment[]>;
+  chains: Record<string, { chain: ChainStage[]; assessment: ChainAssessment }>; interventions: Record<string, InterventionRow>; observation: { observed_provisions: string[]; not_observed_provisions: string[]; note: string }; scope: string; seed: number }
+export const teooLegal = (seed = 3) => get<LegalBundle>(`/legal?seed=${seed}`);

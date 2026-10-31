@@ -1,0 +1,225 @@
+{
+ "experiment_id": "LEG-EXP-05",
+ "protocol_version": 1,
+ "protocol_digest": "5dbce67b56f13b2e989682e08b88b0f5401ffb831a8711284a621976a031f4df",
+ "protocol": {
+  "experiment_id": "LEG-EXP-05",
+  "hypotheses": [
+   {
+    "id": "H1",
+    "statement": "Correcting the decisions lowers exclusion even when the correction does not reach the second institution"
+   },
+   {
+    "id": "H2",
+    "statement": "Propagating the correction raises access at the second institution"
+   },
+   {
+    "id": "H3",
+    "statement": "Re-entry support adds persons who regain access"
+   }
+  ],
+  "targets": [
+   "exclusion and access of a synthetic institution"
+  ],
+  "instrument_conditions": {
+   "population": 300,
+   "periods": 24,
+   "correction_period": 8
+  },
+  "control_condition": "no_correction",
+  "conditions": [
+   "no_correction",
+   "correction_no_propagation",
+   "correction_propagated",
+   "correction_propagated_with_reentry_support"
+  ],
+  "seeds": [
+   2001,
+   2002,
+   2003,
+   2004,
+   2005,
+   2006,
+   2007,
+   2008,
+   2009,
+   2010,
+   2011,
+   2012,
+   2013,
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023,
+   2024,
+   2025,
+   2026,
+   2027,
+   2028,
+   2029,
+   2030
+  ],
+  "trials_per_condition": 1,
+  "stopping_rule": {
+   "type": "fixed-n",
+   "units": 30,
+   "no interim analysis": true
+  },
+  "outcomes": {
+   "primary": [
+    "exclusion_qualified",
+    "downstream_access_qualified"
+   ],
+   "secondary": [
+    "reentered_qualified"
+   ]
+  },
+  "analyses": [
+   {
+    "id": "L05a",
+    "hypothesis": "H1",
+    "outcome": "exclusion_qualified",
+    "method": "paired-sign-flip",
+    "confirmatory": true
+   },
+   {
+    "id": "L05b",
+    "hypothesis": "H2",
+    "outcome": "downstream_access_qualified",
+    "method": "paired-sign-flip",
+    "confirmatory": true
+   },
+   {
+    "id": "L05c",
+    "hypothesis": "H3",
+    "outcome": "reentered_qualified",
+    "method": "paired-sign-flip",
+    "confirmatory": true
+   }
+  ],
+  "multiplicity": "holm",
+  "failure_conditions": [
+   "fewer than 30 worlds"
+  ],
+  "reproduction": {
+   "generator": "xzr.teoo.legal_experiments",
+   "steps": [
+    "run unit per seed",
+    "analyse"
+   ],
+   "world": "xzr.teoo.legal (SYNTHETIC institution)"
+  },
+  "schema": "teoo.protocol/1",
+  "version": 1,
+  "parent_version": null,
+  "change_reason": null
+ },
+ "units": 30,
+ "seeds": [
+  2001,
+  2002,
+  2003,
+  2004,
+  2005,
+  2006,
+  2007,
+  2008,
+  2009,
+  2010,
+  2011,
+  2012,
+  2013,
+  2014,
+  2015,
+  2016,
+  2017,
+  2018,
+  2019,
+  2020,
+  2021,
+  2022,
+  2023,
+  2024,
+  2025,
+  2026,
+  2027,
+  2028,
+  2029,
+  2030
+ ],
+ "evidence_class": "Synthetic-world Result",
+ "seconds": 0.7,
+ "results": {
+  "L05a": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.0009595701799233479,
+   "sd_diff": 0.0021853148473489356,
+   "dz": 0.43909928177508534,
+   "ci95": [
+    0.00023479880550641,
+    0.0017812207785474288
+   ],
+   "p": 0.021698915054247286,
+   "n_perm": 20000,
+   "seed": 9,
+   "inferential": true,
+   "contrast": "no_correction minus correction_no_propagation on exclusion_qualified",
+   "mean_no_correction": 0.29644300011997465,
+   "mean_correction_no_propagation": 0.29548342994005133,
+   "p_holm": 0.021698915054247286,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "L05b": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.05757082186352161,
+   "sd_diff": 0.014315775341561233,
+   "dz": 4.0214952030144895,
+   "ci95": [
+    0.052837865207749794,
+    0.06280430003851761
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 10,
+   "inferential": true,
+   "contrast": "correction_propagated minus correction_no_propagation on downstream_access_qualified",
+   "mean_correction_propagated": 0.753881969104459,
+   "mean_correction_no_propagation": 0.6963111472409372,
+   "p_holm": 0.00014999250037498125,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "L05c": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 6.033333333333333,
+   "sd_diff": 8.911377204347312,
+   "dz": 0.6770371397128203,
+   "ci95": [
+    3.0,
+    9.366666666666667
+   ],
+   "p": 0.00044997750112494374,
+   "n_perm": 20000,
+   "seed": 11,
+   "inferential": true,
+   "contrast": "correction_propagated_with_reentry_support minus correction_propagated on reentered_qualified",
+   "mean_correction_propagated_with_reentry_support": 165.2,
+   "mean_correction_propagated": 159.16666666666666,
+   "p_holm": 0.0008999550022498875,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  }
+ },
+ "catalogue": null,
+ "note": "results about a SYNTHETIC institution and this implementation; not an observation of any institution, law or person"
+}

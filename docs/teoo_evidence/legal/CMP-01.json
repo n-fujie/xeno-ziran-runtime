@@ -1,0 +1,353 @@
+{
+ "experiment_id": "LEG-CMP-01",
+ "protocol_version": 1,
+ "protocol_digest": "d687199819ca78b914c14b38e2cb642436a89a41a7cee3c57771cc3da9bb3bc6",
+ "protocol": {
+  "experiment_id": "LEG-CMP-01",
+  "hypotheses": [
+   {
+    "id": "H1",
+    "statement": "Choosing the extra observed field from the outcome (the observation-revision planner) leaves less exclusion than the same planner with a randomly chosen extra field (non-redundancy of the revision rule)"
+   },
+   {
+    "id": "H2",
+    "statement": "It leaves less exclusion than rule-based compliance, fairness optimisation, a structural causal model, constrained planning on the initial observation, and greedy model-based planning"
+   }
+  ],
+  "targets": [
+   "exclusion and access of a synthetic institution"
+  ],
+  "instrument_conditions": {
+   "fields_initial": 2,
+   "budget": 2,
+   "actor can execute": 6
+  },
+  "control_condition": "rule_based_compliance",
+  "conditions": [
+   "rule_based_compliance",
+   "fairness_optimisation",
+   "structural_causal_model",
+   "constrained_planning",
+   "model_based_greedy",
+   "osr_with_observation_revision",
+   "constrained_planning_with_random_extra_field",
+   "oracle_best_executable"
+  ],
+  "seeds": [
+   3001,
+   3002,
+   3003,
+   3004,
+   3005,
+   3006,
+   3007,
+   3008,
+   3009,
+   3010,
+   3011,
+   3012,
+   3013,
+   3014,
+   3015,
+   3016,
+   3017,
+   3018,
+   3019,
+   3020,
+   3021,
+   3022,
+   3023,
+   3024,
+   3025,
+   3026,
+   3027,
+   3028,
+   3029,
+   3030
+  ],
+  "trials_per_condition": 1,
+  "stopping_rule": {
+   "type": "fixed-n",
+   "units": 30,
+   "no interim analysis": true
+  },
+  "outcomes": {
+   "primary": [
+    "exclusion of the qualified after the plan (lower is better)"
+   ],
+   "secondary": [
+    "rollouts used",
+    "gap to the oracle"
+   ]
+  },
+  "analyses": [
+   {
+    "id": "L11a",
+    "hypothesis": "H1",
+    "outcome": "exclusion",
+    "method": "paired-sign-flip",
+    "confirmatory": true
+   },
+   {
+    "id": "L11b",
+    "hypothesis": "H2",
+    "outcome": "exclusion",
+    "method": "paired-sign-flip",
+    "confirmatory": true
+   },
+   {
+    "id": "L11c",
+    "hypothesis": "H2",
+    "outcome": "exclusion",
+    "method": "paired-sign-flip",
+    "confirmatory": true
+   },
+   {
+    "id": "L11d",
+    "hypothesis": "H2",
+    "outcome": "exclusion",
+    "method": "paired-sign-flip",
+    "confirmatory": true
+   },
+   {
+    "id": "L11e",
+    "hypothesis": "H2",
+    "outcome": "exclusion",
+    "method": "paired-sign-flip",
+    "confirmatory": true
+   },
+   {
+    "id": "L11f",
+    "hypothesis": "H2",
+    "outcome": "exclusion",
+    "method": "paired-sign-flip",
+    "confirmatory": true
+   }
+  ],
+  "multiplicity": "holm",
+  "failure_conditions": [
+   "fewer than 30 worlds"
+  ],
+  "reproduction": {
+   "generator": "xzr.teoo.legal_experiments",
+   "steps": [
+    "run unit per seed",
+    "analyse"
+   ],
+   "world": "xzr.teoo.legal (SYNTHETIC institution)"
+  },
+  "schema": "teoo.protocol/1",
+  "version": 1,
+  "parent_version": null,
+  "change_reason": null
+ },
+ "units": 30,
+ "seeds": [
+  3001,
+  3002,
+  3003,
+  3004,
+  3005,
+  3006,
+  3007,
+  3008,
+  3009,
+  3010,
+  3011,
+  3012,
+  3013,
+  3014,
+  3015,
+  3016,
+  3017,
+  3018,
+  3019,
+  3020,
+  3021,
+  3022,
+  3023,
+  3024,
+  3025,
+  3026,
+  3027,
+  3028,
+  3029,
+  3030
+ ],
+ "evidence_class": "Synthetic-world Result",
+ "seconds": 30.9,
+ "results": {
+  "L11a": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.0002776630875950268,
+   "sd_diff": 0.029076558046553732,
+   "dz": 0.009549379508759859,
+   "ci95": [
+    -0.010016792102401221,
+    0.010633968185594183
+   ],
+   "p": 0.95955202239888,
+   "n_perm": 20000,
+   "seed": 23,
+   "inferential": true,
+   "contrast": "constrained_planning_with_random_extra_field minus osr_with_observation_revision on exclusion",
+   "mean_constrained_planning_with_random_extra_field": 0.21591160853076213,
+   "mean_osr_with_observation_revision": 0.21563394544316714,
+   "p_holm": 0.95955202239888,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "L11b": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.025616797567660617,
+   "sd_diff": 0.04369445117334611,
+   "dz": 0.5862711827191235,
+   "ci95": [
+    0.010962877065983858,
+    0.041685988750011366
+   ],
+   "p": 0.002849857507124644,
+   "n_perm": 20000,
+   "seed": 23,
+   "inferential": true,
+   "contrast": "rule_based_compliance minus osr_with_observation_revision on exclusion",
+   "mean_rule_based_compliance": 0.24125074301082777,
+   "mean_osr_with_observation_revision": 0.21563394544316714,
+   "p_holm": 0.014249287535623219,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "L11c": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.05179160710029398,
+   "sd_diff": 0.051625371552695316,
+   "dz": 1.0032200358583179,
+   "ci95": [
+    0.033802802540198386,
+    0.07043802057958772
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 23,
+   "inferential": true,
+   "contrast": "fairness_optimisation minus osr_with_observation_revision on exclusion",
+   "mean_fairness_optimisation": 0.2674255525434611,
+   "mean_osr_with_observation_revision": 0.21563394544316714,
+   "p_holm": 0.0002999850007499625,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "L11d": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.018420683257989387,
+   "sd_diff": 0.03213531392285864,
+   "dz": 0.5732224462536306,
+   "ci95": [
+    0.007654448544625855,
+    0.029721311907808103
+   ],
+   "p": 0.0031998400079996,
+   "n_perm": 20000,
+   "seed": 23,
+   "inferential": true,
+   "contrast": "structural_causal_model minus osr_with_observation_revision on exclusion",
+   "mean_structural_causal_model": 0.23405462870115654,
+   "mean_osr_with_observation_revision": 0.21563394544316714,
+   "p_holm": 0.014249287535623219,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "L11e": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.011355913480750757,
+   "sd_diff": 0.03211877935794854,
+   "dz": 0.3535599330906849,
+   "ci95": [
+    0.00013282812576154786,
+    0.02240053441610869
+   ],
+   "p": 0.06429678516074196,
+   "n_perm": 20000,
+   "seed": 23,
+   "inferential": true,
+   "contrast": "constrained_planning minus osr_with_observation_revision on exclusion",
+   "mean_constrained_planning": 0.22698985892391788,
+   "mean_osr_with_observation_revision": 0.21563394544316714,
+   "p_holm": 0.19289035548222588,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "L11f": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": -0.009084785594967797,
+   "sd_diff": 0.02940624777570482,
+   "dz": -0.30894065996660636,
+   "ci95": [
+    -0.020156725070797993,
+    0.0002722676610663063
+   ],
+   "p": 0.10494475276236188,
+   "n_perm": 20000,
+   "seed": 23,
+   "inferential": true,
+   "contrast": "model_based_greedy minus osr_with_observation_revision on exclusion",
+   "mean_model_based_greedy": 0.20654915984819935,
+   "mean_osr_with_observation_revision": 0.21563394544316714,
+   "p_holm": 0.20988950552472377,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  }
+ },
+ "catalogue": null,
+ "note": "results about a SYNTHETIC institution and this implementation; not an observation of any institution, law or person",
+ "arms": {
+  "rule_based_compliance": {
+   "exclusion_mean": 0.24125074301082777,
+   "exclusion_sd": 0.08526255140847569,
+   "rollouts_mean": 0.0
+  },
+  "fairness_optimisation": {
+   "exclusion_mean": 0.2674255525434611,
+   "exclusion_sd": 0.08974577608400557,
+   "rollouts_mean": 0.0
+  },
+  "structural_causal_model": {
+   "exclusion_mean": 0.23405462870115654,
+   "exclusion_sd": 0.08995555169529304,
+   "rollouts_mean": 30.0
+  },
+  "constrained_planning": {
+   "exclusion_mean": 0.22698985892391788,
+   "exclusion_sd": 0.09169562734692187,
+   "rollouts_mean": 44.0
+  },
+  "model_based_greedy": {
+   "exclusion_mean": 0.20654915984819935,
+   "exclusion_sd": 0.09286192653048272,
+   "rollouts_mean": 128.0
+  },
+  "osr_with_observation_revision": {
+   "exclusion_mean": 0.21563394544316714,
+   "exclusion_sd": 0.0967658974825294,
+   "rollouts_mean": 44.0
+  },
+  "constrained_planning_with_random_extra_field": {
+   "exclusion_mean": 0.21591160853076213,
+   "exclusion_sd": 0.09590699479172989,
+   "rollouts_mean": 44.0
+  },
+  "oracle_best_executable": {
+   "exclusion_mean": 0.19915542620783103,
+   "exclusion_sd": 0.095421854045791,
+   "rollouts_mean": 0.0
+  }
+ },
+ "base_exclusion_mean": 0.2598515289860484,
+ "osr_autonomous_revision_demonstrated": false
+}

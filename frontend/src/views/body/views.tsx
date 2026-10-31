@@ -1,5 +1,5 @@
-import { useMemo } from 'react';
-import type { TeooBody, TeooChannel, TeooRecord } from './bodyApi';
+import { useMemo, useState } from 'react';
+import type { GuaranteeAssessment, LegalBundle, TeooBody, TeooChannel, TeooRecord } from './bodyApi';
 import { channelOf, integratedRows, LEVELS, recordOf, segments, statusRuns, STATUS_COLOR, validRange, type ObsState, type Session } from './session';
 
 // BODY / TOTAL OBSERVATION — Views B to H. Each is a function of the session bundle (and of the shared time t); none computes a result: they show what the backend produced, with each item's class,
@@ -159,6 +159,44 @@ export function ViewH({ s, t }: { s: Session; t: number }) {
         <tbody>{rows.map((r, i) => <tr key={i} data-level={r.level}><td><span className={`teoo-lv lv${r.level}`}>{r.level}</span> {LEVELS[r.level - 1].name}</td><td>{r.item}</td><td>{r.cls}</td><td className="mono">{r.record}</td><td>{r.note}</td></tr>)}</tbody></table>
       <Note>Views A–G in one table at t = {t} s. Every row keeps its level, its class and its record; an observation, an estimate, an intervention, a counterfactual and an unobserved difference are never added together. {s.observation.states[0].claim_note}</Note>
       <div className="small dim">{ids(Object.keys(s.record_index))}</div>
+    </div>
+  );
+}
+
+// ------------------------------------------------------------------------------------------------ I: AI legal governance
+export const GSTATE_COLOR: Record<string, string> = { SECURED: '#78e696', PARTIAL: '#c9a227', ABSENT: '#ff8a70', INDETERMINATE: '#9bb0d0', INAPPLICABLE: '#8a8a92' };
+export const countStates = (a: GuaranteeAssessment[]): Record<string, number> => a.reduce<Record<string, number>>((m, x) => { m[x.state] = (m[x.state] ?? 0) + 1; return m; }, {});
+const GChip = ({ s }: { s: string }) => <span className="teoo-chip" style={{ borderColor: GSTATE_COLOR[s] ?? '#888' }} data-state={s}><i style={{ background: GSTATE_COLOR[s] ?? '#888' }} />{s}</span>;
+const pct = (x: number | null | undefined) => (x === null || x === undefined ? '-' : x.toFixed(3));
+
+export function ViewI({ b }: { b: LegalBundle }) {
+  const names = Object.keys(b.assessments), chains = Object.keys(b.chains);
+  const [an, setAn] = useState(names[0]), [cn, setCn] = useState(chains[0]);
+  const a = b.assessments[an], chain = b.chains[cn], counts = countStates(a);
+  const notSecured = a.filter((x) => x.state === 'ABSENT' || x.state === 'PARTIAL');
+  return (
+    <div data-testid="teoo-view-i">
+      <div className="teoo-banner" role="note" data-testid="teoo-catalogue-notice">The fifteen guarantees below are a PROVISIONAL catalogue (<span className="mono">{b.catalogue.source}</span>): {b.catalogue.verified_against_original ? 'verified' : 'NOT verified against the original'}. {b.catalogue.note}</div>
+      <h4>Fifteen guarantees, one state each</h4>
+      <div className="teoo-controls"><label>institution <select value={an} onChange={(e) => setAn(e.target.value)} data-testid="teoo-legal-assessment">{names.map((n) => <option key={n}>{n}</option>)}</select></label>
+        <span className="small" data-testid="teoo-state-counts">{b.states.map((s) => <span key={s} style={{ marginRight: 10 }}><GChip s={s} /> {counts[s] ?? 0}</span>)} <span className="dim">(the states are not added into a score)</span></span></div>
+      <table className="small teoo-table" data-testid="teoo-guarantees"><thead><tr><th>#</th><th>guarantee</th><th>state</th><th>reason</th><th>remedy path</th></tr></thead>
+        <tbody>{a.map((x) => <tr key={x.number} data-guarantee={x.number} data-state={x.state}><td>{x.number}</td><td>{x.title}</td><td><GChip s={x.state} /></td><td>{x.reason}</td><td>{x.remedy_path || '-'}</td></tr>)}</tbody></table>
+      <h4>Remedy paths</h4>
+      <ul className="small" data-testid="teoo-remedies">{notSecured.length === 0 ? <li>every applicable guarantee is SECURED in this institution</li> : notSecured.map((x) => <li key={x.number}><b>{x.number}. {x.title}</b> — {x.remedy_path}</li>)}</ul>
+      <h4>Legal translation</h4>
+      <div className="teoo-controls"><label>decision <select value={cn} onChange={(e) => setCn(e.target.value)} data-testid="teoo-legal-chain">{chains.map((n) => <option key={n}>{n}</option>)}</select></label>
+        <span className="small" data-testid="teoo-chain-verdict">legally valid decision: <b>{chain.assessment.valid_legal_decision ? 'yes' : 'no'}</b>{chain.assessment.first_invalid_stage ? ` · first invalid stage: ${chain.assessment.first_invalid_stage}` : ''}</span></div>
+      <table className="small teoo-table" data-testid="teoo-chain"><thead><tr><th>stage</th><th>legal basis</th><th>responsible</th><th>authority</th><th>route to contest</th><th>valid</th><th>why not</th></tr></thead>
+        <tbody>{chain.chain.map((s, i) => <tr key={s.stage} data-valid={chain.assessment.stages[i].valid}><td>{s.stage.replace(/_/g, ' ')}</td><td>{s.legal_basis ?? '— none —'}</td><td>{s.responsible}{s.by_ai ? ' (AI)' : ''}</td><td>{s.authority ?? '—'}</td><td>{s.contest_path ?? '—'}</td>
+          <td>{chain.assessment.stages[i].valid ? 'yes' : 'NO'}</td><td>{chain.assessment.stages[i].why_not.join('; ')}</td></tr>)}</tbody></table>
+      <h4>Interventions on the synthetic institution (same world, same seed)</h4>
+      <table className="small teoo-table" data-testid="teoo-interventions"><thead><tr><th>intervention</th><th>qualified people excluded</th><th>persistence of exclusion</th><th>true-positive gap</th><th>group gap</th><th>downstream access</th><th>wrongful denials overturned</th><th>burden: subject / institution</th></tr></thead>
+        <tbody>{Object.entries(b.interventions).map(([k, v]) => <tr key={k}><td>{k}</td><td>{pct(v.exclusion_qualified)}</td><td>{pct(v.exclusion_persistence)}</td><td>{pct(v.tpr_gap)}</td><td>{pct(v.group_exclusion_gap)}</td><td>{pct(v.downstream_access_qualified)}</td><td>{pct(v.overturn_rate_of_wrongful)}</td><td>{pct(v.burden_subject)} / {pct(v.burden_institution)}</td></tr>)}</tbody></table>
+      <Note>Read across the rows: fairness optimisation narrows the true-positive gap and leaves exclusion in place; deleting the score lets the proxy take its place (exclusion rises); deleting both leaves a lottery that no longer tracks qualification; only a review that is independent and has authority overturns wrongful denials.</Note>
+      <h4>What this view can observe</h4>
+      <div className="small" data-testid="teoo-legal-observation">Observed provisions in the partial assessment: {b.observation.observed_provisions.length} of 15; not observed: <span className="mono">{b.observation.not_observed_provisions.join(', ')}</span>. {b.observation.note}.</div>
+      <Note>{b.scope}</Note>
     </div>
   );
 }

@@ -1,0 +1,193 @@
+{
+ "experiment_id": "LEG-EXP-10",
+ "protocol_version": 1,
+ "protocol_digest": "feb3066c90c955fb8defcd61ea59820bcaa728c5049a0ec57bcb59f98c425128",
+ "protocol": {
+  "experiment_id": "LEG-EXP-10",
+  "hypotheses": [
+   {
+    "id": "H1",
+    "statement": "Moving review to an independent body with authority lowers exclusion compared with review by the institution itself"
+   },
+   {
+    "id": "H2",
+    "statement": "A consent step and formal procedure in front of that body shifts burden onto the subject compared with the plain independent route"
+   }
+  ],
+  "targets": [
+   "exclusion and access of a synthetic institution"
+  ],
+  "instrument_conditions": {
+   "population": 300,
+   "periods": 24
+  },
+  "control_condition": "institution_self_review",
+  "conditions": [
+   "institution_self_review",
+   "independent_body_with_authority",
+   "independent_body_with_consent_and_formal_procedure",
+   "subject_initiated_correction_no_consent_step"
+  ],
+  "seeds": [
+   2001,
+   2002,
+   2003,
+   2004,
+   2005,
+   2006,
+   2007,
+   2008,
+   2009,
+   2010,
+   2011,
+   2012,
+   2013,
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023,
+   2024,
+   2025,
+   2026,
+   2027,
+   2028,
+   2029,
+   2030
+  ],
+  "trials_per_condition": 1,
+  "stopping_rule": {
+   "type": "fixed-n",
+   "units": 30,
+   "no interim analysis": true
+  },
+  "outcomes": {
+   "primary": [
+    "exclusion_qualified",
+    "burden_subject"
+   ],
+   "secondary": [
+    "overturn_rate_of_wrongful",
+    "burden_institution"
+   ]
+  },
+  "analyses": [
+   {
+    "id": "L10a",
+    "hypothesis": "H1",
+    "outcome": "exclusion_qualified",
+    "method": "paired-sign-flip",
+    "confirmatory": true
+   },
+   {
+    "id": "L10b",
+    "hypothesis": "H2",
+    "outcome": "burden_subject",
+    "method": "paired-sign-flip",
+    "confirmatory": true
+   }
+  ],
+  "multiplicity": "holm",
+  "failure_conditions": [
+   "fewer than 30 worlds"
+  ],
+  "reproduction": {
+   "generator": "xzr.teoo.legal_experiments",
+   "steps": [
+    "run unit per seed",
+    "analyse"
+   ],
+   "world": "xzr.teoo.legal (SYNTHETIC institution)"
+  },
+  "schema": "teoo.protocol/1",
+  "version": 1,
+  "parent_version": null,
+  "change_reason": null
+ },
+ "units": 30,
+ "seeds": [
+  2001,
+  2002,
+  2003,
+  2004,
+  2005,
+  2006,
+  2007,
+  2008,
+  2009,
+  2010,
+  2011,
+  2012,
+  2013,
+  2014,
+  2015,
+  2016,
+  2017,
+  2018,
+  2019,
+  2020,
+  2021,
+  2022,
+  2023,
+  2024,
+  2025,
+  2026,
+  2027,
+  2028,
+  2029,
+  2030
+ ],
+ "evidence_class": "Synthetic-world Result",
+ "seconds": 0.7,
+ "results": {
+  "L10a": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.030769449294292487,
+   "sd_diff": 0.015138536614494524,
+   "dz": 2.0325246804127692,
+   "ci95": [
+    0.02537669875366574,
+    0.03606634719299656
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 20,
+   "inferential": true,
+   "contrast": "institution_self_review minus independent_body_with_authority on exclusion_qualified",
+   "mean_institution_self_review": 0.3008242707091696,
+   "mean_independent_body_with_authority": 0.27005482141487713,
+   "p_holm": 9.99950002499875e-05,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "L10b": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.04605555555555556,
+   "sd_diff": 0.03552551113286896,
+   "dz": 1.296407963936203,
+   "ci95": [
+    0.03392027777777775,
+    0.0594225
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 21,
+   "inferential": true,
+   "contrast": "independent_body_with_consent_and_formal_procedure minus independent_body_with_authority on burden_subject",
+   "mean_independent_body_with_consent_and_formal_procedure": 0.7526555555555556,
+   "mean_independent_body_with_authority": 0.7065999999999999,
+   "p_holm": 9.99950002499875e-05,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  }
+ },
+ "catalogue": null,
+ "note": "results about a SYNTHETIC institution and this implementation; not an observation of any institution, law or person"
+}

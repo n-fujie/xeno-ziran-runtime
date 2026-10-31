@@ -100,7 +100,7 @@ def protocols() -> dict[str, tuple[dict, list]]:
                        ("L08c", spearman_per_world)])
     out["EXP-09"] = (P("LEG-EXP-09", [H("H1", "Every removed provision is reported ABSENT when observed, and no provision that is present is"), H("H2", "A provision that is not observed is reported INDETERMINATE, never SECURED or ABSENT"), H("H3", "A formal route that cannot change anything is found PARTIAL by the assessment and passed by a checklist of formal provisions"),
                                      H("H4", "Every state that is not SECURED or INAPPLICABLE names a remedy path")],
-                       ["assessment"], "assessment", SEEDS, {"primary": ["detection, false detection, indeterminate handling"], "secondary": ["remedy"]},
+                       ["formal_checklist", "assessment"], "formal_checklist", SEEDS, {"primary": ["detection, false detection, indeterminate handling"], "secondary": ["remedy"]},
                        [A("L09a", "H1", "violation_detection", "descriptive", False), A("L09b", "H2", "unseen_misreported", "descriptive", False), A("L09c", "H3", "formal_but_ineffective", "paired-sign-flip"), A("L09d", "H4", "remedy_share", "descriptive", False)], ["fewer than 30 worlds"],
                        {"guarantee catalogue": "PROVISIONAL (not verified against the originals)", "provisions": len(L.PROVISIONS)}),
                       [("L09a", lambda u: {"method": "descriptive", "violation_detection_full": float(np.mean([x["violation_detection_full"] for x in u])), "false_detection_full": float(np.mean([x["false_detection_full"] for x in u])), "criterion_met": all(x["violation_detection_full"] == 1.0 and x["false_detection_full"] == 0.0 for x in u)}),

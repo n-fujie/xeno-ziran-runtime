@@ -17,6 +17,7 @@ from ..teoo import body as B
 from ..teoo import evidence as EV
 from ..teoo import export as EX
 from ..teoo import ingest as IN
+from ..teoo import legal as LG
 from ..teoo import mapping as MP
 from ..teoo import observation as OB
 from ..teoo import provenance as P
@@ -171,3 +172,20 @@ def safety(request: Request) -> dict:
     """The capabilities, the threat model and the production gate. No human measurement may be ingested for real while the gate is closed; the service stores nothing."""
     local_only(request)
     return {**SF.production_gate(), "stored_on_server": False}
+
+
+_LEGAL: dict[int, dict] = {}
+
+
+@router.get("/legal")
+def legal(request: Request, seed: int = 3) -> dict:
+    """The AI legal governance bundle: the fifteen guarantees (a PROVISIONAL catalogue) assessed for four synthetic institutions, the legal translation chains, the intervention comparison and the observation conditions. Computed from small
+    simulations on demand; nothing is stored; a synthetic institution, not any real one."""
+    local_only(request)
+    if not 0 <= seed <= 10_000:
+        raise HTTPException(422, "seed must be between 0 and 10000")
+    if seed not in _LEGAL:
+        if len(_LEGAL) > 8:
+            _LEGAL.clear()
+        _LEGAL[seed] = LG.legal_bundle(seed)
+    return _LEGAL[seed]

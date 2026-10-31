@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 import './body.css';
 import ViewA from './BodyView';
-import { teooFigure, teooSession, teooSafety, type FigureOut, type SafetyOut } from './bodyApi';
+import { teooFigure, teooLegal, teooSession, teooSafety, type FigureOut, type LegalBundle, type SafetyOut } from './bodyApi';
 import { needsSyntheticBanner } from './bodyDraw';
 import { svgToPng } from './png';
 import type { Session } from './session';
-import { Plot as _Plot, ViewB, ViewC, ViewD, ViewE, ViewF, ViewG, ViewH } from './views';
+import { Plot as _Plot, ViewB, ViewC, ViewD, ViewE, ViewF, ViewG, ViewH, ViewI } from './views';
 
 // BODY / TOTAL OBSERVATION — the workspace: View A (unchanged) and Views B-H over one session bundle. The shared header names the time base, the time t and the body configuration versions every view uses.
-export const TABS = [['A', 'Body Observation'], ['B', 'Temporal Operational Shape'], ['C', 'Relational Observation'], ['D', 'Observation Limits'], ['E', 'Intervention'], ['F', 'Reconstruction'], ['G', 'Experimental Evidence'], ['H', 'Total Observation']] as const;
+export const TABS = [['A', 'Body Observation'], ['B', 'Temporal Operational Shape'], ['C', 'Relational Observation'], ['D', 'Observation Limits'], ['E', 'Intervention'], ['F', 'Reconstruction'], ['G', 'Experimental Evidence'], ['H', 'Total Observation'], ['I', 'AI Legal Governance']] as const;
 export type Tab = (typeof TABS)[number][0];
 const FIGURE_OF: Partial<Record<Tab, string>> = { A: 'body', B: 'timeseries', D: 'limits', G: 'evidence' };
 void _Plot;
@@ -42,8 +42,9 @@ export function ExportBar({ kind, safety }: { kind: string; safety: SafetyOut | 
 
 export default function Workspace() {
   const [s, setS] = useState<Session | null>(null), [tab, setTab] = useState<Tab>('A'), [t, setT] = useState(0), [variable, setVariable] = useState('joint.angle.knee_l');
-  const [safety, setSafety] = useState<SafetyOut | null>(null), [err, setErr] = useState<string | null>(null);
+  const [safety, setSafety] = useState<SafetyOut | null>(null), [err, setErr] = useState<string | null>(null), [legal, setLegal] = useState<LegalBundle | null>(null);
   useEffect(() => { teooSession().then(setS).catch((e: Error) => setErr(e.message)); teooSafety().then(setSafety).catch(() => undefined); }, []);
+  useEffect(() => { if (tab === 'I' && !legal) teooLegal().then(setLegal).catch((e: Error) => setErr(e.message)); }, [tab, legal]);
   if (err) return <div className="panel-view" data-testid="teoo-error"><b>BODY / TOTAL OBSERVATION</b><div className="dim">{err}</div></div>;
   if (!s) return <div className="panel-view dim">loading…</div>;
   const fig = FIGURE_OF[tab];
@@ -64,6 +65,7 @@ export default function Workspace() {
           {tab === 'F' && <ViewF s={s} />}
           {tab === 'G' && <ViewG s={s} />}
           {tab === 'H' && <ViewH s={s} t={t} />}
+          {tab === 'I' && (legal ? <><SyntheticBanner /><ViewI b={legal} /></> : <div className="dim">loading…</div>)}
         </div>
       )}
       {fig && <ExportBar kind={fig} safety={safety} />}

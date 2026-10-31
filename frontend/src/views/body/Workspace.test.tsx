@@ -4,10 +4,10 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { renderToString } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
-import type { FigureOut, SafetyOut } from './bodyApi';
+import type { FigureOut, LegalBundle, SafetyOut } from './bodyApi';
 import { isPng, pngAddText, pngTextChunks } from './png';
 import { LEVELS, channelOf, integratedRows, recordOf, segments, statusRuns, validRange, type Session } from './session';
-import { ViewB, ViewC, ViewD, ViewE, ViewF, ViewG, ViewH } from './views';
+import { countStates, ViewB, ViewC, ViewD, ViewE, ViewF, ViewG, ViewH, ViewI } from './views';
 import { SyntheticBanner, TABS } from './Workspace';
 
 const fx = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '__fixtures__', 'teoo-session.json'), 'utf8')) as { session: Session; figure: FigureOut; png_base64: string; safety: SafetyOut };
@@ -25,7 +25,7 @@ describe('the session bundle is the one source of every view', () => {
     expect(s.body_versions).toEqual({ before: 1, after: Number(Object.keys(s.bodies).find((k) => k !== '1')) });
   });
   it('has the eight tabs A-H in order and a banner that offers no way to hide it', () => {
-    expect(TABS.map((t) => t[0]).join('')).toBe('ABCDEFGH');
+    expect(TABS.map((t) => t[0]).join('')).toBe('ABCDEFGHI');
     const h = renderToString(<SyntheticBanner />);
     expect(h).toContain('SYNTHETIC'); expect(h).toContain('cannot be hidden'); expect(h).not.toContain('<button'); expect(h).not.toContain('display:none');
   });
@@ -138,5 +138,40 @@ describe('figure export: PNG helpers and the evidence a file keeps', () => {
   });
   it('the safety information says that the production gate is closed and that human ingestion is not allowed', () => {
     expect(fx.safety.production_ready).toBe(false); expect(fx.safety.human_measurement_ingestion_allowed).toBe(false); expect(fx.safety.missing.length).toBeGreaterThan(0); expect(fx.safety.capabilities.length).toBe(8);
+  });
+});
+
+describe('View I: AI legal governance', () => {
+  const lg = (JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '__fixtures__', 'teoo-legal.json'), 'utf8')) as { legal: LegalBundle }).legal;
+  const h = txt(renderToString(<ViewI b={lg} />));
+  it('says that the catalogue is provisional and unverified, and that the institution is synthetic', () => {
+    expect(h).toContain('data-testid="teoo-catalogue-notice"'); expect(h).toContain('PROVISIONAL catalogue'); expect(h).toContain('NOT verified against the original');
+    expect(lg.synthetic).toBe(true); expect(lg.catalogue.verified_against_original).toBe(false); expect(h).toContain('a synthetic institution');
+  });
+  it('lists the fifteen guarantees with one state each and never adds them into a score', () => {
+    expect((h.match(/data-guarantee="/g) ?? []).length).toBe(15); expect(h).toContain('the states are not added into a score');
+    for (const a of Object.values(lg.assessments)) { expect(a.length).toBe(15); expect(a.map((x) => x.number)).toEqual(Array.from({ length: 15 }, (_, i) => i + 1)); expect(Object.values(countStates(a)).reduce((x, y) => x + y, 0)).toBe(15); }
+  });
+  it('shows INDETERMINATE for what is not observed and INAPPLICABLE only with a checked reason', () => {
+    const part = lg.assessments['baseline, with some provisions not observed'], safe = lg.assessments['an institution for which irreversible harm is impossible'];
+    expect(part.filter((x) => x.state === 'INDETERMINATE').length).toBe(lg.observation.not_observed_provisions.length); expect(part.every((x) => x.state !== 'ABSENT' || !lg.observation.not_observed_provisions.includes(x.provision))).toBe(true);
+    for (const x of safe.filter((y) => y.state === 'INAPPLICABLE')) expect(x.reason).toContain('checked against the configuration');
+    expect(h).toContain('not observed is not absent');
+  });
+  it('names a remedy path for every guarantee that is absent or partial', () => {
+    for (const a of Object.values(lg.assessments)) for (const x of a.filter((y) => y.state === 'ABSENT' || y.state === 'PARTIAL')) expect(x.remedy_path.length).toBeGreaterThan(5);
+    expect(h).toContain('data-testid="teoo-remedies"');
+  });
+  it('shows a stage without a legal basis as invalid, and a decision by the scoring system as not a legal decision', () => {
+    const bad = lg.chains['decided by the scoring system'], good = lg.chains.valid;
+    expect(good.assessment.valid_legal_decision).toBe(true); expect(bad.assessment.valid_legal_decision).toBe(false); expect(bad.assessment.first_invalid_stage).toBe('legal_fact');
+    expect(h).toContain('legally valid decision: <b>yes</b>'); expect(txt(renderToString(<ViewI b={{ ...lg, chains: { x: bad } }} />))).toContain('legally valid decision: <b>no</b>');
+    expect(good.chain.map((s) => s.stage).join()).toBe(['technical_event', 'data_representation', 'legal_fact', 'legal_classification', 'norm_selection', 'exception_handling', 'attribution', 'burden_of_proof', 'legal_decision', 'remedy'].join());
+  });
+  it('compares the interventions on one synthetic world and keeps fairness optimisation, deleting the score and the independent review apart', () => {
+    const i = lg.interventions;
+    expect(i['fairness optimisation only'].tpr_gap).toBeLessThan(i.baseline.tpr_gap - 0.2); expect(Math.abs(i['fairness optimisation only'].exclusion_persistence - i.baseline.exclusion_persistence)).toBeLessThan(0.1);
+    expect(i['score deleted'].exclusion_qualified).toBeGreaterThan(i.baseline.exclusion_qualified + 0.1); expect(i.baseline.overturn_rate_of_wrongful).toBe(0); expect(i['independent review with authority and propagation'].overturn_rate_of_wrongful).toBeGreaterThan(0.1);
+    expect(h).toContain('data-testid="teoo-interventions"');
   });
 });

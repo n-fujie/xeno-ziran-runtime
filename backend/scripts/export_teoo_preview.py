@@ -34,6 +34,7 @@ def main() -> None:
     files["demo.json"] = demo
     files["session.json"] = c.get("/api/teoo/session").json()
     files["safety.json"] = c.get("/api/teoo/safety").json()
+    files["legal.json"] = c.get("/api/teoo/legal").json()
     for name in sorted(B.PRESETS):
         files[f"body-{name}.json"] = c.get(f"/api/teoo/body/{name}").json()
         files[f"coverage-{name}.json"] = c.post("/api/teoo/coverage", json={"records": demo["records"], "body_preset": name}).json()
@@ -50,6 +51,8 @@ def main() -> None:
         f = files[f"figure-{kind}.json"]
         if f["issues"] or EX.verify_svg(f["svg"]):  # type: ignore[index]
             raise SystemExit(f"refusing to write: figure {kind} does not verify")
+    if files["legal.json"]["catalogue"]["verified_against_original"] or not files["legal.json"]["synthetic"] or len(files["legal.json"]["guarantees"]) != 15:
+        raise SystemExit("refusing to write: the legal bundle is not the provisional, synthetic one")
     if files["safety.json"]["production_ready"] or files["safety.json"]["human_measurement_ingestion_allowed"]:  # type: ignore[index]
         raise SystemExit("refusing to write: the production gate is open")
     d = out / "teoo-preview"

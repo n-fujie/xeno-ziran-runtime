@@ -1,0 +1,220 @@
+{
+ "experiment_id": "LEG-EXP-09",
+ "protocol_version": 1,
+ "protocol_digest": "ee44d9e04f1e785ff88af7b8901827e90d29145d14c040d3e895f2deb9b0b0d7",
+ "protocol": {
+  "experiment_id": "LEG-EXP-09",
+  "hypotheses": [
+   {
+    "id": "H1",
+    "statement": "Every removed provision is reported ABSENT when observed, and no provision that is present is"
+   },
+   {
+    "id": "H2",
+    "statement": "A provision that is not observed is reported INDETERMINATE, never SECURED or ABSENT"
+   },
+   {
+    "id": "H3",
+    "statement": "A formal route that cannot change anything is found PARTIAL by the assessment and passed by a checklist of formal provisions"
+   },
+   {
+    "id": "H4",
+    "statement": "Every state that is not SECURED or INAPPLICABLE names a remedy path"
+   }
+  ],
+  "targets": [
+   "exclusion and access of a synthetic institution"
+  ],
+  "instrument_conditions": {
+   "guarantee catalogue": "PROVISIONAL (not verified against the originals)",
+   "provisions": 15
+  },
+  "control_condition": "formal_checklist",
+  "conditions": [
+   "formal_checklist",
+   "assessment"
+  ],
+  "seeds": [
+   2001,
+   2002,
+   2003,
+   2004,
+   2005,
+   2006,
+   2007,
+   2008,
+   2009,
+   2010,
+   2011,
+   2012,
+   2013,
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023,
+   2024,
+   2025,
+   2026,
+   2027,
+   2028,
+   2029,
+   2030
+  ],
+  "trials_per_condition": 1,
+  "stopping_rule": {
+   "type": "fixed-n",
+   "units": 30,
+   "no interim analysis": true
+  },
+  "outcomes": {
+   "primary": [
+    "detection, false detection, indeterminate handling"
+   ],
+   "secondary": [
+    "remedy"
+   ]
+  },
+  "analyses": [
+   {
+    "id": "L09a",
+    "hypothesis": "H1",
+    "outcome": "violation_detection",
+    "method": "descriptive",
+    "confirmatory": false
+   },
+   {
+    "id": "L09b",
+    "hypothesis": "H2",
+    "outcome": "unseen_misreported",
+    "method": "descriptive",
+    "confirmatory": false
+   },
+   {
+    "id": "L09c",
+    "hypothesis": "H3",
+    "outcome": "formal_but_ineffective",
+    "method": "paired-sign-flip",
+    "confirmatory": true
+   },
+   {
+    "id": "L09d",
+    "hypothesis": "H4",
+    "outcome": "remedy_share",
+    "method": "descriptive",
+    "confirmatory": false
+   }
+  ],
+  "multiplicity": "holm",
+  "failure_conditions": [
+   "fewer than 30 worlds"
+  ],
+  "reproduction": {
+   "generator": "xzr.teoo.legal_experiments",
+   "steps": [
+    "run unit per seed",
+    "analyse"
+   ],
+   "world": "xzr.teoo.legal (SYNTHETIC institution)"
+  },
+  "schema": "teoo.protocol/1",
+  "version": 1,
+  "parent_version": null,
+  "change_reason": null
+ },
+ "units": 30,
+ "seeds": [
+  2001,
+  2002,
+  2003,
+  2004,
+  2005,
+  2006,
+  2007,
+  2008,
+  2009,
+  2010,
+  2011,
+  2012,
+  2013,
+  2014,
+  2015,
+  2016,
+  2017,
+  2018,
+  2019,
+  2020,
+  2021,
+  2022,
+  2023,
+  2024,
+  2025,
+  2026,
+  2027,
+  2028,
+  2029,
+  2030
+ ],
+ "evidence_class": "Implementation Property",
+ "seconds": 0.5,
+ "results": {
+  "L09a": {
+   "method": "descriptive",
+   "violation_detection_full": 1.0,
+   "false_detection_full": 0.0,
+   "criterion_met": true,
+   "registered_class": "exploratory (declared but not marked confirmatory)",
+   "evidence_class": "Implementation Property"
+  },
+  "L09b": {
+   "method": "descriptive",
+   "unseen_removed_total": 21,
+   "reported_indeterminate": 21,
+   "misreported_secured_or_absent": 0,
+   "false_absent_partial_mean": 0.0,
+   "criterion_met": true,
+   "registered_class": "exploratory (declared but not marked confirmatory)",
+   "evidence_class": "Implementation Property"
+  },
+  "L09c": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.7,
+   "sd_diff": 0.466091599699399,
+   "dz": 1.501850710142508,
+   "ci95": [
+    0.5333333333333333,
+    0.8666666666666667
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 19,
+   "inferential": true,
+   "contrast": "assessment finds the ineffective route minus the checklist finds it",
+   "mean_assessment": 1.0,
+   "mean_checklist": 0.3,
+   "p_holm": 4.999750012499375e-05,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  },
+  "L09d": {
+   "method": "descriptive",
+   "remedy_share_mean": 1.0,
+   "inapplicable_reason_checked_in_all": true,
+   "criterion_met": true,
+   "registered_class": "exploratory (declared but not marked confirmatory)",
+   "evidence_class": "Implementation Property"
+  }
+ },
+ "catalogue": {
+  "source": "~/plato-audit-suite/prisma/seed.ts (GUARANTEES), copied verbatim by script",
+  "verified_against_original": false,
+  "note": "The originals (The Minimum Guarantees of Human Legal Subjecthood V3.0 / 100_POINT_EDITION, the MHEG theorem text, the fifteen principles of AI legal-logic governance) were not found. This catalogue is the one an earlier implementation of the user's (plato-audit-suite) carries; it has NOT been compared with the original and its names, definitions and independence are therefore PROVISIONAL. It is data: replacing it by the verified catalogue changes this file, not code."
+ },
+ "note": "results about a SYNTHETIC institution and this implementation; not an observation of any institution, law or person"
+}

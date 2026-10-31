@@ -277,3 +277,23 @@ def example_chain(valid: bool = True) -> list[dict]:
             stage("legal_decision", legal_basis="eligibility rule (placeholder)", scope="grant or refuse", responsible="authorised official" if valid else "scoring system", evidence="reasons", uncertainty="error rate", authority="authorised official" if valid else None,
                   contest_path="independent review" if valid else None, by_ai=ai),
             stage("remedy", legal_basis="remedy rule (placeholder)", scope="correction and re-entry", responsible="institution", evidence="corrected record", uncertainty="propagation", authority="reviewer", contest_path="appeal")]
+
+
+# ------------------------------------------------------------------------------------------------ the bundle that the legal-governance view reads (live small simulations; nothing stored)
+def legal_bundle(seed: int = 3) -> dict:
+    base = Institution(capacity=0.4, lam=0.8, review_capacity=0.15)
+    repaired = base.with_(review_independent=True, review_authority=True, review_capacity=0.3, appeal_burden=0.2, propagate_correction=True, proxy_gate=False, lam=0.0, score_expiry=4, reentry_support=True, suspension=True)
+    arms = {"baseline": base, "fairness optimisation only": base.with_(fairness_opt=True), "gate removed": base.with_(proxy_gate=False), "score deleted": base.with_(tau_score=False), "score deleted and gate removed": base.with_(tau_score=False, proxy_gate=False),
+            "independent review with authority and propagation": base.with_(review_independent=True, review_authority=True, review_capacity=0.3, appeal_burden=0.2, propagate_correction=True), "all repairs": repaired}
+    runs = {k: simulate(v, seed) for k, v in arms.items()}
+    seen = {p for i, p in enumerate(PROVISIONS) if i % 4 != 3}  # a partial assessment: every fourth provision is not observed
+    return {"synthetic": True, "catalogue": CATALOGUE_STATUS, "states": list(STATES), "guarantees": list(GUARANTEES),
+            "assessments": {"baseline institution (formal appeal that can reverse nothing)": assess_guarantees(base, seed), "after the repairs": assess_guarantees(repaired, seed),
+                            "baseline, with some provisions not observed": assess_guarantees(base, seed, observed=seen),
+                            "an institution for which irreversible harm is impossible": assess_guarantees(base.with_(harm_irreversible=False), seed)},
+            "chains": {"valid": {"chain": example_chain(True), "assessment": assess_chain(example_chain(True))}, "decided by the scoring system": {"chain": example_chain(False), "assessment": assess_chain(example_chain(False))}},
+            "interventions": {k: {m: v[m] for m in ("exclusion_qualified", "exclusion_persistence", "tpr_gap", "group_exclusion_gap", "downstream_access_qualified", "overturn_rate_of_wrongful", "formal_appeal_rate", "burden_subject", "burden_institution")} | {"series_exclusion": v["series_exclusion"]}
+                              for k, v in runs.items()},
+            "observation": {"observed_provisions": sorted(seen), "not_observed_provisions": sorted(set(PROVISIONS) - seen), "note": "a provision that is not observed is INDETERMINATE: not observed is not absent"},
+            "scope": "a synthetic institution; the guarantee catalogue is provisional (not verified against the originals); the mapping from guarantee to indicator is this implementation's; no real institution, law or person is described",
+            "seed": seed}
