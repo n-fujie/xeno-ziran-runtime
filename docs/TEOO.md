@@ -376,4 +376,20 @@ Step 1 of that request — recovery of the originals before any code — could b
 
 ## 33. Final verification of the Phase 4 head
 
-(filled below from the final regression run)
+Source: commit `8ab04cd` and its parents (later commits change documentation only), clean tree, idle machine.
+
+| check | result |
+|---|---|
+| backend, whole suite | **981 tests (949 + 32 new), 979 passed, 2 failed**: the two known failures, identical in name and message to the Stage 6 baseline (programmatic comparison); new tests: `test_teoo_phase4.py` 15, `test_teoo_crypto_v2.py` 15, replay equivalence 2. JUnit: `docs/teoo_evidence/phase4/backend.junit.xml` |
+| frontend, whole suite | 306 passed, 1 skipped (the render measurement); the same 306 at `9dcca49` on an idle machine (the 6 load timeouts of section 24 do not recur) |
+| `tsc -b`, `eslint`, `vite build`, `build:teoo-preview` | clean |
+| `ruff` (whole backend) | 39 findings = the Stage 6 baseline (all in archived experiment scripts); none in TEOO code; `mypy` on `xzr/teoo` and `service/teoo.py`: no finding in TEOO files |
+| 264 stored runs | 264 / 264 agree |
+| 6,475 regenerated runs | 265 / 265 settings match their saved summaries, 0 mismatches |
+| Stage 4–6 | git tree digests identical (section 24) |
+| experiments | `--check` re-runs the first unit of each experiment: digests identical for A–E; units are identical under different `PYTHONHASHSEED`; every confirmatory result file matches its registered protocol (test) |
+| preview | `https://teoo-preview.vercel.app`, redeployed from the Phase 4 head; re-verified in a real browser (report, screenshots and the three exports in `docs/teoo_evidence/phase4/preview_verification/`); no external request, `/api/*` 404, SVG/PNG/JSON consistent |
+
+**Mistake made and undone during the redeploy:** the first redeploy attempt, run from a folder without its project link, created a stray Vercel project `site-teoo-preview` connected to the GitHub repository; it was removed within a minute (it had been deployed once, to its own URL), and the deployment was repeated into `teoo-preview`. No other project was touched.
+
+**Completion against the Phase 4 criteria.** (1) Phase 3 verified at its final commit: yes. (2) Preview works: yes. (3) Views A–H in a real browser: yes (the preview; the local app was verified in Phase 3). (4) SYNTHETIC / measured separation kept: yes, enforced by the exporter. (5) Replay performance measured: yes, with its limits. (6) Experiments A–E: all five run, on a synthetic world only; the variables that were not manipulated are listed in section 28. (7) Protocols and results saved: yes. (8) Negative results reported: yes (section 29). (9) Limits and uncertainty kept: yes. (10) No regression of earlier research: yes (digests). (11) Figures from real data: yes. (12) No unrun experiment claimed: yes. **Phase 4 is complete for what it set out to do on a synthetic world; it is not a validation of anything about a real body, the AI Legal Governance request (section 32) is open, and production use with human data remains closed.**
