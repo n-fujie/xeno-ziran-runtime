@@ -15,10 +15,14 @@ from fastapi import APIRouter, HTTPException, Request
 from ..teoo import TEOO_VERSION
 from ..teoo import body as B
 from ..teoo import evidence as EV
+from ..teoo import export as EX
 from ..teoo import ingest as IN
 from ..teoo import mapping as MP
+from ..teoo import observation as OB
 from ..teoo import provenance as P
+from ..teoo import safety as SF
 from ..teoo import schema as SC
+from ..teoo import session as SE
 from ..teoo import synthetic as SY
 from ..teoo import xbtro_adapter as XA
 from .studies import local_only
@@ -105,3 +109,65 @@ def coverage(request: Request, body: dict[str, Any]) -> dict:
     if preset not in B.PRESETS or not isinstance(recs, list) or len(recs) > MAX_RECORDS:
         raise HTTPException(422, "body_preset and a list of at most 50 records are required")
     return MP.coverage(B.PRESETS[preset](), recs)
+
+
+# ------------------------------------------------------------------------------------------------ Phase 3: the session bundle (Views B-H), observation replay, figures, safety
+_SESSIONS: dict[int, dict] = {}
+
+
+def _session(seed: int) -> dict:
+    if not 0 <= seed <= 10_000:
+        raise HTTPException(422, "seed must be 0..10000")
+    if seed not in _SESSIONS:
+        if len(_SESSIONS) > 8:
+            _SESSIONS.clear()
+        _SESSIONS[seed] = SE.build_session(seed)
+    return _SESSIONS[seed]
+
+
+@router.get("/session")
+def session(request: Request, seed: int = 7) -> dict:
+    """The research session bundle: SYNTHETIC records, the body versions, the observation configuration history with its revisions, the reconstruction, the intervention, the protocol and its replay, the relation field.
+    All views read this one bundle: the same record ids, the same time base, the same body versions."""
+    local_only(request)
+    return _session(seed)
+
+
+@router.get("/observation")
+def observation(request: Request, t: float = 0.0, seed: int = 7) -> dict:
+    """The observation state at time t, replayed from the configuration history (what each declared target's observability was)."""
+    local_only(request)
+    s = _session(seed)
+    if not 0.0 <= t <= 1_000_000.0:
+        raise HTTPException(422, "t must be a number of seconds >= 0")
+    return OB.state_at(s["observation"]["history"], s["observation"]["specs"], t)
+
+
+@router.post("/figure")
+def figure(request: Request, body: dict[str, Any]) -> dict:
+    """A figure of the session as SVG with its metadata (JSON): the evidence band and the watermarks are part of the rendering and cannot be turned off."""
+    local_only(request)
+    kind = body.get("kind")
+    if kind not in ("timeseries", "body", "limits", "evidence"):
+        raise HTTPException(422, "kind must be timeseries, body, limits or evidence")
+    out = SE.figure_for(_session(int(body.get("seed", 7))), kind, generated_at=str(body.get("generated_at") or P.now_iso()))
+    return {"svg": out["svg"], "metadata": out["metadata"], "metadata_ascii": EX.metadata_ascii(out["metadata"]), "issues": EX.verify_svg(out["svg"])}
+
+
+@router.post("/figure/verify")
+def figure_verify(request: Request, body: dict[str, Any]) -> dict:
+    local_only(request)
+    svg, png = body.get("svg"), body.get("png_base64")
+    if isinstance(svg, str) and len(svg) <= 2_000_000:
+        return {"kind": "svg", "issues": EX.verify_svg(svg)}
+    if isinstance(png, str) and len(png) <= 6_000_000:
+        import base64
+        return {"kind": "png", **EX.inspect_png(base64.b64decode(png))}
+    raise HTTPException(422, "svg (a string) or png_base64 is required")
+
+
+@router.get("/safety")
+def safety(request: Request) -> dict:
+    """The capabilities, the threat model and the production gate. No human measurement may be ingested for real while the gate is closed; the service stores nothing."""
+    local_only(request)
+    return {**SF.production_gate(), "stored_on_server": False}

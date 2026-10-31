@@ -17,6 +17,11 @@ LABELS = {
     (Provenance.SYNTHETIC, Kind.RECONSTRUCTION): ("reconstruction from synthetic data (not evidence)", "", "implementation property"),
     (Provenance.RECONSTRUCTED_ESTIMATE, Kind.ESTIMATE): ("model estimate (not an observation)", "computed from inputs by a method; not observed", "unresolved"),
     (Provenance.RECONSTRUCTED_ESTIMATE, Kind.RECONSTRUCTION): ("reconstruction (not an observation)", "computed from inputs by a method; not observed", "unresolved"),
+    (Provenance.MEASURED, Kind.INTERVENTION): ("recorded intervention", "an action that its source declares was carried out; what followed is a separate observation, and the difference is not by itself a cause", "empirical observation (candidate)"),
+    (Provenance.SYNTHETIC, Kind.INTERVENTION): ("simulated intervention (not evidence)", "an intervention in generated data", "implementation property"),
+    (Provenance.CONCEPTUAL, Kind.INTERVENTION): ("planned intervention (not done)", "a plan; nothing was carried out", "implementation property"),
+    (Provenance.SYNTHETIC, Kind.COUNTERFACTUAL_MODEL): ("counterfactual from a model on synthetic data (not an observation)", "what a declared model says would have happened; not what happened", "implementation property"),
+    (Provenance.RECONSTRUCTED_ESTIMATE, Kind.COUNTERFACTUAL_MODEL): ("counterfactual from a declared model (not an observation)", "what a declared model says would have happened; not what happened; valid only under its stated assumptions and scope", "unresolved"),
     (Provenance.CONCEPTUAL, Kind.REFERENCE_STATE): ("conceptual illustration (not data)", "a drawing of an idea; not a photograph, not a measurement", "implementation property"),
 }
 

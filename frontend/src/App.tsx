@@ -20,7 +20,7 @@ import HPOView from './views/research/HPOView';
 const LabView = lazy(() => import('./views/lab/LabView'));
 const StudyView = lazy(() => import('./views/study/StudyView'));
 const EcosystemView = lazy(() => import('./views/ecosystem/EcosystemView'));
-const BodyView = lazy(() => import('./views/body/BodyView'));
+const BodyView = lazy(() => import('./views/body/Workspace'));
 import CompressionView from './views/resolution/CompressionView';
 import DisconnectionView from './views/resolution/DisconnectionView';
 import HiddenDifferenceView from './views/resolution/HiddenDifferenceView';

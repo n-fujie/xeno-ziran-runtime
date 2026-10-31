@@ -1,0 +1,177 @@
+{
+ "note": "TEOO Phase 3 performance measurements on SYNTHETIC data; single run per condition; TEOO code only; no MEOS/Stage 6 result involved. Claims hold for the measured range only.",
+ "backend": {
+  "machine": {
+   "platform": "macOS-27.2-arm64-arm-64bit",
+   "python": "3.12.13",
+   "processor": "arm"
+  },
+  "conditions": {
+   "small": {
+    "variables": 5,
+    "records": 10,
+    "series_length": 1000,
+    "components": 15,
+    "targets": 7
+   },
+   "medium": {
+    "variables": 10,
+    "records": 40,
+    "series_length": 5000,
+    "components": 200,
+    "targets": 50
+   },
+   "large": {
+    "variables": 10,
+    "records": 100,
+    "series_length": 10000,
+    "components": 1000,
+    "targets": 200
+   }
+  },
+  "results": [
+   {
+    "condition": "small",
+    "variables": 5,
+    "records": 10,
+    "series_length": 1000,
+    "components": 15,
+    "targets": 7,
+    "samples_total": 50000,
+    "build_records_s": 0.3127,
+    "ledger_append_s": 0.1395,
+    "ledger_verify_s": 0.1198,
+    "ledger_issues": 0,
+    "save_s": 0.0883,
+    "saved_mb": 6.1,
+    "load_s": 0.0815,
+    "verify_loaded_records_s": 0.1044,
+    "verify_loaded_issues": 0,
+    "body_build_s": 0.0001,
+    "body_validate_s": 0.0003,
+    "body_issues": 0,
+    "coverage_s": 0.0142,
+    "replay_21_times_s": 0.004,
+    "figure_svg_s": 0.0035,
+    "figure_svg_kb": 14.1,
+    "figure_points_drawn": 1000,
+    "peak_rss_mb": 81.0,
+    "rss_before_mb": 26.7
+   },
+   {
+    "condition": "medium",
+    "variables": 10,
+    "records": 40,
+    "series_length": 5000,
+    "components": 200,
+    "targets": 50,
+    "samples_total": 2000000,
+    "build_records_s": 13.6902,
+    "ledger_append_s": 4.3154,
+    "ledger_verify_s": 4.3562,
+    "ledger_issues": 0,
+    "save_s": 3.7047,
+    "saved_mb": 245.6,
+    "load_s": 4.872,
+    "verify_loaded_records_s": 7.0663,
+    "verify_loaded_issues": 0,
+    "body_build_s": 0.0009,
+    "body_validate_s": 0.0034,
+    "body_issues": 0,
+    "coverage_s": 0.7445,
+    "replay_21_times_s": 5.2499,
+    "figure_svg_s": 0.0131,
+    "figure_svg_kb": 25.4,
+    "figure_points_drawn": 2000,
+    "peak_rss_mb": 1465.4,
+    "rss_before_mb": 26.5
+   },
+   {
+    "condition": "large",
+    "variables": 10,
+    "records": 100,
+    "series_length": 10000,
+    "components": 1000,
+    "targets": 200,
+    "samples_total": 10000000,
+    "build_records_s": 86.5732,
+    "ledger_append_s": 22.9247,
+    "ledger_verify_s": 22.7068,
+    "ledger_issues": 0,
+    "save_s": 52.8733,
+    "saved_mb": 1233.2,
+    "load_s": 40.8948,
+    "verify_loaded_records_s": 23.1237,
+    "verify_loaded_issues": 0,
+    "body_build_s": 0.0777,
+    "body_validate_s": 0.0799,
+    "body_issues": 0,
+    "coverage_s": 13.0665,
+    "replay_21_times_s": 0.6397,
+    "figure_svg_s": 0.0149,
+    "figure_svg_kb": 25.4,
+    "figure_points_drawn": 2000,
+    "peak_rss_mb": 2238.0,
+    "rss_before_mb": 26.5
+   }
+  ],
+  "note": "TEOO code on SYNTHETIC data, single run per condition, wall-clock; no MEOS or Stage 6 result is involved or changed. Claims hold for the measured range only."
+ },
+ "render_ssr_node": {
+  "small": {
+   "samples": 1000,
+   "median_ms": 1.47,
+   "p95_ms": 2.9,
+   "html_kb": 12,
+   "runs": 30
+  },
+  "medium": {
+   "samples": 5000,
+   "median_ms": 4.65,
+   "p95_ms": 6.6,
+   "html_kb": 57,
+   "runs": 30
+  },
+  "large": {
+   "samples": 10000,
+   "median_ms": 8.14,
+   "p95_ms": 10.27,
+   "html_kb": 112,
+   "runs": 30
+  }
+ },
+ "browser_slider": {
+  "B": {
+   "updates": 168,
+   "median_ms": 16.7,
+   "p95_ms": 17.7,
+   "max_ms": 22.9
+  },
+  "C": {
+   "updates": 168,
+   "median_ms": 16.7,
+   "p95_ms": 17.8,
+   "max_ms": 18
+  },
+  "D": {
+   "updates": 168,
+   "median_ms": 16.7,
+   "p95_ms": 17.7,
+   "max_ms": 19.2
+  },
+  "H": {
+   "updates": 168,
+   "median_ms": 16.7,
+   "p95_ms": 17.7,
+   "max_ms": 17.8
+  },
+  "console_errors": [],
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.7922.34 Safari/537.36"
+ },
+ "replay_isolated_s_per_21_states": {
+  "targets7_sensors4": 0.004,
+  "targets50_sensors5": 0.033,
+  "targets200_sensors20": 0.64,
+  "targets1000_sensors100": 36.0
+ }
+}

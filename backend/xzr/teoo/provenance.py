@@ -33,14 +33,19 @@ class Kind(StrEnum):  # a separate axis: what the record is, not where it comes 
     OBSERVATION = "OBSERVATION"
     ESTIMATE = "ESTIMATE"
     RECONSTRUCTION = "RECONSTRUCTION"
+    INTERVENTION = "INTERVENTION"  # an action taken on a body or an apparatus (a record of what was done, not of what followed)
+    COUNTERFACTUAL_MODEL = "COUNTERFACTUAL_MODEL"  # the output of a declared causal model about what would have happened: never an observation
 
 
 KINDS_FOR = {  # which kinds a provenance class may carry (a measured reference state does not exist: a reference state is a model's state)
     Provenance.MEASURED: {Kind.OBSERVATION},
     Provenance.SYNTHETIC: {Kind.OBSERVATION, Kind.REFERENCE_STATE, Kind.ESTIMATE, Kind.RECONSTRUCTION},
     Provenance.RECONSTRUCTED_ESTIMATE: {Kind.ESTIMATE, Kind.RECONSTRUCTION},
-    Provenance.CONCEPTUAL: {Kind.REFERENCE_STATE},
+    Provenance.CONCEPTUAL: {Kind.REFERENCE_STATE, Kind.INTERVENTION},  # a planned intervention is a concept until it is done
 }
+KINDS_FOR[Provenance.MEASURED] = {Kind.OBSERVATION, Kind.INTERVENTION}  # an intervention that was really carried out and logged by its source
+KINDS_FOR[Provenance.SYNTHETIC] = KINDS_FOR[Provenance.SYNTHETIC] | {Kind.INTERVENTION, Kind.COUNTERFACTUAL_MODEL}
+KINDS_FOR[Provenance.RECONSTRUCTED_ESTIMATE] = KINDS_FOR[Provenance.RECONSTRUCTED_ESTIMATE] | {Kind.COUNTERFACTUAL_MODEL}  # a counterfactual is never MEASURED
 MEASURED_SOURCE_KINDS = ("device", "instrument", "manual-entry", "file-import")
 PROCESSING_THAT_KEEPS_MEASURED = ("unit-conversion", "filtering", "resampling-without-interpolation", "segmentation", "relabelling")
 

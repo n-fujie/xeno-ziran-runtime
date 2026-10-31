@@ -21,3 +21,24 @@
 .teoo-records table { border-collapse: collapse; width: 100%; }
 .teoo-records th, .teoo-records td { text-align: left; padding: 3px 8px; border-bottom: 1px solid var(--line); }
 @media (max-width: 720px) { .teoo-main { grid-template-columns: 1fr; } .teoo-root { padding: 10px 16px; } }
+
+/* Phase 3: the workspace and Views B-H */
+.teoo-workspace { display: grid; gap: 8px; padding: 8px 16px 16px; overflow: auto; align-content: start; }
+.teoo-tabs { display: flex; flex-wrap: wrap; gap: 4px; }
+.teoo-tabs button { padding: 4px 10px; }
+.teoo-shared { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; color: var(--dim); border: 1px solid var(--line); background: var(--panel); padding: 4px 10px; }
+.teoo-pane { display: grid; gap: 8px; }
+.teoo-plot { width: 100%; max-width: 780px; height: auto; background: var(--panel); border: 1px solid var(--line2); }
+.teoo-table { border-collapse: collapse; width: 100%; }
+.teoo-table th, .teoo-table td { text-align: left; padding: 3px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.teoo-chip { display: inline-flex; gap: 5px; align-items: center; border: 1px solid; border-radius: 2px; padding: 0 5px; font-size: 11px; }
+.teoo-chip i { width: 8px; height: 8px; display: inline-block; }
+.teoo-cols { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.teoo-col { border: 1px solid var(--line2); padding: 6px 8px; background: var(--panel); }
+.teoo-col h4 { margin: 0 0 4px; font-size: 11.5px; letter-spacing: 0.05em; }
+.teoo-lv { display: inline-block; min-width: 18px; text-align: center; border: 1px solid #888; font-size: 11px; }
+.teoo-lv.lv2 { border-style: dashed; } .teoo-lv.lv3 { border-style: double; } .teoo-lv.lv4 { border-style: dotted; } .teoo-lv.lv5 { border-width: 2px; } .teoo-lv.lv6 { border-style: dotted; color: #c9a227; } .teoo-lv.lv7 { border-style: dashed; color: #ff8a70; }
+.teoo-export { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; border: 1px solid var(--line2); padding: 6px 10px; }
+.teoo-bad { color: var(--warn); }
+.teoo-legend2 { margin: 4px 0; padding-left: 18px; }
+@media (max-width: 720px) { .teoo-cols { grid-template-columns: 1fr 1fr; } }

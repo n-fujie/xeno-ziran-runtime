@@ -2,7 +2,7 @@
 // Nothing here measures or simulates: every class, status and time the view shows is read from a record the backend sealed.
 
 export type Provenance = 'MEASURED' | 'SYNTHETIC' | 'RECONSTRUCTED_ESTIMATE' | 'CONCEPTUAL';
-export type RecordKind = 'REFERENCE_STATE' | 'OBSERVATION' | 'ESTIMATE' | 'RECONSTRUCTION';
+export type RecordKind = 'REFERENCE_STATE' | 'OBSERVATION' | 'ESTIMATE' | 'RECONSTRUCTION' | 'INTERVENTION' | 'COUNTERFACTUAL_MODEL';
 export type DisplayClass = 'measured' | 'synthetic' | 'estimated' | 'conceptual' | 'unmeasured' | 'limited';
 
 export interface TeooSample { value: number | null; status: string; causes: string[]; cause_known: boolean; detection_limit: number | null; detail: unknown }
@@ -47,3 +47,13 @@ async function post<T>(path: string, body: unknown): Promise<T> {
 export const teooDemo = (seed = 7) => get<DemoResponse>(`/demo?seed=${seed}`);
 export const teooBodyPreset = (name: string) => get<{ body: TeooBody; issues: Array<{ code: string }>; concept_only: boolean }>(`/body/${name}`);
 export const teooCoverage = (records: TeooRecord[], bodyPreset: string) => post<Coverage>('/coverage', { records, body_preset: bodyPreset });
+
+// Phase 3: the session bundle, the replayed observation state, figures, the safety status
+import type { ObsState, Session } from './session';
+export const teooSession = (seed = 7) => get<Session>(`/session?seed=${seed}`);
+export const teooObservation = (t: number, seed = 7) => get<ObsState>(`/observation?t=${t}&seed=${seed}`);
+export interface FigureOut { svg: string; metadata: { figure_id: string; evidence: { classes: string[]; watermarks: string[]; band: string[] } }; metadata_ascii: string; issues: string[] }
+export const teooFigure = (kind: string, seed = 7) => post<FigureOut>('/figure', { kind, seed });
+export interface SafetyOut { production_ready: boolean; human_measurement_ingestion_allowed: boolean; missing: Array<{ id: string; needed: string }>; note: string; capabilities: Array<{ id: number; name: string; implemented: boolean; limits: string }>;
+  threats: Array<{ id: string; threat: string; defence: string }>; stored_on_server: boolean }
+export const teooSafety = () => get<SafetyOut>('/safety');
