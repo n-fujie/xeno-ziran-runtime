@@ -23,7 +23,8 @@ export function SyntheticBanner() {
 
 export function ExportBar({ kind, safety }: { kind: string; safety: SafetyOut | null }) {
   const [fig, setFig] = useState<FigureOut | null>(null), [msg, setMsg] = useState('');
-  useEffect(() => { setFig(null); teooFigure(kind).then(setFig).catch((e: Error) => setMsg(e.message)); }, [kind]);
+  // a response for a tab that has since been left must not replace the figure of the current tab (it would be exported under the wrong title and metadata)
+  useEffect(() => { let live = true; setFig(null); teooFigure(kind).then((f) => { if (live) setFig(f); }).catch((e: Error) => { if (live) setMsg(e.message); }); return () => { live = false; }; }, [kind]);
   if (!fig) return <div className="small dim" data-testid="teoo-export">{msg || 'preparing the figure…'}</div>;
   const id = fig.metadata.figure_id;
   return (
