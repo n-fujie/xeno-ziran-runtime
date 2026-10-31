@@ -34,12 +34,26 @@ export interface DemoResponse {
 }
 
 const API = '/api/teoo';
+// Preview build (VITE_TEOO_PREVIEW=1): a read-only static page. Every call is answered from a fixed SYNTHETIC fixture that the backend wrote (backend/scripts/export_teoo_preview.py); no API exists there and nothing is sent anywhere.
+const PREVIEW = import.meta.env.VITE_TEOO_PREVIEW === '1';
+const FIXTURE = '/teoo-preview';
+function fixtureOf(path: string, body?: { kind?: string; body_preset?: string }): string {
+  const p = path.split('?')[0];
+  if (p === '/demo') return 'demo.json';
+  if (p === '/session') return 'session.json';
+  if (p === '/safety') return 'safety.json';
+  if (p.startsWith('/body/')) return `body-${p.slice(6).replace(/[^a-z0-9-]/g, '')}.json`;
+  if (p === '/coverage') return `coverage-${String(body?.body_preset ?? '').replace(/[^a-z0-9-]/g, '')}.json`;
+  if (p === '/figure') return `figure-${String(body?.kind ?? '').replace(/[^a-z]/g, '')}.json`;
+  throw new Error(`${path}: not available in the read-only preview`);
+}
 async function get<T>(path: string): Promise<T> {
-  const r = await fetch(`${API}${path}`);
+  const r = await fetch(PREVIEW ? `${FIXTURE}/${fixtureOf(path)}` : `${API}${path}`);
   if (!r.ok) throw new Error(`${path}: ${r.status}${r.status === 403 ? ' (these routes are local-runtime only)' : ''}`);
   return r.json() as Promise<T>;
 }
 async function post<T>(path: string, body: unknown): Promise<T> {
+  if (PREVIEW) { const r = await fetch(`${FIXTURE}/${fixtureOf(path, body as { kind?: string; body_preset?: string })}`); if (!r.ok) throw new Error(`${path}: ${r.status}`); return r.json() as Promise<T>; }
   const r = await fetch(`${API}${path}`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
   if (!r.ok) throw new Error(`${path}: ${r.status}`);
   return r.json() as Promise<T>;

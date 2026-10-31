@@ -31,3 +31,4 @@ web-app-build/
 
 # local output of the study layer (experiment directories, packages); each is reproducible from its protocol
 backend/experiments/studies/
+site-teoo-preview/

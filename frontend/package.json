@@ -11,7 +11,8 @@
     "typecheck": "tsc -b --noEmit",
     "test": "vitest run",
     "build:native": "tsc -b && VITE_NATIVE=1 vite build",
-    "build:web": "tsc -b && VITE_WEBRT=1 vite build"
+    "build:web": "tsc -b && VITE_WEBRT=1 vite build",
+    "build:teoo-preview": "tsc -b && vite build --config vite.teoo-preview.config.ts"
   },
   "dependencies": {
     "@deck.gl/core": "^9.4.0",
