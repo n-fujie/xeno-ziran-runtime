@@ -1,107 +1,1910 @@
 {
- "stress": "coupling gain 0.5",
+ "stress_of_energy": "coupling gain 0.5",
  "a1_firing_cost": 0.3,
  "a1_upkeep_per_tick": 0.02,
- "a1_energy_at_tick_300_unrepaired": {
-  "min": 2.04,
-  "max": 2.04
+ "horizon": 1200,
+ "recovery_window": 30,
+ "post_intervention_criterion": "sustained ACTIVE for 30 ticks within 2W = 60 ticks of the intervention (the same for every intervention tick)",
+ "boundary": {
+  "coupling": {
+   "stress": "coupling gain 0.5",
+   "last_effective_tick": 388,
+   "by_tick": {
+    "384": {
+     "seeds": 10,
+     "sustained_within_60": 10,
+     "recovered_at_1200": 10,
+     "tracked_ticks": 816,
+     "a1_energy_at_start_of_t": [
+      0.38,
+      0.38
+     ],
+     "median_latency": 10.0,
+     "max_latency": 10,
+     "first_a1_fire_median": 384.0,
+     "a1_fires_in_60_median": 12.0,
+     "final_status": [
+      "ACTIVE"
+     ]
+    },
+    "385": {
+     "seeds": 10,
+     "sustained_within_60": 10,
+     "recovered_at_1200": 10,
+     "tracked_ticks": 815,
+     "a1_energy_at_start_of_t": [
+      0.36,
+      0.36
+     ],
+     "median_latency": 10.0,
+     "max_latency": 10,
+     "first_a1_fire_median": 385.0,
+     "a1_fires_in_60_median": 12.0,
+     "final_status": [
+      "ACTIVE"
+     ]
+    },
+    "386": {
+     "seeds": 10,
+     "sustained_within_60": 10,
+     "recovered_at_1200": 10,
+     "tracked_ticks": 814,
+     "a1_energy_at_start_of_t": [
+      0.34,
+      0.34
+     ],
+     "median_latency": 10.0,
+     "max_latency": 10,
+     "first_a1_fire_median": 386.0,
+     "a1_fires_in_60_median": 12.0,
+     "final_status": [
+      "ACTIVE"
+     ]
+    },
+    "387": {
+     "seeds": 10,
+     "sustained_within_60": 10,
+     "recovered_at_1200": 10,
+     "tracked_ticks": 813,
+     "a1_energy_at_start_of_t": [
+      0.32,
+      0.32
+     ],
+     "median_latency": 10.0,
+     "max_latency": 10,
+     "first_a1_fire_median": 387.0,
+     "a1_fires_in_60_median": 12.0,
+     "final_status": [
+      "ACTIVE"
+     ]
+    },
+    "388": {
+     "seeds": 10,
+     "sustained_within_60": 10,
+     "recovered_at_1200": 10,
+     "tracked_ticks": 812,
+     "a1_energy_at_start_of_t": [
+      0.3,
+      0.3
+     ],
+     "median_latency": 10.0,
+     "max_latency": 10,
+     "first_a1_fire_median": 388.0,
+     "a1_fires_in_60_median": 12.0,
+     "final_status": [
+      "ACTIVE"
+     ]
+    },
+    "389": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 811,
+     "a1_energy_at_start_of_t": [
+      0.28,
+      0.28
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "390": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 810,
+     "a1_energy_at_start_of_t": [
+      0.26,
+      0.26
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "391": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 809,
+     "a1_energy_at_start_of_t": [
+      0.24,
+      0.24
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "392": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 808,
+     "a1_energy_at_start_of_t": [
+      0.22,
+      0.22
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "393": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 807,
+     "a1_energy_at_start_of_t": [
+      0.2,
+      0.2
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "394": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 806,
+     "a1_energy_at_start_of_t": [
+      0.18,
+      0.18
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "395": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 805,
+     "a1_energy_at_start_of_t": [
+      0.16,
+      0.16
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "396": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 804,
+     "a1_energy_at_start_of_t": [
+      0.14,
+      0.14
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "397": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 803,
+     "a1_energy_at_start_of_t": [
+      0.12,
+      0.12
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "398": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 802,
+     "a1_energy_at_start_of_t": [
+      0.1,
+      0.1
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "399": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 801,
+     "a1_energy_at_start_of_t": [
+      0.08,
+      0.08
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "400": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 800,
+     "a1_energy_at_start_of_t": [
+      0.06,
+      0.06
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "401": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 799,
+     "a1_energy_at_start_of_t": [
+      0.04,
+      0.04
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "402": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 798,
+     "a1_energy_at_start_of_t": [
+      0.02,
+      0.02
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "403": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 797,
+     "a1_energy_at_start_of_t": [
+      0.0,
+      0.0
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "404": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 796,
+     "a1_energy_at_start_of_t": [
+      0.0,
+      0.0
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "405": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 795,
+     "a1_energy_at_start_of_t": [
+      0.0,
+      0.0
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "450": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 750,
+     "a1_energy_at_start_of_t": [
+      0.0,
+      0.0
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "500": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 700,
+     "a1_energy_at_start_of_t": [
+      0.0,
+      0.0
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "600": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 600,
+     "a1_energy_at_start_of_t": [
+      0.0,
+      0.0
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "800": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 400,
+     "a1_energy_at_start_of_t": [
+      0.0,
+      0.0
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "1000": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 200,
+     "a1_energy_at_start_of_t": [
+      0.0,
+      0.0
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "1100": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 100,
+     "a1_energy_at_start_of_t": [
+      0.0,
+      0.0
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "1140": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 60,
+     "a1_energy_at_start_of_t": [
+      0.0,
+      0.0
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    }
+   }
+  },
+  "renewal stopped": {
+   "stress": "renewal stopped",
+   "last_effective_tick": 383,
+   "by_tick": {
+    "379": {
+     "seeds": 10,
+     "sustained_within_60": 10,
+     "recovered_at_1200": 10,
+     "tracked_ticks": 821,
+     "a1_energy_at_start_of_t": [
+      0.38,
+      0.38
+     ],
+     "median_latency": 10.0,
+     "max_latency": 10,
+     "first_a1_fire_median": 379.0,
+     "a1_fires_in_60_median": 12.0,
+     "final_status": [
+      "ACTIVE"
+     ]
+    },
+    "380": {
+     "seeds": 10,
+     "sustained_within_60": 10,
+     "recovered_at_1200": 10,
+     "tracked_ticks": 820,
+     "a1_energy_at_start_of_t": [
+      0.36,
+      0.36
+     ],
+     "median_latency": 10.0,
+     "max_latency": 10,
+     "first_a1_fire_median": 380.0,
+     "a1_fires_in_60_median": 12.0,
+     "final_status": [
+      "ACTIVE"
+     ]
+    },
+    "381": {
+     "seeds": 10,
+     "sustained_within_60": 10,
+     "recovered_at_1200": 10,
+     "tracked_ticks": 819,
+     "a1_energy_at_start_of_t": [
+      0.34,
+      0.34
+     ],
+     "median_latency": 10.0,
+     "max_latency": 10,
+     "first_a1_fire_median": 381.0,
+     "a1_fires_in_60_median": 12.0,
+     "final_status": [
+      "ACTIVE"
+     ]
+    },
+    "382": {
+     "seeds": 10,
+     "sustained_within_60": 10,
+     "recovered_at_1200": 10,
+     "tracked_ticks": 818,
+     "a1_energy_at_start_of_t": [
+      0.32,
+      0.32
+     ],
+     "median_latency": 10.0,
+     "max_latency": 10,
+     "first_a1_fire_median": 382.0,
+     "a1_fires_in_60_median": 12.0,
+     "final_status": [
+      "ACTIVE"
+     ]
+    },
+    "383": {
+     "seeds": 10,
+     "sustained_within_60": 10,
+     "recovered_at_1200": 10,
+     "tracked_ticks": 817,
+     "a1_energy_at_start_of_t": [
+      0.3,
+      0.3
+     ],
+     "median_latency": 10.0,
+     "max_latency": 10,
+     "first_a1_fire_median": 383.0,
+     "a1_fires_in_60_median": 12.0,
+     "final_status": [
+      "ACTIVE"
+     ]
+    },
+    "384": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 816,
+     "a1_energy_at_start_of_t": [
+      0.28,
+      0.28
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "385": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 815,
+     "a1_energy_at_start_of_t": [
+      0.26,
+      0.26
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "386": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 814,
+     "a1_energy_at_start_of_t": [
+      0.24,
+      0.24
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "387": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 813,
+     "a1_energy_at_start_of_t": [
+      0.22,
+      0.22
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "388": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 812,
+     "a1_energy_at_start_of_t": [
+      0.2,
+      0.2
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "389": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 811,
+     "a1_energy_at_start_of_t": [
+      0.18,
+      0.18
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "390": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 810,
+     "a1_energy_at_start_of_t": [
+      0.16,
+      0.16
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "391": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 809,
+     "a1_energy_at_start_of_t": [
+      0.14,
+      0.14
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "392": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 808,
+     "a1_energy_at_start_of_t": [
+      0.12,
+      0.12
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "393": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 807,
+     "a1_energy_at_start_of_t": [
+      0.1,
+      0.1
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "394": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 806,
+     "a1_energy_at_start_of_t": [
+      0.08,
+      0.08
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "395": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 805,
+     "a1_energy_at_start_of_t": [
+      0.06,
+      0.06
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "396": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 804,
+     "a1_energy_at_start_of_t": [
+      0.04,
+      0.04
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "397": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 803,
+     "a1_energy_at_start_of_t": [
+      0.02,
+      0.02
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "398": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 802,
+     "a1_energy_at_start_of_t": [
+      0.0,
+      0.0
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "399": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 801,
+     "a1_energy_at_start_of_t": [
+      0.0,
+      0.0
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "400": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 800,
+     "a1_energy_at_start_of_t": [
+      0.0,
+      0.0
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "450": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 750,
+     "a1_energy_at_start_of_t": [
+      0.0,
+      0.0
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "500": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 700,
+     "a1_energy_at_start_of_t": [
+      0.0,
+      0.0
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "600": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 600,
+     "a1_energy_at_start_of_t": [
+      0.0,
+      0.0
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "800": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 400,
+     "a1_energy_at_start_of_t": [
+      0.0,
+      0.0
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "1000": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 200,
+     "a1_energy_at_start_of_t": [
+      0.0,
+      0.0
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "1100": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 100,
+     "a1_energy_at_start_of_t": [
+      0.0,
+      0.0
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "1140": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 60,
+     "a1_energy_at_start_of_t": [
+      0.0,
+      0.0
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    }
+   }
+  },
+  "Address": {
+   "stress": "Address partial 0.5",
+   "last_effective_tick": 383,
+   "by_tick": {
+    "379": {
+     "seeds": 10,
+     "sustained_within_60": 10,
+     "recovered_at_1200": 10,
+     "tracked_ticks": 821,
+     "a1_energy_at_start_of_t": [
+      0.38,
+      0.48
+     ],
+     "median_latency": 10.0,
+     "max_latency": 10,
+     "first_a1_fire_median": 379.0,
+     "a1_fires_in_60_median": 12.0,
+     "final_status": [
+      "ACTIVE"
+     ]
+    },
+    "380": {
+     "seeds": 10,
+     "sustained_within_60": 10,
+     "recovered_at_1200": 10,
+     "tracked_ticks": 820,
+     "a1_energy_at_start_of_t": [
+      0.36,
+      0.46
+     ],
+     "median_latency": 10.0,
+     "max_latency": 10,
+     "first_a1_fire_median": 380.0,
+     "a1_fires_in_60_median": 12.0,
+     "final_status": [
+      "ACTIVE"
+     ]
+    },
+    "381": {
+     "seeds": 10,
+     "sustained_within_60": 10,
+     "recovered_at_1200": 10,
+     "tracked_ticks": 819,
+     "a1_energy_at_start_of_t": [
+      0.34,
+      0.44
+     ],
+     "median_latency": 10.0,
+     "max_latency": 10,
+     "first_a1_fire_median": 381.0,
+     "a1_fires_in_60_median": 12.0,
+     "final_status": [
+      "ACTIVE"
+     ]
+    },
+    "382": {
+     "seeds": 10,
+     "sustained_within_60": 10,
+     "recovered_at_1200": 10,
+     "tracked_ticks": 818,
+     "a1_energy_at_start_of_t": [
+      0.32,
+      0.42
+     ],
+     "median_latency": 10.0,
+     "max_latency": 10,
+     "first_a1_fire_median": 382.0,
+     "a1_fires_in_60_median": 12.0,
+     "final_status": [
+      "ACTIVE"
+     ]
+    },
+    "383": {
+     "seeds": 10,
+     "sustained_within_60": 10,
+     "recovered_at_1200": 10,
+     "tracked_ticks": 817,
+     "a1_energy_at_start_of_t": [
+      0.3,
+      0.4
+     ],
+     "median_latency": 10.0,
+     "max_latency": 10,
+     "first_a1_fire_median": 383.0,
+     "a1_fires_in_60_median": 12.0,
+     "final_status": [
+      "ACTIVE"
+     ]
+    },
+    "384": {
+     "seeds": 10,
+     "sustained_within_60": 5,
+     "recovered_at_1200": 5,
+     "tracked_ticks": 816,
+     "a1_energy_at_start_of_t": [
+      0.28,
+      0.38
+     ],
+     "median_latency": 10,
+     "max_latency": 10,
+     "first_a1_fire_median": 384,
+     "a1_fires_in_60_median": 6.0,
+     "final_status": [
+      "ACTIVE",
+      "COLLAPSED"
+     ]
+    },
+    "385": {
+     "seeds": 10,
+     "sustained_within_60": 5,
+     "recovered_at_1200": 5,
+     "tracked_ticks": 815,
+     "a1_energy_at_start_of_t": [
+      0.26,
+      0.36
+     ],
+     "median_latency": 10,
+     "max_latency": 10,
+     "first_a1_fire_median": 385,
+     "a1_fires_in_60_median": 6.0,
+     "final_status": [
+      "ACTIVE",
+      "COLLAPSED"
+     ]
+    },
+    "386": {
+     "seeds": 10,
+     "sustained_within_60": 5,
+     "recovered_at_1200": 5,
+     "tracked_ticks": 814,
+     "a1_energy_at_start_of_t": [
+      0.24,
+      0.34
+     ],
+     "median_latency": 10,
+     "max_latency": 10,
+     "first_a1_fire_median": 386,
+     "a1_fires_in_60_median": 6.0,
+     "final_status": [
+      "ACTIVE",
+      "COLLAPSED"
+     ]
+    },
+    "387": {
+     "seeds": 10,
+     "sustained_within_60": 5,
+     "recovered_at_1200": 5,
+     "tracked_ticks": 813,
+     "a1_energy_at_start_of_t": [
+      0.22,
+      0.32
+     ],
+     "median_latency": 10,
+     "max_latency": 10,
+     "first_a1_fire_median": 387,
+     "a1_fires_in_60_median": 6.0,
+     "final_status": [
+      "ACTIVE",
+      "COLLAPSED"
+     ]
+    },
+    "388": {
+     "seeds": 10,
+     "sustained_within_60": 5,
+     "recovered_at_1200": 5,
+     "tracked_ticks": 812,
+     "a1_energy_at_start_of_t": [
+      0.2,
+      0.3
+     ],
+     "median_latency": 10,
+     "max_latency": 10,
+     "first_a1_fire_median": 388,
+     "a1_fires_in_60_median": 6.0,
+     "final_status": [
+      "ACTIVE",
+      "COLLAPSED"
+     ]
+    },
+    "389": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 811,
+     "a1_energy_at_start_of_t": [
+      0.18,
+      0.28
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "390": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 810,
+     "a1_energy_at_start_of_t": [
+      0.16,
+      0.26
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "391": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 809,
+     "a1_energy_at_start_of_t": [
+      0.14,
+      0.24
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "392": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 808,
+     "a1_energy_at_start_of_t": [
+      0.12,
+      0.22
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "393": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 807,
+     "a1_energy_at_start_of_t": [
+      0.1,
+      0.2
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "394": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 806,
+     "a1_energy_at_start_of_t": [
+      0.08,
+      0.18
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "395": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 805,
+     "a1_energy_at_start_of_t": [
+      0.06,
+      0.16
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "396": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 804,
+     "a1_energy_at_start_of_t": [
+      0.04,
+      0.14
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "397": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 803,
+     "a1_energy_at_start_of_t": [
+      0.02,
+      0.12
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "398": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 802,
+     "a1_energy_at_start_of_t": [
+      0.0,
+      0.1
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "399": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 801,
+     "a1_energy_at_start_of_t": [
+      0.0,
+      0.08
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "400": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 800,
+     "a1_energy_at_start_of_t": [
+      0.0,
+      0.06
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "450": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 750,
+     "a1_energy_at_start_of_t": [
+      0.0,
+      0.0
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "500": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 700,
+     "a1_energy_at_start_of_t": [
+      0.0,
+      0.0
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "600": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 600,
+     "a1_energy_at_start_of_t": [
+      0.0,
+      0.0
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "800": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 400,
+     "a1_energy_at_start_of_t": [
+      0.0,
+      0.0
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "1000": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 200,
+     "a1_energy_at_start_of_t": [
+      0.0,
+      0.0
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "1100": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 100,
+     "a1_energy_at_start_of_t": [
+      0.0,
+      0.0
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    },
+    "1140": {
+     "seeds": 10,
+     "sustained_within_60": 0,
+     "recovered_at_1200": 0,
+     "tracked_ticks": 60,
+     "a1_energy_at_start_of_t": [
+      0.0,
+      0.0
+     ],
+     "median_latency": null,
+     "max_latency": null,
+     "first_a1_fire_median": null,
+     "a1_fires_in_60_median": 0.0,
+     "final_status": [
+      "COLLAPSED"
+     ]
+    }
+   }
+  }
  },
- "tick_a1_energy_below_firing_cost_unrepaired": {
-  "min": 388,
-  "max": 388
- },
- "counterfactual_resource_pulse_1.0_horizon_1200": [
-  {
-   "pulse_tick": 383,
-   "by_upkeep": [
-    {
-     "a1_upkeep": 0.02,
-     "recovered_of_10": 10
-    },
-    {
-     "a1_upkeep": 0.0,
-     "recovered_of_10": 10
-    }
-   ]
-  },
-  {
-   "pulse_tick": 388,
-   "by_upkeep": [
-    {
-     "a1_upkeep": 0.02,
-     "recovered_of_10": 10
-    },
-    {
-     "a1_upkeep": 0.0,
-     "recovered_of_10": 10
-    }
-   ]
-  },
-  {
-   "pulse_tick": 389,
-   "by_upkeep": [
-    {
-     "a1_upkeep": 0.02,
-     "recovered_of_10": 0
-    },
-    {
-     "a1_upkeep": 0.0,
-     "recovered_of_10": 10
-    }
-   ]
-  },
-  {
-   "pulse_tick": 400,
-   "by_upkeep": [
-    {
-     "a1_upkeep": 0.02,
-     "recovered_of_10": 0
-    },
-    {
-     "a1_upkeep": 0.0,
-     "recovered_of_10": 10
-    }
-   ]
-  },
-  {
-   "pulse_tick": 500,
-   "by_upkeep": [
-    {
-     "a1_upkeep": 0.02,
-     "recovered_of_10": 0
-    },
-    {
-     "a1_upkeep": 0.0,
-     "recovered_of_10": 10
-    }
-   ]
-  },
-  {
-   "pulse_tick": 800,
-   "by_upkeep": [
-    {
-     "a1_upkeep": 0.02,
-     "recovered_of_10": 0
-    },
-    {
-     "a1_upkeep": 0.0,
-     "recovered_of_10": 10
-    }
-   ]
-  },
-  {
-   "pulse_tick": 1140,
-   "by_upkeep": [
-    {
-     "a1_upkeep": 0.02,
-     "recovered_of_10": 0
-    },
-    {
-     "a1_upkeep": 0.0,
-     "recovered_of_10": 10
-    }
+ "energy": {
+  "a1_firing_cost": 0.3,
+  "first_tick_end_of_step_energy_below_cost": [
+   388,
+   388
+  ],
+  "end_of_step_energy_by_tick": {
+   "384": [
+    0.36,
+    0.36
+   ],
+   "385": [
+    0.34,
+    0.34
+   ],
+   "386": [
+    0.32,
+    0.32
+   ],
+   "387": [
+    0.3,
+    0.3
+   ],
+   "388": [
+    0.28,
+    0.28
+   ],
+   "389": [
+    0.26,
+    0.26
+   ],
+   "390": [
+    0.24,
+    0.24
+   ],
+   "391": [
+    0.22,
+    0.22
    ]
   }
- ],
- "note": "the counterfactual changes the model (A1's upkeep), it is not a repair action; it shows what the closure depends on"
+ },
+ "upkeep_control": {
+  "coupling": {
+   "branch_at_300": {
+    "387": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      2.04,
+      2.04
+     ]
+    },
+    "388": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      2.04,
+      2.04
+     ]
+    },
+    "389": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      2.04,
+      2.04
+     ]
+    },
+    "394": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      2.04,
+      2.04
+     ]
+    },
+    "500": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      2.04,
+      2.04
+     ]
+    },
+    "800": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      2.04,
+      2.04
+     ]
+    },
+    "1140": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      2.04,
+      2.04
+     ]
+    }
+   },
+   "upkeep_0_from_start": {
+    "387": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      6.0,
+      6.0
+     ]
+    },
+    "388": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      6.0,
+      6.0
+     ]
+    },
+    "389": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      6.0,
+      6.0
+     ]
+    },
+    "394": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      6.0,
+      6.0
+     ]
+    },
+    "500": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      6.0,
+      6.0
+     ]
+    },
+    "800": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      6.0,
+      6.0
+     ]
+    },
+    "1140": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      6.0,
+      6.0
+     ]
+    }
+   }
+  },
+  "renewal stopped": {
+   "branch_at_300": {
+    "382": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      1.94,
+      1.94
+     ]
+    },
+    "383": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      1.94,
+      1.94
+     ]
+    },
+    "384": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      1.94,
+      1.94
+     ]
+    },
+    "389": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      1.94,
+      1.94
+     ]
+    },
+    "500": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      1.94,
+      1.94
+     ]
+    },
+    "800": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      1.94,
+      1.94
+     ]
+    },
+    "1140": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      1.94,
+      1.94
+     ]
+    }
+   },
+   "upkeep_0_from_start": {
+    "382": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      6.0,
+      6.0
+     ]
+    },
+    "383": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      6.0,
+      6.0
+     ]
+    },
+    "384": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      6.0,
+      6.0
+     ]
+    },
+    "389": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      6.0,
+      6.0
+     ]
+    },
+    "500": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      6.0,
+      6.0
+     ]
+    },
+    "800": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      6.0,
+      6.0
+     ]
+    },
+    "1140": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      6.0,
+      6.0
+     ]
+    }
+   }
+  },
+  "Address": {
+   "branch_at_300": {
+    "382": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      1.94,
+      2.04
+     ]
+    },
+    "383": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      1.94,
+      2.04
+     ]
+    },
+    "384": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      1.94,
+      2.04
+     ]
+    },
+    "389": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      1.94,
+      2.04
+     ]
+    },
+    "500": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      1.94,
+      2.04
+     ]
+    },
+    "800": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      1.94,
+      2.04
+     ]
+    },
+    "1140": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      1.94,
+      2.04
+     ]
+    }
+   },
+   "upkeep_0_from_start": {
+    "382": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      6.0,
+      6.0
+     ]
+    },
+    "383": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      6.0,
+      6.0
+     ]
+    },
+    "384": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      6.0,
+      6.0
+     ]
+    },
+    "389": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      6.0,
+      6.0
+     ]
+    },
+    "500": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      6.0,
+      6.0
+     ]
+    },
+    "800": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      6.0,
+      6.0
+     ]
+    },
+    "1140": {
+     "recovered_at_1200": 10,
+     "of": 10,
+     "a1_energy_at_start_of_t": [
+      6.0,
+      6.0
+     ]
+    }
+   }
+  }
+ },
+ "note": "the controls change the model (A1's upkeep), they are not repair actions; branch_at_300 keeps the history identical to the unrepaired run up to tick 300"
 }

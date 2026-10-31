@@ -57,6 +57,41 @@ def test_the_three_pulse_windows_that_stayed_open_were_measured_to_tick_330_and_
 
 
 @need
+def test_the_closure_ticks_are_recomputed_from_the_per_tick_results_and_the_energy_gate_explains_them():
+    """Independent of the stored summaries: the last effective tick is recomputed from the per-tick counts, and the closure is checked against the rule read from the traces (A1's energy at the start of the intervention tick must reach its firing cost)."""
+    o, m = load("_open_windows"), load("_open_mechanism")
+    for w in o["windows"]:
+        eff = [int(t) for t, v in w["per_tick"].items() if v["exploration"] == "5/5" and v["validation"] == "5/5"]
+        assert max(eff) == w["latest_effective_tick"] and sorted(eff) == w["effective_ticks"]
+        assert all(int(t) <= w["latest_effective_tick"] for t in eff) and not [t for t in eff if t > w["latest_effective_tick"]]
+    cost = m["a1_firing_cost"]
+    names = {"coupling gain 0.5": "coupling", "renewal stopped": "renewal stopped", "Address partial 0.5": "Address"}
+    for w in o["windows"]:
+        b = m["boundary"][names[w["stress"]]]
+        assert b["last_effective_tick"] == w["latest_effective_tick"]
+        for t, v in b["by_tick"].items():
+            lo, hi = v["a1_energy_at_start_of_t"]
+            assert (v["recovered_at_1200"] == v["seeds"]) == (lo >= cost - 1e-9)  # every seed recovers exactly when every seed has the energy to fire
+            assert (v["recovered_at_1200"] > 0) == (hi >= cost - 1e-9)  # some seed recovers exactly when some seed has it
+            assert v["sustained_within_60"] == v["recovered_at_1200"] and v["tracked_ticks"] == 1200 - int(t) and v["tracked_ticks"] >= 2 * m["recovery_window"]  # the post-intervention criterion that is the same for every tick agrees; every run is followed for at least 2W ticks
+    for c in m["upkeep_control"].values():
+        assert all(v["recovered_at_1200"] == v["of"] for v in c["branch_at_300"].values())  # with the common history and upkeep 0 after tick 300 every tested tick recovers
+
+
+@need
+def test_the_regenerated_validation_and_evaluation_rows_give_the_saved_summaries():
+    """The run-level rows of the validation (6-10) and evaluation (11-30) runs were regenerated (they were saved only as summaries): every setting's counts and outcome counts equal the saved summary."""
+    v = json.loads((DOCS / "evidence" / "run_rows_verification.json").read_text())
+    assert v["settings"] == v["settings_matching_the_saved_summary"] == len(v["results"]) and v["mismatches"] == []
+    with gzip.open(DOCS / "experiments_stage6_validation_evaluation_rows.jsonl.gz", "rt") as f:
+        head = json.loads(f.readline())
+        rows = [json.loads(line) for line in f]
+    assert head["note"].startswith("regenerated") and len(rows) == v["runs"]
+    seeds = {r["seed"] for r in rows}
+    assert seeds == set(range(6, 31)) and {r["origin"] for r in rows} == {"A", "follow-up"}  # validation and evaluation seeds only; the exploration rows (1-5) are in the original raw files
+
+
+@need
 def test_every_cell_of_the_grid_is_in_the_csv_whatever_its_outcome():
     a = load("")
     rows = list(csv.DictReader((DOCS / "experiments_stage6_cells.csv").open()))

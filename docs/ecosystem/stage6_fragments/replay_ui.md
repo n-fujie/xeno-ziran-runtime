@@ -16,7 +16,7 @@ the **reachable-recovery strips** (one cell per tick 101-170 and stress, coloure
 |---|---|---|
 | `60-repair-recovered.png` | the three horizons, raw and normalised costs, failure class of a pulse of 1.0 at tick 113 on the coupling stress | `tab=research&stress=coupling gain 0.5&ract=resource.pulse/1/0/113` |
 | `61-repair-overshoot.png` | the same with a pulse of 4.0: secondary collapse at every horizon | `...ract=resource.pulse/4/0/113` |
-| `62-reachable-recovery-map.png` | the strip of each stress over ticks 101-420; every window closes (the three late ones at 389 / 384 / 384) | as 60 |
+| `62-reachable-recovery-map.png` | the strip of each stress over ticks 101-420; in the settings and ticks that were measured every window closes (the three late ones at 389 / 384 / 384) | as 60 |
 | `63-stress-table.png`, `64-pulse-phase-bands.png` | classification and windows per stress; insufficient / effective / overshoot bands | `...&repair=rule_based` |
 | `65-controller-decisions.png`, `66-no-action-available.png` | a cost-aware controller's decisions; a detected Address stress with no available action | `stress=history lost&repair=cost_aware`; `stress=Address partial 0.5&repair=cost_aware` |
 | `67-technical-repair-figure.png`, `68-technical-overshoot-figure.png` | the repair figure of the technical sheet: repaired coupling path with a world-state action on the resource path; the failed path after a pulse of 4.0 | `tech=ncb&...&tick=200`, `...&tick=479` |

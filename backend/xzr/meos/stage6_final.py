@@ -122,6 +122,17 @@ def reference_repair(a: dict, stress_id: str) -> dict | None:
     return {"parts": best["parts"], "t": best["t"], "klass": window_class(best["parts"]), "kind": best["kind"], "normalised_cost_equal_weights": cost, "costs": best["costs"], "evaluation": best["evaluation"], "n_candidates": len(cand)}
 
 
+def irreversibility_scope(b: dict, sid: str) -> dict[str, Any]:
+    """What ``irreversible_tick`` is a statement about. It is the tick after the last tick at which any of the settings *whose window was measured at one-tick resolution* (Pipeline B) is effective on every exploration and validation seed; it is not the closure of every
+    possible repair. Settings that were never effective on the coarse grid have no one-tick window and are not covered; the actions built in the follow-up (engine meos-0.5) are covered only where listed in ``experiments_stage6_followup.json``."""
+    sw = [w for w in b["B1_windows"] if w["stress"] == sid]
+    end = max([w["ticks_tested"][1] for w in sw] or [170])
+    return {"kind": "UNION_OF_MEASURED_SETTING_WINDOWS", "settings_measured": len(sw), "tick_range": [101, end], "windows_measured_with_the_extended_horizon_1200": sum(1 for w in sw if w["ticks_tested"][1] > 330),
+            "criterion": "effective on all 5 exploration and all 5 validation seeds, at every horizon applicable to the tick (180/300/480; 1200 for ticks beyond 330), no secondary collapse, resource field not exhausted",
+            "settings": [{"parts": w["parts"], "latest_effective_tick": w["latest_effective_tick"], "ticks_tested": w["ticks_tested"], "effective_intervals": w["effective_intervals"]} for w in sw],
+            "not_covered": "repair actions or settings that were not window-tested at one-tick resolution; A1 energy restoration (no such action exists in the engine)"}
+
+
 def stress_row(a: dict, b: dict, sid: str) -> dict[str, Any]:
     rep = a["repairability"][sid]
     win = stress_windows(b, sid)
@@ -161,6 +172,7 @@ def stress_row(a: dict, b: dict, sid: str) -> dict[str, Any]:
         "minimum_effective": [{"action": m["action"], "magnitude": m["minimum_effective_magnitude"], "ticks": m.get("effective_ticks")} for m in mins],
         "timing_window_fragments": allw, "first_window": allw[0] if allw else None, "earliest_effective_tick": eff_ticks[0] if eff_ticks else None, "latest_successful_repair_tick": latest,
         "irreversible_tick": (latest + 1) if latest is not None and open_end is None else None, "irreversibility": "OPEN_THROUGH_TESTED_LIMIT" if open_end is not None else "CLOSED" if latest is not None else "NO_EFFECTIVE_TICK", "window_open_at_end_of_tested_range": open_end is not None, "tested_range_end": open_end,
+        "irreversibility_scope": irreversibility_scope(b, sid),
         "irreversible_from_first_tested_tick": latest is None, "tested_ticks": [101, max([w["ticks_tested"][1] for w in b["B1_windows"] if w["stress"] == sid] or [170])], "unrepaired_run": {"outcomes_long": na["outcomes_long"], "success": na["long"]},
         "reference_repair": ref,
         "failure_reasons_in_the_tested_grid": dict(failures), "cells_tested": len(rows), "cells_effective": sum(1 for r in rows if r["effective_seeds"] == r["n"]),

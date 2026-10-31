@@ -54,7 +54,7 @@ describe('the repair panel', () => {
   it('draws the reachable-recovery strips with one cell per tick, the windows with their gaps, and the pulse bands', () => {
     const h = html();
     expect(h).toContain('data-testid="eco-recovery-map"'); expect((h.match(/title="tick \d+:/g) ?? []).length).toBe(320 * 2);
-    expect(h).toContain('latest successful repair tick 140'); expect(h).toContain('earliest irreversible 141'); expect(h).toContain('no tested action recovers it at any tested tick');
+    expect(h).toContain('last tick at which a measured setting recovers: 140'); expect(h).toContain('none does from tick 141'); expect(h).toContain('no tested action recovers it at any tested tick');
     expect(h).toContain('101-105, 108-117, 124-140'); expect(h).toContain('effective recovery 0.6-2.5'); expect(h).toContain('overshoot 2.6-6'); expect(h).toContain('not of the world');
   });
   it('shows the three restorations of an Address repair, the repairability of each MFS, and an operational recovery that is not observed', () => {

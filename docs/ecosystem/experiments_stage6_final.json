@@ -103,6 +103,142 @@
 "irreversibility": "CLOSED",
 "window_open_at_end_of_tested_range": false,
 "tested_range_end": null,
+"irreversibility_scope": {
+"kind": "UNION_OF_MEASURED_SETTING_WINDOWS",
+"settings_measured": 6,
+"tick_range": [
+101,
+1140
+],
+"windows_measured_with_the_extended_horizon_1200": 1,
+"criterion": "effective on all 5 exploration and all 5 validation seeds, at every horizon applicable to the tick (180/300/480; 1200 for ticks beyond 330), no secondary collapse, resource field not exhausted",
+"settings": [
+{
+"parts": [
+[
+"internal.m2_tap",
+0.0,
+0
+]
+],
+"latest_effective_tick": null,
+"ticks_tested": [
+101,
+170
+],
+"effective_intervals": []
+},
+{
+"parts": [
+[
+"resource.pulse",
+1.0,
+0
+]
+],
+"latest_effective_tick": 388,
+"ticks_tested": [
+101,
+1140
+],
+"effective_intervals": [
+[
+108,
+117
+],
+[
+125,
+388
+]
+]
+},
+{
+"parts": [
+[
+"coupling.gradual",
+1.0,
+10
+]
+],
+"latest_effective_tick": 104,
+"ticks_tested": [
+101,
+170
+],
+"effective_intervals": [
+[
+101,
+104
+]
+]
+},
+{
+"parts": [
+[
+"coupling.restore",
+0.7,
+0
+]
+],
+"latest_effective_tick": 104,
+"ticks_tested": [
+101,
+170
+],
+"effective_intervals": [
+[
+102,
+104
+]
+]
+},
+{
+"parts": [
+[
+"resource.pulse",
+0.5,
+0
+]
+],
+"latest_effective_tick": 146,
+"ticks_tested": [
+101,
+170
+],
+"effective_intervals": [
+[
+114,
+117
+],
+[
+124,
+146
+]
+]
+},
+{
+"parts": [
+[
+"coupling.restore",
+1.0,
+0
+]
+],
+"latest_effective_tick": 105,
+"ticks_tested": [
+101,
+170
+],
+"effective_intervals": [
+[
+101,
+105
+]
+]
+}
+],
+"not_covered": "repair actions or settings that were not window-tested at one-tick resolution; A1 energy restoration (no such action exists in the engine)"
+},
 "irreversible_from_first_tested_tick": false,
 "tested_ticks": [
 101,
@@ -222,6 +358,54 @@
 "irreversibility": "CLOSED",
 "window_open_at_end_of_tested_range": false,
 "tested_range_end": null,
+"irreversibility_scope": {
+"kind": "UNION_OF_MEASURED_SETTING_WINDOWS",
+"settings_measured": 2,
+"tick_range": [
+101,
+170
+],
+"windows_measured_with_the_extended_horizon_1200": 0,
+"criterion": "effective on all 5 exploration and all 5 validation seeds, at every horizon applicable to the tick (180/300/480; 1200 for ticks beyond 330), no secondary collapse, resource field not exhausted",
+"settings": [
+{
+"parts": [
+[
+"internal.m2_tap",
+0.0,
+0
+]
+],
+"latest_effective_tick": 109,
+"ticks_tested": [
+101,
+170
+],
+"effective_intervals": [
+[
+101,
+109
+]
+]
+},
+{
+"parts": [
+[
+"resource.pulse",
+1.0,
+0
+]
+],
+"latest_effective_tick": null,
+"ticks_tested": [
+101,
+170
+],
+"effective_intervals": []
+}
+],
+"not_covered": "repair actions or settings that were not window-tested at one-tick resolution; A1 energy restoration (no such action exists in the engine)"
+},
 "irreversible_from_first_tested_tick": false,
 "tested_ticks": [
 101,
@@ -353,6 +537,74 @@
 "irreversibility": "CLOSED",
 "window_open_at_end_of_tested_range": false,
 "tested_range_end": null,
+"irreversibility_scope": {
+"kind": "UNION_OF_MEASURED_SETTING_WINDOWS",
+"settings_measured": 3,
+"tick_range": [
+101,
+170
+],
+"windows_measured_with_the_extended_horizon_1200": 0,
+"criterion": "effective on all 5 exploration and all 5 validation seeds, at every horizon applicable to the tick (180/300/480; 1200 for ticks beyond 330), no secondary collapse, resource field not exhausted",
+"settings": [
+{
+"parts": [
+[
+"internal.m2_tap",
+0.0,
+0
+]
+],
+"latest_effective_tick": 111,
+"ticks_tested": [
+101,
+170
+],
+"effective_intervals": [
+[
+101,
+111
+]
+]
+},
+{
+"parts": [
+[
+"resource.pulse",
+1.0,
+0
+]
+],
+"latest_effective_tick": null,
+"ticks_tested": [
+101,
+170
+],
+"effective_intervals": []
+},
+{
+"parts": [
+[
+"renewal.restore",
+1.0,
+0
+]
+],
+"latest_effective_tick": 104,
+"ticks_tested": [
+101,
+170
+],
+"effective_intervals": [
+[
+101,
+104
+]
+]
+}
+],
+"not_covered": "repair actions or settings that were not window-tested at one-tick resolution; A1 energy restoration (no such action exists in the engine)"
+},
 "irreversible_from_first_tested_tick": false,
 "tested_ticks": [
 101,
@@ -493,6 +745,130 @@
 "irreversibility": "CLOSED",
 "window_open_at_end_of_tested_range": false,
 "tested_range_end": null,
+"irreversibility_scope": {
+"kind": "UNION_OF_MEASURED_SETTING_WINDOWS",
+"settings_measured": 5,
+"tick_range": [
+101,
+1140
+],
+"windows_measured_with_the_extended_horizon_1200": 1,
+"criterion": "effective on all 5 exploration and all 5 validation seeds, at every horizon applicable to the tick (180/300/480; 1200 for ticks beyond 330), no secondary collapse, resource field not exhausted",
+"settings": [
+{
+"parts": [
+[
+"internal.m2_tap",
+0.0,
+0
+]
+],
+"latest_effective_tick": null,
+"ticks_tested": [
+101,
+170
+],
+"effective_intervals": []
+},
+{
+"parts": [
+[
+"resource.pulse",
+1.0,
+0
+]
+],
+"latest_effective_tick": null,
+"ticks_tested": [
+101,
+170
+],
+"effective_intervals": []
+},
+{
+"parts": [
+[
+"renewal.restart",
+0.0,
+0
+],
+[
+"resource.pulse",
+0.5,
+0
+]
+],
+"latest_effective_tick": 142,
+"ticks_tested": [
+101,
+170
+],
+"effective_intervals": [
+[
+101,
+106
+],
+[
+120,
+121
+],
+[
+130,
+142
+]
+]
+},
+{
+"parts": [
+[
+"renewal.restart",
+0.0,
+0
+],
+[
+"resource.pulse",
+1.0,
+0
+]
+],
+"latest_effective_tick": 383,
+"ticks_tested": [
+101,
+1140
+],
+"effective_intervals": [
+[
+101,
+106
+],
+[
+121,
+121
+],
+[
+130,
+383
+]
+]
+},
+{
+"parts": [
+[
+"renewal.restart",
+0.0,
+0
+]
+],
+"latest_effective_tick": null,
+"ticks_tested": [
+101,
+170
+],
+"effective_intervals": []
+}
+],
+"not_covered": "repair actions or settings that were not window-tested at one-tick resolution; A1 energy restoration (no such action exists in the engine)"
+},
 "irreversible_from_first_tested_tick": false,
 "tested_ticks": [
 101,
@@ -674,6 +1050,253 @@
 "irreversibility": "CLOSED",
 "window_open_at_end_of_tested_range": false,
 "tested_range_end": null,
+"irreversibility_scope": {
+"kind": "UNION_OF_MEASURED_SETTING_WINDOWS",
+"settings_measured": 10,
+"tick_range": [
+101,
+1140
+],
+"windows_measured_with_the_extended_horizon_1200": 1,
+"criterion": "effective on all 5 exploration and all 5 validation seeds, at every horizon applicable to the tick (180/300/480; 1200 for ticks beyond 330), no secondary collapse, resource field not exhausted",
+"settings": [
+{
+"parts": [
+[
+"internal.m2_tap",
+0.0,
+0
+]
+],
+"latest_effective_tick": null,
+"ticks_tested": [
+101,
+170
+],
+"effective_intervals": []
+},
+{
+"parts": [
+[
+"resource.pulse",
+1.0,
+0
+]
+],
+"latest_effective_tick": null,
+"ticks_tested": [
+101,
+170
+],
+"effective_intervals": []
+},
+{
+"parts": [
+[
+"address.reassign",
+0.0,
+0
+],
+[
+"resource.pulse",
+0.5,
+0
+]
+],
+"latest_effective_tick": 104,
+"ticks_tested": [
+101,
+170
+],
+"effective_intervals": [
+[
+101,
+104
+]
+]
+},
+{
+"parts": [
+[
+"address.reassign",
+0.0,
+0
+],
+[
+"resource.pulse",
+1.0,
+0
+]
+],
+"latest_effective_tick": 109,
+"ticks_tested": [
+101,
+170
+],
+"effective_intervals": [
+[
+101,
+109
+]
+]
+},
+{
+"parts": [
+[
+"address.reassign",
+0.0,
+0
+],
+[
+"resource.pulse",
+2.0,
+0
+]
+],
+"latest_effective_tick": 109,
+"ticks_tested": [
+101,
+170
+],
+"effective_intervals": [
+[
+105,
+109
+]
+]
+},
+{
+"parts": [
+[
+"address.restore",
+0.0,
+0
+],
+[
+"resource.pulse",
+0.5,
+0
+]
+],
+"latest_effective_tick": 142,
+"ticks_tested": [
+101,
+170
+],
+"effective_intervals": [
+[
+101,
+104
+],
+[
+131,
+133
+],
+[
+135,
+135
+],
+[
+140,
+142
+]
+]
+},
+{
+"parts": [
+[
+"address.restore",
+0.0,
+0
+],
+[
+"resource.pulse",
+1.0,
+0
+]
+],
+"latest_effective_tick": 383,
+"ticks_tested": [
+101,
+1140
+],
+"effective_intervals": [
+[
+101,
+109
+],
+[
+131,
+133
+],
+[
+135,
+135
+],
+[
+140,
+383
+]
+]
+},
+{
+"parts": [
+[
+"address.restore",
+0.0,
+0
+],
+[
+"resource.pulse",
+2.0,
+0
+]
+],
+"latest_effective_tick": 109,
+"ticks_tested": [
+101,
+170
+],
+"effective_intervals": [
+[
+106,
+109
+]
+]
+},
+{
+"parts": [
+[
+"address.restore",
+0.0,
+0
+]
+],
+"latest_effective_tick": null,
+"ticks_tested": [
+101,
+170
+],
+"effective_intervals": []
+},
+{
+"parts": [
+[
+"address.reassign",
+0.0,
+0
+]
+],
+"latest_effective_tick": null,
+"ticks_tested": [
+101,
+170
+],
+"effective_intervals": []
+}
+],
+"not_covered": "repair actions or settings that were not window-tested at one-tick resolution; A1 energy restoration (no such action exists in the engine)"
+},
 "irreversible_from_first_tested_tick": false,
 "tested_ticks": [
 101,
@@ -780,6 +1403,254 @@
 "irreversibility": "CLOSED",
 "window_open_at_end_of_tested_range": false,
 "tested_range_end": null,
+"irreversibility_scope": {
+"kind": "UNION_OF_MEASURED_SETTING_WINDOWS",
+"settings_measured": 10,
+"tick_range": [
+101,
+170
+],
+"windows_measured_with_the_extended_horizon_1200": 0,
+"criterion": "effective on all 5 exploration and all 5 validation seeds, at every horizon applicable to the tick (180/300/480; 1200 for ticks beyond 330), no secondary collapse, resource field not exhausted",
+"settings": [
+{
+"parts": [
+[
+"internal.m2_tap",
+0.0,
+0
+]
+],
+"latest_effective_tick": 113,
+"ticks_tested": [
+101,
+170
+],
+"effective_intervals": [
+[
+101,
+113
+]
+]
+},
+{
+"parts": [
+[
+"resource.pulse",
+1.0,
+0
+]
+],
+"latest_effective_tick": null,
+"ticks_tested": [
+101,
+170
+],
+"effective_intervals": []
+},
+{
+"parts": [
+[
+"internal.m2_tap",
+0.0,
+0
+],
+[
+"renewal.auxiliary",
+1.0,
+0
+]
+],
+"latest_effective_tick": 113,
+"ticks_tested": [
+101,
+170
+],
+"effective_intervals": [
+[
+101,
+113
+]
+]
+},
+{
+"parts": [
+[
+"internal.m2_tap",
+0.0,
+0
+],
+[
+"renewal.auxiliary",
+2.0,
+0
+]
+],
+"latest_effective_tick": 113,
+"ticks_tested": [
+101,
+170
+],
+"effective_intervals": [
+[
+101,
+113
+]
+]
+},
+{
+"parts": [
+[
+"internal.m2_tap",
+0.0,
+0
+],
+[
+"renewal.pulse",
+1.5,
+20
+]
+],
+"latest_effective_tick": 113,
+"ticks_tested": [
+101,
+170
+],
+"effective_intervals": [
+[
+101,
+113
+]
+]
+},
+{
+"parts": [
+[
+"internal.m2_tap",
+0.0,
+0
+],
+[
+"resource.inflow",
+0.02,
+120
+]
+],
+"latest_effective_tick": 113,
+"ticks_tested": [
+101,
+170
+],
+"effective_intervals": [
+[
+101,
+113
+]
+]
+},
+{
+"parts": [
+[
+"internal.m2_tap",
+0.0,
+0
+],
+[
+"resource.pulse",
+0.5,
+0
+]
+],
+"latest_effective_tick": 120,
+"ticks_tested": [
+101,
+170
+],
+"effective_intervals": [
+[
+101,
+120
+]
+]
+},
+{
+"parts": [
+[
+"internal.m2_tap",
+0.0,
+0
+],
+[
+"resource.pulse",
+1.0,
+0
+]
+],
+"latest_effective_tick": 120,
+"ticks_tested": [
+101,
+170
+],
+"effective_intervals": [
+[
+101,
+120
+]
+]
+},
+{
+"parts": [
+[
+"internal.m2_tap",
+0.0,
+0
+],
+[
+"resource.pulse",
+2.0,
+0
+]
+],
+"latest_effective_tick": 120,
+"ticks_tested": [
+101,
+170
+],
+"effective_intervals": [
+[
+106,
+120
+]
+]
+},
+{
+"parts": [
+[
+"internal.m2_tap",
+0.0,
+0
+],
+[
+"resource.reserve",
+48.0,
+0
+]
+],
+"latest_effective_tick": 113,
+"ticks_tested": [
+101,
+170
+],
+"effective_intervals": [
+[
+101,
+113
+]
+]
+}
+],
+"not_covered": "repair actions or settings that were not window-tested at one-tick resolution; A1 energy restoration (no such action exists in the engine)"
+},
 "irreversible_from_first_tested_tick": false,
 "tested_ticks": [
 101,

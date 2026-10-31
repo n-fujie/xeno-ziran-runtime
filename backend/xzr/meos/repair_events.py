@@ -86,7 +86,7 @@ def build(stress: R.Stress | None, onset: int, actions: list[dict], rec: dict, e
     if any("pulse" in a["action"] and a["magnitude"] >= 3.0 for a in acts) and any(x["secondary_collapse"] for x in h.values()):
         ev.append({"tick": min(a["t"] for a in acts if "pulse" in a["action"]), "kind": "overshoot", "label": "OVERSHOOT", "detail": "a resource pulse of 3.0 or more followed by a secondary collapse (the stage 3 and stage 6 non-monotonicity)", "source": "schedule and evaluation"})
     if irreversible_tick is not None:
-        ev.append({"tick": irreversible_tick, "kind": "irreversible", "label": "IRREVERSIBLE (tested action space)", "detail": "from this tick no tested repair action was effective (experiments_stage6_refine.json)", "source": "saved result"})
+        ev.append({"tick": irreversible_tick, "kind": "irreversible", "label": "WINDOW CLOSED (tested settings)", "detail": "the tick after the last tick at which any setting measured at one-tick resolution was effective on every exploration and validation seed (final table, irreversibility_scope); not a statement about repair actions that were not measured", "source": "saved result"})
     ev.sort(key=lambda e: (e["tick"], e["kind"]))
     return {"stress": stress.id if stress else "no stress", "label": stress.label if stress else "no stress", "family": stress.family if stress else "none", "onset": onset, "actions": acts, "events": ev,
             "evaluation": {"horizons": h, "costs": evaluation["costs"], "final_status": evaluation["final_status"]}, "controller": {"attempts": sum(1 for e in (controller_log or []) if e["selected"]), "log": controller_log or []}}
