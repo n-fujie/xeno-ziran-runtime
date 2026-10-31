@@ -11,7 +11,7 @@ CAPABILITIES = (
     {"id": 1, "name": "access control and authentication", "module": "access.py", "implemented": True, "limits": "local accounts, scrypt, signed expiring tokens, roles; no external identity provider, no multi-factor authentication, no device binding"},
     {"id": 2, "name": "consent records and purposes", "module": "consent.py", "implemented": True, "limits": "append-only hash-chained log; a consent is a record of what the subject agreed, not a legal instrument; its validity under the applicable law is not assessed"},
     {"id": 3, "name": "deletion requests and verification of the result", "module": "vault.py", "implemented": True, "limits": "crypto-shredding plus removal of blobs and identity; copies outside the vault (backups, snapshots, journalling file systems) are not known unless listed"},
-    {"id": 4, "name": "encryption at rest", "module": "crypto.py, vault.py", "implemented": True, "limits": "stdlib encrypt-then-MAC construction, not a vetted AEAD; passphrase-derived master key in process memory; no hardware key protection"},
+    {"id": 4, "name": "encryption at rest", "module": "crypto.py, vault.py", "implemented": True, "limits": "AES-256-GCM or ChaCha20-Poly1305 from the cryptography package (vetted primitives; the integration has not been reviewed by a cryptographer); passphrase-derived master key in process memory; no hardware key protection"},
     {"id": 5, "name": "integrity of the originals", "module": "vault.py, provenance.py", "implemented": True, "limits": "digests and authenticated encryption detect a change; they do not say the original was measured"},
     {"id": 6, "name": "signatures or trusted checkpoints", "module": "crypto.py, vault.py", "implemented": True, "limits": "Lamport one-time signatures chained from a trust anchor; the anchor must be published where the vault's holder cannot change it (not done here); key custody is not solved"},
     {"id": 7, "name": "separation of identity from observation data", "module": "vault.py", "implemented": True, "limits": "separation by pseudonym and by file; a pseudonym plus outside knowledge can still identify (re-identification from the data themselves is not assessed)"},
@@ -34,7 +34,7 @@ THREATS = (
 
 PRODUCTION_REQUIREMENTS = (
     ("external_identity_provider", "authentication through an external identity provider (the local accounts are for verification only)"),
-    ("key_management_service", "keys held in a key-management service or hardware module, with a vetted AEAD (the local construction is not vetted)"),
+    ("key_management_service", "keys held in a key-management service or hardware module (the local cipher is a vetted AEAD, but its keys come from a passphrase held in process memory)"),
     ("ethics_approval_id", "an ethics approval (and any legally required review) for the specific protocol"),
     ("independent_security_review", "an independent security review or penetration test of the deployed system"),
     ("backup_deletion_procedure", "a tested procedure that removes the data and keys from every backup and snapshot"),

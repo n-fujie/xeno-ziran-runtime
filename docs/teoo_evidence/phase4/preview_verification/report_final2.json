@@ -1,6 +1,6 @@
 {
  "url": "https://teoo-preview.vercel.app/",
- "label": "final",
+ "label": "final2",
  "env": "headless Chrome (chrome-headless-shell 1234) on macOS; data: fixed SYNTHETIC fixtures written by backend/scripts/export_teoo_preview.py",
  "tabs": {
   "A": {
@@ -62,6 +62,13 @@
    "has_watermark_or_note": true,
    "overflow_x": false,
    "levels": 14
+  },
+  "I": {
+   "synthetic_banner": true,
+   "preview_notice": true,
+   "record_ids": 0,
+   "has_watermark_or_note": true,
+   "overflow_x": false
   }
  },
  "console_errors": [
@@ -69,7 +76,7 @@
  ],
  "requests": [
   "GET /",
-  "GET /assets/teoo-preview-Fs7YzOi4.js",
+  "GET /assets/teoo-preview-BvUDIQvy.js",
   "GET /assets/teoo-preview-DXgoERB3.css",
   "GET /teoo-preview/session.json",
   "GET /teoo-preview/safety.json",
@@ -78,14 +85,15 @@
   "GET /teoo-preview/figure-timeseries.json",
   "GET /teoo-preview/figure-limits.json",
   "GET /teoo-preview/figure-evidence.json",
+  "GET /teoo-preview/legal.json",
   "GET /teoo-preview/figure-limits.json",
   "GET /teoo-preview/figure-timeseries.json",
-  "GET https://teoo-preview.vercel.app/376c1399-920f-44b6-b174-7ff1a50e08c0",
+  "GET https://teoo-preview.vercel.app/30288854-16b3-43aa-847a-e1cfab91d166",
   "GET /api/teoo/session",
   "POST /api/teoo/ingest",
   "GET /api/sessions",
   "GET /",
-  "GET /assets/teoo-preview-Fs7YzOi4.js",
+  "GET /assets/teoo-preview-BvUDIQvy.js",
   "GET /assets/teoo-preview-DXgoERB3.css",
   "GET /teoo-preview/session.json",
   "GET /teoo-preview/safety.json",
@@ -93,7 +101,8 @@
   "GET /teoo-preview/figure-body.json",
   "GET /teoo-preview/figure-timeseries.json",
   "GET /teoo-preview/figure-limits.json",
-  "GET /teoo-preview/figure-evidence.json"
+  "GET /teoo-preview/figure-evidence.json",
+  "GET /teoo-preview/legal.json"
  ],
  "external_requests": [],
  "mobile": {
@@ -152,21 +161,28 @@
    "record_ids": 6,
    "has_watermark_or_note": true,
    "overflow_x": false
+  },
+  "I": {
+   "synthetic_banner": true,
+   "preview_notice": true,
+   "record_ids": 0,
+   "has_watermark_or_note": true,
+   "overflow_x": false
   }
  },
  "status": 200,
  "headers": {
   "accept-ranges": "bytes",
   "access-control-allow-origin": "*",
-  "age": "11",
+  "age": "22",
   "cache-control": "public, max-age=0, must-revalidate",
   "content-disposition": "inline",
   "content-length": "950",
   "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; frame-ancestors 'none'",
   "content-type": "text/html; charset=utf-8",
-  "date": "Sat, 31 Oct 2026 13:58:02 GMT",
-  "etag": "\"43f4d8b7874a9d9eb4aeeeced935a136\"",
-  "last-modified": "Sat, 31 Oct 2026 13:57:51 GMT",
+  "date": "Sat, 31 Oct 2026 15:06:19 GMT",
+  "etag": "\"e22e9a834c1eefdfd552c07d1afc5fda\"",
+  "last-modified": "Sat, 31 Oct 2026 15:05:57 GMT",
   "permissions-policy": "camera=(), microphone=(), geolocation=()",
   "referrer-policy": "no-referrer",
   "server": "Vercel",
@@ -175,22 +191,22 @@
   "x-frame-options": "DENY",
   "x-robots-tag": "noindex, nofollow",
   "x-vercel-cache": "HIT",
-  "x-vercel-id": "cdg1::m88nn-1793455082963-81089db60e08"
+  "x-vercel-id": "cdg1::ttcs2-1793459179552-287f2a94bef7"
  },
  "slider_t12": "configuration v3",
  "slider_t0": "configuration v1",
  "export_svg": {
-  "file": "./exports_final.svg",
+  "file": "./exports_final2.svg",
   "name": "fig-6446c442acc704c7.svg",
   "bytes": 50267
  },
  "export_png": {
-  "file": "./exports_final.png",
+  "file": "./exports_final2.png",
   "name": "fig-6446c442acc704c7.png",
   "bytes": 319653
  },
  "export_json": {
-  "file": "./exports_final.json",
+  "file": "./exports_final2.json",
   "name": "fig-6446c442acc704c7.json",
   "bytes": 1947
  },

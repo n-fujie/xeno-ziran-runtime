@@ -65,7 +65,7 @@ export default function Workspace() {
           {tab === 'F' && <ViewF s={s} />}
           {tab === 'G' && <ViewG s={s} />}
           {tab === 'H' && <ViewH s={s} t={t} />}
-          {tab === 'I' && (legal ? <><SyntheticBanner /><ViewI b={legal} /></> : <div className="dim">loading…</div>)}
+          {tab === 'I' && (legal ? <ViewI b={legal} /> : <div className="dim">loading…</div>)}
         </div>
       )}
       {fig && <ExportBar kind={fig} safety={safety} />}

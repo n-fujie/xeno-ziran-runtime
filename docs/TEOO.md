@@ -432,3 +432,23 @@ Registered analyses: 11 protocols, 28 confirmatory; **23 supported** (Holm-corre
 **Not shown, and not claimed:** that the guarantees are the ones of the original; that any result describes a real institution, law, algorithm or person; that the effect sizes hold outside this model; any claim about the thesis of the paper. Negative or weak results kept: fairness optimisation alone is worse than nothing in CMP-01; correction without propagation does nothing; the outcome-responsive revision rule adds nothing over a random field; how convincing an intervention is correlates negatively with what it does; the structure of EXP-05 is mostly a small effect in a 3-period holding model.
 
 **Not done from the request:** the original catalogue and V3.0 / 100_POINT_EDITION comparison (originals missing), the integration into the paper R1 (paper missing), a dedicated research-figure set for these experiments and screenshots taken from the local application (the preview carries View I and its screenshots are saved with the preview verification), re-checks of the existing runtimes for features that could replace the synthetic institution (the existing Shape Detection / Interpretation / Philosophical Practice views were not exercised by this module), and the audit of the earlier plato-audit-suite catalogue against its own source. **The request is therefore not complete**: what is implemented and run is what could be implemented without the originals.
+
+
+## 36. Final verification of the head with the legal-governance work
+
+Run on the committed source (clean tree, regression run on `04c38e0`; afterwards only two corrections were made — the safety text that still called the cipher "not vetted", and a duplicated banner in View I — and the affected tests, the frontend build and the preview were re-run).
+
+| check | result |
+|---|---|
+| backend, whole suite | **992 tests (981 + 11 new), 990 passed, 2 failed**: the two known failures, identical in name and message to the Stage 6 baseline (programmatic comparison). JUnit: `docs/teoo_evidence/phase4/backend.junit.xml` |
+| frontend, whole suite | 312 passed, 1 skipped on an idle machine (the first run, started while other jobs were running, had one 5 s timeout in `lab/hifi/assemblies.test.ts`, a heavy existing test; it passes when run alone and on the idle rerun) |
+| `tsc -b`, `eslint`, `vite build`, `build:teoo-preview` | clean |
+| `ruff` (whole backend) | 39 findings = Stage 6 baseline, none in TEOO code; `mypy` on `xzr/teoo`: no finding in TEOO files |
+| 264 stored runs / 6,475 regenerated runs | 264 / 264; 265 / 265 settings match, 0 mismatches |
+| Stage 4–6 | git tree digests identical (section 24) |
+| experiments | `--check` re-runs the first unit of each of the 16 experiments (Phase 4 A–E, legal EXP-01…10, CMP-01): digests identical |
+| preview `https://teoo-preview.vercel.app` | nine tabs A–I verified in a real browser (desktop and mobile, no overflow, no external request, no console error besides the deliberate `/api/*` probes, exports consistent); View I interaction checked (assessment and chain selectors, counts, verdict); screenshots in `docs/teoo_evidence/phase4/preview_verification/` |
+
+Corrections found by looking at the live page: (1) `safety.py` still described the vault cipher as "not a vetted AEAD" after Phase 4 replaced it (the page showed it) — corrected; the Phase 3 text of section 13 stays as it was written then and section 26 supersedes it; (2) View I showed the SYNTHETIC banner twice — corrected.
+
+**Completion statement.** The Phase 4 and the implemented part of the AI Legal Governance request are done and verified as above. **Not complete, and not claimed:** the original catalogue and its V3.0 / 100_POINT_EDITION comparison, the paper R1 integration, a dedicated research-figure set for the legal experiments, screenshots from the local application for View I (the preview's are saved), a check of the existing runtimes' views for reuse (section 35), real-world validity of any result, and production use with human data. The request is open until the originals are supplied.
