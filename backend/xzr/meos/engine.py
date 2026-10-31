@@ -35,7 +35,7 @@ from typing import Any
 
 import numpy as np
 
-ENGINE_VERSION = "meos-0.4"
+ENGINE_VERSION = "meos-0.5"
 SCHEMA = "xzr.meos/1"
 ENTITIES = ("A1", "A2")
 
@@ -152,6 +152,7 @@ SETTABLE["coupling.gain"] = (0.0, 2.0)  # the share of A1's alteration M1 that A
 SETTABLE["environment.renew_delay"] = (0, 40)  # ticks between A2's renewal action and the renewed resource reaching the field (absent = 0)
 SETTABLE["history.lag"] = (0, 40)  # ticks of delay of the history trace that lowers a threshold (absent = 0)
 SETTABLE["entities.A2.renew"] = (0.05, 3.0)  # how much resource A2 transfers per action step (a configuration parameter of A2)
+SETTABLE["coupling.bypass"] = (0.0, 1.0)  # sixth-stage follow-up: a second path for A1's alteration to reach A2, beside ``coupling.gain`` (absent = 0, no bypass)
 
 OPS = (
     "REMOVE",
@@ -166,6 +167,7 @@ OPS = (
     "ROUTE",
 )
 ADDRESS_MODES = ("loss", "reassign", "fragment", "collision", "partial", "restore", "delayed", "stale")
+ADDRESS_MODES_REPAIR = ("temporary",)  # sixth-stage follow-up (kept apart from ADDRESS_MODES: the experiments that range over the fault modes are unchanged)
 M2_SENSE = ("none", "direct", "delayed", "noisy", "threshold")
 PHIL_MODES = ("none", "expression", "scorekeeping", "revision")
 
@@ -273,8 +275,10 @@ def validate_interventions(ivs: list[dict], horizon: int) -> list[str]:
             issues.append(f"interventions[{i}].arena_radius must be an integer in 1..14")
         if op == "ADDRESS":
             mode = iv.get("mode")
-            if mode not in ADDRESS_MODES or iv.get("target") not in (*ENTITIES, "both"):
-                issues.append(f"interventions[{i}] needs mode in {ADDRESS_MODES} and target A1 / A2 / both")
+            if mode not in (*ADDRESS_MODES, *ADDRESS_MODES_REPAIR) or iv.get("target") not in (*ENTITIES, "both"):
+                issues.append(f"interventions[{i}] needs mode in {(*ADDRESS_MODES, *ADDRESS_MODES_REPAIR)} and target A1 / A2 / both")
+            elif mode == "temporary" and not (isinstance(iv.get("duration"), int) and 1 <= iv["duration"] <= 400):
+                issues.append(f"interventions[{i}] temporary needs an integer duration in 1..400 ticks")
             elif mode in ("reassign", "delayed") and not all(isinstance(iv.get(k), int) and 0 <= iv[k] < 24 for k in ("x", "y")):
                 issues.append(f"interventions[{i}] {mode} needs integer cell x, y")
             elif mode == "delayed" and not (isinstance(iv.get("delay"), int) and 1 <= iv["delay"] <= 100):
@@ -297,6 +301,14 @@ def validate_interventions(ivs: list[dict], horizon: int) -> list[str]:
                 issues.append(
                     f"interventions[{i}].inject must be {{x, y, amount}} with a cell inside the grid and 0 < amount <= 20"
                 )
+        elif op == "ALTER_RESOURCE" and "reroute" in iv:
+            rr = iv["reroute"]
+            ok = isinstance(rr, dict) and all(isinstance(rr.get(k), dict) for k in ("from", "to"))
+            ok = ok and all(isinstance(rr[k].get(c), int) and not isinstance(rr[k].get(c), bool) and 0 <= rr[k][c] < 24 for k in ("from", "to") for c in ("x", "y"))
+            ok = ok and isinstance(rr.get("rate"), int | float) and not isinstance(rr.get("rate"), bool) and 0 < rr["rate"] <= 1
+            ok = ok and isinstance(rr.get("duration"), int) and 1 <= rr["duration"] <= 400
+            if not ok:
+                issues.append(f"interventions[{i}].reroute must be {{from: {{x, y}}, to: {{x, y}}, rate: 0 < rate <= 1, duration: 1..400}} with cells inside the grid")
         elif op == "ALTER_RESOURCE" and iv.get("path") not in SETTABLE:
             issues.append(f"interventions[{i}].path is not a settable resource parameter")
     return issues
@@ -370,6 +382,7 @@ class Run:
         self.rng_aux = np.random.default_rng(int(self.cfg["seed"]) + 104729)
         self.addr: dict[str, dict] = {name: {"mode": None, "fraction": 1.0, "mask": None} for name in ENTITIES}
         self.addr_events = 0
+        self.reroutes: list[dict] = []  # resource transport rerouted by an intervention: {from, to, rate, until} (empty unless intervened)
         self.m2_hist: collections.deque = collections.deque(maxlen=64)
         self.h_hist: dict[str, collections.deque] = {name: collections.deque(maxlen=64) for name in ENTITIES}  # history trace per tick (for a delayed history)
         self.renew_queue: list[tuple[int, tuple, float]] = []  # (due tick, cells, amount per cell) of renewals not yet delivered (a delayed renewal)
@@ -400,6 +413,14 @@ class Run:
         """A delayed address update arrives, or a stale address's duration ends: the address names the configuration's own position again."""
         for name in ENTITIES:
             a = self.addr[name]
+            if a.get("temp_until") is not None and self.t >= a["temp_until"]:
+                prior = a.pop("prior")
+                a.pop("temp_until")
+                if prior.get("until") is not None and self.t >= prior["until"]:  # the fault it would have returned to has ended meanwhile
+                    prior = dict(mode=None, fraction=1.0, mask=None, at=None, until=None)
+                a.update(prior)
+                self._event("address_update", name, action="the temporary local address ends: the address state returns")
+                continue
             if a.get("until") is not None and self.t >= a["until"]:
                 a.update(mode=None, fraction=1.0, mask=None, at=None, until=None)
                 self._event("address_update", name, action="the address is updated to the configuration's position")
@@ -511,6 +532,11 @@ class Run:
             inj = iv["inject"]  # a resource pulse: material inserted into the environment at a cell
             self.R[int(inj["x"]), int(inj["y"])] += float(inj["amount"])
             detail = {"inject": {"x": int(inj["x"]), "y": int(inj["y"]), "amount": float(inj["amount"])}}
+        elif op == "ALTER_RESOURCE" and "reroute" in iv:
+            rr = iv["reroute"]  # a conduit: for ``duration`` ticks a share ``rate`` of the resource in one cell is moved to another (mass is moved, not created)
+            fx, fy, tx, ty = (int(rr[k][c]) for k in ("from", "to") for c in ("x", "y"))
+            self.reroutes.append({"from": (fx, fy), "to": (tx, ty), "rate": float(rr["rate"]), "until": self.t + int(rr["duration"])})
+            detail = {"reroute": {"from": {"x": fx, "y": fy}, "to": {"x": tx, "y": ty}, "rate": float(rr["rate"]), "duration": int(rr["duration"])}}
         elif op in ("RECONFIGURE", "ALTER_RESOURCE"):
             path, v = iv["path"], iv["value"]
             if path.endswith((".x", ".y")):
@@ -563,7 +589,15 @@ class Run:
         self.addr_events += 1
         for name in names:
             a, e = self.addr[name], self.ent[name]
-            if mode == "restore":
+            if a.get("temp_until") is not None:  # a later address intervention ends a temporary local address; the state it would have returned to is kept
+                a.update(a.pop("prior"))
+                a.pop("temp_until")
+            if mode == "temporary":
+                # a local address for a bounded time: the configuration is fully addressable for ``duration`` ticks, then the address state it had returns
+                a["prior"] = {k: a.get(k) for k in ("mode", "fraction", "mask", "at", "until")}
+                a["temp_until"] = self.t + int(iv["duration"])
+                a.update(mode=None, fraction=1.0, mask=None, at=None, until=None)
+            elif mode == "restore":
                 a.update(mode=None, fraction=1.0, mask=None, at=None, until=None)
             elif mode == "loss":
                 a.update(mode="loss", fraction=0.0, mask=None)
@@ -633,6 +667,12 @@ class Run:
             gain = float((self.cfg.get("coupling") or {}).get("gain", 1.0))
             if gain != 1.0:  # a weakened (or strengthened) coupling: what A2 receives of A1's alteration
                 s0 *= gain
+            bypass = float((self.cfg.get("coupling") or {}).get("bypass", 0.0))
+            if bypass > 0.0 and chan_ok and self.ent["A1"]["present"]:  # a second path: a share ``bypass`` of what is peaked in A1's own sensing window reaches A2 without the coupling
+                a1 = self.ent["A1"]
+                w1 = self._window(self.M1, a1["x"], a1["y"], r)
+                if w1.size:
+                    s0 = max(s0, bypass * float(w1.max()))
         if chan_ok and name == "A1":
             self.m2_sensed = self._m2_signal(x, y, r)
             s0 += self.m2_sensed
@@ -873,6 +913,12 @@ class Run:
             self.renew_queue = [q for q in self.renew_queue if q[0] > self.t]
             for _, cells, per_cell in due:
                 self.R[cells] += per_cell
+        if self.reroutes:  # resource conduits: a share of the source cell is moved to the target cell
+            self.reroutes = [q for q in self.reroutes if q["until"] > self.t]
+            for q in self.reroutes:
+                moved = q["rate"] * float(self.R[q["from"]])
+                self.R[q["from"]] -= moved
+                self.R[q["to"]] += moved
         pad = np.pad(self.R, 1, mode="edge")
         lap = pad[:-2, 1:-1] + pad[2:, 1:-1] + pad[1:-1, :-2] + pad[1:-1, 2:] - 4 * self.R
         self.R = np.clip(

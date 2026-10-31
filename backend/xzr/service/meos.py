@@ -521,7 +521,7 @@ def repair_library(request: Request) -> dict:
 
     a, b, c = _s6(""), _s6("_refine"), _s6("_controllers")
     return {"actions": R6.action_table(), "stresses": {sid: {"family": st.family, "label": st.label, "onset": on} for sid, (st, on) in _all_stresses().items()}, "controllers": list(RCTL.KINDS), "failure_classes": list(C6.FAILURE_CLASSES),
-            "horizons": R6.HORIZONS, "recovery_window": R6.W, "decision_tick": R6.T_ACT, "stress_tick": R6.STRESS_TICK, "results": a, "refine": b, "controller_results": c, "final": _s6("_final"), "cross": _s6("_cross"), "has_results": a is not None}
+            "horizons": R6.HORIZONS, "recovery_window": R6.W, "decision_tick": R6.T_ACT, "stress_tick": R6.STRESS_TICK, "results": a, "refine": b, "controller_results": c, "final": _s6("_final"), "cross": _s6("_cross"), "followup": {"actions": R6.followup_table(), "results": _s6("_followup"), "open_windows": _s6("_open_windows")}, "has_results": a is not None}
 
 
 @router.post("/repair-run")
@@ -541,7 +541,8 @@ def repair_run(request: Request, body: dict[str, Any]) -> dict:
     norm: list[dict] = []
     for a in acts:
         aid = a.get("action")
-        if aid not in R6.ACTIONS or R6.ACTIONS[aid].status == "not implemented" or R6.ACTIONS[aid].klass == "C":
+        spec = R6.FOLLOWUP.get(aid) or R6.ACTIONS.get(aid)
+        if spec is None or spec.status == "not implemented" or spec.klass == "C":
             raise HTTPException(422, f"unknown or non-runnable action {aid!r}")
         m, d, t = float(a.get("magnitude", 0.0)), int(a.get("duration", 0)), int(a.get("t", R6.T_ACT))
         reps += R6.build_action(aid, st or R6.STRESSES["history lost"], m, t, d)

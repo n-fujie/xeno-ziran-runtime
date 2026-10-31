@@ -26,11 +26,12 @@ def ok(h: dict, t: int = R.T_ACT) -> bool:
     return all(v["success"] for k, v in h.items() if app[k])
 
 
-def test_the_action_space_names_what_the_engine_cannot_do_and_never_runs_it():
+def test_the_action_space_names_what_the_main_experiments_could_not_do_and_never_runs_it():
     for aid in ("coupling.bypass", "resource.rerouting", "address.temporary_local"):
-        assert R.ACTIONS[aid].status == "not implemented" and R.ACTIONS[aid].note and aid not in R.RUNNABLE
-        with pytest.raises(ValueError):
-            R.build_action(aid, COUPLING, 1.0, 113)
+        assert R.ACTIONS[aid].status == "not implemented" and R.ACTIONS[aid].note and aid not in R.RUNNABLE  # the frozen Stage 6 registry: the main experiments could not build them
+        assert R.FOLLOWUP[aid].status == "implemented" and R.build_action(aid, COUPLING, 1.0, 113, 30)  # the follow-up (engine meos-0.5) builds them in its own registry
+    with pytest.raises(ValueError):
+        R.build_action("observation.sampling", COUPLING, 1.0, 113)  # an observation repair is never an action of a run
     assert R.ACTIONS["resource.redistribute"].status == "proxy" and "proxy" in R.ACTIONS["resource.redistribute"].note
     assert {R.ACTIONS[a].klass for a in R.ACTIONS} == {"A", "B", "C"}  # internal reconfiguration, world-state repair and observation repair are three different things
 

@@ -50,7 +50,9 @@ def test_a_controller_run_logs_its_decisions_and_its_schedule_replays_without_it
 def test_the_routes_refuse_what_they_cannot_run(client):
     assert client.post("/api/meos/repair-run", json={"stress": "nope"}).status_code == 422
     assert client.post("/api/meos/repair-run", json={"stress": "history lost", "controller": "magic"}).status_code == 422
-    assert client.post("/api/meos/repair-run", json={"stress": "history lost", "actions": [{"action": "coupling.bypass", "magnitude": 0, "duration": 0, "t": 113}]}).status_code == 422  # not implemented: never simulated by something else
+    assert client.post("/api/meos/repair-run", json={"stress": "history lost", "actions": [{"action": "coupling.nope", "magnitude": 0, "duration": 0, "t": 113}]}).status_code == 422  # an action nobody built is never simulated by something else
+    ok = client.post("/api/meos/repair-run", json={"stress": "coupling gain 0.5", "seed": 1, "actions": [{"action": "resource.rerouting", "magnitude": 0.5, "duration": 30, "t": 113}]})
+    assert ok.status_code == 200  # built in engine meos-0.5 (the sixth-stage follow-up)
     assert client.post("/api/meos/repair-run", json={"stress": "history lost", "actions": [{"action": "observation.sampling", "magnitude": 0, "duration": 0, "t": 113}]}).status_code == 422  # observation repair is not a run action
     assert client.post("/api/meos/repair-run", json={"stress": "history lost", "actions": [{"action": "resource.pulse", "magnitude": 1, "duration": 0, "t": 113}] * 5}).status_code == 422
 

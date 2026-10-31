@@ -1,0 +1,205 @@
+{
+ "measured_with": "headless Chromium, ANGLE Metal",
+ "viewport": [
+  1672,
+  808
+ ],
+ "frames": 150,
+ "rows": [
+  {
+   "tier": "balanced",
+   "camera": "habitat",
+   "ui": null,
+   "camera_spec": {
+    "pos": [
+     -48.00000000000001,
+     11,
+     33.00000000000001
+    ],
+    "target": [
+     -66,
+     1.2,
+     16
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1672,
+     674
+    ],
+    "quality": "balanced"
+   },
+   "instances": 55195,
+   "full": {
+    "label": "full (static camera)",
+    "median": 16.2,
+    "p95": 18.2,
+    "p99": 21.7,
+    "mean": 16.43,
+    "max": 25.9,
+    "fps_from_median": 61.7,
+    "cpu_submit_median": 4.1,
+    "gpu_time": null,
+    "drawCalls": 428,
+    "triangles": 1065364,
+    "geometries": 322,
+    "textures": 9
+   },
+   "orbiting": {
+    "label": "full (camera orbiting: the reflection refreshes every 2nd frame)",
+    "median": 17.1,
+    "p95": 24.6,
+    "p99": 29.3,
+    "mean": 18.09,
+    "max": 42.2,
+    "fps_from_median": 58.5,
+    "cpu_submit_median": 4.2,
+    "gpu_time": null,
+    "drawCalls": 412,
+    "triangles": 1218534,
+    "geometries": 344,
+    "textures": 9
+   },
+   "orbit_series": {
+    "programs_built": 0,
+    "geometry_uploads": 35,
+    "lod_switches": 142,
+    "visibility_flips": 28
+   }
+  },
+  {
+   "tier": "balanced",
+   "camera": "overview",
+   "ui": null,
+   "camera_spec": {
+    "pos": [
+     -26.000000000000007,
+     35.99999999999998,
+     98.00000000000001
+    ],
+    "target": [
+     -4,
+     -26,
+     -6
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1672,
+     674
+    ],
+    "quality": "balanced"
+   },
+   "instances": 55195,
+   "full": {
+    "label": "full (static camera)",
+    "median": 12.1,
+    "p95": 15.1,
+    "p99": 17.7,
+    "mean": 12.27,
+    "max": 19.4,
+    "fps_from_median": 82.6,
+    "cpu_submit_median": 3,
+    "gpu_time": null,
+    "drawCalls": 457,
+    "triangles": 674384,
+    "geometries": 340,
+    "textures": 9
+   },
+   "orbiting": {
+    "label": "full (camera orbiting: the reflection refreshes every 2nd frame)",
+    "median": 14.6,
+    "p95": 20.7,
+    "p99": 23.8,
+    "mean": 14.66,
+    "max": 23.8,
+    "fps_from_median": 68.5,
+    "cpu_submit_median": 3.4,
+    "gpu_time": null,
+    "drawCalls": 657,
+    "triangles": 1091558,
+    "geometries": 364,
+    "textures": 9
+   },
+   "orbit_series": {
+    "programs_built": 0,
+    "geometry_uploads": 21,
+    "lod_switches": 145,
+    "visibility_flips": 64
+   }
+  },
+  {
+   "tier": "balanced",
+   "camera": "habitat+research",
+   "ui": "research",
+   "camera_spec": {
+    "pos": [
+     -48.00000000000001,
+     11,
+     33.00000000000001
+    ],
+    "target": [
+     -66,
+     1.2,
+     16
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1280,
+     674
+    ],
+    "quality": "balanced"
+   },
+   "instances": 55195,
+   "full": {
+    "label": "full (static camera)",
+    "median": 12.6,
+    "p95": 16.3,
+    "p99": 20.9,
+    "mean": 12.95,
+    "max": 21,
+    "fps_from_median": 79.4,
+    "cpu_submit_median": 3,
+    "gpu_time": null,
+    "drawCalls": 385,
+    "triangles": 989152,
+    "geometries": 311,
+    "textures": 9
+   },
+   "orbiting": {
+    "label": "full (camera orbiting: the reflection refreshes every 2nd frame)",
+    "median": 14.3,
+    "p95": 19,
+    "p99": 23.7,
+    "mean": 14.81,
+    "max": 25.6,
+    "fps_from_median": 69.9,
+    "cpu_submit_median": 3.2,
+    "gpu_time": null,
+    "drawCalls": 331,
+    "triangles": 990562,
+    "geometries": 333,
+    "textures": 9
+   },
+   "orbit_series": {
+    "programs_built": 0,
+    "geometry_uploads": 38,
+    "lod_switches": 143,
+    "visibility_flips": 28
+   }
+  }
+ ]
+}

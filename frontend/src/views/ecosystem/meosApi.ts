@@ -207,9 +207,15 @@ export interface CrossResults {
   C3_observation: { rows: Array<{ run: string; observation: string; operational_state: string; observed_state: string; observability_status: string; operational_recovery: boolean; observed_recovery: boolean }>; operationally_recovered_but_not_observed: number };
   C4_address_three_restorations: { rows: Array<{ case: string; operational_restoration: string; address_restoration: string; observability_restoration: string; mean_address_integrity: number }> };
 }
+export interface FollowupWindow { stress: string; parts: Array<[string, number, number]>; effective_intervals: number[][]; latest_effective_tick: number | null; ticks_tested: [number, number] }
+export interface FollowupBlock {
+  actions: RepairActionSpec[];
+  results: { classification: Record<string, Record<string, string>>; counts: Record<string, number>; minimum_effective: Array<{ stress: string; action: string; minimum_effective_magnitude: number; effective_ticks: number[] }> } | null;
+  open_windows: { extended_horizon: number; last_tick_tested: number; windows: FollowupWindow[] } | null;
+}
 export interface RepairLibraryOut {
   actions: RepairActionSpec[]; stresses: Record<string, { family: string; label: string; onset: number }>; controllers: string[]; failure_classes: string[]; horizons: Record<'short' | 'medium' | 'long', number>; recovery_window: number; decision_tick: number; stress_tick: number;
-  has_results: boolean; results: Record<string, unknown> | null; refine: Record<string, unknown> | null; controller_results: Record<string, unknown> | null; cross: CrossResults | null; final: { stress_table: StressRow[]; resource_non_monotonicity: Record<string, { effective_band: [number | null, number | null]; phases: Array<{ phase: string; from: number; to: number }> }> } | null;
+  followup?: FollowupBlock | null; has_results: boolean; results: Record<string, unknown> | null; refine: Record<string, unknown> | null; controller_results: Record<string, unknown> | null; cross: CrossResults | null; final: { stress_table: StressRow[]; resource_non_monotonicity: Record<string, { effective_band: [number | null, number | null]; phases: Array<{ phase: string; from: number; to: number }> }> } | null;
 }
 export const repairLibrary = async () => { const r = await fetch(`${API}/repair-library`); if (!r.ok) throw new Error(`repair-library: ${r.status}`); return r.json() as Promise<RepairLibraryOut>; };
 export const repairRun = (body: { stress: string; seed?: number; controller?: string | null; actions?: Array<{ action: string; magnitude: number; duration: number; t: number }> }) => post<RepairRunOut>('/repair-run', body);

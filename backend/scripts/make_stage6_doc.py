@@ -24,6 +24,11 @@ def load(name: str) -> dict:
 A, B, C, CT, F = load(""), load("_refine"), load("_cross"), load("_controllers"), load("_final")
 A0, F0 = load("_all_horizons_criterion"), load("_final_all_horizons_criterion")
 S5 = json.loads((DOCS / "experiments_stage5_midrun.json").read_text())
+OPEN = json.loads((DOCS / "experiments_stage6_open_windows.json").read_text())
+MECH = json.loads((DOCS / "experiments_stage6_open_mechanism.json").read_text())
+FU = json.loads((DOCS / "experiments_stage6_followup.json").read_text())
+REPRO5 = json.loads((DOCS / "evidence" / "stage5_reproduction_stage6.json").read_text())
+REPRO6 = json.loads((DOCS / "evidence" / "stage6_reproduction.json").read_text())
 
 
 def frag(name: str) -> str:
@@ -55,7 +60,7 @@ def actions_table() -> str:
 
 
 def not_impl() -> str:
-    return "\n".join(f"- `{a['id']}` ({a['status']}): {a['note']}" for a in A["actions"] if a["status"] in ("not implemented", "proxy"))
+    return "\n".join(f"- `{a['id']}` ({a['status']}{'; built afterwards, section 30' if a['id'] in ('coupling.bypass', 'resource.rerouting', 'address.temporary_local') else ''}): {a['note']}" for a in A["actions"] if a["status"] in ("not implemented", "proxy"))
 
 
 def stress_table() -> str:
@@ -218,13 +223,13 @@ def strips_text() -> str:
     for r in ST:
         runs: list[str] = []
         cur, start = None, 101
-        for t in range(101, 331):
+        for t in range(101, 421):
             cls = ("internal" if any(a <= t <= b for a, b in r["internal_reconfiguration"]["windows"]) else "world-state" if any(a <= t <= b for a, b in r["world_single"]["windows"]) else "combined" if any(a <= t <= b for a, b in r["combined"]["windows"]) else "none")
             if cls != cur:
                 if cur is not None:
                     runs.append(f"{start}-{t - 1} {cur}")
                 cur, start = cls, t
-        runs.append(f"{start}-330 {cur}")
+        runs.append(f"{start}-420 {cur}")
         out.append(f"- **{r['label']}** (unrepaired collapse at {r['unrepaired_collapse_tick']}): " + "; ".join(runs))
     return "\n".join(out)
 
@@ -243,9 +248,70 @@ def orig_vs_new() -> str:
                [[r["label"], wtext(old[r["stress"]]["timing_window_fragments"]), f"{old[r['stress']]['latest_successful_repair_tick']} / {old[r['stress']].get('earliest_irreversible_tick', old[r['stress']].get('irreversible_tick'))}", wtext(r["timing_window_fragments"]), f"{r['latest_successful_repair_tick']} / {r['irreversible_tick']} ({r['irreversibility']})"] for r in ST])
 
 
+def open_windows_text() -> str:
+    rows = []
+    for w in OPEN["windows"]:
+        pt = w["per_tick"]
+        last = w["latest_effective_tick"]
+        nxt = pt.get(str(last + 1)) if last is not None else None
+        rows.append([LABEL[w["stress"]], part_text(w["parts"]), f"{w['ticks_tested'][0]}-{w['ticks_tested'][1]}", wtext(w["effective_intervals"]), last, last + 1 if last is not None else "-",
+                     f"{nxt['exploration']} / {nxt['validation']}" if nxt else "-", len(w["near_miss_ticks"])])
+    return tbl(["stress", "setting (the window that was open at 330)", "action ticks tested", "effective ticks", "latest effective tick", "first tick not effective", "exploration / validation at that tick", "near-miss ticks"], rows)
+
+
+def mechanism_text() -> str:
+    cf = MECH["counterfactual_resource_pulse_1.0_horizon_1200"]
+    rows = [[c["pulse_tick"]] + [f"{b['recovered_of_10']}/10" for b in c["by_upkeep"]] for c in cf]
+    return (f"In the unrepaired coupling run A1's energy is {MECH['a1_energy_at_tick_300_unrepaired']['min']} at tick 300 on every seed and falls by A1's upkeep ({MECH['a1_upkeep_per_tick']} per tick) while the run is collapsed; it is below A1's firing cost ({MECH['a1_firing_cost']}) from tick "
+            f"{MECH['tick_a1_energy_below_firing_cost_unrepaired']['min']} (the same tick on all ten seeds). A resource pulse cannot restart a configuration that cannot fire. As a counterfactual (a change of the *model*, not an action of the tested space), the same pulse with A1's upkeep set to 0 in the initial configuration:\n\n"
+            + tbl(["pulse tick", f"recovered, upkeep {MECH['a1_upkeep_per_tick']} (the model)", "recovered, upkeep 0 (counterfactual)"], rows))
+
+
+def followup_text() -> str:
+    cnt = FU["counts"]
+    acts = tbl(["action", "what it does in the engine", "magnitude", "durations", "declared cost", "note"], [[a["id"], a["label"], f"{a['magnitude_meaning']}: {a['magnitudes']}" if a["magnitudes"] else "-", a["durations"] if a["durations"] != [0] else "-",
+                                                                                                     "; ".join(f"{k}: {v}" for k, v in a["declared_cost"].items()) or "-", a["note"]] for a in FU["actions"]])
+    from collections import Counter
+    c = Counter((r["stress"], r["action"], r["status"]) for r in FU["single_settings"])
+    singles = tbl(["stress", "action", "validated settings", "near misses", "minimum validated magnitude (ticks)"], [[LABEL.get(sid, sid), aid, c.get((sid, aid, "validated"), 0), c.get((sid, aid, "near miss"), 0),
+                  next((f"{m['minimum_effective_magnitude']} (ticks {m['effective_ticks']}; durations {m['durations_at_that_magnitude']})" for m in FU["minimum_effective"] if m["stress"] == sid and m["action"] == aid), "-")] for sid, aid in sorted({(r["stress"], r["action"]) for r in FU["single_settings"]})])
+    wins = tbl(["stress", "setting", "ticks tested", "effective ticks", "near-miss ticks"], [[LABEL[w["stress"]], part_text(w["parts"]), f"{w['ticks_tested'][0]}-{w['ticks_tested'][1]}", wtext(w["effective_intervals"]), wtext([[a, a] for a in w["near_miss_ticks"]]) if len(w["near_miss_ticks"]) < 8 else f"{len(w['near_miss_ticks'])} ticks"] for w in FU["windows"]])
+    cc = Counter((r["stress"], r["status"], r["synergistic"]) for r in FU["combined_settings"])
+    comb = tbl(["stress", "validated and synergistic", "validated, not synergistic (one part alone is effective)", "near miss", "failed validation"], [[LABEL[sid], cc.get((sid, "validated", True), 0), cc.get((sid, "validated", False), 0), cc.get((sid, "near miss", False), 0), cc.get((sid, "failed validation", False), 0)] for sid in SID])
+    cls = tbl(["stress", "at tick 113: Stage 6 action space", "at tick 113: extended", "any tested tick: Stage 6 action space", "any tested tick: extended"], [[LABEL[sid], c_["original_at_decision_tick_113"], c_["extended_at_decision_tick_113"], c_["original_at_any_tested_tick"], c_["extended_at_any_tested_tick"]] for sid, c_ in FU["classification"].items()])
+    return f"""Engine `meos-0.5` adds three opt-in mechanisms (absent from every earlier configuration, so every earlier run is the same run: section 31). The frozen Stage 6 registry still records the three actions as not implemented; they are in their own registry (`repair6.FOLLOWUP_LIST`) and every Stage 6 result above is the result in the original action space.
+
+{acts}
+Protocol: that of Pipeline A and B (exploration seeds 1-5, validation 6-10, evaluation 11-30, the same criterion, the same eight action ticks, a combined repair counts only where neither part is effective alone). {cnt['exploration_runs']} single runs; {cnt['combined_runs']} combined runs.
+
+**Single actions** ({cnt['single_candidates']} candidates, {cnt['single_validated']} validated, {cnt['single_near_miss']} near misses):
+
+{singles}
+Windows (one tick, 101-170, on to 330 where open at 165 or later):
+
+{wins}
+**Combined repairs with a new action** (a primary of Stage 6 with one setting of a new action; {cnt['combined_candidates']} candidates, {cnt['combined_validated']} validated, {cnt['combined_synergistic']} synergistic, {cnt['combined_near_miss']} near misses):
+
+{comb}
+**Repairability, in the action space of Stage 6 and in the extended one** (grid classification of Pipeline A/follow-up at the tick named; the window-based classification of section 7 is unchanged):
+
+{cls}
+Reading. (1) Alone, only `resource.rerouting` and `coupling.bypass` recover anything, and only the coupling stress; rerouting works over a long range of ticks with a large rate and a long duration, the bypass only early. (2) On the other stresses the new actions recover the run only together with a restoration of the damaged parameter (the Address restoration, the renewal restart or restore, the M2 tap): a combined recovery, credited to the combination. (3) The temporary local Address alone does nothing, as the permanent restoration alone did nothing (section 13): the Address is not the only thing that has to be restored. (4) The extended action space changes the class of the renewal-efficiency, the renewal-stopped and the Address stresses **at tick 113**; it does not change the class of the coupling, the resource or the history-lost stresses, and it opens no window for the resource stress. (5) `resource.rerouting` moves resource, it does not add it; its effect on the source cell (0, 6) is a side effect that is not scored beyond the collateral cost in the saved rows. The mechanisms are minimal choices of this study (a peak-tap bypass, a point-to-point conduit, a bounded full addressability), not claims about a real system, and other realisations of the same names would be other actions.
+"""
+
+
+def repro_text() -> str:
+    return f"""The engine version moved from `meos-0.4` to `meos-0.5` for the follow-up. The new mechanisms are absent from every earlier configuration; this was checked, not assumed, by running the earlier experiments again on `meos-0.5`:
+
+- Stage 5 subset (`reproduce_stage5_subset.py`): all identical = {REPRO5.get('all_identical')} (experiment L on history lost, the F14, F8 and F9 searches with their digests, the first decisions of the adaptive controller, Stage 4's strict nulls, the two baseline digests).
+- Stage 6 subset (`reproduce_stage6_subset.py`): all identical = {REPRO6.get('all_identical')}.
+- The baseline result digest and trace digest are unchanged (section 24). The result files written by the engine before the change carry `meos-0.4` in their `engine` field; the runs they record are reproduced bit for bit by `meos-0.5`.
+"""
+
+
 def build() -> str:
     cnt = A["counts"]
-    return f"""# XENO ECOSYSTEM — Stage 6 (MEOS-0.4): endogenous repair, world-state intervention, reachable recovery
+    return f"""# XENO ECOSYSTEM — Stage 6 (MEOS-0.4, follow-up on MEOS-0.5): endogenous repair, world-state intervention, reachable recovery
 
 > Which damage can internal reconfiguration handle, which needs an intervention on the state of the world, and which cannot be recovered in the action space tested here: by which action, how much of it, at which tick, at which cost, on which seeds, and to which horizon.
 
@@ -301,21 +367,20 @@ The unrepaired runs: {', '.join(f"{LABEL[r['stress']]}: {r['outcomes_long']}" fo
 
 ## 7. Stress-by-stress repairability
 
-The stresses arrive at tick 100; the decision tick (the first decision of the stage 5 controllers) is 113. Classes: *internally reconfigurable*, *externally repairable* (world-state, single or combined), *both*, *neither (under the tested actions)*, *inconclusive*. "At the decision tick" asks whether a setting is effective **at tick 113**; "at any tested tick" asks whether one is effective at some tested tick (101-170 at one-tick resolution for every setting, to 330 for the windows still open at 170).
+The stresses arrive at tick 100; the decision tick (the first decision of the stage 5 controllers) is 113. Classes: *internally reconfigurable*, *externally repairable* (world-state, single or combined), *both*, *neither (under the tested actions)*, *inconclusive*. "At the decision tick" asks whether a setting is effective **at tick 113**; "at any tested tick" asks whether one is effective at some tested tick (101-170 at one-tick resolution for every setting, to 330 for the windows still open at 170, and to 1140 with the extended horizon 1200 for the three still open at 330).
 A *combined* recovery counts only at ticks where neither part is effective alone. Windows are in action ticks.
 
 {stress_table()}
 {flags_table()}
 *Reference repair*: the validated setting with the lowest equal-weight normalised cost; its horizons are those of its exploration cell. Every validated setting is effective at all applicable horizons by definition, so a setting that recovers at the short horizon and not at the long one is never in this table: it is listed as *only transiently recoverable* (flags) or in the failure ids.
-Interpretation: repairability is not a property of a stress but of a stress, an action, a magnitude, a tick and a horizon. For the resource, the renewal-efficiency and the history-lost stresses the tested action space has a **window that closes** (at ticks 110, 112 and 121); for the coupling, the renewal-stopped and the Address stresses a pulse-based repair
-stays effective **at every tested tick after the collapse, to tick 330, where the tested range ends**: no closure was found, and no irreversible tick is claimed. The classification "neither" at tick 113 and "internally reconfigurable / externally repairable / both" at another tick are both true and both are reported.
+Interpretation: repairability is not a property of a stress but of a stress, an action, a magnitude, a tick and a horizon. Every stress has a **window that closes** in the tested action space, at tick {', '.join(f"{r['irreversible_tick']} ({LABEL[r['stress']]})" for r in ST)} (the irreversible tick; the latest successful tick is the one before). For the coupling, the renewal-stopped and the Address stresses a pulse-based repair stays effective long after the unrepaired collapse (to tick {', '.join(str(r['latest_successful_repair_tick']) for r in ST if r['latest_successful_repair_tick'] and r['latest_successful_repair_tick'] > 330)}); these windows were first still effective at the end of the first tested range (tick 330), and were measured on to tick 1140 with the extended horizon (section 8) before a closure was claimed. The classification "neither" at tick 113 and "internally reconfigurable / externally repairable / both" at another tick are both true and both are reported.
 
 ## 8. Timing windows
 
-For every setting Pipeline A found effective or nearly, every action tick from 101 to 170 was run on seeds 1-10 (exploration and validation reported separately; a tick is *effective* only if both are all effective). The unrepaired run collapses at about tick 144-159 (section 7). A window that is still effective at the last tick tested (170, or 330 after the extension) **has not closed**: its end is the end of the range, and no latest successful or irreversible tick is claimed for it.
+For every setting Pipeline A found effective or nearly, every action tick from 101 to 170 was run on seeds 1-10 (exploration and validation reported separately; a tick is *effective* only if both are all effective). The unrepaired run collapses at about tick 144-159 (section 7). A window that is still effective at the last tick tested (170, 330 after the first extension, 1140 after the second) **has not closed**: its end is the end of the range, and no latest successful or irreversible tick is claimed for it. Three windows were still effective at 330; they were measured on with the longest horizon the engine accepts (1200) and all three closed (below).
 
 {windows_table()}
-**Latest successful repair tick** = the last tick at which some tested setting is effective. **Earliest irreversible tick** = the next tick, after which no tested setting is effective at any later tested tick (ticks 101-170 at one-tick resolution for every setting, 171-330 for the three whose window was still open at 170, 200 on the coarse grid). They are not the same notion (a window may end and another open later: the effective ticks are often **fragmented**, a gap is recorded and not smoothed), and **both depend on the tested action space**:
+**Latest successful repair tick** = the last tick at which some tested setting is effective. **Earliest irreversible tick** = the next tick, after which no tested setting is effective at any later tested tick (ticks 101-170 at one-tick resolution for every setting, 171-330 for the three whose window was still open at 170, 331-1140 with the extended horizon for the three still open at 330, 200 on the coarse grid). They are not the same notion (a window may end and another open later: the effective ticks are often **fragmented**, a gap is recorded and not smoothed), and **both depend on the tested action space**:
 a tick that is irreversible here may be recoverable by an action that was not tested. Fragmentation is not explained here (the gaps inside a window are several ticks long, longer than the operating cycle of {F['cycle_period']['median_interval']} ticks; no mechanism is claimed).
 
 Reachable recovery by tick (tested action space, one-tick resolution):
@@ -340,7 +405,7 @@ Stress: coupling gain 0.5 from tick 100. All coupling settings, then the other f
 
 {tested_summary("coupling gain 0.5")}
 Restoring the coupling gain **alone** is effective only very early (it needs the repair within a few ticks of the damage, and a partial restoration is enough at some ticks); a gradual restoration likewise. A temporary bridge (the gain strengthened for a while, then returned to the damaged value) is not effective: the damage remains after it. **A resource pulse works much later and over a long band**: the repair site
-is not the damage site, and the original parameter restored alone does not restore the system once the damage has set in. The local bypass is not implemented (no spatial coupling path in the engine).
+is not the damage site, and the original parameter restored alone does not restore the system once the damage has set in. The local bypass was not implemented in the main experiments (no spatial coupling path in the engine); it was built afterwards as a second sensing path (section 30).
 
 ## 11. Resource (Experiment N)
 
@@ -467,7 +532,7 @@ For each stress the tested action space divides the ticks into: recoverable by i
 
 ## 27. Limitations
 
-- The action space is limited to what MEOS-0 can do: the local bypass, the transport rerouting and the temporary local Address are not implemented, redistribution and the reserve release are proxies (section 4).
+- The action space is limited to what MEOS-0 can do: the local bypass, the transport rerouting and the temporary local Address were not implemented in the main experiments and were built afterwards (section 30), as minimal mechanisms of this study; redistribution and the reserve release are proxies (section 4).
 - The tick grid is finite (one-tick resolution only for the settings measured at that resolution; ticks 101-170, a coarse grid to 200); the horizons are finite (180, 300, 480); the seeds are few (5 + 5 for each setting, 20 for evaluation) and the engine's seed-to-seed variation is small, so proportions are near 0 or 1.
 - The repair cost model is synthetic (measured from the model's own traces, equal-weight only where an order is needed). The environment model is synthetic. No claim is made about real ecosystems.
 - The controllers sense five features; four stresses give the same signature, so the controller cannot tell them apart and tries plans in turn.
@@ -478,7 +543,23 @@ For each stress the tested action space divides the ticks into: recoverable by i
 ## 28. Remaining work
 
 {frag("remaining")}
-"""
+
+## 29. Windows open at tick 330, measured on (follow-up)
+
+The first tested range ended at tick 330 because the long horizon (480) leaves room for 60 ticks only up to tick 420. Three windows were still effective there. They were run again with the longest horizon the engine accepts (1200), at every action tick from 331 to 1140, on seeds 1-10, with the same criterion plus success at the extended horizon (`experiments_stage6_open_windows.json`; ticks 300-330 of the extended run agree with the saved windows).
+
+{open_windows_text()}
+All three close; the closure is not the end of the range and not a property of the horizon. The reading of the state:
+
+{mechanism_text()}
+Interpretation. The irreversible ticks of these three stresses are now found, in the tested action space. The mechanism is the energy store of A1 during the collapse; no action of the tested space adds energy to A1 (there is no operation or settable parameter for it), so "closed" means closed **for these actions**: an action that restores A1's energy was not tested and is not in the engine. The closure of the Address and renewal-stopped windows comes five ticks earlier because the repaired run needs A1 to fire a few times before the pair recovers. At the first tick of the closure the seeds are not all alike on the Address pair (ticks 384-388 recover on 2-3 of 5 seeds: not effective, not a near miss by the rule of this study).
+
+## 30. The three actions that were not built (follow-up, engine meos-0.5)
+
+{followup_text()}
+## 31. The earlier results on meos-0.5 (follow-up)
+
+{repro_text()}"""
 
 
 def main() -> None:

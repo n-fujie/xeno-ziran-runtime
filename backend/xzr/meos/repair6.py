@@ -201,6 +201,43 @@ ACTIONS: dict[str, Action] = {a.id: a for a in ACTION_LIST}
 RUNNABLE = tuple(a.id for a in ACTION_LIST if a.klass in ("A", "B") and a.status != "not implemented")  # the internal reference (class A) is run beside the world-state repairs (class B), never merged with them
 
 
+# ---- sixth-stage follow-up (engine meos-0.5): the three actions the main experiments could not build. They are kept in their own registry so that the frozen Stage 6 results and their
+# registry (``ACTION_LIST``, where these three are recorded as not implemented) stay what they were; ``build_action`` finds them here.
+def _bypass(s: Stress, mag: float, t: int, dur: int) -> list[dict]:
+    return [_rc("coupling.bypass", mag, t)]
+
+
+REROUTE_FROM = (0, 6)  # the source edge of the resource gradient, on A1's row
+REROUTE_TO = PULSE_CELL  # A1's cell
+
+
+def _reroute(s: Stress, mag: float, t: int, dur: int) -> list[dict]:
+    return [{"tick": t, "op": "ALTER_RESOURCE", "reroute": {"from": {"x": REROUTE_FROM[0], "y": REROUTE_FROM[1]}, "to": {"x": REROUTE_TO[0], "y": REROUTE_TO[1]}, "rate": mag, "duration": dur}}]
+
+
+def _addr_temporary(s: Stress, mag: float, t: int, dur: int) -> list[dict]:
+    return [{"tick": t, "op": "ADDRESS", "target": "A2", "mode": "temporary", "duration": dur}]
+
+
+FOLLOWUP_LIST: tuple[Action, ...] = (
+    Action("coupling.bypass", "B", "coupling", "bypass of the damaged coupling: a second path for A1's alteration to reach A2", "implemented", (0.25, 0.5, 0.75, 1.0), "share of the peak of A1's own sensing window that reaches A2 (absent = 0)", build=_bypass,
+           latency="1 tick", side_effect="A2 can fire on A1's alteration without the coupling; it can also fire when the damaged coupling would have kept it silent", reversibility="reversible (coupling.bypass 0)", cost={"switching": "1 RECONFIGURE"},
+           note="engine meos-0.5: A2's stimulus is max(gain x peak of its window, bypass x peak of A1's window); the coupling itself stays damaged"),
+    Action("resource.rerouting", "B", "resource", "transport rerouting: a conduit from the source edge of the resource gradient to A1's cell, for a duration", "implemented", (0.25, 0.5, 1.0), "share of the source cell moved to A1's cell per tick", (10, 30, 100),
+           _reroute, "1 tick", side_effect="the source cell (0, 6) is drained while the conduit runs", reversibility="reversible by construction (the conduit ends); the moved resource stays", cost={"resource": "moved, not added", "switching": "1 ALTER_RESOURCE"},
+           note="engine meos-0.5: resource is moved from (0, 6) to (3, 6) each tick; the total is conserved by the conduit itself"),
+    Action("address.temporary_local", "B", "address", "temporary local addressing: A2 is fully addressable for a duration, then its address state returns", "implemented", durations=(10, 30, 100), build=_addr_temporary, latency="1 tick",
+           side_effect="the degraded Address returns when the duration ends", reversibility="reversible by construction", cost={"switching": "1 ADDRESS"}, note="engine meos-0.5: ADDRESS mode temporary; a later address intervention ends it at once"),
+)
+FOLLOWUP: dict[str, Action] = {a.id: a for a in FOLLOWUP_LIST}
+FOLLOWUP_IDS = tuple(FOLLOWUP)
+
+
+def followup_table() -> list[dict]:
+    return [{"id": a.id, "class": a.klass, "family": a.family, "label": a.label, "status": a.status, "magnitudes": list(a.magnitudes), "magnitude_meaning": a.magnitude_meaning, "durations": list(a.durations), "latency": a.latency,
+             "side_effect": a.side_effect, "reversibility": a.reversibility, "declared_cost": a.cost, "note": a.note} for a in FOLLOWUP_LIST]
+
+
 def action_table() -> list[dict]:
     """The registry as data (for the saved results and the service): everything declared about each action, including what is not implemented."""
     return [{"id": a.id, "class": a.klass, "family": a.family, "label": a.label, "status": a.status, "magnitudes": list(a.magnitudes), "magnitude_meaning": a.magnitude_meaning, "durations": list(a.durations), "latency": a.latency, "side_effect": a.side_effect,
@@ -208,7 +245,7 @@ def action_table() -> list[dict]:
 
 
 def build_action(action_id: str, stress: Stress, magnitude: float, t: int, duration: int = 0) -> list[dict]:
-    a = ACTIONS[action_id]
+    a = FOLLOWUP.get(action_id) or ACTIONS[action_id]
     if a.build is None or a.status == "not implemented":
         raise ValueError(f"{action_id} is {a.status}: {a.note}")
     return a.build(stress, magnitude, t, duration)

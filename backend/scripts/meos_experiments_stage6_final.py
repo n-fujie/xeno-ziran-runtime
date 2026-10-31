@@ -20,6 +20,8 @@ def main() -> None:
     a, b = (json.loads((DOCS / f"experiments_stage6{n}.json").read_text()) for n in ("", "_refine"))
     c = json.loads((DOCS / "experiments_stage6_cross.json").read_text())
     ctl = json.loads((DOCS / "experiments_stage6_controllers.json").read_text())
+    op = DOCS / "experiments_stage6_open_windows.json"
+    b = F.with_extension(b, json.loads(op.read_text()) if op.exists() else None)  # the windows still effective at tick 330, measured on to tick 1140 with the extended horizon
     out = F.build(a, b, c, ctl)
     # the controllers' failures under the stage 6 taxonomy ids
     for s in ctl["summary"]:

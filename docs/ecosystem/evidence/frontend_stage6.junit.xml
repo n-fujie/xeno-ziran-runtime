@@ -1,607 +1,609 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuites name="vitest tests" tests="275" failures="0" errors="0" time="71.070088207">
-    <testsuite name="src/api/native.test.ts" timestamp="2026-10-30T02:47:03.532Z" hostname="usernoMacBook-Air.local" tests="2" failures="0" errors="0" skipped="0" time="0.097183666">
-        <testcase classname="src/api/native.test.ts" name="native transport &gt; turns bridge replies into fetch Responses of the same shape as the HTTP service" time="0.07928525">
+<testsuites name="vitest tests" tests="276" failures="0" errors="0" time="78.685272246">
+    <testsuite name="src/api/native.test.ts" timestamp="2026-10-30T18:02:07.080Z" hostname="usernoMacBook-Air.local" tests="2" failures="0" errors="0" skipped="0" time="0.122377875">
+        <testcase classname="src/api/native.test.ts" name="native transport &gt; turns bridge replies into fetch Responses of the same shape as the HTTP service" time="0.104499584">
         </testcase>
-        <testcase classname="src/api/native.test.ts" name="native transport &gt; decodes base64 losslessly" time="0.007572416">
-        </testcase>
-    </testsuite>
-    <testsuite name="src/api/results.test.ts" timestamp="2026-10-30T02:47:03.623Z" hostname="usernoMacBook-Air.local" tests="7" failures="0" errors="0" skipped="0" time="0.025628167">
-        <testcase classname="src/api/results.test.ts" name="section selection &gt; includes overlapping sections and excludes subtrees" time="0.006030792">
-        </testcase>
-        <testcase classname="src/api/results.test.ts" name="section selection &gt; reassembles in the given order" time="0.000485625">
-        </testcase>
-        <testcase classname="src/api/results.test.ts" name="strategy rule &gt; uses sections only when they are clearly smaller than the whole file" time="0.001953458">
-        </testcase>
-        <testcase classname="src/api/results.test.ts" name="strategy rule &gt; switches to the whole file at RATIO of its compressed size, when already loaded, or without sections" time="0.00295725">
-        </testcase>
-        <testcase classname="src/api/results.test.ts" name="loader &gt; requests every needed file before any arrives (one round), and reassembles in file order" time="0.001970458">
-        </testcase>
-        <testcase classname="src/api/results.test.ts" name="loader &gt; caches per page load, and reports a read of a section that was not loaded" time="0.000742209">
-        </testcase>
-        <testcase classname="src/api/results.test.ts" name="loader &gt; fetches the whole file when the rule says so, and files without sections whole" time="0.000495333">
+        <testcase classname="src/api/native.test.ts" name="native transport &gt; decodes base64 losslessly" time="0.012074959">
         </testcase>
     </testsuite>
-    <testsuite name="src/api/sessionGone.test.ts" timestamp="2026-10-30T02:47:03.628Z" hostname="usernoMacBook-Air.local" tests="4" failures="0" errors="0" skipped="0" time="0.288307375">
-        <testcase classname="src/api/sessionGone.test.ts" name="definitive loss vs transient failure &gt; only a 404 &quot;no such session&quot; on a session route proves the session is gone" time="0.003143584">
+    <testsuite name="src/api/results.test.ts" timestamp="2026-10-30T18:02:07.086Z" hostname="usernoMacBook-Air.local" tests="7" failures="0" errors="0" skipped="0" time="0.024727375">
+        <testcase classname="src/api/results.test.ts" name="section selection &gt; includes overlapping sections and excludes subtrees" time="0.002932667">
         </testcase>
-        <testcase classname="src/api/sessionGone.test.ts" name="API client &gt; marks a session gone once, then never requests it again (REST and tiles)" time="0.254220166">
+        <testcase classname="src/api/results.test.ts" name="section selection &gt; reassembles in the given order" time="0.000928083">
         </testcase>
-        <testcase classname="src/api/sessionGone.test.ts" name="API client &gt; a tile 404 for a missing session is definitive too" time="0.020225375">
+        <testcase classname="src/api/results.test.ts" name="strategy rule &gt; uses sections only when they are clearly smaller than the whole file" time="0.002077459">
         </testcase>
-        <testcase classname="src/api/sessionGone.test.ts" name="API client &gt; transient failures do not mark a session gone" time="0.008116666">
+        <testcase classname="src/api/results.test.ts" name="strategy rule &gt; switches to the whole file at RATIO of its compressed size, when already loaded, or without sections" time="0.003850708">
         </testcase>
-    </testsuite>
-    <testsuite name="src/api/webRuntime.test.ts" timestamp="2026-10-30T02:47:03.630Z" hostname="usernoMacBook-Air.local" tests="6" failures="0" errors="0" skipped="0" time="0.17247825">
-        <testcase classname="src/api/webRuntime.test.ts" name="web runtime transport &gt; starts the worker with the manifest, waits for ready, and routes replies by id" time="0.127874041">
+        <testcase classname="src/api/results.test.ts" name="loader &gt; requests every needed file before any arrives (one round), and reassembles in file order" time="0.003393667">
         </testcase>
-        <testcase classname="src/api/webRuntime.test.ts" name="web runtime transport &gt; forwards stream pushes to the app and keeps replies of different requests apart" time="0.01276225">
+        <testcase classname="src/api/results.test.ts" name="loader &gt; caches per page load, and reports a read of a section that was not loaded" time="0.00124">
         </testcase>
-        <testcase classname="src/api/webRuntime.test.ts" name="web runtime transport &gt; reports a missing manifest, resolves nothing as success, and starts afresh on the next request" time="0.010044458">
-        </testcase>
-        <testcase classname="src/api/webRuntime.test.ts" name="web runtime transport &gt; a worker that fails to boot is terminated, reported, and its pending requests do not hang" time="0.0056385">
-        </testcase>
-        <testcase classname="src/api/webRuntime.test.ts" name="web runtime transport &gt; says so clearly when WebAssembly is switched off (for example Safari Lockdown Mode)" time="0.001753833">
-        </testcase>
-        <testcase classname="src/api/webRuntime.test.ts" name="web runtime transport &gt; share downloads through a Blob link and openResults opens the results site without an opener" time="0.003849833">
+        <testcase classname="src/api/results.test.ts" name="loader &gt; fetches the whole file when the rule says so, and files without sections whole" time="0.006731">
         </testcase>
     </testsuite>
-    <testsuite name="src/proto/decode.test.ts" timestamp="2026-10-30T02:47:03.634Z" hostname="usernoMacBook-Air.local" tests="5" failures="0" errors="0" skipped="0" time="0.051541375">
-        <testcase classname="src/proto/decode.test.ts" name="binary protocol (fixtures generated by the backend encoder) &gt; decodes delta frames section by section" time="0.024683542">
+    <testsuite name="src/api/sessionGone.test.ts" timestamp="2026-10-30T18:02:07.087Z" hostname="usernoMacBook-Air.local" tests="4" failures="0" errors="0" skipped="0" time="0.242292125">
+        <testcase classname="src/api/sessionGone.test.ts" name="definitive loss vs transient failure &gt; only a 404 &quot;no such session&quot; on a session route proves the session is gone" time="0.003913375">
         </testcase>
-        <testcase classname="src/proto/decode.test.ts" name="binary protocol (fixtures generated by the backend encoder) &gt; decodes snapshots and aggregates" time="0.004826083">
+        <testcase classname="src/api/sessionGone.test.ts" name="API client &gt; marks a session gone once, then never requests it again (REST and tiles)" time="0.204562125">
         </testcase>
-        <testcase classname="src/proto/decode.test.ts" name="binary protocol (fixtures generated by the backend encoder) &gt; dequantizes monotonically within bounds" time="0.003621333">
+        <testcase classname="src/api/sessionGone.test.ts" name="API client &gt; a tile 404 for a missing session is definitive too" time="0.009389708">
         </testcase>
-        <testcase classname="src/proto/decode.test.ts" name="Mirror &gt; applies snapshot + deltas and counts every event" time="0.013890208">
-        </testcase>
-        <testcase classname="src/proto/decode.test.ts" name="Mirror &gt; keeps sparse edges consistent across cut / new / reconfiguration" time="0.001725333">
+        <testcase classname="src/api/sessionGone.test.ts" name="API client &gt; transient failures do not mark a session gone" time="0.019270208">
         </testcase>
     </testsuite>
-    <testsuite name="src/routing.test.ts" timestamp="2026-10-30T02:47:03.637Z" hostname="usernoMacBook-Air.local" tests="6" failures="0" errors="0" skipped="0" time="0.008866291">
-        <testcase classname="src/routing.test.ts" name="view routing &gt; reads the view from the query and falls back for unknown or missing views" time="0.00353225">
+    <testsuite name="src/api/webRuntime.test.ts" timestamp="2026-10-30T18:02:07.089Z" hostname="usernoMacBook-Air.local" tests="6" failures="0" errors="0" skipped="0" time="0.161163542">
+        <testcase classname="src/api/webRuntime.test.ts" name="web runtime transport &gt; starts the worker with the manifest, waits for ready, and routes replies by id" time="0.122381625">
         </testcase>
-        <testcase classname="src/routing.test.ts" name="view routing &gt; reads view ids case-insensitively, as the host routes them" time="0.000606958">
+        <testcase classname="src/api/webRuntime.test.ts" name="web runtime transport &gt; forwards stream pushes to the app and keeps replies of different requests apart" time="0.013644083">
         </testcase>
-        <testcase classname="src/routing.test.ts" name="view routing &gt; writes the view into the query, keeps other parameters, and omits the default view" time="0.000499625">
+        <testcase classname="src/api/webRuntime.test.ts" name="web runtime transport &gt; reports a missing manifest, resolves nothing as success, and starts afresh on the next request" time="0.01152475">
         </testcase>
-        <testcase classname="src/routing.test.ts" name="view routing &gt; round-trips every allowed view" time="0.000447042">
+        <testcase classname="src/api/webRuntime.test.ts" name="web runtime transport &gt; a worker that fails to boot is terminated, reported, and its pending requests do not hang" time="0.005215291">
         </testcase>
-        <testcase classname="src/routing.test.ts" name="view routing &gt; reports unknown paths and unknown view values, and nothing for addressable views" time="0.000545167">
+        <testcase classname="src/api/webRuntime.test.ts" name="web runtime transport &gt; says so clearly when WebAssembly is switched off (for example Safari Lockdown Mode)" time="0.001306167">
         </testcase>
-        <testcase classname="src/routing.test.ts" name="view routing &gt; titles a view with the application name" time="0.000299084">
-        </testcase>
-    </testsuite>
-    <testsuite name="src/store/sessionLoss.test.ts" timestamp="2026-10-30T02:47:03.640Z" hostname="usernoMacBook-Air.local" tests="2" failures="0" errors="0" skipped="0" time="0.200681416">
-        <testcase classname="src/store/sessionLoss.test.ts" name="store: session loss &gt; a definitive loss closes the stream and reports it once, with the new-session state" time="0.05366225">
-        </testcase>
-        <testcase classname="src/store/sessionLoss.test.ts" name="store: session loss &gt; transient failures keep it a disconnect (reconnecting notice); a 404 ends it as a loss" time="0.132367916">
+        <testcase classname="src/api/webRuntime.test.ts" name="web runtime transport &gt; share downloads through a Blob link and openResults opens the results site without an opener" time="0.002681">
         </testcase>
     </testsuite>
-    <testsuite name="src/views/ecosystem/MfsResults.test.tsx" timestamp="2026-10-30T02:47:03.641Z" hostname="usernoMacBook-Air.local" tests="6" failures="0" errors="0" skipped="0" time="0.113235375">
-        <testcase classname="src/views/ecosystem/MfsResults.test.tsx" name="the saved-results panel &gt; says what is missing when the library is not saved" time="0.023587041">
+    <testsuite name="src/proto/decode.test.ts" timestamp="2026-10-30T18:02:07.090Z" hostname="usernoMacBook-Air.local" tests="5" failures="0" errors="0" skipped="0" time="0.027044792">
+        <testcase classname="src/proto/decode.test.ts" name="binary protocol (fixtures generated by the backend encoder) &gt; decodes delta frames section by section" time="0.014408083">
         </testcase>
-        <testcase classname="src/views/ecosystem/MfsResults.test.tsx" name="the saved-results panel &gt; states the thesis, counts every class, and lists F1-F16-style rows with their classification" time="0.01438425">
+        <testcase classname="src/proto/decode.test.ts" name="binary protocol (fixtures generated by the backend encoder) &gt; decodes snapshots and aggregates" time="0.004291958">
         </testcase>
-        <testcase classname="src/views/ecosystem/MfsResults.test.tsx" name="the saved-results panel &gt; selects the MFS a deep link names and compares it with another, stating the saved equivalence" time="0.0178265">
+        <testcase classname="src/proto/decode.test.ts" name="binary protocol (fixtures generated by the backend encoder) &gt; dequantizes monotonically within bounds" time="0.000702292">
         </testcase>
-        <testcase classname="src/views/ecosystem/MfsResults.test.tsx" name="the saved-results panel &gt; lists a rejected candidate apart from the MFS, with search and validation counts, and keeps the F8 and F9 wording" time="0.025422">
+        <testcase classname="src/proto/decode.test.ts" name="Mirror &gt; applies snapshot + deltas and counts every event" time="0.004014167">
         </testcase>
-        <testcase classname="src/views/ecosystem/MfsResults.test.tsx" name="the saved-results panel &gt; draws the SSS map of the named MFS from tested points only, with the fixed statement" time="0.014124167">
-        </testcase>
-        <testcase classname="src/views/ecosystem/MfsResults.test.tsx" name="the saved-results panel &gt; highlights the condition of an experiment link" time="0.011841959">
+        <testcase classname="src/proto/decode.test.ts" name="Mirror &gt; keeps sparse edges consistent across cut / new / reconfiguration" time="0.000830708">
         </testcase>
     </testsuite>
-    <testsuite name="src/views/ecosystem/RepairPanel.test.tsx" timestamp="2026-10-30T02:47:03.644Z" hostname="usernoMacBook-Air.local" tests="6" failures="0" errors="0" skipped="0" time="0.408312042">
-        <testcase classname="src/views/ecosystem/RepairPanel.test.tsx" name="the repair panel &gt; says so when the library is missing" time="0.061994542">
+    <testsuite name="src/routing.test.ts" timestamp="2026-10-30T18:02:07.092Z" hostname="usernoMacBook-Air.local" tests="6" failures="0" errors="0" skipped="0" time="0.015406541">
+        <testcase classname="src/routing.test.ts" name="view routing &gt; reads the view from the query and falls back for unknown or missing views" time="0.004032125">
         </testcase>
-        <testcase classname="src/views/ecosystem/RepairPanel.test.tsx" name="the repair panel &gt; keeps the three kinds of recovery action apart in its words and its selectors, and offers no observation repair as a run action" time="0.084693333">
+        <testcase classname="src/routing.test.ts" name="view routing &gt; reads view ids case-insensitively, as the host routes them" time="0.000779">
         </testcase>
-        <testcase classname="src/views/ecosystem/RepairPanel.test.tsx" name="the repair panel &gt; lists what the engine cannot do and the proxies, and never as something that can be run" time="0.025444875">
+        <testcase classname="src/routing.test.ts" name="view routing &gt; writes the view into the query, keeps other parameters, and omits the default view" time="0.0006925">
         </testcase>
-        <testcase classname="src/views/ecosystem/RepairPanel.test.tsx" name="the repair panel &gt; shows the three horizons, the raw costs without a weighted total, the failure class and the decisions of a controller" time="0.111219666">
+        <testcase classname="src/routing.test.ts" name="view routing &gt; round-trips every allowed view" time="0.000939833">
         </testcase>
-        <testcase classname="src/views/ecosystem/RepairPanel.test.tsx" name="the repair panel &gt; draws the reachable-recovery strips with one cell per tick, the windows with their gaps, and the pulse bands" time="0.059435458">
+        <testcase classname="src/routing.test.ts" name="view routing &gt; reports unknown paths and unknown view values, and nothing for addressable views" time="0.001353625">
         </testcase>
-        <testcase classname="src/views/ecosystem/RepairPanel.test.tsx" name="the repair panel &gt; shows the three restorations of an Address repair, the repairability of each MFS, and an operational recovery that is not observed" time="0.058990709">
-        </testcase>
-    </testsuite>
-    <testsuite name="src/views/ecosystem/bodies.test.ts" timestamp="2026-10-30T02:47:03.647Z" hostname="usernoMacBook-Air.local" tests="39" failures="0" errors="0" skipped="0" time="4.435380625">
-        <testcase classname="src/views/ecosystem/bodies.test.ts" name="bodyState &gt; reads the last A1 firing from the events, as an age in ticks" time="0.005425708">
-        </testcase>
-        <testcase classname="src/views/ecosystem/bodies.test.ts" name="bodyState &gt; marks the coupling as cut while the interaction channel is cut, and not before or after" time="0.001348542">
-        </testcase>
-        <testcase classname="src/views/ecosystem/bodies.test.ts" name="bodyState &gt; follows the observation: a sampled tick, its coverage and its interval" time="0.00131475">
-        </testcase>
-        <testcase classname="src/views/ecosystem/bodies.test.ts" name="bodyState &gt; reads collapse, recovery, the resource pulse and the Address Domain fault from the record" time="0.00111525">
-        </testcase>
-        <testcase classname="src/views/ecosystem/bodies.test.ts" name="bodyState &gt; passes the observability of the run, and reads a record without traces" time="0.001581792">
-        </testcase>
-        <testcase classname="src/views/ecosystem/bodies.test.ts" name="bodyState &gt; is pure" time="0.002492792">
-        </testcase>
-        <testcase classname="src/views/ecosystem/bodies.test.ts" name="the documented mapping of state to probe, node and reservoir &gt; retracts every probe when the run collapses and leaves every node asleep" time="0.001958916">
-        </testcase>
-        <testcase classname="src/views/ecosystem/bodies.test.ts" name="the documented mapping of state to probe, node and reservoir &gt; reactivates the nodes one after another after a recovery" time="0.000967583">
-        </testcase>
-        <testcase classname="src/views/ecosystem/bodies.test.ts" name="the documented mapping of state to probe, node and reservoir &gt; reads the state of the probes of A, B and C from the observation, the A1 firing and the A2 renewal" time="0.001000583">
-        </testcase>
-        <testcase classname="src/views/ecosystem/bodies.test.ts" name="the documented mapping of state to probe, node and reservoir &gt; withdraws the observer probes beyond the coverage of the observation" time="0.00146425">
-        </testcase>
-        <testcase classname="src/views/ecosystem/bodies.test.ts" name="the documented mapping of state to probe, node and reservoir &gt; raises the reservoir with a resource pulse and lets it settle over the pulse window" time="0.000615209">
-        </testcase>
-        <testcase classname="src/views/ecosystem/bodies.test.ts" name="probes &gt; is built from its spec and its dimensions are read back from the geometry" time="0.020862833">
-        </testcase>
-        <testcase classname="src/views/ecosystem/bodies.test.ts" name="probes &gt; gives different probes different lengths and diameters" time="0.030900584">
-        </testcase>
-        <testcase classname="src/views/ecosystem/bodies.test.ts" name="probes &gt; poses the five states: retracted is in, extended out, sampling further out and lit, overloaded trembles" time="0.014315625">
-        </testcase>
-        <testcase classname="src/views/ecosystem/bodies.test.ts" name="probes &gt; has a different tip for each kind" time="0.034739667">
-        </testcase>
-        <testcase classname="src/views/ecosystem/bodies.test.ts" name="cables &gt; hangs with slack: the lowest point of a route is below the line between its ends" time="0.001714">
-        </testcase>
-        <testcase classname="src/views/ecosystem/bodies.test.ts" name="cables &gt; rests on the ground when asked to" time="0.000476125">
-        </testcase>
-        <testcase classname="src/views/ecosystem/bodies.test.ts" name="cables &gt; builds routes of unequal thickness with clamps, connectors and a braided sleeve, and counts them" time="0.021141667">
-        </testcase>
-        <testcase classname="src/views/ecosystem/bodies.test.ts" name="hardware and geometry &gt; lays fasteners out unevenly, of several kinds, with gaps" time="0.002213958">
-        </testcase>
-        <testcase classname="src/views/ecosystem/bodies.test.ts" name="hardware and geometry &gt; makes a perforated plate with real holes and with slots" time="0.011050959">
-        </testcase>
-        <testcase classname="src/views/ecosystem/bodies.test.ts" name="hardware and geometry &gt; builds the bodies at every tier with more detail at a higher tier, many fasteners, probes of several kinds and a cable network" time="3.709047667">
-        </testcase>
-        <testcase classname="src/views/ecosystem/bodies.test.ts" name="hardware and geometry &gt; lists its components with identifiers and the parameters they were built from" time="0.552265">
-        </testcase>
-        <testcase classname="src/views/ecosystem/bodies.test.ts" name="hardware and geometry &gt; weathers a material in world space within a range, and only on request" time="0.000890875">
-        </testcase>
-        <testcase classname="src/views/ecosystem/bodies.test.ts" name="the ground &gt; faces up: every sampled triangle of the ground has an upward normal" time="0.000644875">
-        </testcase>
-        <testcase classname="src/views/ecosystem/bodies.test.ts" name="the ground &gt; is deterministic and level where the work areas stand" time="0.004673">
-        </testcase>
-        <testcase classname="src/views/ecosystem/bodies.test.ts" name="the bodies answer to the state, mechanically &gt; swings the C-side half of the coupling down when the coupling is cut, and back when it is restored" time="0.001499542">
-        </testcase>
-        <testcase classname="src/views/ecosystem/bodies.test.ts" name="the bodies answer to the state, mechanically &gt; slides the lens covers shut while a node sleeps, and opens them one node after another after a recovery" time="0.000610333">
-        </testcase>
-        <testcase classname="src/views/ecosystem/bodies.test.ts" name="the bodies answer to the state, mechanically &gt; opens the archive latch when history re-entry is disabled and darkens its lamp" time="0.000273917">
-        </testcase>
-        <testcase classname="src/views/ecosystem/bodies.test.ts" name="the bodies answer to the state, mechanically &gt; raises the reservoir piston with a resource pulse" time="0.000231084">
-        </testcase>
-        <testcase classname="src/views/ecosystem/bodies.test.ts" name="the bodies answer to the state, mechanically &gt; turns the observation boom toward a different target and extends it on a sampled tick" time="0.000581708">
-        </testcase>
-        <testcase classname="src/views/ecosystem/bodies.test.ts" name="the bodies answer to the state, mechanically &gt; turns the articulated ring once per sampling interval" time="0.000273833">
-        </testcase>
-        <testcase classname="src/views/ecosystem/bodies.test.ts" name="the bodies answer to the state, mechanically &gt; withdraws the probes beyond the coverage and repositions the probe ring when the boundary changes" time="0.000368292">
-        </testcase>
-        <testcase classname="src/views/ecosystem/bodies.test.ts" name="the bodies answer to the state, mechanically &gt; keeps node C dark and its probe withdrawn while A2 is absent, and lights a lamp for a few ticks after an event" time="0.000702833">
-        </testcase>
-        <testcase classname="src/views/ecosystem/bodies.test.ts" name="fourth stage: SSS and M2 on the bodies, and the cables of the operational paths &gt; lengthens the observer boom with the SSS scale, and only with it" time="0.00049525">
-        </testcase>
-        <testcase classname="src/views/ecosystem/bodies.test.ts" name="fourth stage: SSS and M2 on the bodies, and the cables of the operational paths &gt; tilts the probe ring with the SSS size, and only with it" time="0.000378708">
-        </testcase>
-        <testcase classname="src/views/ecosystem/bodies.test.ts" name="fourth stage: SSS and M2 on the bodies, and the cables of the operational paths &gt; leaves the archive latch ajar in a metastable or recovery-capable region while history is enabled" time="0.000335917">
-        </testcase>
-        <testcase classname="src/views/ecosystem/bodies.test.ts" name="fourth stage: SSS and M2 on the bodies, and the cables of the operational paths &gt; moves the reservoir level with the SSS speed (regulation)" time="0.000178875">
-        </testcase>
-        <testcase classname="src/views/ecosystem/bodies.test.ts" name="fourth stage: SSS and M2 on the bodies, and the cables of the operational paths &gt; drives node B&apos;s second probe as the M2 tap only when M2 sensing is configured" time="0.000320625">
-        </testcase>
-        <testcase classname="src/views/ecosystem/bodies.test.ts" name="fourth stage: SSS and M2 on the bodies, and the cables of the operational paths &gt; carries the five operational paths on named cables: every cable of the body names its path, and each path has a cable" time="0.000361458">
+        <testcase classname="src/routing.test.ts" name="view routing &gt; titles a view with the application name" time="0.000298958">
         </testcase>
     </testsuite>
-    <testsuite name="src/views/ecosystem/deeplink.test.ts" timestamp="2026-10-30T02:47:03.660Z" hostname="usernoMacBook-Air.local" tests="9" failures="0" errors="0" skipped="0" time="0.017903625">
-        <testcase classname="src/views/ecosystem/deeplink.test.ts" name="deep links &gt; round-trips a full state through a URL" time="0.005096666">
+    <testsuite name="src/store/sessionLoss.test.ts" timestamp="2026-10-30T18:02:07.093Z" hostname="usernoMacBook-Air.local" tests="2" failures="0" errors="0" skipped="0" time="0.557683083">
+        <testcase classname="src/store/sessionLoss.test.ts" name="store: session loss &gt; a definitive loss closes the stream and reports it once, with the new-session state" time="0.007311583">
         </testcase>
-        <testcase classname="src/views/ecosystem/deeplink.test.ts" name="deep links &gt; round-trips a controlled run and every Address form" time="0.000918583">
-        </testcase>
-        <testcase classname="src/views/ecosystem/deeplink.test.ts" name="deep links &gt; ignores what is not a valid value rather than guessing" time="0.000488083">
-        </testcase>
-        <testcase classname="src/views/ecosystem/deeplink.test.ts" name="deep links &gt; parses and formats the observation both ways" time="0.00067">
-        </testcase>
-        <testcase classname="src/views/ecosystem/deeplink.test.ts" name="the plan a link gives &gt; is the same for the same link, and carries everything the link names" time="0.002012375">
-        </testcase>
-        <testcase classname="src/views/ecosystem/deeplink.test.ts" name="the plan a link gives &gt; defaults: no link is a plain run of seed 1 from tick 0 with full observation" time="0.001608083">
-        </testcase>
-        <testcase classname="src/views/ecosystem/deeplink.test.ts" name="the plan a link gives &gt; a route link becomes a controlled run and an MFS link wins over it" time="0.00055225">
-        </testcase>
-        <testcase classname="src/views/ecosystem/deeplink.test.ts" name="repair links &gt; round-trips a stress with a controller, and a stress with explicit actions" time="0.000742041">
-        </testcase>
-        <testcase classname="src/views/ecosystem/deeplink.test.ts" name="repair links &gt; ignores a repair that names no stress, drops malformed actions, keeps at most four, and plans a repaired run in the research tab" time="0.003095875">
+        <testcase classname="src/store/sessionLoss.test.ts" name="store: session loss &gt; transient failures keep it a disconnect (reconnecting notice); a 404 ends it as a loss" time="0.547412917">
         </testcase>
     </testsuite>
-    <testsuite name="src/views/ecosystem/layers.test.ts" timestamp="2026-10-30T02:47:03.665Z" hostname="usernoMacBook-Air.local" tests="16" failures="0" errors="0" skipped="0" time="0.038091125">
-        <testcase classname="src/views/ecosystem/layers.test.ts" name="the record &gt; is a real engine record of the intended run" time="0.004713875">
+    <testsuite name="src/views/ecosystem/MfsResults.test.tsx" timestamp="2026-10-30T18:02:07.093Z" hostname="usernoMacBook-Air.local" tests="6" failures="0" errors="0" skipped="0" time="0.137122833">
+        <testcase classname="src/views/ecosystem/MfsResults.test.tsx" name="the saved-results panel &gt; says what is missing when the library is not saved" time="0.020072791">
         </testcase>
-        <testcase classname="src/views/ecosystem/layers.test.ts" name="the record &gt; lists all nine layers of the specification" time="0.000482792">
+        <testcase classname="src/views/ecosystem/MfsResults.test.tsx" name="the saved-results panel &gt; states the thesis, counts every class, and lists F1-F16-style rows with their classification" time="0.017496917">
         </testcase>
-        <testcase classname="src/views/ecosystem/layers.test.ts" name="MEOS status &gt; follows the explicit criteria: active while cycles are sustained, then degraded, then collapsed with the failed dependency named" time="0.001096291">
+        <testcase classname="src/views/ecosystem/MfsResults.test.tsx" name="the saved-results panel &gt; selects the MFS a deep link names and compares it with another, stating the saved equivalence" time="0.029546125">
         </testcase>
-        <testcase classname="src/views/ecosystem/layers.test.ts" name="MEOS status &gt; is a sequence of contiguous status segments covering every tick" time="0.002983084">
+        <testcase classname="src/views/ecosystem/MfsResults.test.tsx" name="the saved-results panel &gt; lists a rejected candidate apart from the MFS, with search and validation counts, and keeps the F8 and F9 wording" time="0.040481042">
         </testcase>
-        <testcase classname="src/views/ecosystem/layers.test.ts" name="MEOS status &gt; membership of the recursion is derived from the counted cycles, not from firing alone" time="0.001367083">
+        <testcase classname="src/views/ecosystem/MfsResults.test.tsx" name="the saved-results panel &gt; draws the SSS map of the named MFS from tested points only, with the fixed statement" time="0.01273525">
         </testcase>
-        <testcase classname="src/views/ecosystem/layers.test.ts" name="operational relations, firing and history &gt; exposes the chain: alters, detected, reconfigures, fires on" time="0.001345584">
-        </testcase>
-        <testcase classname="src/views/ecosystem/layers.test.ts" name="operational relations, firing and history &gt; explains a firing by its recorded preconditions and an absent configuration by its state" time="0.00144425">
-        </testcase>
-        <testcase classname="src/views/ecosystem/layers.test.ts" name="operational relations, firing and history &gt; shows history re-entry only where a threshold was lowered by the trace" time="0.003437542">
-        </testcase>
-        <testcase classname="src/views/ecosystem/layers.test.ts" name="operational relations, firing and history &gt; accumulates the interaction graph monotonically" time="0.001359375">
-        </testcase>
-        <testcase classname="src/views/ecosystem/layers.test.ts" name="Address Domain, SSS and XenoBody partitions &gt; exposes every part of an Address Domain from the record" time="0.001185083">
-        </testcase>
-        <testcase classname="src/views/ecosystem/layers.test.ts" name="Address Domain, SSS and XenoBody partitions &gt; reads SSS in grid cells from the operating conditions" time="0.001667">
-        </testcase>
-        <testcase classname="src/views/ecosystem/layers.test.ts" name="Address Domain, SSS and XenoBody partitions &gt; partitions the same arrangement into different bodies and reports what lies outside the arena" time="0.0011725">
-        </testcase>
-        <testcase classname="src/views/ecosystem/layers.test.ts" name="Address Domain, SSS and XenoBody partitions &gt; mentions MFS membership only from a computed reduction" time="0.001791583">
-        </testcase>
-        <testcase classname="src/views/ecosystem/layers.test.ts" name="fields and trajectories &gt; decodes the recorded field stream to normalised fields consistent with the frame totals" time="0.004009541">
-        </testcase>
-        <testcase classname="src/views/ecosystem/layers.test.ts" name="fields and trajectories &gt; builds the data-panel series from the record" time="0.0007475">
-        </testcase>
-        <testcase classname="src/views/ecosystem/layers.test.ts" name="rendering is separate from simulation &gt; keeps the derivation modules free of any renderer or camera" time="0.001887917">
+        <testcase classname="src/views/ecosystem/MfsResults.test.tsx" name="the saved-results panel &gt; highlights the condition of an experiment link" time="0.012345333">
         </testcase>
     </testsuite>
-    <testsuite name="src/views/ecosystem/megastructure.test.ts" timestamp="2026-10-30T02:47:03.671Z" hostname="usernoMacBook-Air.local" tests="10" failures="0" errors="0" skipped="0" time="0.823880083">
-        <testcase classname="src/views/ecosystem/megastructure.test.ts" name="the static architecture &gt; is dense and scales with the quality tier without changing what is simulated" time="0.002951958">
+    <testsuite name="src/views/ecosystem/RepairPanel.test.tsx" timestamp="2026-10-30T18:02:07.095Z" hostname="usernoMacBook-Air.local" tests="7" failures="0" errors="0" skipped="0" time="0.511085583">
+        <testcase classname="src/views/ecosystem/RepairPanel.test.tsx" name="the repair panel &gt; says so when the library is missing" time="0.037618666">
         </testcase>
-        <testcase classname="src/views/ecosystem/megastructure.test.ts" name="the static architecture &gt; is deterministic (seeded): two builds have the same statistics" time="0.811906125">
+        <testcase classname="src/views/ecosystem/RepairPanel.test.tsx" name="the repair panel &gt; keeps the three kinds of recovery action apart in its words and its selectors, and offers no observation repair as a run action" time="0.0487815">
         </testcase>
-        <testcase classname="src/views/ecosystem/megastructure.test.ts" name="the static architecture &gt; keeps the draw-call count low through instancing" time="0.000268333">
+        <testcase classname="src/views/ecosystem/RepairPanel.test.tsx" name="the repair panel &gt; lists what the engine cannot do and the proxies, and never as something that can be run" time="0.030387959">
         </testcase>
-        <testcase classname="src/views/ecosystem/megastructure.test.ts" name="the static architecture &gt; has the nine zones of the reference drawing and a navigable shaft through four layers" time="0.000464583">
+        <testcase classname="src/views/ecosystem/RepairPanel.test.tsx" name="the repair panel &gt; shows the three horizons, the raw costs without a weighted total, the failure class and the decisions of a controller" time="0.119947375">
         </testcase>
-        <testcase classname="src/views/ecosystem/megastructure.test.ts" name="the simulation-driven objects &gt; draws the habitat arena as an n×n grid of the recorded fields with two operational configurations" time="0.000322375">
+        <testcase classname="src/views/ecosystem/RepairPanel.test.tsx" name="the repair panel &gt; draws the reachable-recovery strips with one cell per tick, the windows with their gaps, and the pulse bands" time="0.054518208">
         </testcase>
-        <testcase classname="src/views/ecosystem/megastructure.test.ts" name="the simulation-driven objects &gt; places each configuration at the recorded cell and hides one that was removed" time="0.001129625">
+        <testcase classname="src/views/ecosystem/RepairPanel.test.tsx" name="the repair panel &gt; shows the three restorations of an Address repair, the repairability of each MFS, and an operational recovery that is not observed" time="0.160336209">
         </testcase>
-        <testcase classname="src/views/ecosystem/megastructure.test.ts" name="the simulation-driven objects &gt; maps firing to brightness: an active configuration is brighter than a refractory one, which is brighter than an idle one" time="0.000840791">
-        </testcase>
-        <testcase classname="src/views/ecosystem/megastructure.test.ts" name="the simulation-driven objects &gt; is a pure function of the recorded frame: the order of frames drawn does not matter, and a camera preset touches nothing" time="0.001906375">
-        </testcase>
-        <testcase classname="src/views/ecosystem/megastructure.test.ts" name="the simulation-driven objects &gt; shows the power reserve, the processing stockpile and the transfers from recorded values" time="0.000769625">
-        </testcase>
-        <testcase classname="src/views/ecosystem/megastructure.test.ts" name="the simulation-driven objects &gt; shows ablation trials in the subsurface chambers: brightness by status, a removed A2 is absent" time="0.000597417">
+        <testcase classname="src/views/ecosystem/RepairPanel.test.tsx" name="the repair panel &gt; runs the actions built in the follow-up and shows the extended action space and the windows measured on" time="0.05083525">
         </testcase>
     </testsuite>
-    <testsuite name="src/views/ecosystem/mfsPanels.test.ts" timestamp="2026-10-30T02:47:03.673Z" hostname="usernoMacBook-Air.local" tests="8" failures="0" errors="0" skipped="0" time="0.014747542">
-        <testcase classname="src/views/ecosystem/mfsPanels.test.ts" name="MFS comparison &gt; shows what each retains and marks only the measures that differ" time="0.005575334">
+    <testsuite name="src/views/ecosystem/bodies.test.ts" timestamp="2026-10-30T18:02:07.096Z" hostname="usernoMacBook-Air.local" tests="39" failures="0" errors="0" skipped="0" time="6.972211416">
+        <testcase classname="src/views/ecosystem/bodies.test.ts" name="bodyState &gt; reads the last A1 firing from the events, as an age in ticks" time="0.01128425">
         </testcase>
-        <testcase classname="src/views/ecosystem/mfsPanels.test.ts" name="MFS comparison &gt; does not state an equivalence itself: it takes the saved verdict, in either order, or says there is none" time="0.00114975">
+        <testcase classname="src/views/ecosystem/bodies.test.ts" name="bodyState &gt; marks the coupling as cut while the interaction channel is cut, and not before or after" time="0.001365666">
         </testcase>
-        <testcase classname="src/views/ecosystem/mfsPanels.test.ts" name="MFS comparison &gt; resolves an MFS to the first MFS with the same components, and says so; two MFS with the same components are not a pair" time="0.00232275">
+        <testcase classname="src/views/ecosystem/bodies.test.ts" name="bodyState &gt; follows the observation: a sampled tick, its coverage and its interval" time="0.001511375">
         </testcase>
-        <testcase classname="src/views/ecosystem/mfsPanels.test.ts" name="candidates versus validated MFS &gt; lists a rejected candidate apart from an MFS, with search and validation seeds kept separate" time="0.001430875">
+        <testcase classname="src/views/ecosystem/bodies.test.ts" name="bodyState &gt; reads collapse, recovery, the resource pulse and the Address Domain fault from the record" time="0.001085167">
         </testcase>
-        <testcase classname="src/views/ecosystem/mfsPanels.test.ts" name="candidates versus validated MFS &gt; marks a near miss as a near miss, not as an MFS" time="0.00029175">
+        <testcase classname="src/views/ecosystem/bodies.test.ts" name="bodyState &gt; passes the observability of the run, and reads a record without traces" time="0.001816208">
         </testcase>
-        <testcase classname="src/views/ecosystem/mfsPanels.test.ts" name="the F table and the SSS map &gt; counts every class, also an empty one" time="0.000542292">
+        <testcase classname="src/views/ecosystem/bodies.test.ts" name="bodyState &gt; is pure" time="0.001428458">
         </testcase>
-        <testcase classname="src/views/ecosystem/mfsPanels.test.ts" name="the F table and the SSS map &gt; builds the grid from tested points only" time="0.000608208">
+        <testcase classname="src/views/ecosystem/bodies.test.ts" name="the documented mapping of state to probe, node and reservoir &gt; retracts every probe when the run collapses and leaves every node asleep" time="0.000818125">
         </testcase>
-        <testcase classname="src/views/ecosystem/mfsPanels.test.ts" name="the F table and the SSS map &gt; states that every ACTIVE point was observation-sensitive only when no tested point is ACTIVE" time="0.000310708">
+        <testcase classname="src/views/ecosystem/bodies.test.ts" name="the documented mapping of state to probe, node and reservoir &gt; reactivates the nodes one after another after a recovery" time="0.000561833">
         </testcase>
-    </testsuite>
-    <testsuite name="src/views/ecosystem/repair.test.ts" timestamp="2026-10-30T02:47:03.676Z" hostname="usernoMacBook-Air.local" tests="14" failures="0" errors="0" skipped="0" time="0.049559375">
-        <testcase classname="src/views/ecosystem/repair.test.ts" name="markers &gt; has one marker per event, with a kind, a colour and a label, and says where each event comes from" time="0.005866125">
+        <testcase classname="src/views/ecosystem/bodies.test.ts" name="the documented mapping of state to probe, node and reservoir &gt; reads the state of the probes of A, B and C from the observation, the A1 firing and the A2 renewal" time="0.000471666">
         </testcase>
-        <testcase classname="src/views/ecosystem/repair.test.ts" name="markers &gt; shows the overshoot, the secondary collapse and the irreversible threshold of a pulse that was too large" time="0.003228">
+        <testcase classname="src/views/ecosystem/bodies.test.ts" name="the documented mapping of state to probe, node and reservoir &gt; withdraws the observer probes beyond the coverage of the observation" time="0.001006708">
         </testcase>
-        <testcase classname="src/views/ecosystem/repair.test.ts" name="markers &gt; shows a controller decision before its action, and a detected stress with no available action as a failed repair, not as nothing" time="0.001197625">
+        <testcase classname="src/views/ecosystem/bodies.test.ts" name="the documented mapping of state to probe, node and reservoir &gt; raises the reservoir with a resource pulse and lets it settle over the pulse window" time="0.000494875">
         </testcase>
-        <testcase classname="src/views/ecosystem/repair.test.ts" name="markers &gt; shows a repair after the collapse as a full recovery" time="0.001472458">
+        <testcase classname="src/views/ecosystem/bodies.test.ts" name="probes &gt; is built from its spec and its dimensions are read back from the geometry" time="0.048535542">
         </testcase>
-        <testcase classname="src/views/ecosystem/repair.test.ts" name="the state of the repair at a tick &gt; is intact before the stress, damaged after it, and repaired after a sustained recovery" time="0.006575">
+        <testcase classname="src/views/ecosystem/bodies.test.ts" name="probes &gt; gives different probes different lengths and diameters" time="0.040680375">
         </testcase>
-        <testcase classname="src/views/ecosystem/repair.test.ts" name="the state of the repair at a tick &gt; shows a failed path after a secondary collapse and keeps the overshoot" time="0.002258">
+        <testcase classname="src/views/ecosystem/bodies.test.ts" name="probes &gt; poses the five states: retracted is in, extended out, sampling further out and lit, overloaded trembles" time="0.013106916">
         </testcase>
-        <testcase classname="src/views/ecosystem/repair.test.ts" name="the state of the repair at a tick &gt; shows a temporary action as a bypass only while it lasts" time="0.003994792">
+        <testcase classname="src/views/ecosystem/bodies.test.ts" name="probes &gt; has a different tip for each kind" time="0.064519083">
         </testcase>
-        <testcase classname="src/views/ecosystem/repair.test.ts" name="the state of the repair at a tick &gt; separates a world-state repair from an internal reconfiguration" time="0.000784334">
+        <testcase classname="src/views/ecosystem/bodies.test.ts" name="cables &gt; hangs with slack: the lowest point of a route is below the line between its ends" time="0.001737625">
         </testcase>
-        <testcase classname="src/views/ecosystem/repair.test.ts" name="failure class &gt; names why a run did not recover, in the taxonomy of the experiments" time="0.000517917">
+        <testcase classname="src/views/ecosystem/bodies.test.ts" name="cables &gt; rests on the ground when asked to" time="0.000451041">
         </testcase>
-        <testcase classname="src/views/ecosystem/repair.test.ts" name="the reachable-recovery strip &gt; has one cell per tick and labels each tick by what recovers it, a gap as none" time="0.001632958">
+        <testcase classname="src/views/ecosystem/bodies.test.ts" name="cables &gt; builds routes of unequal thickness with clamps, connectors and a braided sleeve, and counts them" time="0.019189083">
         </testcase>
-        <testcase classname="src/views/ecosystem/repair.test.ts" name="the reachable-recovery strip &gt; writes the fragments of a window as they are, a gap being a gap" time="0.000299334">
+        <testcase classname="src/views/ecosystem/bodies.test.ts" name="hardware and geometry &gt; lays fasteners out unevenly, of several kinds, with gaps" time="0.001528917">
         </testcase>
-        <testcase classname="src/views/ecosystem/repair.test.ts" name="the research map and the technical figure &gt; has the repair layers, off by default" time="0.001576417">
+        <testcase classname="src/views/ecosystem/bodies.test.ts" name="hardware and geometry &gt; makes a perforated plate with real holes and with slots" time="0.025920042">
         </testcase>
-        <testcase classname="src/views/ecosystem/repair.test.ts" name="the research map and the technical figure &gt; draws the damaged path and the repair site only from the run&apos;s repair state, each in its own layer, and nothing when the layers are off" time="0.005701083">
+        <testcase classname="src/views/ecosystem/bodies.test.ts" name="hardware and geometry &gt; builds the bodies at every tier with more detail at a higher tier, many fasteners, probes of several kinds and a cable network" time="6.105021375">
         </testcase>
-        <testcase classname="src/views/ecosystem/repair.test.ts" name="the research map and the technical figure &gt; lists, in the technical figure, the nodes, the stress, each action that has happened with its tick, magnitude and class, and the result" time="0.001075542">
+        <testcase classname="src/views/ecosystem/bodies.test.ts" name="hardware and geometry &gt; lists its components with identifiers and the parameters they were built from" time="0.604852958">
         </testcase>
-    </testsuite>
-    <testsuite name="src/views/ecosystem/research.test.ts" timestamp="2026-10-30T02:47:03.680Z" hostname="usernoMacBook-Air.local" tests="19" failures="0" errors="0" skipped="0" time="0.020981292">
-        <testcase classname="src/views/ecosystem/research.test.ts" name="event markers &gt; has a marker for every intervention, of its kind" time="0.003339333">
+        <testcase classname="src/views/ecosystem/bodies.test.ts" name="hardware and geometry &gt; weathers a material in world space within a range, and only on request" time="0.000639291">
         </testcase>
-        <testcase classname="src/views/ecosystem/research.test.ts" name="event markers &gt; marks the collapse and the recovery at the ticks the status log gives" time="0.000704834">
+        <testcase classname="src/views/ecosystem/bodies.test.ts" name="the ground &gt; faces up: every sampled triangle of the ground has an upward normal" time="0.000532291">
         </testcase>
-        <testcase classname="src/views/ecosystem/research.test.ts" name="event markers &gt; marks the start of an observation failure and says the run itself is unchanged" time="0.000495667">
+        <testcase classname="src/views/ecosystem/bodies.test.ts" name="the ground &gt; is deterministic and level where the work areas stand" time="0.005234084">
         </testcase>
-        <testcase classname="src/views/ecosystem/research.test.ts" name="event markers &gt; is sorted by tick and has no observation marker without an observation" time="0.001609833">
+        <testcase classname="src/views/ecosystem/bodies.test.ts" name="the bodies answer to the state, mechanically &gt; swings the C-side half of the coupling down when the coupling is cut, and back when it is restored" time="0.001704208">
         </testcase>
-        <testcase classname="src/views/ecosystem/research.test.ts" name="inspection &gt; separates operational, observed and observability state" time="0.001390917">
+        <testcase classname="src/views/ecosystem/bodies.test.ts" name="the bodies answer to the state, mechanically &gt; slides the lens covers shut while a node sleeps, and opens them one node after another after a recovery" time="0.000682333">
         </testcase>
-        <testcase classname="src/views/ecosystem/research.test.ts" name="inspection &gt; reads the cut coupling, the Address Domain fault and the pulse from the record" time="0.000728959">
+        <testcase classname="src/views/ecosystem/bodies.test.ts" name="the bodies answer to the state, mechanically &gt; opens the archive latch when history re-entry is disabled and darkens its lamp" time="0.000334458">
         </testcase>
-        <testcase classname="src/views/ecosystem/research.test.ts" name="inspection &gt; lists the markers at the inspected tick and gives energy, resource and history" time="0.000411">
+        <testcase classname="src/views/ecosystem/bodies.test.ts" name="the bodies answer to the state, mechanically &gt; raises the reservoir piston with a resource pulse" time="0.0003905">
         </testcase>
-        <testcase classname="src/views/ecosystem/research.test.ts" name="inspection &gt; finds a stale or delayed address by the cell it still names" time="0.000351042">
+        <testcase classname="src/views/ecosystem/bodies.test.ts" name="the bodies answer to the state, mechanically &gt; turns the observation boom toward a different target and extends it on a sampled tick" time="0.000784708">
         </testcase>
-        <testcase classname="src/views/ecosystem/research.test.ts" name="inspection &gt; knows which components are open at a tick" time="0.000295958">
+        <testcase classname="src/views/ecosystem/bodies.test.ts" name="the bodies answer to the state, mechanically &gt; turns the articulated ring once per sampling interval" time="0.000329125">
         </testcase>
-        <testcase classname="src/views/ecosystem/research.test.ts" name="snapshots &gt; chooses the baseline, intervention and recovered ticks from the record" time="0.000501708">
+        <testcase classname="src/views/ecosystem/bodies.test.ts" name="the bodies answer to the state, mechanically &gt; withdraws the probes beyond the coverage and repositions the probe ring when the boundary changes" time="0.000692833">
         </testcase>
-        <testcase classname="src/views/ecosystem/research.test.ts" name="snapshots &gt; reports the components, paths, boundary, address and observability that changed" time="0.001581709">
+        <testcase classname="src/views/ecosystem/bodies.test.ts" name="the bodies answer to the state, mechanically &gt; keeps node C dark and its probe withdrawn while A2 is absent, and lights a lamp for a few ticks after an event" time="0.001119583">
         </testcase>
-        <testcase classname="src/views/ecosystem/research.test.ts" name="snapshots &gt; is empty between a snapshot and itself" time="0.000322542">
+        <testcase classname="src/views/ecosystem/bodies.test.ts" name="fourth stage: SSS and M2 on the bodies, and the cables of the operational paths &gt; lengthens the observer boom with the SSS scale, and only with it" time="0.000598292">
         </testcase>
-        <testcase classname="src/views/ecosystem/research.test.ts" name="snapshots &gt; reports an Address Domain change" time="0.001963875">
+        <testcase classname="src/views/ecosystem/bodies.test.ts" name="fourth stage: SSS and M2 on the bodies, and the cables of the operational paths &gt; tilts the probe ring with the SSS size, and only with it" time="0.00048475">
         </testcase>
-        <testcase classname="src/views/ecosystem/research.test.ts" name="path states &gt; reads the state of each path at a tick from its intervals" time="0.000229791">
+        <testcase classname="src/views/ecosystem/bodies.test.ts" name="fourth stage: SSS and M2 on the bodies, and the cables of the operational paths &gt; leaves the archive latch ajar in a metastable or recovery-capable region while history is enabled" time="0.0004155">
         </testcase>
-        <testcase classname="src/views/ecosystem/research.test.ts" name="SSS as mechanics (a visual representation rule) &gt; is neutral at the default setting and moves each mechanical quantity with its own parameter" time="0.000510084">
+        <testcase classname="src/views/ecosystem/bodies.test.ts" name="fourth stage: SSS and M2 on the bodies, and the cables of the operational paths &gt; moves the reservoir level with the SSS speed (regulation)" time="0.000242875">
         </testcase>
-        <testcase classname="src/views/ecosystem/research.test.ts" name="SSS as mechanics (a visual representation rule) &gt; leaves the archive latch ajar in regions that are not stably active, and shut in the others" time="0.000207209">
+        <testcase classname="src/views/ecosystem/bodies.test.ts" name="fourth stage: SSS and M2 on the bodies, and the cables of the operational paths &gt; drives node B&apos;s second probe as the M2 tap only when M2 sensing is configured" time="0.000436916">
         </testcase>
-        <testcase classname="src/views/ecosystem/research.test.ts" name="SSS as mechanics (a visual representation rule) &gt; bounds every quantity" time="0.000181833">
-        </testcase>
-        <testcase classname="src/views/ecosystem/research.test.ts" name="the M2 tap &gt; is absent when M2 is not connected" time="0.000206542">
-        </testcase>
-        <testcase classname="src/views/ecosystem/research.test.ts" name="the M2 tap &gt; follows the recorded M2 term: lit while A1 senses it, extended when it does not, retracted when the run is collapsed, trembling for a noisy tap" time="0.000269541">
+        <testcase classname="src/views/ecosystem/bodies.test.ts" name="fourth stage: SSS and M2 on the bodies, and the cables of the operational paths &gt; carries the five operational paths on named cables: every cable of the body names its path, and each path has a cable" time="0.000732791">
         </testcase>
     </testsuite>
-    <testsuite name="src/views/ecosystem/researchDevice.test.ts" timestamp="2026-10-30T02:47:03.685Z" hostname="usernoMacBook-Air.local" tests="13" failures="0" errors="0" skipped="0" time="0.022492625">
-        <testcase classname="src/views/ecosystem/researchDevice.test.ts" name="the stage-two record &gt; is a real engine record that collapses, recovers and collapses again" time="0.006292084">
+    <testsuite name="src/views/ecosystem/deeplink.test.ts" timestamp="2026-10-30T18:02:07.112Z" hostname="usernoMacBook-Air.local" tests="9" failures="0" errors="0" skipped="0" time="0.025609791">
+        <testcase classname="src/views/ecosystem/deeplink.test.ts" name="deep links &gt; round-trips a full state through a URL" time="0.006755583">
         </testcase>
-        <testcase classname="src/views/ecosystem/researchDevice.test.ts" name="deviceState &gt; reads the recovery phase from the status log, not from a label" time="0.001638083">
+        <testcase classname="src/views/ecosystem/deeplink.test.ts" name="deep links &gt; round-trips a controlled run and every Address form" time="0.000969459">
         </testcase>
-        <testcase classname="src/views/ecosystem/researchDevice.test.ts" name="deviceState &gt; shows a resource pulse only for a few ticks after its injection" time="0.00207125">
+        <testcase classname="src/views/ecosystem/deeplink.test.ts" name="deep links &gt; ignores what is not a valid value rather than guessing" time="0.0003715">
         </testcase>
-        <testcase classname="src/views/ecosystem/researchDevice.test.ts" name="deviceState &gt; opens the boundary per cut channel and closes it again when the channel returns" time="0.001007417">
+        <testcase classname="src/views/ecosystem/deeplink.test.ts" name="deep links &gt; parses and formats the observation both ways" time="0.005718209">
         </testcase>
-        <testcase classname="src/views/ecosystem/researchDevice.test.ts" name="deviceState &gt; has a philosophical module only where a philosophical mode is configured, and counts what the traces recorded" time="0.000533875">
+        <testcase classname="src/views/ecosystem/deeplink.test.ts" name="the plan a link gives &gt; is the same for the same link, and carries everything the link names" time="0.001685">
         </testcase>
-        <testcase classname="src/views/ecosystem/researchDevice.test.ts" name="deviceState &gt; maps an observation to an aim, a coverage and a sampling tick" time="0.001141583">
+        <testcase classname="src/views/ecosystem/deeplink.test.ts" name="the plan a link gives &gt; defaults: no link is a plain run of seed 1 from tick 0 with full observation" time="0.002192417">
         </testcase>
-        <testcase classname="src/views/ecosystem/researchDevice.test.ts" name="deviceState &gt; is pure: the same inputs give the same state, and the record is not changed" time="0.000900542">
+        <testcase classname="src/views/ecosystem/deeplink.test.ts" name="the plan a link gives &gt; a route link becomes a controlled run and an MFS link wins over it" time="0.000629083">
         </testcase>
-        <testcase classname="src/views/ecosystem/researchDevice.test.ts" name="deviceState &gt; reads a stage-one record (no traces, no phil block) without error" time="0.001504167">
+        <testcase classname="src/views/ecosystem/deeplink.test.ts" name="repair links &gt; round-trips a stress with a controller, and a stress with explicit actions" time="0.000618916">
         </testcase>
-        <testcase classname="src/views/ecosystem/researchDevice.test.ts" name="observationCoverage &gt; is the product of the region and the spatial lattice, bounded by 0..1" time="0.000353792">
-        </testcase>
-        <testcase classname="src/views/ecosystem/researchDevice.test.ts" name="the device layer and the array without a renderer &gt; shows the module only for a run that configures one, and a spark only while a claim is in the channel" time="0.0017155">
-        </testcase>
-        <testcase classname="src/views/ecosystem/researchDevice.test.ts" name="the device layer and the array without a renderer &gt; rings only a selected chamber" time="0.000842125">
-        </testcase>
-        <testcase classname="src/views/ecosystem/researchDevice.test.ts" name="the device layer and the array without a renderer &gt; turns every dish toward the observed target and darkens the dishes outside the coverage" time="0.000718333">
-        </testcase>
-        <testcase classname="src/views/ecosystem/researchDevice.test.ts" name="the device layer and the array without a renderer &gt; names the experimental function of every space of the structure" time="0.000389125">
+        <testcase classname="src/views/ecosystem/deeplink.test.ts" name="repair links &gt; ignores a repair that names no stress, drops malformed actions, keeps at most four, and plans a repaired run in the research tab" time="0.00167025">
         </testcase>
     </testsuite>
-    <testsuite name="src/views/ecosystem/researchMap.test.ts" timestamp="2026-10-30T02:47:03.688Z" hostname="usernoMacBook-Air.local" tests="10" failures="0" errors="0" skipped="0" time="0.042498459">
-        <testcase classname="src/views/ecosystem/researchMap.test.ts" name="the research map &gt; draws the three boundaries with three different line types" time="0.010594875">
+    <testsuite name="src/views/ecosystem/layers.test.ts" timestamp="2026-10-30T18:02:07.113Z" hostname="usernoMacBook-Air.local" tests="16" failures="0" errors="0" skipped="0" time="0.041948209">
+        <testcase classname="src/views/ecosystem/layers.test.ts" name="the record &gt; is a real engine record of the intended run" time="0.009033375">
         </testcase>
-        <testcase classname="src/views/ecosystem/researchMap.test.ts" name="the research map &gt; opens a gap in the XenoBody boundary while the coupling is cut" time="0.013821416">
+        <testcase classname="src/views/ecosystem/layers.test.ts" name="the record &gt; lists all nine layers of the specification" time="0.000449791">
         </testcase>
-        <testcase classname="src/views/ecosystem/researchMap.test.ts" name="the research map &gt; draws a path with the line type of its state: solid active, dashed with a cross when cut, dotted when quiet" time="0.000975083">
+        <testcase classname="src/views/ecosystem/layers.test.ts" name="MEOS status &gt; follows the explicit criteria: active while cycles are sustained, then degraded, then collapsed with the failed dependency named" time="0.001248291">
         </testcase>
-        <testcase classname="src/views/ecosystem/researchMap.test.ts" name="the research map &gt; draws the sampling lattice at the observation stride, inside the region, and the occluder hatched" time="0.003044834">
+        <testcase classname="src/views/ecosystem/layers.test.ts" name="MEOS status &gt; is a sequence of contiguous status segments covering every tick" time="0.001529709">
         </testcase>
-        <testcase classname="src/views/ecosystem/researchMap.test.ts" name="the research map &gt; shows the interval, the window and whether this tick is sampled" time="0.001089166">
+        <testcase classname="src/views/ecosystem/layers.test.ts" name="MEOS status &gt; membership of the recursion is derived from the counted cycles, not from firing alone" time="0.003677042">
         </testcase>
-        <testcase classname="src/views/ecosystem/researchMap.test.ts" name="the research map &gt; marks the Address Domain fault and the cell a stale address names" time="0.001756125">
+        <testcase classname="src/views/ecosystem/layers.test.ts" name="operational relations, firing and history &gt; exposes the chain: alters, detected, reconfigures, fires on" time="0.000981208">
         </testcase>
-        <testcase classname="src/views/ecosystem/researchMap.test.ts" name="the research map &gt; draws the interventions that have happened by the tick, at their cells when they name one" time="0.000989792">
+        <testcase classname="src/views/ecosystem/layers.test.ts" name="operational relations, firing and history &gt; explains a firing by its recorded preconditions and an absent configuration by its state" time="0.001690375">
         </testcase>
-        <testcase classname="src/views/ecosystem/researchMap.test.ts" name="the research map &gt; removes a layer when it is switched off, and only that layer" time="0.001212083">
+        <testcase classname="src/views/ecosystem/layers.test.ts" name="operational relations, firing and history &gt; shows history re-entry only where a threshold was lowered by the trace" time="0.005567625">
         </testcase>
-        <testcase classname="src/views/ecosystem/researchMap.test.ts" name="the research map &gt; draws B1, B2 and B3 as different retained bodies and names the legs that close inside each" time="0.002099542">
+        <testcase classname="src/views/ecosystem/layers.test.ts" name="operational relations, firing and history &gt; accumulates the interaction graph monotonically" time="0.001686583">
         </testcase>
-        <testcase classname="src/views/ecosystem/researchMap.test.ts" name="the research map &gt; opens a body only when a relation it retains is cut" time="0.002464042">
+        <testcase classname="src/views/ecosystem/layers.test.ts" name="Address Domain, SSS and XenoBody partitions &gt; exposes every part of an Address Domain from the record" time="0.001650417">
         </testcase>
-    </testsuite>
-    <testsuite name="src/views/ecosystem/routeGraph.test.ts" timestamp="2026-10-30T02:47:03.691Z" hostname="usernoMacBook-Air.local" tests="22" failures="0" errors="0" skipped="0" time="0.05245175">
-        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="the topology of a record &gt; agrees with the backend reading of the same record" time="0.008776042">
+        <testcase classname="src/views/ecosystem/layers.test.ts" name="Address Domain, SSS and XenoBody partitions &gt; reads SSS in grid cells from the operating conditions" time="0.003295917">
         </testcase>
-        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="the topology of a record &gt; knows when each component was enabled, cut or switched on" time="0.00162725">
+        <testcase classname="src/views/ecosystem/layers.test.ts" name="Address Domain, SSS and XenoBody partitions &gt; partitions the same arrangement into different bodies and reports what lies outside the arena" time="0.0009005">
         </testcase>
-        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="the routes at a tick &gt; before the stress: history enabled, the M2 tap installed and dormant, the M2 path dormant, the current MFS the base one" time="0.001328375">
+        <testcase classname="src/views/ecosystem/layers.test.ts" name="Address Domain, SSS and XenoBody partitions &gt; mentions MFS membership only from a computed reduction" time="0.000341875">
         </testcase>
-        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="the routes at a tick &gt; after the stress and before the switch: the history path has failed and the history-needing routes are closed" time="0.000335541">
+        <testcase classname="src/views/ecosystem/layers.test.ts" name="fields and trajectories &gt; decodes the recorded field stream to normalised fields consistent with the frame totals" time="0.003232583">
         </testcase>
-        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="the routes at a tick &gt; after the switch: the M2 path is an adaptive route (a fixed controller gives the fixed fallback), the current MFS is the destination, the transition and its trigger are known" time="0.001889584">
+        <testcase classname="src/views/ecosystem/layers.test.ts" name="fields and trajectories &gt; builds the data-panel series from the record" time="0.000918209">
         </testcase>
-        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="the routes at a tick &gt; closes a library route when a component it needs has failed" time="0.00059875">
-        </testcase>
-        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="which MFS a run is &gt; is none for the full arrangement: it contains every MFS, which says nothing about which one it is" time="0.000270166">
-        </testcase>
-        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="which MFS a run is &gt; is the MFS whose retained components are exactly the enabled ones" time="0.000250459">
-        </testcase>
-        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="which MFS a run is &gt; is the MFS a run is known to be, and its alternatives are the validated MFS of its own condition (not the rest of the library)" time="0.000487667">
-        </testcase>
-        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="the route graph &gt; has a node for every component and an edge only where a path, a transition or a library membership says so" time="0.007799709">
-        </testcase>
-        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="the route graph &gt; shows no transition before it happened" time="0.001907583">
-        </testcase>
-        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="the route graph &gt; is switched by the toggles" time="0.002360333">
-        </testcase>
-        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="replay markers of the routes &gt; marks history loss, the route switch, the M2 takeover, the MFS change and the failed reconfiguration" time="0.000887792">
-        </testcase>
-        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="replay markers of the routes &gt; marks a successful reconfiguration as such and an Address recovery" time="0.000740125">
-        </testcase>
-        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="replay markers of the routes &gt; carries the route state into the inspection" time="0.000813834">
-        </testcase>
-        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="the research map routes &gt; keeps the route layers off by default (they are not all shown at once)" time="0.008761042">
-        </testcase>
-        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="the research map routes &gt; draws the adaptive route and the failed route when their layers are on, and the current and alternative MFS in words" time="0.001089875">
-        </testcase>
-        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="the research map routes &gt; removes a route layer when it is switched off" time="0.000519583">
-        </testcase>
-        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="the research map routes &gt; draws a fixed controller&apos;s route as the fixed fallback, in its own layer" time="0.000608875">
-        </testcase>
-        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="the research map routes &gt; shows a rejected candidate only in its own layer, marked as not an MFS, with search and validation counts apart" time="0.000910875">
-        </testcase>
-        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="the research map routes &gt; draws a rejected candidate in the route graph as a dotted candidate node, switchable" time="0.001352625">
-        </testcase>
-        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="the research map routes &gt; marks the adaptive switch, the fixed fallback and an Address reassignment on the timeline" time="0.002654209">
+        <testcase classname="src/views/ecosystem/layers.test.ts" name="rendering is separate from simulation &gt; keeps the derivation modules free of any renderer or camera" time="0.001548875">
         </testcase>
     </testsuite>
-    <testsuite name="src/views/ecosystem/studies.test.ts" timestamp="2026-10-30T02:47:03.699Z" hostname="usernoMacBook-Air.local" tests="4" failures="0" errors="0" skipped="0" time="0.010019208">
-        <testcase classname="src/views/ecosystem/studies.test.ts" name="study table helpers &gt; formats statistics and missing values without inventing numbers" time="0.003711834">
+    <testsuite name="src/views/ecosystem/megastructure.test.ts" timestamp="2026-10-30T18:02:07.116Z" hostname="usernoMacBook-Air.local" tests="10" failures="0" errors="0" skipped="0" time="2.090044708">
+        <testcase classname="src/views/ecosystem/megastructure.test.ts" name="the static architecture &gt; is dense and scales with the quality tier without changing what is simulated" time="0.003362334">
         </testcase>
-        <testcase classname="src/views/ecosystem/studies.test.ts" name="study table helpers &gt; groups in first-seen order" time="0.001387333">
+        <testcase classname="src/views/ecosystem/megastructure.test.ts" name="the static architecture &gt; is deterministic (seeded): two builds have the same statistics" time="2.072410791">
         </testcase>
-        <testcase classname="src/views/ecosystem/studies.test.ts" name="study table helpers &gt; lays out the history-necessity map and counts every class, including a reversed one" time="0.000711417">
+        <testcase classname="src/views/ecosystem/megastructure.test.ts" name="the static architecture &gt; keeps the draw-call count low through instancing" time="0.000604375">
         </testcase>
-        <testcase classname="src/views/ecosystem/studies.test.ts" name="study table helpers &gt; shows a non-monotone recovery response as separate runs of the same region" time="0.001645542">
+        <testcase classname="src/views/ecosystem/megastructure.test.ts" name="the static architecture &gt; has the nine zones of the reference drawing and a navigable shaft through four layers" time="0.000938875">
         </testcase>
-    </testsuite>
-    <testsuite name="src/views/ecosystem/technical.test.ts" timestamp="2026-10-30T02:47:03.700Z" hostname="usernoMacBook-Air.local" tests="12" failures="0" errors="0" skipped="0" time="6.276973917">
-        <testcase classname="src/views/ecosystem/technical.test.ts" name="projection &gt; maps a point into the front, side and top views" time="0.155774834">
+        <testcase classname="src/views/ecosystem/megastructure.test.ts" name="the simulation-driven objects &gt; draws the habitat arena as an n×n grid of the recorded fields with two operational configurations" time="0.0007105">
         </testcase>
-        <testcase classname="src/views/ecosystem/technical.test.ts" name="projection &gt; projects the edges of a box into the extent of the box, in the frame of its root" time="0.020755041">
+        <testcase classname="src/views/ecosystem/megastructure.test.ts" name="the simulation-driven objects &gt; places each configuration at the recorded cell and hides one that was removed" time="0.001978583">
         </testcase>
-        <testcase classname="src/views/ecosystem/technical.test.ts" name="projection &gt; uses the first level of a LOD only" time="0.001304458">
+        <testcase classname="src/views/ecosystem/megastructure.test.ts" name="the simulation-driven objects &gt; maps firing to brightness: an active configuration is brighter than a refractory one, which is brighter than an idle one" time="0.001346667">
         </testcase>
-        <testcase classname="src/views/ecosystem/technical.test.ts" name="measured dimensions &gt; reads the height of node A from its geometry: the frame height it was built with, the mast and lamp above it and the probe below it" time="0.051743583">
+        <testcase classname="src/views/ecosystem/megastructure.test.ts" name="the simulation-driven objects &gt; is a pure function of the recorded frame: the order of frames drawn does not matter, and a camera preset touches nothing" time="0.002826834">
         </testcase>
-        <testcase classname="src/views/ecosystem/technical.test.ts" name="measured dimensions &gt; reads probe lengths from the geometry and they equal the specified lengths" time="0.007175041">
+        <testcase classname="src/views/ecosystem/megastructure.test.ts" name="the simulation-driven objects &gt; shows the power reserve, the processing stockpile and the transfers from recorded values" time="0.001059709">
         </testcase>
-        <testcase classname="src/views/ecosystem/technical.test.ts" name="measured dimensions &gt; reports the plate thickness as the build parameter, and that parameter is the real extrusion depth" time="0.038300917">
-        </testcase>
-        <testcase classname="src/views/ecosystem/technical.test.ts" name="measured dimensions &gt; lists the dimension lines of a view: overall width and height equal the measured extent of the body" time="0.049907792">
-        </testcase>
-        <testcase classname="src/views/ecosystem/technical.test.ts" name="components, states and routing &gt; gives every listed component an identifier, built-from parameters, a measured extent and a state with its reason" time="0.01301325">
-        </testcase>
-        <testcase classname="src/views/ecosystem/technical.test.ts" name="components, states and routing &gt; shows the coupling as cut while the interaction channel is cut and as intact after" time="0.023133458">
-        </testcase>
-        <testcase classname="src/views/ecosystem/technical.test.ts" name="components, states and routing &gt; reads collapse, sampling and the Address Domain fault into the states of the probes" time="0.009214875">
-        </testcase>
-        <testcase classname="src/views/ecosystem/technical.test.ts" name="components, states and routing &gt; routes the cables as polylines of the three kinds in every view, and draws fasteners as dots" time="0.003897">
-        </testcase>
-        <testcase classname="src/views/ecosystem/technical.test.ts" name="components, states and routing &gt; draws every body: the edge lists of the three views are not empty and share the vertical extent between front and side" time="5.889643041">
+        <testcase classname="src/views/ecosystem/megastructure.test.ts" name="the simulation-driven objects &gt; shows ablation trials in the subsurface chambers: brightness by status, a removed A2 is absent" time="0.001190083">
         </testcase>
     </testsuite>
-    <testsuite name="src/views/lab/hifi/assemblies.test.ts" timestamp="2026-10-30T02:47:03.704Z" hostname="usernoMacBook-Air.local" tests="18" failures="0" errors="0" skipped="0" time="47.45801525">
-        <testcase classname="src/views/lab/hifi/assemblies.test.ts" name="the scene graph draws executable objects at the transformed recorded positions &gt; every carriage tool tip and every sample sits exactly at physToView(recorded position)" time="0.981635625">
+    <testsuite name="src/views/ecosystem/mfsPanels.test.ts" timestamp="2026-10-30T18:02:07.117Z" hostname="usernoMacBook-Air.local" tests="8" failures="0" errors="0" skipped="0" time="0.012462167">
+        <testcase classname="src/views/ecosystem/mfsPanels.test.ts" name="MFS comparison &gt; shows what each retains and marks only the measures that differ" time="0.005409791">
         </testcase>
-        <testcase classname="src/views/lab/hifi/assemblies.test.ts" name="the scene graph draws executable objects at the transformed recorded positions &gt; chamber floors and walls have the MuJoCo geom sizes and positions" time="0.692153917">
+        <testcase classname="src/views/ecosystem/mfsPanels.test.ts" name="MFS comparison &gt; does not state an equivalence itself: it takes the saved verdict, in either order, or says there is none" time="0.000594083">
         </testcase>
-        <testcase classname="src/views/lab/hifi/assemblies.test.ts" name="the scene graph draws executable objects at the transformed recorded positions &gt; every object carries a layer and a category; architecture never carries a selection of an apparatus" time="0.582442083">
+        <testcase classname="src/views/ecosystem/mfsPanels.test.ts" name="MFS comparison &gt; resolves an MFS to the first MFS with the same components, and says so; two MFS with the same components are not a pair" time="0.000517625">
         </testcase>
-        <testcase classname="src/views/lab/hifi/assemblies.test.ts" name="quality levels change detail, never the scientific state drawn &gt; layer A and B transforms are identical at every quality level" time="3.285232125">
+        <testcase classname="src/views/ecosystem/mfsPanels.test.ts" name="candidates versus validated MFS &gt; lists a rejected candidate apart from an MFS, with search and validation seeds kept separate" time="0.000756834">
         </testcase>
-        <testcase classname="src/views/lab/hifi/assemblies.test.ts" name="quality levels change detail, never the scientific state drawn &gt; detail differs between levels (instanced parts), so the comparison above is not vacuous" time="0.680976542">
+        <testcase classname="src/views/ecosystem/mfsPanels.test.ts" name="candidates versus validated MFS &gt; marks a near miss as a near miss, not as an MFS" time="0.00026025">
         </testcase>
-        <testcase classname="src/views/lab/hifi/assemblies.test.ts" name="mechanical coherence &gt; no gantry column or rail passes through a chamber housing (found in browser screenshots, fixed)" time="0.026738875">
+        <testcase classname="src/views/ecosystem/mfsPanels.test.ts" name="the F table and the SSS map &gt; counts every class, also an empty one" time="0.000507583">
         </testcase>
-        <testcase classname="src/views/lab/hifi/assemblies.test.ts" name="backward compatibility with earlier record schemas &gt; a schema-1 record without physics (M2) and one with physics but no systems (M3) build and draw" time="0.748851167">
+        <testcase classname="src/views/ecosystem/mfsPanels.test.ts" name="the F table and the SSS map &gt; builds the grid from tested points only" time="0.001009959">
         </testcase>
-        <testcase classname="src/views/lab/hifi/assemblies.test.ts" name="connection terminals stay clear of every gantry part over the whole record &gt; the highest point any rail, bridge, trolley, mast or carriage reaches is below the terminals" time="0.594736458">
-        </testcase>
-        <testcase classname="src/views/lab/hifi/assemblies.test.ts" name="system apparatus never interpenetrate (found in screenshots: a remote sensor inside the hub) &gt; no two sensor heads, hubs, remote sensors or stores overlap, at sampled steps of every published record" time="1.707203834">
-        </testcase>
-        <testcase classname="src/views/lab/hifi/assemblies.test.ts" name="a failed gantry is drawn dark without changing any other part (shared-material bug found in review) &gt; at a recorded failure, only that carriage darkens; every rail keeps the steel colour" time="0.385185625">
-        </testcase>
-        <testcase classname="src/views/lab/hifi/assemblies.test.ts" name="full reachable envelope of every gantry &gt; every recorded tool tip of every published record lies within its gantry&apos;s drawn rail envelope" time="0.845528541">
-        </testcase>
-        <testcase classname="src/views/lab/hifi/assemblies.test.ts" name="full reachable envelope of every gantry &gt; no recorded carriage, tool or mast position intersects a sensor, hub, store or chamber instrument" time="4.621148792">
-        </testcase>
-        <testcase classname="src/views/lab/hifi/assemblies.test.ts" name="synthetic sweep of every gantry over its whole reachable envelope at travel height &gt; a carriage and its mast anywhere in the reachable envelope meet no static apparatus, service housing or other gantry&apos;s column" time="15.918466083">
-        </testcase>
-        <testcase classname="src/views/lab/hifi/assemblies.test.ts" name="a carried sample and the gripper jaws clear every static part (found in M8.2: the travel plane ignored the load) &gt; at every recorded step, a carried sample and closed jaws meet no rim, instrument, sensor or store" time="2.890560834">
-        </testcase>
-        <testcase classname="src/views/lab/hifi/assemblies.test.ts" name="a carried sample and the gripper jaws clear every static part (found in M8.2: the travel plane ignored the load) &gt; closed jaws meet the recorded sample faces at every carrying step; open jaws clear every resting sample" time="12.239927625">
-        </testcase>
-        <testcase classname="src/views/lab/hifi/assemblies.test.ts" name="relocated system apparatus stand clear of the static installation (M8.2: moved outside the reach envelopes) &gt; no sensor head, hub, remote sensor or store meets a chamber vessel, a gantry column or a service housing" time="0.764757459">
-        </testcase>
-        <testcase classname="src/views/lab/hifi/assemblies.test.ts" name="connection contrast (M8.2: idle lines dimmed so the apparatus dominates; no line removed) &gt; a pair in a recorded event is drawn at full brightness, idle pairs below it and ordered by recorded count" time="0.196712">
-        </testcase>
-        <testcase classname="src/views/lab/hifi/assemblies.test.ts" name="system B receiver points at its recorded remote sensors (M8.2) &gt; one pickup arm per configured remote sensor, each aimed at that sensor within 1°" time="0.270613167">
+        <testcase classname="src/views/ecosystem/mfsPanels.test.ts" name="the F table and the SSS map &gt; states that every ACTIVE point was observation-sensitive only when no tested point is ACTIVE" time="0.000772125">
         </testcase>
     </testsuite>
-    <testsuite name="src/views/lab/hifi/model.test.ts" timestamp="2026-10-30T02:47:03.710Z" hostname="usernoMacBook-Air.local" tests="12" failures="0" errors="0" skipped="0" time="5.888823458">
-        <testcase classname="src/views/lab/hifi/model.test.ts" name="coordinates: rendered position = transform of the recorded physical position &gt; the transform is invertible and places a resting sample on its chamber floor" time="0.009810084">
+    <testsuite name="src/views/ecosystem/repair.test.ts" timestamp="2026-10-30T18:02:07.119Z" hostname="usernoMacBook-Air.local" tests="14" failures="0" errors="0" skipped="0" time="0.049531958">
+        <testcase classname="src/views/ecosystem/repair.test.ts" name="markers &gt; has one marker per event, with a kind, a colour and a label, and says where each event comes from" time="0.006701333">
         </testcase>
-        <testcase classname="src/views/lab/hifi/model.test.ts" name="coordinates: rendered position = transform of the recorded physical position &gt; every recorded sample at rest lies over a chamber floor or a port of the layout" time="0.007160833">
+        <testcase classname="src/views/ecosystem/repair.test.ts" name="markers &gt; shows the overshoot, the secondary collapse and the irreversible threshold of a pulse that was too large" time="0.002349917">
         </testcase>
-        <testcase classname="src/views/lab/hifi/model.test.ts" name="what a system can experimentally access equals the backend (science.py candidates) at every decision step &gt; m9-separated-resources-7000" time="3.694462375">
+        <testcase classname="src/views/ecosystem/repair.test.ts" name="markers &gt; shows a controller decision before its action, and a detected stress with no available action as a failed repair, not as nothing" time="0.000975417">
         </testcase>
-        <testcase classname="src/views/lab/hifi/model.test.ts" name="what a system can experimentally access equals the backend (science.py candidates) at every decision step &gt; m9-extinction-relocation-7000" time="0.855786458">
+        <testcase classname="src/views/ecosystem/repair.test.ts" name="markers &gt; shows a repair after the collapse as a full recovery" time="0.001089292">
         </testcase>
-        <testcase classname="src/views/lab/hifi/model.test.ts" name="transport completion is not delivery &gt; a transfer is &quot;delivered&quot; only with a recorded material_delivered event; a blocked one stays &quot;delivery blocked&quot;" time="0.014620917">
+        <testcase classname="src/views/ecosystem/repair.test.ts" name="the state of the repair at a tick &gt; is intact before the stress, damaged after it, and repaired after a sustained recovery" time="0.0010995">
         </testcase>
-        <testcase classname="src/views/lab/hifi/model.test.ts" name="events, transitions and provenance reference recorded events &gt; event ids are unique and every recorded transition points to an existing event" time="0.441194292">
+        <testcase classname="src/views/ecosystem/repair.test.ts" name="the state of the repair at a tick &gt; shows a failed path after a secondary collapse and keeps the overshoot" time="0.000306875">
         </testcase>
-        <testcase classname="src/views/lab/hifi/model.test.ts" name="events, transitions and provenance reference recorded events &gt; extinction and re-ignition follow the M9-C definition and agree with the published confirmatory run" time="0.022010459">
+        <testcase classname="src/views/ecosystem/repair.test.ts" name="the state of the repair at a tick &gt; shows a temporary action as a bypass only while it lasts" time="0.001060167">
         </testcase>
-        <testcase classname="src/views/lab/hifi/model.test.ts" name="events, transitions and provenance reference recorded events &gt; a delivery is traced back to the selection that initiated it, forward to its observation; no attribution is invented" time="0.002440583">
+        <testcase classname="src/views/ecosystem/repair.test.ts" name="the state of the repair at a tick &gt; separates a world-state repair from an internal reconfiguration" time="0.0006035">
         </testcase>
-        <testcase classname="src/views/lab/hifi/model.test.ts" name="inspection shows recorded values or an availability status — never an invented value &gt; a chamber outside a system&apos;s coverage is reported as outside its observation range, not as zero" time="0.014005458">
+        <testcase classname="src/views/ecosystem/repair.test.ts" name="failure class &gt; names why a run did not recover, in the taxonomy of the experiments" time="0.000531375">
         </testcase>
-        <testcase classname="src/views/lab/hifi/model.test.ts" name="inspection shows recorded values or an availability status — never an invented value &gt; private carriages say that per-system leg counts are unavailable rather than showing zero" time="0.00787625">
+        <testcase classname="src/views/ecosystem/repair.test.ts" name="the reachable-recovery strip &gt; has one cell per tick and labels each tick by what recovers it, a gap as none" time="0.001642417">
         </testcase>
-        <testcase classname="src/views/lab/hifi/model.test.ts" name="inspection shows recorded values or an availability status — never an invented value &gt; in the shared laboratory, mediation counts the legs each system had served on a gantry" time="0.592881958">
+        <testcase classname="src/views/ecosystem/repair.test.ts" name="the reachable-recovery strip &gt; writes the fragments of a window as they are, a gap being a gap" time="0.000301792">
         </testcase>
-        <testcase classname="src/views/lab/hifi/model.test.ts" name="live and replay give the same model state for the same recorded state &gt; a record grown step by step (as the live viewer does) equals the replayed record at every compared step" time="0.2067995">
+        <testcase classname="src/views/ecosystem/repair.test.ts" name="the research map and the technical figure &gt; has the repair layers, off by default" time="0.000602542">
         </testcase>
-    </testsuite>
-    <testsuite name="src/views/lab/hifi/quality.test.ts" timestamp="2026-10-30T02:47:03.714Z" hostname="usernoMacBook-Air.local" tests="3" failures="0" errors="0" skipped="0" time="0.01040575">
-        <testcase classname="src/views/lab/hifi/quality.test.ts" name="drawing-buffer pixel ratio per quality level (M8.2 high-DPI investigation) &gt; DPR-1 displays are unchanged at every level" time="0.003354834">
+        <testcase classname="src/views/ecosystem/repair.test.ts" name="the research map and the technical figure &gt; draws the damaged path and the repair site only from the run&apos;s repair state, each in its own layer, and nothing when the layers are off" time="0.026475791">
         </testcase>
-        <testcase classname="src/views/lab/hifi/quality.test.ts" name="drawing-buffer pixel ratio per quality level (M8.2 high-DPI investigation) &gt; balanced keeps 1.5 on small canvases and stays within its pixel budget on large DPR-2 canvases, never below 1" time="0.000651042">
-        </testcase>
-        <testcase classname="src/views/lab/hifi/quality.test.ts" name="drawing-buffer pixel ratio per quality level (M8.2 high-DPI investigation) &gt; high keeps the full ratio up to 2 (its DPR-2 cost is a documented limit)" time="0.000255625">
+        <testcase classname="src/views/ecosystem/repair.test.ts" name="the research map and the technical figure &gt; lists, in the technical figure, the nodes, the stress, each action that has happened with its tick, magnitude and class, and the result" time="0.002391958">
         </testcase>
     </testsuite>
-    <testsuite name="src/views/lab/labScene.test.ts" timestamp="2026-10-30T02:47:03.715Z" hostname="usernoMacBook-Air.local" tests="9" failures="0" errors="0" skipped="0" time="4.465020791">
-        <testcase classname="src/views/lab/labScene.test.ts" name="every drawn quantity is a recorded runtime-derived value &gt; shutters, cores and conduits equal the recorded apparatus state at every step" time="1.48181925">
+    <testsuite name="src/views/ecosystem/research.test.ts" timestamp="2026-10-30T18:02:07.121Z" hostname="usernoMacBook-Air.local" tests="19" failures="0" errors="0" skipped="0" time="0.075566667">
+        <testcase classname="src/views/ecosystem/research.test.ts" name="event markers &gt; has a marker for every intervention, of its kind" time="0.00285075">
         </testcase>
-        <testcase classname="src/views/lab/labScene.test.ts" name="every drawn quantity is a recorded runtime-derived value &gt; a highlight exists only within HIGHLIGHT_STEPS after a recorded event of that chamber or conduit" time="0.165425333">
+        <testcase classname="src/views/ecosystem/research.test.ts" name="event markers &gt; marks the collapse and the recovery at the ticks the status log gives" time="0.000561417">
         </testcase>
-        <testcase classname="src/views/lab/labScene.test.ts" name="every drawn quantity is a recorded runtime-derived value &gt; every recorded event carries a runtime cause" time="0.000624458">
+        <testcase classname="src/views/ecosystem/research.test.ts" name="event markers &gt; marks the start of an observation failure and says the run itself is unchanged" time="0.000494417">
         </testcase>
-        <testcase classname="src/views/lab/labScene.test.ts" name="every drawn quantity is a recorded runtime-derived value &gt; physical bodies are drawn at their recorded physical positions" time="0.808445666">
+        <testcase classname="src/views/ecosystem/research.test.ts" name="event markers &gt; is sorted by tick and has no observation marker without an observation" time="0.001874875">
         </testcase>
-        <testcase classname="src/views/lab/labScene.test.ts" name="every drawn quantity is a recorded runtime-derived value &gt; rejects anything that is not a laboratory record" time="0.003270583">
+        <testcase classname="src/views/ecosystem/research.test.ts" name="inspection &gt; separates operational, observed and observability state" time="0.002840709">
         </testcase>
-        <testcase classname="src/views/lab/labScene.test.ts" name="scientific systems are drawn from the recorded science state &gt; coverage, sensor, pending experiment and isolation equal the recorded values" time="0.017197125">
+        <testcase classname="src/views/ecosystem/research.test.ts" name="inspection &gt; reads the cut coupling, the Address Domain fault and the pulse from the record" time="0.001873541">
         </testcase>
-        <testcase classname="src/views/lab/labScene.test.ts" name="scientific systems are drawn from the recorded science state &gt; the published schema-2 record (M7 ALL, seed 6000) validates and draws every system from its recorded state" time="0.487205041">
+        <testcase classname="src/views/ecosystem/research.test.ts" name="inspection &gt; lists the markers at the inspected tick and gives energy, resource and history" time="0.002860542">
         </testcase>
-        <testcase classname="src/views/lab/labScene.test.ts" name="schema-3 records (M9): private carriages and harness interventions are drawn as recorded &gt; the separated-resources record validates; every carriage is drawn at its recorded tip, per bay and group" time="0.378513334">
+        <testcase classname="src/views/ecosystem/research.test.ts" name="inspection &gt; finds a stale or delayed address by the cell it still names" time="0.003742334">
         </testcase>
-        <testcase classname="src/views/lab/labScene.test.ts" name="schema-3 records (M9): private carriages and harness interventions are drawn as recorded &gt; the extinction record carries its harness interventions in the timeline and the pathway panel" time="1.112393792">
+        <testcase classname="src/views/ecosystem/research.test.ts" name="inspection &gt; knows which components are open at a tick" time="0.014626917">
+        </testcase>
+        <testcase classname="src/views/ecosystem/research.test.ts" name="snapshots &gt; chooses the baseline, intervention and recovered ticks from the record" time="0.000711334">
+        </testcase>
+        <testcase classname="src/views/ecosystem/research.test.ts" name="snapshots &gt; reports the components, paths, boundary, address and observability that changed" time="0.0025295">
+        </testcase>
+        <testcase classname="src/views/ecosystem/research.test.ts" name="snapshots &gt; is empty between a snapshot and itself" time="0.000265916">
+        </testcase>
+        <testcase classname="src/views/ecosystem/research.test.ts" name="snapshots &gt; reports an Address Domain change" time="0.016421584">
+        </testcase>
+        <testcase classname="src/views/ecosystem/research.test.ts" name="path states &gt; reads the state of each path at a tick from its intervals" time="0.000863125">
+        </testcase>
+        <testcase classname="src/views/ecosystem/research.test.ts" name="SSS as mechanics (a visual representation rule) &gt; is neutral at the default setting and moves each mechanical quantity with its own parameter" time="0.007082">
+        </testcase>
+        <testcase classname="src/views/ecosystem/research.test.ts" name="SSS as mechanics (a visual representation rule) &gt; leaves the archive latch ajar in regions that are not stably active, and shut in the others" time="0.001944583">
+        </testcase>
+        <testcase classname="src/views/ecosystem/research.test.ts" name="SSS as mechanics (a visual representation rule) &gt; bounds every quantity" time="0.002908958">
+        </testcase>
+        <testcase classname="src/views/ecosystem/research.test.ts" name="the M2 tap &gt; is absent when M2 is not connected" time="0.000967292">
+        </testcase>
+        <testcase classname="src/views/ecosystem/research.test.ts" name="the M2 tap &gt; follows the recorded M2 term: lit while A1 senses it, extended when it does not, retracted when the run is collapsed, trembling for a noisy tap" time="0.001332333">
         </testcase>
     </testsuite>
-    <testsuite name="src/views/study/TotalObsPanel.test.tsx" timestamp="2026-10-30T02:47:03.716Z" hostname="usernoMacBook-Air.local" tests="5" failures="0" errors="0" skipped="0" time="0.021397291">
-        <testcase classname="src/views/study/TotalObsPanel.test.tsx" name="TotalObsPanel reads the stored run record &gt; shows one row per generation with its question and reachability verdict" time="0.007774417">
+    <testsuite name="src/views/ecosystem/researchDevice.test.ts" timestamp="2026-10-30T18:02:07.125Z" hostname="usernoMacBook-Air.local" tests="13" failures="0" errors="0" skipped="0" time="0.023908041">
+        <testcase classname="src/views/ecosystem/researchDevice.test.ts" name="the stage-two record &gt; is a real engine record that collapses, recovers and collapses again" time="0.006803292">
         </testcase>
-        <testcase classname="src/views/study/TotalObsPanel.test.tsx" name="TotalObsPanel reads the stored run record &gt; shows the failure that the harness applied and the generation it appears in" time="0.001328125">
+        <testcase classname="src/views/ecosystem/researchDevice.test.ts" name="deviceState &gt; reads the recovery phase from the status log, not from a label" time="0.002452125">
         </testcase>
-        <testcase classname="src/views/study/TotalObsPanel.test.tsx" name="TotalObsPanel reads the stored run record &gt; keeps the eight ontological layers and says which reader each belongs to" time="0.003222875">
+        <testcase classname="src/views/ecosystem/researchDevice.test.ts" name="deviceState &gt; shows a resource pulse only for a few ticks after its injection" time="0.001749542">
         </testcase>
-        <testcase classname="src/views/study/TotalObsPanel.test.tsx" name="TotalObsPanel reads the stored run record &gt; lists the metric definitions with their versions" time="0.000357042">
+        <testcase classname="src/views/ecosystem/researchDevice.test.ts" name="deviceState &gt; opens the boundary per cut channel and closes it again when the channel returns" time="0.000623875">
         </testcase>
-        <testcase classname="src/views/study/TotalObsPanel.test.tsx" name="planetary conditions &gt; state that the model is synthetic and make no claim about the Earth" time="0.005732459">
+        <testcase classname="src/views/ecosystem/researchDevice.test.ts" name="deviceState &gt; has a philosophical module only where a philosophical mode is configured, and counts what the traces recorded" time="0.000649083">
+        </testcase>
+        <testcase classname="src/views/ecosystem/researchDevice.test.ts" name="deviceState &gt; maps an observation to an aim, a coverage and a sampling tick" time="0.000901584">
+        </testcase>
+        <testcase classname="src/views/ecosystem/researchDevice.test.ts" name="deviceState &gt; is pure: the same inputs give the same state, and the record is not changed" time="0.000603833">
+        </testcase>
+        <testcase classname="src/views/ecosystem/researchDevice.test.ts" name="deviceState &gt; reads a stage-one record (no traces, no phil block) without error" time="0.001545208">
+        </testcase>
+        <testcase classname="src/views/ecosystem/researchDevice.test.ts" name="observationCoverage &gt; is the product of the region and the spatial lattice, bounded by 0..1" time="0.000389917">
+        </testcase>
+        <testcase classname="src/views/ecosystem/researchDevice.test.ts" name="the device layer and the array without a renderer &gt; shows the module only for a run that configures one, and a spark only while a claim is in the channel" time="0.0018515">
+        </testcase>
+        <testcase classname="src/views/ecosystem/researchDevice.test.ts" name="the device layer and the array without a renderer &gt; rings only a selected chamber" time="0.00074825">
+        </testcase>
+        <testcase classname="src/views/ecosystem/researchDevice.test.ts" name="the device layer and the array without a renderer &gt; turns every dish toward the observed target and darkens the dishes outside the coverage" time="0.000675334">
+        </testcase>
+        <testcase classname="src/views/ecosystem/researchDevice.test.ts" name="the device layer and the array without a renderer &gt; names the experimental function of every space of the structure" time="0.000524709">
         </testcase>
     </testsuite>
-    <testsuite name="src/wording.test.ts" timestamp="2026-10-30T02:47:03.717Z" hostname="usernoMacBook-Air.local" tests="8" failures="0" errors="0" skipped="0" time="0.055212084">
-        <testcase classname="src/wording.test.ts" name="prediction is scoped to the published result views &gt; no user-facing text denies prediction for the simulator as a whole" time="0.01182975">
+    <testsuite name="src/views/ecosystem/researchMap.test.ts" timestamp="2026-10-30T18:02:07.127Z" hostname="usernoMacBook-Air.local" tests="10" failures="0" errors="0" skipped="0" time="0.072777417">
+        <testcase classname="src/views/ecosystem/researchMap.test.ts" name="the research map &gt; draws the three boundaries with three different line types" time="0.006221208">
         </testcase>
-        <testcase classname="src/wording.test.ts" name="prediction is scoped to the published result views &gt; the deployment-scoped statement is present where the public site is described" time="0.001093958">
+        <testcase classname="src/views/ecosystem/researchMap.test.ts" name="the research map &gt; opens a gap in the XenoBody boundary while the coupling is cut" time="0.042118166">
         </testcase>
-        <testcase classname="src/wording.test.ts" name="the Philosophical Runtime is one operational region &gt; is never the last link of the hierarchy chain" time="0.001511875">
+        <testcase classname="src/views/ecosystem/researchMap.test.ts" name="the research map &gt; draws a path with the line type of its state: solid active, dashed with a cross when cut, dotted when quiet" time="0.000889625">
         </testcase>
-        <testcase classname="src/wording.test.ts" name="the Philosophical Runtime is one operational region &gt; sits beside the experimental runtime and the research results" time="0.000447041">
+        <testcase classname="src/views/ecosystem/researchMap.test.ts" name="the research map &gt; draws the sampling lattice at the observation stride, inside the region, and the occluder hatched" time="0.004323583">
         </testcase>
-        <testcase classname="src/wording.test.ts" name="a null measurement is not read as absence &gt; keeps the distinctions of the measurement interpretation" time="0.000952958">
+        <testcase classname="src/views/ecosystem/researchMap.test.ts" name="the research map &gt; shows the interval, the window and whether this tick is sampled" time="0.001574834">
         </testcase>
-        <testcase classname="src/wording.test.ts" name="a null measurement is not read as absence &gt; bit identity is never re-described as absence anywhere user-facing or in the research docs" time="0.0330635">
+        <testcase classname="src/views/ecosystem/researchMap.test.ts" name="the research map &gt; marks the Address Domain fault and the cell a stale address names" time="0.006003375">
         </testcase>
-        <testcase classname="src/wording.test.ts" name="a null measurement is not read as absence &gt; the redundancy label is defined as a measurement-bounded operational label" time="0.002264083">
+        <testcase classname="src/views/ecosystem/researchMap.test.ts" name="the research map &gt; draws the interventions that have happened by the tick, at their cells when they name one" time="0.001665166">
         </testcase>
-        <testcase classname="src/wording.test.ts" name="identity &gt; the application is XENO ZIRAN SIMULATOR and the public site is described as part of it" time="0.000665833">
+        <testcase classname="src/views/ecosystem/researchMap.test.ts" name="the research map &gt; removes a layer when it is switched off, and only that layer" time="0.001809208">
+        </testcase>
+        <testcase classname="src/views/ecosystem/researchMap.test.ts" name="the research map &gt; draws B1, B2 and B3 as different retained bodies and names the legs that close inside each" time="0.003675041">
+        </testcase>
+        <testcase classname="src/views/ecosystem/researchMap.test.ts" name="the research map &gt; opens a body only when a relation it retains is cut" time="0.000840209">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/views/ecosystem/routeGraph.test.ts" timestamp="2026-10-30T18:02:07.129Z" hostname="usernoMacBook-Air.local" tests="22" failures="0" errors="0" skipped="0" time="0.053364666">
+        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="the topology of a record &gt; agrees with the backend reading of the same record" time="0.012955125">
+        </testcase>
+        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="the topology of a record &gt; knows when each component was enabled, cut or switched on" time="0.001776625">
+        </testcase>
+        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="the routes at a tick &gt; before the stress: history enabled, the M2 tap installed and dormant, the M2 path dormant, the current MFS the base one" time="0.001162792">
+        </testcase>
+        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="the routes at a tick &gt; after the stress and before the switch: the history path has failed and the history-needing routes are closed" time="0.000366042">
+        </testcase>
+        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="the routes at a tick &gt; after the switch: the M2 path is an adaptive route (a fixed controller gives the fixed fallback), the current MFS is the destination, the transition and its trigger are known" time="0.001581458">
+        </testcase>
+        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="the routes at a tick &gt; closes a library route when a component it needs has failed" time="0.000664875">
+        </testcase>
+        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="which MFS a run is &gt; is none for the full arrangement: it contains every MFS, which says nothing about which one it is" time="0.002746167">
+        </testcase>
+        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="which MFS a run is &gt; is the MFS whose retained components are exactly the enabled ones" time="0.000333333">
+        </testcase>
+        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="which MFS a run is &gt; is the MFS a run is known to be, and its alternatives are the validated MFS of its own condition (not the rest of the library)" time="0.000878958">
+        </testcase>
+        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="the route graph &gt; has a node for every component and an edge only where a path, a transition or a library membership says so" time="0.004664083">
+        </testcase>
+        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="the route graph &gt; shows no transition before it happened" time="0.003048834">
+        </testcase>
+        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="the route graph &gt; is switched by the toggles" time="0.002976458">
+        </testcase>
+        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="replay markers of the routes &gt; marks history loss, the route switch, the M2 takeover, the MFS change and the failed reconfiguration" time="0.001825916">
+        </testcase>
+        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="replay markers of the routes &gt; marks a successful reconfiguration as such and an Address recovery" time="0.000646417">
+        </testcase>
+        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="replay markers of the routes &gt; carries the route state into the inspection" time="0.001837959">
+        </testcase>
+        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="the research map routes &gt; keeps the route layers off by default (they are not all shown at once)" time="0.003824792">
+        </testcase>
+        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="the research map routes &gt; draws the adaptive route and the failed route when their layers are on, and the current and alternative MFS in words" time="0.001874875">
+        </testcase>
+        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="the research map routes &gt; removes a route layer when it is switched off" time="0.002175958">
+        </testcase>
+        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="the research map routes &gt; draws a fixed controller&apos;s route as the fixed fallback, in its own layer" time="0.000800209">
+        </testcase>
+        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="the research map routes &gt; shows a rejected candidate only in its own layer, marked as not an MFS, with search and validation counts apart" time="0.0006855">
+        </testcase>
+        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="the research map routes &gt; draws a rejected candidate in the route graph as a dotted candidate node, switchable" time="0.001063541">
+        </testcase>
+        <testcase classname="src/views/ecosystem/routeGraph.test.ts" name="the research map routes &gt; marks the adaptive switch, the fixed fallback and an Address reassignment on the timeline" time="0.001126375">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/views/ecosystem/studies.test.ts" timestamp="2026-10-30T18:02:07.132Z" hostname="usernoMacBook-Air.local" tests="4" failures="0" errors="0" skipped="0" time="0.00962775">
+        <testcase classname="src/views/ecosystem/studies.test.ts" name="study table helpers &gt; formats statistics and missing values without inventing numbers" time="0.003330416">
+        </testcase>
+        <testcase classname="src/views/ecosystem/studies.test.ts" name="study table helpers &gt; groups in first-seen order" time="0.001212333">
+        </testcase>
+        <testcase classname="src/views/ecosystem/studies.test.ts" name="study table helpers &gt; lays out the history-necessity map and counts every class, including a reversed one" time="0.000802791">
+        </testcase>
+        <testcase classname="src/views/ecosystem/studies.test.ts" name="study table helpers &gt; shows a non-monotone recovery response as separate runs of the same region" time="0.00148925">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/views/ecosystem/technical.test.ts" timestamp="2026-10-30T18:02:07.133Z" hostname="usernoMacBook-Air.local" tests="12" failures="0" errors="0" skipped="0" time="4.74428125">
+        <testcase classname="src/views/ecosystem/technical.test.ts" name="projection &gt; maps a point into the front, side and top views" time="0.014786708">
+        </testcase>
+        <testcase classname="src/views/ecosystem/technical.test.ts" name="projection &gt; projects the edges of a box into the extent of the box, in the frame of its root" time="0.0047495">
+        </testcase>
+        <testcase classname="src/views/ecosystem/technical.test.ts" name="projection &gt; uses the first level of a LOD only" time="0.003028709">
+        </testcase>
+        <testcase classname="src/views/ecosystem/technical.test.ts" name="measured dimensions &gt; reads the height of node A from its geometry: the frame height it was built with, the mast and lamp above it and the probe below it" time="0.024437084">
+        </testcase>
+        <testcase classname="src/views/ecosystem/technical.test.ts" name="measured dimensions &gt; reads probe lengths from the geometry and they equal the specified lengths" time="0.027439417">
+        </testcase>
+        <testcase classname="src/views/ecosystem/technical.test.ts" name="measured dimensions &gt; reports the plate thickness as the build parameter, and that parameter is the real extrusion depth" time="0.0231625">
+        </testcase>
+        <testcase classname="src/views/ecosystem/technical.test.ts" name="measured dimensions &gt; lists the dimension lines of a view: overall width and height equal the measured extent of the body" time="0.016975125">
+        </testcase>
+        <testcase classname="src/views/ecosystem/technical.test.ts" name="components, states and routing &gt; gives every listed component an identifier, built-from parameters, a measured extent and a state with its reason" time="0.022200291">
+        </testcase>
+        <testcase classname="src/views/ecosystem/technical.test.ts" name="components, states and routing &gt; shows the coupling as cut while the interaction channel is cut and as intact after" time="0.001863583">
+        </testcase>
+        <testcase classname="src/views/ecosystem/technical.test.ts" name="components, states and routing &gt; reads collapse, sampling and the Address Domain fault into the states of the probes" time="0.001215708">
+        </testcase>
+        <testcase classname="src/views/ecosystem/technical.test.ts" name="components, states and routing &gt; routes the cables as polylines of the three kinds in every view, and draws fasteners as dots" time="0.004585083">
+        </testcase>
+        <testcase classname="src/views/ecosystem/technical.test.ts" name="components, states and routing &gt; draws every body: the edge lists of the three views are not empty and share the vertical extent between front and side" time="4.580856959">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/views/lab/hifi/assemblies.test.ts" timestamp="2026-10-30T18:02:07.135Z" hostname="usernoMacBook-Air.local" tests="18" failures="0" errors="0" skipped="0" time="53.201458166">
+        <testcase classname="src/views/lab/hifi/assemblies.test.ts" name="the scene graph draws executable objects at the transformed recorded positions &gt; every carriage tool tip and every sample sits exactly at physToView(recorded position)" time="1.396726083">
+        </testcase>
+        <testcase classname="src/views/lab/hifi/assemblies.test.ts" name="the scene graph draws executable objects at the transformed recorded positions &gt; chamber floors and walls have the MuJoCo geom sizes and positions" time="0.804993">
+        </testcase>
+        <testcase classname="src/views/lab/hifi/assemblies.test.ts" name="the scene graph draws executable objects at the transformed recorded positions &gt; every object carries a layer and a category; architecture never carries a selection of an apparatus" time="1.137547875">
+        </testcase>
+        <testcase classname="src/views/lab/hifi/assemblies.test.ts" name="quality levels change detail, never the scientific state drawn &gt; layer A and B transforms are identical at every quality level" time="1.133629667">
+        </testcase>
+        <testcase classname="src/views/lab/hifi/assemblies.test.ts" name="quality levels change detail, never the scientific state drawn &gt; detail differs between levels (instanced parts), so the comparison above is not vacuous" time="0.418072416">
+        </testcase>
+        <testcase classname="src/views/lab/hifi/assemblies.test.ts" name="mechanical coherence &gt; no gantry column or rail passes through a chamber housing (found in browser screenshots, fixed)" time="0.026948708">
+        </testcase>
+        <testcase classname="src/views/lab/hifi/assemblies.test.ts" name="backward compatibility with earlier record schemas &gt; a schema-1 record without physics (M2) and one with physics but no systems (M3) build and draw" time="0.582509916">
+        </testcase>
+        <testcase classname="src/views/lab/hifi/assemblies.test.ts" name="connection terminals stay clear of every gantry part over the whole record &gt; the highest point any rail, bridge, trolley, mast or carriage reaches is below the terminals" time="0.637415334">
+        </testcase>
+        <testcase classname="src/views/lab/hifi/assemblies.test.ts" name="system apparatus never interpenetrate (found in screenshots: a remote sensor inside the hub) &gt; no two sensor heads, hubs, remote sensors or stores overlap, at sampled steps of every published record" time="2.628341375">
+        </testcase>
+        <testcase classname="src/views/lab/hifi/assemblies.test.ts" name="a failed gantry is drawn dark without changing any other part (shared-material bug found in review) &gt; at a recorded failure, only that carriage darkens; every rail keeps the steel colour" time="0.465742875">
+        </testcase>
+        <testcase classname="src/views/lab/hifi/assemblies.test.ts" name="full reachable envelope of every gantry &gt; every recorded tool tip of every published record lies within its gantry&apos;s drawn rail envelope" time="2.000666917">
+        </testcase>
+        <testcase classname="src/views/lab/hifi/assemblies.test.ts" name="full reachable envelope of every gantry &gt; no recorded carriage, tool or mast position intersects a sensor, hub, store or chamber instrument" time="6.088838542">
+        </testcase>
+        <testcase classname="src/views/lab/hifi/assemblies.test.ts" name="synthetic sweep of every gantry over its whole reachable envelope at travel height &gt; a carriage and its mast anywhere in the reachable envelope meet no static apparatus, service housing or other gantry&apos;s column" time="20.083373667">
+        </testcase>
+        <testcase classname="src/views/lab/hifi/assemblies.test.ts" name="a carried sample and the gripper jaws clear every static part (found in M8.2: the travel plane ignored the load) &gt; at every recorded step, a carried sample and closed jaws meet no rim, instrument, sensor or store" time="3.121535166">
+        </testcase>
+        <testcase classname="src/views/lab/hifi/assemblies.test.ts" name="a carried sample and the gripper jaws clear every static part (found in M8.2: the travel plane ignored the load) &gt; closed jaws meet the recorded sample faces at every carrying step; open jaws clear every resting sample" time="11.379286958">
+        </testcase>
+        <testcase classname="src/views/lab/hifi/assemblies.test.ts" name="relocated system apparatus stand clear of the static installation (M8.2: moved outside the reach envelopes) &gt; no sensor head, hub, remote sensor or store meets a chamber vessel, a gantry column or a service housing" time="0.866196583">
+        </testcase>
+        <testcase classname="src/views/lab/hifi/assemblies.test.ts" name="connection contrast (M8.2: idle lines dimmed so the apparatus dominates; no line removed) &gt; a pair in a recorded event is drawn at full brightness, idle pairs below it and ordered by recorded count" time="0.203446125">
+        </testcase>
+        <testcase classname="src/views/lab/hifi/assemblies.test.ts" name="system B receiver points at its recorded remote sensors (M8.2) &gt; one pickup arm per configured remote sensor, each aimed at that sensor within 1°" time="0.210631292">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/views/lab/hifi/model.test.ts" timestamp="2026-10-30T18:02:07.137Z" hostname="usernoMacBook-Air.local" tests="12" failures="0" errors="0" skipped="0" time="4.6146985">
+        <testcase classname="src/views/lab/hifi/model.test.ts" name="coordinates: rendered position = transform of the recorded physical position &gt; the transform is invertible and places a resting sample on its chamber floor" time="0.074618417">
+        </testcase>
+        <testcase classname="src/views/lab/hifi/model.test.ts" name="coordinates: rendered position = transform of the recorded physical position &gt; every recorded sample at rest lies over a chamber floor or a port of the layout" time="0.011492625">
+        </testcase>
+        <testcase classname="src/views/lab/hifi/model.test.ts" name="what a system can experimentally access equals the backend (science.py candidates) at every decision step &gt; m9-separated-resources-7000" time="3.546988292">
+        </testcase>
+        <testcase classname="src/views/lab/hifi/model.test.ts" name="what a system can experimentally access equals the backend (science.py candidates) at every decision step &gt; m9-extinction-relocation-7000" time="0.387310125">
+        </testcase>
+        <testcase classname="src/views/lab/hifi/model.test.ts" name="transport completion is not delivery &gt; a transfer is &quot;delivered&quot; only with a recorded material_delivered event; a blocked one stays &quot;delivery blocked&quot;" time="0.011290958">
+        </testcase>
+        <testcase classname="src/views/lab/hifi/model.test.ts" name="events, transitions and provenance reference recorded events &gt; event ids are unique and every recorded transition points to an existing event" time="0.075282292">
+        </testcase>
+        <testcase classname="src/views/lab/hifi/model.test.ts" name="events, transitions and provenance reference recorded events &gt; extinction and re-ignition follow the M9-C definition and agree with the published confirmatory run" time="0.010528584">
+        </testcase>
+        <testcase classname="src/views/lab/hifi/model.test.ts" name="events, transitions and provenance reference recorded events &gt; a delivery is traced back to the selection that initiated it, forward to its observation; no attribution is invented" time="0.005301833">
+        </testcase>
+        <testcase classname="src/views/lab/hifi/model.test.ts" name="inspection shows recorded values or an availability status — never an invented value &gt; a chamber outside a system&apos;s coverage is reported as outside its observation range, not as zero" time="0.012684833">
+        </testcase>
+        <testcase classname="src/views/lab/hifi/model.test.ts" name="inspection shows recorded values or an availability status — never an invented value &gt; private carriages say that per-system leg counts are unavailable rather than showing zero" time="0.002395333">
+        </testcase>
+        <testcase classname="src/views/lab/hifi/model.test.ts" name="inspection shows recorded values or an availability status — never an invented value &gt; in the shared laboratory, mediation counts the legs each system had served on a gantry" time="0.355218334">
+        </testcase>
+        <testcase classname="src/views/lab/hifi/model.test.ts" name="live and replay give the same model state for the same recorded state &gt; a record grown step by step (as the live viewer does) equals the replayed record at every compared step" time="0.105935375">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/views/lab/hifi/quality.test.ts" timestamp="2026-10-30T18:02:07.139Z" hostname="usernoMacBook-Air.local" tests="3" failures="0" errors="0" skipped="0" time="0.007138125">
+        <testcase classname="src/views/lab/hifi/quality.test.ts" name="drawing-buffer pixel ratio per quality level (M8.2 high-DPI investigation) &gt; DPR-1 displays are unchanged at every level" time="0.002894458">
+        </testcase>
+        <testcase classname="src/views/lab/hifi/quality.test.ts" name="drawing-buffer pixel ratio per quality level (M8.2 high-DPI investigation) &gt; balanced keeps 1.5 on small canvases and stays within its pixel budget on large DPR-2 canvases, never below 1" time="0.001186708">
+        </testcase>
+        <testcase classname="src/views/lab/hifi/quality.test.ts" name="drawing-buffer pixel ratio per quality level (M8.2 high-DPI investigation) &gt; high keeps the full ratio up to 2 (its DPR-2 cost is a documented limit)" time="0.000375667">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/views/lab/labScene.test.ts" timestamp="2026-10-30T18:02:07.140Z" hostname="usernoMacBook-Air.local" tests="9" failures="0" errors="0" skipped="0" time="4.777488583">
+        <testcase classname="src/views/lab/labScene.test.ts" name="every drawn quantity is a recorded runtime-derived value &gt; shutters, cores and conduits equal the recorded apparatus state at every step" time="1.994662708">
+        </testcase>
+        <testcase classname="src/views/lab/labScene.test.ts" name="every drawn quantity is a recorded runtime-derived value &gt; a highlight exists only within HIGHLIGHT_STEPS after a recorded event of that chamber or conduit" time="0.216365959">
+        </testcase>
+        <testcase classname="src/views/lab/labScene.test.ts" name="every drawn quantity is a recorded runtime-derived value &gt; every recorded event carries a runtime cause" time="0.000877458">
+        </testcase>
+        <testcase classname="src/views/lab/labScene.test.ts" name="every drawn quantity is a recorded runtime-derived value &gt; physical bodies are drawn at their recorded physical positions" time="0.989578542">
+        </testcase>
+        <testcase classname="src/views/lab/labScene.test.ts" name="every drawn quantity is a recorded runtime-derived value &gt; rejects anything that is not a laboratory record" time="0.001491625">
+        </testcase>
+        <testcase classname="src/views/lab/labScene.test.ts" name="scientific systems are drawn from the recorded science state &gt; coverage, sensor, pending experiment and isolation equal the recorded values" time="0.002173792">
+        </testcase>
+        <testcase classname="src/views/lab/labScene.test.ts" name="scientific systems are drawn from the recorded science state &gt; the published schema-2 record (M7 ALL, seed 6000) validates and draws every system from its recorded state" time="0.897132667">
+        </testcase>
+        <testcase classname="src/views/lab/labScene.test.ts" name="schema-3 records (M9): private carriages and harness interventions are drawn as recorded &gt; the separated-resources record validates; every carriage is drawn at its recorded tip, per bay and group" time="0.348677708">
+        </testcase>
+        <testcase classname="src/views/lab/labScene.test.ts" name="schema-3 records (M9): private carriages and harness interventions are drawn as recorded &gt; the extinction record carries its harness interventions in the timeline and the pathway panel" time="0.309762042">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/views/study/TotalObsPanel.test.tsx" timestamp="2026-10-30T18:02:07.142Z" hostname="usernoMacBook-Air.local" tests="5" failures="0" errors="0" skipped="0" time="0.03272625">
+        <testcase classname="src/views/study/TotalObsPanel.test.tsx" name="TotalObsPanel reads the stored run record &gt; shows one row per generation with its question and reachability verdict" time="0.009078875">
+        </testcase>
+        <testcase classname="src/views/study/TotalObsPanel.test.tsx" name="TotalObsPanel reads the stored run record &gt; shows the failure that the harness applied and the generation it appears in" time="0.00077025">
+        </testcase>
+        <testcase classname="src/views/study/TotalObsPanel.test.tsx" name="TotalObsPanel reads the stored run record &gt; keeps the eight ontological layers and says which reader each belongs to" time="0.001329833">
+        </testcase>
+        <testcase classname="src/views/study/TotalObsPanel.test.tsx" name="TotalObsPanel reads the stored run record &gt; lists the metric definitions with their versions" time="0.000315583">
+        </testcase>
+        <testcase classname="src/views/study/TotalObsPanel.test.tsx" name="planetary conditions &gt; state that the model is synthetic and make no claim about the Earth" time="0.00861475">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/wording.test.ts" timestamp="2026-10-30T18:02:07.143Z" hostname="usernoMacBook-Air.local" tests="8" failures="0" errors="0" skipped="0" time="0.081524833">
+        <testcase classname="src/wording.test.ts" name="prediction is scoped to the published result views &gt; no user-facing text denies prediction for the simulator as a whole" time="0.016481125">
+        </testcase>
+        <testcase classname="src/wording.test.ts" name="prediction is scoped to the published result views &gt; the deployment-scoped statement is present where the public site is described" time="0.0016205">
+        </testcase>
+        <testcase classname="src/wording.test.ts" name="the Philosophical Runtime is one operational region &gt; is never the last link of the hierarchy chain" time="0.00109875">
+        </testcase>
+        <testcase classname="src/wording.test.ts" name="the Philosophical Runtime is one operational region &gt; sits beside the experimental runtime and the research results" time="0.000311375">
+        </testcase>
+        <testcase classname="src/wording.test.ts" name="a null measurement is not read as absence &gt; keeps the distinctions of the measurement interpretation" time="0.000623708">
+        </testcase>
+        <testcase classname="src/wording.test.ts" name="a null measurement is not read as absence &gt; bit identity is never re-described as absence anywhere user-facing or in the research docs" time="0.054425292">
+        </testcase>
+        <testcase classname="src/wording.test.ts" name="a null measurement is not read as absence &gt; the redundancy label is defined as a measurement-bounded operational label" time="0.002942833">
+        </testcase>
+        <testcase classname="src/wording.test.ts" name="identity &gt; the application is XENO ZIRAN SIMULATOR and the public site is described as part of it" time="0.000940792">
         </testcase>
     </testsuite>
 </testsuites>

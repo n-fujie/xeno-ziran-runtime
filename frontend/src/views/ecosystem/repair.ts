@@ -47,8 +47,8 @@ export type RecoveryClass = 'internal' | 'world' | 'combined' | 'none';
 export interface StripCell { tick: number; classes: RecoveryClass[] }
 const inside = (w: number[][], t: number) => w.some(([a, b]) => t >= a && t <= b);
 
-/** The reachable-recovery strip of a stress: for every tick of the tested range, which kinds of tested action recover the run (one-tick resolution to tick 170, and to tick 330 for the windows that were still open at 170; a tick no tested action recovers is ``none``). It is a region of the tested action space, not of the world. */
-export function recoveryStrip(row: StressRow, from = 101, to = 330): StripCell[] {
+/** The reachable-recovery strip of a stress: for every tick of the tested range, which kinds of tested action recover the run (one-tick resolution to tick 170, to tick 330 for the windows that were still open at 170, and to tick 1140 (measured with the extended horizon) for the three still open at 330; the strip shows 101-420; a tick no tested action recovers is ``none``). It is a region of the tested action space, not of the world. */
+export function recoveryStrip(row: StressRow, from = 101, to = 420): StripCell[] {
   const out: StripCell[] = [];
   for (let t = from; t <= to; t++) {
     const c: RecoveryClass[] = [];

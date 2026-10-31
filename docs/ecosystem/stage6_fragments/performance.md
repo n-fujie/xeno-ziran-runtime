@@ -1,3 +1,39 @@
+### Final series (the verdict of this section)
+
+The first series (below) was noisy. A second series was run on the final tree, with its design fixed before any of its data were seen: **12 interleaved pairs** (Stage 5 build on port 3034, Stage 6 build on port 3031, the order alternating each repetition), balanced tier, 150 frames, 1672 x 808, the six conditions, each run started only when the 1-minute load average was below 3 (it waited at most 10 minutes and then ran anyway; the load at the start of every run is in `perf_stage6/paired_final/*.load`: 2.49-5.07, one run at 5.07). The rule is the one fixed for Stages 4 and 5 (CI lower bound above 1.05: regression; upper bound below 1.05: no meaningful regression; otherwise inconclusive); no repetition was excluded. (A first attempt at this series produced no data: the server's session limit answered 429 and the page never became ready; the limit was raised as in all earlier series and the series was run again; nothing from the failed attempt exists.)
+
+| all 48 measures | regression | no meaningful regression | inconclusive |
+|---|---|---|---|
+| Stage 6 against Stage 5, 12 pairs | 0 | 10 | 38 |
+| **A/A control**: the Stage 5 build on two ports, 12 pairs, three conditions (24 measures) | 0 | 8 | 16 |
+
+Medians of the frame time (ms), Stage 5 against Stage 6:
+
+| condition | mode | Stage 5 | Stage 6 | paired ratio | 95 % CI | verdict |
+|---|---|---|---|---|---|---|
+| habitat | static | 16.35 | 16.65 | 1.003 | [0.985, 1.101] | inconclusive |
+| habitat | orbit | 17.2 | 17.15 | 1.014 | [0.971, 1.136] | inconclusive |
+| habitat+repair | static | 14.25 | 14.05 | 1.004 | [0.959, 1.062] | inconclusive |
+| habitat+repair | orbit | 15.45 | 14.75 | 0.977 | [0.883, 1.021] | no meaningful regression |
+| habitat+repairtech | static | 14.2 | 13.8 | 0.979 | [0.925, 1.007] | no meaningful regression |
+| habitat+repairtech | orbit | 15.1 | 14.7 | 0.997 | [0.948, 1.034] | no meaningful regression |
+| habitat+research | static | 14.2 | 13.95 | 0.979 | [0.969, 1.01] | no meaningful regression |
+| habitat+research | orbit | 14.6 | 14.5 | 0.98 | [0.97, 1.014] | no meaningful regression |
+| habitat+technical | static | 14.35 | 14.5 | 1.004 | [0.99, 1.028] | no meaningful regression |
+| habitat+technical | orbit | 14.9 | 15.25 | 1.027 | [0.948, 1.061] | inconclusive |
+| overview | static | 12.5 | 12.4 | 1.003 | [0.961, 1.052] | inconclusive |
+| overview | orbit | 15.65 | 15.7 | 1.003 | [0.978, 1.142] | inconclusive |
+
+**What the A/A control shows.** Two ports serving the *same* build, measured the same way, give 16 inconclusive and 8 no-meaningful-regression verdicts out of 24; the width of the 95 % interval of a tail measure (p95, p99, max) is 0.13-0.56 (median 0.34) in the A/A and 0.07-0.73 (median 0.27) in the Stage 6 against Stage 5 series; the widest A/A interval is habitat+research orbit max: ratio 0.919 [0.617, 1.179] between identical builds. So on this machine, with 12 pairs, a tail measure cannot be separated from a 5 % effect whatever the build; the inconclusive verdicts of the tails are the method's resolution and not a finding about Stage 6. The number of pairs that would be needed to bring a tail interval within 5 % is roughly an order of magnitude larger (the interval narrows with the square root of the number of pairs); it was not run.
+
+**Verdict, Stage 6 against Stage 5.** *No regression* in any of the 48 measures of the final series (and none in the extended and the low-load analyses of the first series; the one flag of the first series' planned analysis, habitat static p99, did not reappear: ratio 1.163 [0.946, 1.526] in the final series). By the rule, the overall verdict is **INCONCLUSIVE** (no measure is a regression, 10 are shown not to be one, 38 cannot be decided); it is not NO_MEANINGFUL_REGRESSION, and it is not changed by the arguments that follow. What the data and the render counters support: the frame-time **medians** are within a few percent in every condition (6 of 12 medians are shown not to be a regression, the others are inconclusive), and the counters that decide the render cost (draw calls, triangles, geometry uploads, programs built, LOD switches, visibility flips) are identical or within the table below. A cost of the repair view of the order of 10-20 % at the tail is **not excluded**; a cost of several percent at the median is unlikely.
+
+<!-- first Stage 6 series (kept) -->
+
+
+
+#### The first Stage 6 series
+
 **Method.** The Stage 5 build (`1d1e331`, port 3034) and the Stage 6 build (this tree, port 3031) were measured **interleaved in time**, the order alternating each repetition, balanced tier, 150 frames, 1672 x 808, headless Chromium on the GPU, the preview browser pane closed, nothing built during a run. Conditions: habitat and overview (static, orbit), and with the UI open:
 the RESEARCH tab (`+research`), the technical sheet (`+technical`), the RESEARCH tab with a **repaired run, the repair panel and the recovery map** (`+repair`), the technical sheet with the **repair figure and the repair layers** (`+repairtech`). A build without the repair view ignores the repair parameters, so for Stage 5 the same URLs measure the research tab / technical sheet without a repair; the difference is the cost of what Stage 6 adds.
 Same rule as for Stages 4 and 5, fixed before any of this data: paired ratio per repetition, 95 % bootstrap interval (10 000 resamples, fixed seed); *regression* if the lower bound exceeds 1.05, *no meaningful regression* if the upper bound is below 1.05, otherwise *inconclusive*. Mean FPS is not used.

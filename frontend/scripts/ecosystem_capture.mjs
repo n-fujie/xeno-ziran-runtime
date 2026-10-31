@@ -98,6 +98,8 @@ export const SHOTS = {
   '71-mfs-repairability': 'tab=research&stress=coupling gain 0.5&ract=resource.pulse/1/0/113&seed=1&|eco-mfs-repairability',
   '72-address-three-restorations': 'tab=research&stress=Address partial 0.5&ract=address.restore/0/0/113&seed=1&|eco-address-three',
   '73-observation-vs-operational': 'tab=research&stress=coupling gain 0.5&ract=resource.pulse/1/0/113&seed=1&|eco-observation-recovery',
+  '74-extended-action-space': 'tab=research&stress=Address partial 0.5&ract=address.restore/0/0/113&seed=1&|eco-followup-classes',
+  '75-windows-measured-on': 'tab=research&stress=coupling gain 0.5&ract=resource.pulse/1/0/113&seed=1&|eco-open-windows',
   '70-replay-repair-markers': 'tab=research&stress=coupling gain 0.5&ract=resource.pulse/4/0/113&seed=1&|eco-replay',
 };
 

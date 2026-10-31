@@ -67,7 +67,7 @@ describe('failure class', () => {
 describe('the reachable-recovery strip', () => {
   const row = { internal_reconfiguration: { effective: true, windows: [[101, 113]] }, world_single: { effective: false, windows: [] }, combined: { effective: true, windows: [[114, 120], [130, 131]] } } as unknown as StressRow;
   it('has one cell per tick and labels each tick by what recovers it, a gap as none', () => {
-    const s = recoveryStrip(row); expect(s).toHaveLength(230); expect(s[0]).toEqual({ tick: 101, classes: ['internal'] });
+    const s = recoveryStrip(row); expect(s).toHaveLength(320); expect(s[0]).toEqual({ tick: 101, classes: ['internal'] });
     expect(s.find((c) => c.tick === 115)!.classes).toEqual(['combined']); expect(s.find((c) => c.tick === 125)!.classes).toEqual(['none']); expect(s.find((c) => c.tick === 130)!.classes).toEqual(['combined']);
   });
   it('writes the fragments of a window as they are, a gap being a gap', () => { expect(windowText([[101, 109], [131, 133], [135, 135]])).toBe('101-109, 131-133, 135'); expect(windowText([])).toBe('none'); });

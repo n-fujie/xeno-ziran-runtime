@@ -1,0 +1,107 @@
+{
+ "stress": "coupling gain 0.5",
+ "a1_firing_cost": 0.3,
+ "a1_upkeep_per_tick": 0.02,
+ "a1_energy_at_tick_300_unrepaired": {
+  "min": 2.04,
+  "max": 2.04
+ },
+ "tick_a1_energy_below_firing_cost_unrepaired": {
+  "min": 388,
+  "max": 388
+ },
+ "counterfactual_resource_pulse_1.0_horizon_1200": [
+  {
+   "pulse_tick": 383,
+   "by_upkeep": [
+    {
+     "a1_upkeep": 0.02,
+     "recovered_of_10": 10
+    },
+    {
+     "a1_upkeep": 0.0,
+     "recovered_of_10": 10
+    }
+   ]
+  },
+  {
+   "pulse_tick": 388,
+   "by_upkeep": [
+    {
+     "a1_upkeep": 0.02,
+     "recovered_of_10": 10
+    },
+    {
+     "a1_upkeep": 0.0,
+     "recovered_of_10": 10
+    }
+   ]
+  },
+  {
+   "pulse_tick": 389,
+   "by_upkeep": [
+    {
+     "a1_upkeep": 0.02,
+     "recovered_of_10": 0
+    },
+    {
+     "a1_upkeep": 0.0,
+     "recovered_of_10": 10
+    }
+   ]
+  },
+  {
+   "pulse_tick": 400,
+   "by_upkeep": [
+    {
+     "a1_upkeep": 0.02,
+     "recovered_of_10": 0
+    },
+    {
+     "a1_upkeep": 0.0,
+     "recovered_of_10": 10
+    }
+   ]
+  },
+  {
+   "pulse_tick": 500,
+   "by_upkeep": [
+    {
+     "a1_upkeep": 0.02,
+     "recovered_of_10": 0
+    },
+    {
+     "a1_upkeep": 0.0,
+     "recovered_of_10": 10
+    }
+   ]
+  },
+  {
+   "pulse_tick": 800,
+   "by_upkeep": [
+    {
+     "a1_upkeep": 0.02,
+     "recovered_of_10": 0
+    },
+    {
+     "a1_upkeep": 0.0,
+     "recovered_of_10": 10
+    }
+   ]
+  },
+  {
+   "pulse_tick": 1140,
+   "by_upkeep": [
+    {
+     "a1_upkeep": 0.02,
+     "recovered_of_10": 0
+    },
+    {
+     "a1_upkeep": 0.0,
+     "recovered_of_10": 10
+    }
+   ]
+  }
+ ],
+ "note": "the counterfactual changes the model (A1's upkeep), it is not a repair action; it shows what the closure depends on"
+}

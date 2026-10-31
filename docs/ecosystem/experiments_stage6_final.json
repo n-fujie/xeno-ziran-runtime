@@ -1,5 +1,5 @@
 {
-"definitions": "MEOS-0, sixth stage: the derived reading of Pipelines A, B and C, in one place, for the results table, the interface and the document. Everything is computed from the saved raw results (``experiments_stage6*.json``); nothing is typed in.\n\nDefinitions (fixed before the readings were taken):\n\n  effective tick         a tick at which a tested setting recovers sustained to every horizon on all five exploration seeds AND all five validation seeds (Pipeline B, one-tick resolution; ticks 101-170).\n  latest successful repair tick   the last tick at which any tested setting is effective.\n  irreversible tick (``irreversibility``)   the first tick after which no tested setting is effective at any later tested tick (ticks up to 170 at one-tick resolution; up to 330 for the windows still open at 170; up to 200 on the coarse grid). It is the next tick after the latest successful one, and it is a statement\n                          about the tested action space only. **If a window is still effective at the last tick tested, it has not closed: ``irreversibility`` is ``OPEN_THROUGH_TESTED_LIMIT`` and ``irreversible_tick`` is null** (never the next tick). ``CLOSED``: a window ended inside the tested range; ``NO_EFFECTIVE_TICK``: no tested setting is effective at any tested tick.\n  first window           the first contiguous run of effective ticks of any setting; ``fragments`` are all of them (the windows are not always contiguous: a gap is recorded, not smoothed).\n  reference repair       the validated setting of a stress with the lowest equal-weight normalised cost (switching, collateral disturbance, persistence energy rate, each divided by its maximum over the validated settings): an equal-weight convention, stated, with the raw costs beside it.\n  flags                  window closes before the unrepaired collapse (all repairs are timing-limited); only transiently recoverable (a setting recovers at the short horizon on every exploration seed and not at the long one, and nothing is validated); costly (every validated setting is above the cost limit).\n",
+"definitions": "MEOS-0, sixth stage: the derived reading of Pipelines A, B and C, in one place, for the results table, the interface and the document. Everything is computed from the saved raw results (``experiments_stage6*.json``); nothing is typed in.\n\nDefinitions (fixed before the readings were taken):\n\n  effective tick         a tick at which a tested setting recovers sustained to every horizon on all five exploration seeds AND all five validation seeds (Pipeline B, one-tick resolution; ticks 101-170).\n  latest successful repair tick   the last tick at which any tested setting is effective.\n  irreversible tick (``irreversibility``)   the first tick after which no tested setting is effective at any later tested tick (ticks up to 170 at one-tick resolution; up to 330 for the windows still open at 170, and up to 1140 (extended horizon 1200) for the three still open at 330; up to 200 on the coarse grid). It is the next tick after the latest successful one, and it is a statement\n                          about the tested action space only. **If a window is still effective at the last tick tested, it has not closed: ``irreversibility`` is ``OPEN_THROUGH_TESTED_LIMIT`` and ``irreversible_tick`` is null** (never the next tick). ``CLOSED``: a window ended inside the tested range; ``NO_EFFECTIVE_TICK``: no tested setting is effective at any tested tick.\n  first window           the first contiguous run of effective ticks of any setting; ``fragments`` are all of them (the windows are not always contiguous: a gap is recorded, not smoothed).\n  reference repair       the validated setting of a stress with the lowest equal-weight normalised cost (switching, collateral disturbance, persistence energy rate, each divided by its maximum over the validated settings): an equal-weight convention, stated, with the raw costs beside it.\n  flags                  window closes before the unrepaired collapse (all repairs are timing-limited); only transiently recoverable (a setting recovers at the short horizon on every exploration seed and not at the long one, and nothing is validated); costly (every validated setting is above the cost limit).\n",
 "stress_table": [
 {
 "stress": "coupling gain 0.5",
@@ -24,7 +24,7 @@
 149
 ],
 "flags": [
-"a window is still open at the end of the tested range (tick 330): no closure found"
+"recoverable only within a timing window"
 ],
 "internal_reconfiguration": {
 "effective": false,
@@ -43,7 +43,7 @@
 ],
 [
 124,
-330
+388
 ]
 ]
 },
@@ -90,7 +90,7 @@
 ],
 [
 124,
-330
+388
 ]
 ],
 "first_window": [
@@ -98,15 +98,15 @@
 105
 ],
 "earliest_effective_tick": 101,
-"latest_successful_repair_tick": 330,
-"irreversible_tick": null,
-"irreversibility": "OPEN_THROUGH_TESTED_LIMIT",
-"window_open_at_end_of_tested_range": true,
-"tested_range_end": 330,
+"latest_successful_repair_tick": 388,
+"irreversible_tick": 389,
+"irreversibility": "CLOSED",
+"window_open_at_end_of_tested_range": false,
+"tested_range_end": null,
 "irreversible_from_first_tested_tick": false,
 "tested_ticks": [
 101,
-170
+1140
 ],
 "unrepaired_run": {
 "outcomes_long": {
@@ -440,7 +440,7 @@
 145
 ],
 "flags": [
-"a window is still open at the end of the tested range (tick 330): no closure found",
+"recoverable only within a timing window",
 "recovered only by a combination (neither part alone)"
 ],
 "internal_reconfiguration": {
@@ -464,7 +464,7 @@
 ],
 [
 130,
-330
+383
 ]
 ]
 },
@@ -480,7 +480,7 @@
 ],
 [
 130,
-330
+383
 ]
 ],
 "first_window": [
@@ -488,15 +488,15 @@
 106
 ],
 "earliest_effective_tick": 101,
-"latest_successful_repair_tick": 330,
-"irreversible_tick": null,
-"irreversibility": "OPEN_THROUGH_TESTED_LIMIT",
-"window_open_at_end_of_tested_range": true,
-"tested_range_end": 330,
+"latest_successful_repair_tick": 383,
+"irreversible_tick": 384,
+"irreversibility": "CLOSED",
+"window_open_at_end_of_tested_range": false,
+"tested_range_end": null,
 "irreversible_from_first_tested_tick": false,
 "tested_ticks": [
 101,
-170
+1140
 ],
 "unrepaired_run": {
 "outcomes_long": {
@@ -612,7 +612,7 @@
 148
 ],
 "flags": [
-"a window is still open at the end of the tested range (tick 330): no closure found",
+"recoverable only within a timing window",
 "near miss at the decision tick (validation 3-4 of 5), nothing effective there",
 "recovered only by a combination (neither part alone)"
 ],
@@ -641,7 +641,7 @@
 ],
 [
 140,
-330
+383
 ]
 ]
 },
@@ -661,7 +661,7 @@
 ],
 [
 140,
-330
+383
 ]
 ],
 "first_window": [
@@ -669,15 +669,15 @@
 109
 ],
 "earliest_effective_tick": 101,
-"latest_successful_repair_tick": 330,
-"irreversible_tick": null,
-"irreversibility": "OPEN_THROUGH_TESTED_LIMIT",
-"window_open_at_end_of_tested_range": true,
-"tested_range_end": 330,
+"latest_successful_repair_tick": 383,
+"irreversible_tick": 384,
+"irreversibility": "CLOSED",
+"window_open_at_end_of_tested_range": false,
+"tested_range_end": null,
 "irreversible_from_first_tested_tick": false,
 "tested_ticks": [
 101,
-170
+1140
 ],
 "unrepaired_run": {
 "outcomes_long": {

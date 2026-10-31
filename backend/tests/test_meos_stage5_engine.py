@@ -16,7 +16,7 @@ def run(ivs=None, **cfg):
 
 def test_the_baseline_digest_and_the_version():
     r = run()
-    assert E.ENGINE_VERSION == "meos-0.4" and r["result_digest"] == BASELINE and "m2_sensed" not in r["traces"]
+    assert E.ENGINE_VERSION == "meos-0.5" and r["result_digest"] == BASELINE and "m2_sensed" not in r["traces"]  # meos-0.5 (the sixth-stage follow-up) adds opt-in mechanisms only: the baseline result digest is unchanged
 
 
 @pytest.mark.parametrize("path,neutral", [("coupling.gain", 1.0), ("environment.renew_delay", 0), ("history.lag", 0)])

@@ -21,27 +21,39 @@ def load(name: str) -> dict:
 
 @need
 def test_an_open_window_is_open_through_the_tested_limit_and_has_no_irreversible_tick():
+    """The rule: a window still effective at the last tick tested has not closed (no irreversible tick). Shown on the saved Pipeline B windows as they were before the extension (three are open at tick 330), and then on the extended measurement (all closed)."""
+    from xzr.meos import stage6_final as F
+
+    a, b, o = load(""), load("_refine"), load("_open_windows")
+    three = ("coupling gain 0.5", "renewal stopped", "Address partial 0.5")
+    for sid in three:
+        r = F.stress_row(a, b, sid)
+        assert r["irreversibility"] == "OPEN_THROUGH_TESTED_LIMIT" and r["irreversible_tick"] is None and r["latest_successful_repair_tick"] == r["tested_range_end"] == 330  # the end of the range is not a closure
+    ext = F.with_extension(b, o)
+    for sid, latest in zip(three, (388, 383, 383), strict=True):
+        r = F.stress_row(a, ext, sid)
+        assert r["irreversibility"] == "CLOSED" and r["latest_successful_repair_tick"] == latest and r["irreversible_tick"] == latest + 1 and r["tested_range_end"] is None
+    for w in o["windows"]:  # every window of the extension ended inside the range tested, and none is effective after its last effective tick
+        assert w["latest_effective_tick"] < w["ticks_tested"][1] and not [t for t in w["effective_ticks"] if t > w["latest_effective_tick"]]
     rows = {r["stress"]: r for r in load("_final")["stress_table"]}
     for r in rows.values():
-        if r["irreversibility"] == "OPEN_THROUGH_TESTED_LIMIT":
-            assert r["irreversible_tick"] is None and r["latest_successful_repair_tick"] == r["tested_range_end"] == 330  # the end of the range is not a closure
-        elif r["irreversibility"] == "CLOSED":
-            assert r["irreversible_tick"] == r["latest_successful_repair_tick"] + 1 and r["tested_range_end"] is None
-        else:
-            assert r["irreversibility"] == "NO_EFFECTIVE_TICK" and r["irreversible_tick"] is None and r["latest_successful_repair_tick"] is None
-    assert {k: v["irreversibility"] for k, v in rows.items() if v["irreversibility"] == "OPEN_THROUGH_TESTED_LIMIT"}.keys() == {"coupling gain 0.5", "renewal stopped", "Address partial 0.5"}
-    assert [r["irreversible_tick"] for r in rows.values() if r["irreversibility"] == "CLOSED"] == [110, 112, 121]
+        assert r["irreversibility"] == "CLOSED" and r["irreversible_tick"] == r["latest_successful_repair_tick"] + 1 and r["tested_range_end"] is None
+    assert [r["irreversible_tick"] for r in rows.values()] == [389, 110, 112, 384, 384, 121]
 
 
 @need
-def test_the_three_pulse_windows_that_stayed_open_were_measured_to_tick_330():
+def test_the_three_pulse_windows_that_stayed_open_were_measured_to_tick_330_and_then_to_1140():
     b = load("_refine")
     assert b["B1_extension"]["ticks"] == [171, 330] and b["B1_extension"]["windows_extended"] == 3
     want = {("coupling gain 0.5", (("resource.pulse", 1.0, 0),)), ("Address partial 0.5", (("address.restore", 0.0, 0), ("resource.pulse", 1.0, 0))), ("renewal stopped", (("renewal.restart", 0.0, 0), ("resource.pulse", 1.0, 0)))}
     got = {(w["stress"], tuple(map(tuple, w["parts"]))): w for w in b["B1_windows"] if w["latest_effective_tick"] == 330}
-    assert set(got) == want
+    assert set(got) == want  # Pipeline B as it was: the first range ended at 330 with these three still effective
     for w in got.values():
         assert w["effective_intervals"][-1][1] == 330 and w["ticks_tested"][1] == 330 and len(w["per_tick"]) == 230  # every tick 101-330 has its per-tick result, failures included
+    o = load("_open_windows")
+    assert o["extended_horizon"] == 1200 and o["last_tick_tested"] == 1140 and {(w["stress"], tuple(map(tuple, w["parts"]))) for w in o["windows"]} == want
+    for w in o["windows"]:
+        assert w["ticks_tested"] == [331, 1140] and len(w["per_tick"]) == 810  # every tick 331-1140, failures included
 
 
 @need
@@ -51,7 +63,7 @@ def test_every_cell_of_the_grid_is_in_the_csv_whatever_its_outcome():
     assert len(rows) == len(a["table"]) and {"effective", "partial", "not effective"} == {r["status"] for r in rows}
     assert sum(r["status"] == "not effective" for r in rows) > sum(r["status"] == "effective" for r in rows)  # failures outnumber successes and none was dropped
     t = list(csv.DictReader((DOCS / "experiments_stage6_results_table.csv").open()))
-    assert [r["irreversibility"] for r in t].count("OPEN_THROUGH_TESTED_LIMIT") == 3 and all(r["irreversible_tick"] == "" for r in t if r["irreversibility"] == "OPEN_THROUGH_TESTED_LIMIT")
+    assert [r["irreversibility"] for r in t] == ["CLOSED"] * 6 and [r["irreversible_tick"] for r in t] == ["389", "110", "112", "384", "384", "121"]  # no window is open at the end of the extended range
 
 
 @need

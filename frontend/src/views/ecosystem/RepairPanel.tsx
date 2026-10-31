@@ -13,14 +13,15 @@ export default function RepairPanel({ lib, repair, initial, busy, onRun }: { lib
   const [stress, setStress] = useState(initial.stress ?? 'history lost'), [mode, setMode] = useState<'controller' | 'actions'>(initial.actions?.length ? 'actions' : 'controller'), [ctl, setCtl] = useState(initial.controller ?? 'rule_based');
   const [rows, setRows] = useState<Row[]>(initial.actions?.length ? initial.actions : [{ action: 'resource.pulse', magnitude: 1, duration: 0, t: 113 }]);
   if (!lib) return <fieldset className="eco-group"><legend>world-state repair (sixth stage)</legend><div className="eco-note">The repair library is not available on this server.</div></fieldset>;
-  const runnable = lib.actions.filter((a) => a.status !== 'not implemented' && a.class !== 'C'), notImpl = lib.actions.filter((a) => a.status === 'not implemented');
+  const fu = lib.followup ?? null, builtLater = new Set((fu?.actions ?? []).map((a) => a.id));
+  const runnable = [...lib.actions.filter((a) => a.status !== 'not implemented' && a.class !== 'C'), ...(fu?.actions ?? [])], notImpl = lib.actions.filter((a) => a.status === 'not implemented' && !builtLater.has(a.id));
   const final = lib.final?.stress_table ?? [];
   const row = (i: number, patch: Partial<Row>) => setRows(rows.map((r, k) => (k === i ? { ...r, ...patch } : r)));
-  const spec = (id: string) => lib.actions.find((a) => a.id === id);
+  const spec = (id: string) => runnable.find((a) => a.id === id);
   const fail = repair ? failureOf(repair) : null;
   const ids = Object.keys(lib.stresses), cross = lib.cross;
   return (
-    <fieldset className="eco-group" data-testid="eco-repair-panel"><legend>world-state repair (sixth stage)</legend>
+    <fieldset className="eco-group" data-testid="eco-repair-panel" style={{ minWidth: 0 }}><legend>world-state repair (sixth stage)</legend>
       <div className="eco-note"><b>Three different things.</b> Internal reconfiguration (a component switched on or off) is class A; world-state repair (the coupling, the resource, the renewal, the Address) is class B; observation repair changes only what is observed and is shown in the observation table of the document. They are never counted as one.</div>
       <div className="eco-row"><label>stress <select value={stress} onChange={(e) => setStress(e.target.value)}>{[...ids, 'no stress'].map((s) => <option key={s} value={s}>{lib.stresses[s]?.label ?? s}</option>)}</select></label>
         <label>mode <select value={mode} onChange={(e) => setMode(e.target.value as 'controller' | 'actions')}><option value="controller">repair controller</option><option value="actions">explicit actions</option></select></label>
@@ -48,9 +49,9 @@ export default function RepairPanel({ lib, repair, initial, busy, onRun }: { lib
       <details open><summary className="dim">reachable recovery · by stress and tick (tested action space)</summary>
         {final.length ? <div data-testid="eco-recovery-map">{final.map((r: StressRow) => (
           <div key={r.stress} style={{ margin: '6px 0' }}><div className="dim">{`${r.label}: ${r.classification_at_any_tested_tick}${r.irreversibility === 'OPEN_THROUGH_TESTED_LIMIT' ? ` · OPEN_THROUGH_TESTED_LIMIT: still effective at tick ${r.tested_range_end}, the end of the tested range; irreversible tick null` : r.latest_successful_repair_tick !== null ? ` · latest successful repair tick ${r.latest_successful_repair_tick} · earliest irreversible ${r.irreversible_tick}` : ' · no tested action recovers it at any tested tick'}`}</div>
-            <div style={{ display: 'flex', height: 12 }} title="ticks 101-330, one cell per tick">{recoveryStrip(r).map((c) => <i key={c.tick} title={`tick ${c.tick}: ${c.classes.join(' + ')}`} style={{ flex: 1, background: CLASS_COLOR[c.classes[0]], opacity: c.classes[0] === 'none' ? 0.35 : 1 }} />)}</div></div>))}
+            <div style={{ display: 'flex', height: 12 }} title="ticks 101-420, one cell per tick">{recoveryStrip(r).map((c) => <i key={c.tick} title={`tick ${c.tick}: ${c.classes.join(' + ')}`} style={{ flex: 1, background: CLASS_COLOR[c.classes[0]], opacity: c.classes[0] === 'none' ? 0.35 : 1 }} />)}</div></div>))}
           <div className="eco-legend">{(Object.keys(CLASS_COLOR) as RecoveryClass[]).map((k) => <span key={k}><i style={{ background: CLASS_COLOR[k] }} />{k === 'none' ? 'no tested action recovers' : `recovered by ${k === 'internal' ? 'internal reconfiguration' : k === 'world' ? 'a world-state repair' : 'a combined repair'}`}</span>)}</div>
-          <div className="eco-note">A coloured cell is a tick at which a tested setting recovered the run, sustained to every applicable horizon, on all exploration and all validation seeds. The strip is a region of the action space that was tested, not of the world; the unrepaired run collapses at tick 144-159. OPEN_THROUGH_TESTED_LIMIT means the window is still effective at tick 330, the end of the tested range: it has not closed and no irreversible tick is claimed.</div></div> : <div className="eco-note">Run backend/scripts/meos_experiments_stage6_final.py to build the table.</div>}
+          <div className="eco-note">A coloured cell is a tick at which a tested setting recovered the run, sustained to every applicable horizon, on all exploration and all validation seeds. The strip is a region of the action space that was tested, not of the world; the unrepaired run collapses at tick 144-159. A window still effective at the last tick tested would be OPEN_THROUGH_TESTED_LIMIT (not closed, no irreversible tick claimed); the three that were open at tick 330 were measured on to tick 1140 with an extended horizon and all closed.</div></div> : <div className="eco-note">Run backend/scripts/meos_experiments_stage6_final.py to build the table.</div>}
       </details>
 
       <details open><summary className="dim">stress table: repairability, windows, minimum effective action</summary>
@@ -60,6 +61,17 @@ export default function RepairPanel({ lib, repair, initial, busy, onRun }: { lib
       <details open><summary className="dim">resource pulse: insufficient / effective / overshoot</summary>
         <table className="eco-table" data-testid="eco-pulse-bands"><thead><tr><th>stress</th><th>effective band</th><th>phases by pulse size</th></tr></thead>
           <tbody>{Object.entries(lib.final?.resource_non_monotonicity ?? {}).map(([sid, p]) => <tr key={sid}><td>{lib.stresses[sid]?.label ?? sid}</td><td>{p.effective_band[0] === null ? 'none' : `${p.effective_band[0]} - ${p.effective_band[1]}`}</td><td>{p.phases.map((b) => `${b.phase} ${b.from}-${b.to}`).join('; ')}</td></tr>)}</tbody></table></details>
+
+      {fu?.results && (
+        <details open><summary className="dim">extended action space (engine meos-0.5): coupling.bypass, resource.rerouting, address.temporary_local</summary>
+          <table className="eco-table" data-testid="eco-followup-classes"><thead><tr><th>stress</th><th>decision tick, original</th><th>decision tick, extended</th><th>any tested tick, original</th><th>any tested tick, extended</th></tr></thead>
+            <tbody>{Object.entries(fu.results.classification).map(([sid, c]) => <tr key={sid}><td>{lib.stresses[sid]?.label ?? sid}</td><td>{c.original_at_decision_tick_113}</td><td>{c.extended_at_decision_tick_113}</td><td>{c.original_at_any_tested_tick}</td><td>{c.extended_at_any_tested_tick}</td></tr>)}</tbody></table>
+          <div className="eco-note">The original columns are the frozen Stage 6 classification (the three actions were not built). The extended columns add them, with the same protocol (exploration seeds 1-5, validation 6-10).</div></details>)}
+      {fu?.open_windows && (
+        <details open><summary className="dim">windows that were open at tick 330, measured on with the extended horizon</summary>
+          <table className="eco-table" data-testid="eco-open-windows"><thead><tr><th>stress</th><th>setting</th><th>ticks tested</th><th>latest effective tick</th><th>effective intervals (last)</th></tr></thead>
+            <tbody>{fu.open_windows.windows.map((w, i) => <tr key={i}><td>{lib.stresses[w.stress]?.label ?? w.stress}</td><td>{w.parts.map((p) => `${p[0]} ${p[1]}`).join(' + ')}</td><td>{`${w.ticks_tested[0]}-${w.ticks_tested[1]}`}</td><td>{w.latest_effective_tick ?? 'none'}</td><td>{w.effective_intervals.slice(-2).map((x) => `${x[0]}-${x[1]}`).join(', ') || '-'}</td></tr>)}</tbody></table>
+          <div className="eco-note">{`Horizon ${fu.open_windows.extended_horizon}: an action tick is tested up to ${fu.open_windows.last_tick_tested}. A window still effective at the last tick tested would be OPEN_THROUGH_TESTED_LIMIT; here each ended earlier.`}</div></details>)}
 
       {cross && (
         <>

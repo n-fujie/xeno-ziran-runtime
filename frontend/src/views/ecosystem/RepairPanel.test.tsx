@@ -25,6 +25,15 @@ const lib: RepairLibraryOut = {
 };
 const html = (repair: RepairBlock | null = null, initial = {}, l: RepairLibraryOut | null = lib) => renderToString(<RepairPanel lib={l} repair={repair} initial={initial} busy={false} onRun={() => undefined} />);
 
+const withFollowup: RepairLibraryOut = {
+  ...lib,
+  followup: {
+    actions: [act('coupling.bypass', 'B', 'implemented', [0.5, 1]), act('resource.rerouting', 'B', 'implemented', [0.25, 1])],
+    results: { classification: { 'coupling gain 0.5': { original_at_decision_tick_113: 'externally repairable', extended_at_decision_tick_113: 'externally repairable', original_at_any_tested_tick: 'externally repairable', extended_at_any_tested_tick: 'externally repairable' } }, counts: {}, minimum_effective: [] },
+    open_windows: { extended_horizon: 1200, last_tick_tested: 1140, windows: [{ stress: 'coupling gain 0.5', parts: [['resource.pulse', 1, 0]], effective_intervals: [[331, 388]], latest_effective_tick: 388, ticks_tested: [331, 1140] }] },
+  },
+};
+
 describe('the repair panel', () => {
   it('says so when the library is missing', () => { expect(html(null, {}, null)).toContain('not available on this server'); });
   it('keeps the three kinds of recovery action apart in its words and its selectors, and offers no observation repair as a run action', () => {
@@ -44,7 +53,7 @@ describe('the repair panel', () => {
   });
   it('draws the reachable-recovery strips with one cell per tick, the windows with their gaps, and the pulse bands', () => {
     const h = html();
-    expect(h).toContain('data-testid="eco-recovery-map"'); expect((h.match(/title="tick \d+:/g) ?? []).length).toBe(230 * 2);
+    expect(h).toContain('data-testid="eco-recovery-map"'); expect((h.match(/title="tick \d+:/g) ?? []).length).toBe(320 * 2);
     expect(h).toContain('latest successful repair tick 140'); expect(h).toContain('earliest irreversible 141'); expect(h).toContain('no tested action recovers it at any tested tick');
     expect(h).toContain('101-105, 108-117, 124-140'); expect(h).toContain('effective recovery 0.6-2.5'); expect(h).toContain('overshoot 2.6-6'); expect(h).toContain('not of the world');
   });
@@ -53,5 +62,11 @@ describe('the repair panel', () => {
     expect(h).toContain('data-testid="eco-address-three"'); expect(h).toContain('Address restore at 113'); expect(h).toContain('<td>0/5</td><td>5/5</td>');  // the Address returns, the operation does not
     expect(h).toContain('data-testid="eco-mfs-repairability"'); expect(h).toContain('MFS-F1-1'); expect(h).toContain('neither (under the tested actions)');
     expect(h).toContain('data-testid="eco-observation-recovery"'); expect(h).toContain('INSUFFICIENT_TEMPORAL_RESOLUTION'); expect(h).toContain('<td>ACTIVE</td><td>COLLAPSED</td>');
+  });
+  it('runs the actions built in the follow-up and shows the extended action space and the windows measured on', () => {
+    const h = html(null, { actions: [{ action: 'resource.rerouting', magnitude: 0.25, duration: 0, t: 113 }] }, withFollowup);
+    expect(h).toContain('coupling.bypass [B]'); expect(h).toContain('resource.rerouting [B]');
+    expect(h).not.toContain('there is no spatial coupling path to bypass');  // no longer listed as something the engine cannot do
+    expect(h).toContain('data-testid="eco-followup-classes"'); expect(h).toContain('data-testid="eco-open-windows"'); expect(h).toContain('331-388'); expect(h).toContain('Horizon 1200');
   });
 });
