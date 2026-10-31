@@ -22,6 +22,7 @@ const en = {
   view_hpo: 'Heterogeneous Philosophical Operations',
   view_laboratory: '3D Laboratory',
   view_ecosystem: 'XENO ECOSYSTEM',
+  view_body: 'BODY / TOTAL OBSERVATION',
   view_study: 'Experiments',
 };
 

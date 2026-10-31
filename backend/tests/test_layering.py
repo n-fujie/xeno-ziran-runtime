@@ -28,6 +28,9 @@ ALLOWED = {
     "totalobs": {"totalobs", "hpo"},
     # MEOS (XENO ECOSYSTEM): a self-contained experimental layer; imports nothing of the rest of xzr (only the service imports it)
     "meos": {"meos"},
+    # TEOO (BODY / TOTAL OBSERVATION): body-observation records, provenance, an open body graph; self-contained, imports nothing
+    # of the rest of xzr (tests/test_teoo_layering.py also runs it in a fresh interpreter); only the service imports it
+    "teoo": {"teoo"},
 }
 
 

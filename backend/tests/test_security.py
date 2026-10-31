@@ -319,9 +319,14 @@ def test_no_route_runs_experiments_or_touches_the_filesystem():
         ("POST", "/api/meos/paths"), ("POST", "/api/meos/boundary-perturbation"), ("POST", "/api/meos/address-intervention"),
         ("POST", "/api/meos/run-log"), ("POST", "/api/meos/sss-classify"),
         ("POST", "/api/meos/route-topology"), ("POST", "/api/meos/reconfigure"), ("POST", "/api/meos/mfs-run"),
-        ("POST", "/api/meos/repair-run")])
+        ("POST", "/api/meos/repair-run"),
+        # TEOO (BODY / TOTAL OBSERVATION): body-observation data pass through these routes, nothing is stored; local runtime and
+        # same origin only, 403 under XZR_PUBLIC (see test_teoo_service.py, the local-only test)
+        ("POST", "/api/teoo/ingest"), ("POST", "/api/teoo/verify"), ("POST", "/api/teoo/coverage")])
     meos_src = Path(app_mod.__file__).with_name("meos.py").read_text()
     assert meos_src.count("local_only(request)") >= len([1 for r in routes if "/api/meos" in getattr(r, "path", "")])
+    teoo_src = Path(app_mod.__file__).with_name("teoo.py").read_text()
+    assert teoo_src.count("local_only(request)") >= len([1 for r in routes if "/api/teoo" in getattr(r, "path", "")])
     studies_src = Path(app_mod.__file__).with_name("studies.py").read_text()
     assert studies_src.count("local_only(request)") >= len([1 for r in routes if "/api/studies" in getattr(r, "path", "")])
     src = Path(app_mod.__file__).read_text()

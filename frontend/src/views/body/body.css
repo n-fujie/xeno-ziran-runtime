@@ -1,0 +1,23 @@
+/* BODY / TOTAL OBSERVATION — View A. Uses the application's tokens (--bg, --panel, --line, --text, --dim, --warn); state is encoded by fill pattern and outline as well as colour. */
+.teoo-root { display: grid; gap: 10px; align-content: start; padding: 12px 16px; overflow: auto; }
+.teoo-head { display: flex; gap: 12px; align-items: baseline; }
+.teoo-head h3 { margin: 0; letter-spacing: 0.08em; font-weight: 600; }
+.teoo-controls { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.teoo { position: relative; display: grid; gap: 8px; }
+.teoo-banner { border: 2px solid #ffd479; background: #2a2208; color: #ffe9b0; padding: 8px 12px; font-weight: 600; letter-spacing: 0.02em; position: sticky; top: 0; z-index: 3; }
+.teoo-note { border: 1px solid var(--line2); background: var(--panel); color: var(--dim); padding: 6px 10px; font-size: 11.5px; }
+.teoo-main { display: grid; grid-template-columns: minmax(180px, 320px) minmax(0, 1fr); gap: 16px; align-items: start; }
+.teoo-figure { position: relative; margin: 0; border: 1px solid var(--line2); background: var(--panel); padding: 8px; }
+.teoo-figure.synthetic { outline: 2px dashed #ffd479; outline-offset: -2px; }
+.teoo-figure svg { width: 100%; height: auto; max-height: 520px; display: block; }
+.teoo-watermark { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; font-size: 44px; font-weight: 700; letter-spacing: 0.18em; color: rgba(255, 212, 121, 0.16); transform: rotate(-24deg); user-select: none; }
+.teoo-mark { cursor: pointer; outline: none; }
+.teoo-mark:focus-visible circle, .teoo-mark.on circle { stroke: #fff; stroke-width: 1.6; }
+.teoo-side h4, .teoo-records h4, .teoo-protections h4 { margin: 4px 0; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--dim); }
+.teoo-legend { list-style: none; margin: 0 0 10px; padding: 0; display: grid; gap: 4px; }
+.teoo-legend li { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.teoo-target { margin: 6px 0; padding: 4px 8px; border-left: 2px solid var(--line2); }
+.teoo-target ul { margin: 2px 0 0; padding-left: 16px; }
+.teoo-records table { border-collapse: collapse; width: 100%; }
+.teoo-records th, .teoo-records td { text-align: left; padding: 3px 8px; border-bottom: 1px solid var(--line); }
+@media (max-width: 720px) { .teoo-main { grid-template-columns: 1fr; } .teoo-root { padding: 10px 16px; } }

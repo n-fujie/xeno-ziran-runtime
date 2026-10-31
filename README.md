@@ -108,6 +108,9 @@ protocol ([docs/HPO_PROTOCOL.md](docs/HPO_PROTOCOL.md)); results are in [docs/HP
 in the viewer (`?view=hpo`). No result is evidence for or against a philosophical doctrine
 ([docs/HPO.md](docs/HPO.md)).
 
+Body observation records (the open body-observation architecture of `?view=body`: provenance that cannot be rewritten silently,
+observation status, a declared body graph) are described in [docs/TEOO.md](docs/TEOO.md). Its example data are SYNTHETIC test data.
+
 ```bash
 .venv/bin/xzr hpo run hpo-002 --pilot --seeds 8
 ```
@@ -225,6 +228,8 @@ backend/
                   (escalation/), history operations (history.py: fork, removal, reactivation, migration)
   xzr/hpo         Heterogeneous Philosophical Operations: registry, instruments, operations, interaction engine,
                   causal history, sandboxed reconfiguration, HPO-001/002/003 (docs/HPO.md)
+  xzr/teoo        BODY / TOTAL OBSERVATION: sealed records of body observations (MEASURED / SYNTHETIC / RECONSTRUCTED_ESTIMATE /
+                  CONCEPTUAL), observation status, an open body graph, CSV/JSON ingestion, an XB-TRO adapter (docs/TEOO.md)
   xzr/cli.py      the `xzr` command; xzr/results.py: result schema, provenance, compare, export
   xzr/presets     experiment presets (JSON) and configuration validation
   experiments/    run_reduction.py; results/{reduction,reason,final_results}.json

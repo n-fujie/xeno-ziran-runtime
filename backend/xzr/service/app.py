@@ -845,6 +845,11 @@ from . import meos as _meos  # noqa: E402
 
 app.include_router(_meos.router)
 
+# TEOO: the BODY / TOTAL OBSERVATION endpoints (nothing stored; local runtime only)
+from . import teoo as _teoo  # noqa: E402
+
+app.include_router(_teoo.router)
+
 # ---------------------------------------------------------------------------------------------- static frontend
 if STATIC_DIR.is_dir():
     app.mount("/assets", StaticFiles(directory=STATIC_DIR / "assets"), name="assets")
