@@ -30,7 +30,7 @@ build-backend = "setuptools.build_meta"
 include = ["xzr*"]
 
 [tool.setuptools.package-data]
-xzr = ["presets/*.json", "_compat/hierarchies/*.npz"]
+xzr = ["presets/*.json", "_compat/hierarchies/*.npz", "teoo/*.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
