@@ -1,0 +1,81 @@
+{
+ "url": "https://teoo-preview.vercel.app/",
+ "errors": [],
+ "external": [],
+ "viewports": {
+  "desktop": {
+   "h4": [
+    "I-A · Legal subjecthood: fifteen guarant",
+    "I-A · Legal subjecthood: outcome taxonom",
+    "I-B · MHEG twelve duties (the earlier op",
+    "I-B · Functional crosswalk: twelve dutie",
+    "I-C · Governance principles: the fifteen",
+    "I-D · Legal transformation: the chain of",
+    "I-D · Legal transformation: the typed ch",
+    "I-D · Legal transformation: Translation ",
+    "I-D · Legal transformation: Ontological ",
+    "I-E · Receipt and proceedings: receipt f",
+    "I-F · Evidence and revision: scope of a ",
+    "I-G · Model against synthetic sensor: 25",
+    "I-H · Intervention and restoration: inte",
+    "I-H · Intervention and restoration: reme",
+    "I-H · Intervention and restoration: six ",
+    "I-I · Experimental evidence: R5-R16 and ",
+    "I-I · Experimental evidence: unverified "
+   ],
+   "tables": [
+    "teoo-guarantees:15",
+    "teoo-duties:12",
+    "teoo-crosswalk:13",
+    "teoo-principles:15",
+    "teoo-transform:9",
+    "teoo-receipts:4",
+    "teoo-proceedings:7",
+    "teoo-evidence-events:4",
+    "teoo-measurements:3",
+    "teoo-world:6",
+    "teoo-restoration:6",
+    "teoo-r-table:10",
+    "teoo-law-results:34"
+   ],
+   "overflowX": false
+  },
+  "mobile": {
+   "h4": [
+    "I-A · Legal subjecthood: fifteen guarant",
+    "I-A · Legal subjecthood: outcome taxonom",
+    "I-B · MHEG twelve duties (the earlier op",
+    "I-B · Functional crosswalk: twelve dutie",
+    "I-C · Governance principles: the fifteen",
+    "I-D · Legal transformation: the chain of",
+    "I-D · Legal transformation: the typed ch",
+    "I-D · Legal transformation: Translation ",
+    "I-D · Legal transformation: Ontological ",
+    "I-E · Receipt and proceedings: receipt f",
+    "I-F · Evidence and revision: scope of a ",
+    "I-G · Model against synthetic sensor: 25",
+    "I-H · Intervention and restoration: inte",
+    "I-H · Intervention and restoration: reme",
+    "I-H · Intervention and restoration: six ",
+    "I-I · Experimental evidence: R5-R16 and ",
+    "I-I · Experimental evidence: unverified "
+   ],
+   "tables": [
+    "teoo-guarantees:15",
+    "teoo-duties:12",
+    "teoo-crosswalk:13",
+    "teoo-principles:15",
+    "teoo-transform:9",
+    "teoo-receipts:4",
+    "teoo-proceedings:7",
+    "teoo-evidence-events:4",
+    "teoo-measurements:3",
+    "teoo-world:6",
+    "teoo-restoration:6",
+    "teoo-r-table:10",
+    "teoo-law-results:34"
+   ],
+   "overflowX": false
+  }
+ }
+}
