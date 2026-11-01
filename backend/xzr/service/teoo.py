@@ -17,6 +17,7 @@ from ..teoo import body as B
 from ..teoo import evidence as EV
 from ..teoo import export as EX
 from ..teoo import ingest as IN
+from ..teoo import lawbundle as LB
 from ..teoo import legal as LG
 from ..teoo import mapping as MP
 from ..teoo import mheg as MH
@@ -189,5 +190,5 @@ def legal(request: Request, seed: int = 3) -> dict:
         if len(_LEGAL) > 8:
             _LEGAL.clear()
         lb = LG.legal_bundle(seed)
-        _LEGAL[seed] = {**lb, "mheg": MH.mheg_bundle(lb)}
+        _LEGAL[seed] = {**lb, "mheg": MH.mheg_bundle(lb), "ledger": LB.law_bundle(seed)}
     return _LEGAL[seed]

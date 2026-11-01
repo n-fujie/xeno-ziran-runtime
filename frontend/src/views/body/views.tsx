@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import type { LegalBundle, MhegBundle, TeooBody, TeooChannel, TeooRecord } from './bodyApi';
+import type { LedgerBundle, LegalBundle, MhegBundle, TeooBody, TeooChannel, TeooRecord } from './bodyApi';
 import { channelOf, integratedRows, LEVELS, recordOf, segments, statusRuns, STATUS_COLOR, validRange, type ObsState, type Session } from './session';
 
 // BODY / TOTAL OBSERVATION — Views B to H. Each is a function of the session bundle (and of the shared time t); none computes a result: they show what the backend produced, with each item's class,
@@ -178,7 +178,7 @@ function DutyTable({ mh, an, proj }: { mh: MhegBundle; an: string; proj: MhegBun
         <tbody>{mh.duties.map((d) => { const p = proj.duties[d.id]; return (
           <tr key={d.id} data-duty={d.id} data-state={p.state}><td>{d.id}</td>
             <td>{d.name} <span className="dim">· {d.label_ja}</span><details><summary className="dim">function · evaluation target · evidence · what cannot be verified</summary>
-              <div><b>Function (this implementation's summary; {d.definition_status}):</b> {d.function}</div><div><b>Evaluated in the synthetic institution:</b> {d.evaluation_target}</div><div><b>Evidence needed:</b> {d.required_evidence}</div><div><b>Cannot be verified here:</b> {d.cannot_verify}</div>
+              <div><b>Function (this implementation's summary; {d.definition_status}):</b> {d.function}</div><div><b>Input (evaluated in the synthetic institution):</b> {d.input}</div><div><b>Evidence needed:</b> {d.required_evidence}</div><div><b>Authority subject:</b> {d.authority_subject}</div><div><b>Violation:</b> {d.violation_condition}</div><div><b>Indeterminate:</b> {d.indeterminate_condition}</div><div><b>Cannot be verified here:</b> {d.cannot_verify}</div>
               <div className="dim">{d.identity_with_guarantees}. {d.source}.</div></details></td>
             <td>{d.crosswalk_as_reported} <span className="dim">({d.mapping_kind})</span></td><td><DChip s={p.state} /></td><td className="small">{p.drivers.length ? p.drivers.join(', ') : '—'}</td></tr>); })}</tbody></table>
       <Note>A duty is shown as its worst mapped finding, never as an average or a total, and one failure is not offset by another. The twelve duties are a registry of their own; the guarantees do not replace them, and the correspondence says nothing about identity of definition.</Note>
@@ -200,6 +200,81 @@ function Crosswalk({ mh, proj }: { mh: MhegBundle; proj: MhegBundle['projections
   );
 }
 
+const Chip2 = ({ s: v }: { s: string }) => <span className="teoo-chip" style={{ borderColor: GSTATE_COLOR[v] ?? (v === 'ACCESS' ? '#c9a227' : v === 'METADATA' ? '#9bb0d0' : v === 'UNKNOWN' ? '#a58fd6' : v === 'CURRENT' ? '#78e696' : v.startsWith('STALE') ? '#ff8a70' : v === 'HISTORICAL' ? '#8a8a92' : v.startsWith('CLOSED') ? '#c9a227' : v === 'QUARANTINED' || v === 'REJECTED' ? '#ff8a70' : '#9bb0d0') }} data-state={v}>{v}</span>;
+
+function LedgerReceipts({ lb }: { lb: LedgerBundle }) {
+  const c = lb.demo.case, st = lb.demo.steps;
+  return (
+    <>
+      <h4>I-E · Receipt and proceedings: receipt first, evidence second (a persistent, append-only SQLite ledger on a SYNTHETIC case)</h4>
+      <div className="teoo-banner" role="note" data-testid="teoo-ledger-note">{lb.limits}. A receipt, a hash or a closure here creates no judicial or administrative authority (I12). {lb.note}.</div>
+      <table className="small teoo-table" data-testid="teoo-receipts"><thead><tr><th>seq</th><th>case</th><th>claim</th><th>state</th><th>reason</th></tr></thead>
+        <tbody>{c.receipts.map((r) => <tr key={r.receipt_seq} data-receipt={r.receipt_seq} data-state={r.state}><td>{r.receipt_seq}</td><td>{r.case_id}</td><td>{r.claim_id ?? '— none —'}</td><td><Chip2 s={r.state} /></td><td>{r.reason}</td></tr>)}</tbody></table>
+      <div className="small" data-testid="teoo-receipt-counts">65 valid submissions to one case: <b>{lb.demo.counts_65.ACTIVE} ACTIVE</b>, <b>{lb.demo.counts_65.QUEUED} QUEUED</b>, none lost; the historical in-memory condition (64) is a condition of an experiment, not a rule of this ledger. Input above 65,536 bytes is refused and is not a receipt (nothing is implied about its durability).</div>
+      <table className="small teoo-table" data-testid="teoo-proceedings"><thead><tr><th>proceeding</th><th>guarantee</th><th>kind</th><th>about</th><th>state</th></tr></thead>
+        <tbody>{c.proceedings.map((p) => <tr key={p.id} data-proceeding={p.id}><td>{p.id}</td><td>{p.guarantee}</td><td>{p.kind}</td><td>{p.ref ?? '—'}</td><td><Chip2 s={p.state} /></td></tr>)}</tbody></table>
+      <div className="small" data-testid="teoo-r9">The R9 separation: G1 evidence <Chip2 s={lb.demo.case_g1.E} /> · applicability <Chip2 s={lb.demo.case_g1.A} /> · proceedings {lb.demo.case_g1.W.join(', ') || 'none'} · effective state <Chip2 s={lb.demo.case_g1.effective} /> — an improper exception request does not erase the evidence, and G1 and G2 cannot be nullified by a general exception.</div>
+      <details className="small" data-testid="teoo-steps"><summary>the path step by step ({st.length} steps)</summary><ol>{st.map((x) => <li key={x.step}>{x.what}: <span className="mono">{JSON.stringify(x.result)}</span></li>)}</ol></details>
+      <ul className="small" data-testid="teoo-invariants">{Object.entries(lb.invariants).map(([k, v]) => <li key={k}><b>{k}</b> {v}</li>)}</ul>
+    </>
+  );
+}
+
+function LedgerEvidenceView({ lb }: { lb: LedgerBundle }) {
+  const c = lb.demo.case;
+  return (
+    <>
+      <h4>I-F · Evidence and revision: scope of a revision, immutable measurements and their status events</h4>
+      <table className="small teoo-table" data-testid="teoo-evidence-events"><thead><tr><th>evidence</th><th>guarantee</th><th>version</th><th>scope</th><th>container</th><th>state</th><th>source</th></tr></thead>
+        <tbody>{c.evidence.map((e) => <tr key={e.id} data-evidence={e.id} data-scope={e.scope}><td>{e.id}</td><td>{e.guarantee}</td><td>v{e.version}</td><td><Chip2 s={e.scope} /></td><td>{e.valid ? 'valid' : 'INVALID'}</td><td><Chip2 s={e.e_state} /></td><td>{e.source}</td></tr>)}</tbody></table>
+      <Note>ACCESS: invalidates observations that depend on access and requires reobservation. METADATA: in the constructed model, the earlier access observation stays valid (unexecuted plans still become stale). UNKNOWN: invalidated conservatively. These scopes are set by the experimenter in the synthetic experiments; that the software could judge legal relevance by itself is not shown, and a real metadata change must not be taken as legally irrelevant.</Note>
+      <table className="small teoo-table" data-testid="teoo-measurements"><thead><tr><th>measurement</th><th>evidence</th><th>execution</th><th>revision</th><th>mode</th><th>model / sensor</th><th>q</th><th>status history (events, never overwritten)</th></tr></thead>
+        <tbody>{c.measurements.map((m) => <tr key={m.id} data-measurement={m.id} data-status={m.status}><td>{m.measure_id}<div className="dim">{m.model_obs_id}</div></td><td>{m.evidence_event_id}</td><td>{m.execution_id ?? '—'}</td><td>{m.world_revision}</td><td>{m.mode}</td><td>{String(m.model)} / {String(m.sensor)}{m.mismatch ? ' · DISAGREE' : ''}</td><td>{m.q === null ? 'not observed' : String(m.q)}</td>
+          <td>{m.status_history.map((h, i) => <span key={i} style={{ marginRight: 6 }}><Chip2 s={h.status} /><span className="dim"> t{h.tick}</span></span>)}</td></tr>)}</tbody></table>
+      <div className="small" data-testid="teoo-events-kept">rows kept: {Object.entries(lb.demo.events_kept).map(([k, v]) => `${k} ${v}`).join(' · ')}</div>
+    </>
+  );
+}
+
+function ModelSensor({ lb }: { lb: LedgerBundle }) {
+  const w = lb.world;
+  return (
+    <>
+      <h4>I-G · Model against synthetic sensor: {w.states} states x {w.conditions.length} conditions = {w.comparisons} comparisons (this implementation's own world)</h4>
+      <table className="small teoo-table" data-testid="teoo-world"><thead><tr><th>condition</th><th>model access</th><th>sensor access</th><th>disagreements</th><th>cause seen: EXPANDED</th><th>cause seen: ACCESS_ONLY</th></tr></thead>
+        <tbody>{w.conditions.map((k) => <tr key={k} data-condition={k}><td>{k}</td><td>{w.per_condition[k].model_access}</td><td>{w.per_condition[k].sensor_access}</td><td>{w.per_condition[k].disagreements}</td><td>{w.per_condition[k].cause_identified_expanded}</td><td>{w.per_condition[k].cause_identified_access_only}</td></tr>)}</tbody></table>
+      <Note>A disagreement is not a found cause: where the hidden condition q (stipulated by the experimenter, not discovered by the device) is not the reason, even EXPANDED leaves it unexplained. An ordinary Boolean model with the same information agrees with the world on <b data-testid="teoo-boolean-agree">{w.boolean_model_agrees} / {w.comparisons}</b> (model) and {w.boolean_sensor_agrees} / {w.comparisons} (sensor): no predictive advantage of the ledger or of its vocabulary is shown. {w.note}.</Note>
+    </>
+  );
+}
+
+function Restoration({ lb }: { lb: LedgerBundle }) {
+  const r = lb.demo.case.restoration, cl = lb.demo.case.closures;
+  return (
+    <>
+      <h4>I-H · Intervention and restoration: six independent records, and administrative closure kept apart from legal determination and restoration</h4>
+      <table className="small teoo-table" data-testid="teoo-restoration"><thead><tr><th>record</th><th>present</th><th>n</th></tr></thead>
+        <tbody>{r.stages.map((x) => <tr key={x.stage} data-stage-record={x.stage} data-present={x.present}><td>{x.stage.replace(/_/g, ' ')}</td><td>{x.present ? 'yes' : 'NO'}</td><td>{x.n}{x.current !== undefined ? ` (${x.current} current)` : ''}</td></tr>)}</tbody></table>
+      <div className="small" data-testid="teoo-closures">{cl.length ? cl.map((c) => <span key={c.id} style={{ marginRight: 12 }}><Chip2 s={c.kind} /> <span className="mono">{c.flag}</span></span>) : 'no closure'} · legal determination by this software: <b>none</b> · material restoration verified: <b>{String(r.material_restoration_verified)}</b> · positive law verified: <b>{String(r.positive_law_verified)}</b> · access changed in the synthetic world: {String(r.access_changed_in_the_synthetic_world)}</div>
+      <Note>Administrative closure (the internal review work is over), evidential resolution, a legal determination by a competent authority and material restoration are four different things; none stands for another, and a model match is not legal verification.</Note>
+    </>
+  );
+}
+
+function ExperimentsPanel({ lb }: { lb: LedgerBundle }) {
+  return (
+    <>
+      <h4>I-I · Experimental evidence: R5-R16 and the new LAW experiments</h4>
+      <table className="small teoo-table" data-testid="teoo-r-table"><thead><tr><th>R</th><th>what</th><th>implemented</th><th>where</th><th>experiment</th><th>status</th></tr></thead>
+        <tbody>{lb.r_table.map((x) => <tr key={x.r} data-r={x.r} data-status={x.status}><td>{x.r}</td><td>{x.what}</td><td>{x.implemented}{x.note ? ` — ${x.note}` : ''}</td><td className="mono">{x.where}</td><td>{x.experiment}</td><td>{x.status}</td></tr>)}</tbody></table>
+      <table className="small teoo-table" data-testid="teoo-law-results"><thead><tr><th>experiment</th><th>analysis</th><th>question</th><th>result</th></tr></thead>
+        <tbody>{lb.results.flatMap((e) => Object.entries(e.analyses).map(([a, v]) => <tr key={a} data-analysis={a} data-ok={String(v.supported ?? v.criterion_met)}><td>{e.id} <span className="dim">({e.class})</span></td><td>{a}{v.confirmatory ? '' : ' · exploratory'}</td><td>{v.hypothesis}</td>
+          <td>{v.supported !== null ? (v.supported ? `supported (p_Holm ${v.p_holm?.toExponential(1)})` : 'NOT supported') : v.criterion_met ? 'criterion met' : 'criterion NOT met'}</td></tr>))}</tbody></table>
+      <ul className="small" data-testid="teoo-law-negative">{lb.negative_and_unmet.map((n) => <li key={n.experiment + n.analysis}><b>{n.experiment} {n.analysis}</b> — {n.hypothesis}</li>)}</ul>
+    </>
+  );
+}
+
 export function ViewI({ b }: { b: LegalBundle }) {
   const names = Object.keys(b.assessments), chains = Object.keys(b.chains);
   const [an, setAn] = useState(names[0]), [cn, setCn] = useState(chains[0]), [mn, setMn] = useState(Object.keys(b.mheg.chains)[0]);
@@ -212,9 +287,7 @@ export function ViewI({ b }: { b: LegalBundle }) {
         {b.catalogue.editions_identical_for_guarantees ? ' (identical in V3.0, the 100_POINT_EDITION and R2)' : ''}; {b.text_available ? 'the source wording is shown from the attached private store' : 'the source wording (definitions, audit questions) is held privately and is not part of this build'}; the <b>operational definitions</b> (how a synthetic institution yields evidence for a finding) and the recommendation rule are this implementation's, not the source's. {b.catalogue.note}</div>
       <div className="teoo-controls"><label>institution <select value={an} onChange={(e) => setAn(e.target.value)} data-testid="teoo-legal-assessment">{names.map((n) => <option key={n}>{n}</option>)}</select></label>
         <span className="small" data-testid="teoo-state-counts">{b.states.map((s) => <span key={s} style={{ marginRight: 10 }}><GChip s={s} /> {counts[s] ?? 0}</span>)} <span className="dim">(counted, never added into a score)</span></span></div>
-      <h4>A · MHEG twelve duties (the earlier operational formulation; a registry of its own, not replaced by the guarantees)</h4>
-      <DutyTable mh={mh} an={an} proj={proj} />
-      <h4>B · Fifteen guarantees, one finding each</h4>
+      <h4>I-A · Legal subjecthood: fifteen guarantees, one finding each</h4>
       <table className="small teoo-table" data-testid="teoo-guarantees"><thead><tr><th>#</th><th>guarantee (source title)</th><th>finding</th><th>evidence</th><th>reason</th></tr></thead>
         <tbody>{a.map((x) => (
           <tr key={x.number} data-guarantee={x.number} data-state={x.state}><td>{x.number}</td>
@@ -226,38 +299,48 @@ export function ViewI({ b }: { b: LegalBundle }) {
             <td><GChip s={x.state} hard={x.hard_failure} /></td><td className="small">{x.sub_findings.length ? x.sub_findings.map((s) => `${s.id} T${s.evidence_tier ?? '?'}`).join(' · ') : (x.evidence_missing.length ? 'missing' : 'logs / records')}</td>
             <td>{x.reason}{x.adverse_inference_available ? ' (the institution controls this evidence: adverse inference available)' : ''}</td></tr>))}</tbody></table>
       <div className="small" data-testid="teoo-u"><b>U — the Low-Score Subject Guarantee Principle</b> (a transversal rule, reported separately; not a sixteenth guarantee): <GChip s={meta.U.state} hard={meta.U.hard_failure} /> {meta.U.reason}{meta.U.untested.length ? ` (untested: ${meta.U.untested.join(', ')})` : ''}</div>
-      <h4>C · Fifteen AI-legal-logic governance principles</h4>
-      <div className="teoo-banner" role="note" data-testid="teoo-governance">Status: <b>{mh.governance_principles.status}</b> — {mh.governance_principles.rule}. Reported source: {mh.governance_principles.reported_source}. No principle is shown and none is mapped until the source is read; to check then: {mh.governance_principles.to_check_when_available.join('; ')}.</div>
-      <h4>D · Functional crosswalk: twelve duties to the fifteen guarantees (functional, not one-to-one; colours are the selected institution's findings)</h4>
+      <h4>I-A · Legal subjecthood: outcome taxonomy (V3.0 §8.6) and the advisory recommendation</h4>
+      <ul className="small" data-testid="teoo-taxonomy">{['constitutive_failure', 'procedural_failure', 'remedial_failure', 'systemic_failure', 'indeterminate_findings'].map((k) => <li key={k}><b>{k.replace(/_/g, ' ')}:</b> {(tax[k] as string[]).join(', ') || 'none'}</li>)}</ul>
+      <div className="small" data-testid="teoo-recommendation">Candidate for the competent human decision maker: <b>{meta.recommendation.candidate}</b> — advisory only; decided by {meta.recommendation.decided_by}; rule: {meta.recommendation.rule_source}. {meta.no_total}</div>
+      <h4>I-B · MHEG twelve duties (the earlier operational formulation; a registry of its own, not replaced by the guarantees)</h4>
+      <DutyTable mh={mh} an={an} proj={proj} />
+      <h4>I-B · Functional crosswalk: twelve duties to the fifteen guarantees (functional, not one-to-one; colours are the selected institution's findings)</h4>
       <Crosswalk mh={mh} proj={proj} />
-      <h4>E · Operational evidence: the legal transformation chain (nine stages)</h4>
+      <h4>I-C · Governance principles: the fifteen AI-legal-logic principles (a separate historical series)</h4>
+      <div className="teoo-banner" role="note" data-testid="teoo-governance">Status: <b>{mh.governance_principles.status}</b> — {mh.governance_principles.rule}. Reported source: {mh.governance_principles.reported_source}. To check when the source is available: {mh.governance_principles.to_check_when_available.join('; ')}.</div>
+      <table className="small teoo-table" data-testid="teoo-principles"><thead><tr><th>#</th><th>principle</th><th>version</th><th>name status</th></tr></thead>
+        <tbody>{mh.governance_principles.items.map((p) => <tr key={p.id} data-principle={p.id} data-known={p.name_status !== 'UNVERIFIED'}><td>{p.id}</td><td>{p.name ?? <span className="dim">unverified: not shown</span>}{p.scope ? <div className="dim">{p.scope}</div> : null}</td><td>{p.version ?? '—'}</td><td>{p.name_status}</td></tr>)}</tbody></table>
+      {mh.governance_principles.proximity.map((x) => <div key={x.principle + x.guarantee} className="small" data-testid="teoo-proximity">{x.principle} and {x.guarantee}: {x.relation}; verified: {String(x.verified)}.</div>)}
+      <h4>I-D · Legal transformation: the chain of nine stages</h4>
       <div className="teoo-controls"><label>institution <select value={mn} onChange={(e) => setMn(e.target.value)} data-testid="teoo-transform-select">{Object.keys(mh.chains).map((n) => <option key={n}>{n}</option>)}</select></label>
         <span className="small" data-testid="teoo-transform-verdict">{mchain.effective_to_the_end ? 'every stage operates' : `first violated stage: ${mchain.first_violated_stage ?? 'none (some stage is not satisfied)'}`}{mchain.information_lost_in_translation.length ? ` · information lost in translation: ${mchain.information_lost_in_translation.join(', ')}` : ''}</span></div>
       <table className="small teoo-table" data-testid="teoo-transform"><thead><tr><th>stage</th><th>operating condition</th><th>authority</th><th>state</th><th>observability</th><th>time span</th><th>resources</th><th>recovery path</th></tr></thead>
         <tbody>{mchain.stages.map((s) => <tr key={s.id} data-stage={s.id} data-state={s.state}><td>{s.label}<div className="dim">{Object.keys(s.findings).join(', ')}</div></td><td>{s.operating_condition}</td><td>{s.authority_relation}</td><td><GChip s={s.state} /></td><td>{s.observability}</td><td>{s.time_span}</td><td>{s.resource_condition}</td><td>{s.recovery_path.join('; ') || '—'}</td></tr>)}</tbody></table>
       <Note>{mchain.rule}. {mchain.stage_assignment}.</Note>
-      <h4>E · Operational evidence: legal translation (R2 §15, §24)</h4>
+      <h4>I-D · Legal transformation: the typed chain of R2 (§15, §24)</h4>
       <div className="teoo-controls"><label>decision <select value={cn} onChange={(e) => setCn(e.target.value)} data-testid="teoo-legal-chain">{chains.map((n) => <option key={n}>{n}</option>)}</select></label>
         <span className="small" data-testid="teoo-chain-verdict">legally valid decision: <b>{chain.assessment.valid_legal_decision ? 'yes' : 'no'}</b>{chain.assessment.first_invalid_stage ? ` · first invalid stage: ${chain.assessment.first_invalid_stage}` : ''}</span></div>
       <table className="small teoo-table" data-testid="teoo-chain"><thead><tr><th>stage</th><th>layer</th><th>legal basis</th><th>jurisdiction / version</th><th>responsible</th><th>authority</th><th>route to contest</th><th>valid</th><th>why not</th></tr></thead>
         <tbody>{chain.chain.map((s, i) => <tr key={s.stage} data-valid={chain.assessment.stages[i].valid}><td>{s.stage.replace(/_/g, ' ')}</td><td>{s.layer}</td><td>{s.legal_basis ?? '— none —'}</td><td>{s.jurisdiction ?? '—'} / {s.rule_version ?? '—'}</td><td>{s.responsible}{s.by_ai ? ' (AI)' : ''}</td><td>{s.authority ?? '—'}</td><td>{s.contest_path ?? '—'}</td>
           <td>{chain.assessment.stages[i].valid ? 'yes' : 'NO'}</td><td>{chain.assessment.stages[i].why_not.join('; ')}</td></tr>)}</tbody></table>
-      <h4>E · Operational evidence: Translation Register (the evidence for G6 and G7)</h4>
+      <h4>I-D · Legal transformation: Translation Register (the evidence for G6 and G7)</h4>
       <table className="small teoo-table" data-testid="teoo-register"><thead><tr><th>configuration</th><th>variable</th><th>legal source</th><th>proxy for</th><th>threshold</th><th>translation loss disclosed</th></tr></thead>
         <tbody>{Object.entries(b.register).flatMap(([k, rows]) => rows.map((r) => <tr key={k + r.variable}><td>{k}</td><td>{r.variable}</td><td>{r.legal_source ?? '— none identified —'}</td><td>{r.proxy_for ?? '—'}</td><td>{r.threshold ?? '—'}</td><td>{r.translation_loss_disclosed ? 'yes' : 'NO'}</td></tr>))}</tbody></table>
-      <h4>E · Operational evidence: Ontological Score Inheritance test (100_POINT_EDITION A.6.1)</h4>
+      <h4>I-D · Legal transformation: Ontological Score Inheritance test (100_POINT_EDITION A.6.1)</h4>
       <ul className="small" data-testid="teoo-inheritance">{Object.entries(b.inheritance).map(([k, v]) => <li key={k}><b>{k}:</b> {v.finding}{v.endogenous_share !== undefined ? ` · treatment-produced share of the score ${pct(v.endogenous_share)}` : ''}{v.reason ? ` — ${v.reason}` : ''}</li>)}</ul>
-      <h4>F · Institutional consequences: outcome taxonomy (V3.0 §8.6) and the advisory recommendation</h4>
-      <ul className="small" data-testid="teoo-taxonomy">{['constitutive_failure', 'procedural_failure', 'remedial_failure', 'systemic_failure', 'indeterminate_findings'].map((k) => <li key={k}><b>{k.replace(/_/g, ' ')}:</b> {(tax[k] as string[]).join(', ') || 'none'}</li>)}</ul>
-      <div className="small" data-testid="teoo-recommendation">Candidate for the competent human decision maker: <b>{meta.recommendation.candidate}</b> — advisory only; decided by {meta.recommendation.decided_by}; rule: {meta.recommendation.rule_source}. {meta.no_total}</div>
-      <h4>F · Institutional consequences: interventions on the synthetic institution (same world, same seed)</h4>
+      <LedgerReceipts lb={b.ledger} />
+      <LedgerEvidenceView lb={b.ledger} />
+      <ModelSensor lb={b.ledger} />
+      <h4>I-H · Intervention and restoration: interventions on the synthetic institution (same world, same seed)</h4>
       <table className="small teoo-table" data-testid="teoo-interventions"><thead><tr><th>intervention</th><th>qualified people excluded</th><th>persistence of exclusion</th><th>true-positive gap</th><th>group gap</th><th>downstream access</th><th>wrongful denials overturned</th><th>burden: subject / institution</th></tr></thead>
         <tbody>{Object.entries(b.interventions).map(([k, v]) => <tr key={k}><td>{k}</td><td>{pct(v.exclusion_qualified)}</td><td>{pct(v.exclusion_persistence)}</td><td>{pct(v.tpr_gap)}</td><td>{pct(v.group_exclusion_gap)}</td><td>{pct(v.downstream_access_qualified)}</td><td>{pct(v.overturn_rate_of_wrongful)}</td><td>{pct(v.burden_subject)} / {pct(v.burden_institution)}</td></tr>)}</tbody></table>
       <Note>Read across the rows: fairness optimisation narrows the true-positive gap and leaves exclusion in place; deleting the score lets the proxy take its place; only a review that is independent and has authority overturns wrongful denials.</Note>
-      <h4>G · Contestation and restoration: remedy paths and the last stages of the chain</h4>
+      <h4>I-H · Intervention and restoration: remedy paths and the last stages of the chain</h4>
       <ul className="small" data-testid="teoo-remedies">{notSecured.length === 0 ? <li>every applicable finding is SECURED in this institution</li> : notSecured.map((x) => <li key={x.number}><b>{x.number}. {x.title}</b> — {x.remedy_path}</li>)}</ul>
       <div className="small" data-testid="teoo-contest-restore">{['contestation', 'revision', 'material_restoration'].map((id) => { const st = mchain.stages.find((x) => x.id === id); return st ? <span key={id} style={{ marginRight: 14 }}>{st.label}: <GChip s={st.state} /></span> : null; })} <span className="dim">(chain of {mn.slice(0, 40)}…)</span></div>
-      <h4>H · Unverified conditions: what this view cannot observe</h4>
+      <Restoration lb={b.ledger} />
+      <ExperimentsPanel lb={b.ledger} />
+      <h4>I-I · Experimental evidence: unverified conditions and what this view cannot observe</h4>
       <ul className="small" data-testid="teoo-unverified">{mh.unverified.map((u) => <li key={u}>{u}</li>)}</ul>
       <details className="small" data-testid="teoo-fidelity"><summary>what this implementation checks of each finding, what it does not, and what no software can verify</summary>
         <table className="small teoo-table"><thead><tr><th>finding</th><th>checked</th><th>not implemented</th><th>normative, not verifiable here</th></tr></thead>

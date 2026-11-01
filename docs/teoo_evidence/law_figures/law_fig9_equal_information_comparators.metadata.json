@@ -1,0 +1,66 @@
+{
+ "body": null,
+ "claim": "an illustration of the stated data under the stated conditions; no claim beyond them",
+ "evidence": {
+  "band": [
+   "EVIDENCE: SYNTHETIC  ·  artificial functional-test data, not a measurement",
+   "REAL-WORLD EXPERIMENT: none recorded (no measurement exists behind this figure)",
+   "BODY: none",
+   "RECORDS: 1 (rec-db2fe9f227)  ·  generated 2026-11-01  ·  TEOO teoo/0.1"
+  ],
+  "classes": [
+   "SYNTHETIC"
+  ],
+  "real_world_experiment_recorded": false,
+  "watermarks": [
+   "SYNTHETIC"
+  ]
+ },
+ "experiment": {
+  "conditions": [
+   "A boolean state machine",
+   "B event sourcing",
+   "C causal model",
+   "D fixed observation",
+   "E adaptive observation",
+   "F ledger"
+  ],
+  "protocol_id": "LAW-L7",
+  "seeds": [
+   7601,
+   7630
+  ],
+  "trials_per_condition": 1,
+  "version": 1
+ },
+ "figure_id": "fig-84a41823bb469aed",
+ "generated_at": "2026-11-01T00:00:00.000000Z",
+ "kind": "table",
+ "metadata_digest": "38f88642bb26c687b18433d7ed7abb4a451aeadf59953b724840e3bb57f5e4cf",
+ "observation_limits": {
+  "config_version": null,
+  "note": "A synthetic ledger or a drawing: what lies outside what is stated here is unknown, not absent.",
+  "summary": {
+   "conditions": "348 scenarios (30 worlds); the same inputs and the same policy"
+  },
+  "t": null
+ },
+ "provenance": {
+  "records": [
+   {
+    "kind": "OBSERVATION",
+    "lineage_classes": [
+     "SYNTHETIC"
+    ],
+    "provenance": "SYNTHETIC",
+    "record_digest": "db2fe9f227c339ca611060125a6db28e9589a10944358a2ea1e340979430c2ef",
+    "record_id": "rec-db2fe9f227c339ca61106012"
+   }
+  ],
+  "source_digest": "84a41823bb469aed1adcd95ab8ea5adf1343f895ef9f180847be5c2603e0e6f1"
+ },
+ "schema": "teoo.figure/1",
+ "teoo_version": "teoo/0.1",
+ "title": "Fig R9 · Equal-information comparators: agreement with the ledger on seven queries (LAW-L7)",
+ "units": {}
+}

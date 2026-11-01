@@ -30,6 +30,7 @@ def test_the_twelve_duties_are_a_registry_of_their_own_with_the_reported_crosswa
                                              "Appeal Access", "Systemic Challenge", "Material Restoration"]
     assert {d["id"]: d["findings"] for d in M.DUTIES} == REPORTED
     for d in M.DUTIES:
+        assert d["input"] and d["authority_subject"] and "VIOLATED" in d["violation_condition"] and "INSUFFICIENT_EVIDENCE" in d["indeterminate_condition"] and all(f in d["violation_condition"] for f in d["findings"])
         assert d["definition_status"] == "FUNCTIONAL_SUMMARY" and "R16" in d["source"] and d["label_ja"] and d["function"] and d["cannot_verify"] and d["required_evidence"] and d["evaluation_target"]
         assert "not an identity" in d["identity_with_guarantees"]
     titles = {g["title"] for g in L.GUARANTEES}
@@ -45,10 +46,15 @@ def test_the_crosswalk_is_functional_not_one_to_one_and_g1_is_named_by_no_duty()
     assert [d["mapping_kind"] for d in M.DUTIES][:3] == ["direct", "direct", "broad"]
 
 
-def test_the_governance_principles_are_a_separate_unverified_set_and_nothing_maps_them():
+def test_the_governance_principles_are_a_separate_series_with_only_the_fifteenth_known_and_nothing_maps_them():
     g = M.GOVERNANCE_PRINCIPLES
-    assert g["status"] == "UNVERIFIED" and g["items"] == [] and g["crosswalk_to_guarantees"] is None and g["crosswalk_to_duties"] is None and "not reused" in g["rule"]
-    assert "End of Human Philosophy" in g["reported_source"] and "not available" in g["reported_source"]
+    assert g["status"] == "PARTIALLY_KNOWN" and len(g["items"]) == 15 and [i["id"] for i in g["items"] if i["name_status"] != "UNVERIFIED"] == ["P15"]
+    p15 = g["items"][14]
+    assert p15["name"] == "Audit of the Auditor and Self-Audit of the Institutional Apparatus" and p15["version"] == "Recursive Double Audit" and p15["definition_status"] == "FUNCTIONAL_SUMMARY"
+    assert all(i["name"] is None and i["scope"] is None for i in g["items"][:14]), "the other fourteen are not invented"
+    assert g["crosswalk_to_guarantees"] is None and g["crosswalk_to_duties"] is None and "not reused" in g["rule"] and "ordinal position" in g["rule"]
+    assert g["proximity"][0]["principle"] == "P15" and g["proximity"][0]["guarantee"] == "G15D" and g["proximity"][0]["verified"] is False and "identity is not assumed" in g["proximity"][0]["relation"]
+    assert not {i["name"] for i in g["items"]} & {x["title"] for x in L.GUARANTEES}, "the names of the guarantees are not reused"
 
 
 def test_directive_states_keep_not_applicable_insufficient_evidence_and_not_evaluated_apart():
@@ -109,7 +115,7 @@ def test_the_fidelity_table_names_what_is_checked_and_what_is_not_for_every_find
 def test_the_bundle_carries_the_duties_the_projection_and_what_is_unverified():
     lb = L.legal_bundle(3)
     mb = M.mheg_bundle(lb)
-    assert len(mb["duties"]) == 12 and set(mb["projections"]) == set(lb["assessments"]) and mb["governance_principles"]["status"] == "UNVERIFIED" and len(mb["unverified"]) >= 5
+    assert len(mb["duties"]) == 12 and set(mb["projections"]) == set(lb["assessments"]) and mb["governance_principles"]["status"] == "PARTIALLY_KNOWN" and len(mb["unverified"]) >= 5
     for p in mb["projections"].values():
         assert set(p["duties"]) == set(M.DUTY_IDS) and all(v["state"] in M.DSTATES for v in p["duties"].values())
         assert len(p["findings"]) == 19

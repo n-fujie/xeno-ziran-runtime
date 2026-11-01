@@ -1,0 +1,50 @@
+{
+ "body": null,
+ "claim": "an illustration of the stated data under the stated conditions; no claim beyond them",
+ "evidence": {
+  "band": [
+   "EVIDENCE: CONCEPTUAL  ·  a drawing, not data",
+   "REAL-WORLD EXPERIMENT: none recorded (no measurement exists behind this figure)",
+   "BODY: none",
+   "RECORDS: 1 (rec-6e822b20ed)  ·  generated 2026-11-01  ·  TEOO teoo/0.1"
+  ],
+  "classes": [
+   "CONCEPTUAL"
+  ],
+  "real_world_experiment_recorded": false,
+  "watermarks": [
+   "CONCEPTUAL"
+  ]
+ },
+ "experiment": null,
+ "figure_id": "fig-8be1d3ef528fb4a9",
+ "generated_at": "2026-11-01T00:00:00.000000Z",
+ "kind": "diagram",
+ "metadata_digest": "d2583426b7c946a0fe2039a7babdc486bb8f167677ffcb1c6a8b62bcb022bfab",
+ "observation_limits": {
+  "config_version": null,
+  "note": "A synthetic ledger or a drawing: what lies outside what is stated here is unknown, not absent.",
+  "summary": {
+   "conditions": "specification"
+  },
+  "t": null
+ },
+ "provenance": {
+  "records": [
+   {
+    "kind": "REFERENCE_STATE",
+    "lineage_classes": [
+     "CONCEPTUAL"
+    ],
+    "provenance": "CONCEPTUAL",
+    "record_digest": "6e822b20ed13483d2215626f771efcfe14cfd92084bedc26d67b5cc6cfabfdcb",
+    "record_id": "rec-6e822b20ed13483d2215626f"
+   }
+  ],
+  "source_digest": "8be1d3ef528fb4a99aa6bbb0881a346bc2879b7cf81c26d8de2ed922ab12fc35"
+ },
+ "schema": "teoo.figure/1",
+ "teoo_version": "teoo/0.1",
+ "title": "Fig R3 · Fifteen governance principles: a separate series, one known",
+ "units": {}
+}

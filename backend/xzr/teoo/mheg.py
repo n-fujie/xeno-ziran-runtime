@@ -77,17 +77,32 @@ def _kind(n: int) -> str:
     return "direct" if n == 1 else "composite" if n <= 4 else "broad"
 
 
+AUTHORITY_SUBJECT = {  # who holds the function in the synthetic institution (this implementation's reading; a real allocation depends on the legal order)
+    "M1": "the institution that deploys the system", "M2": "the authority that empowers the institution", "M3": "the institution and the authority that sets its purpose", "M4": "the designer and the institution that adopts the translation",
+    "M5": "the data controller", "M6": "the data controller and the downstream holders of the record", "M7": "the institution and an independent evaluator (the evaluator is not simulated)", "M8": "the deciding official",
+    "M9": "an independent reviewer with authority", "M10": "the appeal body", "M11": "the body that hears systemic challenges", "M12": "the institution, and the competent authority for relief (not simulated)"}
+
 DUTIES: tuple[dict[str, Any], ...] = tuple(
-    {"id": i, "name": n, "label_ja": ja, "function": fn, "crosswalk_as_reported": cw, "findings": list(expand(cw)), "mapping_kind": _kind(len(expand(cw))), "evaluation_target": tgt, "required_evidence": ev, "cannot_verify": cv,
+    {"id": i, "name": n, "label_ja": ja, "function": fn, "crosswalk_as_reported": cw, "findings": list(expand(cw)), "mapping_kind": _kind(len(expand(cw))), "evaluation_target": tgt, "input": tgt, "required_evidence": ev, "authority_subject": AUTHORITY_SUBJECT[i], "cannot_verify": cv,
+     "violation_condition": "a mapped finding is VIOLATED (the function is absent, conditioned on the contested score, or practically unusable): " + ", ".join(expand(cw)),
+     "indeterminate_condition": "a mapped finding is INSUFFICIENT_EVIDENCE (observed, evidence missing or conflicting) or NOT_EVALUATED (not observed by the audit); neither is compliance; plus everything under cannot_verify",
      "definition_status": "FUNCTIONAL_SUMMARY", "source": SOURCE_NOTE, "identity_with_guarantees": "functional correspondence only; not an identity of definition"}
     for i, n, ja, fn, cw, tgt, ev, cv in _D)
 DUTY_IDS = tuple(d["id"] for d in DUTIES)
 
 GOVERNANCE_PRINCIPLES: dict[str, Any] = {
-    "status": "UNVERIFIED", "reported_count": 15, "reported_source": "The End of Human Philosophy, Chapter 12, 12.3 (as reported by the research owner); the manuscript was not available",
-    "items": [], "crosswalk_to_guarantees": None, "crosswalk_to_duties": None,
-    "rule": "these principles are a separate set: the names of the guarantees are not reused for them, they are not mapped here, and nothing about them is displayed as established until the source is read",
-    "to_check_when_available": ["correspondence with the fifteen guarantees", "correspondence with the twelve duties", "function in institutional operation", "implementation conditions", "independence", "disagreements", "conditions not implemented"],
+    "status": "PARTIALLY_KNOWN", "reported_count": 15, "reported_source": "Fujie, N. (2026). The End of Human Philosophy ..., governance self-review edition, 12 and 12.3 (as cited in R2 and as reported by the research owner); the manuscript was not available",
+    "items": [{"id": f"P{i}", "ordinal": i, "version": None, "name": None, "name_status": "UNVERIFIED", "scope": None, "definition_status": "NOT_AVAILABLE"} for i in range(1, 15)] + [
+        {"id": "P15", "ordinal": 15, "version": "Recursive Double Audit", "name": "Audit of the Auditor and Self-Audit of the Institutional Apparatus", "name_status": "REPORTED_BY_THE_RESEARCH_OWNER",
+         "scope": "the governing apparatus' own evaluation rules, powers, scales, thresholds, interests, invisibility and revisability are examined", "definition_status": "FUNCTIONAL_SUMMARY",
+         "note": "an independent fifteenth principle of the Recursive Double Audit version; kept as such"}],
+    "versions": [{"id": "recursive_double_audit", "label": "Recursive Double Audit", "known_items": ["P15"], "note": "the version whose independent fifteenth principle is the audit of the auditor"},
+                 {"id": "other_versions", "label": "other versions of the source", "known_items": [], "note": "differences between versions are to be kept when the source is available; none is available"}],
+    "proximity": [{"principle": "P15", "guarantee": "G15D", "relation": "functionally proximate (a systemic challenge, and a challenge of the evaluator); identity is not assumed", "verified": False}],
+    "crosswalk_to_guarantees": None, "crosswalk_to_duties": None,
+    "rule": "these principles are a separate historical series: the names of the guarantees are not reused for them, only the fifteenth is known (as reported), the other fourteen are not shown, and none is mapped by ordinal position",
+    "to_check_when_available": ["the fourteen unknown principles and the differences between the versions of the source", "correspondence with the fifteen guarantees by protected function, applicable authority and remedy", "correspondence with the twelve duties", "function in institutional operation",
+                                "implementation conditions", "independence of the three sets", "disagreements", "conditions not implemented"],
 }
 
 # ------------------------------------------------------------------------------------------------ the crosswalk

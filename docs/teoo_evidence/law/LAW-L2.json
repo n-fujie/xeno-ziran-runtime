@@ -1,0 +1,207 @@
+{
+ "experiment_id": "LAW-L2",
+ "protocol_version": 1,
+ "protocol_digest": "d01cd9b5b14583af2a465090ad23f0ca777ee1bff8b6e4f23f1fddc894a9a486",
+ "protocol": {
+  "experiment_id": "LAW-L2",
+  "hypotheses": [
+   {
+    "id": "H1",
+    "statement": "An improper exception request for G1 leaves the evidence state SECURED, is recorded as applicability REJECTED with an open exception proceeding, and cannot be accepted"
+   },
+   {
+    "id": "H2",
+    "statement": "The ledger keeps every proceeding opened for a case; the single-state variant keeps one"
+   },
+   {
+    "id": "H3",
+    "statement": "Completing one proceeding does not complete or erase another"
+   }
+  ],
+  "targets": [
+   "receipts, evidence, proceedings, plans, measurements and closures of a synthetic ledger"
+  ],
+  "instrument_conditions": {
+   "proceeding_kinds": 5,
+   "opened_per_world": "3 to 5 in random order"
+  },
+  "control_condition": "single state",
+  "conditions": [
+   "ledger",
+   "single state"
+  ],
+  "seeds": [
+   7101,
+   7102,
+   7103,
+   7104,
+   7105,
+   7106,
+   7107,
+   7108,
+   7109,
+   7110,
+   7111,
+   7112,
+   7113,
+   7114,
+   7115,
+   7116,
+   7117,
+   7118,
+   7119,
+   7120,
+   7121,
+   7122,
+   7123,
+   7124,
+   7125,
+   7126,
+   7127,
+   7128,
+   7129,
+   7130
+  ],
+  "trials_per_condition": 1,
+  "stopping_rule": {
+   "type": "fixed-n",
+   "units": 30,
+   "no interim analysis": true
+  },
+  "outcomes": {
+   "primary": [
+    "evidence state after the exception",
+    "proceedings kept"
+   ],
+   "secondary": [
+    "independent completion"
+   ]
+  },
+  "analyses": [
+   {
+    "id": "L201",
+    "hypothesis": "H1",
+    "outcome": "E, A, W",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "L202",
+    "hypothesis": "H2",
+    "outcome": "proceedings kept",
+    "method": "paired-sign-flip",
+    "confirmatory": true,
+    "paired": true
+   },
+   {
+    "id": "L203",
+    "hypothesis": "H3",
+    "outcome": "independent completion",
+    "method": "descriptive",
+    "confirmatory": true
+   }
+  ],
+  "multiplicity": "holm",
+  "failure_conditions": [
+   "fewer than 30 units"
+  ],
+  "reproduction": {
+   "generator": "xzr.teoo.lawexperiments",
+   "steps": [
+    "run unit per seed",
+    "analyse"
+   ],
+   "world": "xzr.teoo.lawledger (SQLite, append-only) on xzr.teoo.lawworld (8 Booleans); this implementation's own world, not Appendix O"
+  },
+  "schema": "teoo.protocol/1",
+  "version": 1,
+  "parent_version": null,
+  "change_reason": null
+ },
+ "units": 30,
+ "seeds": [
+  7101,
+  7102,
+  7103,
+  7104,
+  7105,
+  7106,
+  7107,
+  7108,
+  7109,
+  7110,
+  7111,
+  7112,
+  7113,
+  7114,
+  7115,
+  7116,
+  7117,
+  7118,
+  7119,
+  7120,
+  7121,
+  7122,
+  7123,
+  7124,
+  7125,
+  7126,
+  7127,
+  7128,
+  7129,
+  7130
+ ],
+ "evidence_class": "Implementation Property",
+ "seconds": 0.7,
+ "results": {
+  "L201": {
+   "method": "descriptive",
+   "worlds": 30,
+   "criterion": "E stays SECURED, A is REJECTED, the exception proceeding is open, the evidence is unchanged and the exception cannot be accepted, in every world",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  },
+  "L202": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 2.6333333333333333,
+   "sd_diff": 0.6686751354593717,
+   "dz": 3.938135566420105,
+   "ci95": [
+    2.4,
+    2.8666666666666667
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 12,
+   "inferential": true,
+   "contrast": "proceedings kept per world: ledger minus single state",
+   "predicted_sign": 1,
+   "ledger_kept_all": true,
+   "p_holm": 4.999750012499375e-05,
+   "supported": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  },
+  "L203": {
+   "method": "descriptive",
+   "criterion": "completing one proceeding leaves the other open, in every world",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  }
+ },
+ "catalogue": {
+  "source": "The Minimum Guarantees of Human Legal Subjecthood, Publication Final V3.0, Chapter 6.2 (identical in the 100_POINT_EDITION and in R2 section 4: all fifteen titles and definitions compared character for character)",
+  "verified_against_original": true,
+  "sha256": {
+   "v3_0": "cf4d4f0c51169451da5af4c33e7081e947dacbade855068a889965d8c523b848",
+   "v3_0_100_point_edition": "afb59d1a0c3b28854f14113f843645539e07a2e466949d22de4b67da0a22bf99",
+   "ai_law_osr_r2": "a9984451b281df3252b05842dc5109dd396e0b0c54d3560849344ad41059a501"
+  },
+  "editions_identical_for_guarantees": true,
+  "note": "V3.0 uses two vocabularies for the same five findings (Appendix A table: Secured/Partial/Absent/Indeterminate/Inapplicable; A.3 and 8.4 text: Satisfied/Partially Satisfied/Failed/Indeterminate/Not Applicable). R2 section 16 and this implementation use the table's."
+ },
+ "note": "results about a SYNTHETIC ledger and this implementation's own world; the manuscripts R5-R16, the historical code and the world of Appendix O were not available and their numbers are not reproduced; a closure, a measurement or a match here is not a legal judgment or a restoration; not an observation of any institution, law or person"
+}

@@ -1,0 +1,244 @@
+{
+ "experiment_id": "LAW-L5",
+ "protocol_version": 1,
+ "protocol_digest": "dfb4369a605db5042968bd69830b69d959f8141f7774e509ab40898b60533e6a",
+ "protocol": {
+  "experiment_id": "LAW-L5",
+  "hypotheses": [
+   {
+    "id": "H1",
+    "statement": "A closure after a disagreement is CLOSED_ADMIN_CONFLICT and keeps UNRESOLVED_CONFLICT; a closure after a match is CLOSED_ADMIN_MODEL_MATCH"
+   },
+   {
+    "id": "H2",
+    "statement": "No closure creates a legal determination, a verified restoration or verified positive law"
+   },
+   {
+    "id": "H3",
+    "statement": "A closure without a model observation newer than the evidence revision and a current sensor comparison is refused"
+   },
+   {
+    "id": "H4",
+    "statement": "A single SUCCESS state hides conflicts that the ledger's closure keeps"
+   }
+  ],
+  "targets": [
+   "receipts, evidence, proceedings, plans, measurements and closures of a synthetic ledger"
+  ],
+  "instrument_conditions": {
+   "scenarios_per_world": 24,
+   "closure_requires": [
+    "evidence revision",
+    "newer model observation",
+    "current sensor comparison",
+    "officer record",
+    "a recorded review"
+   ]
+  },
+  "control_condition": "single SUCCESS",
+  "conditions": [
+   "separated closure",
+   "single SUCCESS"
+  ],
+  "seeds": [
+   7401,
+   7402,
+   7403,
+   7404,
+   7405,
+   7406,
+   7407,
+   7408,
+   7409,
+   7410,
+   7411,
+   7412,
+   7413,
+   7414,
+   7415,
+   7416,
+   7417,
+   7418,
+   7419,
+   7420,
+   7421,
+   7422,
+   7423,
+   7424,
+   7425,
+   7426,
+   7427,
+   7428,
+   7429,
+   7430
+  ],
+  "trials_per_condition": 1,
+  "stopping_rule": {
+   "type": "fixed-n",
+   "units": 30,
+   "no interim analysis": true
+  },
+  "outcomes": {
+   "primary": [
+    "closure kinds",
+    "conflicts hidden"
+   ],
+   "secondary": [
+    "refusals"
+   ]
+  },
+  "analyses": [
+   {
+    "id": "L501",
+    "hypothesis": "H1",
+    "outcome": "closure kinds",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "L502",
+    "hypothesis": "H2",
+    "outcome": "determinations",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "L503",
+    "hypothesis": "H3",
+    "outcome": "refusals",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "L504",
+    "hypothesis": "H4",
+    "outcome": "conflicts hidden",
+    "method": "paired-sign-flip",
+    "confirmatory": true,
+    "paired": true
+   }
+  ],
+  "multiplicity": "holm",
+  "failure_conditions": [
+   "fewer than 30 units"
+  ],
+  "reproduction": {
+   "generator": "xzr.teoo.lawexperiments",
+   "steps": [
+    "run unit per seed",
+    "analyse"
+   ],
+   "world": "xzr.teoo.lawledger (SQLite, append-only) on xzr.teoo.lawworld (8 Booleans); this implementation's own world, not Appendix O"
+  },
+  "schema": "teoo.protocol/1",
+  "version": 1,
+  "parent_version": null,
+  "change_reason": null
+ },
+ "units": 30,
+ "seeds": [
+  7401,
+  7402,
+  7403,
+  7404,
+  7405,
+  7406,
+  7407,
+  7408,
+  7409,
+  7410,
+  7411,
+  7412,
+  7413,
+  7414,
+  7415,
+  7416,
+  7417,
+  7418,
+  7419,
+  7420,
+  7421,
+  7422,
+  7423,
+  7424,
+  7425,
+  7426,
+  7427,
+  7428,
+  7429,
+  7430
+ ],
+ "evidence_class": "Implementation Property",
+ "seconds": 4.3,
+ "results": {
+  "L501": {
+   "method": "descriptive",
+   "scenarios": 720,
+   "closed": 437,
+   "closed_with_conflict": 247,
+   "closed_with_match": 190,
+   "conflict_closures_flagged": 247,
+   "match_closures_kind": 190,
+   "determinations_by_software": 0,
+   "restoration_verified": 0,
+   "positive_law_verified": 0,
+   "conflicts_hidden_by_success_variant": 247,
+   "refused_without_observation": true,
+   "criterion": "every conflict closure carries UNRESOLVED_CONFLICT and every match closure CLOSED_ADMIN_MODEL_MATCH",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  },
+  "L502": {
+   "method": "descriptive",
+   "determinations_by_software": 0,
+   "restoration_verified": 0,
+   "positive_law_verified": 0,
+   "criterion": "0 and 0 and 0",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  },
+  "L503": {
+   "method": "descriptive",
+   "criterion": "refused in every world",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  },
+  "L504": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 8.233333333333333,
+   "sd_diff": 2.402345597081338,
+   "dz": 3.4272060370232276,
+   "ci95": [
+    7.433333333333334,
+    9.1
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 15,
+   "inferential": true,
+   "contrast": "conflicts hidden per world: single SUCCESS minus separated closure (which hides none)",
+   "predicted_sign": 1,
+   "hidden_total": 247,
+   "p_holm": 4.999750012499375e-05,
+   "supported": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  }
+ },
+ "catalogue": {
+  "source": "The Minimum Guarantees of Human Legal Subjecthood, Publication Final V3.0, Chapter 6.2 (identical in the 100_POINT_EDITION and in R2 section 4: all fifteen titles and definitions compared character for character)",
+  "verified_against_original": true,
+  "sha256": {
+   "v3_0": "cf4d4f0c51169451da5af4c33e7081e947dacbade855068a889965d8c523b848",
+   "v3_0_100_point_edition": "afb59d1a0c3b28854f14113f843645539e07a2e466949d22de4b67da0a22bf99",
+   "ai_law_osr_r2": "a9984451b281df3252b05842dc5109dd396e0b0c54d3560849344ad41059a501"
+  },
+  "editions_identical_for_guarantees": true,
+  "note": "V3.0 uses two vocabularies for the same five findings (Appendix A table: Secured/Partial/Absent/Indeterminate/Inapplicable; A.3 and 8.4 text: Satisfied/Partially Satisfied/Failed/Indeterminate/Not Applicable). R2 section 16 and this implementation use the table's."
+ },
+ "note": "results about a SYNTHETIC ledger and this implementation's own world; the manuscripts R5-R16, the historical code and the world of Appendix O were not available and their numbers are not reproduced; a closure, a measurement or a match here is not a legal judgment or a restoration; not an observation of any institution, law or person"
+}

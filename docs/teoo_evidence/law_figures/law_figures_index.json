@@ -1,0 +1,32 @@
+{
+ "figures": [
+  "law_fig10_negative_results.svg",
+  "law_fig3_governance_principles.svg",
+  "law_fig4_receipt_evidence_review_sequence.svg",
+  "law_fig5_immutable_measurement_history.svg",
+  "law_fig6_evidence_scope_revision.svg",
+  "law_fig7_model_vs_sensor.svg",
+  "law_fig8_closure_vs_restoration.svg",
+  "law_fig9_equal_information_comparators.svg"
+ ],
+ "concept_figures": [
+  "law_fig3",
+  "law_fig4",
+  "law_fig5"
+ ],
+ "result_figures": [
+  "law_fig6",
+  "law_fig7",
+  "law_fig8",
+  "law_fig9",
+  "law_fig10"
+ ],
+ "earlier_figures_kept": [
+  "mheg_fig1 twelve-duty architecture",
+  "mheg_fig2 guarantees seen from the duties",
+  "mheg_fig3 twelve-to-fifteen crosswalk",
+  "legal_fig1 fifteen guarantees",
+  "legal_fig2 legal translation chain",
+  "legal_fig7 and mheg_fig7 negative results"
+ ]
+}

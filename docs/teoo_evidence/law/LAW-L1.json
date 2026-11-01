@@ -1,0 +1,287 @@
+{
+ "experiment_id": "LAW-L1",
+ "protocol_version": 1,
+ "protocol_digest": "b5489a87affe5742f17215bb3139095591e562fb0a47389e60274e4c7481740b",
+ "protocol": {
+  "experiment_id": "LAW-L1",
+  "hypotheses": [
+   {
+    "id": "H1",
+    "statement": "The receipt-first ledger erases no valid claim, including those whose evidence container is corrupt"
+   },
+   {
+    "id": "H2",
+    "statement": "The evidence-first behaviour erases the claims whose container is corrupt"
+   },
+   {
+    "id": "H3",
+    "statement": "Corrupt containers are kept, resends collapsed, conflicts and malformed input quarantined, oversize input refused and not counted as received"
+   },
+   {
+    "id": "H4",
+    "statement": "The R10 in-memory condition leaves overflow UNACKNOWLEDGED; the persistent ledger keeps every valid submission (12 ACTIVE and the rest QUEUED)"
+   },
+   {
+    "id": "H5",
+    "statement": "Concurrent submissions from four connections, a reopened database, the same claim id in another case and an invalid submission first do not lose or refuse valid submissions"
+   }
+  ],
+  "targets": [
+   "receipts, evidence, proceedings, plans, measurements and closures of a synthetic ledger"
+  ],
+  "instrument_conditions": {
+   "stream": "80 submissions per world: valid, corrupt container, resend, conflict, malformed, oversize",
+   "active_capacity": 12,
+   "r10_local_limit": 64,
+   "max_payload_bytes": 65536
+  },
+  "control_condition": "evidence first",
+  "conditions": [
+   "receipt first",
+   "evidence first",
+   "R10 in memory"
+  ],
+  "seeds": [
+   7001,
+   7002,
+   7003,
+   7004,
+   7005,
+   7006,
+   7007,
+   7008,
+   7009,
+   7010,
+   7011,
+   7012,
+   7013,
+   7014,
+   7015,
+   7016,
+   7017,
+   7018,
+   7019,
+   7020,
+   7021,
+   7022,
+   7023,
+   7024,
+   7025,
+   7026,
+   7027,
+   7028,
+   7029,
+   7030
+  ],
+  "trials_per_condition": 1,
+  "stopping_rule": {
+   "type": "fixed-n",
+   "units": 30,
+   "no interim analysis": true
+  },
+  "outcomes": {
+   "primary": [
+    "erased claims",
+    "invariants I9-I11"
+   ],
+   "secondary": [
+    "receipt states",
+    "durability"
+   ]
+  },
+  "analyses": [
+   {
+    "id": "L101",
+    "hypothesis": "H1",
+    "outcome": "erased",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "L102",
+    "hypothesis": "H2",
+    "outcome": "erased",
+    "method": "paired-sign-flip",
+    "confirmatory": true,
+    "paired": true
+   },
+   {
+    "id": "L103",
+    "hypothesis": "H3",
+    "outcome": "kept",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "L104",
+    "hypothesis": "H4",
+    "outcome": "states",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "L105",
+    "hypothesis": "H5",
+    "outcome": "persistence",
+    "method": "descriptive",
+    "confirmatory": true
+   }
+  ],
+  "multiplicity": "holm",
+  "failure_conditions": [
+   "fewer than 30 units"
+  ],
+  "reproduction": {
+   "generator": "xzr.teoo.lawexperiments",
+   "steps": [
+    "run unit per seed",
+    "analyse"
+   ],
+   "world": "xzr.teoo.lawledger (SQLite, append-only) on xzr.teoo.lawworld (8 Booleans); this implementation's own world, not Appendix O"
+  },
+  "schema": "teoo.protocol/1",
+  "version": 1,
+  "parent_version": null,
+  "change_reason": null
+ },
+ "units": 30,
+ "seeds": [
+  7001,
+  7002,
+  7003,
+  7004,
+  7005,
+  7006,
+  7007,
+  7008,
+  7009,
+  7010,
+  7011,
+  7012,
+  7013,
+  7014,
+  7015,
+  7016,
+  7017,
+  7018,
+  7019,
+  7020,
+  7021,
+  7022,
+  7023,
+  7024,
+  7025,
+  7026,
+  7027,
+  7028,
+  7029,
+  7030
+ ],
+ "evidence_class": "Implementation Property",
+ "seconds": 5.8,
+ "results": {
+  "L101": {
+   "method": "descriptive",
+   "receipt_first_erased_total": 0,
+   "evidence_first_erased_total": 371,
+   "worlds": 30,
+   "criterion": "0 valid or corrupt-container claims erased by the receipt-first ledger in every world",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  },
+  "L102": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 12.366666666666667,
+   "sd_diff": 3.586212422630579,
+   "dz": 3.4483921221809273,
+   "ci95": [
+    11.133333333333333,
+    13.666666666666666
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 11,
+   "inferential": true,
+   "contrast": "claims erased per world: evidence first minus receipt first",
+   "predicted_sign": 1,
+   "p_holm": 4.999750012499375e-05,
+   "supported": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  },
+  "L103": {
+   "method": "descriptive",
+   "totals": {
+    "valid_with_corrupt_evidence": 371,
+    "duplicates_collapsed": 268,
+    "conflicts_quarantined": 166,
+    "malformed_quarantined": 171,
+    "oversize_refused": 21
+   },
+   "expected_totals": {
+    "valid_with_corrupt_evidence": 371,
+    "duplicates_collapsed": 268,
+    "conflicts_quarantined": 166,
+    "malformed_quarantined": 171,
+    "oversize_refused": 21
+   },
+   "criterion": "every corrupt container kept as a receipt, every resend collapsed, every conflict and malformed input quarantined, every oversize input refused and not received, in every world",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  },
+  "L104": {
+   "method": "descriptive",
+   "r10_70_valid_submissions": {
+    "ACTIVE": [
+     12
+    ],
+    "QUEUED": [
+     52
+    ],
+    "UNACKNOWLEDGED": [
+     6
+    ]
+   },
+   "persistent_65": {
+    "ACTIVE": [
+     12
+    ],
+    "QUEUED": [
+     53
+    ],
+    "UNACKNOWLEDGED": [
+     0
+    ],
+    "total": [
+     65
+    ]
+   },
+   "criterion": "R10 (70 valid): 12 ACTIVE, 52 QUEUED, 6 UNACKNOWLEDGED; persistent (65): 12 ACTIVE, 53 QUEUED, 0 UNACKNOWLEDGED",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  },
+  "L105": {
+   "method": "descriptive",
+   "criterion": "4 connections x 6 concurrent submissions: 24 receipts, 24 distinct sequences, 0 errors, 12 ACTIVE and 12 QUEUED after reopening; the same claim id in another case is a separate receipt; a malformed submission first does not refuse the valid one after it",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  }
+ },
+ "catalogue": {
+  "source": "The Minimum Guarantees of Human Legal Subjecthood, Publication Final V3.0, Chapter 6.2 (identical in the 100_POINT_EDITION and in R2 section 4: all fifteen titles and definitions compared character for character)",
+  "verified_against_original": true,
+  "sha256": {
+   "v3_0": "cf4d4f0c51169451da5af4c33e7081e947dacbade855068a889965d8c523b848",
+   "v3_0_100_point_edition": "afb59d1a0c3b28854f14113f843645539e07a2e466949d22de4b67da0a22bf99",
+   "ai_law_osr_r2": "a9984451b281df3252b05842dc5109dd396e0b0c54d3560849344ad41059a501"
+  },
+  "editions_identical_for_guarantees": true,
+  "note": "V3.0 uses two vocabularies for the same five findings (Appendix A table: Secured/Partial/Absent/Indeterminate/Inapplicable; A.3 and 8.4 text: Satisfied/Partially Satisfied/Failed/Indeterminate/Not Applicable). R2 section 16 and this implementation use the table's."
+ },
+ "note": "results about a SYNTHETIC ledger and this implementation's own world; the manuscripts R5-R16, the historical code and the world of Appendix O were not available and their numbers are not reproduced; a closure, a measurement or a match here is not a legal judgment or a restoration; not an observation of any institution, law or person"
+}

@@ -156,8 +156,8 @@ describe('View I: AI legal governance (public specification; the source wording 
     for (const a of Object.values(lg.assessments)) { expect(a.length).toBe(15); expect(a.map((x) => x.number)).toEqual(Array.from({ length: 15 }, (_, i) => i + 1)); expect(Object.values(countStates(a)).reduce((x, y) => x + y, 0)).toBe(15); }
     expect(h).toContain('counted, never added into a score');
   });
-  it('lays out sections A to H in order: duties, guarantees, governance principles, crosswalk, operational evidence, consequences, restoration, unverified conditions', () => {
-    const idx = ['A · MHEG twelve duties', 'B · Fifteen guarantees', 'C · Fifteen AI-legal-logic governance principles', 'D · Functional crosswalk', 'E · Operational evidence', 'F · Institutional consequences', 'G · Contestation and restoration', 'H · Unverified conditions'].map((t) => h.indexOf(t));
+  it('lays out sections I-A to I-I in order: subjecthood, MHEG duties, governance principles, legal transformation, receipt and proceedings, evidence and revision, model against sensor, intervention and restoration, experimental evidence', () => {
+    const idx = ['I-A · Legal subjecthood: fifteen guarantees', 'I-B · MHEG twelve duties', 'I-C · Governance principles', 'I-D · Legal transformation', 'I-E · Receipt and proceedings', 'I-F · Evidence and revision', 'I-G · Model against synthetic sensor', 'I-H · Intervention and restoration', 'I-I · Experimental evidence'].map((t) => h.indexOf(t));
     expect(idx.every((i) => i >= 0)).toBe(true); expect([...idx].sort((x, y) => x - y)).toEqual(idx);
   });
   it('shows the twelve duties as a registry of their own, each as its worst mapped finding, with the functional-summary status', () => {
@@ -173,9 +173,12 @@ describe('View I: AI legal governance (public specification; the source wording 
     expect(cw.not_named_by_any_duty).toEqual(['G1']); expect(cw.matrix.M9[cw.findings.indexOf('G12B')]).toBe(1); expect(cw.matrix.M11.reduce((x, y) => x + y, 0)).toBe(1); expect(cw.duties_per_finding.G8).toBe(4);
     expect(h).toContain('data-testid="teoo-crosswalk"'); expect((h.match(/data-mapped="1"/g) ?? []).length).toBe(Object.values(cw.findings_per_duty).reduce((x, y) => x + y, 0)); expect(h).toContain('functional, not one-to-one');
   });
-  it('keeps the governance principles unverified: nothing is listed or mapped', () => {
-    expect(lg.mheg.governance_principles.status).toBe('UNVERIFIED'); expect(lg.mheg.governance_principles.items).toEqual([]);
-    expect(h).toContain('data-testid="teoo-governance"'); expect(h).toContain('UNVERIFIED'); expect(h).toContain('No principle is shown and none is mapped');
+  it('keeps the governance principles a separate series: only the fifteenth (Recursive Double Audit) is known, the rest unverified, nothing mapped', () => {
+    const g = lg.mheg.governance_principles;
+    expect(g.status).toBe('PARTIALLY_KNOWN'); expect(g.items).toHaveLength(15); expect(g.items.filter((i) => i.name_status !== 'UNVERIFIED').map((i) => i.id)).toEqual(['P15']);
+    expect(g.items[14].name).toBe('Audit of the Auditor and Self-Audit of the Institutional Apparatus'); expect(g.items[14].version).toBe('Recursive Double Audit');
+    expect(g.proximity[0].verified).toBe(false); expect(g.proximity[0].relation).toContain('identity is not assumed');
+    expect(h).toContain('data-testid="teoo-governance"'); expect(h).toContain('Audit of the Auditor'); expect(h).toContain('none is mapped by ordinal position'); expect(h).toContain('identity is not assumed');
   });
   it('shows the nine-stage transformation chain with its failure stage, and the unverified conditions', () => {
     const ch = Object.values(lg.mheg.chains);
@@ -184,6 +187,38 @@ describe('View I: AI legal governance (public specification; the source wording 
     expect(ch[0].first_violated_stage).not.toBeNull(); expect(ch[1].first_violated_stage).toBeNull(); expect(ch[1].stages.some((x) => x.state === 'VIOLATED')).toBe(false);
     expect(h).toContain('data-testid="teoo-unverified"'); expect(lg.mheg.unverified.length).toBeGreaterThanOrEqual(5); expect(Object.keys(lg.mheg.fidelity).length).toBe(19);
     expect(lg.mheg.limits).toContain('no total');
+  });
+  it('shows the ledger: receipts, quarantine, the R9 separation of evidence, applicability and proceedings, and the invariants', () => {
+    const l = lg.ledger, st = l.demo.case.receipts.map((r) => r.state);
+    expect(h).toContain('data-testid="teoo-receipts"'); expect(st).toContain('ACTIVE'); expect(st).toContain('QUARANTINED'); expect(l.demo.counts_65).toMatchObject({ ACTIVE: 12, QUEUED: 53 });
+    expect(l.demo.case_g1).toMatchObject({ E: 'SECURED', A: 'REJECTED', effective: 'SECURED' }); expect(h).toContain('data-testid="teoo-r9"'); expect(h).toContain('does not erase the evidence');
+    expect(Object.keys(l.invariants)).toEqual(['I9', 'I10', 'I11', 'I12']); expect(h).toContain('creates no judicial or administrative authority');
+    expect(l.demo.steps.some((x) => x.what.includes('65,536') && x.result.received === false)).toBe(true);
+  });
+  it('shows evidence scopes and immutable measurements with their status events', () => {
+    const c = lg.ledger.demo.case;
+    const scopes = new Set(c.evidence.map((e) => e.scope)); expect(scopes.has('ACCESS') && scopes.has('METADATA')).toBe(true);
+    expect(c.measurements.length).toBeGreaterThanOrEqual(3); expect(c.measurements.some((m) => m.status_history.length >= 2)).toBe(true); expect(c.measurements.some((m) => m.status === 'STALE_EVIDENCE')).toBe(true);
+    expect(h).toContain('data-testid="teoo-measurements"'); expect(h).toContain('never overwritten'); expect(h).toContain('must not be taken as legally irrelevant');
+    expect(lg.ledger.demo.steps.some((x) => String(x.result.result ?? '').includes('append-only'))).toBe(true);
+  });
+  it('shows the model against the sensor, the comparator that agrees on every comparison, and says the historical counts are not reproduced', () => {
+    const w = lg.ledger.world;
+    expect(w.comparisons).toBe(1536); expect(w.boolean_model_agrees).toBe(1536); expect(w.boolean_sensor_agrees).toBe(1536); expect(w.historical_counts_reproduced).toBe(false);
+    expect(Object.values(w.per_condition).every((p) => p.cause_identified_access_only === 0)).toBe(true); expect(h).toContain('data-testid="teoo-world"'); expect(h).toContain('no predictive advantage'); expect(h).toContain('not reproduced');
+  });
+  it('keeps closure apart from legal determination and restoration', () => {
+    const r = lg.ledger.demo.case.restoration;
+    expect(r.material_restoration_verified).toBe(false); expect(r.positive_law_verified).toBe(false); expect(r.legal_determination_by_this_software).toBeNull(); expect(r.stages.find((s) => s.stage === 'material_restoration')?.present).toBe(false);
+    expect(lg.ledger.demo.case.closures[0].kind).toBe('CLOSED_ADMIN_CONFLICT'); expect(lg.ledger.demo.case.closures[0].flag).toBe('UNRESOLVED_CONFLICT');
+    expect(h).toContain('data-testid="teoo-restoration"'); expect(h).toContain('four different things'); expect(h).toContain('a model match is not legal verification');
+  });
+  it('lists R5-R16 with what is implemented and what is not, and keeps the negative and unmet results', () => {
+    const rs = lg.ledger.r_table.map((x) => x.r);
+    expect(rs).toEqual(['R5-R7', 'R8', 'R9', 'R10', 'R11', 'R12', 'R13', 'R14', 'R15', 'R16']); expect(lg.ledger.r_table.find((x) => x.r === 'R14')?.status).toBe('STRUCTURE_ONLY'); expect(lg.ledger.r_table.find((x) => x.r === 'R5-R7')?.status).toBe('NOT_AVAILABLE');
+    expect(lg.ledger.results.map((e) => e.id)).toEqual(['LAW-L1', 'LAW-L2', 'LAW-L3', 'LAW-L4', 'LAW-L5', 'LAW-L6', 'LAW-L7', 'LAW-A1']);
+    expect(lg.ledger.negative_and_unmet.map((n) => n.analysis)).toEqual(expect.arrayContaining(['L403', 'L701']));
+    expect(h).toContain('data-testid="teoo-r-table"'); expect(h).toContain('data-testid="teoo-law-negative"'); expect(h).toContain('criterion NOT met');
   });
   it('reports G12 and G15 through their sub-findings, and U separately and not as a sixteenth guarantee', () => {
     const a = lg.assessments[names[0]];
