@@ -1,0 +1,873 @@
+{
+ "sources": {
+  "V3_0": {
+   "path": {
+    "file": "The_Minimum_Guarantees_Human_Legal_Subjecthood_PUBLICATION_FINAL_V3_0.docx"
+   },
+   "exists": true,
+   "sha256": "cf4d4f0c51169451da5af4c33e7081e947dacbade855068a889965d8c523b848",
+   "bytes": 136031,
+   "paragraphs": 924,
+   "characters": 288731,
+   "coverage": {
+    "characters_in_text_runs": 250736,
+    "characters_in_paragraphs": 250736,
+    "paragraphs_in_xml": 1143,
+    "paragraphs_missing_from_extraction": 0,
+    "complete": true
+   }
+  },
+  "V3_0_100_POINT_EDITION": {
+   "path": {
+    "file": "The_Minimum_Guarantees_Human_Legal_Subjecthood_PUBLICATION_FINAL_V3_0_100_POINT_EDITION.docx"
+   },
+   "exists": true,
+   "sha256": "afb59d1a0c3b28854f14113f843645539e07a2e466949d22de4b67da0a22bf99",
+   "bytes": 138500,
+   "paragraphs": 960,
+   "characters": 296418,
+   "coverage": {
+    "characters_in_text_runs": 257399,
+    "characters_in_paragraphs": 257399,
+    "paragraphs_in_xml": 1179,
+    "paragraphs_missing_from_extraction": 0,
+    "complete": true
+   }
+  },
+  "ai_law_osr_r2": {
+   "path": {
+    "file": "ai_law_osr_r2.docx"
+   },
+   "exists": true,
+   "sha256": "a9984451b281df3252b05842dc5109dd396e0b0c54d3560849344ad41059a501",
+   "bytes": 49650,
+   "paragraphs": 124,
+   "characters": 34434,
+   "coverage": {
+    "characters_in_text_runs": 30053,
+    "characters_in_paragraphs": 30053,
+    "paragraphs_in_xml": 124,
+    "paragraphs_missing_from_extraction": 0,
+    "complete": true
+   }
+  }
+ },
+ "catalogue_checked": {
+  "source": "~/plato-audit-suite/prisma/seed.ts (GUARANTEES), copied verbatim by script",
+  "verified_against_original": false
+ },
+ "missing": [],
+ "editions_compared": {
+  "paragraphs_only_in_first": 88,
+  "paragraphs_only_in_second": 124,
+  "paragraph_similarity_ratio": 0.8875
+ },
+ "catalogue_match": {
+  "V3_0": [
+   {
+    "number": 1,
+    "provisional_title": "Subject Recognition and Score Non-Identity",
+    "exact_occurrences": 3,
+    "first_paragraph": 172,
+    "best_fuzzy_ratio": 1.0
+   },
+   {
+    "number": 2,
+    "provisional_title": "Non-Reduction of Guarantees by Score",
+    "exact_occurrences": 0,
+    "first_paragraph": null,
+    "best_fuzzy_ratio": 0.776
+   },
+   {
+    "number": 3,
+    "provisional_title": "AI Use and Decision Involvement Notice",
+    "exact_occurrences": 0,
+    "first_paragraph": null,
+    "best_fuzzy_ratio": 0.938
+   },
+   {
+    "number": 4,
+    "provisional_title": "Current Score and Classification Access",
+    "exact_occurrences": 3,
+    "first_paragraph": 178,
+    "best_fuzzy_ratio": 1.0
+   },
+   {
+    "number": 5,
+    "provisional_title": "Score History, Expiry, Purpose, and Sharing Access",
+    "exact_occurrences": 0,
+    "first_paragraph": null,
+    "best_fuzzy_ratio": 0.594
+   },
+   {
+    "number": 6,
+    "provisional_title": "Legal Source and Institutional Basis Access",
+    "exact_occurrences": 0,
+    "first_paragraph": null,
+    "best_fuzzy_ratio": 0.684
+   },
+   {
+    "number": 7,
+    "provisional_title": "Legal Concept Variable Transformation Access",
+    "exact_occurrences": 0,
+    "first_paragraph": null,
+    "best_fuzzy_ratio": 0.796
+   },
+   {
+    "number": 8,
+    "provisional_title": "Separation of Facts, Inferences, Scores, and Normative Judgments",
+    "exact_occurrences": 0,
+    "first_paragraph": null,
+    "best_fuzzy_ratio": 0.942
+   },
+   {
+    "number": 9,
+    "provisional_title": "Individual Reasons and Inference Chain",
+    "exact_occurrences": 0,
+    "first_paragraph": null,
+    "best_fuzzy_ratio": 0.818
+   },
+   {
+    "number": 10,
+    "provisional_title": "Correction of Data, Inferences, Scores, and Derived Records",
+    "exact_occurrences": 0,
+    "first_paragraph": null,
+    "best_fuzzy_ratio": 0.85
+   },
+   {
+    "number": 11,
+    "provisional_title": "Contestation, Rebuttal, and Non-Discounting of Testimony",
+    "exact_occurrences": 0,
+    "first_paragraph": null,
+    "best_fuzzy_ratio": 0.8
+   },
+   {
+    "number": 12,
+    "provisional_title": "Fair Burden of Proof and Independent Human Review",
+    "exact_occurrences": 0,
+    "first_paragraph": null,
+    "best_fuzzy_ratio": 0.603
+   },
+   {
+    "number": 13,
+    "provisional_title": "Suspension of Adverse Treatment and Score Use",
+    "exact_occurrences": 3,
+    "first_paragraph": 196,
+    "best_fuzzy_ratio": 1.0
+   },
+   {
+    "number": 14,
+    "provisional_title": "Reversible Treatment, Temporal Limitation, and Future Subjecthood",
+    "exact_occurrences": 3,
+    "first_paragraph": 198,
+    "best_fuzzy_ratio": 1.0
+   },
+   {
+    "number": 15,
+    "provisional_title": "Effective Re-entry, Support, Remedy, and Mutual Audit",
+    "exact_occurrences": 0,
+    "first_paragraph": null,
+    "best_fuzzy_ratio": 0.656
+   }
+  ],
+  "V3_0_100_POINT_EDITION": [
+   {
+    "number": 1,
+    "provisional_title": "Subject Recognition and Score Non-Identity",
+    "exact_occurrences": 3,
+    "first_paragraph": 173,
+    "best_fuzzy_ratio": 1.0
+   },
+   {
+    "number": 2,
+    "provisional_title": "Non-Reduction of Guarantees by Score",
+    "exact_occurrences": 0,
+    "first_paragraph": null,
+    "best_fuzzy_ratio": 0.776
+   },
+   {
+    "number": 3,
+    "provisional_title": "AI Use and Decision Involvement Notice",
+    "exact_occurrences": 0,
+    "first_paragraph": null,
+    "best_fuzzy_ratio": 0.938
+   },
+   {
+    "number": 4,
+    "provisional_title": "Current Score and Classification Access",
+    "exact_occurrences": 3,
+    "first_paragraph": 179,
+    "best_fuzzy_ratio": 1.0
+   },
+   {
+    "number": 5,
+    "provisional_title": "Score History, Expiry, Purpose, and Sharing Access",
+    "exact_occurrences": 0,
+    "first_paragraph": null,
+    "best_fuzzy_ratio": 0.594
+   },
+   {
+    "number": 6,
+    "provisional_title": "Legal Source and Institutional Basis Access",
+    "exact_occurrences": 0,
+    "first_paragraph": null,
+    "best_fuzzy_ratio": 0.684
+   },
+   {
+    "number": 7,
+    "provisional_title": "Legal Concept Variable Transformation Access",
+    "exact_occurrences": 0,
+    "first_paragraph": null,
+    "best_fuzzy_ratio": 0.796
+   },
+   {
+    "number": 8,
+    "provisional_title": "Separation of Facts, Inferences, Scores, and Normative Judgments",
+    "exact_occurrences": 0,
+    "first_paragraph": null,
+    "best_fuzzy_ratio": 0.942
+   },
+   {
+    "number": 9,
+    "provisional_title": "Individual Reasons and Inference Chain",
+    "exact_occurrences": 0,
+    "first_paragraph": null,
+    "best_fuzzy_ratio": 0.818
+   },
+   {
+    "number": 10,
+    "provisional_title": "Correction of Data, Inferences, Scores, and Derived Records",
+    "exact_occurrences": 0,
+    "first_paragraph": null,
+    "best_fuzzy_ratio": 0.85
+   },
+   {
+    "number": 11,
+    "provisional_title": "Contestation, Rebuttal, and Non-Discounting of Testimony",
+    "exact_occurrences": 0,
+    "first_paragraph": null,
+    "best_fuzzy_ratio": 0.8
+   },
+   {
+    "number": 12,
+    "provisional_title": "Fair Burden of Proof and Independent Human Review",
+    "exact_occurrences": 0,
+    "first_paragraph": null,
+    "best_fuzzy_ratio": 0.603
+   },
+   {
+    "number": 13,
+    "provisional_title": "Suspension of Adverse Treatment and Score Use",
+    "exact_occurrences": 3,
+    "first_paragraph": 197,
+    "best_fuzzy_ratio": 1.0
+   },
+   {
+    "number": 14,
+    "provisional_title": "Reversible Treatment, Temporal Limitation, and Future Subjecthood",
+    "exact_occurrences": 3,
+    "first_paragraph": 199,
+    "best_fuzzy_ratio": 1.0
+   },
+   {
+    "number": 15,
+    "provisional_title": "Effective Re-entry, Support, Remedy, and Mutual Audit",
+    "exact_occurrences": 0,
+    "first_paragraph": null,
+    "best_fuzzy_ratio": 0.656
+   }
+  ],
+  "ai_law_osr_r2": [
+   {
+    "number": 1,
+    "provisional_title": "Subject Recognition and Score Non-Identity",
+    "exact_occurrences": 1,
+    "first_paragraph": 18,
+    "best_fuzzy_ratio": 1.0
+   },
+   {
+    "number": 2,
+    "provisional_title": "Non-Reduction of Guarantees by Score",
+    "exact_occurrences": 0,
+    "first_paragraph": null,
+    "best_fuzzy_ratio": 0.702
+   },
+   {
+    "number": 3,
+    "provisional_title": "AI Use and Decision Involvement Notice",
+    "exact_occurrences": 0,
+    "first_paragraph": null,
+    "best_fuzzy_ratio": 0.844
+   },
+   {
+    "number": 4,
+    "provisional_title": "Current Score and Classification Access",
+    "exact_occurrences": 1,
+    "first_paragraph": 24,
+    "best_fuzzy_ratio": 1.0
+   },
+   {
+    "number": 5,
+    "provisional_title": "Score History, Expiry, Purpose, and Sharing Access",
+    "exact_occurrences": 0,
+    "first_paragraph": null,
+    "best_fuzzy_ratio": 0.545
+   },
+   {
+    "number": 6,
+    "provisional_title": "Legal Source and Institutional Basis Access",
+    "exact_occurrences": 0,
+    "first_paragraph": null,
+    "best_fuzzy_ratio": 0.577
+   },
+   {
+    "number": 7,
+    "provisional_title": "Legal Concept Variable Transformation Access",
+    "exact_occurrences": 0,
+    "first_paragraph": null,
+    "best_fuzzy_ratio": 0.673
+   },
+   {
+    "number": 8,
+    "provisional_title": "Separation of Facts, Inferences, Scores, and Normative Judgments",
+    "exact_occurrences": 0,
+    "first_paragraph": null,
+    "best_fuzzy_ratio": 0.877
+   },
+   {
+    "number": 9,
+    "provisional_title": "Individual Reasons and Inference Chain",
+    "exact_occurrences": 0,
+    "first_paragraph": null,
+    "best_fuzzy_ratio": 0.742
+   },
+   {
+    "number": 10,
+    "provisional_title": "Correction of Data, Inferences, Scores, and Derived Records",
+    "exact_occurrences": 0,
+    "first_paragraph": null,
+    "best_fuzzy_ratio": 0.791
+   },
+   {
+    "number": 11,
+    "provisional_title": "Contestation, Rebuttal, and Non-Discounting of Testimony",
+    "exact_occurrences": 0,
+    "first_paragraph": null,
+    "best_fuzzy_ratio": 0.744
+   },
+   {
+    "number": 12,
+    "provisional_title": "Fair Burden of Proof and Independent Human Review",
+    "exact_occurrences": 0,
+    "first_paragraph": null,
+    "best_fuzzy_ratio": 0.522
+   },
+   {
+    "number": 13,
+    "provisional_title": "Suspension of Adverse Treatment and Score Use",
+    "exact_occurrences": 1,
+    "first_paragraph": 42,
+    "best_fuzzy_ratio": 1.0
+   },
+   {
+    "number": 14,
+    "provisional_title": "Reversible Treatment, Temporal Limitation, and Future Subjecthood",
+    "exact_occurrences": 1,
+    "first_paragraph": 44,
+    "best_fuzzy_ratio": 1.0
+   },
+   {
+    "number": 15,
+    "provisional_title": "Effective Re-entry, Support, Remedy, and Mutual Audit",
+    "exact_occurrences": 0,
+    "first_paragraph": null,
+    "best_fuzzy_ratio": 0.613
+   }
+  ]
+ },
+ "guarantees_extracted": {
+  "V3_0": {
+   "1": {
+    "title": "Subject Recognition and Score Non-Identity",
+    "position": 172,
+    "definition_characters": 403
+   },
+   "2": {
+    "title": "Non-Degradation of Minimum Guarantees by Score",
+    "position": 174,
+    "definition_characters": 387
+   },
+   "3": {
+    "title": "AI Use and Decisional Involvement Notice",
+    "position": 176,
+    "definition_characters": 427
+   },
+   "4": {
+    "title": "Current Score and Classification Access",
+    "position": 178,
+    "definition_characters": 319
+   },
+   "5": {
+    "title": "Score History, Expiry, Scope, and Recipient Visibility",
+    "position": 180,
+    "definition_characters": 333
+   },
+   "6": {
+    "title": "Legal and Institutional Source Visibility",
+    "position": 182,
+    "definition_characters": 329
+   },
+   "7": {
+    "title": "Visibility of Legal-Concept-to-Variable Transformation",
+    "position": 184,
+    "definition_characters": 376
+   },
+   "8": {
+    "title": "Separation of Fact, Inference, Score, and Normative Judgment",
+    "position": 186,
+    "definition_characters": 349
+   },
+   "9": {
+    "title": "Individual Reasons and Inferential-Chain Access",
+    "position": 188,
+    "definition_characters": 343
+   },
+   "10": {
+    "title": "Correction of Data, Inferences, Scores, and Derived Information",
+    "position": 190,
+    "definition_characters": 372
+   },
+   "11": {
+    "title": "Contestation, Counter-Evidence, and Non-Discounting of Testimony",
+    "position": 192,
+    "definition_characters": 453
+   },
+   "12": {
+    "title": "Proper Allocation of Evidential Burdens and Independent Human Reconsideration",
+    "position": 194,
+    "definition_characters": 559
+   },
+   "13": {
+    "title": "Suspension of Adverse Treatment and Score Use",
+    "position": 196,
+    "definition_characters": 427
+   },
+   "14": {
+    "title": "Reversible Treatment, Temporal Limitation, and Future Subjecthood",
+    "position": 198,
+    "definition_characters": 449
+   },
+   "15": {
+    "title": "Effective Re-entry, Minimum Resources, Material Restoration, and Mutual Audit",
+    "position": 200,
+    "definition_characters": 759
+   }
+  },
+  "V3_0_100_POINT_EDITION": {
+   "1": {
+    "title": "Subject Recognition and Score Non-Identity",
+    "position": 173,
+    "definition_characters": 403
+   },
+   "2": {
+    "title": "Non-Degradation of Minimum Guarantees by Score",
+    "position": 175,
+    "definition_characters": 387
+   },
+   "3": {
+    "title": "AI Use and Decisional Involvement Notice",
+    "position": 177,
+    "definition_characters": 427
+   },
+   "4": {
+    "title": "Current Score and Classification Access",
+    "position": 179,
+    "definition_characters": 319
+   },
+   "5": {
+    "title": "Score History, Expiry, Scope, and Recipient Visibility",
+    "position": 181,
+    "definition_characters": 333
+   },
+   "6": {
+    "title": "Legal and Institutional Source Visibility",
+    "position": 183,
+    "definition_characters": 329
+   },
+   "7": {
+    "title": "Visibility of Legal-Concept-to-Variable Transformation",
+    "position": 185,
+    "definition_characters": 376
+   },
+   "8": {
+    "title": "Separation of Fact, Inference, Score, and Normative Judgment",
+    "position": 187,
+    "definition_characters": 349
+   },
+   "9": {
+    "title": "Individual Reasons and Inferential-Chain Access",
+    "position": 189,
+    "definition_characters": 343
+   },
+   "10": {
+    "title": "Correction of Data, Inferences, Scores, and Derived Information",
+    "position": 191,
+    "definition_characters": 372
+   },
+   "11": {
+    "title": "Contestation, Counter-Evidence, and Non-Discounting of Testimony",
+    "position": 193,
+    "definition_characters": 453
+   },
+   "12": {
+    "title": "Proper Allocation of Evidential Burdens and Independent Human Reconsideration",
+    "position": 195,
+    "definition_characters": 559
+   },
+   "13": {
+    "title": "Suspension of Adverse Treatment and Score Use",
+    "position": 197,
+    "definition_characters": 427
+   },
+   "14": {
+    "title": "Reversible Treatment, Temporal Limitation, and Future Subjecthood",
+    "position": 199,
+    "definition_characters": 449
+   },
+   "15": {
+    "title": "Effective Re-entry, Minimum Resources, Material Restoration, and Mutual Audit",
+    "position": 201,
+    "definition_characters": 759
+   }
+  },
+  "ai_law_osr_r2": {
+   "1": {
+    "title": "Subject Recognition and Score Non-Identity",
+    "position": 18,
+    "definition_characters": 403
+   },
+   "2": {
+    "title": "Non-Degradation of Minimum Guarantees by Score",
+    "position": 20,
+    "definition_characters": 387
+   },
+   "3": {
+    "title": "AI Use and Decisional Involvement Notice",
+    "position": 22,
+    "definition_characters": 427
+   },
+   "4": {
+    "title": "Current Score and Classification Access",
+    "position": 24,
+    "definition_characters": 319
+   },
+   "5": {
+    "title": "Score History, Expiry, Scope, and Recipient Visibility",
+    "position": 26,
+    "definition_characters": 333
+   },
+   "6": {
+    "title": "Legal and Institutional Source Visibility",
+    "position": 28,
+    "definition_characters": 329
+   },
+   "7": {
+    "title": "Visibility of Legal-Concept-to-Variable Transformation",
+    "position": 30,
+    "definition_characters": 376
+   },
+   "8": {
+    "title": "Separation of Fact, Inference, Score, and Normative Judgment",
+    "position": 32,
+    "definition_characters": 349
+   },
+   "9": {
+    "title": "Individual Reasons and Inferential-Chain Access",
+    "position": 34,
+    "definition_characters": 343
+   },
+   "10": {
+    "title": "Correction of Data, Inferences, Scores, and Derived Information",
+    "position": 36,
+    "definition_characters": 372
+   },
+   "11": {
+    "title": "Contestation, Counter-Evidence, and Non-Discounting of Testimony",
+    "position": 38,
+    "definition_characters": 453
+   },
+   "12": {
+    "title": "Proper Allocation of Evidential Burdens and Independent Human Reconsideration",
+    "position": 40,
+    "definition_characters": 559
+   },
+   "13": {
+    "title": "Suspension of Adverse Treatment and Score Use",
+    "position": 42,
+    "definition_characters": 427
+   },
+   "14": {
+    "title": "Reversible Treatment, Temporal Limitation, and Future Subjecthood",
+    "position": 44,
+    "definition_characters": 449
+   },
+   "15": {
+    "title": "Effective Re-entry, Minimum Resources, Material Restoration, and Mutual Audit",
+    "position": 46,
+    "definition_characters": 759
+   }
+  }
+ },
+ "guarantees_between_editions": {
+  "1": {
+   "title_identical": true,
+   "definition_identical": true
+  },
+  "2": {
+   "title_identical": true,
+   "definition_identical": true
+  },
+  "3": {
+   "title_identical": true,
+   "definition_identical": true
+  },
+  "4": {
+   "title_identical": true,
+   "definition_identical": true
+  },
+  "5": {
+   "title_identical": true,
+   "definition_identical": true
+  },
+  "6": {
+   "title_identical": true,
+   "definition_identical": true
+  },
+  "7": {
+   "title_identical": true,
+   "definition_identical": true
+  },
+  "8": {
+   "title_identical": true,
+   "definition_identical": true
+  },
+  "9": {
+   "title_identical": true,
+   "definition_identical": true
+  },
+  "10": {
+   "title_identical": true,
+   "definition_identical": true
+  },
+  "11": {
+   "title_identical": true,
+   "definition_identical": true
+  },
+  "12": {
+   "title_identical": true,
+   "definition_identical": true
+  },
+  "13": {
+   "title_identical": true,
+   "definition_identical": true
+  },
+  "14": {
+   "title_identical": true,
+   "definition_identical": true
+  },
+  "15": {
+   "title_identical": true,
+   "definition_identical": true
+  }
+ },
+ "guarantees_r2_vs_v3": {
+  "1": {
+   "title_identical": true,
+   "definition_identical": true
+  },
+  "2": {
+   "title_identical": true,
+   "definition_identical": true
+  },
+  "3": {
+   "title_identical": true,
+   "definition_identical": true
+  },
+  "4": {
+   "title_identical": true,
+   "definition_identical": true
+  },
+  "5": {
+   "title_identical": true,
+   "definition_identical": true
+  },
+  "6": {
+   "title_identical": true,
+   "definition_identical": true
+  },
+  "7": {
+   "title_identical": true,
+   "definition_identical": true
+  },
+  "8": {
+   "title_identical": true,
+   "definition_identical": true
+  },
+  "9": {
+   "title_identical": true,
+   "definition_identical": true
+  },
+  "10": {
+   "title_identical": true,
+   "definition_identical": true
+  },
+  "11": {
+   "title_identical": true,
+   "definition_identical": true
+  },
+  "12": {
+   "title_identical": true,
+   "definition_identical": true
+  },
+  "13": {
+   "title_identical": true,
+   "definition_identical": true
+  },
+  "14": {
+   "title_identical": true,
+   "definition_identical": true
+  },
+  "15": {
+   "title_identical": true,
+   "definition_identical": true
+  }
+ },
+ "provisional_catalogue_vs_v3": [
+  {
+   "number": 1,
+   "provisional_title": "Subject Recognition and Score Non-Identity",
+   "canonical_title": "Subject Recognition and Score Non-Identity",
+   "title_identical": true,
+   "title_similarity": 1.0,
+   "definition_similarity": 0.02
+  },
+  {
+   "number": 2,
+   "provisional_title": "Non-Reduction of Guarantees by Score",
+   "canonical_title": "Non-Degradation of Minimum Guarantees by Score",
+   "title_identical": false,
+   "title_similarity": 0.805,
+   "definition_similarity": 0.055
+  },
+  {
+   "number": 3,
+   "provisional_title": "AI Use and Decision Involvement Notice",
+   "canonical_title": "AI Use and Decisional Involvement Notice",
+   "title_identical": false,
+   "title_similarity": 0.974,
+   "definition_similarity": 0.121
+  },
+  {
+   "number": 4,
+   "provisional_title": "Current Score and Classification Access",
+   "canonical_title": "Current Score and Classification Access",
+   "title_identical": true,
+   "title_similarity": 1.0,
+   "definition_similarity": 0.327
+  },
+  {
+   "number": 5,
+   "provisional_title": "Score History, Expiry, Purpose, and Sharing Access",
+   "canonical_title": "Score History, Expiry, Scope, and Recipient Visibility",
+   "title_identical": false,
+   "title_similarity": 0.612,
+   "definition_similarity": 0.149
+  },
+  {
+   "number": 6,
+   "provisional_title": "Legal Source and Institutional Basis Access",
+   "canonical_title": "Legal and Institutional Source Visibility",
+   "title_identical": false,
+   "title_similarity": 0.619,
+   "definition_similarity": 0.072
+  },
+  {
+   "number": 7,
+   "provisional_title": "Legal Concept Variable Transformation Access",
+   "canonical_title": "Visibility of Legal-Concept-to-Variable Transformation",
+   "title_identical": false,
+   "title_similarity": 0.755,
+   "definition_similarity": 0.027
+  },
+  {
+   "number": 8,
+   "provisional_title": "Separation of Facts, Inferences, Scores, and Normative Judgments",
+   "canonical_title": "Separation of Fact, Inference, Score, and Normative Judgment",
+   "title_identical": false,
+   "title_similarity": 0.966,
+   "definition_similarity": 0.081
+  },
+  {
+   "number": 9,
+   "provisional_title": "Individual Reasons and Inference Chain",
+   "canonical_title": "Individual Reasons and Inferential-Chain Access",
+   "title_identical": false,
+   "title_similarity": 0.847,
+   "definition_similarity": 0.131
+  },
+  {
+   "number": 10,
+   "provisional_title": "Correction of Data, Inferences, Scores, and Derived Records",
+   "canonical_title": "Correction of Data, Inferences, Scores, and Derived Information",
+   "title_identical": false,
+   "title_similarity": 0.879,
+   "definition_similarity": 0.016
+  },
+  {
+   "number": 11,
+   "provisional_title": "Contestation, Rebuttal, and Non-Discounting of Testimony",
+   "canonical_title": "Contestation, Counter-Evidence, and Non-Discounting of Testimony",
+   "title_identical": false,
+   "title_similarity": 0.828,
+   "definition_similarity": 0.386
+  },
+  {
+   "number": 12,
+   "provisional_title": "Fair Burden of Proof and Independent Human Review",
+   "canonical_title": "Proper Allocation of Evidential Burdens and Independent Human Reconsideration",
+   "title_identical": false,
+   "title_similarity": 0.571,
+   "definition_similarity": 0.148
+  },
+  {
+   "number": 13,
+   "provisional_title": "Suspension of Adverse Treatment and Score Use",
+   "canonical_title": "Suspension of Adverse Treatment and Score Use",
+   "title_identical": true,
+   "title_similarity": 1.0,
+   "definition_similarity": 0.212
+  },
+  {
+   "number": 14,
+   "provisional_title": "Reversible Treatment, Temporal Limitation, and Future Subjecthood",
+   "canonical_title": "Reversible Treatment, Temporal Limitation, and Future Subjecthood",
+   "title_identical": true,
+   "title_similarity": 1.0,
+   "definition_similarity": 0.239
+  },
+  {
+   "number": 15,
+   "provisional_title": "Effective Re-entry, Support, Remedy, and Mutual Audit",
+   "canonical_title": "Effective Re-entry, Minimum Resources, Material Restoration, and Mutual Audit",
+   "title_identical": false,
+   "title_similarity": 0.677,
+   "definition_similarity": 0.03
+  }
+ ],
+ "not_decided_here": [
+  "which edition is authoritative",
+  "whether the provisional catalogue is correct",
+  "the definitions, independence and non-substitutability of the fifteen guarantees (read them in the sources)"
+ ],
+ "withheld": "outlines, paragraph samples and document properties of the sources are withheld from the public report; the full report is kept privately"
+}

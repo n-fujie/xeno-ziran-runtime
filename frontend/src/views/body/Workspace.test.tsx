@@ -14,7 +14,7 @@ const fx = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)),
 const s = fx.session;
 const knee = 'joint.angle.knee_l';
 const ids = new Set(s.records.map((r) => r.record_id));
-const txt = (html: string) => html.replace(/<!-- -->/g, '');
+const txt = (html: string) => html.replace(/<!-- -->/g, '').replace(/&#x27;/g, "'");
 const cited = (html: string) => [...html.matchAll(/rec-[0-9a-f]{8,}/g)].map((m) => m[0]);
 
 describe('the session bundle is the one source of every view', () => {
@@ -141,32 +141,59 @@ describe('figure export: PNG helpers and the evidence a file keeps', () => {
   });
 });
 
-describe('View I: AI legal governance', () => {
+describe('View I: AI legal governance (public specification; the source wording is held privately)', () => {
   const lg = (JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '__fixtures__', 'teoo-legal.json'), 'utf8')) as { legal: LegalBundle }).legal;
   const h = txt(renderToString(<ViewI b={lg} />));
-  it('says that the catalogue is provisional and unverified, and that the institution is synthetic', () => {
-    expect(h).toContain('data-testid="teoo-catalogue-notice"'); expect(h).toContain('PROVISIONAL catalogue'); expect(h).toContain('NOT verified against the original');
-    expect(lg.synthetic).toBe(true); expect(lg.catalogue.verified_against_original).toBe(false); expect(h).toContain('a synthetic institution');
+  const names = Object.keys(lg.assessments);
+  it('says that titles are the source titles, that the wording is private and that the operational definitions are the implementation\'s', () => {
+    expect(h).toContain('data-testid="teoo-catalogue-notice"'); expect(h).toContain('verified against the original files'); expect(h).toContain('identical in V3.0, the 100_POINT_EDITION and R2'); expect(h).toContain('this implementation\'s, not the source\'s'); expect(h).toContain('held privately and is not part of this build'); expect(lg.text_available).toBe(false);
+    expect(lg.synthetic).toBe(true); expect(lg.catalogue.verified_against_original).toBe(true); expect(Object.keys(lg.catalogue.sha256).sort()).toEqual(['ai_law_osr_r2', 'v3_0', 'v3_0_100_point_edition']); expect(h).toContain('a synthetic institution');
   });
-  it('lists the fifteen guarantees with one state each and never adds them into a score', () => {
-    expect((h.match(/data-guarantee="/g) ?? []).length).toBe(15); expect(h).toContain('the states are not added into a score');
+  it('shows the fifteen guarantees with the source title (the wording is withheld), and one finding each', () => {
+    expect((h.match(/data-guarantee="/g) ?? []).length).toBe(15);
+    expect(lg.guarantees[1].title).toBe('Non-Degradation of Minimum Guarantees by Score'); expect(h).toContain('Non-Degradation of Minimum Guarantees by Score'); 
+    for (const g of lg.guarantees) { expect(g.definition).toBeNull(); expect(g.audit_questions).toEqual([]); expect(g.audit_question_count).toBeGreaterThan(0); expect(h).toContain(`wording held privately (${g.audit_question_count} audit questions`); }
     for (const a of Object.values(lg.assessments)) { expect(a.length).toBe(15); expect(a.map((x) => x.number)).toEqual(Array.from({ length: 15 }, (_, i) => i + 1)); expect(Object.values(countStates(a)).reduce((x, y) => x + y, 0)).toBe(15); }
+    expect(h).toContain('counted, never added into a score');
   });
-  it('shows INDETERMINATE for what is not observed and INAPPLICABLE only with a checked reason', () => {
-    const part = lg.assessments['baseline, with some provisions not observed'], safe = lg.assessments['an institution for which irreversible harm is impossible'];
-    expect(part.filter((x) => x.state === 'INDETERMINATE').length).toBe(lg.observation.not_observed_provisions.length); expect(part.every((x) => x.state !== 'ABSENT' || !lg.observation.not_observed_provisions.includes(x.provision))).toBe(true);
-    for (const x of safe.filter((y) => y.state === 'INAPPLICABLE')) expect(x.reason).toContain('checked against the configuration');
-    expect(h).toContain('not observed is not absent');
+  it('reports G12 and G15 through their sub-findings, and U separately and not as a sixteenth guarantee', () => {
+    const a = lg.assessments[names[0]];
+    expect(a[11].sub_findings.map((s) => s.id)).toEqual(['G12A', 'G12B']); expect(a[14].sub_findings.map((s) => s.id)).toEqual(['G15A', 'G15B', 'G15C', 'G15D']);
+    expect(h).toContain('data-subfinding="G12A"'); expect(h).toContain('data-subfinding="G15D"'); expect(h).toContain('data-testid="teoo-u"'); expect(h).toContain('not a sixteenth guarantee');
+    expect(a.some((x) => x.id === 'U')).toBe(false);
   });
-  it('names a remedy path for every guarantee that is absent or partial', () => {
+  it('shows a formal appeal that cannot alter the decision as a hard failure, not a partial compliance', () => {
+    const base = lg.assessments[names[0]], g11 = base.find((x) => x.id === 'G11')!;
+    expect(g11.state).toBe('ABSENT'); expect(g11.hard_failure).toBe(true); expect(g11.reason).toContain('practically unusable'); expect(h).toContain('hard failure');
+  });
+  it('shows INDETERMINATE for what is not observed and INAPPLICABLE only with its challengeable ground', () => {
+    const part = lg.assessments[names.find((n) => n.includes('not observed'))!], safe = lg.assessments[names.find((n) => n.includes('impossible'))!];
+    for (const id of lg.observation.not_observed_findings.filter((i) => !i.includes('G12') && !i.includes('G15'))) expect(part.find((x) => x.id === id)!.state).toBe('INDETERMINATE');
+    for (const x of safe.filter((y) => y.state === 'INAPPLICABLE')) { expect(x.reason).toContain('challengeable ground'); expect(x.reason).toContain('checked against the configuration'); }
+    expect(safe.filter((x) => x.state === 'INAPPLICABLE').length).toBe(1);
+  });
+  it('detects score-conditioned review in U and keeps it apart from the fifteen', () => {
+    const deg = lg.audits[names.find((n) => n.includes('reviewed less often'))!];
+    expect(deg.U.state).toBe('ABSENT'); expect(deg.U.hard_failure).toBe(true); expect(deg.U.reason).toContain('Score-Based Procedural Degradation'); expect(deg.U.failed_in).toContain('G2');
+  });
+  it('gives only an advisory recommendation, decided by a human, and never a total', () => {
+    for (const m of Object.values(lg.audits)) { expect(m.recommendation.advisory_only).toBe(true); expect(m.recommendation.decided_by).toContain('human decision maker'); expect(m.no_total).toContain('no aggregate'); }
+    expect(h).toContain('data-testid="teoo-recommendation"'); expect(h).toContain('advisory only'); expect(lg.software_limit).toContain('does not decide legal legitimacy');
+  });
+  it('names a remedy path for every finding that is absent or partial', () => {
     for (const a of Object.values(lg.assessments)) for (const x of a.filter((y) => y.state === 'ABSENT' || y.state === 'PARTIAL')) expect(x.remedy_path.length).toBeGreaterThan(5);
     expect(h).toContain('data-testid="teoo-remedies"');
   });
-  it('shows a stage without a legal basis as invalid, and a decision by the scoring system as not a legal decision', () => {
+  it('shows a stage without a legal basis as invalid, an AI output as not a legal decision, and the layers of the chain', () => {
     const bad = lg.chains['decided by the scoring system'], good = lg.chains.valid;
     expect(good.assessment.valid_legal_decision).toBe(true); expect(bad.assessment.valid_legal_decision).toBe(false); expect(bad.assessment.first_invalid_stage).toBe('legal_fact');
     expect(h).toContain('legally valid decision: <b>yes</b>'); expect(txt(renderToString(<ViewI b={{ ...lg, chains: { x: bad } }} />))).toContain('legally valid decision: <b>no</b>');
-    expect(good.chain.map((s) => s.stage).join()).toBe(['technical_event', 'data_representation', 'legal_fact', 'legal_classification', 'norm_selection', 'exception_handling', 'attribution', 'burden_of_proof', 'legal_decision', 'remedy'].join());
+    expect(good.chain.map((s) => s.stage).join()).toBe(['technical_event', 'data_representation', 'legal_fact', 'legal_classification', 'norm_selection', 'exception_handling', 'attribution', 'burden_of_proof', 'legal_decision', 'review', 'remedy'].join());
+    expect(new Set(good.chain.map((s) => s.layer))).toEqual(new Set(['technical', 'asserted', 'legal', 'authorised decision', 'review', 'remedy']));
+  });
+  it('shows the Translation Register as the evidence for G6 and G7, and the five findings of the inheritance test', () => {
+    expect(h).toContain('data-testid="teoo-register"'); expect(lg.register.baseline.some((r) => r.legal_source === null && !r.translation_loss_disclosed)).toBe(true); expect(h).toContain('none identified');
+    expect(Object.keys(lg.inheritance)).toEqual(['baseline', 'after the repairs', 'lineage not produced']); expect(lg.inheritance['lineage not produced'].finding).toBe('indeterminate'); expect(h).toContain('data-testid="teoo-inheritance"');
   });
   it('compares the interventions on one synthetic world and keeps fairness optimisation, deleting the score and the independent review apart', () => {
     const i = lg.interventions;

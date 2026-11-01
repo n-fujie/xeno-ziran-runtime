@@ -19,6 +19,7 @@ from fastapi.testclient import TestClient
 from xzr.service import app as app_mod
 from xzr.teoo import body as B
 from xzr.teoo import export as EX
+from xzr.teoo import manuscript_guard as MG
 
 ALLOWED = {"SYNTHETIC", "RECONSTRUCTED_ESTIMATE", "CONCEPTUAL"}
 GENERATED_AT = "2026-01-01T00:00:00.000000Z"
@@ -51,8 +52,10 @@ def main() -> None:
         f = files[f"figure-{kind}.json"]
         if f["issues"] or EX.verify_svg(f["svg"]):  # type: ignore[index]
             raise SystemExit(f"refusing to write: figure {kind} does not verify")
-    if files["legal.json"]["catalogue"]["verified_against_original"] or not files["legal.json"]["synthetic"] or len(files["legal.json"]["guarantees"]) != 15:
-        raise SystemExit("refusing to write: the legal bundle is not the provisional, synthetic one")
+    if not files["legal.json"]["synthetic"] or len(files["legal.json"]["guarantees"]) != 15 or not files["legal.json"]["catalogue"]["sha256"]:
+        raise SystemExit("refusing to write: the legal bundle is not a synthetic bundle on a checksummed source catalogue")
+    if files["legal.json"].get("text_available") or any(MG.find_passages(json.dumps(doc, ensure_ascii=False)) for doc in files.values()):
+        raise SystemExit("refusing to write: the preview would carry the wording of an unpublished source (unset XZR_TEOO_PRIVATE_SOURCE; the preview is built from the public specification only)")
     if files["safety.json"]["production_ready"] or files["safety.json"]["human_measurement_ingestion_allowed"]:  # type: ignore[index]
         raise SystemExit("refusing to write: the production gate is open")
     d = out / "teoo-preview"

@@ -204,6 +204,32 @@ def _table(d: dict) -> str:
 DRAW.update({"bars": _bars, "forest": _forest, "table": _table})
 
 
+def _diagram(d: dict) -> str:
+    """Boxes and arrows for a CONCEPTUAL figure (a drawing of a structure stated in a source or a specification, not data). Boxes: {id, x, y, w, h, label, sub, fill}; arrows: {from, to, label}."""
+    box = {b["id"]: b for b in d["boxes"]}
+    out = [f'<text x="20" y="20" fill="#d8d8dc" font-size="12">{escape(d["title"])}</text>',
+           '<defs><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#8a8a92"/></marker></defs>']
+    for a in d.get("arrows", []):
+        b0, b1 = box[a["from"]], box[a["to"]]
+        x0, y0, x1, y1 = b0["x"] + b0["w"] / 2, b0["y"] + b0["h"] / 2, b1["x"] + b1["w"] / 2, b1["y"] + b1["h"] / 2
+        if abs(x1 - x0) >= abs(y1 - y0):
+            x0, x1 = (b0["x"] + b0["w"], b1["x"]) if x1 > x0 else (b0["x"], b1["x"] + b1["w"])
+        else:
+            y0, y1 = (b0["y"] + b0["h"], b1["y"]) if y1 > y0 else (b0["y"], b1["y"] + b1["h"])
+        out.append(f'<line x1="{x0:.1f}" y1="{y0:.1f}" x2="{x1:.1f}" y2="{y1:.1f}" stroke="#8a8a92" stroke-width="1.3" marker-end="url(#ah)"/>')
+        if a.get("label"):
+            out.append(f'<text x="{(x0 + x1) / 2:.1f}" y="{(y0 + y1) / 2 - 3:.1f}" fill="#9a9aa2" font-size="8.5" text-anchor="middle">{escape(a["label"])}</text>')
+    for b in d["boxes"]:
+        out.append(f'<rect x="{b["x"]}" y="{b["y"]}" width="{b["w"]}" height="{b["h"]}" rx="3" fill="{b.get("fill", "#1c2230")}" stroke="#55555e"/><text x="{b["x"] + 6}" y="{b["y"] + 13}" fill="#e8e8ec" font-size="10">{escape(b["label"])}</text>')
+        for i, line in enumerate(b.get("sub", [])):
+            out.append(f'<text x="{b["x"] + 6}" y="{b["y"] + 25 + i * 10}" fill="#9a9aa2" font-size="8.2">{escape(line)}</text>')
+    out.append(f'<text x="20" y="{H - BAND - 8}" fill="#9a9aa2" font-size="10">{escape(d.get("note", ""))}</text>')
+    return "".join(out)
+
+
+DRAW["diagram"] = _diagram
+
+
 def render_svg(kind: str, data: dict, metadata: dict) -> str:
     md = json.dumps(metadata, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
     band = "".join(f'<text x="14" y="{H - BAND + 16 + i * 17}" fill="#ffe9b0" font-size="11" class="teoo-band" font-family="monospace">{escape(line)}</text>' for i, line in enumerate(metadata["evidence"]["band"]))
@@ -216,7 +242,7 @@ def render_svg(kind: str, data: dict, metadata: dict) -> str:
 
 
 def build_figure(kind: str, title: str, data: dict, records: list[dict], *, generated_at: str, **kw: Any) -> dict:
-    extra = ("CONCEPTUAL",) if kind == "body" else ()
+    extra = ("CONCEPTUAL",) if kind in ("body", "diagram") else ()
     md = figure_metadata(kind, title, data, records, generated_at=generated_at, extra_classes=extra, **kw)
     svg = render_svg(kind, data, md)
     return {"svg": svg, "metadata": md, "metadata_json": json.dumps(md, sort_keys=True, ensure_ascii=False, indent=1)}

@@ -1,0 +1,218 @@
+{
+ "url": "https://teoo-preview.vercel.app/",
+ "label": "final3",
+ "env": "headless Chrome (chrome-headless-shell 1234) on macOS; data: fixed SYNTHETIC fixtures written by backend/scripts/export_teoo_preview.py",
+ "tabs": {
+  "A": {
+   "synthetic_banner": true,
+   "preview_notice": true,
+   "record_ids": 1,
+   "has_watermark_or_note": true,
+   "overflow_x": false
+  },
+  "B": {
+   "synthetic_banner": true,
+   "preview_notice": true,
+   "record_ids": 2,
+   "has_watermark_or_note": true,
+   "overflow_x": false,
+   "gap_shown": 1
+  },
+  "C": {
+   "synthetic_banner": true,
+   "preview_notice": true,
+   "record_ids": 0,
+   "has_watermark_or_note": true,
+   "overflow_x": false
+  },
+  "D": {
+   "synthetic_banner": true,
+   "preview_notice": true,
+   "record_ids": 0,
+   "has_watermark_or_note": true,
+   "overflow_x": false,
+   "config_in_force": "configuration v1"
+  },
+  "E": {
+   "synthetic_banner": true,
+   "preview_notice": true,
+   "record_ids": 4,
+   "has_watermark_or_note": true,
+   "overflow_x": false,
+   "body_versions": "body v1 → v3"
+  },
+  "F": {
+   "synthetic_banner": true,
+   "preview_notice": true,
+   "record_ids": 2,
+   "has_watermark_or_note": true,
+   "overflow_x": false
+  },
+  "G": {
+   "synthetic_banner": true,
+   "preview_notice": true,
+   "record_ids": 0,
+   "has_watermark_or_note": true,
+   "overflow_x": false
+  },
+  "H": {
+   "synthetic_banner": true,
+   "preview_notice": true,
+   "record_ids": 6,
+   "has_watermark_or_note": true,
+   "overflow_x": false,
+   "levels": 14
+  },
+  "I": {
+   "synthetic_banner": true,
+   "preview_notice": true,
+   "record_ids": 0,
+   "has_watermark_or_note": true,
+   "overflow_x": false
+  }
+ },
+ "console_errors": [
+  "[desktop] Failed to load resource: the server responded with a status of 404 ()"
+ ],
+ "requests": [
+  "GET /",
+  "GET /assets/teoo-preview-5Q4jMb0p.js",
+  "GET /assets/teoo-preview-DXgoERB3.css",
+  "GET /teoo-preview/session.json",
+  "GET /teoo-preview/safety.json",
+  "GET /teoo-preview/demo.json",
+  "GET /teoo-preview/figure-body.json",
+  "GET /teoo-preview/figure-timeseries.json",
+  "GET /teoo-preview/figure-limits.json",
+  "GET /teoo-preview/figure-evidence.json",
+  "GET /teoo-preview/legal.json",
+  "GET /teoo-preview/figure-limits.json",
+  "GET /teoo-preview/figure-timeseries.json",
+  "GET https://teoo-preview.vercel.app/d05d67f2-ff57-4bfb-a992-a977e5e0ae9c",
+  "GET /api/teoo/session",
+  "POST /api/teoo/ingest",
+  "GET /api/sessions",
+  "GET /",
+  "GET /assets/teoo-preview-5Q4jMb0p.js",
+  "GET /assets/teoo-preview-DXgoERB3.css",
+  "GET /teoo-preview/session.json",
+  "GET /teoo-preview/safety.json",
+  "GET /teoo-preview/demo.json",
+  "GET /teoo-preview/figure-body.json",
+  "GET /teoo-preview/figure-timeseries.json",
+  "GET /teoo-preview/figure-limits.json",
+  "GET /teoo-preview/figure-evidence.json",
+  "GET /teoo-preview/legal.json"
+ ],
+ "external_requests": [],
+ "mobile": {
+  "A": {
+   "synthetic_banner": true,
+   "preview_notice": true,
+   "record_ids": 1,
+   "has_watermark_or_note": true,
+   "overflow_x": false
+  },
+  "B": {
+   "synthetic_banner": true,
+   "preview_notice": true,
+   "record_ids": 2,
+   "has_watermark_or_note": true,
+   "overflow_x": false
+  },
+  "C": {
+   "synthetic_banner": true,
+   "preview_notice": true,
+   "record_ids": 0,
+   "has_watermark_or_note": true,
+   "overflow_x": false
+  },
+  "D": {
+   "synthetic_banner": true,
+   "preview_notice": true,
+   "record_ids": 0,
+   "has_watermark_or_note": true,
+   "overflow_x": false
+  },
+  "E": {
+   "synthetic_banner": true,
+   "preview_notice": true,
+   "record_ids": 4,
+   "has_watermark_or_note": true,
+   "overflow_x": false
+  },
+  "F": {
+   "synthetic_banner": true,
+   "preview_notice": true,
+   "record_ids": 2,
+   "has_watermark_or_note": true,
+   "overflow_x": false
+  },
+  "G": {
+   "synthetic_banner": true,
+   "preview_notice": true,
+   "record_ids": 0,
+   "has_watermark_or_note": true,
+   "overflow_x": false
+  },
+  "H": {
+   "synthetic_banner": true,
+   "preview_notice": true,
+   "record_ids": 6,
+   "has_watermark_or_note": true,
+   "overflow_x": false
+  },
+  "I": {
+   "synthetic_banner": true,
+   "preview_notice": true,
+   "record_ids": 0,
+   "has_watermark_or_note": true,
+   "overflow_x": false
+  }
+ },
+ "status": 200,
+ "headers": {
+  "accept-ranges": "bytes",
+  "access-control-allow-origin": "*",
+  "age": "31",
+  "cache-control": "public, max-age=0, must-revalidate",
+  "content-disposition": "inline",
+  "content-length": "950",
+  "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; frame-ancestors 'none'",
+  "content-type": "text/html; charset=utf-8",
+  "date": "Sun, 01 Nov 2026 02:58:32 GMT",
+  "etag": "\"cb1eab12de3d28b145c0e21e9f5bf4a0\"",
+  "last-modified": "Sun, 01 Nov 2026 02:58:01 GMT",
+  "permissions-policy": "camera=(), microphone=(), geolocation=()",
+  "referrer-policy": "no-referrer",
+  "server": "Vercel",
+  "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+  "x-content-type-options": "nosniff",
+  "x-frame-options": "DENY",
+  "x-robots-tag": "noindex, nofollow",
+  "x-vercel-cache": "HIT",
+  "x-vercel-id": "cdg1::zckkx-1793501912521-c9d4a30e11ca"
+ },
+ "slider_t12": "configuration v3",
+ "slider_t0": "configuration v1",
+ "export_svg": {
+  "file": "./exports_final3.svg",
+  "name": "fig-6446c442acc704c7.svg",
+  "bytes": 50267
+ },
+ "export_png": {
+  "file": "./exports_final3.png",
+  "name": "fig-6446c442acc704c7.png",
+  "bytes": 319653
+ },
+ "export_json": {
+  "file": "./exports_final3.json",
+  "name": "fig-6446c442acc704c7.json",
+  "bytes": 1947
+ },
+ "api_probe": {
+  "/api/teoo/session": 404,
+  "/api/teoo/ingest": 404,
+  "/api/sessions": 404
+ }
+}

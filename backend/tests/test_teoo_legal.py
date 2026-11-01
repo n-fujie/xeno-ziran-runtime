@@ -7,14 +7,11 @@ import json
 from pathlib import Path
 
 import pytest
-from fastapi.testclient import TestClient
 
-from xzr.service import app as app_mod
-from xzr.teoo import legal as L
+from xzr.teoo import legal_v1 as L
 from xzr.teoo import protocol as PR
 
 EV = Path(__file__).resolve().parents[2] / "docs" / "teoo_evidence" / "legal"
-client = TestClient(app_mod.app)
 
 
 def test_the_catalogue_has_fifteen_guarantees_and_says_that_it_is_provisional():
@@ -99,18 +96,11 @@ def test_a_correction_reaches_the_second_institution_only_if_it_is_propagated():
     assert prop["downstream_access_qualified"] > none["downstream_access_qualified"] and prop["downstream_mismatch"] <= none["downstream_mismatch"]
 
 
-def test_the_legal_route_is_local_only_and_returns_a_synthetic_bundle_with_the_provisional_notice(monkeypatch):
-    import dataclasses
-
-    from xzr.service import studies
-    from xzr.service.limits import LIMITS
-
-    r = client.get("/api/teoo/legal").json()
+def test_the_first_implementations_bundle_is_synthetic_and_marked_provisional():
+    r = L.legal_bundle()
     assert r["synthetic"] and r["catalogue"]["verified_against_original"] is False and len(r["guarantees"]) == 15 and len(r["assessments"]) == 4
     assert all(len(v) == 15 for v in r["assessments"].values()) and not r["chains"]["decided by the scoring system"]["assessment"]["valid_legal_decision"]
-    assert "not observed is not absent" in r["observation"]["note"] and client.get("/api/teoo/legal", params={"seed": -1}).status_code == 422
-    monkeypatch.setattr(studies, "LIMITS", dataclasses.replace(LIMITS, public=True))
-    assert client.get("/api/teoo/legal").status_code == 403
+    assert "not observed is not absent" in r["observation"]["note"]
 
 
 def test_the_saved_legal_results_are_those_of_the_registered_protocols_and_keep_their_negative_results():

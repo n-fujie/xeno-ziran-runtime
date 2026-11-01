@@ -1,0 +1,221 @@
+{
+ "experiment_id": "LG2-EXP-07",
+ "protocol_version": 1,
+ "protocol_digest": "15bc4ef6bb8b8d951b9d1eddbaf479a98b9b77d4ce0b5e7ef374d864dac1b9bb",
+ "protocol": {
+  "experiment_id": "LG2-EXP-07",
+  "hypotheses": [
+   {
+    "id": "H1",
+    "statement": "Once an unperformed score-degradation test is not counted as a passed one, no score-conditioned configuration is reported SECURED on the finding U"
+   },
+   {
+    "id": "H2",
+    "statement": "Where the test was performed it detects the degradation (>= 0.95) with a false-rate bound <= 0.08"
+   },
+   {
+    "id": "H3",
+    "statement": "The first version reported false assurance more often than the version with the rule"
+   }
+  ],
+  "targets": [
+   "findings and outcomes of a synthetic institution"
+  ],
+  "instrument_conditions": {
+   "min_cases": [
+    0,
+    10,
+    30,
+    60
+   ],
+   "configurations_per_world": 8
+  },
+  "control_condition": "first_version",
+  "conditions": [
+   "first_version",
+   "min_cases_30"
+  ],
+  "seeds": [
+   5001,
+   5002,
+   5003,
+   5004,
+   5005,
+   5006,
+   5007,
+   5008,
+   5009,
+   5010,
+   5011,
+   5012,
+   5013,
+   5014,
+   5015,
+   5016,
+   5017,
+   5018,
+   5019,
+   5020,
+   5021,
+   5022,
+   5023,
+   5024,
+   5025,
+   5026,
+   5027,
+   5028,
+   5029,
+   5030
+  ],
+  "trials_per_condition": 1,
+  "stopping_rule": {
+   "type": "fixed-n",
+   "units": 30,
+   "no interim analysis": true
+  },
+  "outcomes": {
+   "primary": [
+    "false assurance on U",
+    "detection when performed"
+   ],
+   "secondary": [
+    "share left INDETERMINATE",
+    "dose of the minimum"
+   ]
+  },
+  "analyses": [
+   {
+    "id": "L207a",
+    "hypothesis": "H1",
+    "outcome": "reported_SECURED_while_degraded",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "L207b",
+    "hypothesis": "H2",
+    "outcome": "detection_when_performed",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "L207c",
+    "hypothesis": "H3",
+    "outcome": "false_assurance",
+    "method": "paired-sign-flip",
+    "confirmatory": true
+   }
+  ],
+  "multiplicity": "holm",
+  "failure_conditions": [
+   "fewer than 30 worlds"
+  ],
+  "reproduction": {
+   "generator": "xzr.teoo.legal_experiments2",
+   "steps": [
+    "run unit per seed",
+    "analyse"
+   ],
+   "world": "xzr.teoo.legal (SYNTHETIC institution; guarantees from the source text V3.0 6.2)"
+  },
+  "schema": "teoo.protocol/1",
+  "version": 1,
+  "parent_version": null,
+  "change_reason": null
+ },
+ "units": 30,
+ "seeds": [
+  5001,
+  5002,
+  5003,
+  5004,
+  5005,
+  5006,
+  5007,
+  5008,
+  5009,
+  5010,
+  5011,
+  5012,
+  5013,
+  5014,
+  5015,
+  5016,
+  5017,
+  5018,
+  5019,
+  5020,
+  5021,
+  5022,
+  5023,
+  5024,
+  5025,
+  5026,
+  5027,
+  5028,
+  5029,
+  5030
+ ],
+ "evidence_class": "Synthetic-world Result",
+ "seconds": 4.4,
+ "results": {
+  "L207a": {
+   "method": "descriptive",
+   "degraded_configurations": 121,
+   "reported_SECURED_while_degraded": {
+    "first_version": 66,
+    "min_cases_10": 56,
+    "min_cases_30": 25,
+    "min_cases_60": 8
+   },
+   "criterion": "with min_cases = 30 no degraded configuration is reported SECURED",
+   "criterion_met": false,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "L207b": {
+   "method": "descriptive",
+   "degraded_with_a_performed_test": 80,
+   "detected_among_those": 55,
+   "detection_when_performed": 0.6875,
+   "false_rate": 0.01680672268907563,
+   "false_upper95": 0.0519589454058887,
+   "indeterminate_share_of_degraded": 0.33884297520661155,
+   "criterion": "detection when performed >= 0.95 and the upper 95% bound of the false rate <= 0.08",
+   "criterion_met": false,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "L207c": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 1.3666666666666667,
+   "sd_diff": 1.0333518722845685,
+   "dz": 1.3225569172727145,
+   "ci95": [
+    1.0,
+    1.7333333333333334
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 14,
+   "inferential": true,
+   "contrast": "degraded configurations reported SECURED per world: first version minus min_cases = 30",
+   "p_holm": 4.999750012499375e-05,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  }
+ },
+ "catalogue": {
+  "source": "The Minimum Guarantees of Human Legal Subjecthood, Publication Final V3.0, Chapter 6.2 (identical in the 100_POINT_EDITION and in R2 section 4: all fifteen titles and definitions compared character for character)",
+  "verified_against_original": true,
+  "sha256": {
+   "v3_0": "cf4d4f0c51169451da5af4c33e7081e947dacbade855068a889965d8c523b848",
+   "v3_0_100_point_edition": "afb59d1a0c3b28854f14113f843645539e07a2e466949d22de4b67da0a22bf99",
+   "ai_law_osr_r2": "a9984451b281df3252b05842dc5109dd396e0b0c54d3560849344ad41059a501"
+  },
+  "editions_identical_for_guarantees": true,
+  "note": "V3.0 uses two vocabularies for the same five findings (Appendix A table: Secured/Partial/Absent/Indeterminate/Inapplicable; A.3 and 8.4 text: Satisfied/Partially Satisfied/Failed/Indeterminate/Not Applicable). R2 section 16 and this implementation use the table's."
+ },
+ "note": "results about a SYNTHETIC institution and this implementation; guarantees from the source text; operational definitions are the implementation's; not an observation of any institution, law or person"
+}

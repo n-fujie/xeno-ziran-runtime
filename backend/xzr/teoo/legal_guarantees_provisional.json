@@ -1,0 +1,82 @@
+{
+ "source": "~/plato-audit-suite/prisma/seed.ts (GUARANTEES), copied verbatim by script",
+ "verified_against_original": false,
+ "note": "The originals (The Minimum Guarantees of Human Legal Subjecthood V3.0 / 100_POINT_EDITION, the MHEG theorem text, the fifteen principles of AI legal-logic governance) were not found. This catalogue is the one an earlier implementation of the user's (plato-audit-suite) carries; it has NOT been compared with the original and its names, definitions and independence are therefore PROVISIONAL. It is data: replacing it by the verified catalogue changes this file, not code.",
+ "guarantees": [
+  {
+   "number": 1,
+   "title": "Subject Recognition and Score Non-Identity",
+   "description": "The person must not be treated as identical to a score, classification, prediction, or model output."
+  },
+  {
+   "number": 2,
+   "title": "Non-Reduction of Guarantees by Score",
+   "description": "A low score or adverse classification must not reduce access to notice, reasons, challenge, review, correction, suspension, remedy, or re-entry."
+  },
+  {
+   "number": 3,
+   "title": "AI Use and Decision Involvement Notice",
+   "description": "The person must be informed that AI was used, its purpose, its degree of influence, and the responsible institution."
+  },
+  {
+   "number": 4,
+   "title": "Current Score and Classification Access",
+   "description": "The person must be able to inspect their current score, classification, ranking, eligibility status, and risk status."
+  },
+  {
+   "number": 5,
+   "title": "Score History, Expiry, Purpose, and Sharing Access",
+   "description": "The person must be able to inspect score history, update reasons, validity period, purposes, recipients, and downstream uses."
+  },
+  {
+   "number": 6,
+   "title": "Legal Source and Institutional Basis Access",
+   "description": "The person must be able to identify the legislation, regulation, case law, contract, internal policy, guideline, or model policy used."
+  },
+  {
+   "number": 7,
+   "title": "Legal Concept Variable Transformation Access",
+   "description": "The person must be able to inspect how legal or institutional concepts were converted into variables, proxies, thresholds, weights, and computational rules."
+  },
+  {
+   "number": 8,
+   "title": "Separation of Facts, Inferences, Scores, and Normative Judgments",
+   "description": "The institution must clearly separate observed facts, inferred attributes, numerical scores, policy judgments, and legal conclusions."
+  },
+  {
+   "number": 9,
+   "title": "Individual Reasons and Inference Chain",
+   "description": "The person must receive individualised reasons and an intelligible account of the inferential chain leading to the decision."
+  },
+  {
+   "number": 10,
+   "title": "Correction of Data, Inferences, Scores, and Derived Records",
+   "description": "The person must be able to correct incorrect inputs, inferred attributes, scores, classifications, derived records, and propagated records."
+  },
+  {
+   "number": 11,
+   "title": "Contestation, Rebuttal, and Non-Discounting of Testimony",
+   "description": "The person must be able to contest the legal source, variable, proxy, inference, score, classification, and decision. Their testimony must not be automatically discounted because of a low score."
+  },
+  {
+   "number": 12,
+   "title": "Fair Burden of Proof and Independent Human Review",
+   "description": "The institution must not impose an excessive evidential burden on low-scoring subjects. Review must be performed by a human with authority to change or reverse the AI-mediated outcome."
+  },
+  {
+   "number": 13,
+   "title": "Suspension of Adverse Treatment and Score Use",
+   "description": "Where irreversible or serious harm may occur, the person must be able to request suspension of the decision, score use, or data sharing while review is pending."
+  },
+  {
+   "number": 14,
+   "title": "Reversible Treatment, Temporal Limitation, and Future Subjecthood",
+   "description": "Scores and classifications must have expiry, reassessment, correction, and deletion mechanisms. A present score must not permanently determine future legal or institutional status."
+  },
+  {
+   "number": 15,
+   "title": "Effective Re-entry, Support, Remedy, and Mutual Audit",
+   "description": "The person must have a realistic route back into the institution or opportunity, access to necessary procedural support, effective remedy for harm, and the ability to challenge the audit process itself."
+  }
+ ]
+}

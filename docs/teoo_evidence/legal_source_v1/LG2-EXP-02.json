@@ -1,0 +1,248 @@
+{
+ "experiment_id": "LG2-EXP-02",
+ "protocol_version": 1,
+ "protocol_digest": "e149f62f0447cae63c4c868bdfe306d06aa8799226476f09c29b94d4a085f1de",
+ "protocol": {
+  "experiment_id": "LG2-EXP-02",
+  "hypotheses": [
+   {
+    "id": "H1",
+    "statement": "The finding U is raised in worlds where low-score subjects are reviewed less often and not in the control (>= 0.95 detection; false-rate bound <= 0.15)"
+   },
+   {
+    "id": "H2",
+    "statement": "Score-conditioned review opens a review-rate gap between high- and low-score subjects"
+   },
+   {
+    "id": "H3",
+    "statement": "A conventional group-fairness measure (the true-positive-rate gap) does not register it (equivalence within 0.03)"
+   },
+   {
+    "id": "H4",
+    "statement": "It lowers the share of wrongful denials that are overturned"
+   }
+  ],
+  "targets": [
+   "findings and outcomes of a synthetic institution"
+  ],
+  "instrument_conditions": {
+   "population": 300,
+   "periods": 24
+  },
+  "control_condition": "control",
+  "conditions": [
+   "control",
+   "degraded"
+  ],
+  "seeds": [
+   4001,
+   4002,
+   4003,
+   4004,
+   4005,
+   4006,
+   4007,
+   4008,
+   4009,
+   4010,
+   4011,
+   4012,
+   4013,
+   4014,
+   4015,
+   4016,
+   4017,
+   4018,
+   4019,
+   4020,
+   4021,
+   4022,
+   4023,
+   4024,
+   4025,
+   4026,
+   4027,
+   4028,
+   4029,
+   4030
+  ],
+  "trials_per_condition": 1,
+  "stopping_rule": {
+   "type": "fixed-n",
+   "units": 30,
+   "no interim analysis": true
+  },
+  "outcomes": {
+   "primary": [
+    "U",
+    "review-rate gap"
+   ],
+   "secondary": [
+    "true-positive-rate gap",
+    "overturn rate"
+   ]
+  },
+  "analyses": [
+   {
+    "id": "L202a",
+    "hypothesis": "H1",
+    "outcome": "U",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "L202b",
+    "hypothesis": "H2",
+    "outcome": "review_gap",
+    "method": "paired-sign-flip",
+    "confirmatory": true
+   },
+   {
+    "id": "L202c",
+    "hypothesis": "H3",
+    "outcome": "tpr_gap",
+    "method": "equivalence",
+    "confirmatory": true,
+    "margin": 0.03
+   },
+   {
+    "id": "L202d",
+    "hypothesis": "H4",
+    "outcome": "overturn_rate_of_wrongful",
+    "method": "paired-sign-flip",
+    "confirmatory": true
+   }
+  ],
+  "multiplicity": "holm",
+  "failure_conditions": [
+   "fewer than 30 worlds"
+  ],
+  "reproduction": {
+   "generator": "xzr.teoo.legal_experiments2",
+   "steps": [
+    "run unit per seed",
+    "analyse"
+   ],
+   "world": "xzr.teoo.legal (SYNTHETIC institution; guarantees from the source text V3.0 6.2)"
+  },
+  "schema": "teoo.protocol/1",
+  "version": 1,
+  "parent_version": null,
+  "change_reason": null
+ },
+ "units": 30,
+ "seeds": [
+  4001,
+  4002,
+  4003,
+  4004,
+  4005,
+  4006,
+  4007,
+  4008,
+  4009,
+  4010,
+  4011,
+  4012,
+  4013,
+  4014,
+  4015,
+  4016,
+  4017,
+  4018,
+  4019,
+  4020,
+  4021,
+  4022,
+  4023,
+  4024,
+  4025,
+  4026,
+  4027,
+  4028,
+  4029,
+  4030
+ ],
+ "evidence_class": "Synthetic-world Result",
+ "seconds": 1.1,
+ "results": {
+  "L202a": {
+   "method": "descriptive",
+   "detection": 1.0,
+   "false_rate": 0.03333333333333333,
+   "false_upper95": 0.14859606865911312,
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "L202b": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.2643887476921168,
+   "sd_diff": 0.043322736007369134,
+   "dz": 6.102771248038089,
+   "ci95": [
+    0.2498816802474009,
+    0.27944281010263367
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 2,
+   "inferential": true,
+   "contrast": "review-rate gap, degraded minus control",
+   "mean_degraded": 0.25803203202890046,
+   "mean_control": -0.006356715663216282,
+   "p_holm": 9.99950002499875e-05,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "L202c": {
+   "method": "equivalence",
+   "margin": 0.03,
+   "ci90": [
+    0.02153158274079877,
+    0.02921540310814178
+   ],
+   "mean_diff": 0.025350295413582347,
+   "supported": true,
+   "contrast": "true-positive-rate gap, degraded minus control",
+   "mean_degraded": 0.3371840993613125,
+   "mean_control": 0.31183380394773025,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "L202d": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.034336159245278,
+   "sd_diff": 0.012392843692622743,
+   "dz": 2.770644098877625,
+   "ci95": [
+    0.03012893289760055,
+    0.03867194966035163
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 4,
+   "inferential": true,
+   "contrast": "overturn rate, control minus degraded",
+   "mean_control": 0.3779315499070432,
+   "mean_degraded": 0.3435953906617651,
+   "p_holm": 9.99950002499875e-05,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  }
+ },
+ "catalogue": {
+  "source": "The Minimum Guarantees of Human Legal Subjecthood, Publication Final V3.0, Chapter 6.2 (identical in the 100_POINT_EDITION and in R2 section 4: all fifteen titles and definitions compared character for character)",
+  "verified_against_original": true,
+  "sha256": {
+   "v3_0": "cf4d4f0c51169451da5af4c33e7081e947dacbade855068a889965d8c523b848",
+   "v3_0_100_point_edition": "afb59d1a0c3b28854f14113f843645539e07a2e466949d22de4b67da0a22bf99",
+   "ai_law_osr_r2": "a9984451b281df3252b05842dc5109dd396e0b0c54d3560849344ad41059a501"
+  },
+  "editions_identical_for_guarantees": true,
+  "note": "V3.0 uses two vocabularies for the same five findings (Appendix A table: Secured/Partial/Absent/Indeterminate/Inapplicable; A.3 and 8.4 text: Satisfied/Partially Satisfied/Failed/Indeterminate/Not Applicable). R2 section 16 and this implementation use the table's."
+ },
+ "note": "results about a SYNTHETIC institution and this implementation; guarantees from the source text; operational definitions are the implementation's; not an observation of any institution, law or person"
+}

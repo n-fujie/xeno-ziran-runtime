@@ -32,3 +32,12 @@ web-app-build/
 # local output of the study layer (experiment directories, packages); each is reproducible from its protocol
 backend/experiments/studies/
 site-teoo-preview/
+
+# Unpublished manuscripts (The Minimum Guarantees of Human Legal Subjecthood V3.0 / 100_POINT_EDITION, ai_law_osr_r2 and cumulative revisions) are kept in a private store
+# outside this repository. Ignoring does not remove anything already tracked or in history; backend/tests/test_teoo_public_tree.py checks the tracked tree.
+ai_law_osr*
+*Minimum_Guarantees*
+*MHEG*.docx
+docs/publication/ai_law_*
+legal_source_text*.json
+teoo_private/

@@ -1,0 +1,62 @@
+{
+ "body": null,
+ "claim": "an illustration of the stated data under the stated conditions; no claim beyond them",
+ "evidence": {
+  "band": [
+   "EVIDENCE: SYNTHETIC  ·  artificial functional-test data, not a measurement",
+   "REAL-WORLD EXPERIMENT: none recorded (no measurement exists behind this figure)",
+   "BODY: none",
+   "RECORDS: 1 (rec-6e7e9622cc)  ·  generated 2026-11-01  ·  TEOO teoo/0.1"
+  ],
+  "classes": [
+   "SYNTHETIC"
+  ],
+  "real_world_experiment_recorded": false,
+  "watermarks": [
+   "SYNTHETIC"
+  ]
+ },
+ "experiment": {
+  "conditions": [
+   "control",
+   "degraded"
+  ],
+  "protocol_id": "LG2-EXP-02",
+  "seeds": [
+   4001,
+   4030
+  ],
+  "trials_per_condition": 1,
+  "version": 1
+ },
+ "figure_id": "fig-a92f72eb10cbf7ec",
+ "generated_at": "2026-11-01T00:00:00.000000Z",
+ "kind": "bars",
+ "metadata_digest": "f88ed8e017b6fb1276be43aecbd30471a95ebbaf4c62ff446572543c03f58107",
+ "observation_limits": {
+  "config_version": null,
+  "note": "A synthetic institution or a drawing: what lies outside what is stated here is unknown, not absent.",
+  "summary": {
+   "conditions": "synthetic institution; 300 people, 24 periods; review reach of low-score people ×0.4 in the degraded arm"
+  },
+  "t": null
+ },
+ "provenance": {
+  "records": [
+   {
+    "kind": "OBSERVATION",
+    "lineage_classes": [
+     "SYNTHETIC"
+    ],
+    "provenance": "SYNTHETIC",
+    "record_digest": "6e7e9622cc85132e69f2e44f9f39d8d49f7470e5445df6e19f1e17ce919e70ab",
+    "record_id": "rec-6e7e9622cc85132e69f2e44f"
+   }
+  ],
+  "source_digest": "a92f72eb10cbf7ecae693acb03b7d3a5eb22454af41cda405dea01b16655833b"
+ },
+ "schema": "teoo.figure/1",
+ "teoo_version": "teoo/0.1",
+ "title": "Fig L3 · Low-score subject guarantee: review rates, the conventional fairness gap, and the finding U (LG2-EXP-02)",
+ "units": {}
+}

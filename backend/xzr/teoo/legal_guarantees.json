@@ -1,82 +1,153 @@
 {
- "source": "~/plato-audit-suite/prisma/seed.ts (GUARANTEES), copied verbatim by script",
- "verified_against_original": false,
- "note": "The originals (The Minimum Guarantees of Human Legal Subjecthood V3.0 / 100_POINT_EDITION, the MHEG theorem text, the fifteen principles of AI legal-logic governance) were not found. This catalogue is the one an earlier implementation of the user's (plato-audit-suite) carries; it has NOT been compared with the original and its names, definitions and independence are therefore PROVISIONAL. It is data: replacing it by the verified catalogue changes this file, not code.",
+ "schema": "teoo.legal-canon/2-public",
+ "text_policy": "The wording of the sources is held in a private store and is not part of this repository; the text-bearing fields are null or empty here. Titles, positions, counts, labels and SHA-256 values are the public specification.",
+ "sources": {
+  "v3_0": {
+   "file": "The_Minimum_Guarantees_Human_Legal_Subjecthood_PUBLICATION_FINAL_V3_0.docx",
+   "sha256": "cf4d4f0c51169451da5af4c33e7081e947dacbade855068a889965d8c523b848"
+  },
+  "v3_0_100_point_edition": {
+   "file": "The_Minimum_Guarantees_Human_Legal_Subjecthood_PUBLICATION_FINAL_V3_0_100_POINT_EDITION.docx",
+   "sha256": "afb59d1a0c3b28854f14113f843645539e07a2e466949d22de4b67da0a22bf99"
+  },
+  "ai_law_osr_r2": {
+   "file": "ai_law_osr_r2.docx",
+   "sha256": "a9984451b281df3252b05842dc5109dd396e0b0c54d3560849344ad41059a501"
+  }
+ },
+ "verified_against_original": true,
+ "normative_reference": "The Minimum Guarantees of Human Legal Subjecthood, Publication Final V3.0, Chapter 6.2 (identical in the 100_POINT_EDITION and in R2 section 4: all fifteen titles and definitions compared character for character)",
+ "editions_identical_for_guarantees": true,
  "guarantees": [
   {
    "number": 1,
    "title": "Subject Recognition and Score Non-Identity",
-   "description": "The person must not be treated as identical to a score, classification, prediction, or model output."
+   "source_position": 172,
+   "audit_question_count": 3,
+   "audit_questions_source": "V3.0 Appendix A.4"
   },
   {
    "number": 2,
-   "title": "Non-Reduction of Guarantees by Score",
-   "description": "A low score or adverse classification must not reduce access to notice, reasons, challenge, review, correction, suspension, remedy, or re-entry."
+   "title": "Non-Degradation of Minimum Guarantees by Score",
+   "source_position": 174,
+   "audit_question_count": 3,
+   "audit_questions_source": "V3.0 Appendix A.4"
   },
   {
    "number": 3,
-   "title": "AI Use and Decision Involvement Notice",
-   "description": "The person must be informed that AI was used, its purpose, its degree of influence, and the responsible institution."
+   "title": "AI Use and Decisional Involvement Notice",
+   "source_position": 176,
+   "audit_question_count": 3,
+   "audit_questions_source": "V3.0 Appendix A.4"
   },
   {
    "number": 4,
    "title": "Current Score and Classification Access",
-   "description": "The person must be able to inspect their current score, classification, ranking, eligibility status, and risk status."
+   "source_position": 178,
+   "audit_question_count": 3,
+   "audit_questions_source": "V3.0 Appendix A.4"
   },
   {
    "number": 5,
-   "title": "Score History, Expiry, Purpose, and Sharing Access",
-   "description": "The person must be able to inspect score history, update reasons, validity period, purposes, recipients, and downstream uses."
+   "title": "Score History, Expiry, Scope, and Recipient Visibility",
+   "source_position": 180,
+   "audit_question_count": 3,
+   "audit_questions_source": "V3.0 Appendix A.4"
   },
   {
    "number": 6,
-   "title": "Legal Source and Institutional Basis Access",
-   "description": "The person must be able to identify the legislation, regulation, case law, contract, internal policy, guideline, or model policy used."
+   "title": "Legal and Institutional Source Visibility",
+   "source_position": 182,
+   "audit_question_count": 3,
+   "audit_questions_source": "V3.0 Appendix A.4"
   },
   {
    "number": 7,
-   "title": "Legal Concept Variable Transformation Access",
-   "description": "The person must be able to inspect how legal or institutional concepts were converted into variables, proxies, thresholds, weights, and computational rules."
+   "title": "Visibility of Legal-Concept-to-Variable Transformation",
+   "source_position": 184,
+   "audit_question_count": 3,
+   "audit_questions_source": "V3.0 Appendix A.4"
   },
   {
    "number": 8,
-   "title": "Separation of Facts, Inferences, Scores, and Normative Judgments",
-   "description": "The institution must clearly separate observed facts, inferred attributes, numerical scores, policy judgments, and legal conclusions."
+   "title": "Separation of Fact, Inference, Score, and Normative Judgment",
+   "source_position": 186,
+   "audit_question_count": 3,
+   "audit_questions_source": "V3.0 Appendix A.4"
   },
   {
    "number": 9,
-   "title": "Individual Reasons and Inference Chain",
-   "description": "The person must receive individualised reasons and an intelligible account of the inferential chain leading to the decision."
+   "title": "Individual Reasons and Inferential-Chain Access",
+   "source_position": 188,
+   "audit_question_count": 3,
+   "audit_questions_source": "V3.0 Appendix A.4"
   },
   {
    "number": 10,
-   "title": "Correction of Data, Inferences, Scores, and Derived Records",
-   "description": "The person must be able to correct incorrect inputs, inferred attributes, scores, classifications, derived records, and propagated records."
+   "title": "Correction of Data, Inferences, Scores, and Derived Information",
+   "source_position": 190,
+   "audit_question_count": 3,
+   "audit_questions_source": "V3.0 Appendix A.4"
   },
   {
    "number": 11,
-   "title": "Contestation, Rebuttal, and Non-Discounting of Testimony",
-   "description": "The person must be able to contest the legal source, variable, proxy, inference, score, classification, and decision. Their testimony must not be automatically discounted because of a low score."
+   "title": "Contestation, Counter-Evidence, and Non-Discounting of Testimony",
+   "source_position": 192,
+   "audit_question_count": 3,
+   "audit_questions_source": "V3.0 Appendix A.4"
   },
   {
    "number": 12,
-   "title": "Fair Burden of Proof and Independent Human Review",
-   "description": "The institution must not impose an excessive evidential burden on low-scoring subjects. Review must be performed by a human with authority to change or reverse the AI-mediated outcome."
+   "title": "Proper Allocation of Evidential Burdens and Independent Human Reconsideration",
+   "source_position": 194,
+   "audit_question_count": 3,
+   "audit_questions_source": "V3.0 Appendix A.4"
   },
   {
    "number": 13,
    "title": "Suspension of Adverse Treatment and Score Use",
-   "description": "Where irreversible or serious harm may occur, the person must be able to request suspension of the decision, score use, or data sharing while review is pending."
+   "source_position": 196,
+   "audit_question_count": 3,
+   "audit_questions_source": "V3.0 Appendix A.4"
   },
   {
    "number": 14,
    "title": "Reversible Treatment, Temporal Limitation, and Future Subjecthood",
-   "description": "Scores and classifications must have expiry, reassessment, correction, and deletion mechanisms. A present score must not permanently determine future legal or institutional status."
+   "source_position": 198,
+   "audit_question_count": 3,
+   "audit_questions_source": "V3.0 Appendix A.4"
   },
   {
    "number": 15,
-   "title": "Effective Re-entry, Support, Remedy, and Mutual Audit",
-   "description": "The person must have a realistic route back into the institution or opportunity, access to necessary procedural support, effective remedy for harm, and the ability to challenge the audit process itself."
+   "title": "Effective Re-entry, Minimum Resources, Material Restoration, and Mutual Audit",
+   "source_position": 200,
+   "audit_question_count": 3,
+   "audit_questions_source": "V3.0 Appendix A.4"
   }
- ]
+ ],
+ "sub_findings": {
+  "G12A": "Allocation of evidential burdens",
+  "G12B": "Independent human reconsideration",
+  "G15A": "Minimum resources",
+  "G15B": "Material restoration",
+  "G15C": "Effective re-entry",
+  "G15D": "Mutual audit"
+ },
+ "principle_status": "a transversal rule governing all fifteen, not a sixteenth guarantee (V3.0 7.3); reported as a separate finding U (Appendix A.9)",
+ "finding_scale_table_vocabulary": "Secured / Partial / Absent / Indeterminate / Inapplicable (Appendix A table; R2 section 16)",
+ "vocabulary_note": "V3.0 uses two vocabularies for the same five findings (Appendix A table: Secured/Partial/Absent/Indeterminate/Inapplicable; A.3 and 8.4 text: Satisfied/Partially Satisfied/Failed/Indeterminate/Not Applicable). R2 section 16 and this implementation use the table's.",
+ "outcome_taxonomy": [
+  "Constitutive failure",
+  "Procedural failure",
+  "Remedial failure",
+  "Systemic failure",
+  "Indeterminate finding",
+  "Deployment decision"
+ ],
+ "evidence_tiers": [
+  "Tier 1",
+  "Tier 2",
+  "Tier 3"
+ ],
+ "software_limit": "This software organises evidence and states one finding per guarantee. It does not decide legal legitimacy, ranks no person and produces no certification score; a human decision maker remains responsible, and that review must itself be independent and open to challenge."
 }

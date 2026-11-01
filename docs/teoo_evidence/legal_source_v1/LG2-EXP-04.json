@@ -1,0 +1,276 @@
+{
+ "experiment_id": "LG2-EXP-04",
+ "protocol_version": 1,
+ "protocol_digest": "236a417ff62cbb074635f84e0e49087877d5a7686a4b4f112a025ad2203f8cb4",
+ "protocol": {
+  "experiment_id": "LG2-EXP-04",
+  "hypotheses": [
+   {
+    "id": "H1",
+    "statement": "Propagating a correction raises access at the second institution"
+   },
+   {
+    "id": "H2",
+    "statement": "Material relief raises the resources of the qualified (restoration of money, services, time)"
+   },
+   {
+    "id": "H3",
+    "statement": "Re-entry support adds people who regain access"
+   },
+   {
+    "id": "H4",
+    "statement": "G15B is SECURED only when correction propagates and relief accompanies it (PARTIAL when relief is missing)"
+   }
+  ],
+  "targets": [
+   "findings and outcomes of a synthetic institution"
+  ],
+  "instrument_conditions": {
+   "population": 300,
+   "periods": 24,
+   "review_delay": 3
+  },
+  "control_condition": "appeal_only",
+  "conditions": [
+   "appeal_only",
+   "plus_propagation",
+   "plus_material_relief",
+   "plus_reentry_support",
+   "plus_resources_support",
+   "plus_material_relief_without_relief"
+  ],
+  "seeds": [
+   4001,
+   4002,
+   4003,
+   4004,
+   4005,
+   4006,
+   4007,
+   4008,
+   4009,
+   4010,
+   4011,
+   4012,
+   4013,
+   4014,
+   4015,
+   4016,
+   4017,
+   4018,
+   4019,
+   4020,
+   4021,
+   4022,
+   4023,
+   4024,
+   4025,
+   4026,
+   4027,
+   4028,
+   4029,
+   4030
+  ],
+  "trials_per_condition": 1,
+  "stopping_rule": {
+   "type": "fixed-n",
+   "units": 30,
+   "no interim analysis": true
+  },
+  "outcomes": {
+   "primary": [
+    "downstream access",
+    "resources of the qualified",
+    "persons re-entering"
+   ],
+   "secondary": [
+    "time to restoration",
+    "G10, G15A-C states"
+   ]
+  },
+  "analyses": [
+   {
+    "id": "L204a",
+    "hypothesis": "H1",
+    "outcome": "downstream_access_qualified",
+    "method": "paired-sign-flip",
+    "confirmatory": true
+   },
+   {
+    "id": "L204b",
+    "hypothesis": "H2",
+    "outcome": "mean_resources_qualified",
+    "method": "paired-sign-flip",
+    "confirmatory": true
+   },
+   {
+    "id": "L204c",
+    "hypothesis": "H3",
+    "outcome": "reentered_qualified",
+    "method": "paired-sign-flip",
+    "confirmatory": true
+   },
+   {
+    "id": "L204d",
+    "hypothesis": "H4",
+    "outcome": "G15B",
+    "method": "descriptive",
+    "confirmatory": true
+   }
+  ],
+  "multiplicity": "holm",
+  "failure_conditions": [
+   "fewer than 30 worlds"
+  ],
+  "reproduction": {
+   "generator": "xzr.teoo.legal_experiments2",
+   "steps": [
+    "run unit per seed",
+    "analyse"
+   ],
+   "world": "xzr.teoo.legal (SYNTHETIC institution; guarantees from the source text V3.0 6.2)"
+  },
+  "schema": "teoo.protocol/1",
+  "version": 1,
+  "parent_version": null,
+  "change_reason": null
+ },
+ "units": 30,
+ "seeds": [
+  4001,
+  4002,
+  4003,
+  4004,
+  4005,
+  4006,
+  4007,
+  4008,
+  4009,
+  4010,
+  4011,
+  4012,
+  4013,
+  4014,
+  4015,
+  4016,
+  4017,
+  4018,
+  4019,
+  4020,
+  4021,
+  4022,
+  4023,
+  4024,
+  4025,
+  4026,
+  4027,
+  4028,
+  4029,
+  4030
+ ],
+ "evidence_class": "Synthetic-world Result",
+ "seconds": 1.2,
+ "results": {
+  "L204a": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.09507701516270799,
+   "sd_diff": 0.024413066365690034,
+   "dz": 3.8945134436831177,
+   "ci95": [
+    0.08654940591072295,
+    0.10343986160425231
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 8,
+   "inferential": true,
+   "contrast": "downstream access, propagation minus none",
+   "mean_with": 0.8101161148480853,
+   "mean_without": 0.7150390996853775,
+   "p_holm": 0.00014999250037498125,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "L204b": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.24501378677524394,
+   "sd_diff": 0.06596498169470878,
+   "dz": 3.714300837817061,
+   "ci95": [
+    0.22236031277713245,
+    0.26791689807544117
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 9,
+   "inferential": true,
+   "contrast": "resources of the qualified, relief minus none",
+   "mean_with": 2.416668389976353,
+   "mean_without": 2.1716546032011093,
+   "p_holm": 0.00014999250037498125,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "L204c": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 3.566666666666667,
+   "sd_diff": 10.019578535197402,
+   "dz": 0.35596973007771304,
+   "ci95": [
+    0.1,
+    7.166666666666667
+   ],
+   "p": 0.06264686765661717,
+   "n_perm": 20000,
+   "seed": 10,
+   "inferential": true,
+   "contrast": "persons re-entering, re-entry support minus none",
+   "mean_with": 212.6,
+   "mean_without": 209.03333333333333,
+   "p_holm": 0.06264686765661717,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "L204d": {
+   "method": "descriptive",
+   "G15B_by_arm": {
+    "appeal_only": [
+     "ABSENT"
+    ],
+    "plus_propagation": [
+     "PARTIAL"
+    ],
+    "plus_material_relief": [
+     "SECURED"
+    ],
+    "plus_reentry_support": [
+     "SECURED"
+    ],
+    "plus_resources_support": [
+     "SECURED"
+    ],
+    "plus_material_relief_without_relief": [
+     "PARTIAL"
+    ]
+   },
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  }
+ },
+ "catalogue": {
+  "source": "The Minimum Guarantees of Human Legal Subjecthood, Publication Final V3.0, Chapter 6.2 (identical in the 100_POINT_EDITION and in R2 section 4: all fifteen titles and definitions compared character for character)",
+  "verified_against_original": true,
+  "sha256": {
+   "v3_0": "cf4d4f0c51169451da5af4c33e7081e947dacbade855068a889965d8c523b848",
+   "v3_0_100_point_edition": "afb59d1a0c3b28854f14113f843645539e07a2e466949d22de4b67da0a22bf99",
+   "ai_law_osr_r2": "a9984451b281df3252b05842dc5109dd396e0b0c54d3560849344ad41059a501"
+  },
+  "editions_identical_for_guarantees": true,
+  "note": "V3.0 uses two vocabularies for the same five findings (Appendix A table: Secured/Partial/Absent/Indeterminate/Inapplicable; A.3 and 8.4 text: Satisfied/Partially Satisfied/Failed/Indeterminate/Not Applicable). R2 section 16 and this implementation use the table's."
+ },
+ "note": "results about a SYNTHETIC institution and this implementation; guarantees from the source text; operational definitions are the implementation's; not an observation of any institution, law or person"
+}

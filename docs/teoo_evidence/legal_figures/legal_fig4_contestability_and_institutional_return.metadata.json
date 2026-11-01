@@ -1,0 +1,62 @@
+{
+ "body": null,
+ "claim": "an illustration of the stated data under the stated conditions; no claim beyond them",
+ "evidence": {
+  "band": [
+   "EVIDENCE: SYNTHETIC  ·  artificial functional-test data, not a measurement",
+   "REAL-WORLD EXPERIMENT: none recorded (no measurement exists behind this figure)",
+   "BODY: none",
+   "RECORDS: 1 (rec-62623cb7a4)  ·  generated 2026-11-01  ·  TEOO teoo/0.1"
+  ],
+  "classes": [
+   "SYNTHETIC"
+  ],
+  "real_world_experiment_recorded": false,
+  "watermarks": [
+   "SYNTHETIC"
+  ]
+ },
+ "experiment": {
+  "conditions": [
+   "authority_off",
+   "authority_on"
+  ],
+  "protocol_id": "LG2-EXP-03",
+  "seeds": [
+   4001,
+   4030
+  ],
+  "trials_per_condition": 1,
+  "version": 1
+ },
+ "figure_id": "fig-7d528f8552229ad0",
+ "generated_at": "2026-11-01T00:00:00.000000Z",
+ "kind": "bars",
+ "metadata_digest": "70b9ed1e64fbb0be8920d18c4671ff8b41a534f8facbe3ae1268602986dc784f",
+ "observation_limits": {
+  "config_version": null,
+  "note": "A synthetic institution or a drawing: what lies outside what is stated here is unknown, not absent.",
+  "summary": {
+   "conditions": "16 configurations per world; 300 people, 24 periods"
+  },
+  "t": null
+ },
+ "provenance": {
+  "records": [
+   {
+    "kind": "OBSERVATION",
+    "lineage_classes": [
+     "SYNTHETIC"
+    ],
+    "provenance": "SYNTHETIC",
+    "record_digest": "62623cb7a4454b3d5103c20adc5b787ef7d6f7bf93440ea59298557832e81dfd",
+    "record_id": "rec-62623cb7a4454b3d5103c20a"
+   }
+  ],
+  "source_digest": "7d528f8552229ad0c103ca296e40b59de5974f69c8b6d42e49f32ebd54dcdcbe"
+ },
+ "schema": "teoo.figure/1",
+ "teoo_version": "teoo/0.1",
+ "title": "Fig L4 · Contestability: the formal route against the effective one (LG2-EXP-03)",
+ "units": {}
+}

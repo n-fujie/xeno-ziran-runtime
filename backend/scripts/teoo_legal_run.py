@@ -15,8 +15,8 @@ from typing import Any
 
 import numpy as np
 
-from xzr.teoo import legal as L
 from xzr.teoo import legal_experiments as LX
+from xzr.teoo import legal_v1 as L
 from xzr.teoo import protocol as PR
 from xzr.teoo import stats as S
 from xzr.teoo.provenance import digest_of

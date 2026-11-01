@@ -8,7 +8,7 @@ from typing import Any
 
 import numpy as np
 
-from . import legal as L
+from . import legal_v1 as L
 
 MECHS = ("gate", "inheritance", "downstream", "weak_review")
 FIELD_OF = {"gate": "inherited_record", "inheritance": "score_log", "downstream": "downstream_log", "weak_review": "review_log"}

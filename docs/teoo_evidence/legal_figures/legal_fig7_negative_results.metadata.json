@@ -1,0 +1,104 @@
+{
+ "body": null,
+ "claim": "an illustration of the stated data under the stated conditions; no claim beyond them",
+ "evidence": {
+  "band": [
+   "EVIDENCE: SYNTHETIC  ·  artificial functional-test data, not a measurement",
+   "REAL-WORLD EXPERIMENT: none recorded (no measurement exists behind this figure)",
+   "BODY: none",
+   "RECORDS: 7 (rec-a2da0af146, rec-6b91f0bb06…)  ·  generated 2026-11-01  ·  TEOO teoo/0.1"
+  ],
+  "classes": [
+   "SYNTHETIC"
+  ],
+  "real_world_experiment_recorded": false,
+  "watermarks": [
+   "SYNTHETIC"
+  ]
+ },
+ "experiment": null,
+ "figure_id": "fig-940eb3e779b9c133",
+ "generated_at": "2026-11-01T00:00:00.000000Z",
+ "kind": "table",
+ "metadata_digest": "8bdef57b1c178d089530f2f6fd695541f01e947c831dc918e3663546731751ef",
+ "observation_limits": {
+  "config_version": null,
+  "note": "A synthetic institution or a drawing: what lies outside what is stated here is unknown, not absent.",
+  "summary": {
+   "conditions": "see each experiment"
+  },
+  "t": null
+ },
+ "provenance": {
+  "records": [
+   {
+    "kind": "OBSERVATION",
+    "lineage_classes": [
+     "SYNTHETIC"
+    ],
+    "provenance": "SYNTHETIC",
+    "record_digest": "a2da0af146182112e96711b1749a4d1e32464eecc50a2f8f5ad0d31b8de97862",
+    "record_id": "rec-a2da0af146182112e96711b1"
+   },
+   {
+    "kind": "OBSERVATION",
+    "lineage_classes": [
+     "SYNTHETIC"
+    ],
+    "provenance": "SYNTHETIC",
+    "record_digest": "6b91f0bb062f897882e0accbfad29712862a4b336fe5e361e9f7f272d4f96ee9",
+    "record_id": "rec-6b91f0bb062f897882e0accb"
+   },
+   {
+    "kind": "OBSERVATION",
+    "lineage_classes": [
+     "SYNTHETIC"
+    ],
+    "provenance": "SYNTHETIC",
+    "record_digest": "153a245b59e95f8915055cb1abb3f461ed5eb4fbb890df500d0fd27905751863",
+    "record_id": "rec-153a245b59e95f8915055cb1"
+   },
+   {
+    "kind": "OBSERVATION",
+    "lineage_classes": [
+     "SYNTHETIC"
+    ],
+    "provenance": "SYNTHETIC",
+    "record_digest": "e81f9b8bf5f7b7f69a78ad045acc9aaa799802fca11ff20ac4a05dc877f7330e",
+    "record_id": "rec-e81f9b8bf5f7b7f69a78ad04"
+   },
+   {
+    "kind": "OBSERVATION",
+    "lineage_classes": [
+     "SYNTHETIC"
+    ],
+    "provenance": "SYNTHETIC",
+    "record_digest": "2a180f237af6e21e87a174c44d50d3ded9c6651c777add19f0b65a6e3b68b6c8",
+    "record_id": "rec-2a180f237af6e21e87a174c4"
+   },
+   {
+    "kind": "OBSERVATION",
+    "lineage_classes": [
+     "SYNTHETIC"
+    ],
+    "provenance": "SYNTHETIC",
+    "record_digest": "cbb85bbc33cb6a95c3f246bec5441a69a3ee54e56b5676027bd9fa7d5c232f44",
+    "record_id": "rec-cbb85bbc33cb6a95c3f246be"
+   },
+   {
+    "kind": "OBSERVATION",
+    "lineage_classes": [
+     "SYNTHETIC"
+    ],
+    "provenance": "SYNTHETIC",
+    "record_digest": "6863edd1f553c81fa58e63456d67d2e0403624ec51a54ca909cb421b0d8265cd",
+    "record_id": "rec-6863edd1f553c81fa58e6345"
+   }
+  ],
+  "source_digest": "940eb3e779b9c133efe1470b5a29a18b0f8e325686eb894fb35148f1e1b0d12e"
+ },
+ "schema": "teoo.figure/1",
+ "teoo_version": "teoo/0.1",
+ "title": "Fig L7 · Negative and weak results kept (legal governance experiments)",
+ "units": {}
+}

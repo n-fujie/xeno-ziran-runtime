@@ -50,6 +50,6 @@ def test_the_provisional_catalogue_is_matched_against_a_text_and_stays_unverifie
     t = tool()
     import json
 
-    cat = json.loads((Path(__file__).resolve().parents[1] / "xzr" / "teoo" / "legal_guarantees.json").read_text())
+    cat = json.loads((Path(__file__).resolve().parents[1] / "xzr" / "teoo" / "legal_guarantees_provisional.json").read_text())
     rows = t.match_catalogue(t.paragraphs(docx(tmp_path / "a.docx", [("Normal", "The first is Subject Recognition and Score Non-Identity."), ("Normal", "Something else entirely.")])), cat)
     assert rows[0]["exact_occurrences"] == 1 and rows[1]["exact_occurrences"] == 0 and len(rows) == 15 and cat["verified_against_original"] is False
