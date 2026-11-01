@@ -84,8 +84,20 @@ export interface ChainStage { stage: string; layer: string; legal_basis: string 
 export interface ChainAssessment { stages: Array<{ stage: string; layer: string; valid: boolean; why_not: string[]; uncertainty: string; responsible: string }>; valid_legal_decision: boolean; first_invalid_stage: string | null; issues: string[]; unresolved_legal_questions: string[]; reading: string }
 export interface InterventionRow { exclusion_qualified: number; exclusion_persistence: number; tpr_gap: number; group_exclusion_gap: number; downstream_access_qualified: number; overturn_rate_of_wrongful: number; formal_appeal_rate: number; burden_subject: number; burden_institution: number; series_exclusion: number[] }
 export interface RegisterRow { variable: string; legal_source: string | null; purpose: string; proxy_for: string | null; threshold: number | null; translation_loss_disclosed: boolean; recipients: string[]; version: string; responsible: string }
+export type DState = 'SATISFIED' | 'PARTIALLY_SATISFIED' | 'VIOLATED' | 'INSUFFICIENT_EVIDENCE' | 'NOT_APPLICABLE' | 'NOT_EVALUATED';
+export interface MhegDuty { id: string; name: string; label_ja: string; function: string; crosswalk_as_reported: string; findings: string[]; mapping_kind: 'direct' | 'composite' | 'broad'; evaluation_target: string; required_evidence: string; cannot_verify: string;
+  definition_status: string; source: string; identity_with_guarantees: string }
+export interface MhegFindingState { state: DState; legacy_state: GState; observed: boolean; hard_failure: boolean }
+export interface MhegStage { id: string; label: string; operating_condition: string; authority_relation: string; findings: Record<string, DState>; state: DState; observability: string; time_span: string; resource_condition: string; evidence: Record<string, string | null>;
+  failure_condition: string; recovery_path: string[] }
+export interface MhegBundle { duties: MhegDuty[]; crosswalk: { findings: string[]; duties: string[]; matrix: Record<string, number[]>; duties_per_finding: Record<string, number>; findings_per_duty: Record<string, number>; not_named_by_any_duty: string[]; named_by_one_duty: string[];
+  broad_duties: string[]; note: string };
+  projections: Record<string, { findings: Record<string, MhegFindingState>; duties: Record<string, { state: DState; drivers: string[]; findings: Record<string, DState> }> }>;
+  chains: Record<string, { stages: MhegStage[]; first_violated_stage: string | null; effective_to_the_end: boolean; information_lost_in_translation: string[]; rule: string; stage_assignment: string }>; chain_definition: Array<{ id: string; label: string; findings: string[] }>;
+  fidelity: Record<string, { implemented: string; not_implemented: string; normative_unverifiable: string }>; governance_principles: { status: string; reported_count: number; reported_source: string; items: unknown[]; rule: string; to_check_when_available: string[] };
+  states: DState[]; components: Record<string, string[]>; unverified: string[]; limits: string; seed: number }
 export interface LegalBundle { synthetic: boolean; catalogue: { source: string; verified_against_original: boolean; sha256: Record<string, string>; editions_identical_for_guarantees: boolean | null; note: string }; states: string[];
   guarantees: Array<{ number: number; title: string; definition: string | null; source_position: number; audit_questions: string[]; audit_question_count: number }>; text_available: boolean; sub_finding_definitions: Record<string, string>; assessments: Record<string, GuaranteeFinding[]>; audits: Record<string, AuditMeta>;
   chains: Record<string, { chain: ChainStage[]; assessment: ChainAssessment }>; register: Record<string, RegisterRow[]>; interventions: Record<string, InterventionRow>; inheritance: Record<string, { finding: string; reason?: string; safeguards?: Record<string, boolean>; endogenous_share?: number }>;
-  observation: { observed_findings: string[]; not_observed_findings: string[]; note: string }; software_limit: string; scope: string; seed: number }
+  observation: { observed_findings: string[]; not_observed_findings: string[]; note: string }; software_limit: string; scope: string; seed: number; mheg: MhegBundle; observed_by_assessment: Record<string, string[] | null> }
 export const teooLegal = (seed = 3) => get<LegalBundle>(`/legal?seed=${seed}`);

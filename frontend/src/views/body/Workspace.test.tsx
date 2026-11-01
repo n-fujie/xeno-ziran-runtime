@@ -156,6 +156,35 @@ describe('View I: AI legal governance (public specification; the source wording 
     for (const a of Object.values(lg.assessments)) { expect(a.length).toBe(15); expect(a.map((x) => x.number)).toEqual(Array.from({ length: 15 }, (_, i) => i + 1)); expect(Object.values(countStates(a)).reduce((x, y) => x + y, 0)).toBe(15); }
     expect(h).toContain('counted, never added into a score');
   });
+  it('lays out sections A to H in order: duties, guarantees, governance principles, crosswalk, operational evidence, consequences, restoration, unverified conditions', () => {
+    const idx = ['A · MHEG twelve duties', 'B · Fifteen guarantees', 'C · Fifteen AI-legal-logic governance principles', 'D · Functional crosswalk', 'E · Operational evidence', 'F · Institutional consequences', 'G · Contestation and restoration', 'H · Unverified conditions'].map((t) => h.indexOf(t));
+    expect(idx.every((i) => i >= 0)).toBe(true); expect([...idx].sort((x, y) => x - y)).toEqual(idx);
+  });
+  it('shows the twelve duties as a registry of their own, each as its worst mapped finding, with the functional-summary status', () => {
+    expect(lg.mheg.duties.map((d) => d.id)).toEqual(Array.from({ length: 12 }, (_, i) => `M${i + 1}`));
+    expect((h.match(/data-duty="M\d+" data-state=/g) ?? []).length).toBe(12);
+    for (const n of ['AI Use Notice', 'Source Visibility', 'Purpose Legitimacy', 'Translation Visibility', 'Data Access', 'Correction Capacity', 'Epistemic and Distributive Validity', 'Reason Access', 'Human Reconsideration', 'Appeal Access', 'Systemic Challenge', 'Material Restoration']) expect(h).toContain(n);
+    for (const d of lg.mheg.duties) { expect(d.definition_status).toBe('FUNCTIONAL_SUMMARY'); expect(d.identity_with_guarantees).toContain('not an identity'); }
+    expect(h).toContain('never as an average or a total'); expect(h).toContain('the guarantees do not replace them');
+    const titles = new Set(lg.guarantees.map((g) => g.title)); expect(lg.mheg.duties.some((d) => titles.has(d.name))).toBe(false);
+  });
+  it('draws the crosswalk as reported: functional, not one-to-one, with G1 named by no duty', () => {
+    const cw = lg.mheg.crosswalk;
+    expect(cw.not_named_by_any_duty).toEqual(['G1']); expect(cw.matrix.M9[cw.findings.indexOf('G12B')]).toBe(1); expect(cw.matrix.M11.reduce((x, y) => x + y, 0)).toBe(1); expect(cw.duties_per_finding.G8).toBe(4);
+    expect(h).toContain('data-testid="teoo-crosswalk"'); expect((h.match(/data-mapped="1"/g) ?? []).length).toBe(Object.values(cw.findings_per_duty).reduce((x, y) => x + y, 0)); expect(h).toContain('functional, not one-to-one');
+  });
+  it('keeps the governance principles unverified: nothing is listed or mapped', () => {
+    expect(lg.mheg.governance_principles.status).toBe('UNVERIFIED'); expect(lg.mheg.governance_principles.items).toEqual([]);
+    expect(h).toContain('data-testid="teoo-governance"'); expect(h).toContain('UNVERIFIED'); expect(h).toContain('No principle is shown and none is mapped');
+  });
+  it('shows the nine-stage transformation chain with its failure stage, and the unverified conditions', () => {
+    const ch = Object.values(lg.mheg.chains);
+    expect(ch.every((c) => c.stages.map((s) => s.label).join('|') === 'Legal Source|Translation|Data Representation|Classification|Institutional Treatment|Effective Access|Contestation|Revision|Material Restoration')).toBe(true);
+    expect(h).toContain('data-testid="teoo-transform"'); expect((h.match(/data-stage="/g) ?? []).length).toBe(9); expect(h).toContain('data-testid="teoo-contest-restore"');
+    expect(ch[0].first_violated_stage).not.toBeNull(); expect(ch[1].first_violated_stage).toBeNull(); expect(ch[1].stages.some((x) => x.state === 'VIOLATED')).toBe(false);
+    expect(h).toContain('data-testid="teoo-unverified"'); expect(lg.mheg.unverified.length).toBeGreaterThanOrEqual(5); expect(Object.keys(lg.mheg.fidelity).length).toBe(19);
+    expect(lg.mheg.limits).toContain('no total');
+  });
   it('reports G12 and G15 through their sub-findings, and U separately and not as a sixteenth guarantee', () => {
     const a = lg.assessments[names[0]];
     expect(a[11].sub_findings.map((s) => s.id)).toEqual(['G12A', 'G12B']); expect(a[14].sub_findings.map((s) => s.id)).toEqual(['G15A', 'G15B', 'G15C', 'G15D']);

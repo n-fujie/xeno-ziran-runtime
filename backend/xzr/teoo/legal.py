@@ -202,6 +202,7 @@ class Institution:
     collective_challenge: bool = False  # (new) a collective / systemic challenge route that can change the proxy and the weight of the inherited record
     provisions: dict[str, Evidence] = field(default_factory=dict)  # (new) evidence for the findings that the simulation does not measure (G3-G9)
     registry: list[RegisterEntry] | None = None  # (new) the Translation Register; None: the default for this configuration
+    components: dict[str, dict[str, bool | None]] | None = None  # (new, mheg) itemised components of G3, G5, G9 and G15A (True present, False missing, None not observed); None: the single provision as before
 
     def with_(self, **kw: Any) -> Institution:
         d = {**self.__dict__, "provisions": dict(self.provisions)}
@@ -340,6 +341,29 @@ OPERATIONAL = {  # the implementation's operational definition of each finding i
     "G15C": "effective re-entry (re-entry support; measured: people regain access)", "G15D": "mutual audit: a collective / systemic challenge route (collective_challenge)"}
 
 
+COMPONENTS: dict[str, tuple[str, ...]] = {  # the components of a finding that the specification of this implementation itemises (own wording of what each guarantee asks to be provided); a single yes/no provision can hide a missing one
+    "G3": ("responsible_body", "role_of_the_system", "influence_on_the_decision", "expected_consequence", "route_to_contest"),
+    "G5": ("creation_and_change_time", "reason_for_change", "model_used", "purpose_of_use", "validity_period", "recipients", "future_use"),
+    "G9": ("evidence_used", "variable_transformation", "score_and_threshold", "institutional_rule", "main_inferences", "uncertainty", "rejected_counter_evidence"),
+    "G15A": ("time", "comprehensible_information", "language_support", "disability_accommodation", "technical_access", "representation", "fee_relief", "evidence_gathering"),
+}
+
+
+def itemised(fid: str, present: dict[str, bool | None], base: Evidence) -> Evidence:
+    """The evidence of a finding from its itemised components. All missing: the function does not exist (ABSENT); some missing: usable with named shortfalls (PARTIAL); a component not observed and none known missing: the
+    usability is unknown (INDETERMINATE, never SECURED); all present: the single-provision evidence stands. Itemising can only lower a finding relative to the single provision, never raise it."""
+    names = COMPONENTS[fid]
+    missing = [n for n in names if present.get(n) is False]
+    unknown = [n for n in names if present.get(n) is None]
+    if len(missing) == len(names):
+        return prov(exists=False, usable=False, basis=f"none of the {len(names)} components of {fid} is provided")
+    if missing:
+        return prov(exists=base.exists, usable=base.usable, shortfalls=base.shortfalls + tuple(f"component '{n}' is missing" for n in missing), basis=f"{len(names) - len(missing)} of {len(names)} components provided")
+    if unknown:
+        return Evidence(exists=base.exists, usable=None, score_conditioned=base.score_conditioned, tier=base.tier, shortfalls=base.shortfalls, basis=f"{len(unknown)} of {len(names)} components not observed")
+    return base
+
+
 def evidence_for(inst: Institution, seed: int, run: dict | None = None, min_cases: int = 30) -> dict[str, Evidence | None]:
     """``min_cases``: the smallest number of wrongfully denied qualified people on each side (and of reviews in all) with which the score-degradation test is regarded as having been performed; with fewer, the test is *not performed* (None: INDETERMINATE), never passed. 0 reproduces the first version of this evaluator (LG2-EXP-01..06)."""
     run = run or simulate(inst, seed)
@@ -384,6 +408,9 @@ def evidence_for(inst: Institution, seed: int, run: dict | None = None, min_case
     ev["G15B"] = prov(exists=True, usable=inst.propagate_correction or not down, shortfalls=() if inst.material_relief else ("no restoration of lost resources accompanies a reversed denial",), basis="downstream correction and material relief")
     ev["G15C"] = prov(exists=inst.reentry_support, usable=inst.reentry_support and run["reentered_qualified"] > 0, basis="re-entry support")
     ev["G15D"] = prov(exists=inst.collective_challenge, usable=inst.collective_challenge, basis="collective / systemic challenge")
+    for fid, comps in (inst.components or {}).items():
+        if fid in COMPONENTS and ev.get(fid) is not None:
+            ev[fid] = itemised(fid, comps, ev[fid])  # type: ignore[arg-type]
     return ev
 
 
@@ -529,7 +556,7 @@ def legal_bundle(seed: int = 3) -> dict:
             "interventions": {k: {m: v[m] for m in ("exclusion_qualified", "exclusion_persistence", "tpr_gap", "group_exclusion_gap", "downstream_access_qualified", "overturn_rate_of_wrongful", "formal_appeal_rate", "burden_subject", "burden_institution", "series_exclusion")}
                               for k, v in runs.items()},
             "inheritance": {"baseline": ontological_inheritance_finding(base, seed), "after the repairs": ontological_inheritance_finding(fixed, seed), "lineage not produced": ontological_inheritance_finding(base, seed, lineage_produced=False)},
-            "observation": {"observed_findings": sorted(observed), "not_observed_findings": sorted(set(FINDING_IDS) - observed), "note": "a finding that is not observed is INDETERMINATE: not observed is not absent"},
+            "observed_by_assessment": {k: (sorted(observed) if "not observed" in k else None) for k in audits}, "observation": {"observed_findings": sorted(observed), "not_observed_findings": sorted(set(FINDING_IDS) - observed), "note": "a finding that is not observed is INDETERMINATE: not observed is not absent"},
             "software_limit": CANON["software_limit"],
             "text_available": CANON["text_available"], "scope": "a synthetic institution; the guarantees' titles are the source titles (V3.0 6.2, identical in the 100_POINT_EDITION and R2) and their wording is held privately; the operational definitions, the evidence rules and the recommendation rule are this implementation's; "
                      "no real institution, law or person is described; the software does not decide legal legitimacy", "seed": seed}

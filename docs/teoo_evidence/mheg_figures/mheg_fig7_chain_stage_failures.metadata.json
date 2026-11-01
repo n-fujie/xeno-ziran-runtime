@@ -1,0 +1,70 @@
+{
+ "body": null,
+ "claim": "an illustration of the stated data under the stated conditions; no claim beyond them",
+ "evidence": {
+  "band": [
+   "EVIDENCE: SYNTHETIC  ·  artificial functional-test data, not a measurement",
+   "REAL-WORLD EXPERIMENT: none recorded (no measurement exists behind this figure)",
+   "BODY: none",
+   "RECORDS: 1 (rec-75fdc4eb53)  ·  generated 2026-11-01  ·  TEOO teoo/0.1"
+  ],
+  "classes": [
+   "SYNTHETIC"
+  ],
+  "real_world_experiment_recorded": false,
+  "watermarks": [
+   "SYNTHETIC"
+  ]
+ },
+ "experiment": {
+  "conditions": [
+   "intact",
+   "legal_source",
+   "translation",
+   "data_representation",
+   "classification",
+   "institutional_treatment",
+   "effective_access",
+   "contestation",
+   "revision",
+   "material_restoration"
+  ],
+  "protocol_id": "MH-EXP-04",
+  "seeds": [
+   6301,
+   6330
+  ],
+  "trials_per_condition": 1,
+  "version": 1
+ },
+ "figure_id": "fig-7449b42038f1af23",
+ "generated_at": "2026-11-01T00:00:00.000000Z",
+ "kind": "table",
+ "metadata_digest": "4079be57b34d342da7e0982441017b14f8f4478e153f22074eaddba93e9b5c3d",
+ "observation_limits": {
+  "config_version": null,
+  "note": "A synthetic institution or a drawing: what lies outside what is stated here is unknown, not absent.",
+  "summary": {
+   "conditions": "synthetic institution; 300 people, 24 periods"
+  },
+  "t": null
+ },
+ "provenance": {
+  "records": [
+   {
+    "kind": "OBSERVATION",
+    "lineage_classes": [
+     "SYNTHETIC"
+    ],
+    "provenance": "SYNTHETIC",
+    "record_digest": "75fdc4eb534f5edc43f26a060e1d69fcf39ed209dd9a50e46ede40bbbff83a1a",
+    "record_id": "rec-75fdc4eb534f5edc43f26a06"
+   }
+  ],
+  "source_digest": "7449b42038f1af23f49b9615f8d32d5cf4714cb1ad5a448a92bcc49920e6779b"
+ },
+ "schema": "teoo.figure/1",
+ "teoo_version": "teoo/0.1",
+ "title": "Fig M7 · One stage of the chain broken at a time (MH-EXP-04, 30 worlds)",
+ "units": {}
+}

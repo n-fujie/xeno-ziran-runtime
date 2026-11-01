@@ -19,6 +19,7 @@ from ..teoo import export as EX
 from ..teoo import ingest as IN
 from ..teoo import legal as LG
 from ..teoo import mapping as MP
+from ..teoo import mheg as MH
 from ..teoo import observation as OB
 from ..teoo import provenance as P
 from ..teoo import safety as SF
@@ -179,7 +180,7 @@ _LEGAL: dict[int, dict] = {}
 
 @router.get("/legal")
 def legal(request: Request, seed: int = 3) -> dict:
-    """The AI legal governance bundle: the fifteen guarantees (a PROVISIONAL catalogue) assessed for four synthetic institutions, the legal translation chains, the intervention comparison and the observation conditions. Computed from small
+    """The AI legal governance bundle: the fifteen guarantees (public specification; the wording is held privately) assessed for five synthetic institutions, the twelve MHEG duties and their functional crosswalk (``mheg``), the legal translation chains, the intervention comparison and the observation conditions. Computed from small
     simulations on demand; nothing is stored; a synthetic institution, not any real one."""
     local_only(request)
     if not 0 <= seed <= 10_000:
@@ -187,5 +188,6 @@ def legal(request: Request, seed: int = 3) -> dict:
     if seed not in _LEGAL:
         if len(_LEGAL) > 8:
             _LEGAL.clear()
-        _LEGAL[seed] = LG.legal_bundle(seed)
+        lb = LG.legal_bundle(seed)
+        _LEGAL[seed] = {**lb, "mheg": MH.mheg_bundle(lb)}
     return _LEGAL[seed]
