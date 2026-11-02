@@ -4,8 +4,9 @@
 
 Writes <dest>/xzr (the engine package) and <dest>/scenarios (the bundled scenarios). Excluded, because the app does
 not run them: the HTTP service module (service/app.py: FastAPI), the experiment harnesses (experiments/, reasonlab/, hpo/, lab/:
-desktop research runs whose results are published on the research-results site) and bytecode caches. The copy is
-exact otherwise: the app runs the same engine source as the desktop runtime.
+desktop research runs whose results are published on the research-results site), the research layers of the local app (teoo/, meos/, study/, totalobs/
+and their service modules and lineage record: they run on the local server only, and what this script copies is what the iOS app embeds and what the
+public browser runtime publishes at /runtime/) and bytecode caches. The copy is exact otherwise: the app runs the same engine source as the desktop runtime.
 """
 
 from __future__ import annotations
@@ -14,8 +15,8 @@ import shutil
 import sys
 from pathlib import Path
 
-EXCLUDE_DIRS = {"__pycache__", "experiments", "reasonlab", "hpo", "lab"}
-EXCLUDE_FILES = {Path("service") / "app.py"}
+EXCLUDE_DIRS = {"__pycache__", "experiments", "reasonlab", "hpo", "lab", "teoo", "meos", "study", "totalobs"}
+EXCLUDE_FILES = {Path("service") / "app.py", Path("service") / "meos.py", Path("service") / "studies.py", Path("service") / "teoo.py", Path("lineage.py")}
 
 
 def stage(backend: Path, dest: Path) -> list[str]:
