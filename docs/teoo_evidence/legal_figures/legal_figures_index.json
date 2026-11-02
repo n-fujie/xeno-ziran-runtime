@@ -1,0 +1,24 @@
+{
+ "figures": [
+  "legal_fig1_fifteen_guarantees_architecture.svg",
+  "legal_fig2_legal_translation_chain.svg",
+  "legal_fig3_low_score_subject_guarantee.svg",
+  "legal_fig4_contestability_and_institutional_return.svg",
+  "legal_fig5_material_restoration.svg",
+  "legal_fig6_governance_intervention_comparison.svg",
+  "legal_fig7_negative_results.svg",
+  "legal_fig8_operational_shape_legal_architecture.svg"
+ ],
+ "concept_figures": [
+  "legal_fig1",
+  "legal_fig2",
+  "legal_fig8"
+ ],
+ "result_figures": [
+  "legal_fig3",
+  "legal_fig4",
+  "legal_fig5",
+  "legal_fig6",
+  "legal_fig7"
+ ]
+}

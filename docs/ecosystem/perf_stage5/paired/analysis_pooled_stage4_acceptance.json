@@ -1,0 +1,360 @@
+{
+ "rule": "ratio CI lower > 1.05: regression; upper < 1.05: no meaningful regression; otherwise inconclusive",
+ "repetitions": 14,
+ "pairs": {
+  "stage4/stage3": [
+   {
+    "camera": "body",
+    "mode": "static",
+    "measure": "median",
+    "stage3_median": 15.95,
+    "stage4_median": 16.45,
+    "paired_ratio_median": 1.038,
+    "ci95": [
+     1.012,
+     1.085
+    ],
+    "n": 14,
+    "verdict": "inconclusive"
+   },
+   {
+    "camera": "body",
+    "mode": "static",
+    "measure": "p95",
+    "stage3_median": 19.6,
+    "stage4_median": 20.4,
+    "paired_ratio_median": 1.123,
+    "ci95": [
+     0.835,
+     1.343
+    ],
+    "n": 14,
+    "verdict": "inconclusive"
+   },
+   {
+    "camera": "body",
+    "mode": "orbit",
+    "measure": "median",
+    "stage3_median": 16.85,
+    "stage4_median": 16.65,
+    "paired_ratio_median": 1.013,
+    "ci95": [
+     0.944,
+     1.058
+    ],
+    "n": 14,
+    "verdict": "inconclusive"
+   },
+   {
+    "camera": "body",
+    "mode": "orbit",
+    "measure": "p95",
+    "stage3_median": 26.6,
+    "stage4_median": 24.4,
+    "paired_ratio_median": 0.954,
+    "ci95": [
+     0.789,
+     1.146
+    ],
+    "n": 14,
+    "verdict": "inconclusive"
+   },
+   {
+    "camera": "habitat",
+    "mode": "static",
+    "measure": "median",
+    "stage3_median": 17.9,
+    "stage4_median": 18.25,
+    "paired_ratio_median": 1.03,
+    "ci95": [
+     0.989,
+     1.077
+    ],
+    "n": 14,
+    "verdict": "inconclusive"
+   },
+   {
+    "camera": "habitat",
+    "mode": "static",
+    "measure": "p95",
+    "stage3_median": 23.05,
+    "stage4_median": 29.6,
+    "paired_ratio_median": 1.043,
+    "ci95": [
+     0.896,
+     1.465
+    ],
+    "n": 14,
+    "verdict": "inconclusive"
+   },
+   {
+    "camera": "habitat",
+    "mode": "orbit",
+    "measure": "median",
+    "stage3_median": 19.45,
+    "stage4_median": 19.4,
+    "paired_ratio_median": 1.003,
+    "ci95": [
+     0.959,
+     1.022
+    ],
+    "n": 14,
+    "verdict": "no meaningful regression"
+   },
+   {
+    "camera": "habitat",
+    "mode": "orbit",
+    "measure": "p95",
+    "stage3_median": 29.1,
+    "stage4_median": 25.85,
+    "paired_ratio_median": 0.932,
+    "ci95": [
+     0.862,
+     0.996
+    ],
+    "n": 14,
+    "verdict": "no meaningful regression"
+   },
+   {
+    "camera": "overview",
+    "mode": "static",
+    "measure": "median",
+    "stage3_median": 15.35,
+    "stage4_median": 15.75,
+    "paired_ratio_median": 1.007,
+    "ci95": [
+     0.986,
+     1.044
+    ],
+    "n": 14,
+    "verdict": "no meaningful regression"
+   },
+   {
+    "camera": "overview",
+    "mode": "static",
+    "measure": "p95",
+    "stage3_median": 19.95,
+    "stage4_median": 21.1,
+    "paired_ratio_median": 0.975,
+    "ci95": [
+     0.925,
+     1.14
+    ],
+    "n": 14,
+    "verdict": "inconclusive"
+   },
+   {
+    "camera": "overview",
+    "mode": "orbit",
+    "measure": "median",
+    "stage3_median": 16.75,
+    "stage4_median": 17.7,
+    "paired_ratio_median": 1.018,
+    "ci95": [
+     0.982,
+     1.043
+    ],
+    "n": 14,
+    "verdict": "no meaningful regression"
+   },
+   {
+    "camera": "overview",
+    "mode": "orbit",
+    "measure": "p95",
+    "stage3_median": 29.05,
+    "stage4_median": 26.35,
+    "paired_ratio_median": 0.994,
+    "ci95": [
+     0.75,
+     1.107
+    ],
+    "n": 14,
+    "verdict": "inconclusive"
+   }
+  ]
+ },
+ "counters": {
+  "stage3": {
+   "body": {
+    "draw_calls_static": 264.0,
+    "triangles_static": 999878.0,
+    "draw_calls_orbit": 382.0,
+    "orbit_series": null,
+    "orbit_series_runs": 0
+   },
+   "habitat": {
+    "draw_calls_static": 427.0,
+    "triangles_static": 1033428.0,
+    "draw_calls_orbit": 532.5,
+    "orbit_series": null,
+    "orbit_series_runs": 0
+   },
+   "habitat+research": {
+    "draw_calls_static": 384.0,
+    "triangles_static": 960564.0,
+    "draw_calls_orbit": 340.0,
+    "orbit_series": null,
+    "orbit_series_runs": 0
+   },
+   "habitat+technical": {
+    "draw_calls_static": 384.0,
+    "triangles_static": 960564.0,
+    "draw_calls_orbit": 580.0,
+    "orbit_series": null,
+    "orbit_series_runs": 0
+   },
+   "overview": {
+    "draw_calls_static": 455.0,
+    "triangles_static": 653420.0,
+    "draw_calls_orbit": 652.0,
+    "orbit_series": null,
+    "orbit_series_runs": 0
+   }
+  },
+  "stage4": {
+   "body": {
+    "draw_calls_static": 264.0,
+    "triangles_static": 1021422.0,
+    "draw_calls_orbit": 263.0,
+    "orbit_series": {
+     "programs_built": 1,
+     "geometry_uploads": 38,
+     "lod_switches": 0,
+     "visibility_flips": 40
+    },
+    "orbit_series_runs": 6
+   },
+   "habitat": {
+    "draw_calls_static": 428.0,
+    "triangles_static": 1065364.0,
+    "draw_calls_orbit": 412.0,
+    "orbit_series": {
+     "programs_built": 0,
+     "geometry_uploads": 35,
+     "lod_switches": 141,
+     "visibility_flips": 28
+    },
+    "orbit_series_runs": 6
+   },
+   "habitat+research": {
+    "draw_calls_static": 385.0,
+    "triangles_static": 989152.0,
+    "draw_calls_orbit": 571.0,
+    "orbit_series": {
+     "programs_built": 0,
+     "geometry_uploads": 38,
+     "lod_switches": 142,
+     "visibility_flips": 28
+    },
+    "orbit_series_runs": 6
+   },
+   "habitat+technical": {
+    "draw_calls_static": 385.0,
+    "triangles_static": 989152.0,
+    "draw_calls_orbit": 581.0,
+    "orbit_series": {
+     "programs_built": 0,
+     "geometry_uploads": 38,
+     "lod_switches": 144,
+     "visibility_flips": 28
+    },
+    "orbit_series_runs": 6
+   },
+   "overview": {
+    "draw_calls_static": 457.0,
+    "triangles_static": 674384.0,
+    "draw_calls_orbit": 657.0,
+    "orbit_series": {
+     "programs_built": 0,
+     "geometry_uploads": 21,
+     "lod_switches": 145,
+     "visibility_flips": 64
+    },
+    "orbit_series_runs": 6
+   }
+  },
+  "stage5": {
+   "body": {
+    "draw_calls_static": 264.0,
+    "triangles_static": 1021422.0,
+    "draw_calls_orbit": 263.0,
+    "orbit_series": {
+     "programs_built": 1,
+     "geometry_uploads": 38,
+     "lod_switches": 0,
+     "visibility_flips": 40
+    },
+    "orbit_series_runs": 6
+   },
+   "habitat": {
+    "draw_calls_static": 428.0,
+    "triangles_static": 1065364.0,
+    "draw_calls_orbit": 532.5,
+    "orbit_series": {
+     "programs_built": 0,
+     "geometry_uploads": 35,
+     "lod_switches": 142,
+     "visibility_flips": 28
+    },
+    "orbit_series_runs": 6
+   },
+   "habitat+research": {
+    "draw_calls_static": 385.0,
+    "triangles_static": 989152.0,
+    "draw_calls_orbit": 331.0,
+    "orbit_series": {
+     "programs_built": 0,
+     "geometry_uploads": 38,
+     "lod_switches": 143,
+     "visibility_flips": 28
+    },
+    "orbit_series_runs": 6
+   },
+   "habitat+technical": {
+    "draw_calls_static": 385.0,
+    "triangles_static": 989152.0,
+    "draw_calls_orbit": 341.0,
+    "orbit_series": {
+     "programs_built": 0,
+     "geometry_uploads": 38,
+     "lod_switches": 142,
+     "visibility_flips": 28
+    },
+    "orbit_series_runs": 6
+   },
+   "overview": {
+    "draw_calls_static": 457.0,
+    "triangles_static": 674384.0,
+    "draw_calls_orbit": 657.0,
+    "orbit_series": {
+     "programs_built": 0,
+     "geometry_uploads": 21,
+     "lod_switches": 145,
+     "visibility_flips": 64
+    },
+    "orbit_series_runs": 6
+   }
+  }
+ },
+ "load": {
+  "3031_1": "load { 15.98 11.49 7.64 }",
+  "3031_2": "load { 5.08 8.40 7.07 }",
+  "3031_3": "load { 3.47 6.27 6.41 }",
+  "3031_4": "load { 4.18 4.97 5.77 }",
+  "3031_5": "load { 3.12 3.84 4.98 }",
+  "3031_6": "load { 3.82 3.97 4.67 }",
+  "3032_1": "load { 4.16 5.83 5.07 }",
+  "3032_2": "load { 3.71 7.15 6.71 }",
+  "3032_3": "load { 3.67 5.64 6.15 }",
+  "3032_4": "load { 3.60 4.45 5.41 }",
+  "3032_5": "load { 3.18 4.05 5.17 }",
+  "3032_6": "load { 4.06 3.92 4.72 }",
+  "3033_1": "load { 18.08 8.84 6.24 }",
+  "3033_2": "load { 6.83 9.61 7.32 }",
+  "3033_3": "load { 4.12 5.26 5.96 }",
+  "3033_4": "load { 3.75 4.76 5.62 }",
+  "3033_5": "load { 3.60 3.90 4.91 }",
+  "3033_6": "load { 3.82 3.89 4.81 }"
+ },
+ "excluded_repetitions": []
+}

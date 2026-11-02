@@ -42,8 +42,19 @@ class Branch:
     fingerprint: str
 
 
-def _run(engine: Engine, overlay: list[OverlayItem], actions: list[Action], horizon: int, h: Hierarchy,
-         graph_every: int, rng_seed: int | None = None) -> tuple[Branch, ShapeDetector]:
+def _drive(gen):
+    """Run a stepping generator to completion and return its result (the desktop path: no slicing)."""
+    while True:
+        try:
+            next(gen)
+        except StopIteration as stop:
+            return stop.value
+
+
+def _run_steps(engine: Engine, overlay: list[OverlayItem], actions: list[Action], horizon: int, h: Hierarchy,
+               graph_every: int, rng_seed: int | None = None):
+    """One branch. A generator that yields after every simulation step so a host without threads can interleave other
+    work (the browser build); its return value is (Branch, ShapeDetector). Same steps in the same order as always."""
     if rng_seed is not None:
         engine.rng = np.random.default_rng(rng_seed)
     engine.set_overlay(overlay)
@@ -68,6 +79,7 @@ def _run(engine: Engine, overlay: list[OverlayItem], actions: list[Action], hori
             reconf.add((int(s.src[e]), int(old), int(nw)))
         if i < 400:
             early.append(d.ignitions)
+        yield i
     if not det.last_graph:
         det.graph_pass(s, s.t)
     return Branch(ign, ign > 0, det.in_loop.copy(), cuts, new, reconf, removed,
@@ -79,14 +91,22 @@ def _run(engine: Engine, overlay: list[OverlayItem], actions: list[Action], hori
 def compare(engine: Engine, base_overlay: list[OverlayItem], base_actions: list[Action],
             int_overlay: list[OverlayItem], int_actions: list[Action], h: Hierarchy, horizon: int = 150,
             graph_every: int = 10, noise_floor: bool = True) -> dict:
+    return _drive(compare_steps(engine, base_overlay, base_actions, int_overlay, int_actions, h, horizon, graph_every,
+                                noise_floor))
+
+
+def compare_steps(engine: Engine, base_overlay: list[OverlayItem], base_actions: list[Action],
+                  int_overlay: list[OverlayItem], int_actions: list[Action], h: Hierarchy, horizon: int = 150,
+                  graph_every: int = 10, noise_floor: bool = True):
+    """compare() as a generator (yields once per simulation step of any branch; returns the result dict)."""
     t0 = time.perf_counter()
     start_t = engine.state.t
-    a, det_a = _run(engine.fork(), base_overlay, base_actions, horizon, h, graph_every)
-    b, det_b = _run(engine.fork(), int_overlay, int_actions, horizon, h, graph_every)
+    a, det_a = yield from _run_steps(engine.fork(), base_overlay, base_actions, horizon, h, graph_every)
+    b, det_b = yield from _run_steps(engine.fork(), int_overlay, int_actions, horizon, h, graph_every)
     a2 = None
     if noise_floor:
-        a2, _ = _run(engine.fork(), base_overlay, base_actions, horizon, h, graph_every,
-                     rng_seed=engine.seed * 7919 + start_t + 1)
+        a2, _ = yield from _run_steps(engine.fork(), base_overlay, base_actions, horizon, h, graph_every,
+                                      rng_seed=engine.seed * 7919 + start_t + 1)
 
     n = len(a.ign)
     cls = np.zeros(n, dtype=np.uint8)

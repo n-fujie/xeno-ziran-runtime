@@ -15,6 +15,22 @@ ALLOWED = {
     "compare": {"runtime", "lod", "shapes", "compare"},
     "scenario": {"scenario", "runtime", "lod"},
     "reasonlab": {"reasonlab", "practice", "runtime", "scenario"},  # never interpret, shapes or service
+    # HPO: an experiment layer over the runtime (world regimes and provenance from experiments); never service,
+    # practice, interpret or reasonlab
+    "hpo": {"hpo", "runtime", "lod", "experiments"},
+    # laboratory layer: apparatus states derived from the runtime, observing an HPO field; never service or practice
+    "lab": {"lab", "hpo", "runtime", "lod", "experiments"},
+    # study layer: protocols, seeded batch execution, analysis and paper outputs over hpo / lab (and the shape detector);
+    # never service, practice, interpret or reasonlab. Only the service imports it.
+    "study": {"study", "hpo", "lab", "runtime", "lod", "experiments", "shapes", "totalobs"},
+    # total-observation layer: a synthetic world, observers and a research loop re-using hpo's rule revision and reachability
+    # comparison; imports nothing of study, lab, service, practice, interpret or reasonlab (study imports it, never the reverse)
+    "totalobs": {"totalobs", "hpo"},
+    # MEOS (XENO ECOSYSTEM): a self-contained experimental layer; imports nothing of the rest of xzr (only the service imports it)
+    "meos": {"meos"},
+    # TEOO (BODY / TOTAL OBSERVATION): body-observation records, provenance, an open body graph; self-contained, imports nothing
+    # of the rest of xzr (tests/test_teoo_layering.py also runs it in a fresh interpreter); only the service imports it
+    "teoo": {"teoo"},
 }
 
 
@@ -58,6 +74,9 @@ def test_experiment_layer_is_not_imported_by_the_product_layers():
     for layer in ("runtime", "shapes", "lod", "compare", "scenario", "practice", "reasonlab"):
         for p in (ROOT / layer).glob("*.py"):
             assert "experiments" not in _internal_imports(p), p
+            assert "hpo" not in _internal_imports(p), p
+            assert "lab" not in _internal_imports(p), p
+            assert "study" not in _internal_imports(p), p
     assert _internal_imports(ROOT / "shapes" / "multiscale.py") <= {"runtime", "lod", "shapes"}
 
 

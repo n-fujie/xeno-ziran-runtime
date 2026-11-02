@@ -1,0 +1,84 @@
+{
+ "method": "Re-run of every confirmatory experiment with its original protocol, seeds and code, from a clean clone of the published commit on the same machine, written to a separate directory; compared field by field with the published files (run bookkeeping excluded).",
+ "repro_dir": "reproduction",
+ "experiments": {
+  "hpo001": {
+   "compared": [
+    "corrections_implemented",
+    "experiment",
+    "not_a_ranking",
+    "paired_comparisons",
+    "pilot_assets",
+    "results",
+    "seeds"
+   ],
+   "identical": true,
+   "differences": [],
+   "n_differences": 0,
+   "protocol_sha256": "71e589c7d88cdb1119810579121e65a89c4557b98856c66fd047d6c031f67685"
+  },
+  "hpo002": {
+   "compared": [
+    "condition_settings",
+    "conditions",
+    "contrast_pairs",
+    "contrasts",
+    "divergence_from_R0",
+    "experiment",
+    "external_effects",
+    "horizon",
+    "means",
+    "paired_comparisons",
+    "registry",
+    "rules",
+    "seed_ranges",
+    "seeds",
+    "trace",
+    "verdicts",
+    "warmup",
+    "world"
+   ],
+   "identical": true,
+   "differences": [],
+   "n_differences": 0,
+   "protocol_sha256": "71e589c7d88cdb1119810579121e65a89c4557b98856c66fd047d6c031f67685"
+  },
+  "general": {
+   "compared": [
+    "paired_comparisons",
+    "results",
+    "seed_ranges",
+    "seeds_per_setting",
+    "settings"
+   ],
+   "identical": true,
+   "differences": [],
+   "n_differences": 0,
+   "protocol_sha256": "71e589c7d88cdb1119810579121e65a89c4557b98856c66fd047d6c031f67685"
+  },
+  "hpo003": {
+   "compared": [
+    "base_condition",
+    "changed_paths",
+    "contrasts",
+    "epoch",
+    "experiment",
+    "final_settings_example",
+    "horizon",
+    "means",
+    "paired_comparisons",
+    "proposals",
+    "rejected_changes",
+    "reproducible_trace",
+    "sandbox",
+    "seeds",
+    "trace_example",
+    "validation"
+   ],
+   "identical": true,
+   "differences": [],
+   "n_differences": 0,
+   "protocol_sha256": "71e589c7d88cdb1119810579121e65a89c4557b98856c66fd047d6c031f67685"
+  }
+ }
+}

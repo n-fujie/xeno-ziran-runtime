@@ -1,0 +1,50 @@
+{
+ "body": null,
+ "claim": "an illustration of the stated data under the stated conditions; no claim beyond them",
+ "evidence": {
+  "band": [
+   "EVIDENCE: CONCEPTUAL  ·  a drawing, not data",
+   "REAL-WORLD EXPERIMENT: none recorded (no measurement exists behind this figure)",
+   "BODY: none",
+   "RECORDS: 1 (rec-4e18278717)  ·  generated 2026-11-01  ·  TEOO teoo/0.1"
+  ],
+  "classes": [
+   "CONCEPTUAL"
+  ],
+  "real_world_experiment_recorded": false,
+  "watermarks": [
+   "CONCEPTUAL"
+  ]
+ },
+ "experiment": null,
+ "figure_id": "fig-b18f1bfa262cb21a",
+ "generated_at": "2026-11-01T00:00:00.000000Z",
+ "kind": "diagram",
+ "metadata_digest": "6a5c1ec4b576eccd4671dac80cdb962ef4f9b341570b9c6b53563badf561e11f",
+ "observation_limits": {
+  "config_version": null,
+  "note": "A synthetic institution or a drawing: what lies outside what is stated here is unknown, not absent.",
+  "summary": {
+   "conditions": "specification against code"
+  },
+  "t": null
+ },
+ "provenance": {
+  "records": [
+   {
+    "kind": "REFERENCE_STATE",
+    "lineage_classes": [
+     "CONCEPTUAL"
+    ],
+    "provenance": "CONCEPTUAL",
+    "record_digest": "4e182787177d7d1a3961e3e95e59d30490f2cef2efa62eee7cef8696f5766721",
+    "record_id": "rec-4e182787177d7d1a3961e3e9"
+   }
+  ],
+  "source_digest": "b18f1bfa262cb21af04014435d8612676ff683a0d1304f0e179bebea29c268ec"
+ },
+ "schema": "teoo.figure/1",
+ "teoo_version": "teoo/0.1",
+ "title": "Fig L8 · Operational-shape legal architecture: R2's six modules and what this repository implements",
+ "units": {}
+}

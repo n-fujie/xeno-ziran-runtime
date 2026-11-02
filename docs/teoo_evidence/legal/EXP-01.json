@@ -1,0 +1,218 @@
+{
+ "experiment_id": "LEG-EXP-01",
+ "protocol_version": 1,
+ "protocol_digest": "080fcf645575415a206ea2059fdb3a32d621c4b90210a0070ac48550cf16eae0",
+ "protocol": {
+  "experiment_id": "LEG-EXP-01",
+  "hypotheses": [
+   {
+    "id": "H1",
+    "statement": "Fairness optimisation of the score narrows the true-positive-rate gap"
+   },
+   {
+    "id": "H2",
+    "statement": "...but leaves the persistence of exclusion unchanged (equivalence within 0.05)"
+   },
+   {
+    "id": "H3",
+    "statement": "Removing the proxy gate in addition lowers exclusion of the qualified"
+   }
+  ],
+  "targets": [
+   "exclusion and access of a synthetic institution"
+  ],
+  "instrument_conditions": {
+   "population": 300,
+   "periods": 24
+  },
+  "control_condition": "baseline",
+  "conditions": [
+   "baseline",
+   "fairness_opt",
+   "fairness_opt_gate_removed"
+  ],
+  "seeds": [
+   2001,
+   2002,
+   2003,
+   2004,
+   2005,
+   2006,
+   2007,
+   2008,
+   2009,
+   2010,
+   2011,
+   2012,
+   2013,
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023,
+   2024,
+   2025,
+   2026,
+   2027,
+   2028,
+   2029,
+   2030
+  ],
+  "trials_per_condition": 1,
+  "stopping_rule": {
+   "type": "fixed-n",
+   "units": 30,
+   "no interim analysis": true
+  },
+  "outcomes": {
+   "primary": [
+    "tpr_gap",
+    "exclusion_persistence"
+   ],
+   "secondary": [
+    "exclusion_qualified"
+   ]
+  },
+  "analyses": [
+   {
+    "id": "L01a",
+    "hypothesis": "H1",
+    "outcome": "tpr_gap",
+    "method": "paired-sign-flip",
+    "confirmatory": true
+   },
+   {
+    "id": "L01b",
+    "hypothesis": "H2",
+    "outcome": "exclusion_persistence",
+    "method": "equivalence",
+    "confirmatory": true,
+    "margin": 0.05
+   },
+   {
+    "id": "L01c",
+    "hypothesis": "H3",
+    "outcome": "exclusion_qualified",
+    "method": "paired-sign-flip",
+    "confirmatory": true
+   }
+  ],
+  "multiplicity": "holm",
+  "failure_conditions": [
+   "fewer than 30 worlds"
+  ],
+  "reproduction": {
+   "generator": "xzr.teoo.legal_experiments",
+   "steps": [
+    "run unit per seed",
+    "analyse"
+   ],
+   "world": "xzr.teoo.legal (SYNTHETIC institution)"
+  },
+  "schema": "teoo.protocol/1",
+  "version": 1,
+  "parent_version": null,
+  "change_reason": null
+ },
+ "units": 30,
+ "seeds": [
+  2001,
+  2002,
+  2003,
+  2004,
+  2005,
+  2006,
+  2007,
+  2008,
+  2009,
+  2010,
+  2011,
+  2012,
+  2013,
+  2014,
+  2015,
+  2016,
+  2017,
+  2018,
+  2019,
+  2020,
+  2021,
+  2022,
+  2023,
+  2024,
+  2025,
+  2026,
+  2027,
+  2028,
+  2029,
+  2030
+ ],
+ "evidence_class": "Synthetic-world Result",
+ "seconds": 0.9,
+ "results": {
+  "L01a": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.3762153043991781,
+   "sd_diff": 0.09098901763246081,
+   "dz": 4.134733116021261,
+   "ci95": [
+    0.34355458477914247,
+    0.4076810680551258
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 1,
+   "inferential": true,
+   "contrast": "baseline minus fairness_opt on tpr_gap",
+   "mean_baseline": 0.5126292551892215,
+   "mean_fairness_opt": 0.1364139507900434,
+   "p_holm": 9.99950002499875e-05,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "L01b": {
+   "method": "equivalence",
+   "margin": 0.05,
+   "ci90": [
+    -0.008250050676675325,
+    0.02218507289561595
+   ],
+   "mean_diff": 0.006952169859516644,
+   "supported": true,
+   "contrast": "fairness_opt minus baseline on exclusion_persistence",
+   "mean_fairness_opt": 0.9148986434831624,
+   "mean_baseline": 0.9079464736236457,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "L01c": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.04673038051554319,
+   "sd_diff": 0.029319496207537026,
+   "dz": 1.5938329971553342,
+   "ci95": [
+    0.03664556641739336,
+    0.057526627558857436
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 3,
+   "inferential": true,
+   "contrast": "fairness_opt minus fairness_opt_gate_removed on exclusion_qualified",
+   "mean_fairness_opt": 0.2969096059536231,
+   "mean_fairness_opt_gate_removed": 0.25017922543807986,
+   "p_holm": 9.99950002499875e-05,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  }
+ },
+ "catalogue": null,
+ "note": "results about a SYNTHETIC institution and this implementation; not an observation of any institution, law or person"
+}

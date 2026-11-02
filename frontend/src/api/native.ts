@@ -5,13 +5,18 @@
 //
 // Only the API surface changes; requests, response bodies and the stream's messages are those of the HTTP service.
 
-export const NATIVE = import.meta.env.VITE_NATIVE === '1';
+// The browser build (VITE_WEBRT=1, served at /app/) uses the same in-process interface as the iOS app: the engine runs
+// in this tab (a Web Worker with Pyodide, see webRuntime.ts) instead of a server. UI behaviour is the app's.
+export const WEBRT = import.meta.env.VITE_WEBRT === '1';
+export const NATIVE = import.meta.env.VITE_NATIVE === '1' || WEBRT;
 
 interface ReplyHandler { postMessage(msg: unknown): Promise<unknown> }
 
 interface NativeReply { status: number; kind: 'json' | 'text' | 'binary'; body: unknown }
 
 function handler(): ReplyHandler {
+  // the literal test lets the bundler drop the in-tab runtime (and its worker) from every other build
+  if (import.meta.env.VITE_WEBRT === '1') return { postMessage: async (msg) => (await import('./webRuntime')).webHandler.postMessage(msg) };
   const h = (window as unknown as { webkit?: { messageHandlers?: { xzr?: ReplyHandler } } }).webkit?.messageHandlers?.xzr;
   if (!h) throw new Error('The in-app runtime is not available (native bridge missing).');
   return h;

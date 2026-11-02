@@ -1,0 +1,50 @@
+{
+ "body": null,
+ "claim": "an illustration of the stated data under the stated conditions; no claim beyond them",
+ "evidence": {
+  "band": [
+   "EVIDENCE: CONCEPTUAL  ·  a drawing, not data",
+   "REAL-WORLD EXPERIMENT: none recorded (no measurement exists behind this figure)",
+   "BODY: none",
+   "RECORDS: 1 (rec-7ca35347a6)  ·  generated 2026-11-01  ·  TEOO teoo/0.1"
+  ],
+  "classes": [
+   "CONCEPTUAL"
+  ],
+  "real_world_experiment_recorded": false,
+  "watermarks": [
+   "CONCEPTUAL"
+  ]
+ },
+ "experiment": null,
+ "figure_id": "fig-309f7d77924b64e9",
+ "generated_at": "2026-11-01T00:00:00.000000Z",
+ "kind": "table",
+ "metadata_digest": "9adc1028e296c73f31db62568e58f49333bc36db055b160a4f2970f671566f09",
+ "observation_limits": {
+  "config_version": null,
+  "note": "A synthetic institution or a drawing: what lies outside what is stated here is unknown, not absent.",
+  "summary": {
+   "conditions": "specification"
+  },
+  "t": null
+ },
+ "provenance": {
+  "records": [
+   {
+    "kind": "REFERENCE_STATE",
+    "lineage_classes": [
+     "CONCEPTUAL"
+    ],
+    "provenance": "CONCEPTUAL",
+    "record_digest": "7ca35347a648abe8df87f566a4d39b1481544f6ccba07875e0fa8707830d3c1e",
+    "record_id": "rec-7ca35347a648abe8df87f566"
+   }
+  ],
+  "source_digest": "309f7d77924b64e9102c30ba77abd0ca39bb6bce50ed7e8d8677b8d93bf9a7c5"
+ },
+ "schema": "teoo.figure/1",
+ "teoo_version": "teoo/0.1",
+ "title": "Fig M3 · Twelve-to-fifteen functional crosswalk (as reported)",
+ "units": {}
+}

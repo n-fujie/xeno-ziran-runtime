@@ -1,0 +1,477 @@
+{
+ "experiment_id": "MH-EXP-04",
+ "protocol_version": 1,
+ "protocol_digest": "2ec1b3c5c99089343a217e54a932fa5f89891233ec611378e4b47a8e77b674bf",
+ "protocol": {
+  "experiment_id": "MH-EXP-04",
+  "hypotheses": [
+   {
+    "id": "H1",
+    "statement": "Breaking the legal source, the translation or the data representation changes none of the simulated outcomes, while the audit finds the stage's findings unmet (outcome-blind failures)"
+   },
+   {
+    "id": "H2",
+    "statement": "Breaking a stage that the simulation carries worsens its registered primary outcome (classification: qualified people excluded; treatment: persistence of exclusion; effective access and contestation: wrongful denials overturned; revision: downstream access; restoration: qualified people re-entered)"
+   },
+   {
+    "id": "H3",
+    "statement": "Breaking one stage is not confined to it: other stages' findings are also violated in some worlds (shared levers)"
+   }
+  ],
+  "targets": [
+   "findings, duties and outcomes of a synthetic institution"
+  ],
+  "instrument_conditions": {
+   "stages": [
+    "legal_source",
+    "translation",
+    "data_representation",
+    "classification",
+    "institutional_treatment",
+    "effective_access",
+    "contestation",
+    "revision",
+    "material_restoration"
+   ],
+   "levers": {
+    "legal_source": null,
+    "translation": null,
+    "data_representation": null,
+    "classification": {
+     "proxy_gate": true,
+     "lam": 0.8,
+     "score_degrades_review": true
+    },
+    "institutional_treatment": {
+     "suspension": false,
+     "score_expiry": null
+    },
+    "effective_access": {
+     "appeal_burden": 0.9,
+     "resources_support": false
+    },
+    "contestation": {
+     "appeal": false,
+     "collective_challenge": false
+    },
+    "revision": {
+     "review_authority": false,
+     "review_independent": false,
+     "propagate_correction": false
+    },
+    "material_restoration": {
+     "material_relief": false,
+     "reentry_support": false
+    }
+   }
+  },
+  "control_condition": "intact",
+  "conditions": [
+   "intact",
+   "legal_source",
+   "translation",
+   "data_representation",
+   "classification",
+   "institutional_treatment",
+   "effective_access",
+   "contestation",
+   "revision",
+   "material_restoration"
+  ],
+  "seeds": [
+   6301,
+   6302,
+   6303,
+   6304,
+   6305,
+   6306,
+   6307,
+   6308,
+   6309,
+   6310,
+   6311,
+   6312,
+   6313,
+   6314,
+   6315,
+   6316,
+   6317,
+   6318,
+   6319,
+   6320,
+   6321,
+   6322,
+   6323,
+   6324,
+   6325,
+   6326,
+   6327,
+   6328,
+   6329,
+   6330
+  ],
+  "trials_per_condition": 1,
+  "stopping_rule": {
+   "type": "fixed-n",
+   "units": 30,
+   "no interim analysis": true
+  },
+  "outcomes": {
+   "primary": [
+    "registered primary outcome per stage",
+    "outcome identity for the audit-only stages"
+   ],
+   "secondary": [
+    "spillover",
+    "first violated stage",
+    "duties violated"
+   ]
+  },
+  "analyses": [
+   {
+    "id": "M401",
+    "hypothesis": "H1",
+    "outcome": "outcomes",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "M402a",
+    "hypothesis": "H2",
+    "outcome": "exclusion_qualified",
+    "method": "paired-sign-flip",
+    "confirmatory": true,
+    "paired": true
+   },
+   {
+    "id": "M402b",
+    "hypothesis": "H2",
+    "outcome": "exclusion_persistence",
+    "method": "paired-sign-flip",
+    "confirmatory": true,
+    "paired": true
+   },
+   {
+    "id": "M402c",
+    "hypothesis": "H2",
+    "outcome": "overturn_rate_of_wrongful",
+    "method": "paired-sign-flip",
+    "confirmatory": true,
+    "paired": true
+   },
+   {
+    "id": "M402d",
+    "hypothesis": "H2",
+    "outcome": "overturn_rate_of_wrongful",
+    "method": "paired-sign-flip",
+    "confirmatory": true,
+    "paired": true
+   },
+   {
+    "id": "M402e",
+    "hypothesis": "H2",
+    "outcome": "downstream_access_qualified",
+    "method": "paired-sign-flip",
+    "confirmatory": true,
+    "paired": true
+   },
+   {
+    "id": "M402f",
+    "hypothesis": "H2",
+    "outcome": "reentered_qualified",
+    "method": "paired-sign-flip",
+    "confirmatory": true,
+    "paired": true
+   },
+   {
+    "id": "M403",
+    "hypothesis": "H3",
+    "outcome": "spillover",
+    "method": "descriptive",
+    "confirmatory": false
+   }
+  ],
+  "multiplicity": "holm",
+  "failure_conditions": [
+   "fewer than 30 units"
+  ],
+  "reproduction": {
+   "generator": "xzr.teoo.mheg_experiments",
+   "steps": [
+    "run unit per seed",
+    "analyse"
+   ],
+   "world": "xzr.teoo.legal (SYNTHETIC institution) and xzr.teoo.mheg (duties, crosswalk as reported, directive states)"
+  },
+  "schema": "teoo.protocol/1",
+  "version": 1,
+  "parent_version": null,
+  "change_reason": null
+ },
+ "units": 30,
+ "seeds": [
+  6301,
+  6302,
+  6303,
+  6304,
+  6305,
+  6306,
+  6307,
+  6308,
+  6309,
+  6310,
+  6311,
+  6312,
+  6313,
+  6314,
+  6315,
+  6316,
+  6317,
+  6318,
+  6319,
+  6320,
+  6321,
+  6322,
+  6323,
+  6324,
+  6325,
+  6326,
+  6327,
+  6328,
+  6329,
+  6330
+ ],
+ "evidence_class": "Synthetic-world Result",
+ "seconds": 2.6,
+ "results": {
+  "M401": {
+   "method": "descriptive",
+   "worlds": 30,
+   "outcomes_identical_to_intact": {
+    "legal_source": 30,
+    "translation": 30,
+    "data_representation": 30
+   },
+   "own_findings_not_satisfied": {
+    "legal_source": 30,
+    "translation": 30,
+    "data_representation": 30
+   },
+   "criterion": "in every world the outcomes are identical and the audit finds the stage's findings unmet",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "M402a": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": -0.009904930617444165,
+   "sd_diff": 0.015470478218457108,
+   "dz": -0.6402472165098977,
+   "ci95": [
+    -0.0156938474533124,
+    -0.004803128592374294
+   ],
+   "p": 0.0007499625018749063,
+   "n_perm": 20000,
+   "seed": 40,
+   "inferential": true,
+   "contrast": "exclusion_qualified: intact minus classification broken",
+   "outcome": "exclusion_qualified",
+   "predicted_sign_of_intact_minus_broken": -1,
+   "p_holm": 0.0014999250037498126,
+   "supported": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "M402b": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": -0.01097858611195983,
+   "sd_diff": 0.039665470826716974,
+   "dz": -0.27677942258446914,
+   "ci95": [
+    -0.02467402029037736,
+    0.0038386667150969163
+   ],
+   "p": 0.1391930403479826,
+   "n_perm": 20000,
+   "seed": 41,
+   "inferential": true,
+   "contrast": "exclusion_persistence: intact minus institutional_treatment broken",
+   "outcome": "exclusion_persistence",
+   "predicted_sign_of_intact_minus_broken": -1,
+   "p_holm": 0.1391930403479826,
+   "supported": false,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "M402c": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.3571060502841691,
+   "sd_diff": 0.03345351494333564,
+   "dz": 10.674694449568118,
+   "ci95": [
+    0.3443348302268392,
+    0.3674789405267724
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 42,
+   "inferential": true,
+   "contrast": "overturn_rate_of_wrongful: intact minus effective_access broken",
+   "outcome": "overturn_rate_of_wrongful",
+   "predicted_sign_of_intact_minus_broken": 1,
+   "p_holm": 0.0002999850007499625,
+   "supported": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "M402d": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.4055674418081798,
+   "sd_diff": 0.02727163316265703,
+   "dz": 14.871402801190584,
+   "ci95": [
+    0.39508731970117245,
+    0.41417394194887125
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 43,
+   "inferential": true,
+   "contrast": "overturn_rate_of_wrongful: intact minus contestation broken",
+   "outcome": "overturn_rate_of_wrongful",
+   "predicted_sign_of_intact_minus_broken": 1,
+   "p_holm": 0.0002999850007499625,
+   "supported": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "M402e": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.17891774072373245,
+   "sd_diff": 0.05134322282318708,
+   "dz": 3.4847391902117124,
+   "ci95": [
+    0.16041891479901987,
+    0.19623277187938049
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 44,
+   "inferential": true,
+   "contrast": "downstream_access_qualified: intact minus revision broken",
+   "outcome": "downstream_access_qualified",
+   "predicted_sign_of_intact_minus_broken": 1,
+   "p_holm": 0.0002999850007499625,
+   "supported": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "M402f": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 16.8,
+   "sd_diff": 9.23785316155668,
+   "dz": 1.8186043560329785,
+   "ci95": [
+    13.566666666666666,
+    20.033333333333335
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 45,
+   "inferential": true,
+   "contrast": "reentered_qualified: intact minus material_restoration broken",
+   "outcome": "reentered_qualified",
+   "predicted_sign_of_intact_minus_broken": 1,
+   "p_holm": 0.0002999850007499625,
+   "supported": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "M403": {
+   "method": "descriptive",
+   "spillover_share": {
+    "legal_source": 0.0,
+    "translation": 0.0,
+    "data_representation": 0.0,
+    "classification": 0.0,
+    "institutional_treatment": 0.0,
+    "effective_access": 0.0,
+    "contestation": 1.0,
+    "revision": 1.0,
+    "material_restoration": 0.0
+   },
+   "own_violated_share": {
+    "legal_source": 1.0,
+    "translation": 0.0,
+    "data_representation": 1.0,
+    "classification": 1.0,
+    "institutional_treatment": 1.0,
+    "effective_access": 1.0,
+    "contestation": 1.0,
+    "revision": 1.0,
+    "material_restoration": 1.0
+   },
+   "first_violated_stage_counts": {
+    "legal_source": {
+     "legal_source": 30
+    },
+    "translation": {
+     "None": 30
+    },
+    "data_representation": {
+     "data_representation": 30
+    },
+    "classification": {
+     "classification": 30
+    },
+    "institutional_treatment": {
+     "institutional_treatment": 30
+    },
+    "effective_access": {
+     "effective_access": 30
+    },
+    "contestation": {
+     "contestation": 30
+    },
+    "revision": {
+     "classification": 30
+    },
+    "material_restoration": {
+     "material_restoration": 30
+    }
+   },
+   "duties_violated_mean": {
+    "legal_source": 2.0,
+    "translation": 0.0,
+    "data_representation": 4.0,
+    "classification": 1.5,
+    "institutional_treatment": 5.0,
+    "effective_access": 6.0,
+    "contestation": 6.0,
+    "revision": 6.0,
+    "material_restoration": 3.0
+   },
+   "registered_class": "exploratory (declared but not marked confirmatory)",
+   "evidence_class": "Synthetic-world Result"
+  }
+ },
+ "catalogue": {
+  "source": "The Minimum Guarantees of Human Legal Subjecthood, Publication Final V3.0, Chapter 6.2 (identical in the 100_POINT_EDITION and in R2 section 4: all fifteen titles and definitions compared character for character)",
+  "verified_against_original": true,
+  "sha256": {
+   "v3_0": "cf4d4f0c51169451da5af4c33e7081e947dacbade855068a889965d8c523b848",
+   "v3_0_100_point_edition": "afb59d1a0c3b28854f14113f843645539e07a2e466949d22de4b67da0a22bf99",
+   "ai_law_osr_r2": "a9984451b281df3252b05842dc5109dd396e0b0c54d3560849344ad41059a501"
+  },
+  "editions_identical_for_guarantees": true,
+  "note": "V3.0 uses two vocabularies for the same five findings (Appendix A table: Secured/Partial/Absent/Indeterminate/Inapplicable; A.3 and 8.4 text: Satisfied/Partially Satisfied/Failed/Indeterminate/Not Applicable). R2 section 16 and this implementation use the table's."
+ },
+ "note": "results about a SYNTHETIC institution and this implementation; the twelve duties are functional summaries and their crosswalk is as reported (R16 not available); not an observation of any institution, law or person"
+}

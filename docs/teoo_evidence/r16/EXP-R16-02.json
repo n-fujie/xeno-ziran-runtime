@@ -1,0 +1,215 @@
+{
+ "experiment_id": "EXP-R16-02",
+ "protocol_version": 1,
+ "protocol_digest": "94dbb7bd0a65e436800778b894933df4c373e874b4aa861ad3ca62d29b462526",
+ "protocol": {
+  "experiment_id": "EXP-R16-02",
+  "hypotheses": [
+   {
+    "id": "H1",
+    "statement": "Four cases processed at once on one SQLite file (four connections) end in the same state as the same four cases processed one after another"
+   },
+   {
+    "id": "H2",
+    "statement": "Sending every submission again changes nothing after the database is reopened"
+   },
+   {
+    "id": "H3",
+    "statement": "No evidence or measurement of one case refers to another case"
+   },
+   {
+    "id": "H4",
+    "statement": "Every closure keeps its flag (UNRESOLVED_CONFLICT or MODEL_MATCH_NOT_LEGALLY_VERIFIED)"
+   }
+  ],
+  "targets": [
+   "a synthetic ledger, its worlds and the registries of duties, guarantees and governance principles"
+  ],
+  "instrument_conditions": {
+   "cases_per_world": 4,
+   "lifecycle": "receipt, resend, conflict, malformed, corrupt container, review, plan, approval, execution, observation, revision, observation, closure"
+  },
+  "control_condition": "sequential",
+  "conditions": [
+   "concurrent four connections",
+   "sequential"
+  ],
+  "seeds": [
+   8001,
+   8002,
+   8003,
+   8004,
+   8005,
+   8006,
+   8007,
+   8008,
+   8009,
+   8010,
+   8011,
+   8012,
+   8013,
+   8014,
+   8015,
+   8016,
+   8017,
+   8018,
+   8019,
+   8020,
+   8021,
+   8022,
+   8023,
+   8024,
+   8025,
+   8026,
+   8027,
+   8028,
+   8029,
+   8030
+  ],
+  "trials_per_condition": 1,
+  "stopping_rule": {
+   "type": "fixed-n",
+   "units": 30,
+   "no interim analysis": true
+  },
+  "outcomes": {
+   "primary": [
+    "cases equal to sequential",
+    "changes by a resend"
+   ],
+   "secondary": [
+    "contamination",
+    "errors"
+   ]
+  },
+  "analyses": [
+   {
+    "id": "R201",
+    "hypothesis": "H1",
+    "outcome": "state equality",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "R202",
+    "hypothesis": "H2",
+    "outcome": "resend",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "R203",
+    "hypothesis": "H3",
+    "outcome": "contamination",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "R204",
+    "hypothesis": "H4",
+    "outcome": "closure flags",
+    "method": "descriptive",
+    "confirmatory": true
+   }
+  ],
+  "multiplicity": "holm",
+  "failure_conditions": [
+   "fewer than 30 units"
+  ],
+  "reproduction": {
+   "generator": "xzr.teoo.r16experiments",
+   "steps": [
+    "run unit per seed",
+    "analyse"
+   ],
+   "world": "xzr.teoo.lawledger on xzr.teoo.lawworld (own world and a world built to the stated R16 aggregates); registries in xzr.teoo.mheg"
+  },
+  "schema": "teoo.protocol/1",
+  "version": 1,
+  "parent_version": null,
+  "change_reason": null
+ },
+ "units": 30,
+ "seeds": [
+  8001,
+  8002,
+  8003,
+  8004,
+  8005,
+  8006,
+  8007,
+  8008,
+  8009,
+  8010,
+  8011,
+  8012,
+  8013,
+  8014,
+  8015,
+  8016,
+  8017,
+  8018,
+  8019,
+  8020,
+  8021,
+  8022,
+  8023,
+  8024,
+  8025,
+  8026,
+  8027,
+  8028,
+  8029,
+  8030
+ ],
+ "evidence_class": "Implementation Property",
+ "seconds": 4.0,
+ "results": {
+  "R201": {
+   "method": "descriptive",
+   "worlds": 30,
+   "cases_equal": 120,
+   "cases": 120,
+   "errors": 0,
+   "criterion": "every case equal to its sequential counterpart and 0 errors",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  },
+  "R202": {
+   "method": "descriptive",
+   "criterion": "a resend adds no row in any world",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  },
+  "R203": {
+   "method": "descriptive",
+   "contamination": 0,
+   "criterion": "0",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  },
+  "R204": {
+   "method": "descriptive",
+   "closures": 328,
+   "criterion": "every closure keeps a flag",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  }
+ },
+ "catalogue": {
+  "source": "The Minimum Guarantees of Human Legal Subjecthood, Publication Final V3.0, Chapter 6.2 (identical in the 100_POINT_EDITION and in R2 section 4: all fifteen titles and definitions compared character for character)",
+  "verified_against_original": true,
+  "sha256": {
+   "v3_0": "cf4d4f0c51169451da5af4c33e7081e947dacbade855068a889965d8c523b848",
+   "v3_0_100_point_edition": "afb59d1a0c3b28854f14113f843645539e07a2e466949d22de4b67da0a22bf99",
+   "ai_law_osr_r2": "a9984451b281df3252b05842dc5109dd396e0b0c54d3560849344ad41059a501"
+  },
+  "editions_identical_for_guarantees": true,
+  "note": "V3.0 uses two vocabularies for the same five findings (Appendix A table: Secured/Partial/Absent/Indeterminate/Inapplicable; A.3 and 8.4 text: Satisfied/Partially Satisfied/Failed/Indeterminate/Not Applicable). R2 section 16 and this implementation use the table's."
+ },
+ "note": "results about a SYNTHETIC ledger; the stated-aggregates world is an independent verification model built to the stated numbers, not the manuscript's world, and its match is by construction; the principles' profiles are an analytic reading; a closure, a measurement or a match here is not a legal judgment or a restoration; not an observation of any institution, law or person"
+}

@@ -1,0 +1,5 @@
+Exploratory (development seeds 8000-8007, not confirmatory): B in noComm vs noComm_noA
+B completed mean 5.25 vs 6.25; B transfer latency (selection->delivery) 140.5 vs 119.1 steps;
+B failure reasons with A: gantry of bay 1 failed 5, gantry of bay 0 failed 1, no material in 0.1: 1, phase-4 timeout 1;
+without A: gantry of bay 1 failed 6.
+Reading: B depends on A through shared physical resources (bay-0 gantry, material in chamber 0.1), not communication.

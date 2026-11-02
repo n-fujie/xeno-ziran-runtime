@@ -1,0 +1,582 @@
+{
+ "a": {
+  "scenario": "demo-3k",
+  "numpy": "2.5.3",
+  "python": "3.12.13",
+  "platform": "darwin",
+  "itemsize_intp": 8
+ },
+ "b": {
+  "scenario": "demo-3k",
+  "numpy": "2.4.6",
+  "python": "3.14.2",
+  "platform": "emscripten",
+  "itemsize_intp": 4
+ },
+ "checkpoints": {
+  "0": {
+   "fingerprint_equal": false,
+   "identical": 27,
+   "float_differ": {
+    "base_mem_decay": {
+     "max_abs": 1.1102230246251565e-16,
+     "max_rel": 1.3695807284869098e-16,
+     "max_ulps": 1.0,
+     "differing": 167,
+     "of": 3000,
+     "nan_pattern_equal": true
+    },
+    "base_weight": {
+     "max_abs": 2.220446049250313e-16,
+     "max_rel": 2.2094877816896516e-16,
+     "max_ulps": 1.0,
+     "differing": 23,
+     "of": 19340,
+     "nan_pattern_equal": true
+    },
+    "cap": {
+     "max_abs": 1.7763568394002505e-15,
+     "max_rel": 5.74189075021875e-16,
+     "max_ulps": 4.0,
+     "differing": 211,
+     "of": 3000,
+     "nan_pattern_equal": true
+    },
+    "capacity": {
+     "max_abs": 5.329070518200751e-15,
+     "max_rel": 4.996656343441093e-16,
+     "max_ulps": 3.0,
+     "differing": 1547,
+     "of": 19340,
+     "nan_pattern_equal": true
+    },
+    "geo": {
+     "max_abs": 4.263256414560601e-14,
+     "max_rel": 3.484151212056601e-14,
+     "max_ulps": 256.0,
+     "differing": 302,
+     "of": 6000,
+     "nan_pattern_equal": true
+    },
+    "mem_decay": {
+     "max_abs": 1.1102230246251565e-16,
+     "max_rel": 1.3695807284869098e-16,
+     "max_ulps": 1.0,
+     "differing": 167,
+     "of": 3000,
+     "nan_pattern_equal": true
+    },
+    "retention": {
+     "max_abs": 3.3306690738754696e-16,
+     "max_rel": 5.116699977067403e-16,
+     "max_ulps": 3.0,
+     "differing": 201,
+     "of": 3000,
+     "nan_pattern_equal": true
+    },
+    "theta": {
+     "max_abs": 6.661338147750939e-16,
+     "max_rel": 5.628499421218367e-16,
+     "max_ulps": 4.0,
+     "differing": 225,
+     "of": 3000,
+     "nan_pattern_equal": true
+    },
+    "weight": {
+     "max_abs": 2.220446049250313e-16,
+     "max_rel": 2.2094877816896516e-16,
+     "max_ulps": 1.0,
+     "differing": 23,
+     "of": 19340,
+     "nan_pattern_equal": true
+    }
+   },
+   "discrete_differ": {},
+   "dtype_or_shape_mismatch": [],
+   "arrays": 36,
+   "worst_rel": 3.484151212056601e-14
+  },
+  "50": {
+   "fingerprint_equal": false,
+   "identical": 24,
+   "float_differ": {
+    "base_mem_decay": {
+     "max_abs": 1.1102230246251565e-16,
+     "max_rel": 1.3695807284869098e-16,
+     "max_ulps": 1.0,
+     "differing": 167,
+     "of": 3000,
+     "nan_pattern_equal": true
+    },
+    "base_weight": {
+     "max_abs": 2.220446049250313e-16,
+     "max_rel": 2.2094877816896516e-16,
+     "max_ulps": 1.0,
+     "differing": 23,
+     "of": 19340,
+     "nan_pattern_equal": true
+    },
+    "cap": {
+     "max_abs": 1.7763568394002505e-15,
+     "max_rel": 5.74189075021875e-16,
+     "max_ulps": 4.0,
+     "differing": 211,
+     "of": 3000,
+     "nan_pattern_equal": true
+    },
+    "capacity": {
+     "max_abs": 5.329070518200751e-15,
+     "max_rel": 4.996656343441093e-16,
+     "max_ulps": 3.0,
+     "differing": 1547,
+     "of": 19340,
+     "nan_pattern_equal": true
+    },
+    "diff": {
+     "max_abs": 1.9984014443252818e-15,
+     "max_rel": 2.5822717903043252e-14,
+     "max_ulps": 136.0,
+     "differing": 250,
+     "of": 3000,
+     "nan_pattern_equal": true
+    },
+    "geo": {
+     "max_abs": 4.263256414560601e-14,
+     "max_rel": 3.484151212056601e-14,
+     "max_ulps": 256.0,
+     "differing": 302,
+     "of": 6000,
+     "nan_pattern_equal": true
+    },
+    "load": {
+     "max_abs": 2.220446049250313e-16,
+     "max_rel": 1.5551732632447886e-15,
+     "max_ulps": 14.0,
+     "differing": 165,
+     "of": 19340,
+     "nan_pattern_equal": true
+    },
+    "mem_decay": {
+     "max_abs": 1.1102230246251565e-16,
+     "max_rel": 1.3695807284869098e-16,
+     "max_ulps": 1.0,
+     "differing": 167,
+     "of": 3000,
+     "nan_pattern_equal": true
+    },
+    "memory": {
+     "max_abs": 4.884981308350689e-15,
+     "max_rel": 6.89483646366216e-15,
+     "max_ulps": 60.0,
+     "differing": 57,
+     "of": 3000,
+     "nan_pattern_equal": true
+    },
+    "retention": {
+     "max_abs": 3.3306690738754696e-16,
+     "max_rel": 5.116699977067403e-16,
+     "max_ulps": 3.0,
+     "differing": 201,
+     "of": 3000,
+     "nan_pattern_equal": true
+    },
+    "theta": {
+     "max_abs": 6.661338147750939e-16,
+     "max_rel": 5.628499421218367e-16,
+     "max_ulps": 4.0,
+     "differing": 225,
+     "of": 3000,
+     "nan_pattern_equal": true
+    },
+    "weight": {
+     "max_abs": 2.220446049250313e-16,
+     "max_rel": 2.3182266481702613e-16,
+     "max_ulps": 2.0,
+     "differing": 22,
+     "of": 19340,
+     "nan_pattern_equal": true
+    }
+   },
+   "discrete_differ": {},
+   "dtype_or_shape_mismatch": [],
+   "arrays": 36,
+   "worst_rel": 3.484151212056601e-14
+  },
+  "200": {
+   "fingerprint_equal": false,
+   "identical": 24,
+   "float_differ": {
+    "base_mem_decay": {
+     "max_abs": 1.1102230246251565e-16,
+     "max_rel": 1.3695807284869098e-16,
+     "max_ulps": 1.0,
+     "differing": 167,
+     "of": 3000,
+     "nan_pattern_equal": true
+    },
+    "base_weight": {
+     "max_abs": 2.220446049250313e-16,
+     "max_rel": 2.2094877816896516e-16,
+     "max_ulps": 1.0,
+     "differing": 23,
+     "of": 19340,
+     "nan_pattern_equal": true
+    },
+    "cap": {
+     "max_abs": 1.7763568394002505e-15,
+     "max_rel": 5.74189075021875e-16,
+     "max_ulps": 4.0,
+     "differing": 211,
+     "of": 3000,
+     "nan_pattern_equal": true
+    },
+    "capacity": {
+     "max_abs": 5.329070518200751e-15,
+     "max_rel": 4.996656343441093e-16,
+     "max_ulps": 3.0,
+     "differing": 1547,
+     "of": 19340,
+     "nan_pattern_equal": true
+    },
+    "diff": {
+     "max_abs": 1.582067810090848e-15,
+     "max_rel": 6.0901529844893e-14,
+     "max_ulps": 481.0,
+     "differing": 292,
+     "of": 3000,
+     "nan_pattern_equal": true
+    },
+    "geo": {
+     "max_abs": 4.263256414560601e-14,
+     "max_rel": 3.484151212056601e-14,
+     "max_ulps": 256.0,
+     "differing": 302,
+     "of": 6000,
+     "nan_pattern_equal": true
+    },
+    "load": {
+     "max_abs": 4.440892098500626e-16,
+     "max_rel": 1.971681190871919e-15,
+     "max_ulps": 14.0,
+     "differing": 326,
+     "of": 19340,
+     "nan_pattern_equal": true
+    },
+    "mem_decay": {
+     "max_abs": 1.1102230246251565e-16,
+     "max_rel": 1.3695807284869098e-16,
+     "max_ulps": 1.0,
+     "differing": 167,
+     "of": 3000,
+     "nan_pattern_equal": true
+    },
+    "memory": {
+     "max_abs": 7.105427357601002e-15,
+     "max_rel": 2.6180164905204422e-14,
+     "max_ulps": 200.0,
+     "differing": 100,
+     "of": 3000,
+     "nan_pattern_equal": true
+    },
+    "retention": {
+     "max_abs": 3.3306690738754696e-16,
+     "max_rel": 5.116699977067403e-16,
+     "max_ulps": 3.0,
+     "differing": 201,
+     "of": 3000,
+     "nan_pattern_equal": true
+    },
+    "theta": {
+     "max_abs": 6.661338147750939e-16,
+     "max_rel": 5.628499421218367e-16,
+     "max_ulps": 4.0,
+     "differing": 225,
+     "of": 3000,
+     "nan_pattern_equal": true
+    },
+    "weight": {
+     "max_abs": 2.220446049250313e-16,
+     "max_rel": 2.439359007610973e-16,
+     "max_ulps": 2.0,
+     "differing": 22,
+     "of": 19340,
+     "nan_pattern_equal": true
+    }
+   },
+   "discrete_differ": {},
+   "dtype_or_shape_mismatch": [],
+   "arrays": 36,
+   "worst_rel": 6.0901529844893e-14
+  },
+  "500": {
+   "fingerprint_equal": false,
+   "identical": 24,
+   "float_differ": {
+    "base_mem_decay": {
+     "max_abs": 1.1102230246251565e-16,
+     "max_rel": 1.3695807284869098e-16,
+     "max_ulps": 1.0,
+     "differing": 167,
+     "of": 3000,
+     "nan_pattern_equal": true
+    },
+    "base_weight": {
+     "max_abs": 2.220446049250313e-16,
+     "max_rel": 2.2094877816896516e-16,
+     "max_ulps": 1.0,
+     "differing": 23,
+     "of": 19340,
+     "nan_pattern_equal": true
+    },
+    "cap": {
+     "max_abs": 1.7763568394002505e-15,
+     "max_rel": 5.74189075021875e-16,
+     "max_ulps": 4.0,
+     "differing": 211,
+     "of": 3000,
+     "nan_pattern_equal": true
+    },
+    "capacity": {
+     "max_abs": 5.329070518200751e-15,
+     "max_rel": 4.996656343441093e-16,
+     "max_ulps": 3.0,
+     "differing": 1547,
+     "of": 19340,
+     "nan_pattern_equal": true
+    },
+    "diff": {
+     "max_abs": 1.7763568394002505e-15,
+     "max_rel": 1.1085538263282254e-13,
+     "max_ulps": 678.0,
+     "differing": 303,
+     "of": 3000,
+     "nan_pattern_equal": true
+    },
+    "geo": {
+     "max_abs": 4.263256414560601e-14,
+     "max_rel": 3.484151212056601e-14,
+     "max_ulps": 256.0,
+     "differing": 302,
+     "of": 6000,
+     "nan_pattern_equal": true
+    },
+    "load": {
+     "max_abs": 1.1102230246251565e-15,
+     "max_rel": 2.5665530991826116e-15,
+     "max_ulps": 18.0,
+     "differing": 414,
+     "of": 19340,
+     "nan_pattern_equal": true
+    },
+    "mem_decay": {
+     "max_abs": 1.1102230246251565e-16,
+     "max_rel": 1.3695807284869098e-16,
+     "max_ulps": 1.0,
+     "differing": 167,
+     "of": 3000,
+     "nan_pattern_equal": true
+    },
+    "memory": {
+     "max_abs": 6.661338147750939e-15,
+     "max_rel": 6.493570972757603e-14,
+     "max_ulps": 453.0,
+     "differing": 144,
+     "of": 3000,
+     "nan_pattern_equal": true
+    },
+    "retention": {
+     "max_abs": 3.3306690738754696e-16,
+     "max_rel": 5.116699977067403e-16,
+     "max_ulps": 3.0,
+     "differing": 201,
+     "of": 3000,
+     "nan_pattern_equal": true
+    },
+    "theta": {
+     "max_abs": 6.661338147750939e-16,
+     "max_rel": 5.628499421218367e-16,
+     "max_ulps": 4.0,
+     "differing": 225,
+     "of": 3000,
+     "nan_pattern_equal": true
+    },
+    "weight": {
+     "max_abs": 2.220446049250313e-16,
+     "max_rel": 2.1842595072848987e-16,
+     "max_ulps": 1.0,
+     "differing": 19,
+     "of": 19340,
+     "nan_pattern_equal": true
+    }
+   },
+   "discrete_differ": {},
+   "dtype_or_shape_mismatch": [],
+   "arrays": 36,
+   "worst_rel": 1.1085538263282254e-13
+  },
+  "1000": {
+   "fingerprint_equal": false,
+   "identical": 24,
+   "float_differ": {
+    "base_mem_decay": {
+     "max_abs": 1.1102230246251565e-16,
+     "max_rel": 1.3695807284869098e-16,
+     "max_ulps": 1.0,
+     "differing": 167,
+     "of": 3000,
+     "nan_pattern_equal": true
+    },
+    "base_weight": {
+     "max_abs": 2.220446049250313e-16,
+     "max_rel": 2.2094877816896516e-16,
+     "max_ulps": 1.0,
+     "differing": 23,
+     "of": 19340,
+     "nan_pattern_equal": true
+    },
+    "cap": {
+     "max_abs": 1.7763568394002505e-15,
+     "max_rel": 5.74189075021875e-16,
+     "max_ulps": 4.0,
+     "differing": 211,
+     "of": 3000,
+     "nan_pattern_equal": true
+    },
+    "capacity": {
+     "max_abs": 5.329070518200751e-15,
+     "max_rel": 4.996656343441093e-16,
+     "max_ulps": 3.0,
+     "differing": 1547,
+     "of": 19340,
+     "nan_pattern_equal": true
+    },
+    "diff": {
+     "max_abs": 1.609823385706477e-15,
+     "max_rel": 1.036769369054793e-13,
+     "max_ulps": 813.0,
+     "differing": 309,
+     "of": 3000,
+     "nan_pattern_equal": true
+    },
+    "geo": {
+     "max_abs": 4.263256414560601e-14,
+     "max_rel": 3.484151212056601e-14,
+     "max_ulps": 256.0,
+     "differing": 302,
+     "of": 6000,
+     "nan_pattern_equal": true
+    },
+    "load": {
+     "max_abs": 8.881784197001252e-16,
+     "max_rel": 2.7592690541784133e-15,
+     "max_ulps": 24.0,
+     "differing": 521,
+     "of": 19340,
+     "nan_pattern_equal": true
+    },
+    "mem_decay": {
+     "max_abs": 1.1102230246251565e-16,
+     "max_rel": 1.3695807284869098e-16,
+     "max_ulps": 1.0,
+     "differing": 167,
+     "of": 3000,
+     "nan_pattern_equal": true
+    },
+    "memory": {
+     "max_abs": 8.881784197001252e-15,
+     "max_rel": 1.2042058841814245e-13,
+     "max_ulps": 998.0,
+     "differing": 159,
+     "of": 3000,
+     "nan_pattern_equal": true
+    },
+    "retention": {
+     "max_abs": 3.3306690738754696e-16,
+     "max_rel": 5.116699977067403e-16,
+     "max_ulps": 3.0,
+     "differing": 201,
+     "of": 3000,
+     "nan_pattern_equal": true
+    },
+    "theta": {
+     "max_abs": 6.661338147750939e-16,
+     "max_rel": 5.628499421218367e-16,
+     "max_ulps": 4.0,
+     "differing": 225,
+     "of": 3000,
+     "nan_pattern_equal": true
+    },
+    "weight": {
+     "max_abs": 4.440892098500626e-16,
+     "max_rel": 3.7670620022689647e-16,
+     "max_ulps": 2.0,
+     "differing": 13,
+     "of": 19340,
+     "nan_pattern_equal": true
+    }
+   },
+   "discrete_differ": {},
+   "dtype_or_shape_mismatch": [],
+   "arrays": 36,
+   "worst_rel": 1.2042058841814245e-13
+  }
+ },
+ "probe": {
+  "exp": {
+   "differing": 10,
+   "of": 4001,
+   "max_ulps": 1.0
+  },
+  "log": {
+   "differing": 2,
+   "of": 4001,
+   "max_ulps": 1.0
+  },
+  "tanh": {
+   "differing": 995,
+   "of": 4001,
+   "max_ulps": 2.0
+  },
+  "sin": {
+   "differing": 151,
+   "of": 4001,
+   "max_ulps": 1.0
+  },
+  "power": {
+   "differing": 8,
+   "of": 4001,
+   "max_ulps": 1.0
+  },
+  "sqrt": {
+   "differing": 0,
+   "of": 4001,
+   "max_ulps": 0.0
+  },
+  "arctan": {
+   "differing": 253,
+   "of": 4001,
+   "max_ulps": 1.0
+  },
+  "expm1": {
+   "differing": 344,
+   "of": 4001,
+   "max_ulps": 1.0
+  },
+  "log1p": {
+   "differing": 334,
+   "of": 4001,
+   "max_ulps": 1.0
+  },
+  "sum": {
+   "differing": 3,
+   "of": 4,
+   "max_ulps": 384.0
+  },
+  "dot": {
+   "differing": 3,
+   "of": 4,
+   "max_ulps": 466.0
+  }
+ },
+ "first_step_with_discrete_difference": null
+}

@@ -1,0 +1,50 @@
+{
+ "body": null,
+ "claim": "an illustration of the stated data under the stated conditions; no claim beyond them",
+ "evidence": {
+  "band": [
+   "EVIDENCE: CONCEPTUAL  ·  a drawing, not data",
+   "REAL-WORLD EXPERIMENT: none recorded (no measurement exists behind this figure)",
+   "BODY: none",
+   "RECORDS: 1 (rec-d82c0533ca)  ·  generated 2026-11-01  ·  TEOO teoo/0.1"
+  ],
+  "classes": [
+   "CONCEPTUAL"
+  ],
+  "real_world_experiment_recorded": false,
+  "watermarks": [
+   "CONCEPTUAL"
+  ]
+ },
+ "experiment": null,
+ "figure_id": "fig-a08216296cdd3060",
+ "generated_at": "2026-11-01T00:00:00.000000Z",
+ "kind": "diagram",
+ "metadata_digest": "510b158cb2d161a28fe20d22fb0840eb09213b62dba3d66bd71f492f766b34ff",
+ "observation_limits": {
+  "config_version": null,
+  "note": "A synthetic institution or a drawing: what lies outside what is stated here is unknown, not absent.",
+  "summary": {
+   "conditions": "specification"
+  },
+  "t": null
+ },
+ "provenance": {
+  "records": [
+   {
+    "kind": "REFERENCE_STATE",
+    "lineage_classes": [
+     "CONCEPTUAL"
+    ],
+    "provenance": "CONCEPTUAL",
+    "record_digest": "d82c0533ca8bc6e651df4f09a73e591be9e30897990b9b49471c85b12e12c8fb",
+    "record_id": "rec-d82c0533ca8bc6e651df4f09"
+   }
+  ],
+  "source_digest": "a08216296cdd30606f037479af6f33368cad3f1baf91d9e7d61c6d703dca4eaa"
+ },
+ "schema": "teoo.figure/1",
+ "teoo_version": "teoo/0.1",
+ "title": "Fig M1 · MHEG twelve duties: registry and the kind of each mapping",
+ "units": {}
+}

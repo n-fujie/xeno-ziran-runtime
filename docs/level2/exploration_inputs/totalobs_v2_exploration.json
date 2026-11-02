@@ -1,0 +1,32 @@
+{
+ "source": "12-seed functional exploration, rules v2, reserved seeds 7000-7011 / 70000-70011",
+ "metric": "recall_final",
+ "generations": 10,
+ "arms": {
+  "fixed": {
+   "mean": 0.3806,
+   "sd": 0.2484
+  },
+  "adaptive": {
+   "mean": 0.5167,
+   "sd": 0.2564
+  },
+  "full": {
+   "mean": 0.6167,
+   "sd": 0.2894
+  }
+ },
+ "paired": {
+  "adaptive - fixed": {
+   "n": 12,
+   "mean_diff": 0.1361,
+   "sd_diff": 0.2855
+  },
+  "full - adaptive": {
+   "n": 12,
+   "mean_diff": 0.1,
+   "sd_diff": 0.1928
+  }
+ },
+ "note": "functional check; not evidence; used only to size the draft's seed count with the upper 95% bound of each SD"
+}

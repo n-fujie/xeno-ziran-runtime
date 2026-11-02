@@ -1,0 +1,68 @@
+{
+ "body": null,
+ "claim": "an illustration of the stated data under the stated conditions; no claim beyond them",
+ "evidence": {
+  "band": [
+   "EVIDENCE: SYNTHETIC  ·  artificial functional-test data, not a measurement",
+   "REAL-WORLD EXPERIMENT: none recorded (no measurement exists behind this figure)",
+   "BODY: none",
+   "RECORDS: 3 (rec-4b96a57c5e, rec-51560a2ccd…)  ·  generated 2026-11-01  ·  TEOO teoo/0.1"
+  ],
+  "classes": [
+   "SYNTHETIC"
+  ],
+  "real_world_experiment_recorded": false,
+  "watermarks": [
+   "SYNTHETIC"
+  ]
+ },
+ "experiment": null,
+ "figure_id": "fig-8d1fe54e7a57cfcd",
+ "generated_at": "2026-11-01T00:00:00.000000Z",
+ "kind": "table",
+ "metadata_digest": "4afb11545c637a734045bf85694d95579cb71e6ca2d68da60bbeeeafac7c9bec",
+ "observation_limits": {
+  "config_version": null,
+  "note": "A synthetic ledger or a drawing: what lies outside what is stated here is unknown, not absent.",
+  "summary": {
+   "conditions": "see each experiment"
+  },
+  "t": null
+ },
+ "provenance": {
+  "records": [
+   {
+    "kind": "OBSERVATION",
+    "lineage_classes": [
+     "SYNTHETIC"
+    ],
+    "provenance": "SYNTHETIC",
+    "record_digest": "4b96a57c5e29d77ad58afd7801f912af9a38b9c5ffdf26ec148d642a71115479",
+    "record_id": "rec-4b96a57c5e29d77ad58afd78"
+   },
+   {
+    "kind": "OBSERVATION",
+    "lineage_classes": [
+     "SYNTHETIC"
+    ],
+    "provenance": "SYNTHETIC",
+    "record_digest": "51560a2ccd2affc7a95c1e530e86ebc4bc016508e8ba473efa3bb9327cd31999",
+    "record_id": "rec-51560a2ccd2affc7a95c1e53"
+   },
+   {
+    "kind": "OBSERVATION",
+    "lineage_classes": [
+     "SYNTHETIC"
+    ],
+    "provenance": "SYNTHETIC",
+    "record_digest": "db2fe9f227c339ca611060125a6db28e9589a10944358a2ea1e340979430c2ef",
+    "record_id": "rec-db2fe9f227c339ca61106012"
+   }
+  ],
+  "source_digest": "8d1fe54e7a57cfcd3746bf6b5fa71e739a37fa98dfdd362d5619e35eac6de14d"
+ },
+ "schema": "teoo.figure/1",
+ "teoo_version": "teoo/0.1",
+ "title": "Fig R10 · Negative and unmet results kept (AI-law ledger)",
+ "units": {}
+}

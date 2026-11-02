@@ -1,0 +1,41 @@
+{
+ "exploration_grid": {
+  "stresses": [
+   "coupling gain 0.5",
+   "history lost"
+  ],
+  "rows": 4250,
+  "identical_to_saved": 4250,
+  "identical": true
+ },
+ "window_coupling_pulse_1.0": {
+  "effective_intervals_101_170": [
+   [
+    108,
+    117
+   ],
+   [
+    125,
+    170
+   ]
+  ],
+  "saved_intervals_up_to_330": [
+   [
+    108,
+    117
+   ],
+   [
+    125,
+    330
+   ]
+  ],
+  "per_tick_identical": true,
+  "identical": true
+ },
+ "controllers": {
+  "runs": 36,
+  "identical_to_saved": 36,
+  "identical": true
+ },
+ "all_identical": true
+}

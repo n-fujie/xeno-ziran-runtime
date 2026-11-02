@@ -1,0 +1,214 @@
+{
+ "experiment_id": "MH-EXP-03",
+ "protocol_version": 1,
+ "protocol_digest": "4c64545f73c4ad93fbbcaf733cf34bc61e364cd7dc213986b49193583a502458",
+ "protocol": {
+  "experiment_id": "MH-EXP-03",
+  "hypotheses": [
+   {
+    "id": "H1",
+    "statement": "Under random partial audits an unobserved applicable finding is NOT_EVALUATED, an observed indeterminate one is INSUFFICIENT_EVIDENCE, VIOLATED coincides with ABSENT, and NOT_APPLICABLE occurs only where the finding is inapplicable"
+   },
+   {
+    "id": "H2",
+    "statement": "A duty is never SATISFIED while a mapped finding is unmet, never VIOLATED without a violated finding, and is NOT_APPLICABLE only when every mapped finding is; no total is formed"
+   }
+  ],
+  "targets": [
+   "findings, duties and outcomes of a synthetic institution"
+  ],
+  "instrument_conditions": {
+   "configurations_per_world": 8,
+   "observed_probability": 0.7,
+   "unknown_evidence_probability": 0.12
+  },
+  "control_condition": "evaluator's own states",
+  "conditions": [
+   "vocabulary and projection",
+   "evaluator's own states"
+  ],
+  "seeds": [
+   6201,
+   6202,
+   6203,
+   6204,
+   6205,
+   6206,
+   6207,
+   6208,
+   6209,
+   6210,
+   6211,
+   6212,
+   6213,
+   6214,
+   6215,
+   6216,
+   6217,
+   6218,
+   6219,
+   6220,
+   6221,
+   6222,
+   6223,
+   6224,
+   6225,
+   6226,
+   6227,
+   6228,
+   6229,
+   6230
+  ],
+  "trials_per_condition": 1,
+  "stopping_rule": {
+   "type": "fixed-n",
+   "units": 30,
+   "no interim analysis": true
+  },
+  "outcomes": {
+   "primary": [
+    "violations of each invariant"
+   ],
+   "secondary": [
+    "states seen"
+   ]
+  },
+  "analyses": [
+   {
+    "id": "M301",
+    "hypothesis": "H1",
+    "outcome": "violations",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "M302",
+    "hypothesis": "H2",
+    "outcome": "violations",
+    "method": "descriptive",
+    "confirmatory": true
+   }
+  ],
+  "multiplicity": "holm",
+  "failure_conditions": [
+   "fewer than 30 units"
+  ],
+  "reproduction": {
+   "generator": "xzr.teoo.mheg_experiments",
+   "steps": [
+    "run unit per seed",
+    "analyse"
+   ],
+   "world": "xzr.teoo.legal (SYNTHETIC institution) and xzr.teoo.mheg (duties, crosswalk as reported, directive states)"
+  },
+  "schema": "teoo.protocol/1",
+  "version": 1,
+  "parent_version": null,
+  "change_reason": null
+ },
+ "units": 30,
+ "seeds": [
+  6201,
+  6202,
+  6203,
+  6204,
+  6205,
+  6206,
+  6207,
+  6208,
+  6209,
+  6210,
+  6211,
+  6212,
+  6213,
+  6214,
+  6215,
+  6216,
+  6217,
+  6218,
+  6219,
+  6220,
+  6221,
+  6222,
+  6223,
+  6224,
+  6225,
+  6226,
+  6227,
+  6228,
+  6229,
+  6230
+ ],
+ "evidence_class": "Implementation Property",
+ "seconds": 1.6,
+ "results": {
+  "M301": {
+   "method": "descriptive",
+   "violations": {
+    "unobserved_not_not_evaluated": 0,
+    "observed_indeterminate_not_insufficient": 0,
+    "violated_iff_absent": 0,
+    "duty_satisfied_with_unmet_finding": 0,
+    "duty_violated_without_violated_finding": 0,
+    "all_na_duty_not_na": 0,
+    "not_applicable_only_if_inapplicable": 0,
+    "total_in_projection": 0
+   },
+   "findings_checked": 4560,
+   "duties_checked": 2880,
+   "audits": 240,
+   "states_seen": [
+    "INSUFFICIENT_EVIDENCE",
+    "NOT_APPLICABLE",
+    "NOT_EVALUATED",
+    "PARTIALLY_SATISFIED",
+    "SATISFIED",
+    "VIOLATED"
+   ],
+   "criterion": "0 violations of every invariant, and all six states of the vocabulary occur",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  },
+  "M302": {
+   "method": "descriptive",
+   "violations": {
+    "unobserved_not_not_evaluated": 0,
+    "observed_indeterminate_not_insufficient": 0,
+    "violated_iff_absent": 0,
+    "duty_satisfied_with_unmet_finding": 0,
+    "duty_violated_without_violated_finding": 0,
+    "all_na_duty_not_na": 0,
+    "not_applicable_only_if_inapplicable": 0,
+    "total_in_projection": 0
+   },
+   "findings_checked": 4560,
+   "duties_checked": 2880,
+   "audits": 240,
+   "states_seen": [
+    "INSUFFICIENT_EVIDENCE",
+    "NOT_APPLICABLE",
+    "NOT_EVALUATED",
+    "PARTIALLY_SATISFIED",
+    "SATISFIED",
+    "VIOLATED"
+   ],
+   "criterion": "0 violations of every invariant, and all six states of the vocabulary occur",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  }
+ },
+ "catalogue": {
+  "source": "The Minimum Guarantees of Human Legal Subjecthood, Publication Final V3.0, Chapter 6.2 (identical in the 100_POINT_EDITION and in R2 section 4: all fifteen titles and definitions compared character for character)",
+  "verified_against_original": true,
+  "sha256": {
+   "v3_0": "cf4d4f0c51169451da5af4c33e7081e947dacbade855068a889965d8c523b848",
+   "v3_0_100_point_edition": "afb59d1a0c3b28854f14113f843645539e07a2e466949d22de4b67da0a22bf99",
+   "ai_law_osr_r2": "a9984451b281df3252b05842dc5109dd396e0b0c54d3560849344ad41059a501"
+  },
+  "editions_identical_for_guarantees": true,
+  "note": "V3.0 uses two vocabularies for the same five findings (Appendix A table: Secured/Partial/Absent/Indeterminate/Inapplicable; A.3 and 8.4 text: Satisfied/Partially Satisfied/Failed/Indeterminate/Not Applicable). R2 section 16 and this implementation use the table's."
+ },
+ "note": "results about a SYNTHETIC institution and this implementation; the twelve duties are functional summaries and their crosswalk is as reported (R16 not available); not an observation of any institution, law or person"
+}

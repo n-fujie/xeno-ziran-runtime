@@ -1,0 +1,64 @@
+{
+ "body": null,
+ "claim": "an illustration of the stated data under the stated conditions; no claim beyond them",
+ "evidence": {
+  "band": [
+   "EVIDENCE: SYNTHETIC  ·  artificial functional-test data, not a measurement",
+   "REAL-WORLD EXPERIMENT: none recorded (no measurement exists behind this figure)",
+   "BODY: none",
+   "RECORDS: 1 (rec-8335e067fa)  ·  generated 2026-10-31  ·  TEOO teoo/0.1"
+  ],
+  "classes": [
+   "SYNTHETIC"
+  ],
+  "real_world_experiment_recorded": false,
+  "watermarks": [
+   "SYNTHETIC"
+  ]
+ },
+ "experiment": {
+  "conditions": [
+   "connected",
+   "disconnected",
+   "reconnected",
+   "reconfigured"
+  ],
+  "protocol_id": "TEOO4-EXP-B",
+  "seeds": [
+   1001,
+   1030
+  ],
+  "trials_per_condition": 8,
+  "version": 2
+ },
+ "figure_id": "fig-aee9c6be5fafcf03",
+ "generated_at": "2026-10-31T00:00:00.000000Z",
+ "kind": "bars",
+ "metadata_digest": "a7d9713d01e116f9600dc7ba994b574b4441624feece49d9101baae34fc8ef15",
+ "observation_limits": {
+  "config_version": null,
+  "note": "These are measurements by a simulated sensor of a synthetic world: the limits are those of the sensor conditions stated here; what lies outside them is unknown, not absent.",
+  "summary": {
+   "observation conditions": "three simulated sensors: fine (0.02 s, resolution 0.5, limit 0.05, penetration 0.9), medium (0.2 s, 2.0, 0.3, 0.6), limited (0.2 s, 4.0, 0.8, 0.4); window 20 s"
+  },
+  "t": null
+ },
+ "provenance": {
+  "records": [
+   {
+    "kind": "OBSERVATION",
+    "lineage_classes": [
+     "SYNTHETIC"
+    ],
+    "provenance": "SYNTHETIC",
+    "record_digest": "8335e067faeec7cce75798fbcaf15ea844fe0c9c4bfeb3f1a0bc9d3c17bbd59e",
+    "record_id": "rec-8335e067faeec7cce75798fb"
+   }
+  ],
+  "source_digest": "aee9c6be5fafcf03113b19121c06ae0148c8a56c16dbac6acb9da5a9754a3a87"
+ },
+ "schema": "teoo.figure/1",
+ "teoo_version": "teoo/0.1",
+ "title": "Fig 1 · Total relational observation: true couplings that stay invisible to the reader (mean per world, 10 components)",
+ "units": {}
+}

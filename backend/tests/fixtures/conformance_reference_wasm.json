@@ -1,0 +1,254 @@
+{
+ "demo-3k": {
+  "n": 3000,
+  "edges": 14505,
+  "t0": 0,
+  "fp_t0": "822d5a3f35335568ee7d7977a5927ba49ae617357a07a9639b6d8f6940890576",
+  "hierarchy": "cbddd58c7cd00f82c127e64f45bbeb0e84915dd055f2c5d3aea7b7e8c753c9e5",
+  "fp_50": "bca678fa41841739d9fa6d045f9bd9898349a8b24ab8030f46a464b8c4fb459b",
+  "fp_60": "739637d4b7f391727a1fd25c20cbbc5289923027a7c0a3252cb3e300ce45b315",
+  "fp_rewind_60": "739637d4b7f391727a1fd25c20cbbc5289923027a7c0a3252cb3e300ce45b315",
+  "observation": {
+   "series_last": {
+    "ignitions": 67,
+    "penetrations": 48,
+    "amplification": 1.1158,
+    "branching": 0.7385,
+    "branch_points": 10,
+    "reignitions": 0,
+    "returns": 0,
+    "decays": 22,
+    "transformations": 8,
+    "topology_change": 1,
+    "memory_dependence": 0.0597,
+    "persistence": 0.0717,
+    "concentration": 0.8068,
+    "recurrence": 0
+   },
+   "graph_last": {
+    "reach_dynamic": 0.2403,
+    "reach_horizon": 0.3457,
+    "reach_closure": 0.9993,
+    "loops": 41,
+    "loop_fraction": 0.1163,
+    "largest_loop": 48,
+    "fragmentation": 0,
+    "components": 1,
+    "bottleneck_concentration": 0.1395,
+    "asymmetry": 0.5192,
+    "one_way_share": 0.1928,
+    "difference_concentration": 0.7986,
+    "path_dependency": 0.8413,
+    "connections": 14569
+   },
+   "compare": {
+    "reachable": {
+     "baseline": 626,
+     "intervention": 626,
+     "newly_reached": 0,
+     "no_longer_reached": 0,
+     "noise_floor_flips": 359,
+     "exceeds_noise": false
+    },
+    "ignition_pattern": {
+     "ignites_more": 0,
+     "ignites_less": 0,
+     "total_baseline": 2155,
+     "total_intervention": 2155
+    },
+    "cuts": {
+     "only_baseline": 0,
+     "only_intervention": 0,
+     "shared": 6
+    },
+    "loops": {
+     "gained": 0,
+     "lost": 0,
+     "baseline_fraction": 0.122,
+     "intervention_fraction": 0.122
+    },
+    "reconfiguration": {
+     "baseline": 11,
+     "intervention": 11,
+     "only_intervention": 0
+    },
+    "new_connections": {
+     "baseline": 55,
+     "intervention": 55
+    },
+    "gates_changed": 0,
+    "first_divergence_step": null
+   }
+  },
+  "fp_load_t0": "822d5a3f35335568ee7d7977a5927ba49ae617357a07a9639b6d8f6940890576",
+  "fp_load_50": "bca678fa41841739d9fa6d045f9bd9898349a8b24ab8030f46a464b8c4fb459b"
+ },
+ "reason-lab": {
+  "n": 1500,
+  "edges": 7255,
+  "t0": 0,
+  "fp_t0": "b60f2ab0514cdb2288c8f6e70842b9a6f473cc069bdde00619e0b2ed64eade43",
+  "hierarchy": "68cf13d7cf1371b43f82d951345aedcca9336126705c1d4b9387cc629b6744e7",
+  "fp_50": "7dd43666fca9b96e7aa3acca9d2d343a4fb96eb8cd66f5cbe1fc813791314c64",
+  "fp_60": "1ecc62c431fa6e0d99121d8f25e88b4b2be4476d7aa1fd46fa375ed8e629961e",
+  "fp_rewind_60": "1ecc62c431fa6e0d99121d8f25e88b4b2be4476d7aa1fd46fa375ed8e629961e",
+  "observation": {
+   "series_last": {
+    "ignitions": 46,
+    "penetrations": 42,
+    "amplification": 1.0194,
+    "branching": 0.7636,
+    "branch_points": 7,
+    "reignitions": 0,
+    "returns": 0,
+    "decays": 14,
+    "transformations": 6,
+    "topology_change": 1,
+    "memory_dependence": 0.0652,
+    "persistence": 0.122,
+    "concentration": 0.8006,
+    "recurrence": 0
+   },
+   "graph_last": {
+    "reach_dynamic": 0.2867,
+    "reach_horizon": 0.4247,
+    "reach_closure": 1,
+    "loops": 21,
+    "loop_fraction": 0.17,
+    "largest_loop": 108,
+    "fragmentation": 0,
+    "components": 1,
+    "bottleneck_concentration": 0.1438,
+    "asymmetry": 0.4879,
+    "one_way_share": 0.2091,
+    "difference_concentration": 0.7729,
+    "path_dependency": 0.7761,
+    "connections": 7349
+   },
+   "compare": {
+    "reachable": {
+     "baseline": 401,
+     "intervention": 401,
+     "newly_reached": 0,
+     "no_longer_reached": 0,
+     "noise_floor_flips": 191,
+     "exceeds_noise": false
+    },
+    "ignition_pattern": {
+     "ignites_more": 0,
+     "ignites_less": 0,
+     "total_baseline": 1647,
+     "total_intervention": 1647
+    },
+    "cuts": {
+     "only_baseline": 0,
+     "only_intervention": 0,
+     "shared": 2
+    },
+    "loops": {
+     "gained": 0,
+     "lost": 0,
+     "baseline_fraction": 0.1953,
+     "intervention_fraction": 0.1953
+    },
+    "reconfiguration": {
+     "baseline": 19,
+     "intervention": 19,
+     "only_intervention": 0
+    },
+    "new_connections": {
+     "baseline": 56,
+     "intervention": 56
+    },
+    "gates_changed": 0,
+    "first_divergence_step": null
+   }
+  },
+  "fp_load_t0": "b60f2ab0514cdb2288c8f6e70842b9a6f473cc069bdde00619e0b2ed64eade43",
+  "fp_load_50": "7dd43666fca9b96e7aa3acca9d2d343a4fb96eb8cd66f5cbe1fc813791314c64"
+ },
+ "small-600": {
+  "n": 600,
+  "edges": 2228,
+  "t0": 0,
+  "fp_t0": "861939ffedd5643cdbc78f8ad3403aa5722cdb616e063c6c7965afc37a18e5e8",
+  "hierarchy": "cf4cc7063c6771774d6d43429843f4db595847ab48791c1fff160cf848409e3a",
+  "fp_50": "f2359d406ba53ad9c14060708043df75540900f96be9b51c5e9ce250ea4715aa",
+  "fp_60": "2dc07ed61c7407a8c6c40bff143750ef954c7e03f1eb78c42b1300311ae586c2",
+  "fp_rewind_60": "2dc07ed61c7407a8c6c40bff143750ef954c7e03f1eb78c42b1300311ae586c2",
+  "observation": {
+   "series_last": {
+    "ignitions": 13,
+    "penetrations": 11,
+    "amplification": 1.0366,
+    "branching": 1,
+    "branch_points": 1,
+    "reignitions": 0,
+    "returns": 0,
+    "decays": 7,
+    "transformations": 1,
+    "topology_change": 2,
+    "memory_dependence": 0,
+    "persistence": 0.045,
+    "concentration": 0.8632,
+    "recurrence": 0
+   },
+   "graph_last": {
+    "reach_dynamic": 0.3033,
+    "reach_horizon": 0.245,
+    "reach_closure": 0.975,
+    "loops": 11,
+    "loop_fraction": 0.0883,
+    "largest_loop": 8,
+    "fragmentation": 0,
+    "components": 1,
+    "bottleneck_concentration": 0.1127,
+    "asymmetry": 0.4949,
+    "one_way_share": 0.1377,
+    "difference_concentration": 0.8376,
+    "path_dependency": 0.4423,
+    "connections": 2294
+   },
+   "compare": {
+    "reachable": {
+     "baseline": 132,
+     "intervention": 132,
+     "newly_reached": 0,
+     "no_longer_reached": 0,
+     "noise_floor_flips": 138,
+     "exceeds_noise": false
+    },
+    "ignition_pattern": {
+     "ignites_more": 0,
+     "ignites_less": 0,
+     "total_baseline": 432,
+     "total_intervention": 432
+    },
+    "cuts": {
+     "only_baseline": 0,
+     "only_intervention": 0,
+     "shared": 2
+    },
+    "loops": {
+     "gained": 0,
+     "lost": 0,
+     "baseline_fraction": 0.13,
+     "intervention_fraction": 0.13
+    },
+    "reconfiguration": {
+     "baseline": 0,
+     "intervention": 0,
+     "only_intervention": 0
+    },
+    "new_connections": {
+     "baseline": 36,
+     "intervention": 36
+    },
+    "gates_changed": 0,
+    "first_divergence_step": null
+   }
+  },
+  "fp_load_t0": "861939ffedd5643cdbc78f8ad3403aa5722cdb616e063c6c7965afc37a18e5e8",
+  "fp_load_50": "f2359d406ba53ad9c14060708043df75540900f96be9b51c5e9ce250ea4715aa"
+ }
+}

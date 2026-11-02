@@ -1,0 +1,63 @@
+{
+ "body": null,
+ "claim": "an illustration of the stated data under the stated conditions; no claim beyond them",
+ "evidence": {
+  "band": [
+   "EVIDENCE: SYNTHETIC  ·  artificial functional-test data, not a measurement",
+   "REAL-WORLD EXPERIMENT: none recorded (no measurement exists behind this figure)",
+   "BODY: none",
+   "RECORDS: 1 (rec-03701570bb)  ·  generated 2026-11-01  ·  TEOO teoo/0.1"
+  ],
+  "classes": [
+   "SYNTHETIC"
+  ],
+  "real_world_experiment_recorded": false,
+  "watermarks": [
+   "SYNTHETIC"
+  ]
+ },
+ "experiment": {
+  "conditions": [
+   "scope aware",
+   "always invalidate",
+   "never invalidate"
+  ],
+  "protocol_id": "LAW-L3",
+  "seeds": [
+   7201,
+   7230
+  ],
+  "trials_per_condition": 1,
+  "version": 1
+ },
+ "figure_id": "fig-0ec307baf3dcfd27",
+ "generated_at": "2026-11-01T00:00:00.000000Z",
+ "kind": "bars",
+ "metadata_digest": "286b54608cefa0c81759c2cb814294320e2644f032bf3d5e637147c56b38b8c0",
+ "observation_limits": {
+  "config_version": null,
+  "note": "A synthetic ledger or a drawing: what lies outside what is stated here is unknown, not absent.",
+  "summary": {
+   "conditions": "synthetic ledger; scopes are set by the experimenter"
+  },
+  "t": null
+ },
+ "provenance": {
+  "records": [
+   {
+    "kind": "OBSERVATION",
+    "lineage_classes": [
+     "SYNTHETIC"
+    ],
+    "provenance": "SYNTHETIC",
+    "record_digest": "03701570bbf89eb8970cbe45120d58fbd60ffc94018d6a9c7abc94570969a272",
+    "record_id": "rec-03701570bbf89eb8970cbe45"
+   }
+  ],
+  "source_digest": "0ec307baf3dcfd27067c683e628b666ce11d3c99da1feb95385135fb8a9412fd"
+ },
+ "schema": "teoo.figure/1",
+ "teoo_version": "teoo/0.1",
+ "title": "Fig R6 · Scope of an evidence revision against what happens to an earlier observation (LAW-L3)",
+ "units": {}
+}

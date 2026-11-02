@@ -1,0 +1,287 @@
+{
+ "source": "pa-simulation-environment/src/ards/loop2/factors.ts ARMS (snapshot; tests compare it with the live registry)",
+ "envs": [
+  "env1",
+  "env2"
+ ],
+ "arms": [
+  {
+   "id": "V1-A",
+   "role": "control-v1",
+   "factors": {
+    "retention": "no-memory",
+    "reinjection": "none",
+    "ruleRevision": "fixed",
+    "observationChange": "forbidden",
+    "sequence": "fixed"
+   },
+   "reads": "nothing",
+   "mayRevise": [],
+   "implementedIn": "loop"
+  },
+  {
+   "id": "V1-B",
+   "role": "control-v1",
+   "factors": {
+    "retention": "memory",
+    "reinjection": "own",
+    "ruleRevision": "fixed",
+    "observationChange": "forbidden",
+    "sequence": "fixed"
+   },
+   "reads": "observer-view",
+   "mayRevise": [
+    "seed-allocation"
+   ],
+   "implementedIn": "loop"
+  },
+  {
+   "id": "V1-PA",
+   "role": "control-v1",
+   "factors": {
+    "retention": "memory",
+    "reinjection": "own",
+    "ruleRevision": "fixed",
+    "observationChange": "revised-from-data",
+    "sequence": "fixed"
+   },
+   "reads": "observer-view",
+   "mayRevise": [
+    "add-device",
+    "sensor-noise",
+    "sample-rate",
+    "spatial-resolution",
+    "temporal-window",
+    "seed-allocation"
+   ],
+   "implementedIn": "loop"
+  },
+  {
+   "id": "V1-PA-shuffled",
+   "role": "control-v1",
+   "factors": {
+    "retention": "memory",
+    "reinjection": "shuffled",
+    "ruleRevision": "fixed",
+    "observationChange": "revised-from-data",
+    "sequence": "fixed"
+   },
+   "reads": "observer-view",
+   "mayRevise": [
+    "add-device",
+    "sensor-noise",
+    "sample-rate",
+    "spatial-resolution",
+    "temporal-window",
+    "seed-allocation"
+   ],
+   "implementedIn": "loop"
+  },
+  {
+   "id": "V2-A-retained",
+   "role": "history-ablation",
+   "factors": {
+    "retention": "memory",
+    "reinjection": "none",
+    "ruleRevision": "fixed",
+    "observationChange": "forbidden",
+    "sequence": "fixed"
+   },
+   "reads": "nothing",
+   "mayRevise": [],
+   "implementedIn": "loop2"
+  },
+  {
+   "id": "EXISTING-blind",
+   "role": "same-information-comparator",
+   "factors": {
+    "retention": "no-memory",
+    "reinjection": "none",
+    "ruleRevision": "fixed",
+    "observationChange": "revised-from-data",
+    "sequence": "fixed"
+   },
+   "reads": "observer-view",
+   "mayRevise": [
+    "add-device",
+    "sensor-noise",
+    "sample-rate",
+    "spatial-resolution",
+    "temporal-window"
+   ],
+   "implementedIn": "loop2"
+  },
+  {
+   "id": "FIXED-noise",
+   "role": "fixed-strategy",
+   "factors": {
+    "retention": "no-memory",
+    "reinjection": "none",
+    "ruleRevision": "fixed",
+    "observationChange": "preset",
+    "sequence": "fixed"
+   },
+   "reads": "nothing",
+   "mayRevise": [
+    "sensor-noise"
+   ],
+   "implementedIn": "loop2"
+  },
+  {
+   "id": "FIXED-devices",
+   "role": "fixed-strategy",
+   "factors": {
+    "retention": "no-memory",
+    "reinjection": "none",
+    "ruleRevision": "fixed",
+    "observationChange": "preset",
+    "sequence": "fixed"
+   },
+   "reads": "nothing",
+   "mayRevise": [
+    "add-device"
+   ],
+   "implementedIn": "loop2"
+  },
+  {
+   "id": "V2-PA",
+   "role": "main",
+   "factors": {
+    "retention": "memory",
+    "reinjection": "own",
+    "ruleRevision": "fixed",
+    "observationChange": "revised-from-data",
+    "sequence": "fixed"
+   },
+   "reads": "observer-view",
+   "mayRevise": [
+    "add-device",
+    "sensor-noise",
+    "sample-rate",
+    "spatial-resolution",
+    "temporal-window"
+   ],
+   "implementedIn": "loop2"
+  },
+  {
+   "id": "V2-PA-no-reinjection",
+   "role": "history-ablation",
+   "factors": {
+    "retention": "memory",
+    "reinjection": "none",
+    "ruleRevision": "fixed",
+    "observationChange": "revised-from-data",
+    "sequence": "fixed"
+   },
+   "reads": "observer-view",
+   "mayRevise": [
+    "add-device",
+    "sensor-noise",
+    "sample-rate",
+    "spatial-resolution",
+    "temporal-window"
+   ],
+   "implementedIn": "loop2"
+  },
+  {
+   "id": "V2-PA-shuffled",
+   "role": "history-ablation",
+   "factors": {
+    "retention": "memory",
+    "reinjection": "shuffled",
+    "ruleRevision": "fixed",
+    "observationChange": "revised-from-data",
+    "sequence": "fixed"
+   },
+   "reads": "observer-view",
+   "mayRevise": [
+    "add-device",
+    "sensor-noise",
+    "sample-rate",
+    "spatial-resolution",
+    "temporal-window"
+   ],
+   "implementedIn": "loop2"
+  },
+  {
+   "id": "V2-PA-uninformative",
+   "role": "history-ablation",
+   "factors": {
+    "retention": "memory",
+    "reinjection": "uninformative",
+    "ruleRevision": "fixed",
+    "observationChange": "revised-from-data",
+    "sequence": "fixed"
+   },
+   "reads": "observer-view",
+   "mayRevise": [
+    "add-device",
+    "sensor-noise",
+    "sample-rate",
+    "spatial-resolution",
+    "temporal-window"
+   ],
+   "implementedIn": "loop2"
+  },
+  {
+   "id": "V2-PA-meta",
+   "role": "rule-revision",
+   "factors": {
+    "retention": "memory",
+    "reinjection": "own",
+    "ruleRevision": "meta",
+    "observationChange": "revised-from-data",
+    "sequence": "fixed"
+   },
+   "reads": "observer-view",
+   "mayRevise": [
+    "add-device",
+    "sensor-noise",
+    "sample-rate",
+    "spatial-resolution",
+    "temporal-window"
+   ],
+   "implementedIn": "loop2"
+  },
+  {
+   "id": "V2-PA-permuted",
+   "role": "sequence",
+   "factors": {
+    "retention": "memory",
+    "reinjection": "own",
+    "ruleRevision": "fixed",
+    "observationChange": "revised-from-data",
+    "sequence": "permuted"
+   },
+   "reads": "observer-view",
+   "mayRevise": [
+    "add-device",
+    "sensor-noise",
+    "sample-rate",
+    "spatial-resolution",
+    "temporal-window"
+   ],
+   "implementedIn": "loop2"
+  },
+  {
+   "id": "EXISTING-E-oracle",
+   "role": "oracle-reference",
+   "factors": {
+    "retention": "no-memory",
+    "reinjection": "none",
+    "ruleRevision": "fixed",
+    "observationChange": "revised-from-data",
+    "sequence": "fixed"
+   },
+   "reads": "simulator-truth",
+   "mayRevise": [
+    "add-device",
+    "sensor-noise",
+    "sample-rate",
+    "spatial-resolution",
+    "temporal-window"
+   ],
+   "implementedIn": "loop"
+  }
+ ]
+}

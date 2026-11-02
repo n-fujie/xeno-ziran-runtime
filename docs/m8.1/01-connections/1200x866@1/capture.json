@@ -1,0 +1,348 @@
+{
+ "stage": "01-connections",
+ "commit": "77c9a38+uncommitted",
+ "browser": "Chrome/151.0.7922.34",
+ "base": "http://127.0.0.1:3011",
+ "viewport": [
+  1200,
+  866
+ ],
+ "devicePixelRatio": 1,
+ "scenes": [
+  {
+   "name": "01-overview",
+   "record": "m9-separated-resources-7000",
+   "recordSha256": "6341ea1150a02cf9",
+   "stepIndex": 480,
+   "note": "complete installation",
+   "url": "/?view=laboratory&hifi=1&rec=m9-separated-resources-7000&step=480&cam=overview&quality=balanced",
+   "commit": "77c9a38+uncommitted",
+   "viewport": [
+    1200,
+    866
+   ],
+   "devicePixelRatio": 1,
+   "browser": "Chrome/151.0.7922.34",
+   "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified Version)",
+   "state": {
+    "cam": "overview",
+    "sel": null,
+    "sys": null,
+    "domain": "0",
+    "layers": {
+     "A": true,
+     "B": true,
+     "C": true
+    },
+    "quality": "balanced",
+    "step": 481,
+    "index": 480,
+    "camera": [
+     30,
+     27.453,
+     34
+    ],
+    "target": [
+     0,
+     1.5,
+     0
+    ],
+    "pixelRatio": 1,
+    "canvas": [
+     800,
+     723
+    ]
+   },
+   "selfTest": {
+    "step": 481,
+    "positionsChecked": 80,
+    "worstPositionError": 5.072509780052955e-7,
+    "layers": {
+     "A": 42,
+     "B": 113,
+     "C": 74
+    },
+    "drawCalls": 646,
+    "triangles": 94296,
+    "quality": "balanced"
+   },
+   "frames": {
+    "n": 151,
+    "mean": 16.65,
+    "p50": 16.7,
+    "p95": 18.6,
+    "p99": 18.7,
+    "max": 18.7
+   },
+   "longTasks": 0
+  },
+  {
+   "name": "02-oblique",
+   "record": "m9-separated-resources-7000",
+   "recordSha256": "6341ea1150a02cf9",
+   "stepIndex": 480,
+   "note": "elevated oblique view across the installation, below the roof",
+   "url": "/?view=laboratory&hifi=1&rec=m9-separated-resources-7000&step=480&cam=free&quality=balanced&campos=-6%2C7.5%2C-24&target=6%2C1.2%2C4",
+   "commit": "77c9a38+uncommitted",
+   "viewport": [
+    1200,
+    866
+   ],
+   "devicePixelRatio": 1,
+   "browser": "Chrome/151.0.7922.34",
+   "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified Version)",
+   "state": {
+    "cam": "free",
+    "sel": null,
+    "sys": null,
+    "domain": "0",
+    "layers": {
+     "A": true,
+     "B": true,
+     "C": true
+    },
+    "quality": "balanced",
+    "step": 481,
+    "index": 480,
+    "camera": [
+     -6,
+     7.5,
+     -24
+    ],
+    "target": [
+     6,
+     1.2,
+     4
+    ],
+    "pixelRatio": 1,
+    "canvas": [
+     800,
+     723
+    ]
+   },
+   "selfTest": {
+    "step": 481,
+    "positionsChecked": 80,
+    "worstPositionError": 5.072509780052955e-7,
+    "layers": {
+     "A": 42,
+     "B": 113,
+     "C": 74
+    },
+    "drawCalls": 469,
+    "triangles": 75852,
+    "quality": "balanced"
+   },
+   "frames": {
+    "n": 150,
+    "mean": 16.68,
+    "p50": 16.7,
+    "p95": 18.4,
+    "p99": 18.7,
+    "max": 18.8
+   },
+   "longTasks": 0
+  },
+  {
+   "name": "03-domain",
+   "record": "m9-separated-resources-7000",
+   "recordSha256": "6341ea1150a02cf9",
+   "stepIndex": 480,
+   "note": "one research domain",
+   "url": "/?view=laboratory&hifi=1&rec=m9-separated-resources-7000&step=480&cam=domain&quality=balanced&domain=1",
+   "commit": "77c9a38+uncommitted",
+   "viewport": [
+    1200,
+    866
+   ],
+   "devicePixelRatio": 1,
+   "browser": "Chrome/151.0.7922.34",
+   "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified Version)",
+   "state": {
+    "cam": "domain",
+    "sel": null,
+    "sys": null,
+    "domain": "1",
+    "layers": {
+     "A": true,
+     "B": true,
+     "C": true
+    },
+    "quality": "balanced",
+    "step": 481,
+    "index": 480,
+    "camera": [
+     16.286,
+     8.729,
+     16.293
+    ],
+    "target": [
+     9.882,
+     1.201,
+     9.882
+    ],
+    "pixelRatio": 1,
+    "canvas": [
+     800,
+     723
+    ]
+   },
+   "selfTest": {
+    "step": 481,
+    "positionsChecked": 80,
+    "worstPositionError": 5.072509780052955e-7,
+    "layers": {
+     "A": 42,
+     "B": 113,
+     "C": 74
+    },
+    "drawCalls": 204,
+    "triangles": 42380,
+    "quality": "balanced"
+   },
+   "frames": {
+    "n": 150,
+    "mean": 16.67,
+    "p50": 16.7,
+    "p95": 18.7,
+    "p99": 18.7,
+    "max": 18.7
+   },
+   "longTasks": 0
+  },
+  {
+   "name": "04-dense-cluster",
+   "record": "m9-separated-resources-7000",
+   "recordSha256": "6341ea1150a02cf9",
+   "stepIndex": 480,
+   "note": "chambers, gantry, sensors and services of one domain, eye level",
+   "url": "/?view=laboratory&hifi=1&rec=m9-separated-resources-7000&step=480&cam=free&quality=balanced&campos=4.099000000000001%2C3%2C10.499&target=10.499%2C0.9%2C9.499",
+   "commit": "77c9a38+uncommitted",
+   "viewport": [
+    1200,
+    866
+   ],
+   "devicePixelRatio": 1,
+   "browser": "Chrome/151.0.7922.34",
+   "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified Version)",
+   "state": {
+    "cam": "free",
+    "sel": null,
+    "sys": null,
+    "domain": "0",
+    "layers": {
+     "A": true,
+     "B": true,
+     "C": true
+    },
+    "quality": "balanced",
+    "step": 481,
+    "index": 480,
+    "camera": [
+     4.099,
+     3,
+     10.499
+    ],
+    "target": [
+     10.499,
+     0.9,
+     9.499
+    ],
+    "pixelRatio": 1,
+    "canvas": [
+     800,
+     723
+    ]
+   },
+   "selfTest": {
+    "step": 481,
+    "positionsChecked": 80,
+    "worstPositionError": 5.072509780052955e-7,
+    "layers": {
+     "A": 42,
+     "B": 113,
+     "C": 74
+    },
+    "drawCalls": 131,
+    "triangles": 28956,
+    "quality": "balanced"
+   },
+   "frames": {
+    "n": 150,
+    "mean": 16.67,
+    "p50": 16.7,
+    "p95": 17.7,
+    "p99": 17.7,
+    "max": 17.7
+   },
+   "longTasks": 0
+  },
+  {
+   "name": "13-system-comparison",
+   "record": "m7-systems-6000",
+   "recordSha256": "5a70291ada0f15a6",
+   "stepIndex": 480,
+   "note": "systems A, B, C with their observed chambers (comparison table in the panel)",
+   "url": "/?view=laboratory&hifi=1&rec=m7-systems-6000&step=480&cam=free&quality=balanced&campos=23%2C9%2C13&target=11%2C0.8%2C5",
+   "commit": "77c9a38+uncommitted",
+   "viewport": [
+    1200,
+    866
+   ],
+   "devicePixelRatio": 1,
+   "browser": "Chrome/151.0.7922.34",
+   "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified Version)",
+   "state": {
+    "cam": "free",
+    "sel": null,
+    "sys": null,
+    "domain": "0",
+    "layers": {
+     "A": true,
+     "B": true,
+     "C": true
+    },
+    "quality": "balanced",
+    "step": 481,
+    "index": 480,
+    "camera": [
+     23,
+     9,
+     13
+    ],
+    "target": [
+     11,
+     0.8,
+     5
+    ],
+    "pixelRatio": 1,
+    "canvas": [
+     800,
+     723
+    ]
+   },
+   "selfTest": {
+    "step": 481,
+    "positionsChecked": 40,
+    "worstPositionError": 5.072509780052955e-7,
+    "layers": {
+     "A": 42,
+     "B": 113,
+     "C": 74
+    },
+    "drawCalls": 417,
+    "triangles": 80288,
+    "quality": "balanced"
+   },
+   "frames": {
+    "n": 149,
+    "mean": 16.78,
+    "p50": 16.7,
+    "p95": 17.7,
+    "p99": 17.7,
+    "max": 33.2
+   },
+   "longTasks": 0
+  }
+ ]
+}

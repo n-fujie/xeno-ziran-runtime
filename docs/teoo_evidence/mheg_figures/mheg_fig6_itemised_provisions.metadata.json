@@ -1,0 +1,62 @@
+{
+ "body": null,
+ "claim": "an illustration of the stated data under the stated conditions; no claim beyond them",
+ "evidence": {
+  "band": [
+   "EVIDENCE: SYNTHETIC  ·  artificial functional-test data, not a measurement",
+   "REAL-WORLD EXPERIMENT: none recorded (no measurement exists behind this figure)",
+   "BODY: none",
+   "RECORDS: 1 (rec-e5e2741c95)  ·  generated 2026-11-01  ·  TEOO teoo/0.1"
+  ],
+  "classes": [
+   "SYNTHETIC"
+  ],
+  "real_world_experiment_recorded": false,
+  "watermarks": [
+   "SYNTHETIC"
+  ]
+ },
+ "experiment": {
+  "conditions": [
+   "single provision",
+   "itemised"
+  ],
+  "protocol_id": "MH-EXP-02",
+  "seeds": [
+   6101,
+   6130
+  ],
+  "trials_per_condition": 1,
+  "version": 1
+ },
+ "figure_id": "fig-c8fae8a0cea0a67f",
+ "generated_at": "2026-11-01T00:00:00.000000Z",
+ "kind": "bars",
+ "metadata_digest": "931f093ccc52649732076d88620562c1861669af28e1669b4e0310a761e9cf91",
+ "observation_limits": {
+  "config_version": null,
+  "note": "A synthetic institution or a drawing: what lies outside what is stated here is unknown, not absent.",
+  "summary": {
+   "conditions": "synthetic institution; components are random"
+  },
+  "t": null
+ },
+ "provenance": {
+  "records": [
+   {
+    "kind": "OBSERVATION",
+    "lineage_classes": [
+     "SYNTHETIC"
+    ],
+    "provenance": "SYNTHETIC",
+    "record_digest": "e5e2741c95317193fc12868ba5b9ae545349b7a42fac3cbaaac42f2571a52636",
+    "record_id": "rec-e5e2741c95317193fc12868b"
+   }
+  ],
+  "source_digest": "c8fae8a0cea0a67f9f753f52a0677c68cec8ca6e7bf80d17172cdeb476074641"
+ },
+ "schema": "teoo.figure/1",
+ "teoo_version": "teoo/0.1",
+ "title": "Fig M6 · One yes/no provision against itemised components (MH-EXP-02)",
+ "units": {}
+}

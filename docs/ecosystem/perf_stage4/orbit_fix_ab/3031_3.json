@@ -1,0 +1,299 @@
+{
+ "measured_with": "headless Chromium, ANGLE Metal",
+ "viewport": [
+  1672,
+  808
+ ],
+ "tier": "balanced",
+ "frames": 300,
+ "cameras": {
+  "overview": {
+   "orbit": {
+    "median": 23.7,
+    "p95": 37.7,
+    "p99": 45.3,
+    "max": 57.7,
+    "mean": 24.93
+   },
+   "side_of_the_frame": {
+    "cpu_submit_median": 4.4,
+    "cpu_submit_p95": 9.8,
+    "gpu_median": null,
+    "gpu_p95": null
+   },
+   "slow_frame_threshold_ms": 32.8,
+   "series": {
+    "calls": {
+     "mean_in_slow_frames": 621.33,
+     "mean_in_other_frames": 516.16,
+     "correlation_with_frame_time": 0.508,
+     "correlation_with_change_between_frames": 0.291,
+     "range": [
+      432,
+      708
+     ]
+    },
+    "triangles": {
+     "mean_in_slow_frames": 1134263.67,
+     "mean_in_other_frames": 939276.09,
+     "correlation_with_frame_time": 0.506,
+     "correlation_with_change_between_frames": 0.302,
+     "range": [
+      668102,
+      1401628
+     ]
+    },
+    "geometries": {
+     "mean_in_slow_frames": 375.07,
+     "mean_in_other_frames": 373.66,
+     "correlation_with_frame_time": 0.184,
+     "correlation_with_change_between_frames": 0.218,
+     "range": [
+      342,
+      385
+     ]
+    },
+    "textures": {
+     "mean_in_slow_frames": 9,
+     "mean_in_other_frames": 9,
+     "correlation_with_frame_time": null,
+     "correlation_with_change_between_frames": null,
+     "range": [
+      9,
+      9
+     ]
+    },
+    "programs": {
+     "mean_in_slow_frames": 107,
+     "mean_in_other_frames": 107,
+     "correlation_with_frame_time": null,
+     "correlation_with_change_between_frames": null,
+     "range": [
+      107,
+      107
+     ]
+    },
+    "lod_switches": {
+     "mean_in_slow_frames": 1.3,
+     "mean_in_other_frames": 0.64,
+     "correlation_with_frame_time": 0.257,
+     "correlation_with_change_between_frames": 0.22,
+     "range": [
+      0,
+      4
+     ]
+    },
+    "visibility_flips": {
+     "mean_in_slow_frames": 0.5,
+     "mean_in_other_frames": 0.4,
+     "correlation_with_frame_time": 0.056,
+     "correlation_with_change_between_frames": 0.02,
+     "range": [
+      0,
+      6
+     ]
+    }
+   },
+   "ablation_orbit": {},
+   "with_labels": null,
+   "note_shadows": "no light casts shadows in this scene (renderer.shadowMap is not enabled)",
+   "pipeline": [
+    "RenderPass",
+    "OutputPass",
+    "ShaderPass"
+   ]
+  },
+  "habitat": {
+   "orbit": {
+    "median": 26.1,
+    "p95": 45.6,
+    "p99": 58,
+    "max": 66.7,
+    "mean": 27.56
+   },
+   "side_of_the_frame": {
+    "cpu_submit_median": 6,
+    "cpu_submit_p95": 16.2,
+    "gpu_median": null,
+    "gpu_p95": null
+   },
+   "slow_frame_threshold_ms": 38.8,
+   "series": {
+    "calls": {
+     "mean_in_slow_frames": 527.2,
+     "mean_in_other_frames": 474.56,
+     "correlation_with_frame_time": 0.214,
+     "correlation_with_change_between_frames": 0.104,
+     "range": [
+      354,
+      677
+     ]
+    },
+    "triangles": {
+     "mean_in_slow_frames": 1512652.33,
+     "mean_in_other_frames": 1318029.01,
+     "correlation_with_frame_time": 0.395,
+     "correlation_with_change_between_frames": 0.148,
+     "range": [
+      1061450,
+      1848104
+     ]
+    },
+    "geometries": {
+     "mean_in_slow_frames": 368.1,
+     "mean_in_other_frames": 350.33,
+     "correlation_with_frame_time": 0.524,
+     "correlation_with_change_between_frames": 0.08,
+     "range": [
+      325,
+      386
+     ]
+    },
+    "textures": {
+     "mean_in_slow_frames": 9,
+     "mean_in_other_frames": 9,
+     "correlation_with_frame_time": null,
+     "correlation_with_change_between_frames": null,
+     "range": [
+      9,
+      9
+     ]
+    },
+    "programs": {
+     "mean_in_slow_frames": 107,
+     "mean_in_other_frames": 107,
+     "correlation_with_frame_time": null,
+     "correlation_with_change_between_frames": null,
+     "range": [
+      107,
+      107
+     ]
+    },
+    "lod_switches": {
+     "mean_in_slow_frames": 0.9,
+     "mean_in_other_frames": 1.04,
+     "correlation_with_frame_time": -0.038,
+     "correlation_with_change_between_frames": -0.028,
+     "range": [
+      0,
+      2
+     ]
+    },
+    "visibility_flips": {
+     "mean_in_slow_frames": 0.27,
+     "mean_in_other_frames": 0.16,
+     "correlation_with_frame_time": 0.095,
+     "correlation_with_change_between_frames": 0.075,
+     "range": [
+      0,
+      3
+     ]
+    }
+   },
+   "ablation_orbit": {},
+   "with_labels": null,
+   "note_shadows": "no light casts shadows in this scene (renderer.shadowMap is not enabled)",
+   "pipeline": [
+    "RenderPass",
+    "OutputPass",
+    "ShaderPass"
+   ]
+  },
+  "body": {
+   "orbit": {
+    "median": 23.5,
+    "p95": 36.9,
+    "p99": 62.2,
+    "max": 73.3,
+    "mean": 24.88
+   },
+   "side_of_the_frame": {
+    "cpu_submit_median": 4.6,
+    "cpu_submit_p95": 10.7,
+    "gpu_median": null,
+    "gpu_p95": null
+   },
+   "slow_frame_threshold_ms": 32.2,
+   "series": {
+    "calls": {
+     "mean_in_slow_frames": 443.6,
+     "mean_in_other_frames": 358.63,
+     "correlation_with_frame_time": 0.466,
+     "correlation_with_change_between_frames": 0.241,
+     "range": [
+      256,
+      629
+     ]
+    },
+    "triangles": {
+     "mean_in_slow_frames": 1513096.07,
+     "mean_in_other_frames": 1298281.78,
+     "correlation_with_frame_time": 0.469,
+     "correlation_with_change_between_frames": 0.232,
+     "range": [
+      1016904,
+      1896374
+     ]
+    },
+    "geometries": {
+     "mean_in_slow_frames": 310.4,
+     "mean_in_other_frames": 305.87,
+     "correlation_with_frame_time": 0.175,
+     "correlation_with_change_between_frames": 0.138,
+     "range": [
+      286,
+      344
+     ]
+    },
+    "textures": {
+     "mean_in_slow_frames": 8.47,
+     "mean_in_other_frames": 8.31,
+     "correlation_with_frame_time": 0.169,
+     "correlation_with_change_between_frames": 0.193,
+     "range": [
+      8,
+      9
+     ]
+    },
+    "programs": {
+     "mean_in_slow_frames": 106.47,
+     "mean_in_other_frames": 106.31,
+     "correlation_with_frame_time": 0.169,
+     "correlation_with_change_between_frames": 0.193,
+     "range": [
+      106,
+      107
+     ]
+    },
+    "lod_switches": {
+     "mean_in_slow_frames": 0,
+     "mean_in_other_frames": 0,
+     "correlation_with_frame_time": null,
+     "correlation_with_change_between_frames": null,
+     "range": [
+      0,
+      0
+     ]
+    },
+    "visibility_flips": {
+     "mean_in_slow_frames": 0.17,
+     "mean_in_other_frames": 0.4,
+     "correlation_with_frame_time": -0.021,
+     "correlation_with_change_between_frames": -0.017,
+     "range": [
+      0,
+      55
+     ]
+    }
+   },
+   "ablation_orbit": {},
+   "with_labels": null,
+   "note_shadows": "no light casts shadows in this scene (renderer.shadowMap is not enabled)",
+   "pipeline": [
+    "RenderPass",
+    "OutputPass",
+    "ShaderPass"
+   ]
+  }
+ }
+}

@@ -1,0 +1,335 @@
+{
+ "experiment_id": "LAW-L7",
+ "protocol_version": 1,
+ "protocol_digest": "b22ce89cdecabc1b75ef8d3dc0b599f461e5bf4189da4f9d16de42dbcc422abf",
+ "protocol": {
+  "experiment_id": "LAW-L7",
+  "hypotheses": [
+   {
+    "id": "H1",
+    "statement": "Conventional event sourcing given the same information agrees with the ledger on all seven queries (the ledger is not shown to be non-redundant against it)"
+   },
+   {
+    "id": "H2",
+    "statement": "A Boolean state machine without history cannot answer the history query and loses concurrent proceedings"
+   },
+   {
+    "id": "H3",
+    "statement": "A fixed ACCESS_ONLY policy identifies fewer causes than the adaptive policy"
+   },
+   {
+    "id": "H4",
+    "statement": "On access, disagreement and cause, the equal-information causal model with the adaptive policy agrees with the ledger: no predictive advantage of the ledger"
+   }
+  ],
+  "targets": [
+   "receipts, evidence, proceedings, plans, measurements and closures of a synthetic ledger"
+  ],
+  "instrument_conditions": {
+   "queries": [
+    "access",
+    "mismatch",
+    "cause_identified",
+    "current_valid",
+    "history_answerable",
+    "open_proceedings",
+    "closure"
+   ],
+   "designs": [
+    "A_boolean_state_machine",
+    "B_event_sourcing",
+    "C_causal_model",
+    "D_fixed_policy",
+    "E_adaptive_policy"
+   ],
+   "information": "the same events, the same scope, the same world",
+   "scenarios_per_world": "about 12 (the sequence receipt, plan, execute, observe, revision)"
+  },
+  "control_condition": "F ledger",
+  "conditions": [
+   "A boolean state machine",
+   "B event sourcing",
+   "C causal model",
+   "D fixed observation",
+   "E adaptive observation",
+   "F ledger"
+  ],
+  "seeds": [
+   7601,
+   7602,
+   7603,
+   7604,
+   7605,
+   7606,
+   7607,
+   7608,
+   7609,
+   7610,
+   7611,
+   7612,
+   7613,
+   7614,
+   7615,
+   7616,
+   7617,
+   7618,
+   7619,
+   7620,
+   7621,
+   7622,
+   7623,
+   7624,
+   7625,
+   7626,
+   7627,
+   7628,
+   7629,
+   7630
+  ],
+  "trials_per_condition": 1,
+  "stopping_rule": {
+   "type": "fixed-n",
+   "units": 30,
+   "no interim analysis": true
+  },
+  "outcomes": {
+   "primary": [
+    "agreement with the ledger on seven queries"
+   ],
+   "secondary": [
+    "queries a design cannot answer"
+   ]
+  },
+  "analyses": [
+   {
+    "id": "L701",
+    "hypothesis": "H1",
+    "outcome": "agreement of B",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "L702",
+    "hypothesis": "H2",
+    "outcome": "A's answers",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "L703",
+    "hypothesis": "H3",
+    "outcome": "causes identified",
+    "method": "paired-sign-flip",
+    "confirmatory": true,
+    "paired": true
+   },
+   {
+    "id": "L704",
+    "hypothesis": "H4",
+    "outcome": "agreement of E",
+    "method": "descriptive",
+    "confirmatory": true
+   }
+  ],
+  "multiplicity": "holm",
+  "failure_conditions": [
+   "fewer than 30 units"
+  ],
+  "reproduction": {
+   "generator": "xzr.teoo.lawexperiments",
+   "steps": [
+    "run unit per seed",
+    "analyse"
+   ],
+   "world": "xzr.teoo.lawledger (SQLite, append-only) on xzr.teoo.lawworld (8 Booleans); this implementation's own world, not Appendix O"
+  },
+  "schema": "teoo.protocol/1",
+  "version": 1,
+  "parent_version": null,
+  "change_reason": null
+ },
+ "units": 30,
+ "seeds": [
+  7601,
+  7602,
+  7603,
+  7604,
+  7605,
+  7606,
+  7607,
+  7608,
+  7609,
+  7610,
+  7611,
+  7612,
+  7613,
+  7614,
+  7615,
+  7616,
+  7617,
+  7618,
+  7619,
+  7620,
+  7621,
+  7622,
+  7623,
+  7624,
+  7625,
+  7626,
+  7627,
+  7628,
+  7629,
+  7630
+ ],
+ "evidence_class": "Synthetic-world Result",
+ "seconds": 1.2,
+ "results": {
+  "L701": {
+   "method": "descriptive",
+   "scenarios": 348,
+   "B_vs_ledger": {
+    "access": {
+     "agree": 348,
+     "answered": 348,
+     "cannot_answer": 0
+    },
+    "mismatch": {
+     "agree": 348,
+     "answered": 348,
+     "cannot_answer": 0
+    },
+    "cause_identified": {
+     "agree": 348,
+     "answered": 348,
+     "cannot_answer": 0
+    },
+    "current_valid": {
+     "agree": 348,
+     "answered": 348,
+     "cannot_answer": 0
+    },
+    "history_answerable": {
+     "agree": 348,
+     "answered": 348,
+     "cannot_answer": 0
+    },
+    "open_proceedings": {
+     "agree": 348,
+     "answered": 348,
+     "cannot_answer": 0
+    },
+    "closure": {
+     "agree": 348,
+     "answered": 348,
+     "cannot_answer": 0
+    }
+   },
+   "criterion": "event sourcing with the same information agrees with the ledger on every query in every scenario (so the ledger shows no non-redundancy against it)",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "L702": {
+   "method": "descriptive",
+   "A_vs_ledger": {
+    "access": {
+     "agree": 348,
+     "answered": 348,
+     "cannot_answer": 0
+    },
+    "mismatch": {
+     "agree": 348,
+     "answered": 348,
+     "cannot_answer": 0
+    },
+    "cause_identified": {
+     "agree": 348,
+     "answered": 348,
+     "cannot_answer": 0
+    },
+    "current_valid": {
+     "agree": 348,
+     "answered": 348,
+     "cannot_answer": 0
+    },
+    "history_answerable": {
+     "agree": 0,
+     "answered": 348,
+     "cannot_answer": 0
+    },
+    "open_proceedings": {
+     "agree": 198,
+     "answered": 348,
+     "cannot_answer": 0
+    },
+    "closure": {
+     "agree": 348,
+     "answered": 348,
+     "cannot_answer": 0
+    }
+   },
+   "criterion": "A cannot answer the history query in any scenario and disagrees with the ledger on open proceedings in some",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "L703": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 5.0,
+   "sd_diff": 2.1495789483460275,
+   "dz": 2.3260369217177166,
+   "ci95": [
+    4.233333333333333,
+    5.766666666666667
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 17,
+   "inferential": true,
+   "contrast": "causes identified per world: adaptive minus fixed policy",
+   "predicted_sign": 1,
+   "p_holm": 4.999750012499375e-05,
+   "supported": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "L704": {
+   "method": "descriptive",
+   "E_vs_ledger": {
+    "access": {
+     "agree": 348,
+     "answered": 348,
+     "cannot_answer": 0
+    },
+    "mismatch": {
+     "agree": 348,
+     "answered": 348,
+     "cannot_answer": 0
+    },
+    "cause_identified": {
+     "agree": 348,
+     "answered": 348,
+     "cannot_answer": 0
+    }
+   },
+   "criterion": "agreement on access, disagreement and cause in every scenario",
+   "criterion_met": true,
+   "reading": "met: no predictive advantage of the ledger or its vocabulary; what the ledger adds is the audit trail (validity, history, proceedings, closure), and an event-sourced store with the same fields has it too",
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  }
+ },
+ "catalogue": {
+  "source": "The Minimum Guarantees of Human Legal Subjecthood, Publication Final V3.0, Chapter 6.2 (identical in the 100_POINT_EDITION and in R2 section 4: all fifteen titles and definitions compared character for character)",
+  "verified_against_original": true,
+  "sha256": {
+   "v3_0": "cf4d4f0c51169451da5af4c33e7081e947dacbade855068a889965d8c523b848",
+   "v3_0_100_point_edition": "afb59d1a0c3b28854f14113f843645539e07a2e466949d22de4b67da0a22bf99",
+   "ai_law_osr_r2": "a9984451b281df3252b05842dc5109dd396e0b0c54d3560849344ad41059a501"
+  },
+  "editions_identical_for_guarantees": true,
+  "note": "V3.0 uses two vocabularies for the same five findings (Appendix A table: Secured/Partial/Absent/Indeterminate/Inapplicable; A.3 and 8.4 text: Satisfied/Partially Satisfied/Failed/Indeterminate/Not Applicable). R2 section 16 and this implementation use the table's."
+ },
+ "note": "results about a SYNTHETIC ledger and this implementation's own world; the manuscripts R5-R16, the historical code and the world of Appendix O were not available and their numbers are not reproduced; a closure, a measurement or a match here is not a legal judgment or a restoration; not an observation of any institution, law or person"
+}

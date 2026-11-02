@@ -92,6 +92,29 @@ changes of world structure; where they fail, its **control fails with them** (no
 regime its control advantage is small. Scope: one simulated world, one task, one comparator family — not a claim
 about Active Inference in general.
 
+## Heterogeneous Philosophical Operations (HPO)
+
+[`backend/xzr/hpo/`](backend/xzr/hpo/) runs six operational series together in one world. They are engineering
+proxies named after operations of Harman (withdrawal), Simondon (transduction), Whitehead (concrescence), Sellars
+(picturing), Deleuze & Guattari (assemblage) and Luhmann (operational closure). They:
+
+* ignite under configuration-dependent conditions (unobservable is never read as absent);
+* act only through runtime intervention records;
+* change one another's ignition conditions, rules, instruments, resources, history and partition;
+* reconfigure the experiment's own settings inside a sandbox.
+
+Every change is recorded as a causal event with before/after state. Experiments HPO-001/002/003 follow a frozen
+protocol ([docs/HPO_PROTOCOL.md](docs/HPO_PROTOCOL.md)); results are in [docs/HPO_RESULTS.md](docs/HPO_RESULTS.md) and
+in the viewer (`?view=hpo`). No result is evidence for or against a philosophical doctrine
+([docs/HPO.md](docs/HPO.md)).
+
+Body observation records (the open body-observation architecture of `?view=body`: provenance that cannot be rewritten silently,
+observation status, a declared body graph) are described in [docs/TEOO.md](docs/TEOO.md). Its example data are SYNTHETIC test data.
+
+```bash
+.venv/bin/xzr hpo run hpo-002 --pilot --seeds 8
+```
+
 ## Reproducibility, citation, license
 
 Exact commands, determinism and its limits: [docs/REPRODUCIBILITY.md](docs/REPRODUCIBILITY.md). Every run records
@@ -107,8 +130,10 @@ runtime** (configuration, intervention, execution, comparison, replay), the **re
 structured interventions). The Philosophical Runtime is one region of the simulator, not its enclosing category.
 
 The public deployment (https://ziran-xeno-simulator.vercel.app, built by `backend/scripts/export_static.py`) exposes
-only the read-only research-result layer; the interactive runtime runs on the local server (or on the device, in
-the iOS app — [docs/IOS_APP.md](docs/IOS_APP.md)). The published result views are experimental and analytical
+the read-only research-result layer at `/`, and the interactive simulator at `/app/`, which runs entirely in the
+visitor's browser tab (Pyodide in a Web Worker, no simulation server — [docs/WEB_RUNTIME.md](docs/WEB_RUNTIME.md); smaller
+workloads, results not bit-identical to the desktop). Full-size runs use the local server, or the device itself in the
+iOS app — [docs/IOS_APP.md](docs/IOS_APP.md)). The published result views are experimental and analytical
 outputs and should not be interpreted as real-world forecasts or predictive claims.
 
 It does not start from domains (people, markets, institutions, states…). It simulates domain-neutral operations —
@@ -201,6 +226,10 @@ backend/
   xzr/reasonlab   closed loop world ↔ reasoning through an operational intervention gate; enabling conditions
   xzr/experiments primitive reduction study, reasoning non-redundancy suite, resolution escalation
                   (escalation/), history operations (history.py: fork, removal, reactivation, migration)
+  xzr/hpo         Heterogeneous Philosophical Operations: registry, instruments, operations, interaction engine,
+                  causal history, sandboxed reconfiguration, HPO-001/002/003 (docs/HPO.md)
+  xzr/teoo        BODY / TOTAL OBSERVATION: sealed records of body observations (MEASURED / SYNTHETIC / RECONSTRUCTED_ESTIMATE /
+                  CONCEPTUAL), observation status, an open body graph, CSV/JSON ingestion, an XB-TRO adapter (docs/TEOO.md)
   xzr/cli.py      the `xzr` command; xzr/results.py: result schema, provenance, compare, export
   xzr/presets     experiment presets (JSON) and configuration validation
   experiments/    run_reduction.py; results/{reduction,reason,final_results}.json

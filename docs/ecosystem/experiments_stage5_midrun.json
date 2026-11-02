@@ -1,0 +1,1085 @@
+{
+ "L1_existence": {
+  "history lost": {
+   "scenario": "history lost",
+   "free_components": [
+    "A2",
+    "resource_gradient",
+    "interaction_channel",
+    "sensor_resource",
+    "sensor_alteration",
+    "environmental_persistence",
+    "feedback",
+    "resource_renewal",
+    "m2_tap"
+   ],
+   "sets_tested": 512,
+   "persisting_on_all_search_seeds": 1,
+   "inclusion_minimal_persisting": 1,
+   "no_action_persists_on_search_seeds": false,
+   "sets_by_search_seeds_persisted": {
+    "0": 510,
+    "1": 0,
+    "2": 0,
+    "3": 1,
+    "4": 0,
+    "5": 1
+   },
+   "best_search_seeds_persisted": 5,
+   "cheapest_persisting_sets": [
+    {
+     "retained": [
+      "A2",
+      "environmental_persistence",
+      "feedback",
+      "interaction_channel",
+      "m2_tap",
+      "resource_gradient",
+      "resource_renewal",
+      "sensor_alteration",
+      "sensor_resource"
+     ],
+     "cost": 1,
+     "search_persists": "5/5",
+     "validation_persists": "5/5",
+     "validated": true
+    }
+   ],
+   "any_validated": true
+  },
+  "coupling weakened (gain 0.5)": {
+   "scenario": "coupling weakened (gain 0.5)",
+   "free_components": [
+    "A2",
+    "resource_gradient",
+    "history",
+    "interaction_channel",
+    "sensor_resource",
+    "sensor_alteration",
+    "environmental_persistence",
+    "feedback",
+    "resource_renewal",
+    "m2_tap"
+   ],
+   "sets_tested": 1024,
+   "persisting_on_all_search_seeds": 0,
+   "inclusion_minimal_persisting": 0,
+   "no_action_persists_on_search_seeds": false,
+   "sets_by_search_seeds_persisted": {
+    "0": 1024,
+    "1": 0,
+    "2": 0,
+    "3": 0,
+    "4": 0,
+    "5": 0
+   },
+   "best_search_seeds_persisted": 0,
+   "cheapest_persisting_sets": [],
+   "any_validated": false
+  },
+  "resource reduced": {
+   "scenario": "resource reduced",
+   "free_components": [
+    "A2",
+    "resource_gradient",
+    "history",
+    "interaction_channel",
+    "sensor_resource",
+    "sensor_alteration",
+    "environmental_persistence",
+    "feedback",
+    "resource_renewal",
+    "m2_tap"
+   ],
+   "sets_tested": 1024,
+   "persisting_on_all_search_seeds": 0,
+   "inclusion_minimal_persisting": 0,
+   "no_action_persists_on_search_seeds": false,
+   "sets_by_search_seeds_persisted": {
+    "0": 1024,
+    "1": 0,
+    "2": 0,
+    "3": 0,
+    "4": 0,
+    "5": 0
+   },
+   "best_search_seeds_persisted": 0,
+   "cheapest_persisting_sets": [],
+   "any_validated": false
+  },
+  "renewal efficiency 0.6": {
+   "scenario": "renewal efficiency 0.6",
+   "free_components": [
+    "A2",
+    "resource_gradient",
+    "history",
+    "interaction_channel",
+    "sensor_resource",
+    "sensor_alteration",
+    "environmental_persistence",
+    "feedback",
+    "resource_renewal",
+    "m2_tap"
+   ],
+   "sets_tested": 1024,
+   "persisting_on_all_search_seeds": 0,
+   "inclusion_minimal_persisting": 0,
+   "no_action_persists_on_search_seeds": false,
+   "sets_by_search_seeds_persisted": {
+    "0": 1024,
+    "1": 0,
+    "2": 0,
+    "3": 0,
+    "4": 0,
+    "5": 0
+   },
+   "best_search_seeds_persisted": 0,
+   "cheapest_persisting_sets": [],
+   "any_validated": false
+  },
+  "renewal disabled": {
+   "scenario": "renewal disabled",
+   "free_components": [
+    "A2",
+    "resource_gradient",
+    "history",
+    "interaction_channel",
+    "sensor_resource",
+    "sensor_alteration",
+    "environmental_persistence",
+    "resource_renewal",
+    "m2_tap"
+   ],
+   "sets_tested": 512,
+   "persisting_on_all_search_seeds": 0,
+   "inclusion_minimal_persisting": 0,
+   "no_action_persists_on_search_seeds": false,
+   "sets_by_search_seeds_persisted": {
+    "0": 512,
+    "1": 0,
+    "2": 0,
+    "3": 0,
+    "4": 0,
+    "5": 0
+   },
+   "best_search_seeds_persisted": 0,
+   "cheapest_persisting_sets": [],
+   "any_validated": false
+  },
+  "Address degraded (A2 partial 50 %)": {
+   "scenario": "Address degraded (A2 partial 50 %)",
+   "free_components": [
+    "A2",
+    "resource_gradient",
+    "history",
+    "interaction_channel",
+    "sensor_resource",
+    "sensor_alteration",
+    "environmental_persistence",
+    "feedback",
+    "resource_renewal",
+    "m2_tap"
+   ],
+   "sets_tested": 1024,
+   "persisting_on_all_search_seeds": 0,
+   "inclusion_minimal_persisting": 0,
+   "no_action_persists_on_search_seeds": false,
+   "sets_by_search_seeds_persisted": {
+    "0": 1024,
+    "1": 0,
+    "2": 0,
+    "3": 0,
+    "4": 0,
+    "5": 0
+   },
+   "best_search_seeds_persisted": 0,
+   "cheapest_persisting_sets": [],
+   "any_validated": false
+  }
+ },
+ "L2_library": {
+  "history lost": {
+   "signature": {
+    "address": "ok",
+    "coupling": "normal",
+    "history": "lost",
+    "renewal": "normal",
+    "resource": "normal"
+   },
+   "scenarios": [
+    "history lost"
+   ],
+   "shared_persisting_sets": 1,
+   "retained": [
+    "A2",
+    "environmental_persistence",
+    "feedback",
+    "interaction_channel",
+    "m2_tap",
+    "resource_gradient",
+    "resource_renewal",
+    "sensor_alteration",
+    "sensor_resource"
+   ],
+   "cost": 1,
+   "validation": {
+    "history lost": "5/5"
+   }
+  },
+  "coupling weakened (gain 0.5)+resource reduced+renewal efficiency 0.6+renewal disabled": {
+   "signature": {
+    "address": "ok",
+    "coupling": "weak",
+    "history": "ok",
+    "renewal": "normal",
+    "resource": "reduced"
+   },
+   "scenarios": [
+    "coupling weakened (gain 0.5)",
+    "resource reduced",
+    "renewal efficiency 0.6",
+    "renewal disabled"
+   ],
+   "shared_persisting_sets": 0,
+   "retained": null,
+   "note": "no set persists in every scenario that shares this signature: the sensed signature cannot tell these stresses apart and no single action serves them"
+  },
+  "Address degraded (A2 partial 50 %)": {
+   "signature": {
+    "address": "degraded",
+    "coupling": "normal",
+    "history": "ok",
+    "renewal": "normal",
+    "resource": "normal"
+   },
+   "scenarios": [
+    "Address degraded (A2 partial 50 %)"
+   ],
+   "shared_persisting_sets": 0,
+   "retained": null,
+   "note": "no set persists in every scenario that shares this signature: the sensed signature cannot tell these stresses apart and no single action serves them"
+  }
+ },
+ "library_entries": [
+  {
+   "id": "MID-history",
+   "condition_id": "mid-run",
+   "condition": "history lost",
+   "features": {
+    "address": "ok",
+    "coupling": "normal",
+    "history": "lost",
+    "renewal": "normal",
+    "resource": "normal",
+    "tap": "direct"
+   },
+   "retained": [
+    "A2",
+    "environmental_persistence",
+    "feedback",
+    "interaction_channel",
+    "m2_tap",
+    "resource_gradient",
+    "resource_renewal",
+    "sensor_alteration",
+    "sensor_resource"
+   ],
+   "removed": [],
+   "cardinality": 9,
+   "route_kind": "action that survives a stress in mid-run",
+   "retained_paths": [],
+   "lost_paths": [],
+   "digest": ""
+  }
+ ],
+ "L3_controller": {
+  "rows": [
+   {
+    "scenario": "no stress (control for false switches)",
+    "controller": "none",
+    "n": 20,
+    "persisted": {
+     "k": 20,
+     "n": 20,
+     "p": 1.0,
+     "wilson95": [
+      0.8389,
+      1.0
+     ]
+    },
+    "mean_switches": 0.0,
+    "mean_switching_cost": 0.0,
+    "false_switches": 0,
+    "mean_energy": 143.08
+   },
+   {
+    "scenario": "no stress (control for false switches)",
+    "controller": "fixed",
+    "n": 20,
+    "persisted": {
+     "k": 20,
+     "n": 20,
+     "p": 1.0,
+     "wilson95": [
+      0.8389,
+      1.0
+     ]
+    },
+    "mean_switches": 0.0,
+    "mean_switching_cost": 0.0,
+    "false_switches": 0,
+    "mean_energy": 143.08
+   },
+   {
+    "scenario": "no stress (control for false switches)",
+    "controller": "adaptive",
+    "n": 20,
+    "persisted": {
+     "k": 20,
+     "n": 20,
+     "p": 1.0,
+     "wilson95": [
+      0.8389,
+      1.0
+     ]
+    },
+    "mean_switches": 0.0,
+    "mean_switching_cost": 0.0,
+    "false_switches": 0,
+    "mean_energy": 143.08
+   },
+   {
+    "scenario": "no stress (control for false switches)",
+    "controller": "adaptive_mid",
+    "n": 20,
+    "persisted": {
+     "k": 20,
+     "n": 20,
+     "p": 1.0,
+     "wilson95": [
+      0.8389,
+      1.0
+     ]
+    },
+    "mean_switches": 0.0,
+    "mean_switching_cost": 0.0,
+    "false_switches": 0,
+    "mean_energy": 143.08
+   },
+   {
+    "scenario": "history lost",
+    "controller": "none",
+    "n": 20,
+    "persisted": {
+     "k": 0,
+     "n": 20,
+     "p": 0.0,
+     "wilson95": [
+      0.0,
+      0.1611
+     ]
+    },
+    "mean_switches": 0.0,
+    "mean_switching_cost": 0.0,
+    "false_switches": 0,
+    "mean_energy": 120.67
+   },
+   {
+    "scenario": "history lost",
+    "controller": "fixed",
+    "n": 20,
+    "persisted": {
+     "k": 9,
+     "n": 20,
+     "p": 0.45,
+     "wilson95": [
+      0.2582,
+      0.6579
+     ]
+    },
+    "mean_switches": 1.0,
+    "mean_switching_cost": 1.0,
+    "false_switches": 0,
+    "mean_energy": 130.61
+   },
+   {
+    "scenario": "history lost",
+    "controller": "adaptive",
+    "n": 20,
+    "persisted": {
+     "k": 0,
+     "n": 20,
+     "p": 0.0,
+     "wilson95": [
+      0.0,
+      0.1611
+     ]
+    },
+    "mean_switches": 0.0,
+    "mean_switching_cost": 0.0,
+    "false_switches": 0,
+    "mean_energy": 120.67
+   },
+   {
+    "scenario": "history lost",
+    "controller": "adaptive_mid",
+    "n": 20,
+    "persisted": {
+     "k": 9,
+     "n": 20,
+     "p": 0.45,
+     "wilson95": [
+      0.2582,
+      0.6579
+     ]
+    },
+    "mean_switches": 1.0,
+    "mean_switching_cost": 1.0,
+    "false_switches": 0,
+    "mean_energy": 130.61
+   },
+   {
+    "scenario": "coupling weakened (gain 0.5)",
+    "controller": "none",
+    "n": 20,
+    "persisted": {
+     "k": 0,
+     "n": 20,
+     "p": 0.0,
+     "wilson95": [
+      0.0,
+      0.1611
+     ]
+    },
+    "mean_switches": 0.0,
+    "mean_switching_cost": 0.0,
+    "false_switches": 0,
+    "mean_energy": 118.72
+   },
+   {
+    "scenario": "coupling weakened (gain 0.5)",
+    "controller": "fixed",
+    "n": 20,
+    "persisted": {
+     "k": 0,
+     "n": 20,
+     "p": 0.0,
+     "wilson95": [
+      0.0,
+      0.1611
+     ]
+    },
+    "mean_switches": 1.0,
+    "mean_switching_cost": 1.0,
+    "false_switches": 0,
+    "mean_energy": 118.72
+   },
+   {
+    "scenario": "coupling weakened (gain 0.5)",
+    "controller": "adaptive",
+    "n": 20,
+    "persisted": {
+     "k": 0,
+     "n": 20,
+     "p": 0.0,
+     "wilson95": [
+      0.0,
+      0.1611
+     ]
+    },
+    "mean_switches": 0.0,
+    "mean_switching_cost": 0.0,
+    "false_switches": 0,
+    "mean_energy": 118.72
+   },
+   {
+    "scenario": "coupling weakened (gain 0.5)",
+    "controller": "adaptive_mid",
+    "n": 20,
+    "persisted": {
+     "k": 0,
+     "n": 20,
+     "p": 0.0,
+     "wilson95": [
+      0.0,
+      0.1611
+     ]
+    },
+    "mean_switches": 0.0,
+    "mean_switching_cost": 0.0,
+    "false_switches": 0,
+    "mean_energy": 118.72
+   },
+   {
+    "scenario": "resource reduced",
+    "controller": "none",
+    "n": 20,
+    "persisted": {
+     "k": 0,
+     "n": 20,
+     "p": 0.0,
+     "wilson95": [
+      0.0,
+      0.1611
+     ]
+    },
+    "mean_switches": 0.0,
+    "mean_switching_cost": 0.0,
+    "false_switches": 0,
+    "mean_energy": 91.64
+   },
+   {
+    "scenario": "resource reduced",
+    "controller": "fixed",
+    "n": 20,
+    "persisted": {
+     "k": 0,
+     "n": 20,
+     "p": 0.0,
+     "wilson95": [
+      0.0,
+      0.1611
+     ]
+    },
+    "mean_switches": 1.0,
+    "mean_switching_cost": 1.0,
+    "false_switches": 0,
+    "mean_energy": 91.64
+   },
+   {
+    "scenario": "resource reduced",
+    "controller": "adaptive",
+    "n": 20,
+    "persisted": {
+     "k": 0,
+     "n": 20,
+     "p": 0.0,
+     "wilson95": [
+      0.0,
+      0.1611
+     ]
+    },
+    "mean_switches": 0.0,
+    "mean_switching_cost": 0.0,
+    "false_switches": 0,
+    "mean_energy": 91.64
+   },
+   {
+    "scenario": "resource reduced",
+    "controller": "adaptive_mid",
+    "n": 20,
+    "persisted": {
+     "k": 0,
+     "n": 20,
+     "p": 0.0,
+     "wilson95": [
+      0.0,
+      0.1611
+     ]
+    },
+    "mean_switches": 0.0,
+    "mean_switching_cost": 0.0,
+    "false_switches": 0,
+    "mean_energy": 91.64
+   },
+   {
+    "scenario": "renewal efficiency 0.6",
+    "controller": "none",
+    "n": 20,
+    "persisted": {
+     "k": 0,
+     "n": 20,
+     "p": 0.0,
+     "wilson95": [
+      0.0,
+      0.1611
+     ]
+    },
+    "mean_switches": 0.0,
+    "mean_switching_cost": 0.0,
+    "false_switches": 0,
+    "mean_energy": 119.8
+   },
+   {
+    "scenario": "renewal efficiency 0.6",
+    "controller": "fixed",
+    "n": 20,
+    "persisted": {
+     "k": 0,
+     "n": 20,
+     "p": 0.0,
+     "wilson95": [
+      0.0,
+      0.1611
+     ]
+    },
+    "mean_switches": 1.0,
+    "mean_switching_cost": 1.0,
+    "false_switches": 0,
+    "mean_energy": 119.8
+   },
+   {
+    "scenario": "renewal efficiency 0.6",
+    "controller": "adaptive",
+    "n": 20,
+    "persisted": {
+     "k": 0,
+     "n": 20,
+     "p": 0.0,
+     "wilson95": [
+      0.0,
+      0.1611
+     ]
+    },
+    "mean_switches": 0.0,
+    "mean_switching_cost": 0.0,
+    "false_switches": 0,
+    "mean_energy": 119.8
+   },
+   {
+    "scenario": "renewal efficiency 0.6",
+    "controller": "adaptive_mid",
+    "n": 20,
+    "persisted": {
+     "k": 0,
+     "n": 20,
+     "p": 0.0,
+     "wilson95": [
+      0.0,
+      0.1611
+     ]
+    },
+    "mean_switches": 0.0,
+    "mean_switching_cost": 0.0,
+    "false_switches": 0,
+    "mean_energy": 119.8
+   },
+   {
+    "scenario": "renewal disabled",
+    "controller": "none",
+    "n": 20,
+    "persisted": {
+     "k": 0,
+     "n": 20,
+     "p": 0.0,
+     "wilson95": [
+      0.0,
+      0.1611
+     ]
+    },
+    "mean_switches": 0.0,
+    "mean_switching_cost": 0.0,
+    "false_switches": 0,
+    "mean_energy": 118.22
+   },
+   {
+    "scenario": "renewal disabled",
+    "controller": "fixed",
+    "n": 20,
+    "persisted": {
+     "k": 0,
+     "n": 20,
+     "p": 0.0,
+     "wilson95": [
+      0.0,
+      0.1611
+     ]
+    },
+    "mean_switches": 1.0,
+    "mean_switching_cost": 1.0,
+    "false_switches": 0,
+    "mean_energy": 118.22
+   },
+   {
+    "scenario": "renewal disabled",
+    "controller": "adaptive",
+    "n": 20,
+    "persisted": {
+     "k": 0,
+     "n": 20,
+     "p": 0.0,
+     "wilson95": [
+      0.0,
+      0.1611
+     ]
+    },
+    "mean_switches": 1.0,
+    "mean_switching_cost": 1.0,
+    "false_switches": 0,
+    "mean_energy": 118.22
+   },
+   {
+    "scenario": "renewal disabled",
+    "controller": "adaptive_mid",
+    "n": 20,
+    "persisted": {
+     "k": 0,
+     "n": 20,
+     "p": 0.0,
+     "wilson95": [
+      0.0,
+      0.1611
+     ]
+    },
+    "mean_switches": 0.0,
+    "mean_switching_cost": 0.0,
+    "false_switches": 0,
+    "mean_energy": 118.22
+   },
+   {
+    "scenario": "Address degraded (A2 partial 50 %)",
+    "controller": "none",
+    "n": 20,
+    "persisted": {
+     "k": 0,
+     "n": 20,
+     "p": 0.0,
+     "wilson95": [
+      0.0,
+      0.1611
+     ]
+    },
+    "mean_switches": 0.0,
+    "mean_switching_cost": 0.0,
+    "false_switches": 0,
+    "mean_energy": 118.81
+   },
+   {
+    "scenario": "Address degraded (A2 partial 50 %)",
+    "controller": "fixed",
+    "n": 20,
+    "persisted": {
+     "k": 0,
+     "n": 20,
+     "p": 0.0,
+     "wilson95": [
+      0.0,
+      0.1611
+     ]
+    },
+    "mean_switches": 1.0,
+    "mean_switching_cost": 1.0,
+    "false_switches": 0,
+    "mean_energy": 118.82
+   },
+   {
+    "scenario": "Address degraded (A2 partial 50 %)",
+    "controller": "adaptive",
+    "n": 20,
+    "persisted": {
+     "k": 0,
+     "n": 20,
+     "p": 0.0,
+     "wilson95": [
+      0.0,
+      0.1611
+     ]
+    },
+    "mean_switches": 0.0,
+    "mean_switching_cost": 0.0,
+    "false_switches": 0,
+    "mean_energy": 118.81
+   },
+   {
+    "scenario": "Address degraded (A2 partial 50 %)",
+    "controller": "adaptive_mid",
+    "n": 20,
+    "persisted": {
+     "k": 0,
+     "n": 20,
+     "p": 0.0,
+     "wilson95": [
+      0.0,
+      0.1611
+     ]
+    },
+    "mean_switches": 0.0,
+    "mean_switching_cost": 0.0,
+    "false_switches": 0,
+    "mean_energy": 118.81
+   }
+  ]
+ },
+ "L3_verdicts": [
+  {
+   "scenario": "history lost",
+   "controller": "fixed",
+   "persisted": "9/20",
+   "none": "0/20",
+   "difference": 0.45,
+   "cohens_h": 1.4706,
+   "fisher_p": 0.00123,
+   "mean_switching_cost": 1.0,
+   "false_switches": 0,
+   "holm_p": 0.02214,
+   "verdict": "effective",
+   "survives_holm": true
+  },
+  {
+   "scenario": "history lost",
+   "controller": "adaptive",
+   "persisted": "0/20",
+   "none": "0/20",
+   "difference": 0.0,
+   "cohens_h": 0.0,
+   "fisher_p": 1.0,
+   "mean_switching_cost": 0.0,
+   "false_switches": 0,
+   "holm_p": 1.0,
+   "verdict": "no effect",
+   "survives_holm": false
+  },
+  {
+   "scenario": "history lost",
+   "controller": "adaptive_mid",
+   "persisted": "9/20",
+   "none": "0/20",
+   "difference": 0.45,
+   "cohens_h": 1.4706,
+   "fisher_p": 0.00123,
+   "mean_switching_cost": 1.0,
+   "false_switches": 0,
+   "holm_p": 0.02214,
+   "verdict": "effective",
+   "survives_holm": true
+  },
+  {
+   "scenario": "coupling weakened (gain 0.5)",
+   "controller": "fixed",
+   "persisted": "0/20",
+   "none": "0/20",
+   "difference": 0.0,
+   "cohens_h": 0.0,
+   "fisher_p": 1.0,
+   "mean_switching_cost": 1.0,
+   "false_switches": 0,
+   "holm_p": 1.0,
+   "verdict": "no effect",
+   "survives_holm": false
+  },
+  {
+   "scenario": "coupling weakened (gain 0.5)",
+   "controller": "adaptive",
+   "persisted": "0/20",
+   "none": "0/20",
+   "difference": 0.0,
+   "cohens_h": 0.0,
+   "fisher_p": 1.0,
+   "mean_switching_cost": 0.0,
+   "false_switches": 0,
+   "holm_p": 1.0,
+   "verdict": "no effect",
+   "survives_holm": false
+  },
+  {
+   "scenario": "coupling weakened (gain 0.5)",
+   "controller": "adaptive_mid",
+   "persisted": "0/20",
+   "none": "0/20",
+   "difference": 0.0,
+   "cohens_h": 0.0,
+   "fisher_p": 1.0,
+   "mean_switching_cost": 0.0,
+   "false_switches": 0,
+   "holm_p": 1.0,
+   "verdict": "no effect",
+   "survives_holm": false
+  },
+  {
+   "scenario": "resource reduced",
+   "controller": "fixed",
+   "persisted": "0/20",
+   "none": "0/20",
+   "difference": 0.0,
+   "cohens_h": 0.0,
+   "fisher_p": 1.0,
+   "mean_switching_cost": 1.0,
+   "false_switches": 0,
+   "holm_p": 1.0,
+   "verdict": "no effect",
+   "survives_holm": false
+  },
+  {
+   "scenario": "resource reduced",
+   "controller": "adaptive",
+   "persisted": "0/20",
+   "none": "0/20",
+   "difference": 0.0,
+   "cohens_h": 0.0,
+   "fisher_p": 1.0,
+   "mean_switching_cost": 0.0,
+   "false_switches": 0,
+   "holm_p": 1.0,
+   "verdict": "no effect",
+   "survives_holm": false
+  },
+  {
+   "scenario": "resource reduced",
+   "controller": "adaptive_mid",
+   "persisted": "0/20",
+   "none": "0/20",
+   "difference": 0.0,
+   "cohens_h": 0.0,
+   "fisher_p": 1.0,
+   "mean_switching_cost": 0.0,
+   "false_switches": 0,
+   "holm_p": 1.0,
+   "verdict": "no effect",
+   "survives_holm": false
+  },
+  {
+   "scenario": "renewal efficiency 0.6",
+   "controller": "fixed",
+   "persisted": "0/20",
+   "none": "0/20",
+   "difference": 0.0,
+   "cohens_h": 0.0,
+   "fisher_p": 1.0,
+   "mean_switching_cost": 1.0,
+   "false_switches": 0,
+   "holm_p": 1.0,
+   "verdict": "no effect",
+   "survives_holm": false
+  },
+  {
+   "scenario": "renewal efficiency 0.6",
+   "controller": "adaptive",
+   "persisted": "0/20",
+   "none": "0/20",
+   "difference": 0.0,
+   "cohens_h": 0.0,
+   "fisher_p": 1.0,
+   "mean_switching_cost": 0.0,
+   "false_switches": 0,
+   "holm_p": 1.0,
+   "verdict": "no effect",
+   "survives_holm": false
+  },
+  {
+   "scenario": "renewal efficiency 0.6",
+   "controller": "adaptive_mid",
+   "persisted": "0/20",
+   "none": "0/20",
+   "difference": 0.0,
+   "cohens_h": 0.0,
+   "fisher_p": 1.0,
+   "mean_switching_cost": 0.0,
+   "false_switches": 0,
+   "holm_p": 1.0,
+   "verdict": "no effect",
+   "survives_holm": false
+  },
+  {
+   "scenario": "renewal disabled",
+   "controller": "fixed",
+   "persisted": "0/20",
+   "none": "0/20",
+   "difference": 0.0,
+   "cohens_h": 0.0,
+   "fisher_p": 1.0,
+   "mean_switching_cost": 1.0,
+   "false_switches": 0,
+   "holm_p": 1.0,
+   "verdict": "no effect",
+   "survives_holm": false
+  },
+  {
+   "scenario": "renewal disabled",
+   "controller": "adaptive",
+   "persisted": "0/20",
+   "none": "0/20",
+   "difference": 0.0,
+   "cohens_h": 0.0,
+   "fisher_p": 1.0,
+   "mean_switching_cost": 1.0,
+   "false_switches": 0,
+   "holm_p": 1.0,
+   "verdict": "no effect",
+   "survives_holm": false
+  },
+  {
+   "scenario": "renewal disabled",
+   "controller": "adaptive_mid",
+   "persisted": "0/20",
+   "none": "0/20",
+   "difference": 0.0,
+   "cohens_h": 0.0,
+   "fisher_p": 1.0,
+   "mean_switching_cost": 0.0,
+   "false_switches": 0,
+   "holm_p": 1.0,
+   "verdict": "no effect",
+   "survives_holm": false
+  },
+  {
+   "scenario": "Address degraded (A2 partial 50 %)",
+   "controller": "fixed",
+   "persisted": "0/20",
+   "none": "0/20",
+   "difference": 0.0,
+   "cohens_h": 0.0,
+   "fisher_p": 1.0,
+   "mean_switching_cost": 1.0,
+   "false_switches": 0,
+   "holm_p": 1.0,
+   "verdict": "no effect",
+   "survives_holm": false
+  },
+  {
+   "scenario": "Address degraded (A2 partial 50 %)",
+   "controller": "adaptive",
+   "persisted": "0/20",
+   "none": "0/20",
+   "difference": 0.0,
+   "cohens_h": 0.0,
+   "fisher_p": 1.0,
+   "mean_switching_cost": 0.0,
+   "false_switches": 0,
+   "holm_p": 1.0,
+   "verdict": "no effect",
+   "survives_holm": false
+  },
+  {
+   "scenario": "Address degraded (A2 partial 50 %)",
+   "controller": "adaptive_mid",
+   "persisted": "0/20",
+   "none": "0/20",
+   "difference": 0.0,
+   "cohens_h": 0.0,
+   "fisher_p": 1.0,
+   "mean_switching_cost": 0.0,
+   "false_switches": 0,
+   "holm_p": 1.0,
+   "verdict": "no effect",
+   "survives_holm": false
+  }
+ ],
+ "engine": "meos-0.4",
+ "experiment": "L: configurations that survive a stress arriving in mid-run, and a controller that uses them",
+ "seeds": {
+  "search": [
+   1,
+   2,
+   3,
+   4,
+   5
+  ],
+  "validation": [
+   6,
+   7,
+   8,
+   9,
+   10
+  ],
+  "evaluation": [
+   11,
+   30
+  ]
+ },
+ "action_tick": 113,
+ "stress_tick": 100,
+ "horizon": 300,
+ "criteria": "Fixed before the run: a controller is *effective* in a scenario if its persistence exceeds that of no reconfiguration by at least 30 percentage points AND Fisher exact p < 0.05 AND mean switching cost <= 3; *harmful* if it is lower by\n    that margin with p < 0.05; otherwise *no effect*. Holm adjustment over all comparisons is reported next to the unadjusted p.",
+ "seconds": 826.3,
+ "limit": "The stresses of the evaluation are the stresses the library was built for (on other seeds): this tests whether an action exists and a controller can find it by sensing, not generalisation to an unseen stress. A formal model."
+}

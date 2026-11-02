@@ -1,0 +1,68 @@
+=== hpo-002 08:38:07
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.12/3.12.13_4/Frameworks/Python.framework/Versions/3.12/lib/python3.12/concurrent/futures/process.py", line 264, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.12/3.12.13_4/Frameworks/Python.framework/Versions/3.12/lib/python3.12/concurrent/futures/process.py", line 213, in _process_chunk
+    return [fn(*args) for args in chunk]
+            ^^^^^^^^^
+  File "<home>/Desktop/BIM/xeno-ziran-runtime/backend/xzr/hpo/experiments.py", line 194, in hpo002_job
+    m, _, f = run_one(base, s, seed, r0w, noise=c == "C~", keep_states=want_trace and c == "D")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<home>/Desktop/BIM/xeno-ziran-runtime/backend/xzr/hpo/experiments.py", line 140, in run_one
+    f.run(settings.get("horizon", HORIZON))
+  File "<home>/Desktop/BIM/xeno-ziran-runtime/backend/xzr/hpo/field.py", line 325, in run
+    self.step()
+  File "<home>/Desktop/BIM/xeno-ziran-runtime/backend/xzr/hpo/field.py", line 302, in step
+    self._sample(op, t, fair)
+  File "<home>/Desktop/BIM/xeno-ziran-runtime/backend/xzr/hpo/field.py", line 392, in _sample
+    self._execute(op, reqs, ae)
+  File "<home>/Desktop/BIM/xeno-ziran-runtime/backend/xzr/hpo/field.py", line 547, in _execute
+    self._read_archive(op)
+  File "<home>/Desktop/BIM/xeno-ziran-runtime/backend/xzr/hpo/field.py", line 565, in _read_archive
+    prior[hit[0]] = v
+    ~~~~~^^^^^^^^
+IndexError: index 11 is out of bounds for axis 0 with size 11
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "<home>/Desktop/BIM/xeno-ziran-runtime/backend/xzr/__main__.py", line 3, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "<home>/Desktop/BIM/xeno-ziran-runtime/backend/xzr/cli.py", line 194, in main
+    return _hpo(args)
+           ^^^^^^^^^^
+  File "<home>/Desktop/BIM/xeno-ziran-runtime/backend/xzr/cli.py", line 233, in _hpo
+    doc = X.hpo002(seeds, args.procs, **kw)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<home>/Desktop/BIM/xeno-ziran-runtime/backend/xzr/hpo/experiments.py", line 299, in hpo002
+    jobs = run_pool(hpo002_job, [(i, world, {}, HPO002_CONDITIONS, i == 0) for i in range(seeds)], procs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<home>/Desktop/BIM/xeno-ziran-runtime/backend/xzr/hpo/experiments.py", line 286, in run_pool
+    return list(ex.map(fn, args, chunksize=1))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.12/3.12.13_4/Frameworks/Python.framework/Versions/3.12/lib/python3.12/concurrent/futures/process.py", line 636, in _chain_from_iterable_of_lists
+    for element in iterable:
+                   ^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.12/3.12.13_4/Frameworks/Python.framework/Versions/3.12/lib/python3.12/concurrent/futures/_base.py", line 619, in result_iterator
+    yield _result_or_cancel(fs.pop())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.12/3.12.13_4/Frameworks/Python.framework/Versions/3.12/lib/python3.12/concurrent/futures/_base.py", line 317, in _result_or_cancel
+    return fut.result(timeout)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.12/3.12.13_4/Frameworks/Python.framework/Versions/3.12/lib/python3.12/concurrent/futures/_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.12/3.12.13_4/Frameworks/Python.framework/Versions/3.12/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+IndexError: index 11 is out of bounds for axis 0 with size 11
+FAILED hpo-002
+=== hpo-001 08:50:34
+/opt/homebrew/Cellar/python@3.12/3.12.13_4/Frameworks/Python.framework/Versions/3.12/lib/python3.12/multiprocessing/resource_tracker.py:279: UserWarning: resource_tracker: There appear to be 5 leaked semaphore objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '

@@ -1,0 +1,168 @@
+{
+ "generated": "2026-10-13T13:22:30Z",
+ "checks": [
+  {
+   "check": "1 earlier research lines kept",
+   "ok": true,
+   "detail": "484 files tracked at the pre-HPO baseline 6804327; missing: none",
+   "serious": true
+  },
+  {
+   "check": "2 runtime functions not lost",
+   "ok": true,
+   "detail": "14 pre-HPO files changed since 6804327; outside the listed integration points: none",
+   "serious": true
+  },
+  {
+   "check": "3 earlier results not overwritten",
+   "ok": true,
+   "detail": "70 pre-HPO result files byte-identical to 6804327: True; frozen HPO results byte-identical to the published commit 7cb381f: True (none changed)",
+   "serious": true
+  },
+  {
+   "check": "4 API / CLI / viewer work",
+   "ok": true,
+   "detail": "xzr presets → 0; xzr validate → 0; legacy result endpoints 200: True; HPO endpoints (8) 200: True",
+   "serious": true
+  },
+  {
+   "check": "5 legacy test suites pass",
+   "ok": true,
+   "detail": "backend ['263 passed, 1 warning in 86.96s (0:01:26)']; frontend ['Tests  34 passed (34)']; research ['59 passed in 12.06s'] (102 s)",
+   "serious": true
+  },
+  {
+   "check": "6 HPO tests pass",
+   "ok": true,
+   "detail": "['31 passed in 6.79s']",
+   "serious": false
+  },
+  {
+   "check": "7 sources vs implementation kept apart",
+   "ok": true,
+   "detail": "registry fidelity 'engineering proxy', sources bibliographic only: True; validation wording: none",
+   "serious": false
+  },
+  {
+   "check": "8 configured ignition works",
+   "ok": true,
+   "detail": "removing a condition raises unobservable evaluations (E:withdrawal 263.7 vs C 223.1); re-ignition verdicts: withdrawal RE-IGNITION UNDER CHANGED CONFIGURATION DETECTED, transduction RE-IGNITION UNDER CHANGED CONFIGURATION DETECTED, concrescence RE-IGNITION UNDER CHANGED CONFIGURATION DETECTED, picturing RE-IGNITION UNDER CHANGED CONFIGURATION DETECTED, assemblage RE-IGNITION UNDER CHANGED CONFIGURATION DETECTED, closure RE-IGNITION UNDER CHANGED CONFIGURATION DETECTED",
+   "serious": false
+  },
+  {
+   "check": "9 mutual transformation changes state",
+   "ok": true,
+   "detail": "H1 SUPPORTED IN THIS PROXY; world ['field_ignitions', 'memory_mean']; operations ['ignitions', 'fired_samples', 'reignitions', 'unobservable_samples', 'first_ignition_mean', 'ceased_share', 'op_states_visited']",
+   "serious": false
+  },
+  {
+   "check": "10a history reinsertion enters later operational conditions",
+   "ok": true,
+   "detail": "D vs C DETECTED in operation-internal measures (outside H2's pre-registered list): ['param_drift', 'revisions', 'retransform_latency', 'ignitions:transduction', 'picturing_error']; share of reinsertions that cause a later event: {'ignition parameters of an earlier configuration': 0.33121827411167515, 'archived veil': 0.7285714285714285, 'archived datum': 0.7712418300653595, 'archived datum re-seeds the milieu': 0.0}",
+   "serious": false
+  },
+  {
+   "check": "10b H2: pre-registered downstream difference (research outcome)",
+   "ok": null,
+   "detail": "H2 NOT SUPPORTED; pre-registered downstream measures detected: none",
+   "serious": false
+  },
+  {
+   "check": "control: noise branch",
+   "ok": true,
+   "detail": "C~ vs C: 0 of 61 measures detected",
+   "serious": false
+  },
+  {
+   "check": "11 Ziran reconfiguration verifiable",
+   "ok": true,
+   "detail": "reproducible trace True; sandbox paths 15; rejected 0; proposals ['veil_coverage: proposed (no implementation; untestable here)', 'activity_trend: not validated (held-out seeds)', 'conflict_density: proposed (no implementation; untestable here)']",
+   "serious": false
+  },
+  {
+   "check": "reproducibility (re-run, identical measures)",
+   "ok": true,
+   "detail": "{\"seeds\": 1, \"conditions\": [\"A\", \"C\", \"D\", \"E:withdrawal\", \"F:picturing\"], \"identical\": true}",
+   "serious": false
+  },
+  {
+   "check": "12 negative / untested results kept",
+   "ok": true,
+   "detail": "1 negative top-level outcomes recorded; per-kind and per-switch negatives are in the viewer",
+   "serious": false
+  },
+  {
+   "check": "ziran-xeno-simulator (Ziran System core, comparison) unchanged and passing",
+   "ok": true,
+   "detail": "git clean: True; core ['ℹ pass 73', 'ℹ fail 0']; comparison ['ℹ pass 11', 'ℹ fail 0']",
+   "serious": true
+  },
+  {
+   "check": "Xeno-14 / embodied Active Inference tests",
+   "ok": true,
+   "detail": "['23 passed, 1 warning in 2.33s']",
+   "serious": false
+  },
+  {
+   "check": "static export (into a temporary directory; site/ untouched)",
+   "ok": true,
+   "detail": "exit 0; HPO files published: ['hpo-general.json', 'hpo-history_trace.json', 'hpo-hpo001.json', 'hpo-hpo002.json', 'hpo-hpo003.json', 'hpo-reproduction.json', 'hpo-substantive.json', 'hpo-verification.json']",
+   "serious": false
+  },
+  {
+   "check": "iOS bundle staging excludes the HPO layer",
+   "ok": true,
+   "detail": "exit 0; staged packages: ['__init__.py', '__main__.py', '_compat', 'cli.py', 'compare', 'interpret', 'lod', 'native', 'practice', 'presets', 'results.py', 'runtime', 'scenario', 'service', 'shapes']",
+   "serious": false
+  }
+ ],
+ "negative": [
+  "H2: NOT SUPPORTED"
+ ],
+ "publish": true,
+ "integration_points": {
+  "backend/xzr/cli.py": "adds the `xzr hpo` subcommand",
+  "backend/xzr/service/app.py": "serves results/hpo/*.json as /api/experiments/hpo-<name>",
+  "backend/scripts/export_static.py": "publishes the HPO result files in the static mirror",
+  "backend/tests/test_layering.py": "adds the hpo layer's allowed imports; product layers may not import hpo",
+  "ios/scripts/stage_engine.py": "excludes hpo/ (desktop experiment layer) from the iOS bundle",
+  "frontend/src/App.tsx": "adds the HPO view",
+  "frontend/src/store/sim.ts": "adds the 'hpo' view id",
+  "frontend/src/i18n/strings.ts": "adds the HPO view label",
+  "frontend/src/static-views.json": "routes ?view=hpo",
+  "frontend/src/styles.css": "adds HPO styles (appended)",
+  "README.md": "documents HPO",
+  "CHANGELOG.md": "records the HPO integration",
+  "docs/LIMITATIONS.md": "adds HPO limits",
+  "docs/EXPERIMENTS.md": "lists the HPO experiments"
+ },
+ "component_inventory": {
+  "MO / DO / ZCA / MS / ΩⅨ / R-A / HDA": "not implemented anywhere on this machine; named in ziran-xeno-simulator DESIGN.md as possible future rule bundles ('the core does not assume them') — not claimed as preserved or verified",
+  "OOO / Barad / Sacilotto / constructor-theory experimental translations": "no implementation found in either repository (constructor theory appears only as references in ziran-xeno-simulator docs) — not claimed",
+  "Operational Resolution Escalation, Runtime Reduction, History Reentry, Post-Active-Inference": "this repository; covered by the legacy backend / research suites (check 5) and unchanged result files (check 3)",
+  "Ziran System core, Xeno-14, embodied Active Inference": "ziran-xeno-simulator; see the checks above"
+ },
+ "files_changed_vs_head": [
+  "CHANGELOG.md",
+  "README.md",
+  "backend/scripts/export_static.py",
+  "backend/tests/test_layering.py",
+  "backend/xzr/cli.py",
+  "backend/xzr/service/app.py",
+  "docs/EXPERIMENTS.md",
+  "docs/LIMITATIONS.md",
+  "frontend/src/App.tsx",
+  "frontend/src/i18n/strings.ts",
+  "frontend/src/static-views.json",
+  "frontend/src/store/sim.ts",
+  "frontend/src/styles.css",
+  "ios/scripts/stage_engine.py"
+ ],
+ "hpo_results_present": {
+  "hpo001": true,
+  "hpo002": true,
+  "hpo003": true,
+  "general": true
+ },
+ "note": "Serious regression (checks 1–5) stops publication of the viewer update; nothing is discarded."
+}

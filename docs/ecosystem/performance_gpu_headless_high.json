@@ -1,0 +1,196 @@
+{
+ "browser": "headless Chromium, WebGL on ANGLE Metal (GPU)",
+ "viewport": [
+  1672,
+  941
+ ],
+ "quality": "high",
+ "perf": {
+  "01-overview": {
+   "quality": "high",
+   "frames": 47,
+   "fps": 15.750670241286864,
+   "frameMsMean": 63.48936170212766,
+   "frameMsP95": 82.80000000000109,
+   "frameMsMax": 100,
+   "drawCalls": 1,
+   "triangles": 1,
+   "geometries": 142,
+   "textures": 27,
+   "instances": 83249,
+   "edgeSegments": 144790,
+   "simUpdateMsMean": 0,
+   "heapMB": 117.30194091796875,
+   "entities": 2,
+   "trialChambers": 12,
+   "camera": {
+    "pos": [
+     -26.000000000000007,
+     35.99999999999998,
+     98.00000000000001
+    ],
+    "target": [
+     -4,
+     -26,
+     -6
+    ]
+   },
+   "stats": {
+    "instances": 83249,
+    "edgeSegments": 144790,
+    "objects": 32,
+    "byKind": {
+     "terrain": 0,
+     "nodes": 1692,
+     "manipulators": 360,
+     "chambers": 70,
+     "habitat": 0,
+     "power": 26,
+     "array": 12,
+     "expansion": 39,
+     "greebles": 16000,
+     "greebles edges": 22560,
+     "wall grid": 5792,
+     "trusses": 12486,
+     "trusses edges": 90036,
+     "panels": 12344,
+     "panels edges": 11964,
+     "plates": 876,
+     "plates edges": 10512,
+     "rock": 10951,
+     "glazing": 70,
+     "fittings": 12839,
+     "cables": 3890,
+     "suspended material": 0,
+     "sky": 0,
+     "rocks (wet)": 520,
+     "gravel (wet)": 15000
+    }
+   }
+  },
+  "14-experimental-body": {
+   "quality": "high",
+   "frames": 52,
+   "fps": 17.237378592501745,
+   "frameMsMean": 58.01346153846152,
+   "frameMsP95": 83.39999999999964,
+   "frameMsMax": 151,
+   "drawCalls": 1,
+   "triangles": 1,
+   "geometries": 175,
+   "textures": 20,
+   "instances": 83249,
+   "edgeSegments": 144790,
+   "simUpdateMsMean": 0,
+   "heapMB": 98.22845458984375,
+   "entities": 2,
+   "trialChambers": 12,
+   "camera": {
+    "pos": [
+     -88.99999999999999,
+     3.200000000000002,
+     14.99999999999999
+    ],
+    "target": [
+     -103.99999999999999,
+     2.9999999999999996,
+     2.9999999999999996
+    ]
+   },
+   "stats": {
+    "instances": 83249,
+    "edgeSegments": 144790,
+    "objects": 32,
+    "byKind": {
+     "terrain": 0,
+     "nodes": 1692,
+     "manipulators": 360,
+     "chambers": 70,
+     "habitat": 0,
+     "power": 26,
+     "array": 12,
+     "expansion": 39,
+     "greebles": 16000,
+     "greebles edges": 22560,
+     "wall grid": 5792,
+     "trusses": 12486,
+     "trusses edges": 90036,
+     "panels": 12344,
+     "panels edges": 11964,
+     "plates": 876,
+     "plates edges": 10512,
+     "rock": 10951,
+     "glazing": 70,
+     "fittings": 12839,
+     "cables": 3890,
+     "suspended material": 0,
+     "sky": 0,
+     "rocks (wet)": 520,
+     "gravel (wet)": 15000
+    }
+   }
+  },
+  "15-observation-node": {
+   "quality": "high",
+   "frames": 76,
+   "fps": 25.052742616033754,
+   "frameMsMean": 39.915789473684214,
+   "frameMsP95": 51,
+   "frameMsMax": 65.80000000000109,
+   "drawCalls": 1,
+   "triangles": 1,
+   "geometries": 102,
+   "textures": 20,
+   "instances": 83249,
+   "edgeSegments": 144790,
+   "simUpdateMsMean": 0,
+   "heapMB": 92.88787841796875,
+   "entities": 2,
+   "trialChambers": 12,
+   "camera": {
+    "pos": [
+     -104,
+     4.200000000000013,
+     22.000000000000007
+    ],
+    "target": [
+     -85,
+     7.499999999999999,
+     37
+    ]
+   },
+   "stats": {
+    "instances": 83249,
+    "edgeSegments": 144790,
+    "objects": 32,
+    "byKind": {
+     "terrain": 0,
+     "nodes": 1692,
+     "manipulators": 360,
+     "chambers": 70,
+     "habitat": 0,
+     "power": 26,
+     "array": 12,
+     "expansion": 39,
+     "greebles": 16000,
+     "greebles edges": 22560,
+     "wall grid": 5792,
+     "trusses": 12486,
+     "trusses edges": 90036,
+     "panels": 12344,
+     "panels edges": 11964,
+     "plates": 876,
+     "plates edges": 10512,
+     "rock": 10951,
+     "glazing": 70,
+     "fittings": 12839,
+     "cables": 3890,
+     "suspended material": 0,
+     "sky": 0,
+     "rocks (wet)": 520,
+     "gravel (wet)": 15000
+    }
+   }
+  }
+ }
+}

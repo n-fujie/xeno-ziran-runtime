@@ -1,0 +1,83 @@
+{
+ "stage": "05-apparatus",
+ "commit": "3654322+uncommitted",
+ "browser": "Chrome/151.0.7922.34",
+ "base": "http://127.0.0.1:3011",
+ "viewport": [
+  1200,
+  866
+ ],
+ "devicePixelRatio": 1,
+ "scenes": [
+  {
+   "name": "16-memory-store",
+   "record": "m7-systems-6000",
+   "recordSha256": "5a70291ada0f15a6",
+   "stepIndex": 480,
+   "note": "system C memory store; filled slots = recorded memory entries",
+   "url": "/?view=laboratory&hifi=1&rec=m7-systems-6000&step=480&cam=apparatus&quality=balanced&sel=store%3AC%3Astore&sys=C",
+   "commit": "3654322+uncommitted",
+   "viewport": [
+    1200,
+    866
+   ],
+   "devicePixelRatio": 1,
+   "browser": "Chrome/151.0.7922.34",
+   "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified Version)",
+   "state": {
+    "cam": "apparatus",
+    "sel": {
+     "kind": "store",
+     "id": "C:store"
+    },
+    "sys": "C",
+    "domain": "0",
+    "layers": {
+     "A": true,
+     "B": true,
+     "C": true
+    },
+    "quality": "balanced",
+    "step": 481,
+    "index": 480,
+    "camera": [
+     7.748,
+     3.207,
+     10.268
+    ],
+    "target": [
+     9.927,
+     1.28,
+     11.585
+    ],
+    "pixelRatio": 1,
+    "canvas": [
+     800,
+     723
+    ]
+   },
+   "selfTest": {
+    "step": 481,
+    "positionsChecked": 40,
+    "worstPositionError": 5.072509780052955e-7,
+    "layers": {
+     "A": 42,
+     "B": 113,
+     "C": 74
+    },
+    "drawCalls": 72,
+    "triangles": 22108,
+    "quality": "balanced"
+   },
+   "frames": {
+    "n": 150,
+    "mean": 16.67,
+    "p50": 16.7,
+    "p95": 18.5,
+    "p99": 18.7,
+    "max": 18.7
+   },
+   "longTasks": 0
+  }
+ ]
+}

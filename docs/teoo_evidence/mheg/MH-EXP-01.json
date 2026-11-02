@@ -1,0 +1,190 @@
+{
+ "experiment_id": "MH-EXP-01",
+ "protocol_version": 1,
+ "protocol_digest": "12bab7bb0d39ab38a46679a05cda98579ee1dafdfbc04c8eb4525f5abc27d60b",
+ "protocol": {
+  "experiment_id": "MH-EXP-01",
+  "hypotheses": [
+   {
+    "id": "H1",
+    "statement": "Removing a finding that no duty names changes no duty, and removing any other changes at least one; the only finding the crosswalk does not name is G1"
+   },
+   {
+    "id": "H2",
+    "statement": "The duty view cannot tell some single failures apart: at least two findings share one duty signature"
+   },
+   {
+    "id": "H3",
+    "statement": "Over the 19 single and 171 pair removals the duty signatures distinguish fewer patterns than the findings do (information is lost in the projection)"
+   },
+   {
+    "id": "H4",
+    "statement": "No duty is SATISFIED while a finding it maps is VIOLATED, in any of the 190 patterns, and the intact institution satisfies every duty"
+   }
+  ],
+  "targets": [
+   "findings, duties and outcomes of a synthetic institution"
+  ],
+  "instrument_conditions": {
+   "patterns": "19 single + 171 pair removals from a fully provisioned institution; evidence set directly (no simulation)"
+  },
+  "control_condition": "finding-level reading",
+  "conditions": [
+   "crosswalk projection",
+   "finding-level reading"
+  ],
+  "seeds": [
+   6001
+  ],
+  "trials_per_condition": 1,
+  "stopping_rule": {
+   "type": "fixed-n",
+   "units": 1,
+   "no interim analysis": true
+  },
+  "outcomes": {
+   "primary": [
+    "uncovered findings",
+    "collision groups",
+    "distinct duty signatures",
+    "non-compensation violations"
+   ],
+   "secondary": [
+    "duties per finding"
+   ]
+  },
+  "analyses": [
+   {
+    "id": "M101",
+    "hypothesis": "H1",
+    "outcome": "uncovered findings",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "M102",
+    "hypothesis": "H2",
+    "outcome": "collision groups",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "M103",
+    "hypothesis": "H3",
+    "outcome": "distinct signatures",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "M104",
+    "hypothesis": "H4",
+    "outcome": "violations",
+    "method": "descriptive",
+    "confirmatory": true
+   }
+  ],
+  "multiplicity": "holm",
+  "failure_conditions": [
+   "fewer than 1 units"
+  ],
+  "reproduction": {
+   "generator": "xzr.teoo.mheg_experiments",
+   "steps": [
+    "run unit per seed",
+    "analyse"
+   ],
+   "world": "xzr.teoo.legal (SYNTHETIC institution) and xzr.teoo.mheg (duties, crosswalk as reported, directive states)"
+  },
+  "schema": "teoo.protocol/1",
+  "version": 1,
+  "parent_version": null,
+  "change_reason": null
+ },
+ "units": 1,
+ "seeds": [
+  6001
+ ],
+ "evidence_class": "Implementation Property",
+ "seconds": 0.3,
+ "results": {
+  "M101": {
+   "method": "descriptive",
+   "single_patterns": 19,
+   "pair_patterns": 171,
+   "uncovered_singles": [
+    "G1"
+   ],
+   "single_collision_groups": [
+    [
+     "G11",
+     "G12A"
+    ],
+    [
+     "G15B",
+     "G15C"
+    ],
+    [
+     "G4",
+     "G5"
+    ]
+   ],
+   "distinct_duty_signatures_among_190": 87,
+   "patterns": 190,
+   "noncompensation_violations": 0,
+   "baseline_all_satisfied": true,
+   "criterion": "the findings with an empty signature are exactly ['G1'] and every other single removal changes at least one duty",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  },
+  "M102": {
+   "single_collision_groups": [
+    [
+     "G11",
+     "G12A"
+    ],
+    [
+     "G15B",
+     "G15C"
+    ],
+    [
+     "G4",
+     "G5"
+    ]
+   ],
+   "criterion": "at least one group of two or more findings with the same non-empty signature",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  },
+  "M103": {
+   "distinct_duty_signatures_among_190": 87,
+   "patterns": 190,
+   "criterion": "distinct duty signatures < 190",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  },
+  "M104": {
+   "method": "descriptive",
+   "noncompensation_violations": 0,
+   "baseline_all_satisfied": true,
+   "criterion": "0 violations and the intact institution satisfies every duty",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  }
+ },
+ "catalogue": {
+  "source": "The Minimum Guarantees of Human Legal Subjecthood, Publication Final V3.0, Chapter 6.2 (identical in the 100_POINT_EDITION and in R2 section 4: all fifteen titles and definitions compared character for character)",
+  "verified_against_original": true,
+  "sha256": {
+   "v3_0": "cf4d4f0c51169451da5af4c33e7081e947dacbade855068a889965d8c523b848",
+   "v3_0_100_point_edition": "afb59d1a0c3b28854f14113f843645539e07a2e466949d22de4b67da0a22bf99",
+   "ai_law_osr_r2": "a9984451b281df3252b05842dc5109dd396e0b0c54d3560849344ad41059a501"
+  },
+  "editions_identical_for_guarantees": true,
+  "note": "V3.0 uses two vocabularies for the same five findings (Appendix A table: Secured/Partial/Absent/Indeterminate/Inapplicable; A.3 and 8.4 text: Satisfied/Partially Satisfied/Failed/Indeterminate/Not Applicable). R2 section 16 and this implementation use the table's."
+ },
+ "note": "results about a SYNTHETIC institution and this implementation; the twelve duties are functional summaries and their crosswalk is as reported (R16 not available); not an observation of any institution, law or person"
+}

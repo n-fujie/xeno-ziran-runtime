@@ -6,16 +6,18 @@ read state under the session lock.
 
 from __future__ import annotations
 
+import sys
 import threading
 import time
 import uuid
 from collections import deque
 from collections.abc import Callable
 from concurrent.futures import Future, ThreadPoolExecutor
+from typing import Any
 
 import numpy as np
 
-from ..compare.compare import compare
+from ..compare.compare import compare_steps
 from ..interpret.labels import interpret, rules_from_json
 from ..lod.hierarchy import SCALES
 from ..lod.layouts import LAYOUTS, normalize
@@ -34,6 +36,11 @@ from .security import METRICS, event, new_session_id
 OUTBOX_MAX = 600  # hard bound: beyond this, clients are resynced with a snapshot (event log keeps everything)
 BACKPRESSURE = 45  # while clients are connected, the simulation waits once this many steps are unsent
 RING = 1500  # steps of full event history kept in memory for the event log / inspection
+
+# WebAssembly (Pyodide) cannot start threads. There the host drives the session by calling pump() (and run_deferred() for
+# comparison jobs) from its own loop; stepping rules, limits and results are the same as with the simulation thread.
+COOPERATIVE = sys.platform == "emscripten"
+DEFERRED: deque[tuple[Future, Any]] = deque()  # comparison jobs (future, stepping generator) for run_deferred()
 
 _POOL = ThreadPoolExecutor(max_workers=2, thread_name_prefix="xzr-job")  # bounded concurrency of comparison jobs
 JOBS: dict[str, dict] = {}  # job records; pruned by prune_jobs (TTL and count)
@@ -63,6 +70,32 @@ def prune_jobs(now: float | None = None) -> int:
     if drop:
         METRICS.inc("jobs_pruned", len(drop))
     return len(drop)
+
+
+def run_deferred(budget: float = 0.01) -> bool:
+    """Cooperative mode: advance the queued comparison jobs for at most `budget` seconds, in time slices (one simulation
+    step of a branch at a time), so a long comparison never stops the live simulation or the page. Cancelled jobs are
+    skipped. Returns True while jobs remain."""
+    end = time.perf_counter() + budget
+    while DEFERRED:
+        fut, gen = DEFERRED[0]
+        if not fut.running() and not fut.set_running_or_notify_cancel():
+            DEFERRED.popleft()  # cancelled while queued: never run
+            continue
+        try:
+            while time.perf_counter() < end:
+                next(gen)
+            return True  # slice used up; the job continues on the next call
+        except StopIteration:
+            fut.set_result(None)
+            DEFERRED.popleft()
+        except BaseException as e:  # the job body reports its own errors; this only guards the queue itself
+            fut.set_exception(e)
+            DEFERRED.popleft()
+            raise
+        if time.perf_counter() >= end:
+            return bool(DEFERRED)
+    return False
 
 
 def cancel_job(jid: str) -> bool:
@@ -114,9 +147,13 @@ class Session:
         self.streaming = False  # set by the transport while websocket clients are attached
         self.listeners: list[Callable[[dict], None]] = []  # notified (from worker threads) about jobs etc.
         self.compares: dict[str, dict] = {}
+        self._next_step = 0.0  # cooperative mode: earliest time of the next paced step
         self._build(applied)
-        self.thread = threading.Thread(target=self._loop, name=f"xzr-sim-{self.id}", daemon=True)
-        self.thread.start()
+        if COOPERATIVE:
+            self.thread = None  # no threads here: the host calls pump()
+        else:
+            self.thread = threading.Thread(target=self._loop, name=f"xzr-sim-{self.id}", daemon=True)
+            self.thread.start()
 
     def _build(self, applied: dict | None = None) -> None:
         sc = self.scenario
@@ -191,6 +228,28 @@ class Session:
             else:
                 # yield: Python locks are not fair, and the transport must be able to drain the outbox
                 time.sleep(0.001 if self.streaming else 0)
+
+    def pump(self, budget: float = 0.01) -> bool:
+        """Cooperative stepping for hosts without threads: the same rules as _loop (pending batches run unpaced, a running
+        session is paced to `speed`, and stepping waits while a connected client has too many unsent steps), for at most
+        `budget` seconds. Returns True while more work remains."""
+        end = time.perf_counter() + budget
+        while True:
+            with self.cv:
+                if self.closed or not (self.running or self.pending_steps > 0):
+                    return False
+                if self.streaming and len(self.outbox) >= BACKPRESSURE:
+                    return True
+                t0 = time.perf_counter()
+                if self.pending_steps == 0 and self.speed > 0 and t0 < self._next_step:
+                    return True
+                self._step_locked()
+                self.step_latency = 0.9 * self.step_latency + 0.1 * (time.perf_counter() - t0)
+                if self.pending_steps > 0:
+                    self.pending_steps -= 1
+                self._next_step = t0 + 1.0 / self.speed if (self.pending_steps == 0 and self.speed > 0) else 0.0
+            if time.perf_counter() >= end:
+                return True
 
     def steps_per_second(self) -> float:
         ts = self.step_times
@@ -537,10 +596,13 @@ class Session:
             JOBS[jid] = job
         METRICS.inc("jobs_started")
 
-        def work() -> None:
+        def work_steps():
+            """The comparison as a generator (one yield per simulation step): a pool thread drives it straight through;
+            a host without threads advances it in time slices between session steps (run_deferred)."""
             job["status"] = "running"
             try:
-                res = compare(fork, ov_a, act_a, ov_b, act_b, self.h, horizon=horizon, graph_every=self.graph_every)
+                res = yield from compare_steps(fork, ov_a, act_a, ov_b, act_b, self.h, horizon=horizon,
+                                               graph_every=self.graph_every)
                 res["id"] = jid
                 res["commitment_changes"] = changes
                 res["operational_changes"] = {"baseline": prov_a, "intervention": prov_b}
@@ -562,8 +624,17 @@ class Session:
             for fn in list(self.listeners):
                 fn({"type": "job", **{k: v for k, v in job.items() if k != "created"}})
 
+        def work() -> None:
+            for _ in work_steps():
+                pass
+
         with _JOBS_LOCK:
-            FUTURES[jid] = _POOL.submit(work)
+            if COOPERATIVE:
+                fut: Future = Future()
+                DEFERRED.append((fut, work_steps()))
+                FUTURES[jid] = fut
+            else:
+                FUTURES[jid] = _POOL.submit(work)
         return jid
 
     # ------------------------------------------------------------------ persistence

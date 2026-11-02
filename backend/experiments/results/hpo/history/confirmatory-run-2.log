@@ -1,0 +1,21 @@
+=== hpo-002 09:00:14
+results: <home>/Desktop/BIM/xeno-ziran-runtime/backend/experiments/results/hpo/hpo002.json
+=== hpo-001 09:32:38
+results: <home>/Desktop/BIM/xeno-ziran-runtime/backend/experiments/results/hpo/hpo001.json
+=== generalization 09:34:08
+results: <home>/Desktop/BIM/xeno-ziran-runtime/backend/experiments/results/hpo/general.json
+=== hpo-003 09:41:49
+results: <home>/Desktop/BIM/xeno-ziran-runtime/backend/experiments/results/hpo/hpo003.json
+=== verify 09:44:10
+{
+ "seeds": 2,
+ "conditions": [
+  "A",
+  "C",
+  "D",
+  "E:withdrawal",
+  "F:picturing"
+ ],
+ "identical": true
+}
+=== done 09:44:21

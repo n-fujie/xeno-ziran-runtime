@@ -1,0 +1,3814 @@
+{
+ "status": "post-hoc descriptive analysis (not pre-registered; no hypothesis is tested here)",
+ "seeds": 48,
+ "seed_ranges": {
+  "generator": 100,
+  "engine": 20000
+ },
+ "conditions": [
+  "B",
+  "C",
+  "D",
+  "E:withdrawal",
+  "E:transduction",
+  "E:concrescence",
+  "E:picturing",
+  "E:assemblage",
+  "E:closure",
+  "F:withdrawal",
+  "F:transduction",
+  "F:concrescence",
+  "F:picturing",
+  "F:assemblage",
+  "F:closure"
+ ],
+ "results": {
+  "B": {
+   "Q1_changed_ignition_conditions": {},
+   "Q2_causing_series": {},
+   "Q3_ignited_share": {
+    "withdrawal": 0.9375,
+    "transduction": 0.7916666666666666,
+    "concrescence": 0.8125,
+    "picturing": 0.5208333333333334,
+    "assemblage": 0.9375,
+    "closure": 0.9166666666666666
+   },
+   "Q4_parameters_persisting_changed": 0.1643646408839779,
+   "Q5_transforms_by_source_after_step_80": {
+    "withdrawal": 0.0,
+    "transduction": 0.0,
+    "concrescence": 0.0,
+    "picturing": 0.0,
+    "assemblage": 0.0,
+    "closure": 0.0
+   },
+   "Q5_parameter_drift_mean": 0.07475418737173321,
+   "Q6_reinsertions": {},
+   "Q7_configuration": {
+    "couplings_per_run": 0.0,
+    "splits_per_run": 1.875,
+    "reclassifications_per_run": 0.0,
+    "composite_kinds_seen_in_runs": {}
+   },
+   "Q9_unobservable_channel_samples_per_run": {
+    "transduction": {
+     "unmeasured": 59.70833333333333
+    },
+    "assemblage": {
+     "unmeasured": 2.125
+    },
+    "closure": {
+     "unmeasured": 10.583333333333332
+    }
+   }
+  },
+  "C": {
+   "Q1_changed_ignition_conditions": {
+    "picturing.ign.tolerance": {
+     "runs": 48,
+     "per_run": 16.020833333333332,
+     "mean_relative_change": -0.08407200128633215
+    },
+    "withdrawal.ign.threshold": {
+     "runs": 48,
+     "per_run": 28.6875,
+     "mean_relative_change": 0.02889230484838277
+    },
+    "transduction.rule.factor": {
+     "runs": 48,
+     "per_run": 118.39583333333333,
+     "mean_relative_change": 0.003919770507907177
+    },
+    "closure.ign.threshold": {
+     "runs": 47,
+     "per_run": 22.979166666666668,
+     "mean_relative_change": -0.07967152831458499
+    },
+    "assemblage.ign.threshold": {
+     "runs": 44,
+     "per_run": 13.958333333333334,
+     "mean_relative_change": -0.09503466670058126
+    },
+    "transduction.ign.threshold": {
+     "runs": 43,
+     "per_run": 17.25,
+     "mean_relative_change": -0.07737867220636843
+    },
+    "withdrawal.instrument.level": {
+     "runs": 42,
+     "per_run": 0.875,
+     "mean_relative_change": 1.0
+    },
+    "assemblage.rule.links": {
+     "runs": 35,
+     "per_run": 4.0625,
+     "mean_relative_change": -0.2428733098177543
+    },
+    "picturing.rule.damp": {
+     "runs": 34,
+     "per_run": 8.958333333333334,
+     "mean_relative_change": -0.004692149971885292
+    },
+    "assemblage.instrument.level": {
+     "runs": 31,
+     "per_run": 0.6458333333333334,
+     "mean_relative_change": 1.0
+    },
+    "closure.instrument.level": {
+     "runs": 31,
+     "per_run": 0.6458333333333334,
+     "mean_relative_change": 1.0
+    },
+    "concrescence.instrument.level": {
+     "runs": 21,
+     "per_run": 0.4375,
+     "mean_relative_change": 1.0
+    },
+    "closure.rule.adapt": {
+     "runs": 20,
+     "per_run": 1.9583333333333333,
+     "mean_relative_change": 0.0002650119964222972
+    },
+    "concrescence∘assemblage.instrument.level": {
+     "runs": 4,
+     "per_run": 0.08333333333333333,
+     "mean_relative_change": 1.0
+    },
+    "concrescence∘assemblage∘closure.instrument.level": {
+     "runs": 1,
+     "per_run": 0.020833333333333332,
+     "mean_relative_change": 1.0
+    },
+    "withdrawal∘concrescence∘assemblage.instrument.level": {
+     "runs": 1,
+     "per_run": 0.020833333333333332,
+     "mean_relative_change": 1.0
+    }
+   },
+   "Q2_causing_series": {
+    "picturing → transduction": 60.3125,
+    "competition → transduction": 43.833333333333336,
+    "concrescence → transduction": 15.541666666666666,
+    "concrescence → withdrawal": 15.5,
+    "assemblage → transduction": 14.604166666666666,
+    "closure → withdrawal": 13.1875,
+    "concrescence → closure": 10.854166666666666,
+    "assemblage → withdrawal": 9.708333333333334,
+    "assemblage → closure": 8.666666666666666,
+    "assemblage → picturing": 8.583333333333334,
+    "concrescence → assemblage": 8.583333333333334,
+    "assemblage → concrescence": 5.770833333333333,
+    "transduction → picturing": 5.416666666666667,
+    "transduction → closure": 5.375,
+    "concrescence → picturing": 5.229166666666667,
+    "competition → concrescence∘picturing": 4.833333333333333,
+    "picturing → transduction∘closure": 4.666666666666667,
+    "transduction → concrescence∘picturing": 4.604166666666667,
+    "assemblage → transduction∘assemblage": 4.1875,
+    "competition → picturing": 3.5416666666666665,
+    "transduction → transduction∘closure": 3.4791666666666665,
+    "competition → transduction∘assemblage": 2.6666666666666665,
+    "withdrawal → assemblage": 2.375,
+    "picturing → transduction∘assemblage": 2.2708333333333335,
+    "competition → transduction∘closure": 1.8958333333333333,
+    "picturing → transduction∘assemblage∘closure": 1.875,
+    "closure → assemblage": 1.7916666666666667,
+    "assemblage → assemblage": 1.7083333333333333,
+    "competition → closure": 1.2291666666666667,
+    "assemblage → concrescence∘picturing": 1.1666666666666667,
+    "assemblage → transduction∘assemblage∘closure": 1.0208333333333333,
+    "concrescence → transduction∘closure": 1.0208333333333333,
+    "withdrawal → closure": 0.8958333333333334,
+    "picturing → withdrawal": 0.875,
+    "closure → transduction∘assemblage": 0.8125,
+    "competition → transduction∘assemblage∘closure": 0.7916666666666666,
+    "transduction → transduction∘assemblage∘closure": 0.7708333333333334,
+    "closure → concrescence∘assemblage": 0.75,
+    "picturing → assemblage": 0.6458333333333334,
+    "picturing → closure": 0.6458333333333334,
+    "concrescence → transduction∘assemblage": 0.4791666666666667,
+    "assemblage → assemblage∘closure": 0.4583333333333333,
+    "withdrawal → transduction∘assemblage": 0.4375,
+    "withdrawal → transduction∘assemblage∘closure": 0.4375,
+    "picturing → concrescence": 0.4375,
+    "concrescence → transduction∘assemblage∘closure": 0.4166666666666667,
+    "assemblage → transduction∘closure": 0.4166666666666667,
+    "competition → concrescence∘picturing∘assemblage": 0.3541666666666667,
+    "transduction → assemblage∘closure": 0.3541666666666667,
+    "withdrawal → assemblage∘closure": 0.3333333333333333,
+    "closure → concrescence∘picturing∘assemblage": 0.3125,
+    "closure → transduction∘assemblage∘closure": 0.2708333333333333,
+    "concrescence → picturing∘assemblage": 0.2708333333333333,
+    "concrescence → assemblage∘closure": 0.22916666666666666,
+    "transduction → concrescence∘picturing∘assemblage": 0.20833333333333334,
+    "withdrawal → concrescence∘assemblage": 0.20833333333333334,
+    "withdrawal → picturing∘assemblage": 0.20833333333333334,
+    "competition → picturing∘assemblage∘closure": 0.1875,
+    "transduction → picturing∘assemblage∘closure": 0.16666666666666666,
+    "picturing → withdrawal∘transduction": 0.14583333333333334,
+    "concrescence → picturing∘assemblage∘closure": 0.14583333333333334,
+    "picturing → transduction∘concrescence∘assemblage": 0.14583333333333334,
+    "withdrawal → concrescence∘picturing∘assemblage": 0.125,
+    "competition → assemblage∘closure": 0.125,
+    "assemblage → picturing∘assemblage": 0.125,
+    "competition → withdrawal∘transduction": 0.10416666666666667,
+    "concrescence → transduction∘picturing∘assemblage": 0.10416666666666667,
+    "picturing → concrescence∘assemblage": 0.08333333333333333,
+    "competition → transduction∘concrescence∘assemblage": 0.08333333333333333,
+    "transduction → concrescence∘assemblage∘closure": 0.08333333333333333,
+    "closure → withdrawal∘transduction∘assemblage": 0.0625,
+    "competition → picturing∘assemblage": 0.0625,
+    "transduction → concrescence∘closure": 0.0625,
+    "picturing → transduction∘concrescence∘closure": 0.0625,
+    "competition → concrescence∘picturing∘closure": 0.041666666666666664,
+    "withdrawal → transduction∘closure": 0.041666666666666664,
+    "competition → transduction∘picturing∘assemblage": 0.041666666666666664,
+    "closure → picturing∘assemblage": 0.041666666666666664,
+    "picturing → withdrawal∘transduction∘assemblage": 0.020833333333333332,
+    "assemblage → withdrawal∘transduction": 0.020833333333333332,
+    "transduction → picturing∘closure": 0.020833333333333332,
+    "assemblage → picturing∘closure": 0.020833333333333332,
+    "transduction → concrescence∘picturing∘closure": 0.020833333333333332,
+    "picturing → concrescence∘assemblage∘closure": 0.020833333333333332,
+    "closure → transduction∘concrescence∘assemblage": 0.020833333333333332,
+    "transduction → transduction∘picturing∘assemblage": 0.020833333333333332,
+    "transduction → picturing∘assemblage": 0.020833333333333332,
+    "concrescence → picturing∘closure": 0.020833333333333332,
+    "picturing → withdrawal∘concrescence∘assemblage": 0.020833333333333332,
+    "competition → concrescence∘closure": 0.020833333333333332
+   },
+   "Q3_ignited_share": {
+    "withdrawal": 0.6875,
+    "transduction": 0.8333333333333334,
+    "concrescence": 0.9166666666666666,
+    "picturing": 1.0,
+    "assemblage": 0.9375,
+    "closure": 0.8958333333333334
+   },
+   "Q4_parameters_persisting_changed": 0.22360497792051384,
+   "Q5_transforms_by_source_after_step_80": {
+    "withdrawal": 2.8541666666666665,
+    "transduction": 12.708333333333334,
+    "concrescence": 36.895833333333336,
+    "picturing": 58.708333333333336,
+    "assemblage": 23.25,
+    "closure": 9.395833333333334
+   },
+   "Q5_parameter_drift_mean": 0.14144676637720469,
+   "Q6_reinsertions": {
+    "archived datum re-seeds the milieu": {
+     "per_run": 1.125,
+     "share_causing_a_later_event": 0.0
+    }
+   },
+   "Q7_configuration": {
+    "couplings_per_run": 3.1041666666666665,
+    "splits_per_run": 4.5625,
+    "reclassifications_per_run": 0.0,
+    "composite_kinds_seen_in_runs": {
+     "assemblage∘closure": 7,
+     "transduction∘assemblage": 12,
+     "transduction∘assemblage∘closure": 6,
+     "withdrawal∘transduction": 1,
+     "withdrawal∘transduction∘assemblage": 1,
+     "concrescence∘picturing": 36,
+     "transduction∘closure": 19,
+     "picturing∘assemblage": 8,
+     "transduction∘picturing∘assemblage": 2,
+     "concrescence∘assemblage": 21,
+     "concrescence∘picturing∘assemblage": 19,
+     "concrescence∘picturing∘closure": 4,
+     "picturing∘assemblage∘closure": 3,
+     "picturing∘closure": 2,
+     "transduction∘concrescence∘assemblage": 2,
+     "concrescence∘assemblage∘closure": 5,
+     "concrescence∘closure": 2,
+     "transduction∘concrescence∘closure": 1,
+     "withdrawal∘concrescence∘assemblage": 1
+    }
+   },
+   "Q9_unobservable_channel_samples_per_run": {
+    "withdrawal": {
+     "boundary_invisible": 54.62500000000001
+    },
+    "transduction": {
+     "boundary_invisible": 95.75000000000003,
+     "unmeasured": 59.520833333333336,
+     "scale_mismatch": 3.8541666666666665
+    },
+    "assemblage": {
+     "boundary_invisible": 54.645833333333336,
+     "unmeasured": 30.770833333333336,
+     "scale_mismatch": 29.4375
+    },
+    "closure": {
+     "boundary_invisible": 41.58333333333333,
+     "unmeasured": 60.72916666666667,
+     "scale_mismatch": 6.083333333333334
+    },
+    "concrescence": {
+     "boundary_invisible": 17.229166666666664,
+     "scale_mismatch": 6.604166666666666,
+     "unmeasured": 0.4375
+    },
+    "picturing": {
+     "boundary_invisible": 17.895833333333336,
+     "scale_mismatch": 11.000000000000002,
+     "unmeasured": 2.4791666666666665
+    }
+   }
+  },
+  "D": {
+   "Q1_changed_ignition_conditions": {
+    "picturing.ign.tolerance": {
+     "runs": 48,
+     "per_run": 19.125,
+     "mean_relative_change": -0.08645272988871329
+    },
+    "withdrawal.ign.threshold": {
+     "runs": 48,
+     "per_run": 33.208333333333336,
+     "mean_relative_change": 0.034385148682913064
+    },
+    "transduction.rule.factor": {
+     "runs": 47,
+     "per_run": 108.85416666666667,
+     "mean_relative_change": 0.006014378296892319
+    },
+    "closure.ign.threshold": {
+     "runs": 46,
+     "per_run": 27.145833333333332,
+     "mean_relative_change": -0.08288276763774427
+    },
+    "assemblage.ign.threshold": {
+     "runs": 44,
+     "per_run": 18.520833333333332,
+     "mean_relative_change": -0.09458569608922698
+    },
+    "transduction.ign.threshold": {
+     "runs": 42,
+     "per_run": 21.229166666666668,
+     "mean_relative_change": -0.07967107686970432
+    },
+    "assemblage.rule.links": {
+     "runs": 35,
+     "per_run": 3.7916666666666665,
+     "mean_relative_change": -0.2431025867136979
+    },
+    "withdrawal.instrument.level": {
+     "runs": 34,
+     "per_run": 0.7083333333333334,
+     "mean_relative_change": 1.0
+    },
+    "picturing.rule.damp": {
+     "runs": 29,
+     "per_run": 8.25,
+     "mean_relative_change": -0.004568739583502684
+    },
+    "closure.instrument.level": {
+     "runs": 25,
+     "per_run": 0.5208333333333334,
+     "mean_relative_change": 1.0
+    },
+    "assemblage.instrument.level": {
+     "runs": 24,
+     "per_run": 0.5,
+     "mean_relative_change": 1.0
+    },
+    "concrescence.instrument.level": {
+     "runs": 18,
+     "per_run": 0.375,
+     "mean_relative_change": 1.0
+    },
+    "closure.rule.adapt": {
+     "runs": 17,
+     "per_run": 1.5833333333333333,
+     "mean_relative_change": 0.0009857667767840287
+    },
+    "concrescence∘assemblage.instrument.level": {
+     "runs": 4,
+     "per_run": 0.08333333333333333,
+     "mean_relative_change": 1.0
+    },
+    "concrescence∘assemblage∘closure.instrument.level": {
+     "runs": 2,
+     "per_run": 0.041666666666666664,
+     "mean_relative_change": 1.0
+    },
+    "withdrawal∘concrescence∘assemblage.instrument.level": {
+     "runs": 1,
+     "per_run": 0.020833333333333332,
+     "mean_relative_change": 1.0
+    },
+    "withdrawal∘assemblage.instrument.level": {
+     "runs": 1,
+     "per_run": 0.020833333333333332,
+     "mean_relative_change": 1.0
+    }
+   },
+   "Q2_causing_series": {
+    "picturing → transduction": 52.479166666666664,
+    "competition → transduction": 41.5,
+    "concrescence → transduction": 18.8125,
+    "concrescence → withdrawal": 16.6875,
+    "closure → withdrawal": 16.520833333333332,
+    "concrescence → closure": 14.229166666666666,
+    "assemblage → transduction": 12.416666666666666,
+    "concrescence → assemblage": 11.8125,
+    "assemblage → picturing": 9.083333333333334,
+    "assemblage → withdrawal": 8.854166666666666,
+    "assemblage → closure": 8.291666666666666,
+    "transduction → picturing": 7.645833333333333,
+    "concrescence → picturing": 6.8125,
+    "transduction → closure": 6.270833333333333,
+    "assemblage → concrescence": 6.125,
+    "picturing → transduction∘closure": 5.520833333333333,
+    "competition → concrescence∘picturing": 4.104166666666667,
+    "transduction → concrescence∘picturing": 3.8125,
+    "competition → picturing": 3.5833333333333335,
+    "picturing → transduction∘assemblage": 3.5,
+    "transduction → transduction∘closure": 3.4375,
+    "withdrawal → assemblage": 3.3125,
+    "assemblage → transduction∘assemblage": 2.4583333333333335,
+    "competition → transduction∘closure": 2.1875,
+    "closure → assemblage": 1.6041666666666667,
+    "picturing → transduction∘assemblage∘closure": 1.3958333333333333,
+    "concrescence → transduction∘closure": 1.1458333333333333,
+    "competition → transduction∘assemblage": 1.0625,
+    "assemblage → transduction∘assemblage∘closure": 1.0208333333333333,
+    "competition → closure": 1.0208333333333333,
+    "assemblage → assemblage": 1.0,
+    "concrescence → transduction∘assemblage": 0.9791666666666666,
+    "assemblage → concrescence∘picturing": 0.9375,
+    "transduction → transduction∘assemblage∘closure": 0.8333333333333334,
+    "closure → transduction∘assemblage": 0.8125,
+    "closure → concrescence∘assemblage": 0.7291666666666666,
+    "picturing → withdrawal": 0.7083333333333334,
+    "competition → transduction∘assemblage∘closure": 0.6875,
+    "assemblage → transduction∘closure": 0.625,
+    "picturing → closure": 0.5208333333333334,
+    "picturing → assemblage": 0.5,
+    "withdrawal → closure": 0.4791666666666667,
+    "withdrawal → transduction∘assemblage∘closure": 0.4375,
+    "concrescence → assemblage∘closure": 0.4375,
+    "withdrawal → transduction∘assemblage": 0.4166666666666667,
+    "assemblage → assemblage∘closure": 0.3958333333333333,
+    "picturing → concrescence": 0.375,
+    "withdrawal → assemblage∘closure": 0.3541666666666667,
+    "transduction → concrescence∘picturing∘assemblage": 0.3541666666666667,
+    "transduction → assemblage∘closure": 0.3541666666666667,
+    "picturing → transduction∘concrescence∘assemblage": 0.3125,
+    "competition → concrescence∘picturing∘assemblage": 0.2916666666666667,
+    "closure → concrescence∘picturing∘assemblage": 0.2916666666666667,
+    "withdrawal → picturing∘assemblage": 0.2708333333333333,
+    "concrescence → transduction∘assemblage∘closure": 0.25,
+    "concrescence → picturing∘assemblage": 0.25,
+    "withdrawal → transduction∘closure": 0.22916666666666666,
+    "withdrawal → concrescence∘assemblage": 0.20833333333333334,
+    "competition → picturing∘assemblage∘closure": 0.1875,
+    "transduction → picturing∘assemblage∘closure": 0.16666666666666666,
+    "competition → transduction∘concrescence∘assemblage": 0.16666666666666666,
+    "picturing → withdrawal∘transduction": 0.14583333333333334,
+    "competition → transduction∘picturing∘assemblage": 0.125,
+    "withdrawal → concrescence∘picturing∘assemblage": 0.125,
+    "closure → transduction∘assemblage∘closure": 0.125,
+    "competition → assemblage∘closure": 0.125,
+    "assemblage → picturing∘assemblage": 0.125,
+    "competition → withdrawal∘transduction": 0.10416666666666667,
+    "closure → transduction∘picturing∘assemblage": 0.10416666666666667,
+    "picturing → concrescence∘assemblage": 0.08333333333333333,
+    "concrescence → picturing∘assemblage∘closure": 0.08333333333333333,
+    "transduction → concrescence∘assemblage∘closure": 0.08333333333333333,
+    "closure → withdrawal∘transduction∘assemblage": 0.0625,
+    "competition → picturing∘assemblage": 0.0625,
+    "concrescence → transduction∘picturing∘assemblage": 0.0625,
+    "transduction → concrescence∘closure": 0.0625,
+    "picturing → transduction∘concrescence∘closure": 0.0625,
+    "transduction → transduction∘picturing∘assemblage": 0.0625,
+    "competition → concrescence∘picturing∘closure": 0.041666666666666664,
+    "picturing → concrescence∘assemblage∘closure": 0.041666666666666664,
+    "assemblage → transduction∘concrescence∘assemblage": 0.041666666666666664,
+    "closure → picturing∘assemblage": 0.041666666666666664,
+    "picturing → withdrawal∘transduction∘assemblage": 0.020833333333333332,
+    "assemblage → withdrawal∘transduction": 0.020833333333333332,
+    "transduction → picturing∘closure": 0.020833333333333332,
+    "assemblage → picturing∘closure": 0.020833333333333332,
+    "transduction → concrescence∘picturing∘closure": 0.020833333333333332,
+    "closure → transduction∘concrescence∘assemblage": 0.020833333333333332,
+    "picturing → withdrawal∘concrescence∘assemblage": 0.020833333333333332,
+    "picturing → withdrawal∘assemblage": 0.020833333333333332
+   },
+   "Q3_ignited_share": {
+    "withdrawal": 0.7083333333333334,
+    "transduction": 0.8125,
+    "concrescence": 0.8958333333333334,
+    "picturing": 0.9791666666666666,
+    "assemblage": 0.9375,
+    "closure": 0.9375
+   },
+   "Q4_parameters_persisting_changed": 0.2172829248026589,
+   "Q5_transforms_by_source_after_step_80": {
+    "withdrawal": 3.625,
+    "transduction": 15.229166666666666,
+    "concrescence": 50.0625,
+    "picturing": 52.1875,
+    "assemblage": 18.208333333333332,
+    "closure": 12.458333333333334
+   },
+   "Q5_parameter_drift_mean": 0.10433007533437094,
+   "Q6_reinsertions": {
+    "ignition parameters of an earlier configuration": {
+     "per_run": 16.416666666666668,
+     "share_causing_a_later_event": 0.33121827411167515
+    },
+    "archived veil": {
+     "per_run": 1.4583333333333333,
+     "share_causing_a_later_event": 0.7285714285714285
+    },
+    "archived datum": {
+     "per_run": 9.5625,
+     "share_causing_a_later_event": 0.7712418300653595
+    },
+    "archived datum re-seeds the milieu": {
+     "per_run": 1.125,
+     "share_causing_a_later_event": 0.0
+    }
+   },
+   "Q7_configuration": {
+    "couplings_per_run": 2.8125,
+    "splits_per_run": 4.104166666666667,
+    "reclassifications_per_run": 0.0,
+    "composite_kinds_seen_in_runs": {
+     "assemblage∘closure": 6,
+     "transduction∘assemblage": 11,
+     "transduction∘assemblage∘closure": 5,
+     "withdrawal∘transduction": 1,
+     "withdrawal∘transduction∘assemblage": 1,
+     "concrescence∘picturing": 32,
+     "picturing∘assemblage": 6,
+     "transduction∘closure": 15,
+     "transduction∘picturing∘assemblage": 3,
+     "concrescence∘assemblage": 22,
+     "concrescence∘picturing∘assemblage": 16,
+     "concrescence∘picturing∘closure": 2,
+     "picturing∘assemblage∘closure": 2,
+     "picturing∘closure": 1,
+     "transduction∘concrescence∘assemblage": 2,
+     "concrescence∘assemblage∘closure": 5,
+     "concrescence∘closure": 2,
+     "transduction∘concrescence∘closure": 1,
+     "withdrawal∘concrescence∘assemblage": 1,
+     "withdrawal∘assemblage": 1
+    }
+   },
+   "Q9_unobservable_channel_samples_per_run": {
+    "withdrawal": {
+     "boundary_invisible": 60.04166666666667
+    },
+    "transduction": {
+     "boundary_invisible": 94.72916666666664,
+     "unmeasured": 58.458333333333336,
+     "scale_mismatch": 3.854166666666667
+    },
+    "assemblage": {
+     "boundary_invisible": 49.33333333333332,
+     "unmeasured": 27.395833333333332,
+     "scale_mismatch": 26.583333333333332
+    },
+    "closure": {
+     "boundary_invisible": 40.166666666666664,
+     "unmeasured": 61.520833333333336,
+     "scale_mismatch": 4.208333333333333
+    },
+    "concrescence": {
+     "boundary_invisible": 15.666666666666666,
+     "scale_mismatch": 5.208333333333334,
+     "unmeasured": 0.10416666666666667
+    },
+    "picturing": {
+     "boundary_invisible": 12.541666666666666,
+     "scale_mismatch": 7.729166666666666,
+     "unmeasured": 2.6249999999999996
+    }
+   }
+  },
+  "E:withdrawal": {
+   "Q1_changed_ignition_conditions": {
+    "picturing.ign.tolerance": {
+     "runs": 48,
+     "per_run": 16.3125,
+     "mean_relative_change": -0.08330022298455834
+    },
+    "withdrawal.ign.threshold": {
+     "runs": 48,
+     "per_run": 29.645833333333332,
+     "mean_relative_change": 0.024051608682649855
+    },
+    "transduction.rule.factor": {
+     "runs": 48,
+     "per_run": 139.375,
+     "mean_relative_change": 0.003348651834915664
+    },
+    "closure.ign.threshold": {
+     "runs": 47,
+     "per_run": 25.0,
+     "mean_relative_change": -0.07770449341397093
+    },
+    "assemblage.ign.threshold": {
+     "runs": 44,
+     "per_run": 15.479166666666666,
+     "mean_relative_change": -0.08843466439130128
+    },
+    "transduction.ign.threshold": {
+     "runs": 44,
+     "per_run": 20.708333333333332,
+     "mean_relative_change": -0.07668466983488308
+    },
+    "withdrawal.instrument.level": {
+     "runs": 42,
+     "per_run": 1.4166666666666667,
+     "mean_relative_change": 1.0
+    },
+    "assemblage.rule.links": {
+     "runs": 36,
+     "per_run": 3.9166666666666665,
+     "mean_relative_change": -0.24307127343392784
+    },
+    "picturing.rule.damp": {
+     "runs": 33,
+     "per_run": 10.25,
+     "mean_relative_change": -0.004375716745550373
+    },
+    "closure.instrument.level": {
+     "runs": 31,
+     "per_run": 0.6458333333333334,
+     "mean_relative_change": 1.0
+    },
+    "assemblage.instrument.level": {
+     "runs": 29,
+     "per_run": 0.6041666666666666,
+     "mean_relative_change": 1.0
+    },
+    "closure.rule.adapt": {
+     "runs": 23,
+     "per_run": 3.2083333333333335,
+     "mean_relative_change": -0.00020417600584273326
+    },
+    "concrescence.instrument.level": {
+     "runs": 20,
+     "per_run": 0.4166666666666667,
+     "mean_relative_change": 1.0
+    },
+    "concrescence∘assemblage.instrument.level": {
+     "runs": 5,
+     "per_run": 0.10416666666666667,
+     "mean_relative_change": 1.0
+    },
+    "concrescence.ign.threshold": {
+     "runs": 1,
+     "per_run": 0.8958333333333334,
+     "mean_relative_change": -0.07999999999999995
+    },
+    "concrescence∘assemblage∘closure.instrument.level": {
+     "runs": 1,
+     "per_run": 0.020833333333333332,
+     "mean_relative_change": 1.0
+    },
+    "withdrawal∘concrescence∘assemblage.instrument.level": {
+     "runs": 1,
+     "per_run": 0.020833333333333332,
+     "mean_relative_change": 1.0
+    }
+   },
+   "Q2_causing_series": {
+    "picturing → transduction": 63.5,
+    "competition → transduction": 49.145833333333336,
+    "assemblage → transduction": 19.479166666666668,
+    "concrescence → transduction": 16.4375,
+    "concrescence → withdrawal": 16.104166666666668,
+    "closure → withdrawal": 13.541666666666666,
+    "concrescence → closure": 11.1875,
+    "assemblage → withdrawal": 10.708333333333334,
+    "assemblage → closure": 10.645833333333334,
+    "concrescence → assemblage": 10.25,
+    "assemblage → picturing": 9.291666666666666,
+    "picturing → transduction∘assemblage": 9.291666666666666,
+    "picturing → transduction∘closure": 7.0,
+    "assemblage → concrescence": 6.625,
+    "competition → concrescence∘picturing": 5.75,
+    "transduction → closure": 5.729166666666667,
+    "transduction → picturing": 5.479166666666667,
+    "transduction → transduction∘closure": 5.375,
+    "assemblage → transduction∘assemblage": 5.354166666666667,
+    "concrescence → picturing": 5.333333333333333,
+    "competition → transduction∘assemblage": 4.916666666666667,
+    "transduction → concrescence∘picturing": 4.520833333333333,
+    "competition → picturing": 3.7291666666666665,
+    "competition → transduction∘closure": 3.6041666666666665,
+    "assemblage → assemblage": 3.1458333333333335,
+    "concrescence → transduction∘assemblage": 2.2708333333333335,
+    "competition → closure": 2.1041666666666665,
+    "concrescence → transduction∘closure": 2.1041666666666665,
+    "closure → assemblage": 1.6458333333333333,
+    "picturing → withdrawal": 1.4166666666666667,
+    "assemblage → concrescence∘picturing": 1.4166666666666667,
+    "withdrawal → assemblage": 0.8958333333333334,
+    "closure → transduction∘assemblage": 0.8541666666666666,
+    "competition → transduction∘concrescence∘assemblage": 0.8541666666666666,
+    "closure → concrescence∘assemblage": 0.75,
+    "transduction → transduction∘assemblage∘closure": 0.6458333333333334,
+    "picturing → transduction∘assemblage∘closure": 0.6458333333333334,
+    "picturing → closure": 0.6458333333333334,
+    "assemblage → transduction∘assemblage∘closure": 0.625,
+    "picturing → assemblage": 0.6041666666666666,
+    "assemblage → transduction∘closure": 0.5625,
+    "assemblage → assemblage∘closure": 0.5208333333333334,
+    "assemblage → transduction∘concrescence∘assemblage": 0.5,
+    "concrescence → transduction∘concrescence∘assemblage": 0.4583333333333333,
+    "competition → concrescence∘picturing∘assemblage": 0.4375,
+    "competition → transduction∘assemblage∘closure": 0.4166666666666667,
+    "picturing → concrescence": 0.4166666666666667,
+    "withdrawal → transduction∘assemblage∘closure": 0.3958333333333333,
+    "withdrawal → transduction∘assemblage": 0.375,
+    "withdrawal → closure": 0.375,
+    "concrescence → assemblage∘closure": 0.375,
+    "transduction → assemblage∘closure": 0.3541666666666667,
+    "concrescence → transduction∘concrescence": 0.3333333333333333,
+    "assemblage → transduction∘concrescence": 0.3333333333333333,
+    "picturing → transduction∘concrescence∘assemblage": 0.3125,
+    "competition → transduction∘concrescence": 0.3125,
+    "concrescence → picturing∘assemblage": 0.3125,
+    "closure → concrescence∘picturing∘assemblage": 0.2916666666666667,
+    "transduction → concrescence∘picturing∘assemblage": 0.2708333333333333,
+    "transduction → picturing∘assemblage∘closure": 0.22916666666666666,
+    "assemblage → withdrawal∘transduction∘assemblage": 0.20833333333333334,
+    "withdrawal → concrescence∘assemblage": 0.20833333333333334,
+    "assemblage → concrescence∘assemblage": 0.20833333333333334,
+    "competition → picturing∘assemblage∘closure": 0.1875,
+    "concrescence → picturing∘assemblage∘closure": 0.1875,
+    "assemblage → picturing∘assemblage": 0.16666666666666666,
+    "competition → withdrawal∘transduction∘assemblage": 0.125,
+    "withdrawal → withdrawal∘transduction∘assemblage": 0.125,
+    "closure → transduction∘assemblage∘closure": 0.125,
+    "competition → assemblage∘closure": 0.125,
+    "picturing → concrescence∘assemblage": 0.10416666666666667,
+    "concrescence → transduction∘assemblage∘closure": 0.10416666666666667,
+    "competition → concrescence∘picturing∘closure": 0.10416666666666667,
+    "concrescence → concrescence∘assemblage": 0.10416666666666667,
+    "competition → picturing∘assemblage": 0.08333333333333333,
+    "closure → picturing∘assemblage": 0.08333333333333333,
+    "closure → transduction∘picturing∘assemblage": 0.08333333333333333,
+    "transduction → concrescence∘assemblage∘closure": 0.08333333333333333,
+    "closure → withdrawal∘transduction∘assemblage": 0.0625,
+    "withdrawal → assemblage∘closure": 0.0625,
+    "competition → transduction∘picturing∘assemblage": 0.0625,
+    "concrescence → picturing∘closure": 0.0625,
+    "transduction → concrescence∘picturing∘closure": 0.0625,
+    "transduction → concrescence∘closure": 0.0625,
+    "picturing → transduction∘concrescence∘closure": 0.0625,
+    "picturing → withdrawal∘transduction∘assemblage": 0.041666666666666664,
+    "concrescence → transduction∘picturing∘assemblage": 0.041666666666666664,
+    "assemblage → picturing∘closure": 0.041666666666666664,
+    "transduction → picturing∘closure": 0.020833333333333332,
+    "picturing → concrescence∘assemblage∘closure": 0.020833333333333332,
+    "closure → transduction∘concrescence∘assemblage": 0.020833333333333332,
+    "transduction → transduction∘picturing∘assemblage": 0.020833333333333332,
+    "transduction → picturing∘assemblage": 0.020833333333333332,
+    "picturing → withdrawal∘concrescence∘assemblage": 0.020833333333333332,
+    "competition → concrescence∘closure": 0.020833333333333332
+   },
+   "Q3_ignited_share": {
+    "withdrawal": 0.3541666666666667,
+    "transduction": 0.8125,
+    "concrescence": 0.9166666666666666,
+    "picturing": 1.0,
+    "assemblage": 0.9375,
+    "closure": 0.8958333333333334
+   },
+   "Q4_parameters_persisting_changed": 0.22774774774774775,
+   "Q5_transforms_by_source_after_step_80": {
+    "withdrawal": 0.25,
+    "transduction": 14.979166666666666,
+    "concrescence": 44.166666666666664,
+    "picturing": 70.54166666666667,
+    "assemblage": 36.625,
+    "closure": 9.604166666666666
+   },
+   "Q5_parameter_drift_mean": 0.1378262459871464,
+   "Q6_reinsertions": {
+    "archived datum re-seeds the milieu": {
+     "per_run": 1.2083333333333333,
+     "share_causing_a_later_event": 0.0
+    }
+   },
+   "Q7_configuration": {
+    "couplings_per_run": 3.2708333333333335,
+    "splits_per_run": 5.583333333333333,
+    "reclassifications_per_run": 0.0,
+    "composite_kinds_seen_in_runs": {
+     "assemblage∘closure": 6,
+     "transduction∘assemblage": 15,
+     "transduction∘assemblage∘closure": 5,
+     "withdrawal∘assemblage": 1,
+     "withdrawal∘transduction∘assemblage": 1,
+     "concrescence∘picturing": 35,
+     "concrescence∘picturing∘assemblage": 21,
+     "picturing∘assemblage": 8,
+     "transduction∘closure": 16,
+     "transduction∘picturing∘assemblage": 3,
+     "concrescence∘assemblage": 22,
+     "transduction∘concrescence∘assemblage": 4,
+     "concrescence∘picturing∘closure": 5,
+     "picturing∘assemblage∘closure": 4,
+     "picturing∘closure": 3,
+     "transduction∘concrescence": 1,
+     "concrescence∘assemblage∘closure": 5,
+     "concrescence∘closure": 2,
+     "transduction∘concrescence∘closure": 1,
+     "withdrawal∘concrescence∘assemblage": 1
+    }
+   },
+   "Q9_unobservable_channel_samples_per_run": {
+    "withdrawal": {
+     "boundary_invisible": 16.395833333333332,
+     "instrument_mismatch": 82.14583333333334
+    },
+    "transduction": {
+     "boundary_invisible": 80.58333333333334,
+     "unmeasured": 64.625,
+     "instrument_mismatch": 2.8333333333333335,
+     "scale_mismatch": 3.958333333333333
+    },
+    "assemblage": {
+     "boundary_invisible": 45.35416666666667,
+     "unmeasured": 27.041666666666668,
+     "instrument_mismatch": 2.8333333333333335,
+     "scale_mismatch": 32.75
+    },
+    "closure": {
+     "boundary_invisible": 24.416666666666668,
+     "unmeasured": 69.77083333333333,
+     "scale_mismatch": 6.812500000000001
+    },
+    "concrescence": {
+     "boundary_invisible": 14.645833333333336,
+     "scale_mismatch": 7.687499999999998,
+     "unmeasured": 0.625
+    },
+    "picturing": {
+     "boundary_invisible": 11.75,
+     "scale_mismatch": 11.083333333333336,
+     "unmeasured": 0.9166666666666666
+    }
+   }
+  },
+  "E:transduction": {
+   "Q1_changed_ignition_conditions": {
+    "picturing.ign.tolerance": {
+     "runs": 48,
+     "per_run": 12.354166666666666,
+     "mean_relative_change": -0.08592468435288135
+    },
+    "withdrawal.ign.threshold": {
+     "runs": 48,
+     "per_run": 27.395833333333332,
+     "mean_relative_change": 0.033552612548588254
+    },
+    "transduction.rule.factor": {
+     "runs": 47,
+     "per_run": 84.70833333333333,
+     "mean_relative_change": 0.005422809650447679
+    },
+    "closure.ign.threshold": {
+     "runs": 46,
+     "per_run": 19.583333333333332,
+     "mean_relative_change": -0.08018893387340062
+    },
+    "assemblage.ign.threshold": {
+     "runs": 44,
+     "per_run": 12.770833333333334,
+     "mean_relative_change": -0.0960008911335891
+    },
+    "transduction.ign.threshold": {
+     "runs": 42,
+     "per_run": 13.083333333333334,
+     "mean_relative_change": -0.0779419081821476
+    },
+    "withdrawal.instrument.level": {
+     "runs": 39,
+     "per_run": 0.8125,
+     "mean_relative_change": 1.0
+    },
+    "assemblage.rule.links": {
+     "runs": 35,
+     "per_run": 3.75,
+     "mean_relative_change": -0.24333186360964143
+    },
+    "assemblage.instrument.level": {
+     "runs": 29,
+     "per_run": 0.6041666666666666,
+     "mean_relative_change": 1.0
+    },
+    "closure.instrument.level": {
+     "runs": 29,
+     "per_run": 0.6041666666666666,
+     "mean_relative_change": 1.0
+    },
+    "picturing.rule.damp": {
+     "runs": 28,
+     "per_run": 7.333333333333333,
+     "mean_relative_change": -0.0044327296160480865
+    },
+    "concrescence.instrument.level": {
+     "runs": 18,
+     "per_run": 0.375,
+     "mean_relative_change": 1.0
+    },
+    "closure.rule.adapt": {
+     "runs": 18,
+     "per_run": 2.3958333333333335,
+     "mean_relative_change": -0.00047127158693504163
+    },
+    "concrescence∘assemblage.instrument.level": {
+     "runs": 4,
+     "per_run": 0.08333333333333333,
+     "mean_relative_change": 1.0
+    },
+    "concrescence∘assemblage∘closure.instrument.level": {
+     "runs": 1,
+     "per_run": 0.020833333333333332,
+     "mean_relative_change": 1.0
+    },
+    "withdrawal∘concrescence∘assemblage.instrument.level": {
+     "runs": 1,
+     "per_run": 0.020833333333333332,
+     "mean_relative_change": 1.0
+    }
+   },
+   "Q2_causing_series": {
+    "picturing → transduction": 62.375,
+    "concrescence → withdrawal": 15.104166666666666,
+    "assemblage → transduction": 13.395833333333334,
+    "closure → withdrawal": 12.291666666666666,
+    "concrescence → transduction": 11.6875,
+    "competition → transduction": 11.333333333333334,
+    "concrescence → closure": 11.145833333333334,
+    "assemblage → closure": 9.5,
+    "assemblage → picturing": 9.479166666666666,
+    "assemblage → withdrawal": 9.375,
+    "concrescence → assemblage": 8.208333333333334,
+    "picturing → transduction∘closure": 6.729166666666667,
+    "concrescence → picturing": 5.541666666666667,
+    "assemblage → concrescence": 5.416666666666667,
+    "transduction → picturing": 4.458333333333333,
+    "assemblage → assemblage": 3.4375,
+    "competition → concrescence∘picturing": 3.2291666666666665,
+    "competition → picturing": 3.125,
+    "competition → transduction∘closure": 2.9375,
+    "transduction → closure": 2.7083333333333335,
+    "transduction → transduction∘closure": 2.7083333333333335,
+    "withdrawal → assemblage": 2.4583333333333335,
+    "transduction → concrescence∘picturing": 1.9791666666666667,
+    "assemblage → transduction∘assemblage": 1.7916666666666667,
+    "closure → assemblage": 1.6041666666666667,
+    "competition → closure": 1.4583333333333333,
+    "concrescence → transduction∘closure": 1.3541666666666667,
+    "assemblage → transduction∘closure": 0.9583333333333334,
+    "assemblage → concrescence∘picturing": 0.9583333333333334,
+    "withdrawal → closure": 0.8958333333333334,
+    "picturing → withdrawal": 0.8125,
+    "closure → concrescence∘assemblage": 0.75,
+    "closure → transduction∘assemblage": 0.7083333333333334,
+    "transduction → transduction∘assemblage∘closure": 0.625,
+    "assemblage → transduction∘assemblage∘closure": 0.625,
+    "picturing → assemblage": 0.6041666666666666,
+    "picturing → closure": 0.6041666666666666,
+    "assemblage → assemblage∘closure": 0.5208333333333334,
+    "picturing → transduction∘assemblage": 0.4791666666666667,
+    "competition → picturing∘assemblage": 0.4791666666666667,
+    "competition → assemblage∘closure": 0.4583333333333333,
+    "closure → concrescence∘picturing∘assemblage": 0.4375,
+    "withdrawal → transduction∘assemblage∘closure": 0.4166666666666667,
+    "withdrawal → transduction∘assemblage": 0.375,
+    "picturing → concrescence": 0.375,
+    "withdrawal → assemblage∘closure": 0.3333333333333333,
+    "competition → concrescence∘picturing∘assemblage": 0.3125,
+    "competition → transduction∘assemblage": 0.2916666666666667,
+    "picturing → transduction∘assemblage∘closure": 0.25,
+    "picturing → withdrawal∘transduction": 0.25,
+    "concrescence → assemblage∘closure": 0.25,
+    "concrescence → picturing∘assemblage": 0.25,
+    "transduction → assemblage∘closure": 0.22916666666666666,
+    "withdrawal → concrescence∘assemblage": 0.20833333333333334,
+    "assemblage → withdrawal∘transduction": 0.16666666666666666,
+    "assemblage → withdrawal∘assemblage": 0.16666666666666666,
+    "withdrawal → concrescence∘picturing∘assemblage": 0.14583333333333334,
+    "competition → transduction∘assemblage∘closure": 0.14583333333333334,
+    "picturing → transduction∘concrescence∘assemblage": 0.14583333333333334,
+    "closure → transduction∘assemblage∘closure": 0.125,
+    "competition → picturing∘assemblage∘closure": 0.125,
+    "assemblage → picturing∘assemblage": 0.125,
+    "withdrawal → picturing∘assemblage": 0.10416666666666667,
+    "picturing → concrescence∘assemblage": 0.08333333333333333,
+    "competition → transduction∘concrescence∘assemblage": 0.08333333333333333,
+    "concrescence → transduction∘assemblage": 0.08333333333333333,
+    "transduction → concrescence∘assemblage∘closure": 0.08333333333333333,
+    "withdrawal → transduction∘closure": 0.08333333333333333,
+    "competition → withdrawal∘picturing∘assemblage": 0.08333333333333333,
+    "closure → withdrawal∘transduction∘assemblage": 0.0625,
+    "transduction → concrescence∘closure": 0.0625,
+    "picturing → transduction∘concrescence∘closure": 0.0625,
+    "transduction → concrescence∘picturing∘assemblage": 0.041666666666666664,
+    "concrescence → transduction∘assemblage∘closure": 0.041666666666666664,
+    "concrescence → picturing∘assemblage∘closure": 0.041666666666666664,
+    "competition → transduction∘picturing∘assemblage": 0.041666666666666664,
+    "closure → picturing∘assemblage": 0.041666666666666664,
+    "transduction → picturing∘assemblage": 0.020833333333333332,
+    "competition → withdrawal∘transduction": 0.020833333333333332,
+    "picturing → concrescence∘assemblage∘closure": 0.020833333333333332,
+    "closure → transduction∘concrescence∘assemblage": 0.020833333333333332,
+    "transduction → transduction∘picturing∘assemblage": 0.020833333333333332,
+    "picturing → withdrawal∘concrescence∘assemblage": 0.020833333333333332,
+    "competition → concrescence∘closure": 0.020833333333333332
+   },
+   "Q3_ignited_share": {
+    "withdrawal": 0.6875,
+    "transduction": 0.75,
+    "concrescence": 0.8958333333333334,
+    "picturing": 0.9791666666666666,
+    "assemblage": 0.9375,
+    "closure": 0.9375
+   },
+   "Q4_parameters_persisting_changed": 0.2102515424774561,
+   "Q5_transforms_by_source_after_step_80": {
+    "withdrawal": 2.8125,
+    "transduction": 5.041666666666667,
+    "concrescence": 32.208333333333336,
+    "picturing": 59.291666666666664,
+    "assemblage": 22.708333333333332,
+    "closure": 8.1875
+   },
+   "Q5_parameter_drift_mean": 0.1437512053689813,
+   "Q6_reinsertions": {
+    "archived datum re-seeds the milieu": {
+     "per_run": 0.8333333333333334,
+     "share_causing_a_later_event": 0.0
+    }
+   },
+   "Q7_configuration": {
+    "couplings_per_run": 2.7916666666666665,
+    "splits_per_run": 3.2083333333333335,
+    "reclassifications_per_run": 0.0,
+    "composite_kinds_seen_in_runs": {
+     "assemblage∘closure": 6,
+     "picturing∘assemblage": 7,
+     "transduction∘assemblage": 7,
+     "transduction∘assemblage∘closure": 4,
+     "transduction∘closure": 12,
+     "withdrawal∘transduction": 1,
+     "withdrawal∘transduction∘assemblage": 1,
+     "concrescence∘picturing": 35,
+     "concrescence∘picturing∘assemblage": 22,
+     "concrescence∘assemblage": 21,
+     "picturing∘assemblage∘closure": 1,
+     "transduction∘concrescence∘assemblage": 2,
+     "concrescence∘assemblage∘closure": 5,
+     "concrescence∘closure": 2,
+     "concrescence∘picturing∘closure": 2,
+     "transduction∘concrescence∘closure": 1,
+     "transduction∘picturing∘assemblage": 1,
+     "withdrawal∘assemblage": 1,
+     "withdrawal∘picturing∘assemblage": 1,
+     "withdrawal∘concrescence∘assemblage": 1
+    }
+   },
+   "Q9_unobservable_channel_samples_per_run": {
+    "withdrawal": {
+     "boundary_invisible": 55.0625,
+     "scale_mismatch": 1.5625
+    },
+    "transduction": {
+     "boundary_invisible": 96.62500000000001,
+     "unmeasured": 18.770833333333332,
+     "scale_mismatch": 1.875,
+     "instrument_mismatch": 1.6875
+    },
+    "assemblage": {
+     "boundary_invisible": 52.97916666666667,
+     "unmeasured": 14.562499999999998,
+     "scale_mismatch": 32.8125
+    },
+    "closure": {
+     "boundary_invisible": 44.229166666666664,
+     "unmeasured": 56.125,
+     "scale_mismatch": 4.166666666666667
+    },
+    "picturing": {
+     "scale_mismatch": 10.208333333333336,
+     "boundary_invisible": 18.25,
+     "unmeasured": 0.10416666666666667
+    },
+    "concrescence": {
+     "boundary_invisible": 20.708333333333336,
+     "scale_mismatch": 8.875
+    }
+   }
+  },
+  "E:concrescence": {
+   "Q1_changed_ignition_conditions": {
+    "picturing.ign.tolerance": {
+     "runs": 48,
+     "per_run": 15.208333333333334,
+     "mean_relative_change": -0.08507176096231321
+    },
+    "withdrawal.ign.threshold": {
+     "runs": 48,
+     "per_run": 27.083333333333332,
+     "mean_relative_change": 0.03209036384274956
+    },
+    "transduction.rule.factor": {
+     "runs": 48,
+     "per_run": 102.66666666666667,
+     "mean_relative_change": 0.004629892378767246
+    },
+    "closure.ign.threshold": {
+     "runs": 47,
+     "per_run": 22.458333333333332,
+     "mean_relative_change": -0.07974865980487081
+    },
+    "assemblage.ign.threshold": {
+     "runs": 44,
+     "per_run": 13.75,
+     "mean_relative_change": -0.09617174243957036
+    },
+    "transduction.ign.threshold": {
+     "runs": 43,
+     "per_run": 15.916666666666666,
+     "mean_relative_change": -0.07766733870877145
+    },
+    "withdrawal.instrument.level": {
+     "runs": 42,
+     "per_run": 0.875,
+     "mean_relative_change": 1.0
+    },
+    "assemblage.rule.links": {
+     "runs": 34,
+     "per_run": 3.9166666666666665,
+     "mean_relative_change": -0.24250635439360935
+    },
+    "closure.instrument.level": {
+     "runs": 31,
+     "per_run": 0.6458333333333334,
+     "mean_relative_change": 1.0
+    },
+    "picturing.rule.damp": {
+     "runs": 29,
+     "per_run": 7.270833333333333,
+     "mean_relative_change": -0.005055173160883542
+    },
+    "assemblage.instrument.level": {
+     "runs": 28,
+     "per_run": 0.5833333333333334,
+     "mean_relative_change": 1.0
+    },
+    "concrescence.instrument.level": {
+     "runs": 22,
+     "per_run": 0.4583333333333333,
+     "mean_relative_change": 1.0
+    },
+    "closure.rule.adapt": {
+     "runs": 18,
+     "per_run": 2.2083333333333335,
+     "mean_relative_change": -0.00013814459106556928
+    },
+    "concrescence∘assemblage.instrument.level": {
+     "runs": 4,
+     "per_run": 0.08333333333333333,
+     "mean_relative_change": 1.0
+    },
+    "concrescence∘assemblage∘closure.instrument.level": {
+     "runs": 2,
+     "per_run": 0.041666666666666664,
+     "mean_relative_change": 1.0
+    },
+    "withdrawal∘concrescence∘assemblage.instrument.level": {
+     "runs": 1,
+     "per_run": 0.020833333333333332,
+     "mean_relative_change": 1.0
+    }
+   },
+   "Q2_causing_series": {
+    "picturing → transduction": 49.25,
+    "competition → transduction": 39.625,
+    "assemblage → transduction": 15.958333333333334,
+    "concrescence → transduction": 14.291666666666666,
+    "concrescence → withdrawal": 14.041666666666666,
+    "closure → withdrawal": 13.041666666666666,
+    "concrescence → closure": 10.1875,
+    "assemblage → withdrawal": 9.791666666666666,
+    "assemblage → picturing": 9.4375,
+    "assemblage → closure": 8.604166666666666,
+    "concrescence → assemblage": 8.020833333333334,
+    "assemblage → concrescence": 6.208333333333333,
+    "transduction → closure": 5.520833333333333,
+    "transduction → picturing": 5.375,
+    "picturing → transduction∘closure": 5.3125,
+    "concrescence → picturing": 5.291666666666667,
+    "assemblage → transduction∘assemblage": 4.770833333333333,
+    "transduction → concrescence∘picturing": 3.4583333333333335,
+    "competition → concrescence∘picturing": 3.4166666666666665,
+    "competition → picturing": 3.2708333333333335,
+    "transduction → transduction∘closure": 3.2291666666666665,
+    "picturing → transduction∘assemblage": 2.3958333333333335,
+    "competition → transduction∘assemblage": 2.3958333333333335,
+    "assemblage → assemblage": 2.3333333333333335,
+    "withdrawal → assemblage": 2.2291666666666665,
+    "competition → transduction∘closure": 2.1875,
+    "closure → assemblage": 1.7291666666666667,
+    "competition → closure": 1.375,
+    "concrescence → transduction∘closure": 1.0208333333333333,
+    "assemblage → concrescence∘picturing": 0.9791666666666666,
+    "closure → transduction∘assemblage": 0.875,
+    "picturing → withdrawal": 0.875,
+    "assemblage → transduction∘assemblage∘closure": 0.8333333333333334,
+    "picturing → transduction∘assemblage∘closure": 0.8125,
+    "withdrawal → closure": 0.7708333333333334,
+    "closure → concrescence∘assemblage": 0.75,
+    "transduction → transduction∘assemblage∘closure": 0.6875,
+    "picturing → closure": 0.6458333333333334,
+    "competition → transduction∘assemblage∘closure": 0.6041666666666666,
+    "picturing → assemblage": 0.5833333333333334,
+    "withdrawal → transduction∘assemblage": 0.5208333333333334,
+    "concrescence → assemblage∘closure": 0.5,
+    "picturing → concrescence": 0.4583333333333333,
+    "concrescence → transduction∘assemblage": 0.4583333333333333,
+    "withdrawal → transduction∘assemblage∘closure": 0.4375,
+    "assemblage → transduction∘closure": 0.3958333333333333,
+    "assemblage → assemblage∘closure": 0.375,
+    "transduction → assemblage∘closure": 0.3541666666666667,
+    "withdrawal → assemblage∘closure": 0.3333333333333333,
+    "transduction → concrescence∘picturing∘assemblage": 0.3333333333333333,
+    "concrescence → picturing∘assemblage": 0.3333333333333333,
+    "transduction → concrescence∘picturing∘closure": 0.3125,
+    "closure → concrescence∘picturing∘assemblage": 0.3125,
+    "competition → concrescence∘picturing∘assemblage": 0.2916666666666667,
+    "withdrawal → concrescence∘picturing∘assemblage": 0.2708333333333333,
+    "withdrawal → concrescence∘assemblage": 0.22916666666666666,
+    "concrescence → transduction∘assemblage∘closure": 0.22916666666666666,
+    "transduction → picturing∘assemblage∘closure": 0.22916666666666666,
+    "withdrawal → picturing∘assemblage": 0.20833333333333334,
+    "competition → picturing∘assemblage∘closure": 0.1875,
+    "picturing → withdrawal∘transduction": 0.14583333333333334,
+    "competition → withdrawal∘transduction": 0.14583333333333334,
+    "concrescence → transduction∘picturing∘assemblage": 0.14583333333333334,
+    "picturing → transduction∘concrescence∘assemblage": 0.14583333333333334,
+    "closure → transduction∘assemblage∘closure": 0.125,
+    "competition → assemblage∘closure": 0.125,
+    "competition → transduction∘concrescence∘assemblage": 0.125,
+    "competition → concrescence∘picturing∘closure": 0.10416666666666667,
+    "assemblage → picturing∘assemblage": 0.10416666666666667,
+    "picturing → concrescence∘assemblage": 0.08333333333333333,
+    "concrescence → picturing∘assemblage∘closure": 0.08333333333333333,
+    "transduction → concrescence∘assemblage∘closure": 0.08333333333333333,
+    "closure → withdrawal∘transduction∘assemblage": 0.0625,
+    "competition → picturing∘assemblage": 0.0625,
+    "transduction → concrescence∘closure": 0.0625,
+    "picturing → transduction∘concrescence∘closure": 0.0625,
+    "competition → concrescence∘assemblage∘closure": 0.0625,
+    "withdrawal → concrescence∘picturing∘closure": 0.0625,
+    "assemblage → picturing∘closure": 0.041666666666666664,
+    "picturing → concrescence∘assemblage∘closure": 0.041666666666666664,
+    "competition → transduction∘picturing∘assemblage": 0.041666666666666664,
+    "closure → picturing∘assemblage": 0.041666666666666664,
+    "assemblage → concrescence∘closure": 0.041666666666666664,
+    "assemblage → withdrawal∘transduction": 0.020833333333333332,
+    "transduction → picturing∘closure": 0.020833333333333332,
+    "concrescence → picturing∘closure": 0.020833333333333332,
+    "closure → transduction∘concrescence∘assemblage": 0.020833333333333332,
+    "assemblage → transduction∘concrescence∘assemblage": 0.020833333333333332,
+    "transduction → transduction∘picturing∘assemblage": 0.020833333333333332,
+    "transduction → picturing∘assemblage": 0.020833333333333332,
+    "picturing → withdrawal∘concrescence∘assemblage": 0.020833333333333332
+   },
+   "Q3_ignited_share": {
+    "withdrawal": 0.6666666666666666,
+    "transduction": 0.8333333333333334,
+    "concrescence": 0.9166666666666666,
+    "picturing": 1.0,
+    "assemblage": 0.9375,
+    "closure": 0.8958333333333334
+   },
+   "Q4_parameters_persisting_changed": 0.21829268292682927,
+   "Q5_transforms_by_source_after_step_80": {
+    "withdrawal": 2.8541666666666665,
+    "transduction": 11.8125,
+    "concrescence": 33.125,
+    "picturing": 47.333333333333336,
+    "assemblage": 26.791666666666668,
+    "closure": 9.104166666666666
+   },
+   "Q5_parameter_drift_mean": 0.14176228267591517,
+   "Q6_reinsertions": {
+    "archived datum re-seeds the milieu": {
+     "per_run": 0.9791666666666666,
+     "share_causing_a_later_event": 0.0
+    }
+   },
+   "Q7_configuration": {
+    "couplings_per_run": 3.0208333333333335,
+    "splits_per_run": 4.375,
+    "reclassifications_per_run": 0.0,
+    "composite_kinds_seen_in_runs": {
+     "assemblage∘closure": 7,
+     "transduction∘assemblage": 14,
+     "transduction∘assemblage∘closure": 4,
+     "withdrawal∘transduction": 1,
+     "withdrawal∘transduction∘assemblage": 1,
+     "concrescence∘picturing": 34,
+     "picturing∘assemblage": 7,
+     "transduction∘closure": 17,
+     "transduction∘picturing∘assemblage": 2,
+     "concrescence∘assemblage": 21,
+     "concrescence∘picturing∘assemblage": 18,
+     "concrescence∘picturing∘closure": 2,
+     "picturing∘assemblage∘closure": 2,
+     "picturing∘closure": 1,
+     "transduction∘concrescence∘assemblage": 3,
+     "concrescence∘assemblage∘closure": 5,
+     "concrescence∘closure": 2,
+     "transduction∘concrescence∘closure": 1,
+     "withdrawal∘concrescence∘assemblage": 1
+    }
+   },
+   "Q9_unobservable_channel_samples_per_run": {
+    "withdrawal": {
+     "boundary_invisible": 56.91666666666667
+    },
+    "transduction": {
+     "boundary_invisible": 97.14583333333333,
+     "unmeasured": 56.08333333333333,
+     "scale_mismatch": 3.4375
+    },
+    "assemblage": {
+     "boundary_invisible": 53.958333333333336,
+     "unmeasured": 26.583333333333336,
+     "scale_mismatch": 27.395833333333332,
+     "instrument_mismatch": 5.520833333333334
+    },
+    "closure": {
+     "boundary_invisible": 42.375,
+     "unmeasured": 56.95833333333333,
+     "scale_mismatch": 4.0
+    },
+    "concrescence": {
+     "boundary_invisible": 9.979166666666668,
+     "instrument_mismatch": 14.541666666666666,
+     "scale_mismatch": 8.416666666666666,
+     "unmeasured": 0.5416666666666666
+    },
+    "picturing": {
+     "boundary_invisible": 10.979166666666668,
+     "instrument_mismatch": 14.666666666666666,
+     "scale_mismatch": 12.395833333333336,
+     "unmeasured": 0.7499999999999999
+    }
+   }
+  },
+  "E:picturing": {
+   "Q1_changed_ignition_conditions": {
+    "picturing.ign.tolerance": {
+     "runs": 48,
+     "per_run": 15.333333333333334,
+     "mean_relative_change": -0.08556103013493803
+    },
+    "withdrawal.ign.threshold": {
+     "runs": 48,
+     "per_run": 26.229166666666668,
+     "mean_relative_change": 0.03547471289985918
+    },
+    "transduction.rule.factor": {
+     "runs": 48,
+     "per_run": 103.22916666666667,
+     "mean_relative_change": 0.004695505008759662
+    },
+    "closure.ign.threshold": {
+     "runs": 47,
+     "per_run": 22.541666666666668,
+     "mean_relative_change": -0.0807437315094242
+    },
+    "assemblage.ign.threshold": {
+     "runs": 43,
+     "per_run": 13.270833333333334,
+     "mean_relative_change": -0.09776755516086706
+    },
+    "transduction.ign.threshold": {
+     "runs": 42,
+     "per_run": 13.625,
+     "mean_relative_change": -0.07718871618548495
+    },
+    "withdrawal.instrument.level": {
+     "runs": 42,
+     "per_run": 0.875,
+     "mean_relative_change": 1.0
+    },
+    "assemblage.rule.links": {
+     "runs": 35,
+     "per_run": 3.9583333333333335,
+     "mean_relative_change": -0.2428733098177543
+    },
+    "closure.instrument.level": {
+     "runs": 32,
+     "per_run": 0.6666666666666666,
+     "mean_relative_change": 1.0
+    },
+    "assemblage.instrument.level": {
+     "runs": 31,
+     "per_run": 0.6458333333333334,
+     "mean_relative_change": 1.0
+    },
+    "picturing.rule.damp": {
+     "runs": 29,
+     "per_run": 7.208333333333333,
+     "mean_relative_change": -0.005460989295881735
+    },
+    "concrescence.instrument.level": {
+     "runs": 23,
+     "per_run": 0.4791666666666667,
+     "mean_relative_change": 1.0
+    },
+    "closure.rule.adapt": {
+     "runs": 18,
+     "per_run": 2.5833333333333335,
+     "mean_relative_change": -0.00044218269850355676
+    },
+    "concrescence∘assemblage.instrument.level": {
+     "runs": 4,
+     "per_run": 0.08333333333333333,
+     "mean_relative_change": 1.0
+    },
+    "concrescence∘assemblage∘closure.instrument.level": {
+     "runs": 1,
+     "per_run": 0.020833333333333332,
+     "mean_relative_change": 1.0
+    },
+    "withdrawal∘concrescence∘assemblage.instrument.level": {
+     "runs": 1,
+     "per_run": 0.020833333333333332,
+     "mean_relative_change": 1.0
+    }
+   },
+   "Q2_causing_series": {
+    "picturing → transduction": 46.875,
+    "competition → transduction": 44.0,
+    "assemblage → transduction": 14.770833333333334,
+    "concrescence → withdrawal": 13.625,
+    "closure → withdrawal": 12.604166666666666,
+    "concrescence → transduction": 12.104166666666666,
+    "concrescence → closure": 10.104166666666666,
+    "assemblage → withdrawal": 9.458333333333334,
+    "assemblage → picturing": 8.541666666666666,
+    "assemblage → closure": 8.5,
+    "concrescence → assemblage": 8.229166666666666,
+    "picturing → transduction∘closure": 6.708333333333333,
+    "transduction → closure": 5.625,
+    "assemblage → concrescence": 5.541666666666667,
+    "concrescence → picturing": 5.5,
+    "transduction → picturing": 5.416666666666667,
+    "transduction → transduction∘closure": 3.625,
+    "competition → picturing": 3.3541666666666665,
+    "transduction → concrescence∘picturing": 3.25,
+    "competition → concrescence∘picturing": 3.0208333333333335,
+    "assemblage → transduction∘assemblage": 2.7708333333333335,
+    "withdrawal → assemblage": 2.5208333333333335,
+    "competition → transduction∘closure": 2.4375,
+    "closure → assemblage": 1.8958333333333333,
+    "assemblage → assemblage": 1.5833333333333333,
+    "competition → closure": 1.4791666666666667,
+    "picturing → transduction∘assemblage": 1.375,
+    "concrescence → transduction∘closure": 1.3125,
+    "competition → transduction∘assemblage": 1.0625,
+    "assemblage → concrescence∘picturing": 1.0208333333333333,
+    "withdrawal → closure": 0.9375,
+    "picturing → withdrawal": 0.875,
+    "closure → transduction∘assemblage": 0.75,
+    "closure → concrescence∘assemblage": 0.75,
+    "picturing → closure": 0.6666666666666666,
+    "picturing → assemblage": 0.6458333333333334,
+    "transduction → transduction∘assemblage∘closure": 0.625,
+    "assemblage → transduction∘assemblage∘closure": 0.625,
+    "transduction → concrescence∘picturing∘assemblage": 0.5416666666666666,
+    "competition → concrescence∘picturing∘assemblage": 0.5,
+    "withdrawal → transduction∘assemblage": 0.4791666666666667,
+    "picturing → concrescence": 0.4791666666666667,
+    "assemblage → transduction∘closure": 0.4583333333333333,
+    "withdrawal → transduction∘assemblage∘closure": 0.4375,
+    "picturing → transduction∘assemblage∘closure": 0.4166666666666667,
+    "competition → assemblage∘closure": 0.4166666666666667,
+    "withdrawal → assemblage∘closure": 0.375,
+    "assemblage → assemblage∘closure": 0.375,
+    "competition → transduction∘assemblage∘closure": 0.375,
+    "transduction → assemblage∘closure": 0.3541666666666667,
+    "concrescence → picturing∘assemblage": 0.3333333333333333,
+    "closure → concrescence∘picturing∘assemblage": 0.3125,
+    "withdrawal → concrescence∘picturing∘assemblage": 0.22916666666666666,
+    "concrescence → transduction∘assemblage": 0.20833333333333334,
+    "withdrawal → concrescence∘assemblage": 0.20833333333333334,
+    "withdrawal → picturing∘assemblage": 0.20833333333333334,
+    "competition → picturing∘assemblage∘closure": 0.1875,
+    "transduction → picturing∘assemblage∘closure": 0.1875,
+    "picturing → withdrawal∘transduction": 0.14583333333333334,
+    "competition → withdrawal∘transduction": 0.14583333333333334,
+    "closure → transduction∘assemblage∘closure": 0.125,
+    "assemblage → picturing∘assemblage": 0.125,
+    "concrescence → transduction∘picturing∘assemblage": 0.10416666666666667,
+    "competition → concrescence∘picturing∘closure": 0.10416666666666667,
+    "picturing → transduction∘concrescence∘assemblage": 0.10416666666666667,
+    "picturing → concrescence∘assemblage": 0.08333333333333333,
+    "concrescence → picturing∘assemblage∘closure": 0.08333333333333333,
+    "transduction → concrescence∘picturing∘closure": 0.08333333333333333,
+    "competition → transduction∘concrescence∘assemblage": 0.08333333333333333,
+    "transduction → concrescence∘assemblage∘closure": 0.08333333333333333,
+    "competition → transduction∘picturing∘assemblage": 0.08333333333333333,
+    "closure → withdrawal∘transduction∘assemblage": 0.0625,
+    "competition → picturing∘assemblage": 0.0625,
+    "transduction → concrescence∘closure": 0.0625,
+    "picturing → transduction∘concrescence∘closure": 0.0625,
+    "withdrawal → transduction∘closure": 0.0625,
+    "concrescence → transduction∘assemblage∘closure": 0.041666666666666664,
+    "closure → picturing∘assemblage": 0.041666666666666664,
+    "picturing → withdrawal∘transduction∘assemblage": 0.020833333333333332,
+    "assemblage → withdrawal∘transduction": 0.020833333333333332,
+    "transduction → picturing∘closure": 0.020833333333333332,
+    "assemblage → picturing∘closure": 0.020833333333333332,
+    "concrescence → assemblage∘closure": 0.020833333333333332,
+    "picturing → concrescence∘assemblage∘closure": 0.020833333333333332,
+    "closure → transduction∘concrescence∘assemblage": 0.020833333333333332,
+    "transduction → transduction∘picturing∘assemblage": 0.020833333333333332,
+    "transduction → picturing∘assemblage": 0.020833333333333332,
+    "picturing → withdrawal∘concrescence∘assemblage": 0.020833333333333332
+   },
+   "Q3_ignited_share": {
+    "withdrawal": 0.6875,
+    "transduction": 0.8333333333333334,
+    "concrescence": 0.9166666666666666,
+    "picturing": 1.0,
+    "assemblage": 0.9375,
+    "closure": 0.9166666666666666
+   },
+   "Q4_parameters_persisting_changed": 0.21552070767993567,
+   "Q5_transforms_by_source_after_step_80": {
+    "withdrawal": 3.25,
+    "transduction": 12.020833333333334,
+    "concrescence": 30.166666666666668,
+    "picturing": 44.979166666666664,
+    "assemblage": 20.604166666666668,
+    "closure": 8.708333333333334
+   },
+   "Q5_parameter_drift_mean": 0.13588178980291948,
+   "Q6_reinsertions": {
+    "archived datum re-seeds the milieu": {
+     "per_run": 1.0,
+     "share_causing_a_later_event": 0.0
+    }
+   },
+   "Q7_configuration": {
+    "couplings_per_run": 3.0833333333333335,
+    "splits_per_run": 4.604166666666667,
+    "reclassifications_per_run": 0.0,
+    "composite_kinds_seen_in_runs": {
+     "assemblage∘closure": 6,
+     "transduction∘assemblage": 12,
+     "transduction∘assemblage∘closure": 4,
+     "withdrawal∘transduction": 1,
+     "withdrawal∘transduction∘assemblage": 1,
+     "concrescence∘picturing": 34,
+     "picturing∘assemblage": 7,
+     "transduction∘closure": 19,
+     "transduction∘picturing∘assemblage": 3,
+     "concrescence∘assemblage": 21,
+     "concrescence∘picturing∘assemblage": 21,
+     "concrescence∘picturing∘closure": 3,
+     "picturing∘assemblage∘closure": 2,
+     "picturing∘closure": 1,
+     "transduction∘concrescence∘assemblage": 2,
+     "concrescence∘assemblage∘closure": 5,
+     "concrescence∘closure": 2,
+     "transduction∘concrescence∘closure": 1,
+     "withdrawal∘concrescence∘assemblage": 1
+    }
+   },
+   "Q9_unobservable_channel_samples_per_run": {
+    "withdrawal": {
+     "boundary_invisible": 55.833333333333336
+    },
+    "transduction": {
+     "boundary_invisible": 96.95833333333336,
+     "unmeasured": 59.0,
+     "scale_mismatch": 3.8541666666666665
+    },
+    "assemblage": {
+     "boundary_invisible": 52.52083333333333,
+     "unmeasured": 24.5625,
+     "scale_mismatch": 30.104166666666664,
+     "instrument_mismatch": 7.208333333333333
+    },
+    "closure": {
+     "boundary_invisible": 48.35416666666666,
+     "unmeasured": 55.56249999999999,
+     "scale_mismatch": 5.583333333333333
+    },
+    "concrescence": {
+     "boundary_invisible": 9.645833333333334,
+     "instrument_mismatch": 14.541666666666666,
+     "scale_mismatch": 9.375,
+     "unmeasured": 0.16666666666666669
+    },
+    "picturing": {
+     "boundary_invisible": 7.729166666666666,
+     "instrument_mismatch": 20.6875,
+     "scale_mismatch": 13.35416666666667,
+     "unmeasured": 0.4375
+    }
+   }
+  },
+  "E:assemblage": {
+   "Q1_changed_ignition_conditions": {
+    "picturing.ign.tolerance": {
+     "runs": 48,
+     "per_run": 16.0,
+     "mean_relative_change": -0.0838717514343628
+    },
+    "withdrawal.ign.threshold": {
+     "runs": 48,
+     "per_run": 29.0625,
+     "mean_relative_change": 0.026958824509875023
+    },
+    "closure.ign.threshold": {
+     "runs": 47,
+     "per_run": 22.5,
+     "mean_relative_change": -0.07958588639241715
+    },
+    "transduction.rule.factor": {
+     "runs": 47,
+     "per_run": 114.89583333333333,
+     "mean_relative_change": 0.004016991037430868
+    },
+    "assemblage.ign.threshold": {
+     "runs": 45,
+     "per_run": 13.625,
+     "mean_relative_change": -0.09670112175389782
+    },
+    "transduction.ign.threshold": {
+     "runs": 44,
+     "per_run": 18.979166666666668,
+     "mean_relative_change": -0.07721921061129998
+    },
+    "withdrawal.instrument.level": {
+     "runs": 41,
+     "per_run": 0.8541666666666666,
+     "mean_relative_change": 1.0
+    },
+    "assemblage.instrument.level": {
+     "runs": 35,
+     "per_run": 1.1458333333333333,
+     "mean_relative_change": 1.0
+    },
+    "assemblage.rule.links": {
+     "runs": 34,
+     "per_run": 3.7291666666666665,
+     "mean_relative_change": -0.24289972161704193
+    },
+    "picturing.rule.damp": {
+     "runs": 34,
+     "per_run": 8.8125,
+     "mean_relative_change": -0.002934620314028478
+    },
+    "closure.instrument.level": {
+     "runs": 32,
+     "per_run": 0.7083333333333334,
+     "mean_relative_change": 1.0
+    },
+    "concrescence.instrument.level": {
+     "runs": 23,
+     "per_run": 0.5,
+     "mean_relative_change": 1.0
+    },
+    "closure.rule.adapt": {
+     "runs": 20,
+     "per_run": 1.9583333333333333,
+     "mean_relative_change": 0.0009529010194658631
+    },
+    "concrescence∘assemblage.instrument.level": {
+     "runs": 4,
+     "per_run": 0.08333333333333333,
+     "mean_relative_change": 1.0
+    },
+    "concrescence∘assemblage∘closure.instrument.level": {
+     "runs": 2,
+     "per_run": 0.041666666666666664,
+     "mean_relative_change": 1.0
+    },
+    "withdrawal∘transduction∘assemblage.instrument.level": {
+     "runs": 1,
+     "per_run": 0.020833333333333332,
+     "mean_relative_change": 1.0
+    },
+    "transduction.instrument.level": {
+     "runs": 1,
+     "per_run": 0.14583333333333334,
+     "mean_relative_change": 1.0
+    },
+    "assemblage∘closure.instrument.level": {
+     "runs": 1,
+     "per_run": 0.020833333333333332,
+     "mean_relative_change": 1.0
+    },
+    "transduction∘closure.instrument.level": {
+     "runs": 1,
+     "per_run": 0.041666666666666664,
+     "mean_relative_change": 1.0
+    },
+    "transduction∘assemblage.instrument.level": {
+     "runs": 1,
+     "per_run": 0.020833333333333332,
+     "mean_relative_change": 1.0
+    },
+    "withdrawal∘concrescence∘assemblage.instrument.level": {
+     "runs": 1,
+     "per_run": 0.020833333333333332,
+     "mean_relative_change": 1.0
+    }
+   },
+   "Q2_causing_series": {
+    "picturing → transduction": 66.6875,
+    "competition → transduction": 36.041666666666664,
+    "concrescence → transduction": 17.145833333333332,
+    "concrescence → withdrawal": 15.645833333333334,
+    "closure → withdrawal": 13.1875,
+    "concrescence → closure": 10.875,
+    "concrescence → assemblage": 8.875,
+    "picturing → transduction∘closure": 8.354166666666666,
+    "assemblage → transduction": 8.104166666666666,
+    "assemblage → picturing": 8.041666666666666,
+    "assemblage → withdrawal": 7.604166666666667,
+    "assemblage → closure": 5.6875,
+    "concrescence → picturing": 5.625,
+    "transduction → picturing": 5.354166666666667,
+    "assemblage → concrescence": 4.979166666666667,
+    "transduction → closure": 4.75,
+    "competition → concrescence∘picturing": 4.520833333333333,
+    "transduction → concrescence∘picturing": 4.479166666666667,
+    "competition → picturing": 4.041666666666667,
+    "transduction → transduction∘closure": 3.8541666666666665,
+    "competition → transduction∘closure": 2.9375,
+    "withdrawal → assemblage": 2.5208333333333335,
+    "closure → assemblage": 1.875,
+    "assemblage → transduction∘assemblage": 1.7916666666666667,
+    "concrescence → transduction∘closure": 1.7291666666666667,
+    "picturing → assemblage": 1.1458333333333333,
+    "competition → closure": 1.1458333333333333,
+    "withdrawal → closure": 0.8958333333333334,
+    "picturing → withdrawal": 0.8541666666666666,
+    "closure → concrescence∘assemblage": 0.75,
+    "closure → transduction∘assemblage": 0.7083333333333334,
+    "picturing → closure": 0.7083333333333334,
+    "transduction → transduction∘assemblage∘closure": 0.625,
+    "assemblage → transduction∘assemblage∘closure": 0.625,
+    "picturing → transduction∘assemblage": 0.5,
+    "picturing → concrescence": 0.5,
+    "withdrawal → transduction∘assemblage": 0.375,
+    "withdrawal → transduction∘assemblage∘closure": 0.375,
+    "assemblage → assemblage": 0.3541666666666667,
+    "withdrawal → assemblage∘closure": 0.3125,
+    "transduction → assemblage∘closure": 0.3125,
+    "competition → transduction∘assemblage": 0.2916666666666667,
+    "assemblage → assemblage∘closure": 0.2708333333333333,
+    "concrescence → picturing∘assemblage": 0.2708333333333333,
+    "picturing → transduction∘assemblage∘closure": 0.22916666666666666,
+    "concrescence → withdrawal∘assemblage": 0.22916666666666666,
+    "concrescence → assemblage∘closure": 0.22916666666666666,
+    "picturing → withdrawal∘transduction∘assemblage": 0.20833333333333334,
+    "withdrawal → concrescence∘assemblage": 0.20833333333333334,
+    "assemblage → transduction∘closure": 0.20833333333333334,
+    "withdrawal → picturing∘assemblage": 0.20833333333333334,
+    "assemblage → concrescence∘picturing": 0.16666666666666666,
+    "withdrawal → transduction∘closure": 0.16666666666666666,
+    "picturing → transduction∘concrescence∘assemblage": 0.14583333333333334,
+    "closure → concrescence∘picturing∘assemblage": 0.14583333333333334,
+    "competition → transduction∘assemblage∘closure": 0.125,
+    "closure → transduction∘assemblage∘closure": 0.125,
+    "competition → assemblage∘closure": 0.125,
+    "competition → picturing∘assemblage∘closure": 0.125,
+    "transduction → concrescence∘picturing∘assemblage": 0.125,
+    "concrescence → transduction∘picturing∘assemblage": 0.10416666666666667,
+    "concrescence → picturing∘assemblage∘closure": 0.10416666666666667,
+    "assemblage → picturing∘assemblage": 0.10416666666666667,
+    "picturing → concrescence∘assemblage": 0.08333333333333333,
+    "competition → transduction∘concrescence∘assemblage": 0.08333333333333333,
+    "concrescence → transduction∘assemblage": 0.08333333333333333,
+    "transduction → concrescence∘assemblage∘closure": 0.08333333333333333,
+    "competition → concrescence∘picturing∘assemblage": 0.08333333333333333,
+    "competition → concrescence∘assemblage∘closure": 0.08333333333333333,
+    "closure → withdrawal∘transduction∘assemblage": 0.0625,
+    "competition → picturing∘assemblage": 0.0625,
+    "transduction → concrescence∘closure": 0.0625,
+    "picturing → transduction∘concrescence∘closure": 0.0625,
+    "concrescence → transduction∘assemblage∘closure": 0.041666666666666664,
+    "picturing → concrescence∘assemblage∘closure": 0.041666666666666664,
+    "competition → transduction∘picturing∘assemblage": 0.041666666666666664,
+    "closure → picturing∘assemblage": 0.041666666666666664,
+    "picturing → assemblage∘closure": 0.020833333333333332,
+    "closure → transduction∘concrescence∘assemblage": 0.020833333333333332,
+    "transduction → transduction∘picturing∘assemblage": 0.020833333333333332,
+    "concrescence → picturing∘closure": 0.020833333333333332,
+    "withdrawal → concrescence∘picturing∘assemblage": 0.020833333333333332,
+    "picturing → withdrawal∘concrescence∘assemblage": 0.020833333333333332
+   },
+   "Q3_ignited_share": {
+    "withdrawal": 0.7083333333333334,
+    "transduction": 0.8333333333333334,
+    "concrescence": 0.9375,
+    "picturing": 0.9791666666666666,
+    "assemblage": 0.75,
+    "closure": 0.9375
+   },
+   "Q4_parameters_persisting_changed": 0.22355868934052261,
+   "Q5_transforms_by_source_after_step_80": {
+    "withdrawal": 2.875,
+    "transduction": 11.770833333333334,
+    "concrescence": 39.479166666666664,
+    "picturing": 66.02083333333333,
+    "assemblage": 4.75,
+    "closure": 9.0625
+   },
+   "Q5_parameter_drift_mean": 0.14989070880226293,
+   "Q6_reinsertions": {
+    "archived datum re-seeds the milieu": {
+     "per_run": 0.8333333333333334,
+     "share_causing_a_later_event": 0.0
+    }
+   },
+   "Q7_configuration": {
+    "couplings_per_run": 2.6666666666666665,
+    "splits_per_run": 3.9791666666666665,
+    "reclassifications_per_run": 0.0,
+    "composite_kinds_seen_in_runs": {
+     "assemblage∘closure": 5,
+     "transduction∘assemblage": 7,
+     "transduction∘assemblage∘closure": 4,
+     "transduction∘closure": 20,
+     "withdrawal∘assemblage": 1,
+     "withdrawal∘transduction∘assemblage": 1,
+     "concrescence∘picturing": 36,
+     "picturing∘assemblage": 7,
+     "transduction∘picturing∘assemblage": 2,
+     "concrescence∘assemblage": 21,
+     "concrescence∘picturing∘assemblage": 11,
+     "picturing∘assemblage∘closure": 2,
+     "transduction∘concrescence∘assemblage": 2,
+     "concrescence∘assemblage∘closure": 5,
+     "concrescence∘closure": 1,
+     "concrescence∘picturing∘closure": 2,
+     "transduction∘concrescence∘closure": 1,
+     "picturing∘closure": 1,
+     "withdrawal∘concrescence∘assemblage": 1
+    }
+   },
+   "Q9_unobservable_channel_samples_per_run": {
+    "withdrawal": {
+     "boundary_invisible": 53.41666666666667,
+     "instrument_mismatch": 1.6875
+    },
+    "transduction": {
+     "boundary_invisible": 95.45833333333334,
+     "instrument_mismatch": 18.541666666666664,
+     "unmeasured": 54.45833333333333,
+     "scale_mismatch": 3.4375
+    },
+    "assemblage": {
+     "boundary_invisible": 29.500000000000014,
+     "instrument_mismatch": 87.33333333333336,
+     "unmeasured": 7.208333333333333,
+     "scale_mismatch": 7.041666666666666
+    },
+    "closure": {
+     "boundary_invisible": 46.72916666666667,
+     "unmeasured": 53.791666666666664,
+     "instrument_mismatch": 13.645833333333334,
+     "scale_mismatch": 2.4791666666666665
+    },
+    "concrescence": {
+     "boundary_invisible": 15.166666666666666,
+     "instrument_mismatch": 4.979166666666667,
+     "scale_mismatch": 1.375
+    },
+    "picturing": {
+     "boundary_invisible": 18.270833333333336,
+     "scale_mismatch": 3.5625000000000004,
+     "instrument_mismatch": 5.479166666666666,
+     "unmeasured": 1.875
+    }
+   }
+  },
+  "E:closure": {
+   "Q1_changed_ignition_conditions": {
+    "picturing.ign.tolerance": {
+     "runs": 48,
+     "per_run": 16.3125,
+     "mean_relative_change": -0.08569226052173191
+    },
+    "withdrawal.ign.threshold": {
+     "runs": 48,
+     "per_run": 22.770833333333332,
+     "mean_relative_change": -0.008212135703496484
+    },
+    "transduction.rule.factor": {
+     "runs": 48,
+     "per_run": 142.02083333333334,
+     "mean_relative_change": 0.003157838078652147
+    },
+    "closure.ign.threshold": {
+     "runs": 47,
+     "per_run": 18.5625,
+     "mean_relative_change": -0.08364927686574196
+    },
+    "assemblage.ign.threshold": {
+     "runs": 46,
+     "per_run": 16.041666666666668,
+     "mean_relative_change": -0.0970518410143443
+    },
+    "transduction.ign.threshold": {
+     "runs": 43,
+     "per_run": 20.333333333333332,
+     "mean_relative_change": -0.07695028856258224
+    },
+    "withdrawal.instrument.level": {
+     "runs": 41,
+     "per_run": 0.8541666666666666,
+     "mean_relative_change": 1.0
+    },
+    "picturing.rule.damp": {
+     "runs": 36,
+     "per_run": 13.020833333333334,
+     "mean_relative_change": -0.0009434665366375287
+    },
+    "closure.instrument.level": {
+     "runs": 33,
+     "per_run": 0.6875,
+     "mean_relative_change": 1.0
+    },
+    "assemblage.instrument.level": {
+     "runs": 28,
+     "per_run": 0.5833333333333334,
+     "mean_relative_change": 1.0
+    },
+    "assemblage.rule.links": {
+     "runs": 23,
+     "per_run": 2.2916666666666665,
+     "mean_relative_change": -0.24508633029164428
+    },
+    "concrescence.instrument.level": {
+     "runs": 19,
+     "per_run": 0.3958333333333333,
+     "mean_relative_change": 1.0
+    },
+    "closure.rule.adapt": {
+     "runs": 6,
+     "per_run": 0.8958333333333334,
+     "mean_relative_change": 0.0019175582292761523
+    },
+    "concrescence∘assemblage.instrument.level": {
+     "runs": 5,
+     "per_run": 0.10416666666666667,
+     "mean_relative_change": 1.0
+    },
+    "concrescence∘assemblage∘closure.instrument.level": {
+     "runs": 1,
+     "per_run": 0.020833333333333332,
+     "mean_relative_change": 1.0
+    },
+    "withdrawal∘concrescence∘assemblage.instrument.level": {
+     "runs": 1,
+     "per_run": 0.020833333333333332,
+     "mean_relative_change": 1.0
+    }
+   },
+   "Q2_causing_series": {
+    "picturing → transduction": 78.97916666666667,
+    "competition → transduction": 47.291666666666664,
+    "assemblage → transduction": 21.270833333333332,
+    "concrescence → transduction": 18.5,
+    "concrescence → withdrawal": 16.375,
+    "assemblage → closure": 13.395833333333334,
+    "assemblage → withdrawal": 10.5625,
+    "concrescence → closure": 9.854166666666666,
+    "assemblage → picturing": 9.708333333333334,
+    "concrescence → assemblage": 9.479166666666666,
+    "competition → concrescence∘picturing": 8.208333333333334,
+    "assemblage → transduction∘assemblage": 7.208333333333333,
+    "assemblage → concrescence": 6.395833333333333,
+    "closure → withdrawal": 6.354166666666667,
+    "transduction → picturing": 5.25,
+    "transduction → concrescence∘picturing": 5.208333333333333,
+    "concrescence → picturing": 5.125,
+    "competition → transduction∘assemblage": 4.9375,
+    "transduction → closure": 4.208333333333333,
+    "picturing → transduction∘assemblage": 4.104166666666667,
+    "competition → picturing": 3.8958333333333335,
+    "assemblage → assemblage": 3.3333333333333335,
+    "withdrawal → assemblage": 3.1875,
+    "picturing → transduction∘closure": 2.6666666666666665,
+    "competition → transduction∘closure": 2.5208333333333335,
+    "transduction → transduction∘closure": 2.2291666666666665,
+    "concrescence → transduction∘assemblage": 1.2708333333333333,
+    "assemblage → concrescence∘picturing": 0.9791666666666666,
+    "assemblage → transduction∘closure": 0.9375,
+    "picturing → withdrawal": 0.8541666666666666,
+    "withdrawal → transduction∘assemblage": 0.7708333333333334,
+    "closure → assemblage": 0.7291666666666666,
+    "picturing → closure": 0.6875,
+    "competition → concrescence∘picturing∘assemblage": 0.6875,
+    "withdrawal → closure": 0.6666666666666666,
+    "closure → transduction∘assemblage": 0.6458333333333334,
+    "closure → concrescence∘assemblage": 0.6458333333333334,
+    "transduction → transduction∘assemblage∘closure": 0.625,
+    "assemblage → transduction∘assemblage∘closure": 0.625,
+    "picturing → assemblage": 0.5833333333333334,
+    "concrescence → transduction∘closure": 0.5416666666666666,
+    "withdrawal → transduction∘assemblage∘closure": 0.4791666666666667,
+    "competition → transduction∘concrescence∘assemblage": 0.4791666666666667,
+    "competition → closure": 0.4583333333333333,
+    "picturing → concrescence": 0.3958333333333333,
+    "assemblage → assemblage∘closure": 0.3333333333333333,
+    "competition → transduction∘assemblage∘closure": 0.3333333333333333,
+    "concrescence → picturing∘assemblage": 0.3125,
+    "transduction → assemblage∘closure": 0.3125,
+    "withdrawal → assemblage∘closure": 0.2916666666666667,
+    "withdrawal → concrescence∘picturing∘assemblage": 0.2916666666666667,
+    "transduction → concrescence∘picturing∘assemblage": 0.2916666666666667,
+    "assemblage → picturing∘assemblage": 0.2916666666666667,
+    "picturing → transduction∘assemblage∘closure": 0.2708333333333333,
+    "concrescence → assemblage∘closure": 0.25,
+    "picturing → withdrawal∘transduction∘assemblage": 0.22916666666666666,
+    "withdrawal → concrescence∘assemblage": 0.22916666666666666,
+    "picturing → transduction∘concrescence∘assemblage": 0.20833333333333334,
+    "withdrawal → picturing∘assemblage": 0.20833333333333334,
+    "assemblage → withdrawal∘transduction": 0.16666666666666666,
+    "concrescence → transduction∘picturing∘assemblage": 0.14583333333333334,
+    "closure → transduction∘assemblage∘closure": 0.125,
+    "competition → assemblage∘closure": 0.125,
+    "competition → picturing∘assemblage∘closure": 0.125,
+    "competition → picturing∘assemblage": 0.10416666666666667,
+    "picturing → concrescence∘assemblage": 0.10416666666666667,
+    "assemblage → concrescence∘closure": 0.10416666666666667,
+    "competition → withdrawal∘transduction∘assemblage": 0.10416666666666667,
+    "picturing → withdrawal∘transduction": 0.08333333333333333,
+    "transduction → concrescence∘assemblage∘closure": 0.08333333333333333,
+    "closure → concrescence∘picturing∘assemblage": 0.08333333333333333,
+    "closure → withdrawal∘transduction∘assemblage": 0.0625,
+    "competition → transduction∘picturing∘assemblage": 0.0625,
+    "transduction → concrescence∘closure": 0.0625,
+    "picturing → transduction∘concrescence∘closure": 0.0625,
+    "concrescence → transduction∘assemblage∘closure": 0.041666666666666664,
+    "concrescence → picturing∘assemblage∘closure": 0.041666666666666664,
+    "assemblage → withdrawal∘transduction∘assemblage": 0.041666666666666664,
+    "concrescence → withdrawal∘transduction∘assemblage": 0.041666666666666664,
+    "picturing → concrescence∘assemblage∘closure": 0.020833333333333332,
+    "transduction → transduction∘picturing∘assemblage": 0.020833333333333332,
+    "picturing → withdrawal∘concrescence∘assemblage": 0.020833333333333332,
+    "withdrawal → transduction∘picturing∘assemblage": 0.020833333333333332
+   },
+   "Q3_ignited_share": {
+    "withdrawal": 0.875,
+    "transduction": 0.875,
+    "concrescence": 0.9166666666666666,
+    "picturing": 1.0,
+    "assemblage": 0.9791666666666666,
+    "closure": 0.8333333333333334
+   },
+   "Q4_parameters_persisting_changed": 0.22074688796680497,
+   "Q5_transforms_by_source_after_step_80": {
+    "withdrawal": 3.9375,
+    "transduction": 10.395833333333334,
+    "concrescence": 40.479166666666664,
+    "picturing": 75.75,
+    "assemblage": 42.145833333333336,
+    "closure": 0.8333333333333334
+   },
+   "Q5_parameter_drift_mean": 0.11373626608745847,
+   "Q6_reinsertions": {
+    "archived datum re-seeds the milieu": {
+     "per_run": 1.4583333333333333,
+     "share_causing_a_later_event": 0.0
+    }
+   },
+   "Q7_configuration": {
+    "couplings_per_run": 2.8125,
+    "splits_per_run": 4.270833333333333,
+    "reclassifications_per_run": 0.0,
+    "composite_kinds_seen_in_runs": {
+     "assemblage∘closure": 5,
+     "transduction∘assemblage": 12,
+     "transduction∘assemblage∘closure": 5,
+     "withdrawal∘transduction": 1,
+     "withdrawal∘transduction∘assemblage": 2,
+     "concrescence∘picturing": 39,
+     "picturing∘assemblage": 8,
+     "transduction∘closure": 7,
+     "transduction∘picturing∘assemblage": 4,
+     "concrescence∘assemblage": 22,
+     "concrescence∘picturing∘assemblage": 26,
+     "transduction∘concrescence∘assemblage": 5,
+     "picturing∘assemblage∘closure": 1,
+     "concrescence∘assemblage∘closure": 4,
+     "concrescence∘closure": 1,
+     "concrescence∘picturing∘closure": 1,
+     "transduction∘concrescence∘closure": 1,
+     "withdrawal∘concrescence∘assemblage": 1
+    }
+   },
+   "Q9_unobservable_channel_samples_per_run": {
+    "withdrawal": {
+     "boundary_invisible": 26.04166666666667
+    },
+    "transduction": {
+     "boundary_invisible": 79.31250000000001,
+     "unmeasured": 42.333333333333336,
+     "instrument_mismatch": 8.25,
+     "scale_mismatch": 6.166666666666667
+    },
+    "assemblage": {
+     "boundary_invisible": 37.93750000000001,
+     "unmeasured": 23.1875,
+     "instrument_mismatch": 5.791666666666667,
+     "scale_mismatch": 36.93749999999999
+    },
+    "closure": {
+     "boundary_invisible": 34.43750000000001,
+     "unmeasured": 38.62499999999999,
+     "instrument_mismatch": 99.8125,
+     "scale_mismatch": 3.4375
+    },
+    "concrescence": {
+     "boundary_invisible": 10.500000000000002,
+     "scale_mismatch": 5.583333333333332,
+     "unmeasured": 0.75,
+     "instrument_mismatch": 0.125
+    },
+    "picturing": {
+     "boundary_invisible": 8.75,
+     "scale_mismatch": 9.229166666666666,
+     "unmeasured": 2.1041666666666665,
+     "instrument_mismatch": 0.020833333333333332
+    }
+   }
+  },
+  "F:withdrawal": {
+   "Q1_changed_ignition_conditions": {
+    "picturing.ign.tolerance": {
+     "runs": 48,
+     "per_run": 16.354166666666668,
+     "mean_relative_change": -0.08330651367526024
+    },
+    "withdrawal.ign.threshold": {
+     "runs": 48,
+     "per_run": 20.0625,
+     "mean_relative_change": 0.02646667761876621
+    },
+    "transduction.rule.factor": {
+     "runs": 48,
+     "per_run": 135.4375,
+     "mean_relative_change": 0.0034463145845200147
+    },
+    "closure.ign.threshold": {
+     "runs": 47,
+     "per_run": 25.291666666666668,
+     "mean_relative_change": -0.07754160799145858
+    },
+    "assemblage.ign.threshold": {
+     "runs": 44,
+     "per_run": 14.895833333333334,
+     "mean_relative_change": -0.08846854810332999
+    },
+    "transduction.ign.threshold": {
+     "runs": 44,
+     "per_run": 20.1875,
+     "mean_relative_change": -0.07719302803246751
+    },
+    "assemblage.rule.links": {
+     "runs": 37,
+     "per_run": 4.083333333333333,
+     "mean_relative_change": -0.24282476921365817
+    },
+    "withdrawal.instrument.level": {
+     "runs": 35,
+     "per_run": 1.1041666666666667,
+     "mean_relative_change": 1.0
+    },
+    "picturing.rule.damp": {
+     "runs": 32,
+     "per_run": 9.916666666666666,
+     "mean_relative_change": -0.00404180914490569
+    },
+    "closure.instrument.level": {
+     "runs": 31,
+     "per_run": 0.6458333333333334,
+     "mean_relative_change": 1.0
+    },
+    "assemblage.instrument.level": {
+     "runs": 29,
+     "per_run": 0.6041666666666666,
+     "mean_relative_change": 1.0
+    },
+    "closure.rule.adapt": {
+     "runs": 23,
+     "per_run": 3.0416666666666665,
+     "mean_relative_change": -0.00022020834561970964
+    },
+    "concrescence.instrument.level": {
+     "runs": 21,
+     "per_run": 0.4375,
+     "mean_relative_change": 1.0
+    },
+    "concrescence∘assemblage.instrument.level": {
+     "runs": 5,
+     "per_run": 0.10416666666666667,
+     "mean_relative_change": 1.0
+    },
+    "concrescence.ign.threshold": {
+     "runs": 1,
+     "per_run": 1.0208333333333333,
+     "mean_relative_change": -0.07999999999999995
+    },
+    "concrescence∘assemblage∘closure.instrument.level": {
+     "runs": 1,
+     "per_run": 0.020833333333333332,
+     "mean_relative_change": 1.0
+    },
+    "withdrawal∘concrescence∘assemblage.instrument.level": {
+     "runs": 1,
+     "per_run": 0.020833333333333332,
+     "mean_relative_change": 1.0
+    }
+   },
+   "Q2_causing_series": {
+    "picturing → transduction": 63.291666666666664,
+    "competition → transduction": 50.270833333333336,
+    "assemblage → transduction": 17.583333333333332,
+    "concrescence → transduction": 16.604166666666668,
+    "concrescence → closure": 11.1875,
+    "concrescence → withdrawal": 10.645833333333334,
+    "concrescence → assemblage": 10.25,
+    "assemblage → closure": 10.145833333333334,
+    "assemblage → withdrawal": 9.666666666666666,
+    "closure → withdrawal": 9.416666666666666,
+    "assemblage → picturing": 8.833333333333334,
+    "picturing → transduction∘closure": 7.395833333333333,
+    "picturing → transduction∘assemblage": 6.645833333333333,
+    "assemblage → concrescence": 6.375,
+    "transduction → closure": 5.916666666666667,
+    "transduction → picturing": 5.479166666666667,
+    "competition → concrescence∘picturing": 5.416666666666667,
+    "transduction → transduction∘closure": 5.395833333333333,
+    "concrescence → picturing": 5.3125,
+    "transduction → concrescence∘picturing": 4.625,
+    "competition → picturing": 3.7916666666666665,
+    "competition → transduction∘closure": 3.2916666666666665,
+    "assemblage → transduction∘assemblage": 3.1041666666666665,
+    "competition → transduction∘assemblage": 2.5,
+    "assemblage → assemblage": 2.3333333333333335,
+    "concrescence → transduction∘closure": 1.9583333333333333,
+    "competition → closure": 1.9375,
+    "closure → assemblage": 1.7083333333333333,
+    "concrescence → transduction∘assemblage": 1.5833333333333333,
+    "assemblage → concrescence∘picturing": 1.25,
+    "picturing → withdrawal": 1.1041666666666667,
+    "closure → transduction∘assemblage": 0.9583333333333334,
+    "withdrawal → assemblage": 0.8958333333333334,
+    "competition → transduction∘concrescence∘assemblage": 0.7916666666666666,
+    "closure → concrescence∘assemblage": 0.75,
+    "transduction → transduction∘assemblage∘closure": 0.6458333333333334,
+    "picturing → transduction∘assemblage∘closure": 0.6458333333333334,
+    "picturing → closure": 0.6458333333333334,
+    "assemblage → transduction∘assemblage∘closure": 0.625,
+    "picturing → assemblage": 0.6041666666666666,
+    "assemblage → transduction∘closure": 0.5625,
+    "picturing → transduction∘concrescence∘assemblage": 0.5416666666666666,
+    "assemblage → transduction∘concrescence∘assemblage": 0.5416666666666666,
+    "assemblage → assemblage∘closure": 0.5208333333333334,
+    "picturing → concrescence": 0.4375,
+    "concrescence → transduction∘concrescence∘assemblage": 0.4375,
+    "competition → transduction∘assemblage∘closure": 0.4166666666666667,
+    "withdrawal → transduction∘assemblage∘closure": 0.3958333333333333,
+    "withdrawal → transduction∘assemblage": 0.375,
+    "competition → concrescence∘picturing∘assemblage": 0.375,
+    "withdrawal → closure": 0.375,
+    "concrescence → assemblage∘closure": 0.375,
+    "transduction → assemblage∘closure": 0.3541666666666667,
+    "concrescence → transduction∘concrescence": 0.3541666666666667,
+    "assemblage → transduction∘concrescence": 0.3333333333333333,
+    "concrescence → picturing∘assemblage": 0.3125,
+    "closure → concrescence∘picturing∘assemblage": 0.2916666666666667,
+    "competition → transduction∘concrescence": 0.2708333333333333,
+    "transduction → concrescence∘picturing∘assemblage": 0.22916666666666666,
+    "transduction → picturing∘assemblage∘closure": 0.22916666666666666,
+    "assemblage → withdrawal∘transduction∘assemblage": 0.20833333333333334,
+    "withdrawal → concrescence∘assemblage": 0.20833333333333334,
+    "assemblage → concrescence∘assemblage": 0.20833333333333334,
+    "competition → picturing∘assemblage∘closure": 0.1875,
+    "concrescence → picturing∘assemblage∘closure": 0.1875,
+    "assemblage → picturing∘assemblage": 0.16666666666666666,
+    "concrescence → concrescence∘assemblage": 0.14583333333333334,
+    "competition → withdrawal∘transduction∘assemblage": 0.125,
+    "withdrawal → withdrawal∘transduction∘assemblage": 0.125,
+    "closure → transduction∘assemblage∘closure": 0.125,
+    "competition → assemblage∘closure": 0.125,
+    "picturing → concrescence∘assemblage": 0.10416666666666667,
+    "concrescence → transduction∘assemblage∘closure": 0.10416666666666667,
+    "competition → concrescence∘picturing∘closure": 0.10416666666666667,
+    "assemblage → withdrawal∘assemblage": 0.08333333333333333,
+    "competition → picturing∘assemblage": 0.08333333333333333,
+    "closure → picturing∘assemblage": 0.08333333333333333,
+    "closure → transduction∘picturing∘assemblage": 0.08333333333333333,
+    "concrescence → concrescence": 0.08333333333333333,
+    "transduction → concrescence∘assemblage∘closure": 0.08333333333333333,
+    "closure → withdrawal∘transduction∘assemblage": 0.0625,
+    "withdrawal → assemblage∘closure": 0.0625,
+    "competition → transduction∘picturing∘assemblage": 0.0625,
+    "concrescence → picturing∘closure": 0.0625,
+    "transduction → concrescence∘picturing∘closure": 0.0625,
+    "transduction → concrescence∘closure": 0.0625,
+    "picturing → transduction∘concrescence∘closure": 0.0625,
+    "picturing → withdrawal∘transduction∘assemblage": 0.041666666666666664,
+    "withdrawal → withdrawal∘assemblage": 0.041666666666666664,
+    "concrescence → transduction∘picturing∘assemblage": 0.041666666666666664,
+    "assemblage → picturing∘closure": 0.041666666666666664,
+    "transduction → picturing∘closure": 0.020833333333333332,
+    "picturing → concrescence∘assemblage∘closure": 0.020833333333333332,
+    "closure → transduction∘concrescence∘assemblage": 0.020833333333333332,
+    "transduction → transduction∘picturing∘assemblage": 0.020833333333333332,
+    "transduction → picturing∘assemblage": 0.020833333333333332,
+    "picturing → withdrawal∘concrescence∘assemblage": 0.020833333333333332,
+    "competition → concrescence∘closure": 0.020833333333333332
+   },
+   "Q3_ignited_share": {
+    "withdrawal": 0.5625,
+    "transduction": 0.8125,
+    "concrescence": 0.9166666666666666,
+    "picturing": 1.0,
+    "assemblage": 0.9375,
+    "closure": 0.9166666666666666
+   },
+   "Q4_parameters_persisting_changed": 0.22705314009661837,
+   "Q5_transforms_by_source_after_step_80": {
+    "withdrawal": 0.2916666666666667,
+    "transduction": 15.25,
+    "concrescence": 38.145833333333336,
+    "picturing": 68.02083333333333,
+    "assemblage": 29.375,
+    "closure": 5.645833333333333
+   },
+   "Q5_parameter_drift_mean": 0.12803355505452144,
+   "Q6_reinsertions": {
+    "archived datum re-seeds the milieu": {
+     "per_run": 1.1458333333333333,
+     "share_causing_a_later_event": 0.0
+    }
+   },
+   "Q7_configuration": {
+    "couplings_per_run": 3.25,
+    "splits_per_run": 5.458333333333333,
+    "reclassifications_per_run": 0.0,
+    "composite_kinds_seen_in_runs": {
+     "assemblage∘closure": 6,
+     "transduction∘assemblage": 14,
+     "transduction∘assemblage∘closure": 5,
+     "withdrawal∘assemblage": 1,
+     "withdrawal∘transduction∘assemblage": 1,
+     "concrescence∘picturing": 35,
+     "concrescence∘picturing∘assemblage": 20,
+     "transduction∘closure": 17,
+     "picturing∘assemblage": 8,
+     "transduction∘picturing∘assemblage": 2,
+     "concrescence∘assemblage": 22,
+     "concrescence∘picturing∘closure": 5,
+     "picturing∘assemblage∘closure": 4,
+     "picturing∘closure": 3,
+     "transduction∘concrescence": 1,
+     "transduction∘concrescence∘assemblage": 3,
+     "concrescence∘assemblage∘closure": 5,
+     "concrescence∘closure": 2,
+     "transduction∘concrescence∘closure": 1,
+     "withdrawal∘concrescence∘assemblage": 1
+    }
+   },
+   "Q9_unobservable_channel_samples_per_run": {
+    "withdrawal": {
+     "boundary_invisible": 30.749999999999993,
+     "instrument_mismatch": 40.29166666666667,
+     "scale_mismatch": 15.374999999999996
+    },
+    "transduction": {
+     "boundary_invisible": 90.29166666666667,
+     "unmeasured": 64.85416666666667,
+     "instrument_mismatch": 2.8333333333333335,
+     "scale_mismatch": 3.8541666666666665
+    },
+    "assemblage": {
+     "boundary_invisible": 47.64583333333334,
+     "unmeasured": 28.229166666666668,
+     "instrument_mismatch": 1.125,
+     "scale_mismatch": 32.02083333333333
+    },
+    "closure": {
+     "boundary_invisible": 30.54166666666667,
+     "unmeasured": 68.93749999999999,
+     "scale_mismatch": 6.812500000000001
+    },
+    "concrescence": {
+     "boundary_invisible": 15.187499999999998,
+     "scale_mismatch": 7.479166666666665,
+     "unmeasured": 0.5833333333333333
+    },
+    "picturing": {
+     "boundary_invisible": 12.416666666666666,
+     "scale_mismatch": 10.770833333333336,
+     "unmeasured": 0.9166666666666666
+    }
+   }
+  },
+  "F:transduction": {
+   "Q1_changed_ignition_conditions": {
+    "picturing.ign.tolerance": {
+     "runs": 48,
+     "per_run": 11.5,
+     "mean_relative_change": -0.08655768750305348
+    },
+    "withdrawal.ign.threshold": {
+     "runs": 48,
+     "per_run": 26.6875,
+     "mean_relative_change": 0.03155240272587865
+    },
+    "closure.ign.threshold": {
+     "runs": 47,
+     "per_run": 18.708333333333332,
+     "mean_relative_change": -0.08103007058545034
+    },
+    "transduction.rule.factor": {
+     "runs": 47,
+     "per_run": 53.354166666666664,
+     "mean_relative_change": 0.007459479922967378
+    },
+    "assemblage.ign.threshold": {
+     "runs": 45,
+     "per_run": 12.791666666666666,
+     "mean_relative_change": -0.09558886573380643
+    },
+    "transduction.ign.threshold": {
+     "runs": 42,
+     "per_run": 10.5625,
+     "mean_relative_change": -0.07961289569766919
+    },
+    "withdrawal.instrument.level": {
+     "runs": 40,
+     "per_run": 0.8333333333333334,
+     "mean_relative_change": 1.0
+    },
+    "assemblage.rule.links": {
+     "runs": 34,
+     "per_run": 3.625,
+     "mean_relative_change": -0.2436077826192206
+    },
+    "closure.instrument.level": {
+     "runs": 31,
+     "per_run": 0.6458333333333334,
+     "mean_relative_change": 1.0
+    },
+    "assemblage.instrument.level": {
+     "runs": 29,
+     "per_run": 0.6041666666666666,
+     "mean_relative_change": 1.0
+    },
+    "picturing.rule.damp": {
+     "runs": 26,
+     "per_run": 4.5625,
+     "mean_relative_change": -0.006565996937089967
+    },
+    "concrescence.instrument.level": {
+     "runs": 19,
+     "per_run": 0.3958333333333333,
+     "mean_relative_change": 1.0
+    },
+    "closure.rule.adapt": {
+     "runs": 17,
+     "per_run": 1.8333333333333333,
+     "mean_relative_change": -0.0005194124433332649
+    },
+    "concrescence∘assemblage.instrument.level": {
+     "runs": 4,
+     "per_run": 0.08333333333333333,
+     "mean_relative_change": 1.0
+    },
+    "concrescence∘assemblage∘closure.instrument.level": {
+     "runs": 1,
+     "per_run": 0.020833333333333332,
+     "mean_relative_change": 1.0
+    },
+    "withdrawal∘concrescence∘assemblage.instrument.level": {
+     "runs": 1,
+     "per_run": 0.020833333333333332,
+     "mean_relative_change": 1.0
+    }
+   },
+   "Q2_causing_series": {
+    "picturing → transduction": 31.583333333333332,
+    "competition → transduction": 16.145833333333332,
+    "concrescence → withdrawal": 15.0625,
+    "assemblage → transduction": 12.5,
+    "closure → withdrawal": 11.625,
+    "concrescence → closure": 11.604166666666666,
+    "concrescence → transduction": 10.020833333333334,
+    "assemblage → closure": 9.583333333333334,
+    "assemblage → withdrawal": 9.208333333333334,
+    "assemblage → picturing": 8.729166666666666,
+    "concrescence → assemblage": 8.208333333333334,
+    "concrescence → picturing": 5.645833333333333,
+    "assemblage → concrescence": 5.5625,
+    "transduction → picturing": 4.291666666666667,
+    "assemblage → assemblage": 2.6041666666666665,
+    "withdrawal → assemblage": 2.4375,
+    "transduction → closure": 2.3333333333333335,
+    "picturing → transduction∘closure": 2.125,
+    "competition → transduction∘closure": 2.0416666666666665,
+    "transduction → transduction∘closure": 2.0208333333333335,
+    "competition → concrescence∘picturing": 1.9791666666666667,
+    "competition → picturing": 1.8125,
+    "assemblage → transduction∘assemblage": 1.7916666666666667,
+    "closure → assemblage": 1.5,
+    "competition → closure": 1.1875,
+    "transduction → concrescence∘picturing": 1.1666666666666667,
+    "withdrawal → closure": 0.9375,
+    "assemblage → concrescence∘picturing": 0.875,
+    "picturing → withdrawal": 0.8333333333333334,
+    "assemblage → transduction∘closure": 0.75,
+    "closure → concrescence∘assemblage": 0.75,
+    "closure → transduction∘assemblage": 0.6875,
+    "picturing → closure": 0.6458333333333334,
+    "transduction → transduction∘assemblage∘closure": 0.625,
+    "assemblage → transduction∘assemblage∘closure": 0.625,
+    "picturing → assemblage": 0.6041666666666666,
+    "assemblage → assemblage∘closure": 0.5208333333333334,
+    "picturing → transduction∘assemblage": 0.4791666666666667,
+    "closure → concrescence∘picturing∘assemblage": 0.4375,
+    "withdrawal → transduction∘assemblage∘closure": 0.4166666666666667,
+    "concrescence → transduction∘closure": 0.4166666666666667,
+    "picturing → concrescence": 0.3958333333333333,
+    "withdrawal → transduction∘assemblage": 0.375,
+    "withdrawal → assemblage∘closure": 0.3333333333333333,
+    "competition → picturing∘assemblage": 0.3125,
+    "competition → assemblage∘closure": 0.3125,
+    "competition → transduction∘assemblage": 0.2916666666666667,
+    "concrescence → picturing∘assemblage": 0.2916666666666667,
+    "competition → concrescence∘picturing∘assemblage": 0.2708333333333333,
+    "picturing → transduction∘assemblage∘closure": 0.25,
+    "concrescence → assemblage∘closure": 0.25,
+    "picturing → withdrawal∘transduction": 0.22916666666666666,
+    "withdrawal → concrescence∘assemblage": 0.20833333333333334,
+    "transduction → assemblage∘closure": 0.20833333333333334,
+    "assemblage → withdrawal∘transduction": 0.16666666666666666,
+    "assemblage → withdrawal∘assemblage": 0.16666666666666666,
+    "withdrawal → concrescence∘picturing∘assemblage": 0.14583333333333334,
+    "competition → transduction∘assemblage∘closure": 0.14583333333333334,
+    "picturing → transduction∘concrescence∘assemblage": 0.14583333333333334,
+    "closure → transduction∘assemblage∘closure": 0.125,
+    "competition → picturing∘assemblage∘closure": 0.125,
+    "assemblage → picturing∘assemblage": 0.125,
+    "withdrawal → picturing∘assemblage": 0.10416666666666667,
+    "picturing → concrescence∘assemblage": 0.08333333333333333,
+    "competition → transduction∘concrescence∘assemblage": 0.08333333333333333,
+    "concrescence → transduction∘assemblage": 0.08333333333333333,
+    "transduction → concrescence∘assemblage∘closure": 0.08333333333333333,
+    "competition → withdrawal∘picturing∘assemblage": 0.08333333333333333,
+    "closure → withdrawal∘transduction∘assemblage": 0.0625,
+    "transduction → concrescence∘closure": 0.0625,
+    "picturing → transduction∘concrescence∘closure": 0.0625,
+    "concrescence → transduction∘assemblage∘closure": 0.041666666666666664,
+    "concrescence → picturing∘assemblage∘closure": 0.041666666666666664,
+    "competition → transduction∘picturing∘assemblage": 0.041666666666666664,
+    "closure → picturing∘assemblage": 0.041666666666666664,
+    "transduction → picturing∘assemblage": 0.020833333333333332,
+    "competition → withdrawal∘transduction": 0.020833333333333332,
+    "transduction → concrescence∘picturing∘assemblage": 0.020833333333333332,
+    "picturing → concrescence∘assemblage∘closure": 0.020833333333333332,
+    "closure → transduction∘concrescence∘assemblage": 0.020833333333333332,
+    "transduction → transduction∘picturing∘assemblage": 0.020833333333333332,
+    "picturing → withdrawal∘concrescence∘assemblage": 0.020833333333333332,
+    "competition → concrescence∘closure": 0.020833333333333332
+   },
+   "Q3_ignited_share": {
+    "withdrawal": 0.6875,
+    "transduction": 0.8541666666666666,
+    "concrescence": 0.9166666666666666,
+    "picturing": 0.9791666666666666,
+    "assemblage": 0.8958333333333334,
+    "closure": 0.9375
+   },
+   "Q4_parameters_persisting_changed": 0.21967213114754097,
+   "Q5_transforms_by_source_after_step_80": {
+    "withdrawal": 2.75,
+    "transduction": 2.9583333333333335,
+    "concrescence": 30.166666666666668,
+    "picturing": 23.958333333333332,
+    "assemblage": 20.0,
+    "closure": 7.395833333333333
+   },
+   "Q5_parameter_drift_mean": 0.14251907766611904,
+   "Q6_reinsertions": {
+    "archived datum re-seeds the milieu": {
+     "per_run": 0.625,
+     "share_causing_a_later_event": 0.0
+    }
+   },
+   "Q7_configuration": {
+    "couplings_per_run": 2.6666666666666665,
+    "splits_per_run": 3.4791666666666665,
+    "reclassifications_per_run": 0.0,
+    "composite_kinds_seen_in_runs": {
+     "assemblage∘closure": 6,
+     "picturing∘assemblage": 8,
+     "transduction∘assemblage": 7,
+     "transduction∘assemblage∘closure": 4,
+     "transduction∘closure": 11,
+     "withdrawal∘transduction": 1,
+     "withdrawal∘transduction∘assemblage": 1,
+     "concrescence∘picturing": 36,
+     "concrescence∘picturing∘assemblage": 22,
+     "concrescence∘assemblage": 21,
+     "picturing∘assemblage∘closure": 1,
+     "transduction∘concrescence∘assemblage": 2,
+     "concrescence∘assemblage∘closure": 5,
+     "concrescence∘closure": 2,
+     "concrescence∘picturing∘closure": 2,
+     "transduction∘concrescence∘closure": 1,
+     "transduction∘picturing∘assemblage": 1,
+     "withdrawal∘assemblage": 1,
+     "withdrawal∘picturing∘assemblage": 1,
+     "withdrawal∘concrescence∘assemblage": 1
+    }
+   },
+   "Q9_unobservable_channel_samples_per_run": {
+    "withdrawal": {
+     "boundary_invisible": 54.68749999999999,
+     "scale_mismatch": 1.5625
+    },
+    "transduction": {
+     "boundary_invisible": 90.64583333333334,
+     "unmeasured": 23.291666666666668,
+     "scale_mismatch": 1.875,
+     "instrument_mismatch": 0.8333333333333334
+    },
+    "assemblage": {
+     "boundary_invisible": 53.270833333333336,
+     "unmeasured": 15.937499999999998,
+     "scale_mismatch": 32.1875
+    },
+    "closure": {
+     "boundary_invisible": 39.104166666666664,
+     "unmeasured": 55.291666666666664,
+     "scale_mismatch": 4.166666666666667
+    },
+    "picturing": {
+     "scale_mismatch": 10.104166666666668,
+     "boundary_invisible": 18.208333333333336,
+     "unmeasured": 0.10416666666666667
+    },
+    "concrescence": {
+     "boundary_invisible": 20.625,
+     "scale_mismatch": 8.770833333333334
+    }
+   }
+  },
+  "F:concrescence": {
+   "Q1_changed_ignition_conditions": {
+    "picturing.ign.tolerance": {
+     "runs": 48,
+     "per_run": 14.708333333333334,
+     "mean_relative_change": -0.0844097079722627
+    },
+    "withdrawal.ign.threshold": {
+     "runs": 48,
+     "per_run": 21.208333333333332,
+     "mean_relative_change": 0.04179399078356338
+    },
+    "transduction.rule.factor": {
+     "runs": 48,
+     "per_run": 93.02083333333333,
+     "mean_relative_change": 0.0051312960897407335
+    },
+    "closure.ign.threshold": {
+     "runs": 47,
+     "per_run": 20.645833333333332,
+     "mean_relative_change": -0.08264560376787801
+    },
+    "assemblage.ign.threshold": {
+     "runs": 43,
+     "per_run": 12.645833333333334,
+     "mean_relative_change": -0.09655077822695389
+    },
+    "transduction.ign.threshold": {
+     "runs": 42,
+     "per_run": 10.958333333333334,
+     "mean_relative_change": -0.07972447849805843
+    },
+    "withdrawal.instrument.level": {
+     "runs": 41,
+     "per_run": 0.8541666666666666,
+     "mean_relative_change": 1.0
+    },
+    "assemblage.rule.links": {
+     "runs": 34,
+     "per_run": 3.875,
+     "mean_relative_change": -0.24274237472766888
+    },
+    "closure.instrument.level": {
+     "runs": 30,
+     "per_run": 0.625,
+     "mean_relative_change": 1.0
+    },
+    "assemblage.instrument.level": {
+     "runs": 29,
+     "per_run": 0.6041666666666666,
+     "mean_relative_change": 1.0
+    },
+    "picturing.rule.damp": {
+     "runs": 26,
+     "per_run": 5.166666666666667,
+     "mean_relative_change": -0.005841260166257741
+    },
+    "closure.rule.adapt": {
+     "runs": 19,
+     "per_run": 2.1041666666666665,
+     "mean_relative_change": -0.0006430212256725643
+    },
+    "concrescence.instrument.level": {
+     "runs": 18,
+     "per_run": 0.375,
+     "mean_relative_change": 1.0
+    },
+    "concrescence∘assemblage.instrument.level": {
+     "runs": 4,
+     "per_run": 0.08333333333333333,
+     "mean_relative_change": 1.0
+    },
+    "concrescence∘assemblage∘closure.instrument.level": {
+     "runs": 2,
+     "per_run": 0.041666666666666664,
+     "mean_relative_change": 1.0
+    },
+    "withdrawal∘concrescence∘assemblage.instrument.level": {
+     "runs": 1,
+     "per_run": 0.020833333333333332,
+     "mean_relative_change": 1.0
+    }
+   },
+   "Q2_causing_series": {
+    "competition → transduction": 39.041666666666664,
+    "picturing → transduction": 36.416666666666664,
+    "assemblage → transduction": 15.729166666666666,
+    "closure → withdrawal": 11.229166666666666,
+    "concrescence → transduction": 10.270833333333334,
+    "concrescence → withdrawal": 9.979166666666666,
+    "assemblage → withdrawal": 9.4375,
+    "assemblage → picturing": 9.270833333333334,
+    "concrescence → closure": 8.666666666666666,
+    "assemblage → closure": 8.375,
+    "concrescence → assemblage": 7.479166666666667,
+    "transduction → closure": 6.1875,
+    "assemblage → concrescence": 6.083333333333333,
+    "concrescence → picturing": 5.9375,
+    "transduction → picturing": 5.666666666666667,
+    "picturing → transduction∘assemblage": 5.4375,
+    "assemblage → transduction∘assemblage": 4.3125,
+    "transduction → transduction∘closure": 3.1458333333333335,
+    "assemblage → assemblage": 3.0,
+    "picturing → transduction∘picturing∘assemblage": 2.75,
+    "withdrawal → assemblage": 2.4583333333333335,
+    "competition → transduction∘assemblage": 2.4375,
+    "picturing → transduction∘closure": 2.4375,
+    "competition → picturing": 2.1875,
+    "competition → concrescence∘picturing": 2.1458333333333335,
+    "transduction → concrescence∘picturing": 2.1458333333333335,
+    "competition → transduction∘closure": 1.8958333333333333,
+    "closure → assemblage": 1.7083333333333333,
+    "competition → closure": 1.4791666666666667,
+    "competition → transduction∘picturing∘assemblage": 1.2708333333333333,
+    "closure → transduction∘assemblage": 0.8541666666666666,
+    "picturing → withdrawal": 0.8541666666666666,
+    "closure → concrescence∘assemblage": 0.75,
+    "assemblage → transduction∘picturing∘assemblage": 0.7291666666666666,
+    "withdrawal → closure": 0.6875,
+    "assemblage → concrescence∘picturing": 0.6666666666666666,
+    "transduction → transduction∘assemblage∘closure": 0.625,
+    "assemblage → transduction∘assemblage∘closure": 0.625,
+    "picturing → closure": 0.625,
+    "picturing → assemblage": 0.6041666666666666,
+    "withdrawal → transduction∘assemblage": 0.5416666666666666,
+    "assemblage → transduction∘picturing": 0.5,
+    "withdrawal → transduction∘assemblage∘closure": 0.4375,
+    "picturing → transduction∘assemblage∘closure": 0.4375,
+    "concrescence → picturing∘assemblage": 0.4166666666666667,
+    "competition → transduction∘picturing": 0.3958333333333333,
+    "assemblage → transduction∘closure": 0.3958333333333333,
+    "assemblage → assemblage∘closure": 0.375,
+    "competition → transduction∘assemblage∘closure": 0.375,
+    "picturing → concrescence": 0.375,
+    "concrescence → transduction∘closure": 0.375,
+    "transduction → assemblage∘closure": 0.3541666666666667,
+    "withdrawal → assemblage∘closure": 0.3333333333333333,
+    "transduction → picturing∘assemblage∘closure": 0.2916666666666667,
+    "closure → concrescence∘picturing∘assemblage": 0.2916666666666667,
+    "assemblage → picturing∘assemblage": 0.2708333333333333,
+    "competition → picturing∘assemblage∘closure": 0.2708333333333333,
+    "concrescence → assemblage∘closure": 0.2708333333333333,
+    "picturing → transduction∘picturing": 0.25,
+    "withdrawal → concrescence∘assemblage": 0.22916666666666666,
+    "competition → concrescence∘picturing∘assemblage": 0.20833333333333334,
+    "withdrawal → picturing∘assemblage": 0.20833333333333334,
+    "transduction → concrescence∘picturing∘assemblage": 0.1875,
+    "concrescence → transduction∘assemblage": 0.16666666666666666,
+    "picturing → withdrawal∘transduction": 0.14583333333333334,
+    "competition → withdrawal∘transduction": 0.14583333333333334,
+    "picturing → transduction∘concrescence∘assemblage": 0.14583333333333334,
+    "closure → transduction∘assemblage∘closure": 0.125,
+    "competition → assemblage∘closure": 0.125,
+    "concrescence → transduction∘picturing∘assemblage": 0.10416666666666667,
+    "withdrawal → concrescence∘picturing∘assemblage": 0.10416666666666667,
+    "competition → picturing∘assemblage": 0.08333333333333333,
+    "picturing → concrescence∘assemblage": 0.08333333333333333,
+    "concrescence → picturing∘assemblage∘closure": 0.08333333333333333,
+    "competition → transduction∘concrescence∘assemblage": 0.08333333333333333,
+    "transduction → concrescence∘assemblage∘closure": 0.08333333333333333,
+    "transduction → transduction∘picturing∘assemblage": 0.08333333333333333,
+    "closure → withdrawal∘transduction∘assemblage": 0.0625,
+    "transduction → concrescence∘closure": 0.0625,
+    "picturing → transduction∘concrescence∘closure": 0.0625,
+    "competition → concrescence∘assemblage∘closure": 0.0625,
+    "concrescence → transduction∘assemblage∘closure": 0.041666666666666664,
+    "assemblage → picturing∘closure": 0.041666666666666664,
+    "picturing → concrescence∘assemblage∘closure": 0.041666666666666664,
+    "closure → picturing∘assemblage": 0.041666666666666664,
+    "assemblage → concrescence∘closure": 0.041666666666666664,
+    "assemblage → withdrawal∘transduction": 0.020833333333333332,
+    "withdrawal → transduction∘closure": 0.020833333333333332,
+    "transduction → picturing∘closure": 0.020833333333333332,
+    "concrescence → picturing∘closure": 0.020833333333333332,
+    "closure → transduction∘concrescence∘assemblage": 0.020833333333333332,
+    "closure → transduction∘picturing∘assemblage": 0.020833333333333332,
+    "transduction → picturing∘assemblage": 0.020833333333333332,
+    "picturing → withdrawal∘concrescence∘assemblage": 0.020833333333333332
+   },
+   "Q3_ignited_share": {
+    "withdrawal": 0.6666666666666666,
+    "transduction": 0.8333333333333334,
+    "concrescence": 0.9375,
+    "picturing": 1.0,
+    "assemblage": 0.9375,
+    "closure": 0.9166666666666666
+   },
+   "Q4_parameters_persisting_changed": 0.215210355987055,
+   "Q5_transforms_by_source_after_step_80": {
+    "withdrawal": 2.8125,
+    "transduction": 10.979166666666666,
+    "concrescence": 22.3125,
+    "picturing": 37.1875,
+    "assemblage": 26.75,
+    "closure": 7.25
+   },
+   "Q5_parameter_drift_mean": 0.14039203809539155,
+   "Q6_reinsertions": {
+    "archived datum re-seeds the milieu": {
+     "per_run": 0.7708333333333334,
+     "share_causing_a_later_event": 0.0
+    }
+   },
+   "Q7_configuration": {
+    "couplings_per_run": 3.1666666666666665,
+    "splits_per_run": 4.791666666666667,
+    "reclassifications_per_run": 0.0,
+    "composite_kinds_seen_in_runs": {
+     "assemblage∘closure": 8,
+     "transduction∘assemblage": 15,
+     "transduction∘assemblage∘closure": 4,
+     "withdrawal∘transduction": 1,
+     "withdrawal∘transduction∘assemblage": 1,
+     "concrescence∘picturing": 33,
+     "picturing∘assemblage": 11,
+     "transduction∘closure": 17,
+     "transduction∘picturing∘assemblage": 6,
+     "concrescence∘assemblage": 21,
+     "concrescence∘picturing∘assemblage": 16,
+     "transduction∘picturing": 2,
+     "picturing∘assemblage∘closure": 2,
+     "picturing∘closure": 1,
+     "transduction∘concrescence∘assemblage": 2,
+     "concrescence∘assemblage∘closure": 5,
+     "concrescence∘closure": 2,
+     "transduction∘concrescence∘closure": 1,
+     "withdrawal∘concrescence∘assemblage": 1,
+     "concrescence∘picturing∘closure": 1
+    }
+   },
+   "Q9_unobservable_channel_samples_per_run": {
+    "withdrawal": {
+     "boundary_invisible": 57.104166666666664
+    },
+    "transduction": {
+     "boundary_invisible": 97.97916666666669,
+     "unmeasured": 55.52083333333333,
+     "scale_mismatch": 4.645833333333334
+    },
+    "assemblage": {
+     "boundary_invisible": 56.520833333333336,
+     "unmeasured": 27.70833333333334,
+     "scale_mismatch": 27.145833333333332,
+     "instrument_mismatch": 2.125
+    },
+    "closure": {
+     "boundary_invisible": 42.14583333333333,
+     "unmeasured": 57.479166666666664,
+     "scale_mismatch": 4.416666666666667
+    },
+    "concrescence": {
+     "boundary_invisible": 13.895833333333332,
+     "instrument_mismatch": 6.020833333333332,
+     "scale_mismatch": 4.5625,
+     "unmeasured": 0.0625
+    },
+    "picturing": {
+     "boundary_invisible": 17.041666666666668,
+     "instrument_mismatch": 6.145833333333332,
+     "scale_mismatch": 10.895833333333336,
+     "unmeasured": 1.7916666666666667
+    }
+   }
+  },
+  "F:picturing": {
+   "Q1_changed_ignition_conditions": {
+    "picturing.ign.tolerance": {
+     "runs": 48,
+     "per_run": 13.3125,
+     "mean_relative_change": -0.08574560840401059
+    },
+    "withdrawal.ign.threshold": {
+     "runs": 48,
+     "per_run": 21.916666666666668,
+     "mean_relative_change": 0.041915337844450756
+    },
+    "transduction.rule.factor": {
+     "runs": 47,
+     "per_run": 74.5,
+     "mean_relative_change": 0.006324766780677711
+    },
+    "closure.ign.threshold": {
+     "runs": 46,
+     "per_run": 21.166666666666668,
+     "mean_relative_change": -0.08213704865213767
+    },
+    "assemblage.ign.threshold": {
+     "runs": 43,
+     "per_run": 12.520833333333334,
+     "mean_relative_change": -0.09687945522192098
+    },
+    "transduction.ign.threshold": {
+     "runs": 42,
+     "per_run": 10.8125,
+     "mean_relative_change": -0.07933823044378072
+    },
+    "withdrawal.instrument.level": {
+     "runs": 37,
+     "per_run": 0.7708333333333334,
+     "mean_relative_change": 1.0
+    },
+    "assemblage.rule.links": {
+     "runs": 35,
+     "per_run": 3.8333333333333335,
+     "mean_relative_change": -0.24333186360964143
+    },
+    "assemblage.instrument.level": {
+     "runs": 28,
+     "per_run": 0.5833333333333334,
+     "mean_relative_change": 1.0
+    },
+    "closure.instrument.level": {
+     "runs": 28,
+     "per_run": 0.5833333333333334,
+     "mean_relative_change": 1.0
+    },
+    "picturing.rule.damp": {
+     "runs": 24,
+     "per_run": 3.9166666666666665,
+     "mean_relative_change": -0.006098331254790757
+    },
+    "concrescence.instrument.level": {
+     "runs": 19,
+     "per_run": 0.3958333333333333,
+     "mean_relative_change": 1.0
+    },
+    "closure.rule.adapt": {
+     "runs": 18,
+     "per_run": 2.25,
+     "mean_relative_change": -0.0003679909335176367
+    },
+    "concrescence∘assemblage.instrument.level": {
+     "runs": 4,
+     "per_run": 0.08333333333333333,
+     "mean_relative_change": 1.0
+    },
+    "concrescence∘assemblage∘closure.instrument.level": {
+     "runs": 1,
+     "per_run": 0.020833333333333332,
+     "mean_relative_change": 1.0
+    },
+    "withdrawal∘concrescence∘assemblage.instrument.level": {
+     "runs": 1,
+     "per_run": 0.020833333333333332,
+     "mean_relative_change": 1.0
+    }
+   },
+   "Q2_causing_series": {
+    "competition → transduction": 41.166666666666664,
+    "picturing → transduction": 26.145833333333332,
+    "assemblage → transduction": 14.270833333333334,
+    "closure → withdrawal": 11.4375,
+    "concrescence → withdrawal": 10.479166666666666,
+    "concrescence → transduction": 9.979166666666666,
+    "concrescence → closure": 9.104166666666666,
+    "assemblage → withdrawal": 8.895833333333334,
+    "assemblage → picturing": 8.145833333333334,
+    "assemblage → closure": 7.854166666666667,
+    "concrescence → assemblage": 7.645833333333333,
+    "concrescence → picturing": 5.854166666666667,
+    "assemblage → concrescence": 5.708333333333333,
+    "transduction → closure": 5.541666666666667,
+    "transduction → picturing": 4.770833333333333,
+    "transduction → transduction∘closure": 3.7916666666666665,
+    "withdrawal → assemblage": 2.5416666666666665,
+    "assemblage → transduction∘assemblage": 2.4375,
+    "competition → transduction∘closure": 1.9791666666666667,
+    "transduction → concrescence∘picturing": 1.9166666666666667,
+    "competition → picturing": 1.8958333333333333,
+    "picturing → transduction∘closure": 1.875,
+    "closure → assemblage": 1.75,
+    "assemblage → assemblage": 1.6666666666666667,
+    "competition → concrescence∘picturing": 1.5833333333333333,
+    "picturing → transduction∘assemblage": 1.5416666666666667,
+    "competition → closure": 1.3541666666666667,
+    "withdrawal → closure": 0.8541666666666666,
+    "picturing → withdrawal": 0.7708333333333334,
+    "assemblage → concrescence∘picturing": 0.7708333333333334,
+    "closure → transduction∘assemblage": 0.75,
+    "closure → concrescence∘assemblage": 0.75,
+    "competition → transduction∘assemblage": 0.6875,
+    "transduction → transduction∘assemblage∘closure": 0.625,
+    "assemblage → transduction∘assemblage∘closure": 0.625,
+    "picturing → assemblage": 0.5833333333333334,
+    "picturing → closure": 0.5833333333333334,
+    "concrescence → transduction∘closure": 0.5,
+    "withdrawal → transduction∘assemblage": 0.4583333333333333,
+    "withdrawal → transduction∘assemblage∘closure": 0.4375,
+    "competition → assemblage∘closure": 0.4166666666666667,
+    "concrescence → picturing∘assemblage": 0.4166666666666667,
+    "picturing → concrescence": 0.3958333333333333,
+    "assemblage → transduction∘closure": 0.3958333333333333,
+    "assemblage → assemblage∘closure": 0.375,
+    "competition → transduction∘assemblage∘closure": 0.375,
+    "picturing → transduction∘assemblage∘closure": 0.3541666666666667,
+    "transduction → assemblage∘closure": 0.3541666666666667,
+    "closure → concrescence∘picturing∘assemblage": 0.3333333333333333,
+    "withdrawal → assemblage∘closure": 0.2708333333333333,
+    "competition → transduction∘concrescence∘assemblage": 0.2708333333333333,
+    "competition → concrescence∘picturing∘assemblage": 0.25,
+    "withdrawal → concrescence∘assemblage": 0.22916666666666666,
+    "concrescence → transduction∘assemblage": 0.20833333333333334,
+    "withdrawal → picturing∘assemblage": 0.20833333333333334,
+    "competition → picturing∘assemblage∘closure": 0.1875,
+    "transduction → picturing∘assemblage∘closure": 0.1875,
+    "transduction → concrescence∘picturing∘assemblage": 0.16666666666666666,
+    "picturing → withdrawal∘transduction": 0.14583333333333334,
+    "competition → withdrawal∘transduction": 0.14583333333333334,
+    "closure → transduction∘assemblage∘closure": 0.125,
+    "assemblage → picturing∘assemblage": 0.125,
+    "concrescence → transduction∘picturing∘assemblage": 0.10416666666666667,
+    "picturing → transduction∘concrescence∘assemblage": 0.10416666666666667,
+    "picturing → concrescence∘assemblage": 0.08333333333333333,
+    "withdrawal → concrescence∘picturing∘assemblage": 0.08333333333333333,
+    "concrescence → picturing∘assemblage∘closure": 0.08333333333333333,
+    "transduction → concrescence∘assemblage∘closure": 0.08333333333333333,
+    "closure → withdrawal∘transduction∘assemblage": 0.0625,
+    "competition → picturing∘assemblage": 0.0625,
+    "transduction → concrescence∘closure": 0.0625,
+    "picturing → transduction∘concrescence∘closure": 0.0625,
+    "concrescence → transduction∘assemblage∘closure": 0.041666666666666664,
+    "withdrawal → transduction∘closure": 0.041666666666666664,
+    "competition → transduction∘picturing∘assemblage": 0.041666666666666664,
+    "closure → picturing∘assemblage": 0.041666666666666664,
+    "picturing → withdrawal∘transduction∘assemblage": 0.020833333333333332,
+    "assemblage → withdrawal∘transduction": 0.020833333333333332,
+    "transduction → picturing∘closure": 0.020833333333333332,
+    "assemblage → picturing∘closure": 0.020833333333333332,
+    "concrescence → assemblage∘closure": 0.020833333333333332,
+    "picturing → concrescence∘assemblage∘closure": 0.020833333333333332,
+    "closure → transduction∘concrescence∘assemblage": 0.020833333333333332,
+    "transduction → transduction∘picturing∘assemblage": 0.020833333333333332,
+    "picturing → withdrawal∘concrescence∘assemblage": 0.020833333333333332
+   },
+   "Q3_ignited_share": {
+    "withdrawal": 0.6875,
+    "transduction": 0.8333333333333334,
+    "concrescence": 0.8958333333333334,
+    "picturing": 1.0,
+    "assemblage": 0.9166666666666666,
+    "closure": 0.9375
+   },
+   "Q4_parameters_persisting_changed": 0.21357544314742757,
+   "Q5_transforms_by_source_after_step_80": {
+    "withdrawal": 2.9166666666666665,
+    "transduction": 9.645833333333334,
+    "concrescence": 22.9375,
+    "picturing": 19.1875,
+    "assemblage": 18.104166666666668,
+    "closure": 7.416666666666667
+   },
+   "Q5_parameter_drift_mean": 0.14128779839809805,
+   "Q6_reinsertions": {
+    "archived datum re-seeds the milieu": {
+     "per_run": 1.0625,
+     "share_causing_a_later_event": 0.0
+    }
+   },
+   "Q7_configuration": {
+    "couplings_per_run": 2.9791666666666665,
+    "splits_per_run": 4.1875,
+    "reclassifications_per_run": 0.0,
+    "composite_kinds_seen_in_runs": {
+     "assemblage∘closure": 7,
+     "transduction∘assemblage": 14,
+     "transduction∘assemblage∘closure": 4,
+     "withdrawal∘transduction": 1,
+     "withdrawal∘transduction∘assemblage": 1,
+     "concrescence∘picturing": 33,
+     "picturing∘assemblage": 8,
+     "transduction∘closure": 17,
+     "transduction∘picturing∘assemblage": 2,
+     "concrescence∘assemblage": 22,
+     "concrescence∘picturing∘assemblage": 17,
+     "transduction∘concrescence∘assemblage": 4,
+     "picturing∘assemblage∘closure": 2,
+     "picturing∘closure": 1,
+     "concrescence∘assemblage∘closure": 5,
+     "concrescence∘closure": 2,
+     "concrescence∘picturing∘closure": 2,
+     "transduction∘concrescence∘closure": 1,
+     "withdrawal∘concrescence∘assemblage": 1
+    }
+   },
+   "Q9_unobservable_channel_samples_per_run": {
+    "withdrawal": {
+     "boundary_invisible": 56.562499999999986
+    },
+    "transduction": {
+     "boundary_invisible": 94.45833333333337,
+     "unmeasured": 57.25,
+     "scale_mismatch": 3.4375
+    },
+    "assemblage": {
+     "boundary_invisible": 54.458333333333336,
+     "unmeasured": 25.458333333333336,
+     "scale_mismatch": 26.770833333333332,
+     "instrument_mismatch": 2.9583333333333335
+    },
+    "closure": {
+     "boundary_invisible": 44.16666666666666,
+     "unmeasured": 55.208333333333336,
+     "scale_mismatch": 5.583333333333333
+    },
+    "picturing": {
+     "unmeasured": 3.1041666666666665,
+     "boundary_invisible": 16.083333333333332,
+     "instrument_mismatch": 8.75,
+     "scale_mismatch": 9.8125
+    },
+    "concrescence": {
+     "boundary_invisible": 14.3125,
+     "instrument_mismatch": 6.020833333333332,
+     "scale_mismatch": 5.104166666666667,
+     "unmeasured": 0.3541666666666667
+    }
+   }
+  },
+  "F:assemblage": {
+   "Q1_changed_ignition_conditions": {
+    "picturing.ign.tolerance": {
+     "runs": 48,
+     "per_run": 16.125,
+     "mean_relative_change": -0.08392291919171939
+    },
+    "withdrawal.ign.threshold": {
+     "runs": 48,
+     "per_run": 28.0625,
+     "mean_relative_change": 0.029463729784048143
+    },
+    "closure.ign.threshold": {
+     "runs": 47,
+     "per_run": 22.3125,
+     "mean_relative_change": -0.07946763791345123
+    },
+    "transduction.rule.factor": {
+     "runs": 47,
+     "per_run": 114.9375,
+     "mean_relative_change": 0.0040019624011123885
+    },
+    "assemblage.ign.threshold": {
+     "runs": 44,
+     "per_run": 12.145833333333334,
+     "mean_relative_change": -0.0958181787855266
+    },
+    "transduction.ign.threshold": {
+     "runs": 44,
+     "per_run": 18.541666666666668,
+     "mean_relative_change": -0.07725185877003153
+    },
+    "withdrawal.instrument.level": {
+     "runs": 40,
+     "per_run": 0.8333333333333334,
+     "mean_relative_change": 1.0
+    },
+    "picturing.rule.damp": {
+     "runs": 33,
+     "per_run": 8.854166666666666,
+     "mean_relative_change": -0.003572262455604834
+    },
+    "closure.instrument.level": {
+     "runs": 32,
+     "per_run": 0.7083333333333334,
+     "mean_relative_change": 1.0
+    },
+    "assemblage.rule.links": {
+     "runs": 30,
+     "per_run": 3.2708333333333335,
+     "mean_relative_change": -0.24355795610425238
+    },
+    "assemblage.instrument.level": {
+     "runs": 29,
+     "per_run": 0.9583333333333334,
+     "mean_relative_change": 1.0
+    },
+    "concrescence.instrument.level": {
+     "runs": 22,
+     "per_run": 0.4791666666666667,
+     "mean_relative_change": 1.0
+    },
+    "closure.rule.adapt": {
+     "runs": 18,
+     "per_run": 1.625,
+     "mean_relative_change": 0.0007209708376850937
+    },
+    "concrescence∘assemblage.instrument.level": {
+     "runs": 4,
+     "per_run": 0.08333333333333333,
+     "mean_relative_change": 1.0
+    },
+    "withdrawal∘transduction∘assemblage.instrument.level": {
+     "runs": 1,
+     "per_run": 0.020833333333333332,
+     "mean_relative_change": 1.0
+    },
+    "transduction.instrument.level": {
+     "runs": 1,
+     "per_run": 0.14583333333333334,
+     "mean_relative_change": 1.0
+    },
+    "assemblage∘closure.instrument.level": {
+     "runs": 1,
+     "per_run": 0.020833333333333332,
+     "mean_relative_change": 1.0
+    },
+    "transduction∘closure.instrument.level": {
+     "runs": 1,
+     "per_run": 0.041666666666666664,
+     "mean_relative_change": 1.0
+    },
+    "concrescence∘assemblage∘closure.instrument.level": {
+     "runs": 1,
+     "per_run": 0.020833333333333332,
+     "mean_relative_change": 1.0
+    },
+    "transduction∘assemblage.instrument.level": {
+     "runs": 1,
+     "per_run": 0.020833333333333332,
+     "mean_relative_change": 1.0
+    },
+    "withdrawal∘concrescence∘assemblage.instrument.level": {
+     "runs": 1,
+     "per_run": 0.020833333333333332,
+     "mean_relative_change": 1.0
+    }
+   },
+   "Q2_causing_series": {
+    "picturing → transduction": 66.6875,
+    "competition → transduction": 36.520833333333336,
+    "concrescence → transduction": 16.875,
+    "concrescence → withdrawal": 15.229166666666666,
+    "closure → withdrawal": 12.791666666666666,
+    "concrescence → closure": 11.0,
+    "assemblage → picturing": 8.083333333333334,
+    "assemblage → transduction": 7.916666666666667,
+    "concrescence → assemblage": 7.875,
+    "assemblage → withdrawal": 7.5625,
+    "picturing → transduction∘closure": 7.5625,
+    "assemblage → closure": 5.729166666666667,
+    "concrescence → picturing": 5.541666666666667,
+    "transduction → picturing": 5.479166666666667,
+    "assemblage → concrescence": 5.083333333333333,
+    "transduction → closure": 4.833333333333333,
+    "transduction → concrescence∘picturing": 4.520833333333333,
+    "competition → concrescence∘picturing": 4.4375,
+    "competition → picturing": 4.166666666666667,
+    "transduction → transduction∘closure": 3.6666666666666665,
+    "competition → transduction∘closure": 3.1666666666666665,
+    "withdrawal → assemblage": 2.0208333333333335,
+    "assemblage → transduction∘assemblage": 1.7916666666666667,
+    "concrescence → transduction∘closure": 1.4375,
+    "closure → assemblage": 1.3333333333333333,
+    "picturing → assemblage": 0.9583333333333334,
+    "competition → closure": 0.9583333333333334,
+    "withdrawal → closure": 0.8958333333333334,
+    "picturing → withdrawal": 0.8333333333333334,
+    "closure → concrescence∘assemblage": 0.75,
+    "picturing → closure": 0.7083333333333334,
+    "closure → transduction∘assemblage": 0.6875,
+    "transduction → transduction∘assemblage∘closure": 0.625,
+    "assemblage → transduction∘assemblage∘closure": 0.625,
+    "picturing → transduction∘assemblage": 0.5,
+    "picturing → concrescence": 0.4791666666666667,
+    "withdrawal → transduction∘assemblage": 0.375,
+    "withdrawal → transduction∘assemblage∘closure": 0.375,
+    "assemblage → assemblage": 0.3541666666666667,
+    "competition → transduction∘assemblage": 0.3333333333333333,
+    "concrescence → picturing∘assemblage": 0.3333333333333333,
+    "withdrawal → assemblage∘closure": 0.3125,
+    "transduction → assemblage∘closure": 0.3125,
+    "assemblage → assemblage∘closure": 0.2708333333333333,
+    "picturing → transduction∘assemblage∘closure": 0.22916666666666666,
+    "concrescence → assemblage∘closure": 0.22916666666666666,
+    "picturing → withdrawal∘transduction∘assemblage": 0.20833333333333334,
+    "withdrawal → concrescence∘assemblage": 0.20833333333333334,
+    "assemblage → transduction∘closure": 0.20833333333333334,
+    "withdrawal → picturing∘assemblage": 0.20833333333333334,
+    "assemblage → concrescence∘picturing": 0.16666666666666666,
+    "picturing → transduction∘concrescence∘assemblage": 0.14583333333333334,
+    "concrescence → transduction∘assemblage": 0.14583333333333334,
+    "closure → picturing∘assemblage": 0.14583333333333334,
+    "closure → concrescence∘picturing∘assemblage": 0.14583333333333334,
+    "competition → transduction∘assemblage∘closure": 0.125,
+    "concrescence → transduction∘picturing∘assemblage": 0.125,
+    "closure → transduction∘assemblage∘closure": 0.125,
+    "competition → assemblage∘closure": 0.125,
+    "competition → picturing∘assemblage∘closure": 0.125,
+    "withdrawal → transduction∘closure": 0.125,
+    "transduction → concrescence∘picturing∘assemblage": 0.125,
+    "assemblage → picturing∘assemblage": 0.10416666666666667,
+    "picturing → concrescence∘assemblage": 0.08333333333333333,
+    "competition → transduction∘concrescence∘assemblage": 0.08333333333333333,
+    "transduction → concrescence∘assemblage∘closure": 0.08333333333333333,
+    "competition → concrescence∘picturing∘assemblage": 0.08333333333333333,
+    "closure → withdrawal∘transduction∘assemblage": 0.0625,
+    "competition → picturing∘assemblage": 0.0625,
+    "transduction → concrescence∘closure": 0.0625,
+    "picturing → transduction∘concrescence∘closure": 0.0625,
+    "concrescence → withdrawal∘assemblage": 0.041666666666666664,
+    "concrescence → transduction∘assemblage∘closure": 0.041666666666666664,
+    "concrescence → picturing∘assemblage∘closure": 0.041666666666666664,
+    "transduction → picturing∘assemblage": 0.041666666666666664,
+    "competition → transduction∘picturing∘assemblage": 0.041666666666666664,
+    "picturing → assemblage∘closure": 0.020833333333333332,
+    "picturing → concrescence∘assemblage∘closure": 0.020833333333333332,
+    "closure → transduction∘concrescence∘assemblage": 0.020833333333333332,
+    "transduction → transduction∘picturing∘assemblage": 0.020833333333333332,
+    "withdrawal → concrescence∘picturing∘assemblage": 0.020833333333333332,
+    "picturing → withdrawal∘concrescence∘assemblage": 0.020833333333333332,
+    "competition → concrescence∘assemblage∘closure": 0.020833333333333332
+   },
+   "Q3_ignited_share": {
+    "withdrawal": 0.7083333333333334,
+    "transduction": 0.8333333333333334,
+    "concrescence": 0.9375,
+    "picturing": 0.9791666666666666,
+    "assemblage": 0.8541666666666666,
+    "closure": 0.9375
+   },
+   "Q4_parameters_persisting_changed": 0.22093504344228382,
+   "Q5_transforms_by_source_after_step_80": {
+    "withdrawal": 2.3333333333333335,
+    "transduction": 11.875,
+    "concrescence": 37.416666666666664,
+    "picturing": 64.97916666666667,
+    "assemblage": 4.708333333333333,
+    "closure": 8.208333333333334
+   },
+   "Q5_parameter_drift_mean": 0.14350950758081463,
+   "Q6_reinsertions": {
+    "archived datum re-seeds the milieu": {
+     "per_run": 0.8958333333333334,
+     "share_causing_a_later_event": 0.0
+    }
+   },
+   "Q7_configuration": {
+    "couplings_per_run": 2.6666666666666665,
+    "splits_per_run": 4.0625,
+    "reclassifications_per_run": 0.0,
+    "composite_kinds_seen_in_runs": {
+     "assemblage∘closure": 5,
+     "transduction∘assemblage": 8,
+     "transduction∘assemblage∘closure": 4,
+     "transduction∘closure": 19,
+     "withdrawal∘assemblage": 1,
+     "withdrawal∘transduction∘assemblage": 1,
+     "concrescence∘picturing": 37,
+     "picturing∘assemblage": 9,
+     "transduction∘picturing∘assemblage": 3,
+     "concrescence∘assemblage": 21,
+     "concrescence∘picturing∘assemblage": 11,
+     "picturing∘assemblage∘closure": 1,
+     "transduction∘concrescence∘assemblage": 2,
+     "concrescence∘assemblage∘closure": 5,
+     "concrescence∘closure": 2,
+     "concrescence∘picturing∘closure": 1,
+     "transduction∘concrescence∘closure": 1,
+     "withdrawal∘concrescence∘assemblage": 1
+    }
+   },
+   "Q9_unobservable_channel_samples_per_run": {
+    "withdrawal": {
+     "boundary_invisible": 53.729166666666664,
+     "instrument_mismatch": 0.8333333333333334,
+     "scale_mismatch": 0.8541666666666666
+    },
+    "transduction": {
+     "boundary_invisible": 94.18750000000001,
+     "instrument_mismatch": 17.687499999999996,
+     "unmeasured": 56.3125,
+     "scale_mismatch": 4.8125
+    },
+    "assemblage": {
+     "boundary_invisible": 40.854166666666664,
+     "instrument_mismatch": 43.64583333333334,
+     "unmeasured": 11.000000000000002,
+     "scale_mismatch": 32.45833333333334
+    },
+    "closure": {
+     "boundary_invisible": 44.604166666666664,
+     "unmeasured": 54.812499999999986,
+     "instrument_mismatch": 11.083333333333334,
+     "scale_mismatch": 3.4583333333333335
+    },
+    "concrescence": {
+     "boundary_invisible": 14.9375,
+     "instrument_mismatch": 3.250000000000001,
+     "scale_mismatch": 1.2083333333333335
+    },
+    "picturing": {
+     "boundary_invisible": 18.22916666666667,
+     "scale_mismatch": 4.458333333333333,
+     "instrument_mismatch": 3.6458333333333335,
+     "unmeasured": 1.7708333333333333
+    }
+   }
+  },
+  "F:closure": {
+   "Q1_changed_ignition_conditions": {
+    "picturing.ign.tolerance": {
+     "runs": 48,
+     "per_run": 17.5,
+     "mean_relative_change": -0.08480949763145967
+    },
+    "withdrawal.ign.threshold": {
+     "runs": 48,
+     "per_run": 22.895833333333332,
+     "mean_relative_change": -0.010246187715046056
+    },
+    "transduction.rule.factor": {
+     "runs": 48,
+     "per_run": 136.8125,
+     "mean_relative_change": 0.0021514441120834
+    },
+    "closure.ign.threshold": {
+     "runs": 47,
+     "per_run": 17.083333333333332,
+     "mean_relative_change": -0.08410195109490544
+    },
+    "assemblage.ign.threshold": {
+     "runs": 47,
+     "per_run": 15.375,
+     "mean_relative_change": -0.09826182909867107
+    },
+    "transduction.ign.threshold": {
+     "runs": 43,
+     "per_run": 20.0625,
+     "mean_relative_change": -0.07671926763169525
+    },
+    "withdrawal.instrument.level": {
+     "runs": 43,
+     "per_run": 0.8958333333333334,
+     "mean_relative_change": 1.0
+    },
+    "picturing.rule.damp": {
+     "runs": 37,
+     "per_run": 12.979166666666666,
+     "mean_relative_change": -0.0013602049935055784
+    },
+    "assemblage.instrument.level": {
+     "runs": 28,
+     "per_run": 0.5833333333333334,
+     "mean_relative_change": 1.0
+    },
+    "closure.instrument.level": {
+     "runs": 28,
+     "per_run": 0.5833333333333334,
+     "mean_relative_change": 1.0
+    },
+    "assemblage.rule.links": {
+     "runs": 23,
+     "per_run": 2.2916666666666665,
+     "mean_relative_change": -0.24508633029164428
+    },
+    "concrescence.instrument.level": {
+     "runs": 21,
+     "per_run": 0.4375,
+     "mean_relative_change": 1.0
+    },
+    "closure.rule.adapt": {
+     "runs": 6,
+     "per_run": 0.6875,
+     "mean_relative_change": 0.0019242112562885107
+    },
+    "concrescence∘assemblage.instrument.level": {
+     "runs": 5,
+     "per_run": 0.10416666666666667,
+     "mean_relative_change": 1.0
+    },
+    "concrescence∘assemblage∘closure.instrument.level": {
+     "runs": 1,
+     "per_run": 0.020833333333333332,
+     "mean_relative_change": 1.0
+    },
+    "withdrawal∘concrescence∘assemblage.instrument.level": {
+     "runs": 1,
+     "per_run": 0.020833333333333332,
+     "mean_relative_change": 1.0
+    }
+   },
+   "Q2_causing_series": {
+    "picturing → transduction": 79.4375,
+    "competition → transduction": 46.458333333333336,
+    "assemblage → transduction": 19.291666666666668,
+    "concrescence → transduction": 18.791666666666668,
+    "concrescence → withdrawal": 16.708333333333332,
+    "assemblage → closure": 11.6875,
+    "assemblage → withdrawal": 10.5625,
+    "concrescence → assemblage": 9.520833333333334,
+    "assemblage → picturing": 9.229166666666666,
+    "concrescence → closure": 9.145833333333334,
+    "competition → concrescence∘picturing": 7.9375,
+    "assemblage → concrescence": 6.5,
+    "closure → withdrawal": 6.1875,
+    "transduction → concrescence∘picturing": 5.895833333333333,
+    "transduction → picturing": 5.75,
+    "concrescence → picturing": 5.083333333333333,
+    "picturing → transduction∘assemblage": 4.416666666666667,
+    "transduction → closure": 3.7083333333333335,
+    "competition → picturing": 3.625,
+    "assemblage → transduction∘assemblage": 3.5416666666666665,
+    "withdrawal → assemblage": 2.9166666666666665,
+    "assemblage → assemblage": 2.4791666666666665,
+    "picturing → transduction∘closure": 2.25,
+    "transduction → transduction∘closure": 2.1458333333333335,
+    "competition → transduction∘closure": 1.75,
+    "competition → transduction∘assemblage": 1.6666666666666667,
+    "assemblage → transduction∘closure": 0.9375,
+    "picturing → withdrawal": 0.8958333333333334,
+    "competition → concrescence∘picturing∘assemblage": 0.8541666666666666,
+    "assemblage → concrescence∘picturing": 0.8125,
+    "concrescence → transduction∘assemblage": 0.75,
+    "closure → assemblage": 0.7291666666666666,
+    "closure → transduction∘assemblage": 0.6458333333333334,
+    "closure → concrescence∘assemblage": 0.6458333333333334,
+    "transduction → transduction∘assemblage∘closure": 0.625,
+    "assemblage → transduction∘assemblage∘closure": 0.625,
+    "picturing → assemblage": 0.5833333333333334,
+    "picturing → closure": 0.5833333333333334,
+    "withdrawal → transduction∘assemblage": 0.5416666666666666,
+    "withdrawal → closure": 0.5,
+    "withdrawal → transduction∘assemblage∘closure": 0.4791666666666667,
+    "concrescence → transduction∘closure": 0.4583333333333333,
+    "picturing → concrescence": 0.4375,
+    "competition → picturing∘assemblage": 0.3541666666666667,
+    "assemblage → assemblage∘closure": 0.3333333333333333,
+    "withdrawal → concrescence∘picturing∘assemblage": 0.3333333333333333,
+    "concrescence → picturing∘assemblage": 0.3333333333333333,
+    "transduction → assemblage∘closure": 0.3125,
+    "competition → closure": 0.2916666666666667,
+    "assemblage → picturing∘assemblage": 0.2916666666666667,
+    "picturing → transduction∘assemblage∘closure": 0.2708333333333333,
+    "transduction → concrescence∘picturing∘assemblage": 0.2708333333333333,
+    "withdrawal → assemblage∘closure": 0.22916666666666666,
+    "withdrawal → concrescence∘assemblage": 0.22916666666666666,
+    "picturing → transduction∘concrescence∘assemblage": 0.20833333333333334,
+    "withdrawal → picturing∘assemblage": 0.20833333333333334,
+    "competition → transduction∘picturing∘assemblage": 0.1875,
+    "concrescence → assemblage∘closure": 0.1875,
+    "assemblage → withdrawal∘transduction": 0.16666666666666666,
+    "concrescence → transduction∘picturing∘assemblage": 0.16666666666666666,
+    "competition → withdrawal∘transduction∘assemblage": 0.125,
+    "competition → transduction∘assemblage∘closure": 0.125,
+    "closure → transduction∘assemblage∘closure": 0.125,
+    "competition → assemblage∘closure": 0.125,
+    "competition → picturing∘assemblage∘closure": 0.125,
+    "picturing → concrescence∘assemblage": 0.10416666666666667,
+    "assemblage → concrescence∘closure": 0.10416666666666667,
+    "picturing → withdrawal∘transduction": 0.08333333333333333,
+    "competition → transduction∘concrescence∘assemblage": 0.08333333333333333,
+    "transduction → concrescence∘assemblage∘closure": 0.08333333333333333,
+    "closure → concrescence∘picturing∘assemblage": 0.08333333333333333,
+    "closure → withdrawal∘transduction∘assemblage": 0.0625,
+    "transduction → concrescence∘closure": 0.0625,
+    "picturing → transduction∘concrescence∘closure": 0.0625,
+    "transduction → transduction∘picturing∘assemblage": 0.0625,
+    "picturing → withdrawal∘transduction∘assemblage": 0.041666666666666664,
+    "concrescence → transduction∘assemblage∘closure": 0.041666666666666664,
+    "concrescence → picturing∘assemblage∘closure": 0.041666666666666664,
+    "picturing → concrescence∘assemblage∘closure": 0.020833333333333332,
+    "picturing → withdrawal∘concrescence∘assemblage": 0.020833333333333332,
+    "withdrawal → transduction∘picturing∘assemblage": 0.020833333333333332
+   },
+   "Q3_ignited_share": {
+    "withdrawal": 0.875,
+    "transduction": 0.875,
+    "concrescence": 0.9166666666666666,
+    "picturing": 1.0,
+    "assemblage": 0.9375,
+    "closure": 0.9375
+   },
+   "Q4_parameters_persisting_changed": 0.22174288179465057,
+   "Q5_transforms_by_source_after_step_80": {
+    "withdrawal": 3.25,
+    "transduction": 11.020833333333334,
+    "concrescence": 39.729166666666664,
+    "picturing": 75.89583333333333,
+    "assemblage": 33.354166666666664,
+    "closure": 0.6666666666666666
+   },
+   "Q5_parameter_drift_mean": 0.10662008541327177,
+   "Q6_reinsertions": {
+    "archived datum re-seeds the milieu": {
+     "per_run": 1.7916666666666667,
+     "share_causing_a_later_event": 0.0
+    }
+   },
+   "Q7_configuration": {
+    "couplings_per_run": 2.875,
+    "splits_per_run": 4.1875,
+    "reclassifications_per_run": 0.0,
+    "composite_kinds_seen_in_runs": {
+     "assemblage∘closure": 5,
+     "transduction∘assemblage": 16,
+     "transduction∘assemblage∘closure": 4,
+     "withdrawal∘transduction": 1,
+     "withdrawal∘transduction∘assemblage": 2,
+     "concrescence∘picturing": 41,
+     "picturing∘assemblage": 11,
+     "transduction∘closure": 7,
+     "transduction∘picturing∘assemblage": 6,
+     "concrescence∘assemblage": 22,
+     "concrescence∘picturing∘assemblage": 26,
+     "withdrawal∘assemblage": 1,
+     "picturing∘assemblage∘closure": 1,
+     "transduction∘concrescence∘assemblage": 2,
+     "concrescence∘assemblage∘closure": 4,
+     "concrescence∘closure": 1,
+     "concrescence∘picturing∘closure": 1,
+     "transduction∘concrescence∘closure": 1,
+     "withdrawal∘concrescence∘assemblage": 1
+    }
+   },
+   "Q9_unobservable_channel_samples_per_run": {
+    "withdrawal": {
+     "boundary_invisible": 40.64583333333334
+    },
+    "transduction": {
+     "boundary_invisible": 91.27083333333334,
+     "unmeasured": 42.02083333333333,
+     "instrument_mismatch": 4.833333333333333,
+     "scale_mismatch": 6.187499999999999
+    },
+    "assemblage": {
+     "boundary_invisible": 38.64583333333333,
+     "unmeasured": 23.020833333333332,
+     "instrument_mismatch": 3.229166666666667,
+     "scale_mismatch": 36.854166666666664
+    },
+    "closure": {
+     "boundary_invisible": 33.85416666666667,
+     "unmeasured": 54.91666666666666,
+     "instrument_mismatch": 49.416666666666664,
+     "scale_mismatch": 3.4375
+    },
+    "concrescence": {
+     "boundary_invisible": 11.5,
+     "scale_mismatch": 5.374999999999999,
+     "instrument_mismatch": 0.125
+    },
+    "picturing": {
+     "boundary_invisible": 9.208333333333334,
+     "scale_mismatch": 9.354166666666666,
+     "instrument_mismatch": 0.020833333333333332,
+     "unmeasured": 1.9166666666666665
+    }
+   }
+  },
+  "Q3_C_vs_B": {
+   "withdrawal": {
+    "enabled_share": 0.020833333333333332,
+    "disabled_share": 0.2708333333333333
+   },
+   "transduction": {
+    "enabled_share": 0.08333333333333333,
+    "disabled_share": 0.041666666666666664
+   },
+   "concrescence": {
+    "enabled_share": 0.10416666666666667,
+    "disabled_share": 0.0
+   },
+   "picturing": {
+    "enabled_share": 0.4791666666666667,
+    "disabled_share": 0.0
+   },
+   "assemblage": {
+    "enabled_share": 0.0625,
+    "disabled_share": 0.0625
+   },
+   "closure": {
+    "enabled_share": 0.020833333333333332,
+    "disabled_share": 0.041666666666666664
+   }
+  },
+  "Q5_removal": {
+   "withdrawal": {
+    "transforms_by_k_after_step_80_C": 2.8541666666666665,
+    "transforms_by_k_after_step_80_E": 0.25,
+    "drift_C": 0.14144676637720469,
+    "drift_E": 0.1378262459871464,
+    "ignited_share_E": 0.3541666666666667
+   },
+   "transduction": {
+    "transforms_by_k_after_step_80_C": 12.708333333333334,
+    "transforms_by_k_after_step_80_E": 5.041666666666667,
+    "drift_C": 0.14144676637720469,
+    "drift_E": 0.1437512053689813,
+    "ignited_share_E": 0.75
+   },
+   "concrescence": {
+    "transforms_by_k_after_step_80_C": 36.895833333333336,
+    "transforms_by_k_after_step_80_E": 33.125,
+    "drift_C": 0.14144676637720469,
+    "drift_E": 0.14176228267591517,
+    "ignited_share_E": 0.9166666666666666
+   },
+   "picturing": {
+    "transforms_by_k_after_step_80_C": 58.708333333333336,
+    "transforms_by_k_after_step_80_E": 44.979166666666664,
+    "drift_C": 0.14144676637720469,
+    "drift_E": 0.13588178980291948,
+    "ignited_share_E": 1.0
+   },
+   "assemblage": {
+    "transforms_by_k_after_step_80_C": 23.25,
+    "transforms_by_k_after_step_80_E": 4.75,
+    "drift_C": 0.14144676637720469,
+    "drift_E": 0.14989070880226293,
+    "ignited_share_E": 0.75
+   },
+   "closure": {
+    "transforms_by_k_after_step_80_C": 9.395833333333334,
+    "transforms_by_k_after_step_80_E": 0.8333333333333334,
+    "drift_C": 0.14144676637720469,
+    "drift_E": 0.11373626608745847,
+    "ignited_share_E": 0.8333333333333334
+   }
+  }
+ },
+ "reproduces_confirmatory_trace": true,
+ "elapsed_s": 176.2,
+ "protocol_sha256": "71e589c7d88cdb1119810579121e65a89c4557b98856c66fd047d6c031f67685"
+}

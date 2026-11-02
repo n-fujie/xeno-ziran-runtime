@@ -1,0 +1,229 @@
+{
+ "experiment_id": "LEG-EXP-07",
+ "protocol_version": 1,
+ "protocol_digest": "58cd4f91054a0b7a1200e67b7e9722a5464cfd7ee84e4ec281f37a82d961f61f",
+ "protocol": {
+  "experiment_id": "LEG-EXP-07",
+  "hypotheses": [
+   {
+    "id": "H1",
+    "statement": "One more observed field lets the observer identify more of the active mechanisms than the initial two"
+   },
+   {
+    "id": "H2",
+    "statement": "Choosing the field from the outcome identifies more than choosing it without looking, at equal cost"
+   },
+   {
+    "id": "H3",
+    "statement": "... and more than a field order fixed in advance"
+   }
+  ],
+  "targets": [
+   "exclusion and access of a synthetic institution"
+  ],
+  "instrument_conditions": {
+   "fields_initial": 2,
+   "mechanisms": [
+    "gate",
+    "inheritance",
+    "downstream",
+    "weak_review"
+   ]
+  },
+  "control_condition": "fixed",
+  "conditions": [
+   "fixed",
+   "prespecified_revision",
+   "outcome_responsive_revision",
+   "cost_matched_static"
+  ],
+  "seeds": [
+   2001,
+   2002,
+   2003,
+   2004,
+   2005,
+   2006,
+   2007,
+   2008,
+   2009,
+   2010,
+   2011,
+   2012,
+   2013,
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023,
+   2024,
+   2025,
+   2026,
+   2027,
+   2028,
+   2029,
+   2030
+  ],
+  "trials_per_condition": 1,
+  "stopping_rule": {
+   "type": "fixed-n",
+   "units": 30,
+   "no interim analysis": true
+  },
+  "outcomes": {
+   "primary": [
+    "active mechanisms identified"
+   ],
+   "secondary": [
+    "false identifications",
+    "active but not observed"
+   ]
+  },
+  "analyses": [
+   {
+    "id": "L07a",
+    "hypothesis": "H1",
+    "outcome": "true_identified",
+    "method": "paired-sign-flip",
+    "confirmatory": true
+   },
+   {
+    "id": "L07b",
+    "hypothesis": "H2",
+    "outcome": "true_identified",
+    "method": "paired-sign-flip",
+    "confirmatory": true
+   },
+   {
+    "id": "L07c",
+    "hypothesis": "H3",
+    "outcome": "true_identified",
+    "method": "paired-sign-flip",
+    "confirmatory": true
+   }
+  ],
+  "multiplicity": "holm",
+  "failure_conditions": [
+   "fewer than 30 worlds"
+  ],
+  "reproduction": {
+   "generator": "xzr.teoo.legal_experiments",
+   "steps": [
+    "run unit per seed",
+    "analyse"
+   ],
+   "world": "xzr.teoo.legal (SYNTHETIC institution)"
+  },
+  "schema": "teoo.protocol/1",
+  "version": 1,
+  "parent_version": null,
+  "change_reason": null
+ },
+ "units": 30,
+ "seeds": [
+  2001,
+  2002,
+  2003,
+  2004,
+  2005,
+  2006,
+  2007,
+  2008,
+  2009,
+  2010,
+  2011,
+  2012,
+  2013,
+  2014,
+  2015,
+  2016,
+  2017,
+  2018,
+  2019,
+  2020,
+  2021,
+  2022,
+  2023,
+  2024,
+  2025,
+  2026,
+  2027,
+  2028,
+  2029,
+  2030
+ ],
+ "evidence_class": "Synthetic-world Result",
+ "seconds": 3.7,
+ "results": {
+  "L07a": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.5333333333333333,
+   "sd_diff": 0.507416263404925,
+   "dz": 1.051076545624487,
+   "ci95": [
+    0.36666666666666664,
+    0.7
+   ],
+   "p": 9.99950002499875e-05,
+   "n_perm": 20000,
+   "seed": 14,
+   "inferential": true,
+   "contrast": "cost_matched_static minus fixed on true_identified",
+   "mean_cost_matched_static": 1.6,
+   "mean_fixed": 1.0666666666666667,
+   "p_holm": 0.0002999850007499625,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "L07b": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.03333333333333333,
+   "sd_diff": 0.6149478998583782,
+   "dz": 0.0542051340300698,
+   "ci95": [
+    -0.16666666666666666,
+    0.23333333333333334
+   ],
+   "p": 1.0,
+   "n_perm": 20000,
+   "seed": 15,
+   "inferential": true,
+   "contrast": "outcome_responsive_revision minus cost_matched_static on true_identified",
+   "mean_outcome_responsive_revision": 1.6333333333333333,
+   "mean_cost_matched_static": 1.6,
+   "p_holm": 1.0,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "L07c": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.0,
+   "sd_diff": 0.0,
+   "dz": null,
+   "ci95": [
+    0.0,
+    0.0
+   ],
+   "p": 1.0,
+   "n_perm": 20000,
+   "seed": 16,
+   "inferential": true,
+   "contrast": "outcome_responsive_revision minus prespecified_revision on true_identified",
+   "mean_outcome_responsive_revision": 1.6333333333333333,
+   "mean_prespecified_revision": 1.6333333333333333,
+   "p_holm": 1.0,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  }
+ },
+ "catalogue": null,
+ "note": "results about a SYNTHETIC institution and this implementation; not an observation of any institution, law or person"
+}

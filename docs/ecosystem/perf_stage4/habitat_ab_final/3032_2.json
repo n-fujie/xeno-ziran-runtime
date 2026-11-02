@@ -1,0 +1,66 @@
+{
+ "measured_with": "headless Chromium, ANGLE Metal",
+ "viewport": [
+  1672,
+  808
+ ],
+ "frames": 120,
+ "rows": [
+  {
+   "tier": "balanced",
+   "camera": "habitat",
+   "camera_spec": {
+    "pos": [
+     -48.00000000000001,
+     11,
+     33.00000000000001
+    ],
+    "target": [
+     -66,
+     1.2,
+     16
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1672,
+     674
+    ],
+    "quality": "balanced"
+   },
+   "instances": 55195,
+   "full": {
+    "label": "full (static camera)",
+    "median": 19,
+    "p95": 22.7,
+    "mean": 19.28,
+    "max": 32.9,
+    "fps_from_median": 52.6,
+    "cpu_submit_median": 3.6,
+    "gpu_time": null,
+    "drawCalls": 668,
+    "triangles": 1477482,
+    "geometries": 320,
+    "textures": 9
+   },
+   "orbiting": {
+    "label": "full (camera orbiting: the reflection refreshes every 2nd frame)",
+    "median": 19.4,
+    "p95": 26.2,
+    "mean": 20.1,
+    "max": 48.8,
+    "fps_from_median": 51.5,
+    "cpu_submit_median": 4,
+    "gpu_time": null,
+    "drawCalls": 674,
+    "triangles": 1615654,
+    "geometries": 335,
+    "textures": 9
+   }
+  }
+ ]
+}

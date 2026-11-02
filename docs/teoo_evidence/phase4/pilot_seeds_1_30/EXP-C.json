@@ -1,0 +1,322 @@
+{
+ "experiment_id": "TEOO4-EXP-C",
+ "protocol_digest": "ac6364b6dc0986769fbfd2498c89de0ca9f3c54c2c916290e1ef6dd160e5877b",
+ "protocol": {
+  "experiment_id": "TEOO4-EXP-C",
+  "hypotheses": [
+   {
+    "id": "HC1",
+    "statement": "Outcome-adaptive revision identifies more true differences than a fixed sensor"
+   },
+   {
+    "id": "HC2",
+    "statement": "... more than a pre-specified revision schedule of equal cost"
+   },
+   {
+    "id": "HC3",
+    "statement": "... more than the best static sensor of equal cost (non-redundancy of revision)"
+   }
+  ],
+  "targets": [
+   "amplitude difference of each of 12 components"
+  ],
+  "instrument_conditions": {
+   "initial": {
+    "ts": 1.0,
+    "r": 4.0,
+    "lim": 0.8,
+    "win": 4.0,
+    "pen": 0.3
+   },
+   "budget": 6.0
+  },
+  "control_condition": "fixed",
+  "conditions": [
+   "fixed",
+   "prespecified",
+   "random",
+   "adaptive",
+   "static_costmatched"
+  ],
+  "seeds": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19,
+   20,
+   21,
+   22,
+   23,
+   24,
+   25,
+   26,
+   27,
+   28,
+   29,
+   30
+  ],
+  "trials_per_condition": 8,
+  "stopping_rule": {
+   "type": "fixed-n",
+   "units": 30,
+   "no interim analysis": true
+  },
+  "outcomes": {
+   "primary": [
+    "number of true differences identified (of 12)"
+   ],
+   "secondary": [
+    "cost used",
+    "revisions",
+    "capabilities lost",
+    "valid statuses"
+   ]
+  },
+  "analyses": [
+   {
+    "id": "C1",
+    "hypothesis": "HC1",
+    "outcome": "identified",
+    "method": "paired-sign-flip",
+    "confirmatory": true,
+    "contrast": "adaptive minus fixed"
+   },
+   {
+    "id": "C2",
+    "hypothesis": "HC2",
+    "outcome": "identified",
+    "method": "paired-sign-flip",
+    "confirmatory": true,
+    "contrast": "adaptive minus prespecified"
+   },
+   {
+    "id": "C3",
+    "hypothesis": "HC3",
+    "outcome": "identified",
+    "method": "paired-sign-flip",
+    "confirmatory": true,
+    "contrast": "adaptive minus static_costmatched"
+   },
+   {
+    "id": "C4",
+    "hypothesis": "HC3",
+    "outcome": "identified",
+    "method": "equivalence",
+    "confirmatory": false,
+    "margin": 0.5,
+    "contrast": "adaptive minus static_costmatched"
+   },
+   {
+    "id": "C5",
+    "hypothesis": "HC2",
+    "outcome": "identified",
+    "method": "paired-sign-flip",
+    "confirmatory": false,
+    "contrast": "adaptive minus random"
+   }
+  ],
+  "multiplicity": "holm",
+  "failure_conditions": [
+   "an arm exceeding the budget"
+  ],
+  "reproduction": {
+   "generator": "xzr.teoo.experiments",
+   "steps": [
+    "run_c(seed)",
+    "analyse"
+   ],
+   "world": "xzr.teoo.world (SYNTHETIC)"
+  },
+  "schema": "teoo.protocol/1",
+  "version": 1,
+  "parent_version": null,
+  "change_reason": null
+ },
+ "units": 30,
+ "seeds": [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  20,
+  21,
+  22,
+  23,
+  24,
+  25,
+  26,
+  27,
+  28,
+  29,
+  30
+ ],
+ "evidence_class": "Synthetic-world Result",
+ "seconds": 7.8,
+ "results": {
+  "C1": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 10.366666666666667,
+   "sd_diff": 1.1290317283753197,
+   "dz": 9.181909069627595,
+   "ci95": [
+    9.966666666666667,
+    10.766666666666667
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 8,
+   "inferential": true,
+   "contrast": "adaptive minus fixed",
+   "p_holm": 0.00014999250037498125,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "C2": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 5.766666666666667,
+   "sd_diff": 1.5013403972802926,
+   "dz": 3.8410121229756395,
+   "ci95": [
+    5.233333333333333,
+    6.3
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 8,
+   "inferential": true,
+   "contrast": "adaptive minus prespecified",
+   "p_holm": 0.00014999250037498125,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "C3": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": -0.03333333333333333,
+   "sd_diff": 1.2726115785600323,
+   "dz": -0.026192857188247654,
+   "ci95": [
+    -0.43333333333333335,
+    0.4666666666666667
+   ],
+   "p": 1.0,
+   "n_perm": 20000,
+   "seed": 8,
+   "inferential": true,
+   "contrast": "adaptive minus static_costmatched",
+   "p_holm": 1.0,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "C4": {
+   "method": "equivalence",
+   "margin": 0.5,
+   "ci90": [
+    -0.36666666666666664,
+    0.36666666666666664
+   ],
+   "mean_diff": -0.03333333333333333,
+   "supported": true,
+   "contrast": "adaptive minus static_costmatched",
+   "registered_class": "exploratory (declared but not marked confirmatory)",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "C5": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 5.5,
+   "sd_diff": 1.8335945477441957,
+   "dz": 2.999572619130248,
+   "ci95": [
+    4.833333333333333,
+    6.166666666666667
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 8,
+   "inferential": true,
+   "contrast": "adaptive minus random",
+   "registered_class": "exploratory (declared but not marked confirmatory)",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "arms": {
+   "fixed": {
+    "identified_mean": 0.0,
+    "identified_sd": 0.0,
+    "cost_over_initial_mean": 0.0,
+    "revisions_mean": 0.0,
+    "capabilities_lost_total": 0,
+    "valid_statuses_mean": 0.0
+   },
+   "prespecified": {
+    "identified_mean": 4.6,
+    "identified_sd": 1.2205143065174586,
+    "cost_over_initial_mean": 1.6749999999999994,
+    "revisions_mean": 5.0,
+    "capabilities_lost_total": 0,
+    "valid_statuses_mean": 1.4
+   },
+   "random": {
+    "identified_mean": 4.866666666666666,
+    "identified_sd": 1.5252661346824676,
+    "cost_over_initial_mean": 1.6749999999999994,
+    "revisions_mean": 5.0,
+    "capabilities_lost_total": 0,
+    "valid_statuses_mean": 1.4
+   },
+   "adaptive": {
+    "identified_mean": 10.366666666666667,
+    "identified_sd": 1.1290317283753197,
+    "cost_over_initial_mean": 4.073333333333332,
+    "revisions_mean": 7.933333333333334,
+    "capabilities_lost_total": 0,
+    "valid_statuses_mean": 12.0
+   },
+   "static_costmatched": {
+    "identified_mean": 10.4,
+    "identified_sd": 1.4994251772159108,
+    "cost_over_initial_mean": 4.373333333333333,
+    "revisions_mean": 0.0,
+    "capabilities_lost_total": 0,
+    "valid_statuses_mean": 12.0
+   }
+  },
+  "budget_respected": true,
+  "adaptive_vs_static_cost": -0.3000000000000004,
+  "adaptive_decider": "rule: fix the cause shared by most declared targets whose TEOO status is not MEASURED_VALID; evaluation information: the statuses only",
+  "autonomous_revision_demonstrated": false
+ },
+ "note": "results about a SYNTHETIC world and this implementation; not an observation of any body"
+}

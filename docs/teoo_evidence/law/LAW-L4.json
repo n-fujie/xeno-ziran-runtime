@@ -1,0 +1,263 @@
+{
+ "experiment_id": "LAW-L4",
+ "protocol_version": 1,
+ "protocol_digest": "9bbf7ce596f5c9dfac980c10943c69152b49918932697b52731ad40879226b9d",
+ "protocol": {
+  "experiment_id": "LAW-L4",
+  "hypotheses": [
+   {
+    "id": "H1",
+    "statement": "Model and synthetic sensor disagree only under executed conditions"
+   },
+   {
+    "id": "H2",
+    "statement": "The EXPANDED mode attributes disagreements to the stipulated hidden condition q; ACCESS_ONLY attributes none; some disagreements are not explained by q even in EXPANDED"
+   },
+   {
+    "id": "H3",
+    "statement": "An ordinary Boolean model with the same information agrees with the world on all 1,536 comparisons (no predictive advantage of the ledger)"
+   },
+   {
+    "id": "H4",
+    "statement": "The ledger realises the world: its measurements equal the world's function on a sample of 96 (state, condition) pairs"
+   }
+  ],
+  "targets": [
+   "receipts, evidence, proceedings, plans, measurements and closures of a synthetic ledger"
+  ],
+  "instrument_conditions": {
+   "states": 256,
+   "conditions": 6,
+   "comparisons": 1536,
+   "note": "this implementation's world; the manuscript's Appendix O counts are not reproduced"
+  },
+  "control_condition": "boolean comparator",
+  "conditions": [
+   "world",
+   "boolean comparator",
+   "ledger"
+  ],
+  "seeds": [
+   7301
+  ],
+  "trials_per_condition": 1,
+  "stopping_rule": {
+   "type": "fixed-n",
+   "units": 1,
+   "no interim analysis": true
+  },
+  "outcomes": {
+   "primary": [
+    "disagreements",
+    "cause identified",
+    "agreement of the Boolean comparator"
+   ],
+   "secondary": [
+    "ledger realisation"
+   ]
+  },
+  "analyses": [
+   {
+    "id": "L401",
+    "hypothesis": "H1",
+    "outcome": "disagreements",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "L402",
+    "hypothesis": "H2",
+    "outcome": "cause identified",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "L403",
+    "hypothesis": "H3",
+    "outcome": "agreement",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "L404",
+    "hypothesis": "H4",
+    "outcome": "ledger realisation",
+    "method": "descriptive",
+    "confirmatory": true
+   }
+  ],
+  "multiplicity": "holm",
+  "failure_conditions": [
+   "fewer than 1 units"
+  ],
+  "reproduction": {
+   "generator": "xzr.teoo.lawexperiments",
+   "steps": [
+    "run unit per seed",
+    "analyse"
+   ],
+   "world": "xzr.teoo.lawledger (SQLite, append-only) on xzr.teoo.lawworld (8 Booleans); this implementation's own world, not Appendix O"
+  },
+  "schema": "teoo.protocol/1",
+  "version": 1,
+  "parent_version": null,
+  "change_reason": null
+ },
+ "units": 1,
+ "seeds": [
+  7301
+ ],
+ "evidence_class": "Synthetic-world Result",
+ "seconds": 0.8,
+ "results": {
+  "L401": {
+   "method": "descriptive",
+   "comparisons": 1536,
+   "per_condition": {
+    "BASE": {
+     "model_access": 32,
+     "sensor_access": 32,
+     "disagreements": 0,
+     "cause_identified_expanded": 0,
+     "cause_identified_access_only": 0
+    },
+    "RECEIPT_ONLY": {
+     "model_access": 32,
+     "sensor_access": 32,
+     "disagreements": 0,
+     "cause_identified_expanded": 0,
+     "cause_identified_access_only": 0
+    },
+    "DECLARATION_ONLY": {
+     "model_access": 32,
+     "sensor_access": 32,
+     "disagreements": 0,
+     "cause_identified_expanded": 0,
+     "cause_identified_access_only": 0
+    },
+    "PLAN_ONLY": {
+     "model_access": 32,
+     "sensor_access": 32,
+     "disagreements": 0,
+     "cause_identified_expanded": 0,
+     "cause_identified_access_only": 0
+    },
+    "EXEC_GATE": {
+     "model_access": 88,
+     "sensor_access": 36,
+     "disagreements": 52,
+     "cause_identified_expanded": 28,
+     "cause_identified_access_only": 0
+    },
+    "EXEC_LINKED": {
+     "model_access": 60,
+     "sensor_access": 46,
+     "disagreements": 14,
+     "cause_identified_expanded": 14,
+     "cause_identified_access_only": 0
+    }
+   },
+   "boolean_model_agrees": 1536,
+   "boolean_sensor_agrees": 1536,
+   "ledger_realisation": {
+    "checked": 96,
+    "agree": 96
+   },
+   "disagreements_without_execution": 0,
+   "disagreements_with_execution": 66,
+   "disagreements_not_explained_by_q": {
+    "EXEC_GATE": 24,
+    "EXEC_LINKED": 0
+   },
+   "historical_counts_reproduced": false,
+   "criterion": "no disagreement without execution",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "L402": {
+   "per_condition": {
+    "BASE": {
+     "model_access": 32,
+     "sensor_access": 32,
+     "disagreements": 0,
+     "cause_identified_expanded": 0,
+     "cause_identified_access_only": 0
+    },
+    "RECEIPT_ONLY": {
+     "model_access": 32,
+     "sensor_access": 32,
+     "disagreements": 0,
+     "cause_identified_expanded": 0,
+     "cause_identified_access_only": 0
+    },
+    "DECLARATION_ONLY": {
+     "model_access": 32,
+     "sensor_access": 32,
+     "disagreements": 0,
+     "cause_identified_expanded": 0,
+     "cause_identified_access_only": 0
+    },
+    "PLAN_ONLY": {
+     "model_access": 32,
+     "sensor_access": 32,
+     "disagreements": 0,
+     "cause_identified_expanded": 0,
+     "cause_identified_access_only": 0
+    },
+    "EXEC_GATE": {
+     "model_access": 88,
+     "sensor_access": 36,
+     "disagreements": 52,
+     "cause_identified_expanded": 28,
+     "cause_identified_access_only": 0
+    },
+    "EXEC_LINKED": {
+     "model_access": 60,
+     "sensor_access": 46,
+     "disagreements": 14,
+     "cause_identified_expanded": 14,
+     "cause_identified_access_only": 0
+    }
+   },
+   "disagreements_not_explained_by_q": {
+    "EXEC_GATE": 24,
+    "EXEC_LINKED": 0
+   },
+   "criterion": "ACCESS_ONLY identifies no cause; EXPANDED identifies some but not all disagreements",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "L403": {
+   "comparisons": 1536,
+   "boolean_model_agrees": 1536,
+   "boolean_sensor_agrees": 1536,
+   "criterion": "1,536 / 1,536 on both",
+   "criterion_met": true,
+   "reading": "met: a Boolean model with the same information gives the same outputs; no predictive advantage of the ledger or of its vocabulary is shown",
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "L404": {
+   "checked": 96,
+   "agree": 96,
+   "criterion": "96 / 96",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  }
+ },
+ "catalogue": {
+  "source": "The Minimum Guarantees of Human Legal Subjecthood, Publication Final V3.0, Chapter 6.2 (identical in the 100_POINT_EDITION and in R2 section 4: all fifteen titles and definitions compared character for character)",
+  "verified_against_original": true,
+  "sha256": {
+   "v3_0": "cf4d4f0c51169451da5af4c33e7081e947dacbade855068a889965d8c523b848",
+   "v3_0_100_point_edition": "afb59d1a0c3b28854f14113f843645539e07a2e466949d22de4b67da0a22bf99",
+   "ai_law_osr_r2": "a9984451b281df3252b05842dc5109dd396e0b0c54d3560849344ad41059a501"
+  },
+  "editions_identical_for_guarantees": true,
+  "note": "V3.0 uses two vocabularies for the same five findings (Appendix A table: Secured/Partial/Absent/Indeterminate/Inapplicable; A.3 and 8.4 text: Satisfied/Partially Satisfied/Failed/Indeterminate/Not Applicable). R2 section 16 and this implementation use the table's."
+ },
+ "note": "results about a SYNTHETIC ledger and this implementation's own world; the manuscripts R5-R16, the historical code and the world of Appendix O were not available and their numbers are not reproduced; a closure, a measurement or a match here is not a legal judgment or a restoration; not an observation of any institution, law or person"
+}

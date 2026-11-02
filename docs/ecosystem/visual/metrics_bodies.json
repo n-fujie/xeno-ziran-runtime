@@ -1,0 +1,1474 @@
+{
+ "statistics": [
+  "luminance_mean",
+  "luminance_std",
+  "chroma",
+  "detail_density",
+  "uniformity",
+  "dark_share"
+ ],
+ "statistics_stage2": [
+  "edge_density",
+  "occupied_area_ratio",
+  "depth_proxy",
+  "silhouette_density",
+  "luminance_histogram",
+  "spatial_frequency_hi",
+  "spatial_frequency_vhi"
+ ],
+ "references": {
+  "ref21_full": {
+   "size": [
+    760,
+    774
+   ],
+   "luminance_mean": 0.1113,
+   "luminance_std": 0.1983,
+   "chroma": 0.0079,
+   "detail_density": 0.2461,
+   "fine_over_coarse": 0.534,
+   "uniformity": 0.7388,
+   "dark_share": 0.6777,
+   "luminance_histogram": [
+    0.744,
+    0.1174,
+    0.0533,
+    0.0271,
+    0.0162,
+    0.0109,
+    0.0092,
+    0.0219
+   ],
+   "edge_density": 0.2035,
+   "spatial_frequency_hi": 0.28382,
+   "spatial_frequency_vhi": 0.10799,
+   "occupied_area_ratio": 0.3223,
+   "depth_proxy": 0.5799,
+   "silhouette_density": 0.9559
+  },
+  "ref20_full": {
+   "size": [
+    760,
+    774
+   ],
+   "luminance_mean": 0.0956,
+   "luminance_std": 0.186,
+   "chroma": 0.008,
+   "detail_density": 0.1985,
+   "fine_over_coarse": 0.502,
+   "uniformity": 0.7741,
+   "dark_share": 0.7225,
+   "luminance_histogram": [
+    0.7891,
+    0.1027,
+    0.0393,
+    0.0181,
+    0.0124,
+    0.0107,
+    0.0087,
+    0.019
+   ],
+   "edge_density": 0.1655,
+   "spatial_frequency_hi": 0.25707,
+   "spatial_frequency_vhi": 0.08978,
+   "occupied_area_ratio": 0.2775,
+   "depth_proxy": 0.5313,
+   "silhouette_density": 0.956
+  }
+ },
+ "captures": {
+  "01-overview": {
+   "metrics": {
+    "size": [
+     1672,
+     808
+    ],
+    "luminance_mean": 0.2247,
+    "luminance_std": 0.1278,
+    "chroma": 0.0071,
+    "detail_density": 0.1841,
+    "fine_over_coarse": 0.638,
+    "uniformity": 0.2147,
+    "dark_share": 0.0554,
+    "luminance_histogram": [
+     0.1236,
+     0.648,
+     0.1162,
+     0.0653,
+     0.0318,
+     0.0085,
+     0.003,
+     0.0035
+    ],
+    "edge_density": 0.1237,
+    "spatial_frequency_hi": 0.18419,
+    "spatial_frequency_vhi": 0.06134,
+    "occupied_area_ratio": 0.7737,
+    "depth_proxy": 0.5854,
+    "silhouette_density": 0.22
+   },
+   "distance_to_reference": {
+    "ref21_full": 0.8268,
+    "ref20_full": 0.8822
+   },
+   "nearest_reference": "ref21_full",
+   "distance2_to_reference": {
+    "ref21_full": {
+     "tone_tv": 0.6473,
+     "structure": 0.867,
+     "frequency": 0.11001
+    },
+    "ref20_full": {
+     "tone_tv": 0.6888,
+     "structure": 0.8903,
+     "frequency": 0.07823
+    }
+   }
+  },
+  "02-habitat": {
+   "metrics": {
+    "size": [
+     1672,
+     808
+    ],
+    "luminance_mean": 0.3634,
+    "luminance_std": 0.1629,
+    "chroma": 0.0082,
+    "detail_density": 0.1327,
+    "fine_over_coarse": 0.543,
+    "uniformity": 0.5294,
+    "dark_share": 0.0323,
+    "luminance_histogram": [
+     0.0416,
+     0.1356,
+     0.4573,
+     0.2178,
+     0.0745,
+     0.0361,
+     0.023,
+     0.0141
+    ],
+    "edge_density": 0.075,
+    "spatial_frequency_hi": 0.0583,
+    "spatial_frequency_vhi": 0.02075,
+    "occupied_area_ratio": 0.8771,
+    "depth_proxy": 0.7734,
+    "silhouette_density": 0.0555
+   },
+   "distance_to_reference": {
+    "ref21_full": 0.7335,
+    "ref20_full": 0.7828
+   },
+   "nearest_reference": "ref21_full",
+   "distance2_to_reference": {
+    "ref21_full": {
+     "tone_tv": 0.7102,
+     "structure": 1.0828,
+     "frequency": 0.24181
+    },
+    "ref20_full": {
+     "tone_tv": 0.7524,
+     "structure": 1.1123,
+     "frequency": 0.21042
+    }
+   }
+  },
+  "03-research-core": {
+   "metrics": {
+    "size": [
+     1672,
+     808
+    ],
+    "luminance_mean": 0.3044,
+    "luminance_std": 0.2296,
+    "chroma": 0.0131,
+    "detail_density": 0.1724,
+    "fine_over_coarse": 0.448,
+    "uniformity": 0.6048,
+    "dark_share": 0.1739,
+    "luminance_histogram": [
+     0.2369,
+     0.2346,
+     0.2129,
+     0.1048,
+     0.1032,
+     0.052,
+     0.0404,
+     0.0152
+    ],
+    "edge_density": 0.1307,
+    "spatial_frequency_hi": 0.04894,
+    "spatial_frequency_vhi": 0.01422,
+    "occupied_area_ratio": 0.8218,
+    "depth_proxy": 0.8781,
+    "silhouette_density": 0.0872
+   },
+   "distance_to_reference": {
+    "ref21_full": 0.5617,
+    "ref20_full": 0.613
+   },
+   "nearest_reference": "ref21_full",
+   "distance2_to_reference": {
+    "ref21_full": {
+     "tone_tv": 0.5138,
+     "structure": 1.048,
+     "frequency": 0.25291
+    },
+    "ref20_full": {
+     "tone_tv": 0.556,
+     "structure": 1.0828,
+     "frequency": 0.22142
+    }
+   }
+  },
+  "04-meos0-active": {
+   "metrics": {
+    "size": [
+     1672,
+     808
+    ],
+    "luminance_mean": 0.3639,
+    "luminance_std": 0.1636,
+    "chroma": 0.0082,
+    "detail_density": 0.1316,
+    "fine_over_coarse": 0.54,
+    "uniformity": 0.5447,
+    "dark_share": 0.0323,
+    "luminance_histogram": [
+     0.0416,
+     0.1355,
+     0.4573,
+     0.2168,
+     0.0746,
+     0.0362,
+     0.0235,
+     0.0145
+    ],
+    "edge_density": 0.0742,
+    "spatial_frequency_hi": 0.0571,
+    "spatial_frequency_vhi": 0.02038,
+    "occupied_area_ratio": 0.8772,
+    "depth_proxy": 0.7747,
+    "silhouette_density": 0.0553
+   },
+   "distance_to_reference": {
+    "ref21_full": 0.7296,
+    "ref20_full": 0.7784
+   },
+   "nearest_reference": "ref21_full",
+   "distance2_to_reference": {
+    "ref21_full": {
+     "tone_tv": 0.7098,
+     "structure": 1.0834,
+     "frequency": 0.24306
+    },
+    "ref20_full": {
+     "tone_tv": 0.752,
+     "structure": 1.1129,
+     "frequency": 0.21167
+    }
+   }
+  },
+  "05-meos-collapse": {
+   "metrics": {
+    "size": [
+     1672,
+     808
+    ],
+    "luminance_mean": 0.3565,
+    "luminance_std": 0.1599,
+    "chroma": 0.0082,
+    "detail_density": 0.134,
+    "fine_over_coarse": 0.525,
+    "uniformity": 0.5602,
+    "dark_share": 0.0391,
+    "luminance_histogram": [
+     0.0552,
+     0.1357,
+     0.4502,
+     0.2131,
+     0.0805,
+     0.0351,
+     0.0201,
+     0.0102
+    ],
+    "edge_density": 0.0792,
+    "spatial_frequency_hi": 0.06012,
+    "spatial_frequency_vhi": 0.02383,
+    "occupied_area_ratio": 0.8991,
+    "depth_proxy": 0.7791,
+    "silhouette_density": 0.0352
+   },
+   "distance_to_reference": {
+    "ref21_full": 0.7168,
+    "ref20_full": 0.7653
+   },
+   "nearest_reference": "ref21_full",
+   "distance2_to_reference": {
+    "ref21_full": {
+     "tone_tv": 0.7006,
+     "structure": 1.1115,
+     "frequency": 0.23901
+    },
+    "ref20_full": {
+     "tone_tv": 0.7428,
+     "structure": 1.1415,
+     "frequency": 0.2077
+    }
+   }
+  },
+  "06-xenobody-boundary": {
+   "metrics": {
+    "size": [
+     1672,
+     808
+    ],
+    "luminance_mean": 0.364,
+    "luminance_std": 0.1646,
+    "chroma": 0.0082,
+    "detail_density": 0.1352,
+    "fine_over_coarse": 0.548,
+    "uniformity": 0.5057,
+    "dark_share": 0.0324,
+    "luminance_histogram": [
+     0.0418,
+     0.1364,
+     0.4572,
+     0.2156,
+     0.0729,
+     0.0371,
+     0.0246,
+     0.0144
+    ],
+    "edge_density": 0.0767,
+    "spatial_frequency_hi": 0.0587,
+    "spatial_frequency_vhi": 0.02076,
+    "occupied_area_ratio": 0.8825,
+    "depth_proxy": 0.7748,
+    "silhouette_density": 0.0549
+   },
+   "distance_to_reference": {
+    "ref21_full": 0.7403,
+    "ref20_full": 0.7904
+   },
+   "nearest_reference": "ref21_full",
+   "distance2_to_reference": {
+    "ref21_full": {
+     "tone_tv": 0.7097,
+     "structure": 1.0861,
+     "frequency": 0.24143
+    },
+    "ref20_full": {
+     "tone_tv": 0.7519,
+     "structure": 1.1159,
+     "frequency": 0.21003
+    }
+   }
+  },
+  "07-history-overlay": {
+   "metrics": {
+    "size": [
+     1672,
+     808
+    ],
+    "luminance_mean": 0.364,
+    "luminance_std": 0.164,
+    "chroma": 0.0082,
+    "detail_density": 0.1315,
+    "fine_over_coarse": 0.54,
+    "uniformity": 0.5349,
+    "dark_share": 0.0321,
+    "luminance_histogram": [
+     0.0416,
+     0.1361,
+     0.4566,
+     0.2163,
+     0.0737,
+     0.0374,
+     0.0241,
+     0.0142
+    ],
+    "edge_density": 0.0743,
+    "spatial_frequency_hi": 0.0572,
+    "spatial_frequency_vhi": 0.02038,
+    "occupied_area_ratio": 0.8768,
+    "depth_proxy": 0.775,
+    "silhouette_density": 0.0566
+   },
+   "distance_to_reference": {
+    "ref21_full": 0.7325,
+    "ref20_full": 0.7816
+   },
+   "nearest_reference": "ref21_full",
+   "distance2_to_reference": {
+    "ref21_full": {
+     "tone_tv": 0.7101,
+     "structure": 1.0821,
+     "frequency": 0.24297
+    },
+    "ref20_full": {
+     "tone_tv": 0.7523,
+     "structure": 1.1117,
+     "frequency": 0.21158
+    }
+   }
+  },
+  "08-subsurface-laboratory": {
+   "metrics": {
+    "size": [
+     1672,
+     808
+    ],
+    "luminance_mean": 0.2635,
+    "luminance_std": 0.1579,
+    "chroma": 0.0183,
+    "detail_density": 0.1071,
+    "fine_over_coarse": 0.387,
+    "uniformity": 0.6727,
+    "dark_share": 0.0769,
+    "luminance_histogram": [
+     0.1428,
+     0.443,
+     0.1806,
+     0.1597,
+     0.0448,
+     0.0183,
+     0.0066,
+     0.0042
+    ],
+    "edge_density": 0.0853,
+    "spatial_frequency_hi": 0.06506,
+    "spatial_frequency_vhi": 0.02059,
+    "occupied_area_ratio": 0.828,
+    "depth_proxy": 0.7389,
+    "silhouette_density": 0.1156
+   },
+   "distance_to_reference": {
+    "ref21_full": 0.64,
+    "ref20_full": 0.6816
+   },
+   "nearest_reference": "ref21_full",
+   "distance2_to_reference": {
+    "ref21_full": {
+     "tone_tv": 0.6215,
+     "structure": 1.0005,
+     "frequency": 0.23557
+    },
+    "ref20_full": {
+     "tone_tv": 0.6632,
+     "structure": 1.029,
+     "frequency": 0.2041
+    }
+   }
+  },
+  "09-observation-array": {
+   "metrics": {
+    "size": [
+     1672,
+     808
+    ],
+    "luminance_mean": 0.1955,
+    "luminance_std": 0.1576,
+    "chroma": 0.0055,
+    "detail_density": 0.0504,
+    "fine_over_coarse": 0.332,
+    "uniformity": 0.6533,
+    "dark_share": 0.273,
+    "luminance_histogram": [
+     0.2894,
+     0.3952,
+     0.2307,
+     0.0509,
+     0.0133,
+     0.0097,
+     0.006,
+     0.0048
+    ],
+    "edge_density": 0.0315,
+    "spatial_frequency_hi": 0.03513,
+    "spatial_frequency_vhi": 0.01316,
+    "occupied_area_ratio": 0.727,
+    "depth_proxy": 0.6684,
+    "silhouette_density": 0.0299
+   },
+   "distance_to_reference": {
+    "ref21_full": 0.4671,
+    "ref20_full": 0.4994
+   },
+   "nearest_reference": "ref21_full",
+   "distance2_to_reference": {
+    "ref21_full": {
+     "tone_tv": 0.479,
+     "structure": 1.0289,
+     "frequency": 0.26616
+    },
+    "ref20_full": {
+     "tone_tv": 0.5176,
+     "structure": 1.0471,
+     "frequency": 0.23479
+    }
+   }
+  },
+  "10-philosophical-socket": {
+   "metrics": {
+    "size": [
+     1672,
+     808
+    ],
+    "luminance_mean": 0.2262,
+    "luminance_std": 0.1504,
+    "chroma": 0.0073,
+    "detail_density": 0.0884,
+    "fine_over_coarse": 0.447,
+    "uniformity": 0.4671,
+    "dark_share": 0.1542,
+    "luminance_histogram": [
+     0.1919,
+     0.4391,
+     0.2608,
+     0.0629,
+     0.0233,
+     0.0096,
+     0.0074,
+     0.0051
+    ],
+    "edge_density": 0.0544,
+    "spatial_frequency_hi": 0.05336,
+    "spatial_frequency_vhi": 0.01978,
+    "occupied_area_ratio": 0.8458,
+    "depth_proxy": 0.713,
+    "silhouette_density": 0.05
+   },
+   "distance_to_reference": {
+    "ref21_full": 0.6231,
+    "ref20_full": 0.6691
+   },
+   "nearest_reference": "ref21_full",
+   "distance2_to_reference": {
+    "ref21_full": {
+     "tone_tv": 0.572,
+     "structure": 1.0652,
+     "frequency": 0.24676
+    },
+    "ref20_full": {
+     "tone_tv": 0.6136,
+     "structure": 1.0905,
+     "frequency": 0.2154
+    }
+   }
+  },
+  "11-resource-pulse": {
+   "metrics": {
+    "size": [
+     1672,
+     808
+    ],
+    "luminance_mean": 0.3572,
+    "luminance_std": 0.1628,
+    "chroma": 0.0082,
+    "detail_density": 0.134,
+    "fine_over_coarse": 0.523,
+    "uniformity": 0.5681,
+    "dark_share": 0.0398,
+    "luminance_histogram": [
+     0.0574,
+     0.136,
+     0.448,
+     0.2119,
+     0.0775,
+     0.0354,
+     0.0226,
+     0.0112
+    ],
+    "edge_density": 0.079,
+    "spatial_frequency_hi": 0.05852,
+    "spatial_frequency_vhi": 0.02344,
+    "occupied_area_ratio": 0.9,
+    "depth_proxy": 0.7842,
+    "silhouette_density": 0.0355
+   },
+   "distance_to_reference": {
+    "ref21_full": 0.7144,
+    "ref20_full": 0.7627
+   },
+   "nearest_reference": "ref21_full",
+   "distance2_to_reference": {
+    "ref21_full": {
+     "tone_tv": 0.6973,
+     "structure": 1.1127,
+     "frequency": 0.24064
+    },
+    "ref20_full": {
+     "tone_tv": 0.7395,
+     "structure": 1.1429,
+     "frequency": 0.20934
+    }
+   }
+  },
+  "12-boundary-open": {
+   "metrics": {
+    "size": [
+     1672,
+     808
+    ],
+    "luminance_mean": 0.3615,
+    "luminance_std": 0.1604,
+    "chroma": 0.0083,
+    "detail_density": 0.1285,
+    "fine_over_coarse": 0.535,
+    "uniformity": 0.5745,
+    "dark_share": 0.0321,
+    "luminance_histogram": [
+     0.0416,
+     0.1355,
+     0.461,
+     0.2175,
+     0.0767,
+     0.0333,
+     0.0205,
+     0.0138
+    ],
+    "edge_density": 0.0724,
+    "spatial_frequency_hi": 0.0582,
+    "spatial_frequency_vhi": 0.02093,
+    "occupied_area_ratio": 0.8772,
+    "depth_proxy": 0.7666,
+    "silhouette_density": 0.0553
+   },
+   "distance_to_reference": {
+    "ref21_full": 0.7223,
+    "ref20_full": 0.7699
+   },
+   "nearest_reference": "ref21_full",
+   "distance2_to_reference": {
+    "ref21_full": {
+     "tone_tv": 0.7105,
+     "structure": 1.0821,
+     "frequency": 0.24183
+    },
+    "ref20_full": {
+     "tone_tv": 0.7527,
+     "structure": 1.1113,
+     "frequency": 0.21045
+    }
+   }
+  },
+  "13-recovered": {
+   "metrics": {
+    "size": [
+     1672,
+     808
+    ],
+    "luminance_mean": 0.3673,
+    "luminance_std": 0.1686,
+    "chroma": 0.0082,
+    "detail_density": 0.1334,
+    "fine_over_coarse": 0.532,
+    "uniformity": 0.5665,
+    "dark_share": 0.0321,
+    "luminance_histogram": [
+     0.0416,
+     0.1355,
+     0.4531,
+     0.2142,
+     0.0737,
+     0.0375,
+     0.0281,
+     0.0163
+    ],
+    "edge_density": 0.0765,
+    "spatial_frequency_hi": 0.05535,
+    "spatial_frequency_vhi": 0.01954,
+    "occupied_area_ratio": 0.8772,
+    "depth_proxy": 0.7832,
+    "silhouette_density": 0.0553
+   },
+   "distance_to_reference": {
+    "ref21_full": 0.725,
+    "ref20_full": 0.7734
+   },
+   "nearest_reference": "ref21_full",
+   "distance2_to_reference": {
+    "ref21_full": {
+     "tone_tv": 0.708,
+     "structure": 1.0846,
+     "frequency": 0.24499
+    },
+    "ref20_full": {
+     "tone_tv": 0.7502,
+     "structure": 1.1146,
+     "frequency": 0.2136
+    }
+   }
+  },
+  "14-experimental-body": {
+   "metrics": {
+    "size": [
+     1672,
+     808
+    ],
+    "luminance_mean": 0.1105,
+    "luminance_std": 0.1744,
+    "chroma": 0.01,
+    "detail_density": 0.1843,
+    "fine_over_coarse": 0.528,
+    "uniformity": 0.635,
+    "dark_share": 0.6592,
+    "luminance_histogram": [
+     0.715,
+     0.1267,
+     0.0705,
+     0.0375,
+     0.0219,
+     0.0168,
+     0.0072,
+     0.0044
+    ],
+    "edge_density": 0.1386,
+    "spatial_frequency_hi": 0.11819,
+    "spatial_frequency_vhi": 0.03343,
+    "occupied_area_ratio": 0.3408,
+    "depth_proxy": 0.5782,
+    "silhouette_density": 0.5189
+   },
+   "distance_to_reference": {
+    "ref21_full": 0.1245,
+    "ref20_full": 0.1547
+   },
+   "nearest_reference": "ref21_full",
+   "distance2_to_reference": {
+    "ref21_full": {
+     "tone_tv": 0.0485,
+     "structure": 0.4422,
+     "frequency": 0.18164
+    },
+    "ref20_full": {
+     "tone_tv": 0.0902,
+     "structure": 0.445,
+     "frequency": 0.14988
+    }
+   }
+  },
+  "15-observation-node": {
+   "metrics": {
+    "size": [
+     1672,
+     808
+    ],
+    "luminance_mean": 0.1321,
+    "luminance_std": 0.1716,
+    "chroma": 0.0051,
+    "detail_density": 0.1297,
+    "fine_over_coarse": 0.522,
+    "uniformity": 0.3232,
+    "dark_share": 0.5534,
+    "luminance_histogram": [
+     0.5911,
+     0.1827,
+     0.1317,
+     0.0547,
+     0.026,
+     0.0076,
+     0.0024,
+     0.0038
+    ],
+    "edge_density": 0.0878,
+    "spatial_frequency_hi": 0.07151,
+    "spatial_frequency_vhi": 0.02361,
+    "occupied_area_ratio": 0.4466,
+    "depth_proxy": 0.5965,
+    "silhouette_density": 0.1478
+   },
+   "distance_to_reference": {
+    "ref21_full": 0.4504,
+    "ref20_full": 0.488
+   },
+   "nearest_reference": "ref21_full",
+   "distance2_to_reference": {
+    "ref21_full": {
+     "tone_tv": 0.1811,
+     "structure": 0.8259,
+     "frequency": 0.22846
+    },
+    "ref20_full": {
+     "tone_tv": 0.2226,
+     "structure": 0.8319,
+     "frequency": 0.19701
+    }
+   }
+  },
+  "16-wet-ground": {
+   "metrics": {
+    "size": [
+     1672,
+     808
+    ],
+    "luminance_mean": 0.1052,
+    "luminance_std": 0.1742,
+    "chroma": 0.0087,
+    "detail_density": 0.1655,
+    "fine_over_coarse": 0.513,
+    "uniformity": 0.6896,
+    "dark_share": 0.6787,
+    "luminance_histogram": [
+     0.7439,
+     0.1118,
+     0.0559,
+     0.0345,
+     0.0246,
+     0.0187,
+     0.0064,
+     0.0043
+    ],
+    "edge_density": 0.1276,
+    "spatial_frequency_hi": 0.11097,
+    "spatial_frequency_vhi": 0.03036,
+    "occupied_area_ratio": 0.3213,
+    "depth_proxy": 0.5636,
+    "silhouette_density": 0.5179
+   },
+   "distance_to_reference": {
+    "ref21_full": 0.0977,
+    "ref20_full": 0.1019
+   },
+   "nearest_reference": "ref21_full",
+   "distance2_to_reference": {
+    "ref21_full": {
+     "tone_tv": 0.0261,
+     "structure": 0.4448,
+     "frequency": 0.18948
+    },
+    "ref20_full": {
+     "tone_tv": 0.0623,
+     "structure": 0.4431,
+     "frequency": 0.15772
+    }
+   }
+  },
+  "17-body-coupling-cut": {
+   "metrics": {
+    "size": [
+     1672,
+     808
+    ],
+    "luminance_mean": 0.1064,
+    "luminance_std": 0.1699,
+    "chroma": 0.0096,
+    "detail_density": 0.1817,
+    "fine_over_coarse": 0.535,
+    "uniformity": 0.6161,
+    "dark_share": 0.6667,
+    "luminance_histogram": [
+     0.7238,
+     0.128,
+     0.0666,
+     0.035,
+     0.0205,
+     0.0145,
+     0.0071,
+     0.0043
+    ],
+    "edge_density": 0.1366,
+    "spatial_frequency_hi": 0.12304,
+    "spatial_frequency_vhi": 0.03506,
+    "occupied_area_ratio": 0.3333,
+    "depth_proxy": 0.5656,
+    "silhouette_density": 0.5355
+   },
+   "distance_to_reference": {
+    "ref21_full": 0.142,
+    "ref20_full": 0.1695
+   },
+   "nearest_reference": "ref21_full",
+   "distance2_to_reference": {
+    "ref21_full": {
+     "tone_tv": 0.0398,
+     "structure": 0.4261,
+     "frequency": 0.17655
+    },
+    "ref20_full": {
+     "tone_tv": 0.0815,
+     "structure": 0.4266,
+     "frequency": 0.14477
+    }
+   }
+  },
+  "18-body-renewal": {
+   "metrics": {
+    "size": [
+     1672,
+     808
+    ],
+    "luminance_mean": 0.1074,
+    "luminance_std": 0.1718,
+    "chroma": 0.0094,
+    "detail_density": 0.1838,
+    "fine_over_coarse": 0.532,
+    "uniformity": 0.6286,
+    "dark_share": 0.667,
+    "luminance_histogram": [
+     0.7224,
+     0.1256,
+     0.0689,
+     0.0347,
+     0.0217,
+     0.0152,
+     0.0072,
+     0.0044
+    ],
+    "edge_density": 0.1377,
+    "spatial_frequency_hi": 0.12154,
+    "spatial_frequency_vhi": 0.03441,
+    "occupied_area_ratio": 0.333,
+    "depth_proxy": 0.5692,
+    "silhouette_density": 0.5297
+   },
+   "distance_to_reference": {
+    "ref21_full": 0.1298,
+    "ref20_full": 0.1575
+   },
+   "nearest_reference": "ref21_full",
+   "distance2_to_reference": {
+    "ref21_full": {
+     "tone_tv": 0.0411,
+     "structure": 0.4315,
+     "frequency": 0.17818
+    },
+    "ref20_full": {
+     "tone_tv": 0.0828,
+     "structure": 0.4325,
+     "frequency": 0.1464
+    }
+   }
+  },
+  "19-close-probe": {
+   "metrics": {
+    "size": [
+     1672,
+     808
+    ],
+    "luminance_mean": 0.0973,
+    "luminance_std": 0.1777,
+    "chroma": 0.0087,
+    "detail_density": 0.1172,
+    "fine_over_coarse": 0.479,
+    "uniformity": 0.5995,
+    "dark_share": 0.7313,
+    "luminance_histogram": [
+     0.7866,
+     0.083,
+     0.0493,
+     0.022,
+     0.0262,
+     0.017,
+     0.0088,
+     0.007
+    ],
+    "edge_density": 0.0915,
+    "spatial_frequency_hi": 0.08092,
+    "spatial_frequency_vhi": 0.02194,
+    "occupied_area_ratio": 0.2687,
+    "depth_proxy": 0.5202,
+    "silhouette_density": 0.4665
+   },
+   "distance_to_reference": {
+    "ref21_full": 0.1988,
+    "ref20_full": 0.193
+   },
+   "nearest_reference": "ref20_full",
+   "distance2_to_reference": {
+    "ref21_full": {
+     "tone_tv": 0.0587,
+     "structure": 0.5084,
+     "frequency": 0.22039
+    },
+    "ref20_full": {
+     "tone_tv": 0.0342,
+     "structure": 0.4953,
+     "frequency": 0.18876
+    }
+   }
+  },
+  "20-close-cable": {
+   "metrics": {
+    "size": [
+     1672,
+     808
+    ],
+    "luminance_mean": 0.1113,
+    "luminance_std": 0.1658,
+    "chroma": 0.0081,
+    "detail_density": 0.1046,
+    "fine_over_coarse": 0.461,
+    "uniformity": 0.4795,
+    "dark_share": 0.6427,
+    "luminance_histogram": [
+     0.6862,
+     0.1503,
+     0.0919,
+     0.0319,
+     0.0172,
+     0.0123,
+     0.0056,
+     0.0046
+    ],
+    "edge_density": 0.0745,
+    "spatial_frequency_hi": 0.07116,
+    "spatial_frequency_vhi": 0.02082,
+    "occupied_area_ratio": 0.3573,
+    "depth_proxy": 0.5622,
+    "silhouette_density": 0.2863
+   },
+   "distance_to_reference": {
+    "ref21_full": 0.2992,
+    "ref20_full": 0.3204
+   },
+   "nearest_reference": "ref21_full",
+   "distance2_to_reference": {
+    "ref21_full": {
+     "tone_tv": 0.0787,
+     "structure": 0.683,
+     "frequency": 0.22983
+    },
+    "ref20_full": {
+     "tone_tv": 0.1204,
+     "structure": 0.6813,
+     "frequency": 0.19829
+    }
+   }
+  },
+  "21-close-plate": {
+   "metrics": {
+    "size": [
+     1672,
+     808
+    ],
+    "luminance_mean": 0.1151,
+    "luminance_std": 0.1626,
+    "chroma": 0.0104,
+    "detail_density": 0.1295,
+    "fine_over_coarse": 0.464,
+    "uniformity": 0.6044,
+    "dark_share": 0.5899,
+    "luminance_histogram": [
+     0.6466,
+     0.2111,
+     0.0734,
+     0.0339,
+     0.0134,
+     0.0092,
+     0.0064,
+     0.006
+    ],
+    "edge_density": 0.0922,
+    "spatial_frequency_hi": 0.08592,
+    "spatial_frequency_vhi": 0.02555,
+    "occupied_area_ratio": 0.4101,
+    "depth_proxy": 0.5855,
+    "silhouette_density": 0.3226
+   },
+   "distance_to_reference": {
+    "ref21_full": 0.2017,
+    "ref20_full": 0.2282
+   },
+   "nearest_reference": "ref21_full",
+   "distance2_to_reference": {
+    "ref21_full": {
+     "tone_tv": 0.1206,
+     "structure": 0.649,
+     "frequency": 0.21438
+    },
+    "ref20_full": {
+     "tone_tv": 0.1593,
+     "structure": 0.6535,
+     "frequency": 0.18281
+    }
+   }
+  },
+  "22-probe-ring": {
+   "metrics": {
+    "size": [
+     1672,
+     808
+    ],
+    "luminance_mean": 0.2006,
+    "luminance_std": 0.1907,
+    "chroma": 0.0101,
+    "detail_density": 0.1139,
+    "fine_over_coarse": 0.485,
+    "uniformity": 0.5573,
+    "dark_share": 0.32,
+    "luminance_histogram": [
+     0.3728,
+     0.3053,
+     0.1731,
+     0.0564,
+     0.0609,
+     0.0169,
+     0.0069,
+     0.0077
+    ],
+    "edge_density": 0.0807,
+    "spatial_frequency_hi": 0.05373,
+    "spatial_frequency_vhi": 0.01495,
+    "occupied_area_ratio": 0.68,
+    "depth_proxy": 0.7531,
+    "silhouette_density": 0.0801
+   },
+   "distance_to_reference": {
+    "ref21_full": 0.4317,
+    "ref20_full": 0.4767
+   },
+   "nearest_reference": "ref21_full",
+   "distance2_to_reference": {
+    "ref21_full": {
+     "tone_tv": 0.3877,
+     "structure": 0.9696,
+     "frequency": 0.24819
+    },
+    "ref20_full": {
+     "tone_tv": 0.4294,
+     "structure": 0.9928,
+     "frequency": 0.21667
+    }
+   }
+  },
+  "23-state-collapse": {
+   "metrics": {
+    "size": [
+     1672,
+     808
+    ],
+    "luminance_mean": 0.1036,
+    "luminance_std": 0.163,
+    "chroma": 0.0095,
+    "detail_density": 0.1849,
+    "fine_over_coarse": 0.538,
+    "uniformity": 0.6405,
+    "dark_share": 0.6717,
+    "luminance_histogram": [
+     0.7271,
+     0.1238,
+     0.0697,
+     0.0353,
+     0.0215,
+     0.0146,
+     0.0071,
+     0.0009
+    ],
+    "edge_density": 0.1392,
+    "spatial_frequency_hi": 0.13535,
+    "spatial_frequency_vhi": 0.04173,
+    "occupied_area_ratio": 0.3283,
+    "depth_proxy": 0.5574,
+    "silhouette_density": 0.5444
+   },
+   "distance_to_reference": {
+    "ref21_full": 0.1215,
+    "ref20_full": 0.1456
+   },
+   "nearest_reference": "ref21_full",
+   "distance2_to_reference": {
+    "ref21_full": {
+     "tone_tv": 0.04,
+     "structure": 0.4171,
+     "frequency": 0.16258
+    },
+    "ref20_full": {
+     "tone_tv": 0.0817,
+     "structure": 0.4164,
+     "frequency": 0.13086
+    }
+   }
+  },
+  "24-state-recovery": {
+   "metrics": {
+    "size": [
+     1672,
+     808
+    ],
+    "luminance_mean": 0.1074,
+    "luminance_std": 0.1718,
+    "chroma": 0.0094,
+    "detail_density": 0.1838,
+    "fine_over_coarse": 0.532,
+    "uniformity": 0.6286,
+    "dark_share": 0.667,
+    "luminance_histogram": [
+     0.7224,
+     0.1256,
+     0.0689,
+     0.0347,
+     0.0217,
+     0.0152,
+     0.0072,
+     0.0044
+    ],
+    "edge_density": 0.1377,
+    "spatial_frequency_hi": 0.12156,
+    "spatial_frequency_vhi": 0.03441,
+    "occupied_area_ratio": 0.333,
+    "depth_proxy": 0.5692,
+    "silhouette_density": 0.5297
+   },
+   "distance_to_reference": {
+    "ref21_full": 0.1298,
+    "ref20_full": 0.1575
+   },
+   "nearest_reference": "ref21_full",
+   "distance2_to_reference": {
+    "ref21_full": {
+     "tone_tv": 0.0411,
+     "structure": 0.4315,
+     "frequency": 0.17816
+    },
+    "ref20_full": {
+     "tone_tv": 0.0828,
+     "structure": 0.4325,
+     "frequency": 0.14639
+    }
+   }
+  },
+  "25-state-pulse": {
+   "metrics": {
+    "size": [
+     1672,
+     808
+    ],
+    "luminance_mean": 0.0921,
+    "luminance_std": 0.1672,
+    "chroma": 0.0087,
+    "detail_density": 0.1188,
+    "fine_over_coarse": 0.48,
+    "uniformity": 0.6072,
+    "dark_share": 0.737,
+    "luminance_histogram": [
+     0.7914,
+     0.085,
+     0.0499,
+     0.0213,
+     0.0238,
+     0.016,
+     0.0089,
+     0.0036
+    ],
+    "edge_density": 0.0938,
+    "spatial_frequency_hi": 0.09325,
+    "spatial_frequency_vhi": 0.02808,
+    "occupied_area_ratio": 0.263,
+    "depth_proxy": 0.5041,
+    "silhouette_density": 0.4817
+   },
+   "distance_to_reference": {
+    "ref21_full": 0.1959,
+    "ref20_full": 0.1865
+   },
+   "nearest_reference": "ref20_full",
+   "distance2_to_reference": {
+    "ref21_full": {
+     "tone_tv": 0.0601,
+     "structure": 0.4961,
+     "frequency": 0.20665
+    },
+    "ref20_full": {
+     "tone_tv": 0.033,
+     "structure": 0.4807,
+     "frequency": 0.17505
+    }
+   }
+  },
+  "26-technical-ncb": {
+   "metrics": {
+    "size": [
+     1280,
+     1367
+    ],
+    "luminance_mean": 0.9253,
+    "luminance_std": 0.1292,
+    "chroma": 0.0156,
+    "detail_density": 0.0851,
+    "fine_over_coarse": 0.605,
+    "uniformity": 0.467,
+    "dark_share": 0.0,
+    "luminance_histogram": [
+     0.0048,
+     0.0092,
+     0.0108,
+     0.007,
+     0.0082,
+     0.011,
+     0.0176,
+     0.9313
+    ],
+    "edge_density": 0.0847,
+    "spatial_frequency_hi": 0.2894,
+    "spatial_frequency_vhi": 0.15274,
+    "occupied_area_ratio": 0.9387,
+    "depth_proxy": 0.3162,
+    "silhouette_density": 0.1049
+   },
+   "distance_to_reference": {
+    "ref21_full": 1.1075,
+    "ref20_full": 1.1493
+   },
+   "nearest_reference": "ref21_full",
+   "distance2_to_reference": {
+    "ref21_full": {
+     "tone_tv": 0.9179,
+     "structure": 1.0899,
+     "frequency": 0.0451
+    },
+    "ref20_full": {
+     "tone_tv": 0.9215,
+     "structure": 1.102,
+     "frequency": 0.07078
+    }
+   }
+  },
+  "27-technical-observer": {
+   "metrics": {
+    "size": [
+     1280,
+     1367
+    ],
+    "luminance_mean": 0.9301,
+    "luminance_std": 0.117,
+    "chroma": 0.0147,
+    "detail_density": 0.0801,
+    "fine_over_coarse": 0.626,
+    "uniformity": 0.3952,
+    "dark_share": 0.0,
+    "luminance_histogram": [
+     0.0046,
+     0.006,
+     0.0078,
+     0.0067,
+     0.009,
+     0.0095,
+     0.0171,
+     0.9393
+    ],
+    "edge_density": 0.0803,
+    "spatial_frequency_hi": 0.33847,
+    "spatial_frequency_vhi": 0.18859,
+    "occupied_area_ratio": 0.9401,
+    "depth_proxy": 0.2877,
+    "silhouette_density": 0.1028
+   },
+   "distance_to_reference": {
+    "ref21_full": 1.1322,
+    "ref20_full": 1.1751
+   },
+   "nearest_reference": "ref21_full",
+   "distance2_to_reference": {
+    "ref21_full": {
+     "tone_tv": 0.9253,
+     "structure": 1.1,
+     "frequency": 0.09738
+    },
+    "ref20_full": {
+     "tone_tv": 0.9287,
+     "structure": 1.1107,
+     "frequency": 0.12802
+    }
+   }
+  },
+  "28-technical-cut": {
+   "metrics": {
+    "size": [
+     1280,
+     1367
+    ],
+    "luminance_mean": 0.925,
+    "luminance_std": 0.1293,
+    "chroma": 0.0156,
+    "detail_density": 0.0865,
+    "fine_over_coarse": 0.61,
+    "uniformity": 0.4668,
+    "dark_share": 0.0,
+    "luminance_histogram": [
+     0.0047,
+     0.009,
+     0.0109,
+     0.0074,
+     0.0087,
+     0.0114,
+     0.0176,
+     0.9304
+    ],
+    "edge_density": 0.0864,
+    "spatial_frequency_hi": 0.29175,
+    "spatial_frequency_vhi": 0.15484,
+    "occupied_area_ratio": 0.9379,
+    "depth_proxy": 0.3184,
+    "silhouette_density": 0.106
+   },
+   "distance_to_reference": {
+    "ref21_full": 1.1071,
+    "ref20_full": 1.149
+   },
+   "nearest_reference": "ref21_full",
+   "distance2_to_reference": {
+    "ref21_full": {
+     "tone_tv": 0.9173,
+     "structure": 1.0878,
+     "frequency": 0.04752
+    },
+    "ref20_full": {
+     "tone_tv": 0.9209,
+     "structure": 1.1001,
+     "frequency": 0.07373
+    }
+   }
+  },
+  "29-observer-hero": {
+   "metrics": {
+    "size": [
+     1672,
+     808
+    ],
+    "luminance_mean": 0.1457,
+    "luminance_std": 0.1758,
+    "chroma": 0.0074,
+    "detail_density": 0.1383,
+    "fine_over_coarse": 0.509,
+    "uniformity": 0.6204,
+    "dark_share": 0.5008,
+    "luminance_histogram": [
+     0.5427,
+     0.2339,
+     0.1174,
+     0.0602,
+     0.0265,
+     0.0091,
+     0.0048,
+     0.0054
+    ],
+    "edge_density": 0.0972,
+    "spatial_frequency_hi": 0.07657,
+    "spatial_frequency_vhi": 0.02218,
+    "occupied_area_ratio": 0.4992,
+    "depth_proxy": 0.6464,
+    "silhouette_density": 0.1733
+   },
+   "distance_to_reference": {
+    "ref21_full": 0.2421,
+    "ref20_full": 0.2811
+   },
+   "nearest_reference": "ref21_full",
+   "distance2_to_reference": {
+    "ref21_full": {
+     "tone_tv": 0.224,
+     "structure": 0.8121,
+     "frequency": 0.22431
+    },
+    "ref20_full": {
+     "tone_tv": 0.2655,
+     "structure": 0.8244,
+     "frequency": 0.19274
+    }
+   }
+  }
+ },
+ "note": "crude image statistics, not a perceptual judgement; see the module docstring"
+}

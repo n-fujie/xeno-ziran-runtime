@@ -1,0 +1,470 @@
+{
+ "note": "the exact camera of every capture: position, target, field of view, clipping, exposure, tone mapping, pixel ratio, drawing-buffer size and quality tier",
+ "shots": {
+  "45-f14-history-mfs": {
+   "query": "tech=ncb&mfs=MFS-F14-1&seed=1&tick=120&layer=route.active,route.dormant,mfs.current,mfs.alternative,path.history_access,path.coupling&|eco-research-map",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -26.000000000000007,
+     35.99999999999998,
+     98.00000000000001
+    ],
+    "target": [
+     -4,
+     -26,
+     -6
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1280,
+     1366
+    ],
+    "quality": "balanced"
+   }
+  },
+  "46-f14-m2-mfs": {
+   "query": "tech=ncb&mfs=MFS-F14-2&seed=1&tick=120&layer=route.active,route.dormant,mfs.current,mfs.alternative,path.coupling&|eco-research-map",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -26.000000000000007,
+     35.99999999999998,
+     98.00000000000001
+    ],
+    "target": [
+     -4,
+     -26,
+     -6
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1280,
+     1366
+    ],
+    "quality": "balanced"
+   }
+  },
+  "47-f9-no-mfs": {
+   "query": "tab=research&experiment=F9&tick=120&|eco-f-compact",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -26.000000000000007,
+     35.99999999999998,
+     98.00000000000001
+    ],
+    "target": [
+     -4,
+     -26,
+     -6
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1280,
+     807
+    ],
+    "quality": "balanced"
+   }
+  },
+  "48-adaptive-failure": {
+   "query": "tab=research&route=adaptive:renewal disabled&seed=1&tick=240&|eco-reconfiguration",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -26.000000000000007,
+     35.99999999999998,
+     98.00000000000001
+    ],
+    "target": [
+     -4,
+     -26,
+     -6
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1280,
+     807
+    ],
+    "quality": "balanced"
+   }
+  },
+  "49-fixed-fallback-success": {
+   "query": "tab=research&route=fixed:history lost&seed=1&tick=200&|eco-reconfiguration",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -26.000000000000007,
+     35.99999999999998,
+     98.00000000000001
+    ],
+    "target": [
+     -4,
+     -26,
+     -6
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1280,
+     807
+    ],
+    "quality": "balanced"
+   }
+  },
+  "50-sss-map-mfs-a": {
+   "query": "tab=research&sssmap=MFS-F14-1&tick=120&|eco-sss-map",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -26.000000000000007,
+     35.99999999999998,
+     98.00000000000001
+    ],
+    "target": [
+     -4,
+     -26,
+     -6
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1280,
+     807
+    ],
+    "quality": "balanced"
+   }
+  },
+  "51-sss-map-mfs-b": {
+   "query": "tab=research&sssmap=MFS-F14-2&tick=120&|eco-sss-map",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -26.000000000000007,
+     35.99999999999998,
+     98.00000000000001
+    ],
+    "target": [
+     -4,
+     -26,
+     -6
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1280,
+     807
+    ],
+    "quality": "balanced"
+   }
+  },
+  "52-observation-sensitive-active": {
+   "query": "tech=ncb&tick=120&obs=interval:3,stride:2&layer=boundary.observation,observation,path.observation&|eco-research-map",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -26.000000000000007,
+     35.99999999999998,
+     98.00000000000001
+    ],
+    "target": [
+     -4,
+     -26,
+     -6
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1280,
+     1366
+    ],
+    "quality": "balanced"
+   }
+  },
+  "53-dynamic-address-attempt": {
+   "query": "tech=ncb&tick=130&address=reassign@100:A2:11,6&layer=boundary.address,interventions,path.coupling&|eco-research-map",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -26.000000000000007,
+     35.99999999999998,
+     98.00000000000001
+    ],
+    "target": [
+     -4,
+     -26,
+     -6
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1280,
+     1366
+    ],
+    "quality": "balanced"
+   }
+  },
+  "54-route-topology": {
+   "query": "tech=ncb&mfs=MFS-F14-2&seed=1&tick=120&|eco-route-topology",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -26.000000000000007,
+     35.99999999999998,
+     98.00000000000001
+    ],
+    "target": [
+     -4,
+     -26,
+     -6
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1280,
+     1366
+    ],
+    "quality": "balanced"
+   }
+  },
+  "55-mfs-comparison": {
+   "query": "tab=research&mfs=MFS-F14-1&tick=120&|eco-mfs-compare",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -26.000000000000007,
+     35.99999999999998,
+     98.00000000000001
+    ],
+    "target": [
+     -4,
+     -26,
+     -6
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1280,
+     807
+    ],
+    "quality": "balanced"
+   }
+  },
+  "56-replay-transition-inspection": {
+   "query": "tab=research&route=adaptive:renewal disabled&seed=1&tick=240&|.eco",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -26.000000000000007,
+     35.99999999999998,
+     98.00000000000001
+    ],
+    "target": [
+     -4,
+     -26,
+     -6
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1280,
+     807
+    ],
+    "quality": "balanced"
+   }
+  },
+  "57-technical-view-alternate-route": {
+   "query": "tech=ncb&route=fixed:history lost&seed=1&tick=200&layer=route.active,route.fallback,route.failed,route.dormant,mfs.current,mfs.alternative&|eco-research-map",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -26.000000000000007,
+     35.99999999999998,
+     98.00000000000001
+    ],
+    "target": [
+     -4,
+     -26,
+     -6
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1280,
+     1366
+    ],
+    "quality": "balanced"
+   }
+  },
+  "58-rejected-candidate-route": {
+   "query": "tech=ncb&mfs=MFS-F8-1&seed=1&tick=120&layer=mfs.current,mfs.alternative,mfs.rejected,route.active&|eco-route-topology",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -26.000000000000007,
+     35.99999999999998,
+     98.00000000000001
+    ],
+    "target": [
+     -4,
+     -26,
+     -6
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1280,
+     1366
+    ],
+    "quality": "balanced"
+   }
+  },
+  "59-current-alternative-mfs-map": {
+   "query": "tech=ncb&mfs=MFS-F14-1&seed=1&tick=120&layer=mfs.current,mfs.alternative,mfs.rejected,route.active,route.dormant&|eco-research-map",
+   "viewport": [
+    1672,
+    941
+   ],
+   "quality": "balanced",
+   "camera": {
+    "pos": [
+     -26.000000000000007,
+     35.99999999999998,
+     98.00000000000001
+    ],
+    "target": [
+     -4,
+     -26,
+     -6
+    ],
+    "fov": 46,
+    "near": 0.3,
+    "far": 2500,
+    "exposure": 0.95,
+    "toneMapping": "ACESFilmic",
+    "pixelRatio": 1,
+    "size": [
+     1280,
+     1366
+    ],
+    "quality": "balanced"
+   }
+  }
+ }
+}

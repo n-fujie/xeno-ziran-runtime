@@ -1,0 +1,236 @@
+{
+ "experiment_id": "LAW-L3",
+ "protocol_version": 1,
+ "protocol_digest": "4582c9112ccdbd63d9a1ca91be617ed605496c41980676aa16d56a22950aa40e",
+ "protocol": {
+  "experiment_id": "LAW-L3",
+  "hypotheses": [
+   {
+    "id": "H1",
+    "statement": "A revision of scope ACCESS or UNKNOWN invalidates an earlier observation, a revision of scope METADATA does not, and every scope makes unexecuted plans stale"
+   },
+   {
+    "id": "H2",
+    "statement": "Scope-aware invalidation misses no invalidation that is needed (access truly affected) and has fewer needless reobservations than invalidating on every revision"
+   }
+  ],
+  "targets": [
+   "receipts, evidence, proceedings, plans, measurements and closures of a synthetic ledger"
+  ],
+  "instrument_conditions": {
+   "scopes": [
+    "ACCESS",
+    "METADATA",
+    "UNKNOWN"
+   ],
+   "ground_truth": "the scenario stipulates whether access is affected (the ledger does not find legal relevance by itself); UNKNOWN affects with probability 0.5"
+  },
+  "control_condition": "never invalidate",
+  "conditions": [
+   "scope aware",
+   "always invalidate",
+   "never invalidate"
+  ],
+  "seeds": [
+   7201,
+   7202,
+   7203,
+   7204,
+   7205,
+   7206,
+   7207,
+   7208,
+   7209,
+   7210,
+   7211,
+   7212,
+   7213,
+   7214,
+   7215,
+   7216,
+   7217,
+   7218,
+   7219,
+   7220,
+   7221,
+   7222,
+   7223,
+   7224,
+   7225,
+   7226,
+   7227,
+   7228,
+   7229,
+   7230
+  ],
+  "trials_per_condition": 1,
+  "stopping_rule": {
+   "type": "fixed-n",
+   "units": 30,
+   "no interim analysis": true
+  },
+  "outcomes": {
+   "primary": [
+    "missed invalidations",
+    "needless invalidations"
+   ],
+   "secondary": [
+    "share invalidated by scope"
+   ]
+  },
+  "analyses": [
+   {
+    "id": "L301",
+    "hypothesis": "H1",
+    "outcome": "invalidated",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "L302",
+    "hypothesis": "H2",
+    "outcome": "needless invalidations",
+    "method": "paired-sign-flip",
+    "confirmatory": true,
+    "paired": true
+   },
+   {
+    "id": "L303",
+    "hypothesis": "H2",
+    "outcome": "missed invalidations",
+    "method": "paired-sign-flip",
+    "confirmatory": true,
+    "paired": true
+   }
+  ],
+  "multiplicity": "holm",
+  "failure_conditions": [
+   "fewer than 30 units"
+  ],
+  "reproduction": {
+   "generator": "xzr.teoo.lawexperiments",
+   "steps": [
+    "run unit per seed",
+    "analyse"
+   ],
+   "world": "xzr.teoo.lawledger (SQLite, append-only) on xzr.teoo.lawworld (8 Booleans); this implementation's own world, not Appendix O"
+  },
+  "schema": "teoo.protocol/1",
+  "version": 1,
+  "parent_version": null,
+  "change_reason": null
+ },
+ "units": 30,
+ "seeds": [
+  7201,
+  7202,
+  7203,
+  7204,
+  7205,
+  7206,
+  7207,
+  7208,
+  7209,
+  7210,
+  7211,
+  7212,
+  7213,
+  7214,
+  7215,
+  7216,
+  7217,
+  7218,
+  7219,
+  7220,
+  7221,
+  7222,
+  7223,
+  7224,
+  7225,
+  7226,
+  7227,
+  7228,
+  7229,
+  7230
+ ],
+ "evidence_class": "Synthetic-world Result",
+ "seconds": 1.2,
+ "results": {
+  "L301": {
+   "method": "descriptive",
+   "invalidated_share_by_scope": {
+    "ACCESS": 1.0,
+    "METADATA": 0.0,
+    "UNKNOWN": 1.0
+   },
+   "n_by_scope": {
+    "ACCESS": 95,
+    "METADATA": 101,
+    "UNKNOWN": 101
+   },
+   "plan_stale_all_scopes": true,
+   "criterion": "an earlier observation is invalidated in every ACCESS and UNKNOWN case and in no METADATA case, and unexecuted plans become stale for every scope",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "L302": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 3.3666666666666667,
+   "sd_diff": 1.7116907014619387,
+   "dz": 1.96686624738408,
+   "ci95": [
+    2.7666666666666666,
+    3.966666666666667
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 13,
+   "inferential": true,
+   "contrast": "needless reobservations per world: always invalidate minus scope aware",
+   "predicted_sign": 1,
+   "p_holm": 9.99950002499875e-05,
+   "supported": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "L303": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 5.033333333333333,
+   "sd_diff": 1.7904600320690718,
+   "dz": 2.811195582800454,
+   "ci95": [
+    4.4,
+    5.666666666666667
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 14,
+   "inferential": true,
+   "contrast": "missed invalidations per world: never invalidate minus scope aware",
+   "predicted_sign": 1,
+   "scope_aware_missed_total": 0,
+   "scope_aware_needless_total": 45,
+   "always_needless_total": 146,
+   "never_missed_total": 151,
+   "p_holm": 9.99950002499875e-05,
+   "supported": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  }
+ },
+ "catalogue": {
+  "source": "The Minimum Guarantees of Human Legal Subjecthood, Publication Final V3.0, Chapter 6.2 (identical in the 100_POINT_EDITION and in R2 section 4: all fifteen titles and definitions compared character for character)",
+  "verified_against_original": true,
+  "sha256": {
+   "v3_0": "cf4d4f0c51169451da5af4c33e7081e947dacbade855068a889965d8c523b848",
+   "v3_0_100_point_edition": "afb59d1a0c3b28854f14113f843645539e07a2e466949d22de4b67da0a22bf99",
+   "ai_law_osr_r2": "a9984451b281df3252b05842dc5109dd396e0b0c54d3560849344ad41059a501"
+  },
+  "editions_identical_for_guarantees": true,
+  "note": "V3.0 uses two vocabularies for the same five findings (Appendix A table: Secured/Partial/Absent/Indeterminate/Inapplicable; A.3 and 8.4 text: Satisfied/Partially Satisfied/Failed/Indeterminate/Not Applicable). R2 section 16 and this implementation use the table's."
+ },
+ "note": "results about a SYNTHETIC ledger and this implementation's own world; the manuscripts R5-R16, the historical code and the world of Appendix O were not available and their numbers are not reproduced; a closure, a measurement or a match here is not a legal judgment or a restoration; not an observation of any institution, law or person"
+}

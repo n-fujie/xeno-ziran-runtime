@@ -1,0 +1,63 @@
+{
+ "body": null,
+ "claim": "an illustration of the stated data under the stated conditions; no claim beyond them",
+ "evidence": {
+  "band": [
+   "EVIDENCE: SYNTHETIC  ·  artificial functional-test data, not a measurement",
+   "REAL-WORLD EXPERIMENT: none recorded (no measurement exists behind this figure)",
+   "BODY: none",
+   "RECORDS: 1 (rec-4b96a57c5e)  ·  generated 2026-11-01  ·  TEOO teoo/0.1"
+  ],
+  "classes": [
+   "SYNTHETIC"
+  ],
+  "real_world_experiment_recorded": false,
+  "watermarks": [
+   "SYNTHETIC"
+  ]
+ },
+ "experiment": {
+  "conditions": [
+   "world",
+   "boolean comparator",
+   "ledger"
+  ],
+  "protocol_id": "LAW-L4",
+  "seeds": [
+   7301,
+   7301
+  ],
+  "trials_per_condition": 1,
+  "version": 1
+ },
+ "figure_id": "fig-d130127fac2bbf8d",
+ "generated_at": "2026-11-01T00:00:00.000000Z",
+ "kind": "bars",
+ "metadata_digest": "0fcb5e0aa227546b68740b0cb4f0a70908c221209531b7ac99663a590e9712b9",
+ "observation_limits": {
+  "config_version": null,
+  "note": "A synthetic ledger or a drawing: what lies outside what is stated here is unknown, not absent.",
+  "summary": {
+   "conditions": "256 states x 6 conditions = 1,536 comparisons"
+  },
+  "t": null
+ },
+ "provenance": {
+  "records": [
+   {
+    "kind": "OBSERVATION",
+    "lineage_classes": [
+     "SYNTHETIC"
+    ],
+    "provenance": "SYNTHETIC",
+    "record_digest": "4b96a57c5e29d77ad58afd7801f912af9a38b9c5ffdf26ec148d642a71115479",
+    "record_id": "rec-4b96a57c5e29d77ad58afd78"
+   }
+  ],
+  "source_digest": "d130127fac2bbf8dcc5536abdb0c0fa9fb014fb7473d3666e83d8b9a82053592"
+ },
+ "schema": "teoo.figure/1",
+ "teoo_version": "teoo/0.1",
+ "title": "Fig R7 · Model against synthetic sensor over 256 states and 6 conditions (LAW-L4; this implementation's world)",
+ "units": {}
+}

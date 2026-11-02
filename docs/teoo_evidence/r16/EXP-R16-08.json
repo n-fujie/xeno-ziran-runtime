@@ -1,0 +1,508 @@
+{
+ "experiment_id": "EXP-R16-08",
+ "protocol_version": 1,
+ "protocol_digest": "e3462d59e79b004808812b141151caa52e6e772d7e82acc0657bc8b38f607aad",
+ "protocol": {
+  "experiment_id": "EXP-R16-08",
+  "hypotheses": [
+   {
+    "id": "H1",
+    "statement": "On both worlds, conventional event sourcing with the same information agrees with the ledger on all seven queries"
+   },
+   {
+    "id": "H2",
+    "statement": "An evidence-scoped revision model without an event log agrees with the ledger on every query except the history query"
+   },
+   {
+    "id": "H3",
+    "statement": "A Boolean state machine cannot answer the history query and loses concurrent proceedings"
+   },
+   {
+    "id": "H4",
+    "statement": "A fixed ACCESS_ONLY policy identifies fewer causes than the adaptive policy, in each world"
+   }
+  ],
+  "targets": [
+   "a synthetic ledger, its worlds and the registries of duties, guarantees and governance principles"
+  ],
+  "instrument_conditions": {
+   "worlds": [
+    "own",
+    "r16_stated_aggregates"
+   ],
+   "queries": [
+    "access",
+    "mismatch",
+    "cause_identified",
+    "current_valid",
+    "history_answerable",
+    "open_proceedings",
+    "closure"
+   ],
+   "designs": [
+    "A_boolean_state_machine",
+    "B_event_sourcing",
+    "R_evidence_scoped_revision",
+    "C_causal_model",
+    "D_fixed_policy",
+    "E_adaptive_policy"
+   ],
+   "information": "the same events, scope, policy and world"
+  },
+  "control_condition": "ledger",
+  "conditions": [
+   "Boolean state machine",
+   "event sourcing",
+   "evidence-scoped revision model",
+   "causal model with fixed or adaptive observation",
+   "ledger"
+  ],
+  "seeds": [
+   8201,
+   8202,
+   8203,
+   8204,
+   8205,
+   8206,
+   8207,
+   8208,
+   8209,
+   8210,
+   8211,
+   8212,
+   8213,
+   8214,
+   8215,
+   8216,
+   8217,
+   8218,
+   8219,
+   8220,
+   8221,
+   8222,
+   8223,
+   8224,
+   8225,
+   8226,
+   8227,
+   8228,
+   8229,
+   8230
+  ],
+  "trials_per_condition": 1,
+  "stopping_rule": {
+   "type": "fixed-n",
+   "units": 30,
+   "no interim analysis": true
+  },
+  "outcomes": {
+   "primary": [
+    "agreement with the ledger on seven queries"
+   ],
+   "secondary": [
+    "queries a design cannot answer"
+   ]
+  },
+  "analyses": [
+   {
+    "id": "R801",
+    "hypothesis": "H1",
+    "outcome": "agreement of event sourcing",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "R802",
+    "hypothesis": "H2",
+    "outcome": "agreement of R",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "R803",
+    "hypothesis": "H3",
+    "outcome": "A's answers",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "R804",
+    "hypothesis": "H4",
+    "outcome": "causes identified, own world",
+    "method": "paired-sign-flip",
+    "confirmatory": true,
+    "paired": true
+   },
+   {
+    "id": "R805",
+    "hypothesis": "H4",
+    "outcome": "causes identified, stated world",
+    "method": "paired-sign-flip",
+    "confirmatory": true,
+    "paired": true
+   }
+  ],
+  "multiplicity": "holm",
+  "failure_conditions": [
+   "fewer than 30 units"
+  ],
+  "reproduction": {
+   "generator": "xzr.teoo.r16experiments",
+   "steps": [
+    "run unit per seed",
+    "analyse"
+   ],
+   "world": "xzr.teoo.lawledger on xzr.teoo.lawworld (own world and a world built to the stated R16 aggregates); registries in xzr.teoo.mheg"
+  },
+  "schema": "teoo.protocol/1",
+  "version": 1,
+  "parent_version": null,
+  "change_reason": null
+ },
+ "units": 30,
+ "seeds": [
+  8201,
+  8202,
+  8203,
+  8204,
+  8205,
+  8206,
+  8207,
+  8208,
+  8209,
+  8210,
+  8211,
+  8212,
+  8213,
+  8214,
+  8215,
+  8216,
+  8217,
+  8218,
+  8219,
+  8220,
+  8221,
+  8222,
+  8223,
+  8224,
+  8225,
+  8226,
+  8227,
+  8228,
+  8229,
+  8230
+ ],
+ "evidence_class": "Synthetic-world Result",
+ "seconds": 3.2,
+ "results": {
+  "R801": {
+   "method": "descriptive",
+   "own": {
+    "B_vs_ledger": {
+     "access": {
+      "agree": 376,
+      "answered": 376,
+      "cannot_answer": 0
+     },
+     "mismatch": {
+      "agree": 376,
+      "answered": 376,
+      "cannot_answer": 0
+     },
+     "cause_identified": {
+      "agree": 376,
+      "answered": 376,
+      "cannot_answer": 0
+     },
+     "current_valid": {
+      "agree": 376,
+      "answered": 376,
+      "cannot_answer": 0
+     },
+     "history_answerable": {
+      "agree": 376,
+      "answered": 376,
+      "cannot_answer": 0
+     },
+     "open_proceedings": {
+      "agree": 376,
+      "answered": 376,
+      "cannot_answer": 0
+     },
+     "closure": {
+      "agree": 376,
+      "answered": 376,
+      "cannot_answer": 0
+     }
+    }
+   },
+   "r16_stated_aggregates": {
+    "B_vs_ledger": {
+     "access": {
+      "agree": 376,
+      "answered": 376,
+      "cannot_answer": 0
+     },
+     "mismatch": {
+      "agree": 376,
+      "answered": 376,
+      "cannot_answer": 0
+     },
+     "cause_identified": {
+      "agree": 376,
+      "answered": 376,
+      "cannot_answer": 0
+     },
+     "current_valid": {
+      "agree": 376,
+      "answered": 376,
+      "cannot_answer": 0
+     },
+     "history_answerable": {
+      "agree": 376,
+      "answered": 376,
+      "cannot_answer": 0
+     },
+     "open_proceedings": {
+      "agree": 376,
+      "answered": 376,
+      "cannot_answer": 0
+     },
+     "closure": {
+      "agree": 376,
+      "answered": 376,
+      "cannot_answer": 0
+     }
+    }
+   },
+   "criterion": "agreement on every query in every scenario of both worlds",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "R802": {
+   "method": "descriptive",
+   "own": {
+    "R_vs_ledger": {
+     "access": {
+      "agree": 376,
+      "answered": 376,
+      "cannot_answer": 0
+     },
+     "mismatch": {
+      "agree": 376,
+      "answered": 376,
+      "cannot_answer": 0
+     },
+     "cause_identified": {
+      "agree": 376,
+      "answered": 376,
+      "cannot_answer": 0
+     },
+     "current_valid": {
+      "agree": 376,
+      "answered": 376,
+      "cannot_answer": 0
+     },
+     "history_answerable": {
+      "agree": 0,
+      "answered": 376,
+      "cannot_answer": 0
+     },
+     "open_proceedings": {
+      "agree": 376,
+      "answered": 376,
+      "cannot_answer": 0
+     },
+     "closure": {
+      "agree": 376,
+      "answered": 376,
+      "cannot_answer": 0
+     }
+    }
+   },
+   "r16_stated_aggregates": {
+    "R_vs_ledger": {
+     "access": {
+      "agree": 376,
+      "answered": 376,
+      "cannot_answer": 0
+     },
+     "mismatch": {
+      "agree": 376,
+      "answered": 376,
+      "cannot_answer": 0
+     },
+     "cause_identified": {
+      "agree": 376,
+      "answered": 376,
+      "cannot_answer": 0
+     },
+     "current_valid": {
+      "agree": 376,
+      "answered": 376,
+      "cannot_answer": 0
+     },
+     "history_answerable": {
+      "agree": 0,
+      "answered": 376,
+      "cannot_answer": 0
+     },
+     "open_proceedings": {
+      "agree": 376,
+      "answered": 376,
+      "cannot_answer": 0
+     },
+     "closure": {
+      "agree": 376,
+      "answered": 376,
+      "cannot_answer": 0
+     }
+    }
+   },
+   "criterion": "agreement on every query except history_answerable, where it cannot keep history",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "R803": {
+   "method": "descriptive",
+   "own": {
+    "A_vs_ledger": {
+     "access": {
+      "agree": 376,
+      "answered": 376,
+      "cannot_answer": 0
+     },
+     "mismatch": {
+      "agree": 376,
+      "answered": 376,
+      "cannot_answer": 0
+     },
+     "cause_identified": {
+      "agree": 376,
+      "answered": 376,
+      "cannot_answer": 0
+     },
+     "current_valid": {
+      "agree": 376,
+      "answered": 376,
+      "cannot_answer": 0
+     },
+     "history_answerable": {
+      "agree": 0,
+      "answered": 376,
+      "cannot_answer": 0
+     },
+     "open_proceedings": {
+      "agree": 223,
+      "answered": 376,
+      "cannot_answer": 0
+     },
+     "closure": {
+      "agree": 376,
+      "answered": 376,
+      "cannot_answer": 0
+     }
+    }
+   },
+   "r16_stated_aggregates": {
+    "A_vs_ledger": {
+     "access": {
+      "agree": 376,
+      "answered": 376,
+      "cannot_answer": 0
+     },
+     "mismatch": {
+      "agree": 376,
+      "answered": 376,
+      "cannot_answer": 0
+     },
+     "cause_identified": {
+      "agree": 376,
+      "answered": 376,
+      "cannot_answer": 0
+     },
+     "current_valid": {
+      "agree": 376,
+      "answered": 376,
+      "cannot_answer": 0
+     },
+     "history_answerable": {
+      "agree": 0,
+      "answered": 376,
+      "cannot_answer": 0
+     },
+     "open_proceedings": {
+      "agree": 177,
+      "answered": 376,
+      "cannot_answer": 0
+     },
+     "closure": {
+      "agree": 376,
+      "answered": 376,
+      "cannot_answer": 0
+     }
+    }
+   },
+   "criterion": "no history answer and fewer agreeing proceedings counts than scenarios",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "R804": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 5.1,
+   "sd_diff": 2.0060254063781153,
+   "dz": 2.542340682119308,
+   "ci95": [
+    4.433333333333334,
+    5.8
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 31,
+   "inferential": true,
+   "contrast": "causes identified per world: adaptive minus fixed, own world",
+   "predicted_sign": 1,
+   "p_holm": 9.99950002499875e-05,
+   "supported": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "R805": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 5.1,
+   "sd_diff": 2.0060254063781153,
+   "dz": 2.542340682119308,
+   "ci95": [
+    4.4,
+    5.8
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 32,
+   "inferential": true,
+   "contrast": "causes identified per world: adaptive minus fixed, stated-aggregates world",
+   "predicted_sign": 1,
+   "p_holm": 9.99950002499875e-05,
+   "supported": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  }
+ },
+ "catalogue": {
+  "source": "The Minimum Guarantees of Human Legal Subjecthood, Publication Final V3.0, Chapter 6.2 (identical in the 100_POINT_EDITION and in R2 section 4: all fifteen titles and definitions compared character for character)",
+  "verified_against_original": true,
+  "sha256": {
+   "v3_0": "cf4d4f0c51169451da5af4c33e7081e947dacbade855068a889965d8c523b848",
+   "v3_0_100_point_edition": "afb59d1a0c3b28854f14113f843645539e07a2e466949d22de4b67da0a22bf99",
+   "ai_law_osr_r2": "a9984451b281df3252b05842dc5109dd396e0b0c54d3560849344ad41059a501"
+  },
+  "editions_identical_for_guarantees": true,
+  "note": "V3.0 uses two vocabularies for the same five findings (Appendix A table: Secured/Partial/Absent/Indeterminate/Inapplicable; A.3 and 8.4 text: Satisfied/Partially Satisfied/Failed/Indeterminate/Not Applicable). R2 section 16 and this implementation use the table's."
+ },
+ "note": "results about a SYNTHETIC ledger; the stated-aggregates world is an independent verification model built to the stated numbers, not the manuscript's world, and its match is by construction; the principles' profiles are an analytic reading; a closure, a measurement or a match here is not a legal judgment or a restoration; not an observation of any institution, law or person"
+}

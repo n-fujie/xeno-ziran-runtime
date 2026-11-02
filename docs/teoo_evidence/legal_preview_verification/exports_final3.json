@@ -1,0 +1,63 @@
+{
+ "schema": "teoo.figure/1",
+ "figure_id": "fig-6446c442acc704c7",
+ "kind": "timeseries",
+ "title": "Left knee angle: observed samples, the dropout, and a reconstruction (SYNTHETIC input)",
+ "generated_at": "2026-01-01T00:00:00.000000Z",
+ "teoo_version": "teoo/0.1",
+ "evidence": {
+  "classes": [
+   "RECONSTRUCTED_ESTIMATE",
+   "SYNTHETIC"
+  ],
+  "watermarks": [
+   "SYNTHETIC",
+   "RECONSTRUCTED_ESTIMATE"
+  ],
+  "real_world_experiment_recorded": false,
+  "band": [
+   "EVIDENCE: RECONSTRUCTED_ESTIMATE + SYNTHETIC",
+   "REAL-WORLD EXPERIMENT: none recorded (no measurement exists behind this figure)",
+   "BODY: body.human-simplified-skeleton v1 (fe7cf9528b)",
+   "RECORDS: 2 (rec-564ca3dd34, rec-ac4cc7e3a2)  ·  generated 2026-01-01  ·  TEOO teoo/0.1"
+  ]
+ },
+ "experiment": null,
+ "provenance": {
+  "records": [
+   {
+    "record_id": "rec-564ca3dd348d4c552e457056",
+    "provenance": "SYNTHETIC",
+    "kind": "OBSERVATION",
+    "lineage_classes": [
+     "SYNTHETIC"
+    ],
+    "record_digest": "564ca3dd348d4c552e457056fb29b19423a814e9a7e05ca918efa11ec7950ce3"
+   },
+   {
+    "record_id": "rec-ac4cc7e3a2c977be7e03bed3",
+    "provenance": "RECONSTRUCTED_ESTIMATE",
+    "kind": "RECONSTRUCTION",
+    "lineage_classes": [
+     "RECONSTRUCTED_ESTIMATE",
+     "SYNTHETIC"
+    ],
+    "record_digest": "ac4cc7e3a2c977be7e03bed387999510c74f1015f40c06763b32db26dabe7759"
+   }
+  ],
+  "source_digest": "6446c442acc704c7f947a8aa1aca7b255edc04aa21f3f3c910b690971c68c4da"
+ },
+ "observation_limits": null,
+ "body": {
+  "id": "body.human-simplified-skeleton",
+  "version": 1,
+  "digest": "fe7cf9528bef69bb8e499b6bb10191a26ea96cdd790c5cca8959b4a244408df3",
+  "preset": "human-simplified-skeleton/1"
+ },
+ "units": {
+  "deg": "degrees",
+  "s": "seconds, device time"
+ },
+ "claim": "an illustration of the stated data under the stated conditions; no claim beyond them",
+ "metadata_digest": "aa0c406dfd2df59e0cf42102f6c0b9302f45ab70f8141445fe03ffe9d1c8729c"
+}

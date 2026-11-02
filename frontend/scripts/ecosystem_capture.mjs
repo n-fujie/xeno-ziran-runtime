@@ -1,0 +1,131 @@
+// XENO ECOSYSTEM — visual-regression captures and performance measurements.
+//
+//   node frontend/scripts/ecosystem_capture.mjs --base http://127.0.0.1:3031 --out docs/ecosystem/visual [--width 1672 --height 941] [--quality balanced]
+//
+// Needs Playwright (resolved from PLAYWRIGHT_DIR, a directory whose node_modules contains it) and a Chromium/headless-shell binary (CHROME). It loads the view with
+// ?chrome=0 (the stage alone), waits until the record is loaded and the scene settled, takes the picture of the stage and reads window.__meos.perf().
+// In a headless browser WebGL runs on a software rasteriser (SwiftShader): the frame rates it reports are those of software rendering, not of a GPU.
+import { createRequire } from 'node:module';
+import { mkdirSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+
+const arg = (k, d) => { const i = process.argv.indexOf(`--${k}`); return i > 0 ? process.argv[i + 1] : d; };
+const base = arg('base', 'http://127.0.0.1:3031'), out = arg('out', 'docs/ecosystem/visual'), width = +arg('width', 1672), height = +arg('height', 941), quality = arg('quality', 'balanced');
+const only = arg('only', null);
+const wait = +arg('wait', 9000);
+const require = createRequire((process.env.PLAYWRIGHT_DIR ?? process.cwd()) + '/package.json');
+const { chromium } = require('playwright');
+const exe = process.env.CHROME;
+mkdirSync(out, { recursive: true });
+
+export const SHOTS = {
+  '01-overview': 'cam=overview&layers=physical,meos&tick=120',
+  '02-habitat': 'cam=habitat&layers=physical,operational,firing&tick=120',
+  '03-research-core': 'cam=core&layers=physical&tick=120',
+  '04-meos0-active': 'cam=habitat&layers=physical,meos,operational&tick=120',
+  '05-meos-collapse': 'preset=a2-removed&cam=habitat&layers=physical,meos,firing&tick=150',
+  '06-xenobody-boundary': 'cam=habitat&layers=physical,xenobody,address&tick=120',
+  '07-history-overlay': 'cam=habitat&layers=physical,history&tick=120',
+  '08-subsurface-laboratory': 'reductions=1&cam=subsurface&layers=physical&tick=120',
+  // second stage: the research device (fixed camera presets, so that a capture is comparable with the earlier ones)
+  '09-observation-array': 'cam=array&layers=physical,meos&tick=120',
+  '10-philosophical-socket': 'preset=recovery-demo&horizon=360&phil=revision&cam=socket&layers=physical,meos&tick=165',
+  '11-resource-pulse': 'preset=recovery-demo&horizon=360&phil=revision&cam=habitat&layers=physical,meos&tick=154',
+  '12-boundary-open': 'preset=recovery-demo&horizon=360&phil=revision&cam=habitat&layers=physical,meos&tick=125',
+  '13-recovered': 'preset=recovery-demo&horizon=360&phil=revision&cam=habitat&layers=physical,meos&tick=175',
+  // the experimental bodies and the wet ground (third stage)
+  '14-experimental-body': 'cam=body&layers=physical,meos&tick=120&labels=0',
+  '15-observation-node': 'cam=observer&layers=physical,meos&tick=120&labels=0',
+  '16-wet-ground': 'cam=puddle&layers=physical&tick=120&labels=0',
+  '17-body-coupling-cut': 'preset=recovery-demo&horizon=360&phil=revision&cam=body&layers=physical,meos&tick=125&labels=0',
+  '18-body-renewal': 'preset=recovery-demo&horizon=360&phil=revision&cam=body&layers=physical,meos&tick=175&labels=0',
+  // stage three: close-ups, states of the run, the probe ring
+  '19-close-probe': 'cam=probe&layers=physical,meos&tick=120&labels=0',
+  '20-close-cable': 'cam=cable&layers=physical,meos&tick=120&labels=0',
+  '21-close-plate': 'cam=plate&layers=physical,meos&tick=120&labels=0',
+  '22-probe-ring': 'cam=probering&layers=physical,meos&tick=120&labels=0',
+  '29-observer-hero': 'cam=observerhero&layers=physical,meos&tick=120&labels=0',
+  '23-state-collapse': 'preset=recovery-demo&horizon=360&phil=revision&cam=body&layers=physical,meos&tick=153&labels=0',
+  '24-state-recovery': 'preset=recovery-demo&horizon=360&phil=revision&cam=body&layers=physical,meos&tick=170&labels=0',
+  '25-state-pulse': 'preset=recovery-demo&horizon=360&phil=revision&cam=probe&layers=physical,meos&tick=154&labels=0',
+  // technical inspection sheets (the sheet element is photographed, not the stage)
+  '26-technical-ncb': 'tech=ncb&probe=C1&tick=120&preset=recovery-demo&horizon=360&phil=revision',
+  '27-technical-observer': 'tech=observer&probe=O1&tick=120&preset=recovery-demo&horizon=360&phil=revision',
+  '28-technical-cut': 'tech=ncb&probe=B1&tick=125&preset=recovery-demo&horizon=360&phil=revision',
+  // fourth stage (a '|' names the element that is photographed: a data-testid, or a CSS selector beginning with '.')
+  '30-observation-failure': 'cam=observer&layers=physical,meos&tick=120&labels=0&obs=interval:3',
+  '31-boundary-b1': 'tech=ncb&tick=120&body=B1&maplayers=boundary.xenobody,boundary.address,boundary.observation,path.coupling,path.resource&|eco-research-map',
+  '32-boundary-b3': 'tech=ncb&tick=120&body=B3&maplayers=boundary.xenobody,boundary.address,boundary.observation,path.coupling,path.resource&|eco-research-map',
+  '33-address-loss': 'preset=address-loss&horizon=360&cam=body&layers=physical,meos&tick=120&labels=0',
+  '34-address-recovery': 'preset=address-loss&horizon=360&cam=body&layers=physical,meos&tick=185&labels=0',
+  '35-sss-active': 'sss=1/1/1&cam=observer&layers=physical,meos&tick=120&labels=0',
+  '36-sss-metastable': 'sss=1.2227/1/1&horizon=480&cam=observer&layers=physical,meos&tick=120&labels=0',
+  '37-sss-collapsed': 'sss=1.5/1/1&horizon=480&cam=observer&layers=physical,meos&tick=300&labels=0',
+  '38-m2-sensing': 'm2=direct&m2w=4&cam=body&layers=physical,meos&tick=120&labels=0',
+  '39-technical-paths': 'tech=ncb&tick=125&preset=recovery-demo&horizon=360&phil=revision&maplayers=path.resource,path.coupling,path.history_access,path.observation,path.recovery&|eco-research-map',
+  '40-technical-observation-region': 'tech=ncb&tick=120&obs=interval:3,stride:2,region:2.4.6.8,occluder:3.5.5.7&maplayers=boundary.observation,observation&|eco-research-map',
+  '41-replay-markers': 'tab=research&preset=recovery-demo&horizon=360&phil=revision&obs=interval:3&tick=165&cam=habitat&layers=physical,meos&&|.eco',
+  '43-address-loss-map': 'tech=ncb&tick=120&preset=address-loss&horizon=360&maplayers=boundary.address,boundary.xenobody,path.coupling,path.observation,interventions&|eco-research-map',
+  '44-address-recovery-map': 'tech=ncb&tick=185&preset=address-loss&horizon=360&maplayers=boundary.address,boundary.xenobody,path.coupling,path.observation,path.recovery,interventions&|eco-research-map',
+  '42-compare-baseline-intervention-recovered': 'tech=ncb&compare=1&preset=recovery-demo&horizon=360&phil=revision&tick=165&&|eco-compare',
+  // fifth stage: the saved MFS library, the routes, the reconfiguration controllers (state restored from a deep link: deeplink.ts)
+  '45-f14-history-mfs': 'tech=ncb&mfs=MFS-F14-1&seed=1&tick=120&layer=route.active,route.dormant,mfs.current,mfs.alternative,path.history_access,path.coupling&|eco-research-map',
+  '46-f14-m2-mfs': 'tech=ncb&mfs=MFS-F14-2&seed=1&tick=120&layer=route.active,route.dormant,mfs.current,mfs.alternative,path.coupling&|eco-research-map',
+  '47-f9-no-mfs': 'tab=research&experiment=F9&tick=120&|eco-f-compact',
+  '48-adaptive-failure': 'tab=research&route=adaptive:renewal disabled&seed=1&tick=240&|eco-reconfiguration',
+  '49-fixed-fallback-success': 'tab=research&route=fixed:history lost&seed=1&tick=200&|eco-reconfiguration',
+  '50-sss-map-mfs-a': 'tab=research&sssmap=MFS-F14-1&tick=120&|eco-sss-map',
+  '51-sss-map-mfs-b': 'tab=research&sssmap=MFS-F14-2&tick=120&|eco-sss-map',
+  '52-observation-sensitive-active': 'tech=ncb&tick=120&obs=interval:3,stride:2&layer=boundary.observation,observation,path.observation&|eco-research-map',
+  '53-dynamic-address-attempt': 'tech=ncb&tick=130&address=reassign@100:A2:11,6&layer=boundary.address,interventions,path.coupling&|eco-research-map',
+  '54-route-topology': 'tech=ncb&mfs=MFS-F14-2&seed=1&tick=120&|eco-route-topology',
+  '55-mfs-comparison': 'tab=research&mfs=MFS-F14-1&tick=120&|eco-mfs-compare',
+  '56-replay-transition-inspection': 'tab=research&route=adaptive:renewal disabled&seed=1&tick=240&|.eco',
+  '57-technical-view-alternate-route': 'tech=ncb&route=fixed:history lost&seed=1&tick=200&layer=route.active,route.fallback,route.failed,route.dormant,mfs.current,mfs.alternative&|eco-research-map',
+  '58-rejected-candidate-route': 'tech=ncb&mfs=MFS-F8-1&seed=1&tick=120&layer=mfs.current,mfs.alternative,mfs.rejected,route.active&|eco-route-topology',
+  '59-current-alternative-mfs-map': 'tech=ncb&mfs=MFS-F14-1&seed=1&tick=120&layer=mfs.current,mfs.alternative,mfs.rejected,route.active,route.dormant&|eco-research-map',
+  // sixth stage: world-state repair (state restored from a deep link: deeplink.ts)
+  '60-repair-recovered': 'tab=research&stress=coupling gain 0.5&ract=resource.pulse/1/0/113&seed=1&|eco-repair-result',
+  '61-repair-overshoot': 'tab=research&stress=coupling gain 0.5&ract=resource.pulse/4/0/113&seed=1&|eco-repair-result',
+  '62-reachable-recovery-map': 'tab=research&stress=coupling gain 0.5&ract=resource.pulse/1/0/113&seed=1&|eco-recovery-map',
+  '63-stress-table': 'tab=research&stress=history lost&repair=rule_based&seed=1&|eco-stress-table',
+  '64-pulse-phase-bands': 'tab=research&stress=coupling gain 0.5&ract=resource.pulse/1/0/113&seed=1&|eco-pulse-bands',
+  '65-controller-decisions': 'tab=research&stress=history lost&repair=cost_aware&seed=1&|eco-repair-decisions',
+  '66-no-action-available': 'tab=research&stress=Address partial 0.5&repair=cost_aware&seed=1&|eco-repair-decisions',
+  '67-technical-repair-figure': 'tech=ncb&stress=coupling gain 0.5&ract=resource.pulse/1/0/113&seed=1&tick=200&|eco-repair-figure',
+  '68-technical-overshoot-figure': 'tech=ncb&stress=coupling gain 0.5&ract=resource.pulse/4/0/113&seed=1&tick=479&|eco-repair-figure',
+  '69-research-map-repair-layers': 'tech=ncb&stress=coupling gain 0.5&ract=resource.pulse/1/0/113&seed=1&tick=120&layer=repair.damaged,repair.repairable,repair.world,repair.repaired&|eco-research-map',
+  '71-mfs-repairability': 'tab=research&stress=coupling gain 0.5&ract=resource.pulse/1/0/113&seed=1&|eco-mfs-repairability',
+  '72-address-three-restorations': 'tab=research&stress=Address partial 0.5&ract=address.restore/0/0/113&seed=1&|eco-address-three',
+  '73-observation-vs-operational': 'tab=research&stress=coupling gain 0.5&ract=resource.pulse/1/0/113&seed=1&|eco-observation-recovery',
+  '74-extended-action-space': 'tab=research&stress=Address partial 0.5&ract=address.restore/0/0/113&seed=1&|eco-followup-classes',
+  '75-windows-measured-on': 'tab=research&stress=coupling gain 0.5&ract=resource.pulse/1/0/113&seed=1&|eco-open-windows',
+  '70-replay-repair-markers': 'tab=research&stress=coupling gain 0.5&ract=resource.pulse/4/0/113&seed=1&|eco-replay',
+};
+
+// default: the machine's GPU through ANGLE/Metal (frame rates are then those of the GPU); --software forces SwiftShader (slow, a rasteriser on the CPU)
+const software = process.argv.includes('--software');
+const browser = await chromium.launch({ executablePath: exe, args: software ? ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--enable-webgl'] : ['--use-angle=metal', '--ignore-gpu-blocklist', '--enable-gpu', '--enable-webgl'] });
+const perf = {}, cameras = {};
+for (const [name, q] of Object.entries(SHOTS)) {
+  if (only && !only.split(',').some((o) => name.includes(o))) continue;
+  const page = await browser.newPage({ viewport: { width, height: q.includes('tech=') ? 1500 : height } });
+  page.on('pageerror', (e) => console.error('pageerror', String(e).slice(0, 300)));
+  const [query, targetSpec] = q.split('|');
+  const tech = query.includes('tech='), chromeOn = query.includes('tab=research');
+  await page.goto(`${base}/?view=ecosystem&${query}&quality=${quality}${tech || chromeOn ? '' : '&chrome=0'}&capture=1`, { waitUntil: 'load' });
+  await page.waitForFunction(() => document.querySelector('.eco-stage')?.getAttribute('data-settled') === '1' && window.__meos?.ready?.(), null, { timeout: 120000 });
+  await page.waitForTimeout(tech ? 2500 : wait);
+  await page.evaluate(() => window.__meos.resetPerf());  // measure after warm-up: the scene build and shader compilation are not steady state
+  await page.waitForTimeout(+arg('measure', 5000));
+  perf[name] = await page.evaluate(() => ({ ...window.__meos.perf(), camera: window.__meos.camera(), stats: window.__meos.stats() }));
+  cameras[name] = { query: q, viewport: [width, height], quality, camera: perf[name].camera };
+  if (targetSpec) await page.waitForSelector(targetSpec.startsWith('.') ? targetSpec : `[data-testid=${targetSpec}]`, { timeout: 120000 });  // a run that needs the server to build its library first
+  const target = targetSpec ? await page.$(targetSpec.startsWith('.') ? targetSpec : `[data-testid=${targetSpec}]`) : tech ? await page.$('[data-testid=eco-sheet]') : await page.$('.eco-stage');
+  await target.screenshot({ path: join(out, `${name}.png`), timeout: 300000 });
+  await page.close();
+  console.log(name, 'ok', perf[name].fps.toFixed(1), software ? 'fps (software rendering)' : 'fps (GPU, headless)');
+}
+writeFileSync(join(out, `cameras-${quality}.json`), JSON.stringify({ note: 'the exact camera of every capture: position, target, field of view, clipping, exposure, tone mapping, pixel ratio, drawing-buffer size and quality tier', shots: cameras }, null, 1));
+writeFileSync(join(out, `perf-${quality}.json`), JSON.stringify({ browser: software ? 'headless Chromium, WebGL on SwiftShader (software)' : 'headless Chromium, WebGL on ANGLE Metal (GPU)', viewport: [width, height], quality, perf }, null, 1));
+await browser.close();

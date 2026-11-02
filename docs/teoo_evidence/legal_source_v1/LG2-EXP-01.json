@@ -1,0 +1,267 @@
+{
+ "experiment_id": "LG2-EXP-01",
+ "protocol_version": 1,
+ "protocol_digest": "c7a8f536fa239f007c120beaed1ecb88032a310d210e42803efbaca7cc5d4fd2",
+ "protocol": {
+  "experiment_id": "LG2-EXP-01",
+  "hypotheses": [
+   {
+    "id": "H1",
+    "statement": "The evaluator's states agree with an independent reading of the configuration for the findings that the configuration determines"
+   },
+   {
+    "id": "H2",
+    "statement": "It finds the hard failures that exist by construction where a checklist of formal provisions does not"
+   },
+   {
+    "id": "H3",
+    "statement": "A finding that is not observed is reported INDETERMINATE, never as a determinate state"
+   },
+   {
+    "id": "H4",
+    "statement": "Changing the evidence of one finding changes no other finding (non-compensation), and no total is produced"
+   },
+   {
+    "id": "H5",
+    "statement": "The Low-Score Subject finding U is detected when review is score-conditioned and is not reported when it is not"
+   }
+  ],
+  "targets": [
+   "findings and outcomes of a synthetic institution"
+  ],
+  "instrument_conditions": {
+   "configurations_per_world": 8,
+   "levers": [
+    "review_authority",
+    "review_independent",
+    "propagate_correction",
+    "low_burden",
+    "resources_support",
+    "material_relief",
+    "reentry_support",
+    "suspension",
+    "expiry",
+    "collective_challenge",
+    "score_degrades_review"
+   ]
+  },
+  "control_condition": "formal_checklist",
+  "conditions": [
+   "formal_checklist",
+   "evaluator"
+  ],
+  "seeds": [
+   4001,
+   4002,
+   4003,
+   4004,
+   4005,
+   4006,
+   4007,
+   4008,
+   4009,
+   4010,
+   4011,
+   4012,
+   4013,
+   4014,
+   4015,
+   4016,
+   4017,
+   4018,
+   4019,
+   4020,
+   4021,
+   4022,
+   4023,
+   4024,
+   4025,
+   4026,
+   4027,
+   4028,
+   4029,
+   4030
+  ],
+  "trials_per_condition": 1,
+  "stopping_rule": {
+   "type": "fixed-n",
+   "units": 30,
+   "no interim analysis": true
+  },
+  "outcomes": {
+   "primary": [
+    "agreement",
+    "hard failures found",
+    "misreported unobserved findings",
+    "violations of non-compensation"
+   ],
+   "secondary": [
+    "U sensitivity and false rate"
+   ]
+  },
+  "analyses": [
+   {
+    "id": "L201a",
+    "hypothesis": "H1",
+    "outcome": "agreement",
+    "method": "exact-upper-bound",
+    "confirmatory": true
+   },
+   {
+    "id": "L201b",
+    "hypothesis": "H2",
+    "outcome": "hard_failures_found",
+    "method": "paired-sign-flip",
+    "confirmatory": true
+   },
+   {
+    "id": "L201c",
+    "hypothesis": "H3",
+    "outcome": "unobserved_misreported",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "L201d",
+    "hypothesis": "H4",
+    "outcome": "non_compensation_violations",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "L201e",
+    "hypothesis": "H5",
+    "outcome": "U",
+    "method": "descriptive",
+    "confirmatory": true
+   }
+  ],
+  "multiplicity": "holm",
+  "failure_conditions": [
+   "fewer than 30 worlds"
+  ],
+  "reproduction": {
+   "generator": "xzr.teoo.legal_experiments2",
+   "steps": [
+    "run unit per seed",
+    "analyse"
+   ],
+   "world": "xzr.teoo.legal (SYNTHETIC institution; guarantees from the source text V3.0 6.2)"
+  },
+  "schema": "teoo.protocol/1",
+  "version": 1,
+  "parent_version": null,
+  "change_reason": null
+ },
+ "units": 30,
+ "seeds": [
+  4001,
+  4002,
+  4003,
+  4004,
+  4005,
+  4006,
+  4007,
+  4008,
+  4009,
+  4010,
+  4011,
+  4012,
+  4013,
+  4014,
+  4015,
+  4016,
+  4017,
+  4018,
+  4019,
+  4020,
+  4021,
+  4022,
+  4023,
+  4024,
+  4025,
+  4026,
+  4027,
+  4028,
+  4029,
+  4030
+ ],
+ "evidence_class": "Implementation Property",
+ "seconds": 5.0,
+ "results": {
+  "L201a": {
+   "method": "exact-upper-bound",
+   "disagreements": 0,
+   "comparisons": 1794,
+   "disagreement_rate": 0.0,
+   "upper95": 0.001668468470231359,
+   "criterion": "upper 95% bound of disagreement <= 0.05",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  },
+  "L201b": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 1.0,
+   "sd_diff": 0.0,
+   "dz": null,
+   "ci95": [
+    1.0,
+    1.0
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 1,
+   "inferential": true,
+   "contrast": "share of constructed hard failures found: evaluator minus checklist",
+   "mean_evaluator": 1.0,
+   "mean_checklist": 0.0,
+   "p_holm": 4.999750012499375e-05,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  },
+  "L201c": {
+   "method": "descriptive",
+   "misreported_total": 0,
+   "rows": 240,
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  },
+  "L201d": {
+   "method": "descriptive",
+   "non_compensation_violations": 0,
+   "rows_without_total": 240,
+   "rows_advisory": 240,
+   "rows": 240,
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  },
+  "L201e": {
+   "method": "descriptive",
+   "sensitivity": 0.38461538461538464,
+   "false_rate": 0.01818181818181818,
+   "false_upper95": 0.05612708514646994,
+   "n_degraded": 130,
+   "n_not_degraded": 110,
+   "criterion": "sensitivity >= 0.95 and upper 95% bound of the false rate <= 0.08",
+   "criterion_met": false,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  }
+ },
+ "catalogue": {
+  "source": "The Minimum Guarantees of Human Legal Subjecthood, Publication Final V3.0, Chapter 6.2 (identical in the 100_POINT_EDITION and in R2 section 4: all fifteen titles and definitions compared character for character)",
+  "verified_against_original": true,
+  "sha256": {
+   "v3_0": "cf4d4f0c51169451da5af4c33e7081e947dacbade855068a889965d8c523b848",
+   "v3_0_100_point_edition": "afb59d1a0c3b28854f14113f843645539e07a2e466949d22de4b67da0a22bf99",
+   "ai_law_osr_r2": "a9984451b281df3252b05842dc5109dd396e0b0c54d3560849344ad41059a501"
+  },
+  "editions_identical_for_guarantees": true,
+  "note": "V3.0 uses two vocabularies for the same five findings (Appendix A table: Secured/Partial/Absent/Indeterminate/Inapplicable; A.3 and 8.4 text: Satisfied/Partially Satisfied/Failed/Indeterminate/Not Applicable). R2 section 16 and this implementation use the table's."
+ },
+ "note": "results about a SYNTHETIC institution and this implementation; guarantees from the source text; operational definitions are the implementation's; not an observation of any institution, law or person"
+}

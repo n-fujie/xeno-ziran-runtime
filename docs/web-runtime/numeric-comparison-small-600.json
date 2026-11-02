@@ -1,0 +1,542 @@
+{
+ "a": {
+  "scenario": "small-600",
+  "numpy": "2.5.3",
+  "python": "3.12.13",
+  "platform": "darwin",
+  "itemsize_intp": 8
+ },
+ "b": {
+  "scenario": "small-600",
+  "numpy": "2.4.6",
+  "python": "3.14.2",
+  "platform": "emscripten",
+  "itemsize_intp": 4
+ },
+ "checkpoints": {
+  "0": {
+   "fingerprint_equal": false,
+   "identical": 28,
+   "float_differ": {
+    "base_mem_decay": {
+     "max_abs": 1.1102230246251565e-16,
+     "max_rel": 1.3701772434601629e-16,
+     "max_ulps": 1.0,
+     "differing": 32,
+     "of": 600,
+     "nan_pattern_equal": true
+    },
+    "base_weight": {
+     "max_abs": 1.1102230246251565e-16,
+     "max_rel": 2.1746792831302102e-16,
+     "max_ulps": 1.0,
+     "differing": 6,
+     "of": 4276,
+     "nan_pattern_equal": true
+    },
+    "cap": {
+     "max_abs": 8.881784197001252e-16,
+     "max_rel": 2.9800509007957573e-16,
+     "max_ulps": 2.0,
+     "differing": 30,
+     "of": 600,
+     "nan_pattern_equal": true
+    },
+    "capacity": {
+     "max_abs": 5.329070518200751e-15,
+     "max_rel": 5.211437825150364e-16,
+     "max_ulps": 3.0,
+     "differing": 236,
+     "of": 4276,
+     "nan_pattern_equal": true
+    },
+    "mem_decay": {
+     "max_abs": 1.1102230246251565e-16,
+     "max_rel": 1.3701772434601629e-16,
+     "max_ulps": 1.0,
+     "differing": 32,
+     "of": 600,
+     "nan_pattern_equal": true
+    },
+    "retention": {
+     "max_abs": 2.220446049250313e-16,
+     "max_rel": 3.7697083128672743e-16,
+     "max_ulps": 2.0,
+     "differing": 40,
+     "of": 600,
+     "nan_pattern_equal": true
+    },
+    "theta": {
+     "max_abs": 4.440892098500626e-16,
+     "max_rel": 2.4008745203102657e-16,
+     "max_ulps": 2.0,
+     "differing": 32,
+     "of": 600,
+     "nan_pattern_equal": true
+    },
+    "weight": {
+     "max_abs": 1.1102230246251565e-16,
+     "max_rel": 2.1746792831302102e-16,
+     "max_ulps": 1.0,
+     "differing": 6,
+     "of": 4276,
+     "nan_pattern_equal": true
+    }
+   },
+   "discrete_differ": {},
+   "dtype_or_shape_mismatch": [],
+   "arrays": 36,
+   "worst_rel": 5.211437825150364e-16
+  },
+  "50": {
+   "fingerprint_equal": false,
+   "identical": 25,
+   "float_differ": {
+    "base_mem_decay": {
+     "max_abs": 1.1102230246251565e-16,
+     "max_rel": 1.3701772434601629e-16,
+     "max_ulps": 1.0,
+     "differing": 32,
+     "of": 600,
+     "nan_pattern_equal": true
+    },
+    "base_weight": {
+     "max_abs": 1.1102230246251565e-16,
+     "max_rel": 2.1746792831302102e-16,
+     "max_ulps": 1.0,
+     "differing": 6,
+     "of": 4276,
+     "nan_pattern_equal": true
+    },
+    "cap": {
+     "max_abs": 8.881784197001252e-16,
+     "max_rel": 2.9800509007957573e-16,
+     "max_ulps": 2.0,
+     "differing": 30,
+     "of": 600,
+     "nan_pattern_equal": true
+    },
+    "capacity": {
+     "max_abs": 5.329070518200751e-15,
+     "max_rel": 5.211437825150364e-16,
+     "max_ulps": 3.0,
+     "differing": 236,
+     "of": 4276,
+     "nan_pattern_equal": true
+    },
+    "diff": {
+     "max_abs": 1.9984014443252818e-15,
+     "max_rel": 1.8750072850323114e-14,
+     "max_ulps": 167.0,
+     "differing": 76,
+     "of": 600,
+     "nan_pattern_equal": true
+    },
+    "load": {
+     "max_abs": 1.9984014443252818e-15,
+     "max_rel": 2.2687219632040445e-15,
+     "max_ulps": 19.0,
+     "differing": 70,
+     "of": 4276,
+     "nan_pattern_equal": true
+    },
+    "mem_decay": {
+     "max_abs": 1.1102230246251565e-16,
+     "max_rel": 1.3701772434601629e-16,
+     "max_ulps": 1.0,
+     "differing": 32,
+     "of": 600,
+     "nan_pattern_equal": true
+    },
+    "memory": {
+     "max_abs": 3.1086244689504383e-15,
+     "max_rel": 5.415599923633025e-15,
+     "max_ulps": 38.0,
+     "differing": 8,
+     "of": 600,
+     "nan_pattern_equal": true
+    },
+    "retention": {
+     "max_abs": 2.220446049250313e-16,
+     "max_rel": 3.7697083128672743e-16,
+     "max_ulps": 2.0,
+     "differing": 40,
+     "of": 600,
+     "nan_pattern_equal": true
+    },
+    "theta": {
+     "max_abs": 4.440892098500626e-16,
+     "max_rel": 2.4008745203102657e-16,
+     "max_ulps": 2.0,
+     "differing": 32,
+     "of": 600,
+     "nan_pattern_equal": true
+    },
+    "weight": {
+     "max_abs": 1.1102230246251565e-16,
+     "max_rel": 2.2180973957824042e-16,
+     "max_ulps": 1.0,
+     "differing": 6,
+     "of": 4276,
+     "nan_pattern_equal": true
+    }
+   },
+   "discrete_differ": {},
+   "dtype_or_shape_mismatch": [],
+   "arrays": 36,
+   "worst_rel": 1.8750072850323114e-14
+  },
+  "200": {
+   "fingerprint_equal": false,
+   "identical": 25,
+   "float_differ": {
+    "base_mem_decay": {
+     "max_abs": 1.1102230246251565e-16,
+     "max_rel": 1.3701772434601629e-16,
+     "max_ulps": 1.0,
+     "differing": 32,
+     "of": 600,
+     "nan_pattern_equal": true
+    },
+    "base_weight": {
+     "max_abs": 1.1102230246251565e-16,
+     "max_rel": 2.1746792831302102e-16,
+     "max_ulps": 1.0,
+     "differing": 6,
+     "of": 4276,
+     "nan_pattern_equal": true
+    },
+    "cap": {
+     "max_abs": 8.881784197001252e-16,
+     "max_rel": 2.9800509007957573e-16,
+     "max_ulps": 2.0,
+     "differing": 30,
+     "of": 600,
+     "nan_pattern_equal": true
+    },
+    "capacity": {
+     "max_abs": 5.329070518200751e-15,
+     "max_rel": 5.211437825150364e-16,
+     "max_ulps": 3.0,
+     "differing": 236,
+     "of": 4276,
+     "nan_pattern_equal": true
+    },
+    "diff": {
+     "max_abs": 2.6645352591003757e-15,
+     "max_rel": 3.4085540983190634e-14,
+     "max_ulps": 226.0,
+     "differing": 53,
+     "of": 600,
+     "nan_pattern_equal": true
+    },
+    "load": {
+     "max_abs": 1.1102230246251565e-16,
+     "max_rel": 1.9986024909532514e-15,
+     "max_ulps": 13.0,
+     "differing": 59,
+     "of": 4276,
+     "nan_pattern_equal": true
+    },
+    "mem_decay": {
+     "max_abs": 1.1102230246251565e-16,
+     "max_rel": 1.3701772434601629e-16,
+     "max_ulps": 1.0,
+     "differing": 32,
+     "of": 600,
+     "nan_pattern_equal": true
+    },
+    "memory": {
+     "max_abs": 5.329070518200751e-15,
+     "max_rel": 2.3878073826545117e-14,
+     "max_ulps": 172.0,
+     "differing": 21,
+     "of": 600,
+     "nan_pattern_equal": true
+    },
+    "retention": {
+     "max_abs": 2.220446049250313e-16,
+     "max_rel": 3.7697083128672743e-16,
+     "max_ulps": 2.0,
+     "differing": 40,
+     "of": 600,
+     "nan_pattern_equal": true
+    },
+    "theta": {
+     "max_abs": 4.440892098500626e-16,
+     "max_rel": 2.4008745203102657e-16,
+     "max_ulps": 2.0,
+     "differing": 32,
+     "of": 600,
+     "nan_pattern_equal": true
+    },
+    "weight": {
+     "max_abs": 1.1102230246251565e-16,
+     "max_rel": 2.214901359571286e-16,
+     "max_ulps": 1.0,
+     "differing": 4,
+     "of": 4276,
+     "nan_pattern_equal": true
+    }
+   },
+   "discrete_differ": {},
+   "dtype_or_shape_mismatch": [],
+   "arrays": 36,
+   "worst_rel": 3.4085540983190634e-14
+  },
+  "500": {
+   "fingerprint_equal": false,
+   "identical": 25,
+   "float_differ": {
+    "base_mem_decay": {
+     "max_abs": 1.1102230246251565e-16,
+     "max_rel": 1.3701772434601629e-16,
+     "max_ulps": 1.0,
+     "differing": 32,
+     "of": 600,
+     "nan_pattern_equal": true
+    },
+    "base_weight": {
+     "max_abs": 1.1102230246251565e-16,
+     "max_rel": 2.1746792831302102e-16,
+     "max_ulps": 1.0,
+     "differing": 6,
+     "of": 4276,
+     "nan_pattern_equal": true
+    },
+    "cap": {
+     "max_abs": 8.881784197001252e-16,
+     "max_rel": 2.9800509007957573e-16,
+     "max_ulps": 2.0,
+     "differing": 30,
+     "of": 600,
+     "nan_pattern_equal": true
+    },
+    "capacity": {
+     "max_abs": 5.329070518200751e-15,
+     "max_rel": 5.211437825150364e-16,
+     "max_ulps": 3.0,
+     "differing": 236,
+     "of": 4276,
+     "nan_pattern_equal": true
+    },
+    "diff": {
+     "max_abs": 9.992007221626409e-16,
+     "max_rel": 8.656954299561146e-14,
+     "max_ulps": 770.0,
+     "differing": 63,
+     "of": 600,
+     "nan_pattern_equal": true
+    },
+    "load": {
+     "max_abs": 8.881784197001252e-16,
+     "max_rel": 1.5901075588124647e-15,
+     "max_ulps": 12.0,
+     "differing": 135,
+     "of": 4276,
+     "nan_pattern_equal": true
+    },
+    "mem_decay": {
+     "max_abs": 1.1102230246251565e-16,
+     "max_rel": 1.3701772434601629e-16,
+     "max_ulps": 1.0,
+     "differing": 32,
+     "of": 600,
+     "nan_pattern_equal": true
+    },
+    "memory": {
+     "max_abs": 6.661338147750939e-15,
+     "max_rel": 5.0648047195822605e-14,
+     "max_ulps": 316.0,
+     "differing": 27,
+     "of": 600,
+     "nan_pattern_equal": true
+    },
+    "retention": {
+     "max_abs": 2.220446049250313e-16,
+     "max_rel": 3.7697083128672743e-16,
+     "max_ulps": 2.0,
+     "differing": 40,
+     "of": 600,
+     "nan_pattern_equal": true
+    },
+    "theta": {
+     "max_abs": 4.440892098500626e-16,
+     "max_rel": 2.4008745203102657e-16,
+     "max_ulps": 2.0,
+     "differing": 32,
+     "of": 600,
+     "nan_pattern_equal": true
+    },
+    "weight": {
+     "max_abs": 1.1102230246251565e-16,
+     "max_rel": 1.6684661177742112e-16,
+     "max_ulps": 1.0,
+     "differing": 3,
+     "of": 4276,
+     "nan_pattern_equal": true
+    }
+   },
+   "discrete_differ": {},
+   "dtype_or_shape_mismatch": [],
+   "arrays": 36,
+   "worst_rel": 8.656954299561146e-14
+  },
+  "1000": {
+   "fingerprint_equal": false,
+   "identical": 25,
+   "float_differ": {
+    "base_mem_decay": {
+     "max_abs": 1.1102230246251565e-16,
+     "max_rel": 1.3701772434601629e-16,
+     "max_ulps": 1.0,
+     "differing": 32,
+     "of": 600,
+     "nan_pattern_equal": true
+    },
+    "base_weight": {
+     "max_abs": 1.1102230246251565e-16,
+     "max_rel": 2.1746792831302102e-16,
+     "max_ulps": 1.0,
+     "differing": 6,
+     "of": 4276,
+     "nan_pattern_equal": true
+    },
+    "cap": {
+     "max_abs": 8.881784197001252e-16,
+     "max_rel": 2.9800509007957573e-16,
+     "max_ulps": 2.0,
+     "differing": 30,
+     "of": 600,
+     "nan_pattern_equal": true
+    },
+    "capacity": {
+     "max_abs": 5.329070518200751e-15,
+     "max_rel": 5.211437825150364e-16,
+     "max_ulps": 3.0,
+     "differing": 236,
+     "of": 4276,
+     "nan_pattern_equal": true
+    },
+    "diff": {
+     "max_abs": 1.0547118733938987e-15,
+     "max_rel": 1.5976538171747253e-13,
+     "max_ulps": 792.0,
+     "differing": 57,
+     "of": 600,
+     "nan_pattern_equal": true
+    },
+    "load": {
+     "max_abs": 2.220446049250313e-16,
+     "max_rel": 2.0987211701983994e-15,
+     "max_ulps": 14.0,
+     "differing": 147,
+     "of": 4276,
+     "nan_pattern_equal": true
+    },
+    "mem_decay": {
+     "max_abs": 1.1102230246251565e-16,
+     "max_rel": 1.3701772434601629e-16,
+     "max_ulps": 1.0,
+     "differing": 32,
+     "of": 600,
+     "nan_pattern_equal": true
+    },
+    "memory": {
+     "max_abs": 7.105427357601002e-15,
+     "max_rel": 9.664072607991767e-14,
+     "max_ulps": 543.0,
+     "differing": 29,
+     "of": 600,
+     "nan_pattern_equal": true
+    },
+    "retention": {
+     "max_abs": 2.220446049250313e-16,
+     "max_rel": 3.7697083128672743e-16,
+     "max_ulps": 2.0,
+     "differing": 40,
+     "of": 600,
+     "nan_pattern_equal": true
+    },
+    "theta": {
+     "max_abs": 4.440892098500626e-16,
+     "max_rel": 2.4008745203102657e-16,
+     "max_ulps": 2.0,
+     "differing": 32,
+     "of": 600,
+     "nan_pattern_equal": true
+    },
+    "weight": {
+     "max_abs": 1.1102230246251565e-16,
+     "max_rel": 2.6044931250107167e-16,
+     "max_ulps": 2.0,
+     "differing": 4,
+     "of": 4276,
+     "nan_pattern_equal": true
+    }
+   },
+   "discrete_differ": {},
+   "dtype_or_shape_mismatch": [],
+   "arrays": 36,
+   "worst_rel": 1.5976538171747253e-13
+  }
+ },
+ "probe": {
+  "exp": {
+   "differing": 10,
+   "of": 4001,
+   "max_ulps": 1.0
+  },
+  "log": {
+   "differing": 2,
+   "of": 4001,
+   "max_ulps": 1.0
+  },
+  "tanh": {
+   "differing": 995,
+   "of": 4001,
+   "max_ulps": 2.0
+  },
+  "sin": {
+   "differing": 151,
+   "of": 4001,
+   "max_ulps": 1.0
+  },
+  "power": {
+   "differing": 8,
+   "of": 4001,
+   "max_ulps": 1.0
+  },
+  "sqrt": {
+   "differing": 0,
+   "of": 4001,
+   "max_ulps": 0.0
+  },
+  "arctan": {
+   "differing": 253,
+   "of": 4001,
+   "max_ulps": 1.0
+  },
+  "expm1": {
+   "differing": 344,
+   "of": 4001,
+   "max_ulps": 1.0
+  },
+  "log1p": {
+   "differing": 334,
+   "of": 4001,
+   "max_ulps": 1.0
+  },
+  "sum": {
+   "differing": 3,
+   "of": 4,
+   "max_ulps": 384.0
+  },
+  "dot": {
+   "differing": 3,
+   "of": 4,
+   "max_ulps": 466.0
+  }
+ },
+ "first_step_with_discrete_difference": null
+}

@@ -1,0 +1,1833 @@
+{
+ "engine": "meos-0.1",
+ "config": {
+  "schema": "xzr.meos/1",
+  "seed": 1,
+  "horizon": 240,
+  "grid": 14,
+  "noise": 0.002,
+  "init_jitter": 0.02,
+  "environment": {
+   "gradient": true,
+   "r_max": 1.0,
+   "gradient_length": 4.0,
+   "r_flat": 0.25,
+   "diffusion": 0.03,
+   "relax": 0.06,
+   "regrow": 0.02,
+   "persistence": 0.1,
+   "mark_diffusion": 0.2,
+   "arena_radius": null
+  },
+  "power": {
+   "reserve": 24.0,
+   "capacity": 24.0,
+   "charge": 0.4,
+   "infinite": false
+  },
+  "channels": {
+   "sensor_resource": true,
+   "sensor_alteration": true,
+   "interaction": true,
+   "feedback": true
+  },
+  "history": {
+   "enabled": true,
+   "mode": "removed",
+   "gain": 1.0,
+   "decay": 0.05,
+   "kappa": 0.1,
+   "theta_floor": 0.4
+  },
+  "sss": {
+   "scale": 1.0,
+   "size": 1.0,
+   "speed": 1.0
+  },
+  "entities": {
+   "A1": {
+    "present": true,
+    "pos": [
+     3,
+     6
+    ],
+    "sensor_radius": 2,
+    "window": 6,
+    "persist": 3,
+    "refractory": 2,
+    "speed": 1.0,
+    "size": 1.0,
+    "threshold": 0.2,
+    "cost": 0.3,
+    "consume": 0.35,
+    "gain": 0.9,
+    "deposit": 0.6,
+    "upkeep": 0.02,
+    "energy": 3.0,
+    "energy_max": 6.0
+   },
+   "A2": {
+    "present": true,
+    "pos": [
+     5,
+     6
+    ],
+    "sensor_radius": 2,
+    "window": 6,
+    "persist": 3,
+    "refractory": 2,
+    "speed": 1.0,
+    "size": 1.0,
+    "threshold": 0.05,
+    "cost": 0.25,
+    "renew": 0.5,
+    "deposit": 0.25
+   }
+  }
+ },
+ "experiments": {
+  "deterministic_replay": {
+   "digest": "b4cf1e522e8bee460eab30ee2a3f86ffd703a3f7969dc21271cf0240aa09adc5",
+   "replay": {
+    "identical": true,
+    "expected": "b4cf1e522e8bee460eab30ee2a3f86ffd703a3f7969dc21271cf0240aa09adc5",
+    "got": "b4cf1e522e8bee460eab30ee2a3f86ffd703a3f7969dc21271cf0240aa09adc5"
+   },
+   "second_run_digest": "b4cf1e522e8bee460eab30ee2a3f86ffd703a3f7969dc21271cf0240aa09adc5",
+   "other_seed_digest": "da63c62df2f98b3dc15bc868490b47301d89410cb0895963cd2d739ec8e71f1f"
+  },
+  "baseline": {
+   "label": "MEOS-0 unperturbed",
+   "interventions": [],
+   "status": "ACTIVE",
+   "cycles": 47,
+   "history_reentry_cycles": 47,
+   "status_trajectory": [
+    [
+     0,
+     "DEGRADED"
+    ],
+    [
+     11,
+     "ACTIVE"
+    ]
+   ],
+   "failed_dependency": null,
+   "final_power": 0.4,
+   "result_digest": "b4cf1e522e8bee460eab30ee2a3f86ffd703a3f7969dc21271cf0240aa09adc5",
+   "seconds": 0.229
+  },
+  "ablation_single": {
+   "seeds": [
+    1,
+    2,
+    3
+   ],
+   "rows": [
+    {
+     "removed": [],
+     "outcomes": [
+      {
+       "seed": 1,
+       "status": "ACTIVE",
+       "persists": true,
+       "cycles": 47,
+       "first_collapse_tick": null,
+       "failed_dependency": null,
+       "result_digest": "b4cf1e522e8bee460eab30ee2a3f86ffd703a3f7969dc21271cf0240aa09adc5"
+      },
+      {
+       "seed": 2,
+       "status": "ACTIVE",
+       "persists": true,
+       "cycles": 47,
+       "first_collapse_tick": null,
+       "failed_dependency": null,
+       "result_digest": "da63c62df2f98b3dc15bc868490b47301d89410cb0895963cd2d739ec8e71f1f"
+      },
+      {
+       "seed": 3,
+       "status": "ACTIVE",
+       "persists": true,
+       "cycles": 47,
+       "first_collapse_tick": null,
+       "failed_dependency": null,
+       "result_digest": "2f5edb8ca47d0e68f4ee1643a87d790ad00454ed2d39797d55bf7def77935711"
+      }
+     ],
+     "persists_in_all_seeds": true
+    },
+    {
+     "removed": [
+      "A2"
+     ],
+     "outcomes": [
+      {
+       "seed": 1,
+       "status": "COLLAPSED",
+       "persists": false,
+       "cycles": 0,
+       "first_collapse_tick": 48,
+       "failed_dependency": {
+        "entity": "A2",
+        "precondition": "present",
+        "detail": "A2 is absent: nothing reconfigures the environment for A1",
+        "value": null,
+        "need": null
+       },
+       "result_digest": "6f4e4b31d4ec2c57082407caa59708254de7198a55652877605b51887c27e56b"
+      },
+      {
+       "seed": 2,
+       "status": "COLLAPSED",
+       "persists": false,
+       "cycles": 0,
+       "first_collapse_tick": 48,
+       "failed_dependency": {
+        "entity": "A2",
+        "precondition": "present",
+        "detail": "A2 is absent: nothing reconfigures the environment for A1",
+        "value": null,
+        "need": null
+       },
+       "result_digest": "1b0e027a4ac6097c1dc30c58f7efaa19cfd5c4c9e05c193355d8f8ccb339c3c6"
+      },
+      {
+       "seed": 3,
+       "status": "COLLAPSED",
+       "persists": false,
+       "cycles": 0,
+       "first_collapse_tick": 48,
+       "failed_dependency": {
+        "entity": "A2",
+        "precondition": "present",
+        "detail": "A2 is absent: nothing reconfigures the environment for A1",
+        "value": null,
+        "need": null
+       },
+       "result_digest": "90ca1da9d2517b880e099bede50af5f982e23d677d0d4d1c8d3afba563228b61"
+      }
+     ],
+     "persists_in_all_seeds": false
+    },
+    {
+     "removed": [
+      "resource_gradient"
+     ],
+     "outcomes": [
+      {
+       "seed": 1,
+       "status": "ACTIVE",
+       "persists": true,
+       "cycles": 47,
+       "first_collapse_tick": null,
+       "failed_dependency": null,
+       "result_digest": "121c0c446e5d827a4b250397f40feb5d87cd0ca174fa587c81077f50f38b7ee5"
+      },
+      {
+       "seed": 2,
+       "status": "ACTIVE",
+       "persists": true,
+       "cycles": 47,
+       "first_collapse_tick": null,
+       "failed_dependency": null,
+       "result_digest": "03a3fc04d36c433b946058142a63b69d831f330f8e6aae92e750f7e7cec7bf28"
+      },
+      {
+       "seed": 3,
+       "status": "ACTIVE",
+       "persists": true,
+       "cycles": 47,
+       "first_collapse_tick": null,
+       "failed_dependency": null,
+       "result_digest": "0bc62b153b9ef325e4f83b7b66dd9a1df66e5d1f646b6f9727fd780ea3cbce88"
+      }
+     ],
+     "persists_in_all_seeds": true
+    },
+    {
+     "removed": [
+      "history"
+     ],
+     "outcomes": [
+      {
+       "seed": 1,
+       "status": "COLLAPSED",
+       "persists": false,
+       "cycles": 22,
+       "first_collapse_tick": 159,
+       "failed_dependency": {
+        "entity": "A2",
+        "precondition": "differentiated stimulus >= threshold",
+        "detail": "A2 detects no alteration above its threshold (the signal decayed, is too weak or is out of reach)",
+        "value": -0.0023,
+        "need": 0.05
+       },
+       "result_digest": "5b008292028ef36c65cc1bb6994dff7edd8b887b5f569083dda068b2d332538c"
+      },
+      {
+       "seed": 2,
+       "status": "COLLAPSED",
+       "persists": false,
+       "cycles": 21,
+       "first_collapse_tick": 154,
+       "failed_dependency": {
+        "entity": "A2",
+        "precondition": "differentiated stimulus >= threshold",
+        "detail": "A2 detects no alteration above its threshold (the signal decayed, is too weak or is out of reach)",
+        "value": -0.0043,
+        "need": 0.05
+       },
+       "result_digest": "3e18c3f9475d35c46ddeea351d2e17f98480725553cc41d9dce0bd352808212b"
+      },
+      {
+       "seed": 3,
+       "status": "COLLAPSED",
+       "persists": false,
+       "cycles": 21,
+       "first_collapse_tick": 154,
+       "failed_dependency": {
+        "entity": "A2",
+        "precondition": "differentiated stimulus >= threshold",
+        "detail": "A2 detects no alteration above its threshold (the signal decayed, is too weak or is out of reach)",
+        "value": -0.0,
+        "need": 0.05
+       },
+       "result_digest": "f8dcdb6c0385044ba248c7c8f5de7ef66cad3407370955ec9bdbbc3750146a35"
+      }
+     ],
+     "persists_in_all_seeds": false
+    },
+    {
+     "removed": [
+      "interaction_channel"
+     ],
+     "outcomes": [
+      {
+       "seed": 1,
+       "status": "COLLAPSED",
+       "persists": false,
+       "cycles": 0,
+       "first_collapse_tick": 48,
+       "failed_dependency": {
+        "entity": "A2",
+        "precondition": "interaction channel",
+        "detail": "the interaction channel between A1's alteration and A2 is interrupted",
+        "value": null,
+        "need": null
+       },
+       "result_digest": "e764a226262d2e62ab12a7d703a4f5bda67dbf3d7b740db77c018c81606d1083"
+      },
+      {
+       "seed": 2,
+       "status": "COLLAPSED",
+       "persists": false,
+       "cycles": 0,
+       "first_collapse_tick": 48,
+       "failed_dependency": {
+        "entity": "A2",
+        "precondition": "interaction channel",
+        "detail": "the interaction channel between A1's alteration and A2 is interrupted",
+        "value": null,
+        "need": null
+       },
+       "result_digest": "370fbb363d655c409f845024dff2de22309cc777a6b3b47d286116a7c04f4c2b"
+      },
+      {
+       "seed": 3,
+       "status": "COLLAPSED",
+       "persists": false,
+       "cycles": 0,
+       "first_collapse_tick": 48,
+       "failed_dependency": {
+        "entity": "A2",
+        "precondition": "interaction channel",
+        "detail": "the interaction channel between A1's alteration and A2 is interrupted",
+        "value": null,
+        "need": null
+       },
+       "result_digest": "e1b101618f368d857780f641f735e4580d410e60f04135fb373782c3a4ce7b06"
+      }
+     ],
+     "persists_in_all_seeds": false
+    },
+    {
+     "removed": [
+      "sensor_resource"
+     ],
+     "outcomes": [
+      {
+       "seed": 1,
+       "status": "COLLAPSED",
+       "persists": false,
+       "cycles": 0,
+       "first_collapse_tick": 48,
+       "failed_dependency": {
+        "entity": "A1",
+        "precondition": "sensor channel connected",
+        "detail": "A1's resource sensor is disconnected",
+        "value": null,
+        "need": null
+       },
+       "result_digest": "9be9e8e2fc196487485145a1a1ccfd1428807eee3d5d4ba8b0f053da95fa385e"
+      },
+      {
+       "seed": 2,
+       "status": "COLLAPSED",
+       "persists": false,
+       "cycles": 0,
+       "first_collapse_tick": 48,
+       "failed_dependency": {
+        "entity": "A1",
+        "precondition": "sensor channel connected",
+        "detail": "A1's resource sensor is disconnected",
+        "value": null,
+        "need": null
+       },
+       "result_digest": "26c46a6c236cb6283ae5d4e4757eb7f1722a409d610eff33e91e80e6f2417215"
+      },
+      {
+       "seed": 3,
+       "status": "COLLAPSED",
+       "persists": false,
+       "cycles": 0,
+       "first_collapse_tick": 48,
+       "failed_dependency": {
+        "entity": "A1",
+        "precondition": "sensor channel connected",
+        "detail": "A1's resource sensor is disconnected",
+        "value": null,
+        "need": null
+       },
+       "result_digest": "ee6b9b92b702dee8ef99cd1dc455d1869052630296aa52b1353de0c227c7bd8f"
+      }
+     ],
+     "persists_in_all_seeds": false
+    },
+    {
+     "removed": [
+      "sensor_alteration"
+     ],
+     "outcomes": [
+      {
+       "seed": 1,
+       "status": "COLLAPSED",
+       "persists": false,
+       "cycles": 0,
+       "first_collapse_tick": 48,
+       "failed_dependency": {
+        "entity": "A2",
+        "precondition": "sensor channel connected",
+        "detail": "A2's alteration sensor is disconnected",
+        "value": null,
+        "need": null
+       },
+       "result_digest": "5266bbbfa7613df0c9b3b59056cc531b899d4e84cad1b8f2d628752a60b40fd3"
+      },
+      {
+       "seed": 2,
+       "status": "COLLAPSED",
+       "persists": false,
+       "cycles": 0,
+       "first_collapse_tick": 48,
+       "failed_dependency": {
+        "entity": "A2",
+        "precondition": "sensor channel connected",
+        "detail": "A2's alteration sensor is disconnected",
+        "value": null,
+        "need": null
+       },
+       "result_digest": "35c9a3b85f58bf8016684b9f27beab555faca118103d7d63a6cc14fb7a16d6d5"
+      },
+      {
+       "seed": 3,
+       "status": "COLLAPSED",
+       "persists": false,
+       "cycles": 0,
+       "first_collapse_tick": 48,
+       "failed_dependency": {
+        "entity": "A2",
+        "precondition": "sensor channel connected",
+        "detail": "A2's alteration sensor is disconnected",
+        "value": null,
+        "need": null
+       },
+       "result_digest": "d4ec5acac38ad3ecb533d5d64f5f29758bf9e94977d19dd376723cd21a49a77d"
+      }
+     ],
+     "persists_in_all_seeds": false
+    },
+    {
+     "removed": [
+      "environmental_persistence"
+     ],
+     "outcomes": [
+      {
+       "seed": 1,
+       "status": "COLLAPSED",
+       "persists": false,
+       "cycles": 0,
+       "first_collapse_tick": 48,
+       "failed_dependency": {
+        "entity": null,
+        "precondition": "environmental persistence",
+        "detail": "alterations do not persist: A1's alteration is gone before A2 can detect it",
+        "value": null,
+        "need": null
+       },
+       "result_digest": "a16ce7f6c611c4f7900525b3054f9f487af0bc4b6b363a999a20bfd06b602ff7"
+      },
+      {
+       "seed": 2,
+       "status": "COLLAPSED",
+       "persists": false,
+       "cycles": 0,
+       "first_collapse_tick": 48,
+       "failed_dependency": {
+        "entity": null,
+        "precondition": "environmental persistence",
+        "detail": "alterations do not persist: A1's alteration is gone before A2 can detect it",
+        "value": null,
+        "need": null
+       },
+       "result_digest": "44bcae2a6cf3210d44235da713256ca7ea55278457ea7ffad8d8a6fb5a577b51"
+      },
+      {
+       "seed": 3,
+       "status": "COLLAPSED",
+       "persists": false,
+       "cycles": 0,
+       "first_collapse_tick": 48,
+       "failed_dependency": {
+        "entity": null,
+        "precondition": "environmental persistence",
+        "detail": "alterations do not persist: A1's alteration is gone before A2 can detect it",
+        "value": null,
+        "need": null
+       },
+       "result_digest": "d8d1aa0bc88828a5601d5dda978a3f5f9b7f50021ea65ef1f31779c67e26e849"
+      }
+     ],
+     "persists_in_all_seeds": false
+    },
+    {
+     "removed": [
+      "feedback"
+     ],
+     "outcomes": [
+      {
+       "seed": 1,
+       "status": "COLLAPSED",
+       "persists": false,
+       "cycles": 0,
+       "first_collapse_tick": 48,
+       "failed_dependency": {
+        "entity": "A2",
+        "precondition": "environmental reconfiguration",
+        "detail": "A2's reconfiguration of the resource is disabled (no feedback to A1)",
+        "value": null,
+        "need": null
+       },
+       "result_digest": "8f19788e1bd92d9ec46211dce3b0a2242d0f2107d58d8230c965d0f0d47ee880"
+      },
+      {
+       "seed": 2,
+       "status": "COLLAPSED",
+       "persists": false,
+       "cycles": 0,
+       "first_collapse_tick": 48,
+       "failed_dependency": {
+        "entity": "A2",
+        "precondition": "environmental reconfiguration",
+        "detail": "A2's reconfiguration of the resource is disabled (no feedback to A1)",
+        "value": null,
+        "need": null
+       },
+       "result_digest": "73f8eed8846209a53fd49217a50c22429435de10c632ce0703eaadb29efee6eb"
+      },
+      {
+       "seed": 3,
+       "status": "COLLAPSED",
+       "persists": false,
+       "cycles": 0,
+       "first_collapse_tick": 48,
+       "failed_dependency": {
+        "entity": "A2",
+        "precondition": "environmental reconfiguration",
+        "detail": "A2's reconfiguration of the resource is disabled (no feedback to A1)",
+        "value": null,
+        "need": null
+       },
+       "result_digest": "afb861abb868a8266fe97ad6c904455c141c09077327e26cff3831839c6e847e"
+      }
+     ],
+     "persists_in_all_seeds": false
+    },
+    {
+     "removed": [
+      "resource_renewal"
+     ],
+     "outcomes": [
+      {
+       "seed": 1,
+       "status": "COLLAPSED",
+       "persists": false,
+       "cycles": 13,
+       "first_collapse_tick": 114,
+       "failed_dependency": {
+        "entity": "A2",
+        "precondition": "differentiated stimulus >= threshold",
+        "detail": "A2 detects no alteration above its threshold (the signal decayed, is too weak or is out of reach)",
+        "value": -0.0023,
+        "need": 0.0499
+       },
+       "result_digest": "ef91b3711e13dfc453b4ae0936a567d6499fb3a209859bdd9080cad0212f45f1"
+      },
+      {
+       "seed": 2,
+       "status": "COLLAPSED",
+       "persists": false,
+       "cycles": 13,
+       "first_collapse_tick": 114,
+       "failed_dependency": {
+        "entity": "A2",
+        "precondition": "differentiated stimulus >= threshold",
+        "detail": "A2 detects no alteration above its threshold (the signal decayed, is too weak or is out of reach)",
+        "value": -0.0043,
+        "need": 0.0499
+       },
+       "result_digest": "17f8957e042f1dda421be2c03247fa314aa25fdafb4366b60255fd769314251c"
+      },
+      {
+       "seed": 3,
+       "status": "COLLAPSED",
+       "persists": false,
+       "cycles": 13,
+       "first_collapse_tick": 114,
+       "failed_dependency": {
+        "entity": "A2",
+        "precondition": "differentiated stimulus >= threshold",
+        "detail": "A2 detects no alteration above its threshold (the signal decayed, is too weak or is out of reach)",
+        "value": -0.0,
+        "need": 0.0499
+       },
+       "result_digest": "03141dca55ef6c44e32a60c295e59414232bb7d9451af42cf4558e5b0e750b9d"
+      }
+     ],
+     "persists_in_all_seeds": false
+    }
+   ]
+  },
+  "ablation_combinations": {
+   "seeds": [
+    1
+   ],
+   "rows": [
+    {
+     "removed": [],
+     "outcomes": [
+      {
+       "seed": 1,
+       "status": "ACTIVE",
+       "persists": true,
+       "cycles": 47,
+       "first_collapse_tick": null,
+       "failed_dependency": null,
+       "result_digest": "b4cf1e522e8bee460eab30ee2a3f86ffd703a3f7969dc21271cf0240aa09adc5"
+      }
+     ],
+     "persists_in_all_seeds": true
+    },
+    {
+     "removed": [
+      "A2",
+      "history"
+     ],
+     "outcomes": [
+      {
+       "seed": 1,
+       "status": "COLLAPSED",
+       "persists": false,
+       "cycles": 0,
+       "first_collapse_tick": 48,
+       "failed_dependency": {
+        "entity": "A2",
+        "precondition": "present",
+        "detail": "A2 is absent: nothing reconfigures the environment for A1",
+        "value": null,
+        "need": null
+       },
+       "result_digest": "4a6efd4e693956117a8745f0d5f7691b168b6c24b44c6e5e5a26a1c339dd4a8b"
+      }
+     ],
+     "persists_in_all_seeds": false
+    },
+    {
+     "removed": [
+      "resource_gradient",
+      "history"
+     ],
+     "outcomes": [
+      {
+       "seed": 1,
+       "status": "ACTIVE",
+       "persists": true,
+       "cycles": 47,
+       "first_collapse_tick": null,
+       "failed_dependency": null,
+       "result_digest": "918ba10497d023954008c03b9bec7aeca752e8e09ee78be8dd6b37f5c7b0ee22"
+      }
+     ],
+     "persists_in_all_seeds": true
+    },
+    {
+     "removed": [
+      "resource_gradient",
+      "resource_renewal"
+     ],
+     "outcomes": [
+      {
+       "seed": 1,
+       "status": "COLLAPSED",
+       "persists": false,
+       "cycles": 13,
+       "first_collapse_tick": 114,
+       "failed_dependency": {
+        "entity": "A2",
+        "precondition": "differentiated stimulus >= threshold",
+        "detail": "A2 detects no alteration above its threshold (the signal decayed, is too weak or is out of reach)",
+        "value": -0.0023,
+        "need": 0.0499
+       },
+       "result_digest": "9e06725587ce41c3a045c56909f72759b882bda67e2b2e54886f9df521d083bf"
+      }
+     ],
+     "persists_in_all_seeds": false
+    }
+   ]
+  },
+  "minimal_configuration": {
+   "operation": "MEOS-0 recursive cycle sustained: status ACTIVE at the end of the run",
+   "relative_to": {
+    "horizon": 160,
+    "seed": 1,
+    "scale": {
+     "scale": 1.0,
+     "size": 1.0,
+     "speed": 1.0
+    },
+    "admissible_reductions": [
+     "A2",
+     "resource_gradient",
+     "history",
+     "interaction_channel",
+     "sensor_resource",
+     "sensor_alteration",
+     "environmental_persistence",
+     "feedback",
+     "resource_renewal"
+    ]
+   },
+   "baseline_persists": true,
+   "single_removal_persists": {
+    "A2": false,
+    "resource_gradient": true,
+    "history": false,
+    "interaction_channel": false,
+    "sensor_resource": false,
+    "sensor_alteration": false,
+    "environmental_persistence": false,
+    "feedback": false,
+    "resource_renewal": false
+   },
+   "removed": [
+    "resource_gradient",
+    "history"
+   ],
+   "retained": [
+    "A2",
+    "interaction_channel",
+    "sensor_resource",
+    "sensor_alteration",
+    "environmental_persistence",
+    "feedback",
+    "resource_renewal"
+   ],
+   "retained_is_one_minimal": true,
+   "leave_one_out_persists": {
+    "A2": false,
+    "interaction_channel": false,
+    "sensor_resource": false,
+    "sensor_alteration": false,
+    "environmental_persistence": false,
+    "feedback": false,
+    "resource_renewal": false
+   },
+   "retained_sustains_operation": true,
+   "exhaustive": {
+    "subsets_evaluated": 512,
+    "sets_that_sustain": 3,
+    "minimal_retained_sets": [
+     [
+      "A2",
+      "environmental_persistence",
+      "feedback",
+      "interaction_channel",
+      "resource_renewal",
+      "sensor_alteration",
+      "sensor_resource"
+     ]
+    ]
+   }
+  },
+  "xenobody_boundaries": {
+   "note": "the same physical arrangement; only the specification of what belongs to the operational body differs",
+   "unperturbed": {
+    "status": "ACTIVE",
+    "reason": "complete cycles are being sustained",
+    "persists": true,
+    "cycles": 47,
+    "history_reentry_cycles": 47,
+    "first_collapse_tick": null,
+    "failed_dependency": null,
+    "status_log": [
+     [
+      0,
+      "DEGRADED"
+     ],
+     [
+      11,
+      "ACTIVE"
+     ]
+    ],
+    "result_digest": "b4cf1e522e8bee460eab30ee2a3f86ffd703a3f7969dc21271cf0240aa09adc5",
+    "final_power": 0.4
+   },
+   "partitions": [
+    {
+     "id": "B1",
+     "label": "A1 as one operational body",
+     "components": [
+      "A1",
+      "sensor_resource"
+     ],
+     "legs_inside": {
+      "A1 senses the resource and fires": true,
+      "A1 acts and alters the environment": true,
+      "the alteration reaches the other configuration": false,
+      "A2 detects the alteration and fires": false,
+      "A2 reconfigures the environment": false,
+      "history re-enters the next firing": false
+     },
+     "closure": 0.3333,
+     "persists_when_only_the_body_is_retained": false,
+     "status_when_only_the_body_is_retained": "COLLAPSED",
+     "failed_dependency": {
+      "entity": "A2",
+      "precondition": "present",
+      "detail": "A2 is absent: nothing reconfigures the environment for A1",
+      "value": null,
+      "need": null
+     },
+     "cycles": 0
+    },
+    {
+     "id": "B2",
+     "label": "A1 + the environmental sensor network",
+     "components": [
+      "A1",
+      "sensor_resource",
+      "sensor_alteration",
+      "interaction_channel"
+     ],
+     "legs_inside": {
+      "A1 senses the resource and fires": true,
+      "A1 acts and alters the environment": true,
+      "the alteration reaches the other configuration": true,
+      "A2 detects the alteration and fires": false,
+      "A2 reconfigures the environment": false,
+      "history re-enters the next firing": false
+     },
+     "closure": 0.5,
+     "persists_when_only_the_body_is_retained": false,
+     "status_when_only_the_body_is_retained": "COLLAPSED",
+     "failed_dependency": {
+      "entity": "A2",
+      "precondition": "present",
+      "detail": "A2 is absent: nothing reconfigures the environment for A1",
+      "value": null,
+      "need": null
+     },
+     "cycles": 0
+    },
+    {
+     "id": "B3",
+     "label": "A1 + A2 + the resource-transfer loop",
+     "components": [
+      "A1",
+      "A2",
+      "sensor_resource",
+      "sensor_alteration",
+      "interaction_channel",
+      "feedback",
+      "resource_renewal",
+      "history"
+     ],
+     "legs_inside": {
+      "A1 senses the resource and fires": true,
+      "A1 acts and alters the environment": true,
+      "the alteration reaches the other configuration": true,
+      "A2 detects the alteration and fires": true,
+      "A2 reconfigures the environment": true,
+      "history re-enters the next firing": true
+     },
+     "closure": 1.0,
+     "persists_when_only_the_body_is_retained": true,
+     "status_when_only_the_body_is_retained": "ACTIVE",
+     "failed_dependency": null,
+     "cycles": 47
+    }
+   ]
+  },
+  "history_H_plus_vs_H_minus": {
+   "H+": {
+    "status": "ACTIVE",
+    "reason": "complete cycles are being sustained",
+    "persists": true,
+    "cycles": 47,
+    "history_reentry_cycles": 47,
+    "first_collapse_tick": null,
+    "failed_dependency": null,
+    "status_log": [
+     [
+      0,
+      "DEGRADED"
+     ],
+     [
+      11,
+      "ACTIVE"
+     ]
+    ],
+    "result_digest": "b4cf1e522e8bee460eab30ee2a3f86ffd703a3f7969dc21271cf0240aa09adc5",
+    "final_power": 0.4,
+    "first_divergence_from_H+": null,
+    "mean_threshold_reduction": 0.07344
+   },
+   "H- removed": {
+    "status": "COLLAPSED",
+    "reason": "no complete cycle in the last 48 ticks",
+    "persists": false,
+    "cycles": 22,
+    "history_reentry_cycles": 0,
+    "first_collapse_tick": 159,
+    "failed_dependency": {
+     "entity": "A2",
+     "precondition": "differentiated stimulus >= threshold",
+     "detail": "A2 detects no alteration above its threshold (the signal decayed, is too weak or is out of reach)",
+     "value": -0.0023,
+     "need": 0.05
+    },
+    "status_log": [
+     [
+      0,
+      "DEGRADED"
+     ],
+     [
+      11,
+      "ACTIVE"
+     ],
+     [
+      136,
+      "DEGRADED"
+     ],
+     [
+      159,
+      "COLLAPSED"
+     ]
+    ],
+    "result_digest": "6d0f9ea20ac6aec931d5604f56bab0469f3d8e05f0689db78a12feea8bb0011b",
+    "final_power": 15.28,
+    "first_divergence_from_H+": 17,
+    "mean_threshold_reduction": 0.0
+   },
+   "H- prevented": {
+    "status": "COLLAPSED",
+    "reason": "no complete cycle in the last 48 ticks",
+    "persists": false,
+    "cycles": 22,
+    "history_reentry_cycles": 0,
+    "first_collapse_tick": 159,
+    "failed_dependency": {
+     "entity": "A2",
+     "precondition": "differentiated stimulus >= threshold",
+     "detail": "A2 detects no alteration above its threshold (the signal decayed, is too weak or is out of reach)",
+     "value": -0.0023,
+     "need": 0.05
+    },
+    "status_log": [
+     [
+      0,
+      "DEGRADED"
+     ],
+     [
+      11,
+      "ACTIVE"
+     ],
+     [
+      136,
+      "DEGRADED"
+     ],
+     [
+      159,
+      "COLLAPSED"
+     ]
+    ],
+    "result_digest": "562d17d125b5deae55378f7afb759c886ee8397ff783cc0af15bd214b183a2e9",
+    "final_power": 15.28,
+    "first_divergence_from_H+": 17,
+    "mean_threshold_reduction": 0.0
+   }
+  },
+  "sss": {
+   "rows": [
+    {
+     "axis": "scale",
+     "value": 0.5,
+     "status": "ACTIVE",
+     "persists": true,
+     "cycles": 46,
+     "first_collapse_tick": null,
+     "failed_dependency": null,
+     "result_digest": "d7027b508a7f8a8b2232d6201d033f685c9bbbc0e9861e27d7e5d4ec7b3177e3"
+    },
+    {
+     "axis": "scale",
+     "value": 1.0,
+     "status": "ACTIVE",
+     "persists": true,
+     "cycles": 47,
+     "first_collapse_tick": null,
+     "failed_dependency": null,
+     "result_digest": "1e4dcf50755e2a932813c8117d7c4c543263a8633098c217c838232e510327a7"
+    },
+    {
+     "axis": "scale",
+     "value": 1.5,
+     "status": "COLLAPSED",
+     "persists": false,
+     "cycles": 2,
+     "first_collapse_tick": 59,
+     "failed_dependency": {
+      "entity": "A2",
+      "precondition": "differentiated stimulus >= threshold",
+      "detail": "A2 detects no alteration above its threshold (the signal decayed, is too weak or is out of reach)",
+      "value": -0.0023,
+      "need": 0.05
+     },
+     "result_digest": "70d327e9cb5a824668aa3e7d3141ece89dcd51e09592ccf983da24e2bd5645ee"
+    },
+    {
+     "axis": "scale",
+     "value": 2.0,
+     "status": "COLLAPSED",
+     "persists": false,
+     "cycles": 2,
+     "first_collapse_tick": 59,
+     "failed_dependency": {
+      "entity": "A2",
+      "precondition": "differentiated stimulus >= threshold",
+      "detail": "A2 detects no alteration above its threshold (the signal decayed, is too weak or is out of reach)",
+      "value": -0.0023,
+      "need": 0.05
+     },
+     "result_digest": "2ca032c9967732d74cd326012c43008742f954702a86d4b9c57909513c92fb0a"
+    },
+    {
+     "axis": "size",
+     "value": 0.5,
+     "status": "COLLAPSED",
+     "persists": false,
+     "cycles": 2,
+     "first_collapse_tick": 59,
+     "failed_dependency": {
+      "entity": "A2",
+      "precondition": "differentiated stimulus >= threshold",
+      "detail": "A2 detects no alteration above its threshold (the signal decayed, is too weak or is out of reach)",
+      "value": -0.0023,
+      "need": 0.05
+     },
+     "result_digest": "77b5e175f97cb40b81a5507dd6727f55f603b7a90760339c0a1ebbb46829160e"
+    },
+    {
+     "axis": "size",
+     "value": 1.0,
+     "status": "ACTIVE",
+     "persists": true,
+     "cycles": 47,
+     "first_collapse_tick": null,
+     "failed_dependency": null,
+     "result_digest": "1e4dcf50755e2a932813c8117d7c4c543263a8633098c217c838232e510327a7"
+    },
+    {
+     "axis": "size",
+     "value": 2.0,
+     "status": "COLLAPSED",
+     "persists": false,
+     "cycles": 2,
+     "first_collapse_tick": 59,
+     "failed_dependency": {
+      "entity": "A2",
+      "precondition": "differentiated stimulus >= threshold",
+      "detail": "A2 detects no alteration above its threshold (the signal decayed, is too weak or is out of reach)",
+      "value": -0.0023,
+      "need": 0.05
+     },
+     "result_digest": "8d8d4096af808aafab44141e8d12fa9cb6800e3d5e7bb3860a301605d14c6ef9"
+    },
+    {
+     "axis": "size",
+     "value": 3.0,
+     "status": "COLLAPSED",
+     "persists": false,
+     "cycles": 3,
+     "first_collapse_tick": 64,
+     "failed_dependency": {
+      "entity": "A2",
+      "precondition": "differentiated stimulus >= threshold",
+      "detail": "A2 detects no alteration above its threshold (the signal decayed, is too weak or is out of reach)",
+      "value": -0.0023,
+      "need": 0.05
+     },
+     "result_digest": "1b24fe027c2810783e61c2298367577104b1f75b1284ee9fed5ef0aeb6323cef"
+    },
+    {
+     "axis": "speed",
+     "value": 0.5,
+     "status": "COLLAPSED",
+     "persists": false,
+     "cycles": 2,
+     "first_collapse_tick": 69,
+     "failed_dependency": {
+      "entity": "A2",
+      "precondition": "differentiated stimulus >= threshold",
+      "detail": "A2 detects no alteration above its threshold (the signal decayed, is too weak or is out of reach)",
+      "value": -0.0024,
+      "need": 0.05
+     },
+     "result_digest": "a8e096b9dd6d4d72f53c53b4c9d98a047901c8274c4c401806b84338761d2973"
+    },
+    {
+     "axis": "speed",
+     "value": 1.0,
+     "status": "ACTIVE",
+     "persists": true,
+     "cycles": 47,
+     "first_collapse_tick": null,
+     "failed_dependency": null,
+     "result_digest": "1e4dcf50755e2a932813c8117d7c4c543263a8633098c217c838232e510327a7"
+    },
+    {
+     "axis": "speed",
+     "value": 2.0,
+     "status": "COLLAPSED",
+     "persists": false,
+     "cycles": 34,
+     "first_collapse_tick": 174,
+     "failed_dependency": {
+      "entity": "A2",
+      "precondition": "differentiated stimulus >= threshold",
+      "detail": "A2 detects no alteration above its threshold (the signal decayed, is too weak or is out of reach)",
+      "value": -0.0028,
+      "need": 0.0476
+     },
+     "result_digest": "a86bbc6931b9dd5521ad3d76be0312ea3825331f71a0bfc19da147ab1e3817bd"
+    },
+    {
+     "axis": "speed",
+     "value": 3.0,
+     "status": "COLLAPSED",
+     "persists": false,
+     "cycles": 1,
+     "first_collapse_tick": 51,
+     "failed_dependency": {
+      "entity": "A2",
+      "precondition": "differentiated stimulus >= threshold",
+      "detail": "A2 detects no alteration above its threshold (the signal decayed, is too weak or is out of reach)",
+      "value": -0.0033,
+      "need": 0.05
+     },
+     "result_digest": "ae149bb9ce97555d9f274e926fd7ade58ea94dc7b5d0b8673f3b4e6190f75b23"
+    }
+   ]
+  },
+  "address_domain": {
+   "rows": [
+    {
+     "path": "entities.A2.x",
+     "value": 4,
+     "status": "ACTIVE",
+     "persists": true,
+     "cycles": 47,
+     "first_collapse_tick": null,
+     "failed_dependency": null,
+     "result_digest": "9dfb4acc53a8a2a575f63e051f962f7e2cfc6fa51aee8dc8eceed24df01d892e"
+    },
+    {
+     "path": "entities.A2.x",
+     "value": 7,
+     "status": "COLLAPSED",
+     "persists": false,
+     "cycles": 0,
+     "first_collapse_tick": 48,
+     "failed_dependency": {
+      "entity": "A2",
+      "precondition": "differentiated stimulus >= threshold",
+      "detail": "A2 detects no alteration above its threshold (the signal decayed, is too weak or is out of reach)",
+      "value": -0.0023,
+      "need": 0.05
+     },
+     "result_digest": "d00d24e436ce496d21fda3337f6c8b00cb33e6ce33935c2fb9edcc411aa94b1d"
+    },
+    {
+     "path": "entities.A2.x",
+     "value": 9,
+     "status": "COLLAPSED",
+     "persists": false,
+     "cycles": 0,
+     "first_collapse_tick": 48,
+     "failed_dependency": {
+      "entity": "A2",
+      "precondition": "differentiated stimulus >= threshold",
+      "detail": "A2 detects no alteration above its threshold (the signal decayed, is too weak or is out of reach)",
+      "value": -0.0023,
+      "need": 0.05
+     },
+     "result_digest": "bf61a195d50324dbac808d7ff051692c16dd8fd69a3f30a1690a7c907f65f7cb"
+    },
+    {
+     "path": "entities.A2.y",
+     "value": 3,
+     "status": "ACTIVE",
+     "persists": true,
+     "cycles": 46,
+     "first_collapse_tick": null,
+     "failed_dependency": null,
+     "result_digest": "63eb06735946dacb57493ce48759c702189e8ba0bf19f0d553e2a2de6abd9a89"
+    },
+    {
+     "path": "entities.A2.y",
+     "value": 9,
+     "status": "ACTIVE",
+     "persists": true,
+     "cycles": 46,
+     "first_collapse_tick": null,
+     "failed_dependency": null,
+     "result_digest": "3390a287bab428c5253440624d2aab72e431b918fba4535b699a0727c8579e90"
+    },
+    {
+     "path": "entities.A2.sensor_radius",
+     "value": 0,
+     "status": "COLLAPSED",
+     "persists": false,
+     "cycles": 0,
+     "first_collapse_tick": 48,
+     "failed_dependency": {
+      "entity": "A2",
+      "precondition": "differentiated stimulus >= threshold",
+      "detail": "A2 detects no alteration above its threshold (the signal decayed, is too weak or is out of reach)",
+      "value": -0.0023,
+      "need": 0.05
+     },
+     "result_digest": "a8c1041736017cf4ac77379eeffa7a976f7bca2113d1e58b0642f77736beb119"
+    },
+    {
+     "path": "entities.A2.sensor_radius",
+     "value": 1,
+     "status": "ACTIVE",
+     "persists": true,
+     "cycles": 46,
+     "first_collapse_tick": null,
+     "failed_dependency": null,
+     "result_digest": "59d1b4735e20496dbe4df7eb6af68e8884a9b7f806be276da221478022abca97"
+    },
+    {
+     "path": "entities.A2.sensor_radius",
+     "value": 3,
+     "status": "ACTIVE",
+     "persists": true,
+     "cycles": 47,
+     "first_collapse_tick": null,
+     "failed_dependency": null,
+     "result_digest": "c2dfe57bc3575ee812c1d671e008a69d2caafafedc689158a94f92d3eb1f0937"
+    },
+    {
+     "path": "entities.A1.sensor_radius",
+     "value": 0,
+     "status": "ACTIVE",
+     "persists": true,
+     "cycles": 47,
+     "first_collapse_tick": null,
+     "failed_dependency": null,
+     "result_digest": "c18739d1759066e5f7085714ec8da30b3008a93a00ab79a729ee87fa808aa01a"
+    },
+    {
+     "path": "entities.A1.sensor_radius",
+     "value": 1,
+     "status": "ACTIVE",
+     "persists": true,
+     "cycles": 47,
+     "first_collapse_tick": null,
+     "failed_dependency": null,
+     "result_digest": "a2bdc11fa24af688f4f43afd9ef3ac325fa6fd4c29c181b5013eff62df66b9fb"
+    },
+    {
+     "path": "entities.A1.sensor_radius",
+     "value": 3,
+     "status": "COLLAPSED",
+     "persists": false,
+     "cycles": 3,
+     "first_collapse_tick": 64,
+     "failed_dependency": {
+      "entity": "A2",
+      "precondition": "differentiated stimulus >= threshold",
+      "detail": "A2 detects no alteration above its threshold (the signal decayed, is too weak or is out of reach)",
+      "value": -0.0023,
+      "need": 0.05
+     },
+     "result_digest": "dd7843a68c91ea10e6da868dcaefcab83b308b3e49e8bcde319b120f3ba095ca"
+    },
+    {
+     "path": "entities.A2.window",
+     "value": 2,
+     "status": "ACTIVE",
+     "persists": true,
+     "cycles": 47,
+     "first_collapse_tick": null,
+     "failed_dependency": null,
+     "result_digest": "f08a4438e586b47602ab2284abe98488c363c450a181bacaffead1ddc01a2b38"
+    },
+    {
+     "path": "entities.A2.window",
+     "value": 20,
+     "status": "ACTIVE",
+     "persists": true,
+     "cycles": 47,
+     "first_collapse_tick": null,
+     "failed_dependency": null,
+     "result_digest": "d546a6fc64d36e1dd6dc538d5681cd1d18d5acaab49a8fb93db3cffb174da673"
+    },
+    {
+     "path": "entities.A1.window",
+     "value": 2,
+     "status": "COLLAPSED",
+     "persists": false,
+     "cycles": 0,
+     "first_collapse_tick": 48,
+     "failed_dependency": {
+      "entity": "A2",
+      "precondition": "differentiated stimulus >= threshold",
+      "detail": "A2 detects no alteration above its threshold (the signal decayed, is too weak or is out of reach)",
+      "value": -0.0023,
+      "need": 0.05
+     },
+     "result_digest": "b1495c2893f75b44683640ca3516d9d772af9a3c1f1309a5473aa9f558b4b45a"
+    },
+    {
+     "path": "entities.A1.window",
+     "value": 20,
+     "status": "ACTIVE",
+     "persists": true,
+     "cycles": 47,
+     "first_collapse_tick": null,
+     "failed_dependency": null,
+     "result_digest": "7391ca93c4e24ff4b39288eb4f3b141454517b0ec7c1de8459dbf220e84db1fe"
+    },
+    {
+     "path": "entities.A2.persist",
+     "value": 1,
+     "status": "COLLAPSED",
+     "persists": false,
+     "cycles": 2,
+     "first_collapse_tick": 59,
+     "failed_dependency": {
+      "entity": "A2",
+      "precondition": "differentiated stimulus >= threshold",
+      "detail": "A2 detects no alteration above its threshold (the signal decayed, is too weak or is out of reach)",
+      "value": -0.0023,
+      "need": 0.05
+     },
+     "result_digest": "799c6b33fd27d01fda6fd6b5cc146147fbbc24895f6e4b2fd21353772a5505aa"
+    },
+    {
+     "path": "entities.A2.persist",
+     "value": 6,
+     "status": "COLLAPSED",
+     "persists": false,
+     "cycles": 3,
+     "first_collapse_tick": 69,
+     "failed_dependency": {
+      "entity": "A2",
+      "precondition": "differentiated stimulus >= threshold",
+      "detail": "A2 detects no alteration above its threshold (the signal decayed, is too weak or is out of reach)",
+      "value": -0.0023,
+      "need": 0.05
+     },
+     "result_digest": "21f6544cf5f75d19ccf9524fd51cded3883e0799e8d6b9f0be67f3cafc4a8830"
+    },
+    {
+     "path": "entities.A2.speed",
+     "value": 0.5,
+     "status": "COLLAPSED",
+     "persists": false,
+     "cycles": 2,
+     "first_collapse_tick": 64,
+     "failed_dependency": {
+      "entity": "A2",
+      "precondition": "differentiated stimulus >= threshold",
+      "detail": "A2 detects no alteration above its threshold (the signal decayed, is too weak or is out of reach)",
+      "value": -0.0024,
+      "need": 0.05
+     },
+     "result_digest": "4eaeb0acfc5d4ecd7154c768fcaa4a9e1713ec87c01c327128fbf50172d56792"
+    },
+    {
+     "path": "entities.A2.speed",
+     "value": 2.0,
+     "status": "COLLAPSED",
+     "persists": false,
+     "cycles": 2,
+     "first_collapse_tick": 59,
+     "failed_dependency": {
+      "entity": "A2",
+      "precondition": "differentiated stimulus >= threshold",
+      "detail": "A2 detects no alteration above its threshold (the signal decayed, is too weak or is out of reach)",
+      "value": -0.0028,
+      "need": 0.05
+     },
+     "result_digest": "30ea2b217fa9331e5bf1e890cac92a1a799569985624f13cf1a74209aa4be764"
+    }
+   ]
+  },
+  "interventions": [
+   {
+    "label": "A2 removed at tick 100",
+    "interventions": [
+     {
+      "tick": 100,
+      "op": "REMOVE",
+      "target": "A2"
+     }
+    ],
+    "status": "COLLAPSED",
+    "cycles": 19,
+    "history_reentry_cycles": 19,
+    "status_trajectory": [
+     [
+      0,
+      "DEGRADED"
+     ],
+     [
+      11,
+      "ACTIVE"
+     ],
+     [
+      121,
+      "DEGRADED"
+     ],
+     [
+      144,
+      "COLLAPSED"
+     ]
+    ],
+    "failed_dependency": "A2 is absent: nothing reconfigures the environment for A1",
+    "final_power": 18.06,
+    "result_digest": "27372972f580d54ebfee175f64a72615601aad5b8bdb7ee2b8e8d8a3650b858f",
+    "seconds": 0.049
+   },
+   {
+    "label": "interaction channel isolated at 100",
+    "interventions": [
+     {
+      "tick": 100,
+      "op": "ISOLATE",
+      "target": "interaction_channel"
+     }
+    ],
+    "status": "COLLAPSED",
+    "cycles": 20,
+    "history_reentry_cycles": 20,
+    "status_trajectory": [
+     [
+      0,
+      "DEGRADED"
+     ],
+     [
+      11,
+      "ACTIVE"
+     ],
+     [
+      126,
+      "DEGRADED"
+     ],
+     [
+      149,
+      "COLLAPSED"
+     ]
+    ],
+    "failed_dependency": "the interaction channel between A1's alteration and A2 is interrupted",
+    "final_power": 17.56,
+    "result_digest": "c4fb1e128a94b818334e81374236cc01ef0e9f4f6013367d41b677cfcaaf84db",
+    "seconds": 0.059
+   },
+   {
+    "label": "isolated 100, reconnected 150, no pulse (horizon 360)",
+    "interventions": [
+     {
+      "tick": 100,
+      "op": "ISOLATE",
+      "target": "interaction_channel"
+     },
+     {
+      "tick": 150,
+      "op": "RECONNECT",
+      "target": "interaction_channel"
+     }
+    ],
+    "status": "COLLAPSED",
+    "cycles": 20,
+    "history_reentry_cycles": 20,
+    "status_trajectory": [
+     [
+      0,
+      "DEGRADED"
+     ],
+     [
+      11,
+      "ACTIVE"
+     ],
+     [
+      126,
+      "DEGRADED"
+     ],
+     [
+      149,
+      "COLLAPSED"
+     ]
+    ],
+    "failed_dependency": "A2 detects no alteration above its threshold (the signal decayed, is too weak or is out of reach)",
+    "final_power": 24.0,
+    "result_digest": "ca6b0a847f41b374874cc74c108b2afe8432a7c3734356c54fccde893b4b8bd5",
+    "seconds": 0.157
+   },
+   {
+    "label": "isolated 100, reconnected 150, resource pulse 2.0 at 151 (horizon 360)",
+    "interventions": [
+     {
+      "tick": 100,
+      "op": "ISOLATE",
+      "target": "interaction_channel"
+     },
+     {
+      "tick": 150,
+      "op": "RECONNECT",
+      "target": "interaction_channel"
+     },
+     {
+      "tick": 151,
+      "op": "ALTER_RESOURCE",
+      "inject": {
+       "x": 3,
+       "y": 6,
+       "amount": 2.0
+      }
+     }
+    ],
+    "status": "ACTIVE",
+    "cycles": 61,
+    "history_reentry_cycles": 61,
+    "status_trajectory": [
+     [
+      0,
+      "DEGRADED"
+     ],
+     [
+      11,
+      "ACTIVE"
+     ],
+     [
+      126,
+      "DEGRADED"
+     ],
+     [
+      149,
+      "COLLAPSED"
+     ],
+     [
+      156,
+      "DEGRADED"
+     ],
+     [
+      161,
+      "ACTIVE"
+     ]
+    ],
+    "failed_dependency": null,
+    "final_power": 0.4,
+    "result_digest": "6272ae497db3b0c91b7436da76eb9a6e6382d2747c2bcae3401c1abad313cb6b",
+    "seconds": 0.176
+   },
+   {
+    "label": "isolated 100, reconnected 150, resource pulse 4.0 at 151 (horizon 360)",
+    "interventions": [
+     {
+      "tick": 100,
+      "op": "ISOLATE",
+      "target": "interaction_channel"
+     },
+     {
+      "tick": 150,
+      "op": "RECONNECT",
+      "target": "interaction_channel"
+     },
+     {
+      "tick": 151,
+      "op": "ALTER_RESOURCE",
+      "inject": {
+       "x": 3,
+       "y": 6,
+       "amount": 4.0
+      }
+     }
+    ],
+    "status": "COLLAPSED",
+    "cycles": 21,
+    "history_reentry_cycles": 21,
+    "status_trajectory": [
+     [
+      0,
+      "DEGRADED"
+     ],
+     [
+      11,
+      "ACTIVE"
+     ],
+     [
+      126,
+      "DEGRADED"
+     ],
+     [
+      149,
+      "COLLAPSED"
+     ],
+     [
+      156,
+      "DEGRADED"
+     ],
+     [
+      204,
+      "COLLAPSED"
+     ]
+    ],
+    "failed_dependency": "A2 detects no alteration above its threshold (the signal decayed, is too weak or is out of reach)",
+    "final_power": 24.0,
+    "result_digest": "862f4b2380bdc92997a7db07cc630becd926c7968698c02a7e8c871f07fe50d9",
+    "seconds": 0.09
+   },
+   {
+    "label": "arena radius 2 at tick 50",
+    "interventions": [
+     {
+      "tick": 50,
+      "op": "CHANGE_BOUNDARY",
+      "arena_radius": 2
+     }
+    ],
+    "status": "COLLAPSED",
+    "cycles": 9,
+    "history_reentry_cycles": 9,
+    "status_trajectory": [
+     [
+      0,
+      "DEGRADED"
+     ],
+     [
+      11,
+      "ACTIVE"
+     ],
+     [
+      71,
+      "DEGRADED"
+     ],
+     [
+      94,
+      "COLLAPSED"
+     ]
+    ],
+    "failed_dependency": "A2 detects no alteration above its threshold (the signal decayed, is too weak or is out of reach)",
+    "final_power": 24.0,
+    "result_digest": "3c6c96982b43911899a6cc10b012ebc476daeab56ab6fc245e802830b778b7ae",
+    "seconds": 0.056
+   },
+   {
+    "label": "arena radius 4 at tick 50",
+    "interventions": [
+     {
+      "tick": 50,
+      "op": "CHANGE_BOUNDARY",
+      "arena_radius": 4
+     }
+    ],
+    "status": "ACTIVE",
+    "cycles": 47,
+    "history_reentry_cycles": 47,
+    "status_trajectory": [
+     [
+      0,
+      "DEGRADED"
+     ],
+     [
+      11,
+      "ACTIVE"
+     ]
+    ],
+    "failed_dependency": null,
+    "final_power": 0.4,
+    "result_digest": "e772089fa96ca9d26653081632fef6160abd7d3724886dc35bc419b47175fef8",
+    "seconds": 0.062
+   },
+   {
+    "label": "scale 2 at tick 100",
+    "interventions": [
+     {
+      "tick": 100,
+      "op": "ALTER_SSS",
+      "scale": 2.0
+     }
+    ],
+    "status": "COLLAPSED",
+    "cycles": 20,
+    "history_reentry_cycles": 20,
+    "status_trajectory": [
+     [
+      0,
+      "DEGRADED"
+     ],
+     [
+      11,
+      "ACTIVE"
+     ],
+     [
+      126,
+      "DEGRADED"
+     ],
+     [
+      149,
+      "COLLAPSED"
+     ]
+    ],
+    "failed_dependency": "A2 detects no alteration above its threshold (the signal decayed, is too weak or is out of reach)",
+    "final_power": 16.48,
+    "result_digest": "8a1a43a3e17c35a7eeafa9715290409d0c85a2af99ef9fad66647884254df071",
+    "seconds": 0.05
+   },
+   {
+    "label": "infinite-resource control",
+    "interventions": [],
+    "status": "ACTIVE",
+    "cycles": 47,
+    "history_reentry_cycles": 47,
+    "status_trajectory": [
+     [
+      0,
+      "DEGRADED"
+     ],
+     [
+      11,
+      "ACTIVE"
+     ]
+    ],
+    "failed_dependency": null,
+    "final_power": 24.0,
+    "result_digest": "597374e94783e5d3a27ec759f46f042f40b89c09a746ea11e0e2564f8431053c",
+    "seconds": 0.054
+   },
+   {
+    "label": "infinite-resource control with history removed",
+    "interventions": [
+     {
+      "tick": 0,
+      "op": "DISABLE_HISTORY",
+      "mode": "removed"
+     }
+    ],
+    "status": "ACTIVE",
+    "cycles": 47,
+    "history_reentry_cycles": 0,
+    "status_trajectory": [
+     [
+      0,
+      "DEGRADED"
+     ],
+     [
+      11,
+      "ACTIVE"
+     ]
+    ],
+    "failed_dependency": null,
+    "final_power": 24.0,
+    "result_digest": "651aba13a9749971e1c997b85368b1deaa8a7dbcc43b01bb933f46ccc1d9f538",
+    "seconds": 0.052
+   }
+  ],
+  "observation": {
+   "1": {
+    "observation": {
+     "sampling_interval": 1,
+     "spatial_resolution": 1,
+     "region": null
+    },
+    "observed_cycles": 47,
+    "true_cycles": 47,
+    "observed_status": "ACTIVE",
+    "true_status": "ACTIVE",
+    "agrees": true
+   },
+   "2": {
+    "observation": {
+     "sampling_interval": 2,
+     "spatial_resolution": 1,
+     "region": null
+    },
+    "observed_cycles": 0,
+    "true_cycles": 47,
+    "observed_status": "COLLAPSED",
+    "true_status": "ACTIVE",
+    "agrees": false
+   },
+   "4": {
+    "observation": {
+     "sampling_interval": 4,
+     "spatial_resolution": 1,
+     "region": null
+    },
+    "observed_cycles": 0,
+    "true_cycles": 47,
+    "observed_status": "COLLAPSED",
+    "true_status": "ACTIVE",
+    "agrees": false
+   },
+   "8": {
+    "observation": {
+     "sampling_interval": 8,
+     "spatial_resolution": 1,
+     "region": null
+    },
+    "observed_cycles": 0,
+    "true_cycles": 47,
+    "observed_status": "COLLAPSED",
+    "true_status": "ACTIVE",
+    "agrees": false
+   }
+  }
+ }
+}

@@ -1,0 +1,50 @@
+{
+ "body": null,
+ "claim": "an illustration of the stated data under the stated conditions; no claim beyond them",
+ "evidence": {
+  "band": [
+   "EVIDENCE: CONCEPTUAL  ·  a drawing, not data",
+   "REAL-WORLD EXPERIMENT: none recorded (no measurement exists behind this figure)",
+   "BODY: none",
+   "RECORDS: 1 (rec-f0891a2c40)  ·  generated 2026-11-01  ·  TEOO teoo/0.1"
+  ],
+  "classes": [
+   "CONCEPTUAL"
+  ],
+  "real_world_experiment_recorded": false,
+  "watermarks": [
+   "CONCEPTUAL"
+  ]
+ },
+ "experiment": null,
+ "figure_id": "fig-bbac06be5da547d8",
+ "generated_at": "2026-11-01T00:00:00.000000Z",
+ "kind": "diagram",
+ "metadata_digest": "5492aed5d94ec635823deb99eb6bf580dedb28faa6eb19a72786e4de6064ba5e",
+ "observation_limits": {
+  "config_version": null,
+  "note": "A synthetic ledger or a drawing: what lies outside what is stated here is unknown, not absent.",
+  "summary": {
+   "conditions": "specification"
+  },
+  "t": null
+ },
+ "provenance": {
+  "records": [
+   {
+    "kind": "REFERENCE_STATE",
+    "lineage_classes": [
+     "CONCEPTUAL"
+    ],
+    "provenance": "CONCEPTUAL",
+    "record_digest": "f0891a2c40dc3d73a335e45d1a9d1a872c87079e31f6518fb5b705f2827d27af",
+    "record_id": "rec-f0891a2c40dc3d73a335e45d"
+   }
+  ],
+  "source_digest": "bbac06be5da547d8578c3430f9a7ef1e05fb295db472b7f7a2e83ee16659ca27"
+ },
+ "schema": "teoo.figure/1",
+ "teoo_version": "teoo/0.1",
+ "title": "Fig R4 · Receipt, evidence, review, plan, execution, observation, closure, restoration",
+ "units": {}
+}

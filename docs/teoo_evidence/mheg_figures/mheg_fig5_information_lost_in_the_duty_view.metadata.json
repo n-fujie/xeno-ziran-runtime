@@ -1,0 +1,62 @@
+{
+ "body": null,
+ "claim": "an illustration of the stated data under the stated conditions; no claim beyond them",
+ "evidence": {
+  "band": [
+   "EVIDENCE: SYNTHETIC  ·  artificial functional-test data, not a measurement",
+   "REAL-WORLD EXPERIMENT: none recorded (no measurement exists behind this figure)",
+   "BODY: none",
+   "RECORDS: 1 (rec-c663139f12)  ·  generated 2026-11-01  ·  TEOO teoo/0.1"
+  ],
+  "classes": [
+   "SYNTHETIC"
+  ],
+  "real_world_experiment_recorded": false,
+  "watermarks": [
+   "SYNTHETIC"
+  ]
+ },
+ "experiment": {
+  "conditions": [
+   "crosswalk projection",
+   "finding-level reading"
+  ],
+  "protocol_id": "MH-EXP-01",
+  "seeds": [
+   6001,
+   6001
+  ],
+  "trials_per_condition": 1,
+  "version": 1
+ },
+ "figure_id": "fig-72e1c56e6f83e495",
+ "generated_at": "2026-11-01T00:00:00.000000Z",
+ "kind": "bars",
+ "metadata_digest": "c96c4c1b19c0e3139aae86b95765034a1c2229b9a52f212a1d7a882aee8b3778",
+ "observation_limits": {
+  "config_version": null,
+  "note": "A synthetic institution or a drawing: what lies outside what is stated here is unknown, not absent.",
+  "summary": {
+   "conditions": "specification and projection code; no simulation"
+  },
+  "t": null
+ },
+ "provenance": {
+  "records": [
+   {
+    "kind": "OBSERVATION",
+    "lineage_classes": [
+     "SYNTHETIC"
+    ],
+    "provenance": "SYNTHETIC",
+    "record_digest": "c663139f122edbc97a2b7942f08105c59a4a91e8957badd54b943bf54b82e251",
+    "record_id": "rec-c663139f122edbc97a2b7942"
+   }
+  ],
+  "source_digest": "72e1c56e6f83e495acc75c90cc4ef0b4bfc1ffe6867366426f1bb1858ee03a11"
+ },
+ "schema": "teoo.figure/1",
+ "teoo_version": "teoo/0.1",
+ "title": "Fig M5 · What the duty view cannot tell apart (MH-EXP-01)",
+ "units": {}
+}

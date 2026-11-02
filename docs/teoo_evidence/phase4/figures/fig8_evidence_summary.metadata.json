@@ -1,0 +1,98 @@
+{
+ "body": null,
+ "claim": "an illustration of the stated data under the stated conditions; no claim beyond them",
+ "evidence": {
+  "band": [
+   "EVIDENCE: SYNTHETIC  ·  artificial functional-test data, not a measurement",
+   "REAL-WORLD EXPERIMENT: none recorded (no measurement exists behind this figure)",
+   "BODY: none",
+   "RECORDS: 5 (rec-5c9fbed58e, rec-8335e067fa…)  ·  generated 2026-10-31  ·  TEOO teoo/0.1"
+  ],
+  "classes": [
+   "SYNTHETIC"
+  ],
+  "real_world_experiment_recorded": false,
+  "watermarks": [
+   "SYNTHETIC"
+  ]
+ },
+ "experiment": {
+  "conditions": [
+   "fixed-fine",
+   "variants"
+  ],
+  "protocol_id": "TEOO4-EXP-A",
+  "seeds": [
+   1001,
+   1030
+  ],
+  "trials_per_condition": 8,
+  "version": 2
+ },
+ "figure_id": "fig-80ce2caf2f15c874",
+ "generated_at": "2026-10-31T00:00:00.000000Z",
+ "kind": "table",
+ "metadata_digest": "96e3057bcb1b43612f2f7a5758ad62de2334e53d549ec6670126d21d89845a68",
+ "observation_limits": {
+  "config_version": null,
+  "note": "These are measurements by a simulated sensor of a synthetic world: the limits are those of the sensor conditions stated here; what lies outside them is unknown, not absent.",
+  "summary": {
+   "observation conditions": "see each experiment"
+  },
+  "t": null
+ },
+ "provenance": {
+  "records": [
+   {
+    "kind": "OBSERVATION",
+    "lineage_classes": [
+     "SYNTHETIC"
+    ],
+    "provenance": "SYNTHETIC",
+    "record_digest": "5c9fbed58e016f5abe09cadfb16b8d406db21e404d4b3c58692db480c9a7eaa8",
+    "record_id": "rec-5c9fbed58e016f5abe09cadf"
+   },
+   {
+    "kind": "OBSERVATION",
+    "lineage_classes": [
+     "SYNTHETIC"
+    ],
+    "provenance": "SYNTHETIC",
+    "record_digest": "8335e067faeec7cce75798fbcaf15ea844fe0c9c4bfeb3f1a0bc9d3c17bbd59e",
+    "record_id": "rec-8335e067faeec7cce75798fb"
+   },
+   {
+    "kind": "OBSERVATION",
+    "lineage_classes": [
+     "SYNTHETIC"
+    ],
+    "provenance": "SYNTHETIC",
+    "record_digest": "1707620131708e820edbd5920fa894aa525ecad930223f4ecc5cf8087267c596",
+    "record_id": "rec-1707620131708e820edbd592"
+   },
+   {
+    "kind": "OBSERVATION",
+    "lineage_classes": [
+     "SYNTHETIC"
+    ],
+    "provenance": "SYNTHETIC",
+    "record_digest": "1d0c05362132a5e305dc6f7c6822238b5980974acbfd6ba99d87a9656d7fd2af",
+    "record_id": "rec-1d0c05362132a5e305dc6f7c"
+   },
+   {
+    "kind": "OBSERVATION",
+    "lineage_classes": [
+     "SYNTHETIC"
+    ],
+    "provenance": "SYNTHETIC",
+    "record_digest": "a508abaf24ad8dcdde5534a37950cad85d216451998f6025a33510dcc76e548a",
+    "record_id": "rec-a508abaf24ad8dcdde5534a3"
+   }
+  ],
+  "source_digest": "80ce2caf2f15c8745520c96b7ba18e1f8a0659061c0182404889518bc09aa8c2"
+ },
+ "schema": "teoo.figure/1",
+ "teoo_version": "teoo/0.1",
+ "title": "Fig 8 · Experimental evidence summary (protocol version 2, 30 synthetic worlds per experiment)",
+ "units": {}
+}

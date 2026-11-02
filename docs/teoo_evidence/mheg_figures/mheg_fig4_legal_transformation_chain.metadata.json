@@ -1,0 +1,50 @@
+{
+ "body": null,
+ "claim": "an illustration of the stated data under the stated conditions; no claim beyond them",
+ "evidence": {
+  "band": [
+   "EVIDENCE: CONCEPTUAL  ·  a drawing, not data",
+   "REAL-WORLD EXPERIMENT: none recorded (no measurement exists behind this figure)",
+   "BODY: none",
+   "RECORDS: 1 (rec-431e75f788)  ·  generated 2026-11-01  ·  TEOO teoo/0.1"
+  ],
+  "classes": [
+   "CONCEPTUAL"
+  ],
+  "real_world_experiment_recorded": false,
+  "watermarks": [
+   "CONCEPTUAL"
+  ]
+ },
+ "experiment": null,
+ "figure_id": "fig-ef8531d414074e78",
+ "generated_at": "2026-11-01T00:00:00.000000Z",
+ "kind": "diagram",
+ "metadata_digest": "4434625441c890d89f370531500d75e7d08ac87433045b2aaae626084dd6f225",
+ "observation_limits": {
+  "config_version": null,
+  "note": "A synthetic institution or a drawing: what lies outside what is stated here is unknown, not absent.",
+  "summary": {
+   "conditions": "specification"
+  },
+  "t": null
+ },
+ "provenance": {
+  "records": [
+   {
+    "kind": "REFERENCE_STATE",
+    "lineage_classes": [
+     "CONCEPTUAL"
+    ],
+    "provenance": "CONCEPTUAL",
+    "record_digest": "431e75f788f92a4ae3718f00ded9ce44cbd7ec51f22ebdd53e1739227028e029",
+    "record_id": "rec-431e75f788f92a4ae3718f00"
+   }
+  ],
+  "source_digest": "ef8531d414074e7829259ffc62b95e1268ba5e74ff0a2fc7f2cbb34bffff5fcf"
+ },
+ "schema": "teoo.figure/1",
+ "teoo_version": "teoo/0.1",
+ "title": "Fig M4 · Legal transformation chain: nine stages from legal source to material restoration",
+ "units": {}
+}

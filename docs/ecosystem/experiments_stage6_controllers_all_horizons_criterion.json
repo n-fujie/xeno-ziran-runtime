@@ -1,0 +1,5828 @@
+{
+"seeds": {
+"library": "exploration 1-5 and validation 6-10",
+"evaluation": [
+11,
+30
+]
+},
+"controllers": [
+"none",
+"fixed",
+"rule_based",
+"cost_aware",
+"delayed",
+"noisy"
+],
+"signatures": {
+"coupling gain 0.5": {
+"address": "ok",
+"coupling": "weak",
+"history": "ok",
+"renewal": "normal",
+"resource": "reduced"
+},
+"resource regrow 0.01 charge 0.2": {
+"address": "ok",
+"coupling": "weak",
+"history": "ok",
+"renewal": "normal",
+"resource": "reduced"
+},
+"renewal efficiency 0.6": {
+"address": "ok",
+"coupling": "weak",
+"history": "ok",
+"renewal": "normal",
+"resource": "reduced"
+},
+"renewal stopped": {
+"address": "ok",
+"coupling": "weak",
+"history": "ok",
+"renewal": "normal",
+"resource": "reduced"
+},
+"Address partial 0.5": {
+"address": "degraded",
+"coupling": "normal",
+"history": "ok",
+"renewal": "normal",
+"resource": "normal"
+},
+"history lost": {
+"address": "ok",
+"coupling": "normal",
+"history": "lost",
+"renewal": "normal",
+"resource": "normal"
+}
+},
+"library": [
+{
+"id": "internal.m2_tap m=0.0 d=0",
+"actions": [
+{
+"action": "internal.m2_tap",
+"magnitude": 0.0,
+"duration": 0
+}
+],
+"klass": "A",
+"stresses": [
+"history lost"
+],
+"cost_components": {
+"switching": 1,
+"collateral": 0.1073,
+"energy_rate_norm": 0.9993
+},
+"signatures": [
+{
+"address": "ok",
+"coupling": "normal",
+"history": "lost",
+"renewal": "normal",
+"resource": "normal"
+}
+],
+"expected": 1.0,
+"cost": 0.7764
+},
+{
+"id": "resource.pulse m=1.0 d=0",
+"actions": [
+{
+"action": "resource.pulse",
+"magnitude": 1.0,
+"duration": 0
+}
+],
+"klass": "B",
+"stresses": [
+"coupling gain 0.5"
+],
+"cost_components": {
+"switching": 1,
+"collateral": 0.316,
+"energy_rate_norm": 1.0098
+},
+"signatures": [
+{
+"address": "ok",
+"coupling": "weak",
+"history": "ok",
+"renewal": "normal",
+"resource": "reduced"
+}
+],
+"expected": 0.25,
+"cost": 0.9999
+},
+{
+"id": "resource.pulse m=1.5 d=0",
+"actions": [
+{
+"action": "resource.pulse",
+"magnitude": 1.5,
+"duration": 0
+}
+],
+"klass": "B",
+"stresses": [
+"coupling gain 0.5"
+],
+"cost_components": {
+"switching": 1,
+"collateral": 0.316,
+"energy_rate_norm": 1.0098
+},
+"signatures": [
+{
+"address": "ok",
+"coupling": "weak",
+"history": "ok",
+"renewal": "normal",
+"resource": "reduced"
+}
+],
+"expected": 0.25,
+"cost": 0.9999
+},
+{
+"id": "resource.pulse m=2.0 d=0",
+"actions": [
+{
+"action": "resource.pulse",
+"magnitude": 2.0,
+"duration": 0
+}
+],
+"klass": "B",
+"stresses": [
+"coupling gain 0.5"
+],
+"cost_components": {
+"switching": 1,
+"collateral": 0.3161,
+"energy_rate_norm": 1.0098
+},
+"signatures": [
+{
+"address": "ok",
+"coupling": "weak",
+"history": "ok",
+"renewal": "normal",
+"resource": "reduced"
+}
+],
+"expected": 0.25,
+"cost": 1.0
+}
+],
+"failure_classes": [
+"no effective action",
+"action too weak",
+"action too late",
+"overshoot",
+"secondary collapse",
+"detection failure",
+"Address unresolved",
+"insufficient resource",
+"action cost too high",
+"action destabilized system",
+"outside tested action space"
+],
+"summary": [
+{
+"stress": "Address partial 0.3 (stronger)",
+"controller": "cost_aware",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 102.76,
+"mean_collateral": 10.247,
+"median_latency": null,
+"failures": {
+"outside tested action space": 20
+}
+},
+{
+"stress": "Address partial 0.3 (stronger)",
+"controller": "delayed",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 102.76,
+"mean_collateral": 10.247,
+"median_latency": null,
+"failures": {
+"outside tested action space": 20
+}
+},
+{
+"stress": "Address partial 0.3 (stronger)",
+"controller": "fixed",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 1.0,
+"mean_energy_use": 102.76,
+"mean_collateral": 10.168,
+"median_latency": null,
+"failures": {
+"Address unresolved": 20
+}
+},
+{
+"stress": "Address partial 0.3 (stronger)",
+"controller": "noisy",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.2,
+"mean_interventions": 0.2,
+"mean_energy_use": 102.76,
+"mean_collateral": 10.247,
+"median_latency": null,
+"failures": {
+"Address unresolved": 4,
+"outside tested action space": 16
+}
+},
+{
+"stress": "Address partial 0.3 (stronger)",
+"controller": "none",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 102.76,
+"mean_collateral": 10.247,
+"median_latency": null,
+"failures": {
+"detection failure": 20
+}
+},
+{
+"stress": "Address partial 0.3 (stronger)",
+"controller": "rule_based",
+"n": 20,
+"success_short": {
+"k": 4,
+"n": 20,
+"p": 0.2,
+"wilson95": [
+0.0807,
+0.416
+]
+},
+"success_medium": {
+"k": 4,
+"n": 20,
+"p": 0.2,
+"wilson95": [
+0.0807,
+0.416
+]
+},
+"success_long": {
+"k": 4,
+"n": 20,
+"p": 0.2,
+"wilson95": [
+0.0807,
+0.416
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 1.0,
+"mean_energy_use": 111.62,
+"mean_collateral": 8.237,
+"median_latency": 0,
+"failures": {
+"Address unresolved": 16
+}
+},
+{
+"stress": "Address partial 0.5",
+"controller": "cost_aware",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 102.76,
+"mean_collateral": 10.141,
+"median_latency": null,
+"failures": {
+"outside tested action space": 20
+}
+},
+{
+"stress": "Address partial 0.5",
+"controller": "delayed",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 102.76,
+"mean_collateral": 10.141,
+"median_latency": null,
+"failures": {
+"outside tested action space": 20
+}
+},
+{
+"stress": "Address partial 0.5",
+"controller": "fixed",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 1.0,
+"mean_energy_use": 102.79,
+"mean_collateral": 9.982,
+"median_latency": null,
+"failures": {
+"Address unresolved": 20
+}
+},
+{
+"stress": "Address partial 0.5",
+"controller": "noisy",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.2,
+"mean_interventions": 0.2,
+"mean_energy_use": 102.76,
+"mean_collateral": 10.141,
+"median_latency": null,
+"failures": {
+"Address unresolved": 4,
+"outside tested action space": 16
+}
+},
+{
+"stress": "Address partial 0.5",
+"controller": "none",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 102.76,
+"mean_collateral": 10.141,
+"median_latency": null,
+"failures": {
+"detection failure": 20
+}
+},
+{
+"stress": "Address partial 0.5",
+"controller": "rule_based",
+"n": 20,
+"success_short": {
+"k": 8,
+"n": 20,
+"p": 0.4,
+"wilson95": [
+0.2188,
+0.6134
+]
+},
+"success_medium": {
+"k": 8,
+"n": 20,
+"p": 0.4,
+"wilson95": [
+0.2188,
+0.6134
+]
+},
+"success_long": {
+"k": 8,
+"n": 20,
+"p": 0.4,
+"wilson95": [
+0.2188,
+0.6134
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 1.0,
+"mean_energy_use": 120.47,
+"mean_collateral": 6.178,
+"median_latency": 0,
+"failures": {
+"Address unresolved": 12
+}
+},
+{
+"stress": "Address partial 0.5 at tick 130 (later)",
+"controller": "cost_aware",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 94.36,
+"mean_collateral": 9.736,
+"median_latency": null,
+"failures": {
+"outside tested action space": 20
+}
+},
+{
+"stress": "Address partial 0.5 at tick 130 (later)",
+"controller": "delayed",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 94.36,
+"mean_collateral": 9.736,
+"median_latency": null,
+"failures": {
+"outside tested action space": 20
+}
+},
+{
+"stress": "Address partial 0.5 at tick 130 (later)",
+"controller": "fixed",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 1.0,
+"mean_energy_use": 94.37,
+"mean_collateral": 9.577,
+"median_latency": null,
+"failures": {
+"Address unresolved": 20
+}
+},
+{
+"stress": "Address partial 0.5 at tick 130 (later)",
+"controller": "noisy",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.2,
+"mean_interventions": 0.2,
+"mean_energy_use": 94.36,
+"mean_collateral": 9.725,
+"median_latency": null,
+"failures": {
+"Address unresolved": 4,
+"outside tested action space": 16
+}
+},
+{
+"stress": "Address partial 0.5 at tick 130 (later)",
+"controller": "none",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 94.36,
+"mean_collateral": 9.736,
+"median_latency": null,
+"failures": {
+"detection failure": 20
+}
+},
+{
+"stress": "Address partial 0.5 at tick 130 (later)",
+"controller": "rule_based",
+"n": 20,
+"success_short": {
+"k": 8,
+"n": 20,
+"p": 0.4,
+"wilson95": [
+0.2188,
+0.6134
+]
+},
+"success_medium": {
+"k": 8,
+"n": 20,
+"p": 0.4,
+"wilson95": [
+0.2188,
+0.6134
+]
+},
+"success_long": {
+"k": 8,
+"n": 20,
+"p": 0.4,
+"wilson95": [
+0.2188,
+0.6134
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 1.0,
+"mean_energy_use": 110.63,
+"mean_collateral": 5.889,
+"median_latency": 0,
+"failures": {
+"Address unresolved": 12
+}
+},
+{
+"stress": "Address partial 0.5 at tick 80 (earlier)",
+"controller": "cost_aware",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 108.36,
+"mean_collateral": 10.553,
+"median_latency": null,
+"failures": {
+"outside tested action space": 20
+}
+},
+{
+"stress": "Address partial 0.5 at tick 80 (earlier)",
+"controller": "delayed",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 108.36,
+"mean_collateral": 10.553,
+"median_latency": null,
+"failures": {
+"outside tested action space": 20
+}
+},
+{
+"stress": "Address partial 0.5 at tick 80 (earlier)",
+"controller": "fixed",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 1.0,
+"mean_energy_use": 108.38,
+"mean_collateral": 10.442,
+"median_latency": null,
+"failures": {
+"Address unresolved": 20
+}
+},
+{
+"stress": "Address partial 0.5 at tick 80 (earlier)",
+"controller": "noisy",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.2,
+"mean_interventions": 0.2,
+"mean_energy_use": 108.36,
+"mean_collateral": 10.553,
+"median_latency": null,
+"failures": {
+"Address unresolved": 4,
+"outside tested action space": 16
+}
+},
+{
+"stress": "Address partial 0.5 at tick 80 (earlier)",
+"controller": "none",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 108.36,
+"mean_collateral": 10.553,
+"median_latency": null,
+"failures": {
+"detection failure": 20
+}
+},
+{
+"stress": "Address partial 0.5 at tick 80 (earlier)",
+"controller": "rule_based",
+"n": 20,
+"success_short": {
+"k": 8,
+"n": 20,
+"p": 0.4,
+"wilson95": [
+0.2188,
+0.6134
+]
+},
+"success_medium": {
+"k": 8,
+"n": 20,
+"p": 0.4,
+"wilson95": [
+0.2188,
+0.6134
+]
+},
+"success_long": {
+"k": 8,
+"n": 20,
+"p": 0.4,
+"wilson95": [
+0.2188,
+0.6134
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 1.0,
+"mean_energy_use": 128.14,
+"mean_collateral": 6.411,
+"median_latency": 0,
+"failures": {
+"Address unresolved": 12
+}
+},
+{
+"stress": "Address partial 0.7 (weaker)",
+"controller": "cost_aware",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 102.82,
+"mean_collateral": 9.827,
+"median_latency": null,
+"failures": {
+"outside tested action space": 20
+}
+},
+{
+"stress": "Address partial 0.7 (weaker)",
+"controller": "delayed",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 102.82,
+"mean_collateral": 9.827,
+"median_latency": null,
+"failures": {
+"outside tested action space": 20
+}
+},
+{
+"stress": "Address partial 0.7 (weaker)",
+"controller": "fixed",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 1.0,
+"mean_energy_use": 102.76,
+"mean_collateral": 9.773,
+"median_latency": null,
+"failures": {
+"Address unresolved": 20
+}
+},
+{
+"stress": "Address partial 0.7 (weaker)",
+"controller": "noisy",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.2,
+"mean_interventions": 0.2,
+"mean_energy_use": 102.82,
+"mean_collateral": 9.827,
+"median_latency": null,
+"failures": {
+"Address unresolved": 4,
+"outside tested action space": 16
+}
+},
+{
+"stress": "Address partial 0.7 (weaker)",
+"controller": "none",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 102.82,
+"mean_collateral": 9.827,
+"median_latency": null,
+"failures": {
+"detection failure": 20
+}
+},
+{
+"stress": "Address partial 0.7 (weaker)",
+"controller": "rule_based",
+"n": 20,
+"success_short": {
+"k": 17,
+"n": 20,
+"p": 0.85,
+"wilson95": [
+0.6396,
+0.9476
+]
+},
+"success_medium": {
+"k": 17,
+"n": 20,
+"p": 0.85,
+"wilson95": [
+0.6396,
+0.9476
+]
+},
+"success_long": {
+"k": 17,
+"n": 20,
+"p": 0.85,
+"wilson95": [
+0.6396,
+0.9476
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 1.0,
+"mean_energy_use": 140.4,
+"mean_collateral": 1.544,
+"median_latency": 0,
+"failures": {
+"Address unresolved": 3
+}
+},
+{
+"stress": "coupling gain 0.3 (stronger drop)",
+"controller": "cost_aware",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 102.76,
+"mean_collateral": 10.168,
+"median_latency": null,
+"failures": {
+"outside tested action space": 20
+}
+},
+{
+"stress": "coupling gain 0.3 (stronger drop)",
+"controller": "delayed",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 102.76,
+"mean_collateral": 10.168,
+"median_latency": null,
+"failures": {
+"outside tested action space": 20
+}
+},
+{
+"stress": "coupling gain 0.3 (stronger drop)",
+"controller": "fixed",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 1.0,
+"mean_energy_use": 102.76,
+"mean_collateral": 10.168,
+"median_latency": null,
+"failures": {
+"action too late": 20
+}
+},
+{
+"stress": "coupling gain 0.3 (stronger drop)",
+"controller": "noisy",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.2,
+"mean_interventions": 0.2,
+"mean_energy_use": 102.76,
+"mean_collateral": 10.168,
+"median_latency": null,
+"failures": {
+"action too late": 4,
+"outside tested action space": 16
+}
+},
+{
+"stress": "coupling gain 0.3 (stronger drop)",
+"controller": "none",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 102.76,
+"mean_collateral": 10.168,
+"median_latency": null,
+"failures": {
+"detection failure": 20
+}
+},
+{
+"stress": "coupling gain 0.3 (stronger drop)",
+"controller": "rule_based",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 1.0,
+"mean_energy_use": 102.76,
+"mean_collateral": 10.168,
+"median_latency": null,
+"failures": {
+"action too late": 20
+}
+},
+{
+"stress": "coupling gain 0.5",
+"controller": "cost_aware",
+"n": 20,
+"success_short": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"success_medium": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"success_long": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 1.0,
+"mean_energy_use": 147.63,
+"mean_collateral": 0.286,
+"median_latency": 0,
+"failures": {}
+},
+{
+"stress": "coupling gain 0.5",
+"controller": "delayed",
+"n": 20,
+"success_short": {
+"k": 9,
+"n": 20,
+"p": 0.45,
+"wilson95": [
+0.2582,
+0.6579
+]
+},
+"success_medium": {
+"k": 9,
+"n": 20,
+"p": 0.45,
+"wilson95": [
+0.2582,
+0.6579
+]
+},
+"success_long": {
+"k": 9,
+"n": 20,
+"p": 0.45,
+"wilson95": [
+0.2582,
+0.6579
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 1.0,
+"mean_energy_use": 126.09,
+"mean_collateral": 5.044,
+"median_latency": 16,
+"failures": {
+"secondary collapse": 11
+}
+},
+{
+"stress": "coupling gain 0.5",
+"controller": "fixed",
+"n": 20,
+"success_short": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"success_medium": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"success_long": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 1.0,
+"mean_energy_use": 147.63,
+"mean_collateral": 0.286,
+"median_latency": 0,
+"failures": {}
+},
+{
+"stress": "coupling gain 0.5",
+"controller": "noisy",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.2,
+"mean_interventions": 0.2,
+"mean_energy_use": 102.76,
+"mean_collateral": 10.168,
+"median_latency": null,
+"failures": {
+"no effective action": 4,
+"outside tested action space": 16
+}
+},
+{
+"stress": "coupling gain 0.5",
+"controller": "none",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 102.76,
+"mean_collateral": 10.168,
+"median_latency": null,
+"failures": {
+"detection failure": 20
+}
+},
+{
+"stress": "coupling gain 0.5",
+"controller": "rule_based",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 1.0,
+"mean_energy_use": 102.76,
+"mean_collateral": 10.168,
+"median_latency": null,
+"failures": {
+"no effective action": 20
+}
+},
+{
+"stress": "coupling gain 0.5 at tick 130 (later)",
+"controller": "cost_aware",
+"n": 20,
+"success_short": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"success_medium": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"success_long": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 1.0,
+"mean_energy_use": 135.18,
+"mean_collateral": 0.282,
+"median_latency": 0,
+"failures": {}
+},
+{
+"stress": "coupling gain 0.5 at tick 130 (later)",
+"controller": "delayed",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 6,
+"n": 20,
+"p": 0.3,
+"wilson95": [
+0.1455,
+0.519
+]
+},
+"success_long": {
+"k": 6,
+"n": 20,
+"p": 0.3,
+"wilson95": [
+0.1455,
+0.519
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 1.0,
+"mean_energy_use": 110.0,
+"mean_collateral": 6.044,
+"median_latency": 16,
+"failures": {
+"secondary collapse": 14
+}
+},
+{
+"stress": "coupling gain 0.5 at tick 130 (later)",
+"controller": "fixed",
+"n": 20,
+"success_short": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"success_medium": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"success_long": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 1.0,
+"mean_energy_use": 135.18,
+"mean_collateral": 0.283,
+"median_latency": 0,
+"failures": {}
+},
+{
+"stress": "coupling gain 0.5 at tick 130 (later)",
+"controller": "noisy",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.2,
+"mean_interventions": 0.2,
+"mean_energy_use": 94.36,
+"mean_collateral": 9.781,
+"median_latency": null,
+"failures": {
+"action too late": 4,
+"outside tested action space": 16
+}
+},
+{
+"stress": "coupling gain 0.5 at tick 130 (later)",
+"controller": "none",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 94.36,
+"mean_collateral": 9.781,
+"median_latency": null,
+"failures": {
+"detection failure": 20
+}
+},
+{
+"stress": "coupling gain 0.5 at tick 130 (later)",
+"controller": "rule_based",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 1.0,
+"mean_energy_use": 94.36,
+"mean_collateral": 9.78,
+"median_latency": null,
+"failures": {
+"action too late": 20
+}
+},
+{
+"stress": "coupling gain 0.7 (weaker drop)",
+"controller": "cost_aware",
+"n": 20,
+"success_short": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"success_medium": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"success_long": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 1.0,
+"mean_energy_use": 148.72,
+"mean_collateral": 0.083,
+"median_latency": 0,
+"failures": {}
+},
+{
+"stress": "coupling gain 0.7 (weaker drop)",
+"controller": "delayed",
+"n": 20,
+"success_short": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"success_medium": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"success_long": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 1.0,
+"mean_energy_use": 148.72,
+"mean_collateral": 0.182,
+"median_latency": 18,
+"failures": {}
+},
+{
+"stress": "coupling gain 0.7 (weaker drop)",
+"controller": "fixed",
+"n": 20,
+"success_short": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"success_medium": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"success_long": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 1.0,
+"mean_energy_use": 148.72,
+"mean_collateral": 0.083,
+"median_latency": 0,
+"failures": {}
+},
+{
+"stress": "coupling gain 0.7 (weaker drop)",
+"controller": "noisy",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.2,
+"mean_interventions": 0.2,
+"mean_energy_use": 102.76,
+"mean_collateral": 10.168,
+"median_latency": null,
+"failures": {
+"action too late": 4,
+"outside tested action space": 16
+}
+},
+{
+"stress": "coupling gain 0.7 (weaker drop)",
+"controller": "none",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 102.76,
+"mean_collateral": 10.168,
+"median_latency": null,
+"failures": {
+"detection failure": 20
+}
+},
+{
+"stress": "coupling gain 0.7 (weaker drop)",
+"controller": "rule_based",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 4.0,
+"mean_energy_use": 102.76,
+"mean_collateral": 10.168,
+"median_latency": null,
+"failures": {
+"action too late": 20
+}
+},
+{
+"stress": "history lost",
+"controller": "cost_aware",
+"n": 20,
+"success_short": {
+"k": 9,
+"n": 20,
+"p": 0.45,
+"wilson95": [
+0.2582,
+0.6579
+]
+},
+"success_medium": {
+"k": 9,
+"n": 20,
+"p": 0.45,
+"wilson95": [
+0.2582,
+0.6579
+]
+},
+"success_long": {
+"k": 9,
+"n": 20,
+"p": 0.45,
+"wilson95": [
+0.2582,
+0.6579
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 1.0,
+"mean_energy_use": 122.69,
+"mean_collateral": 5.342,
+"median_latency": 0,
+"failures": {
+"no effective action": 11
+}
+},
+{
+"stress": "history lost",
+"controller": "delayed",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 1.0,
+"mean_energy_use": 103.03,
+"mean_collateral": 9.633,
+"median_latency": null,
+"failures": {
+"no effective action": 20
+}
+},
+{
+"stress": "history lost",
+"controller": "fixed",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 1.0,
+"mean_energy_use": 104.16,
+"mean_collateral": 9.308,
+"median_latency": null,
+"failures": {
+"secondary collapse": 11,
+"no effective action": 9
+}
+},
+{
+"stress": "history lost",
+"controller": "noisy",
+"n": 20,
+"success_short": {
+"k": 3,
+"n": 20,
+"p": 0.15,
+"wilson95": [
+0.0524,
+0.3604
+]
+},
+"success_medium": {
+"k": 3,
+"n": 20,
+"p": 0.15,
+"wilson95": [
+0.0524,
+0.3604
+]
+},
+"success_long": {
+"k": 3,
+"n": 20,
+"p": 0.15,
+"wilson95": [
+0.0524,
+0.3604
+]
+},
+"mean_attempts": 0.2,
+"mean_interventions": 0.2,
+"mean_energy_use": 109.61,
+"mean_collateral": 8.194,
+"median_latency": 0,
+"failures": {
+"no effective action": 1,
+"outside tested action space": 16
+}
+},
+{
+"stress": "history lost",
+"controller": "none",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 103.03,
+"mean_collateral": 9.633,
+"median_latency": null,
+"failures": {
+"detection failure": 20
+}
+},
+{
+"stress": "history lost",
+"controller": "rule_based",
+"n": 20,
+"success_short": {
+"k": 9,
+"n": 20,
+"p": 0.45,
+"wilson95": [
+0.2582,
+0.6579
+]
+},
+"success_medium": {
+"k": 9,
+"n": 20,
+"p": 0.45,
+"wilson95": [
+0.2582,
+0.6579
+]
+},
+"success_long": {
+"k": 9,
+"n": 20,
+"p": 0.45,
+"wilson95": [
+0.2582,
+0.6579
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 1.0,
+"mean_energy_use": 122.69,
+"mean_collateral": 5.342,
+"median_latency": 0,
+"failures": {
+"no effective action": 11
+}
+},
+{
+"stress": "no stress",
+"controller": "cost_aware",
+"n": 20,
+"success_short": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"success_medium": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"success_long": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 147.04,
+"mean_collateral": 0.0,
+"median_latency": 0,
+"failures": {}
+},
+{
+"stress": "no stress",
+"controller": "delayed",
+"n": 20,
+"success_short": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"success_medium": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"success_long": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 147.04,
+"mean_collateral": 0.0,
+"median_latency": 0,
+"failures": {}
+},
+{
+"stress": "no stress",
+"controller": "fixed",
+"n": 20,
+"success_short": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"success_medium": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"success_long": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 147.04,
+"mean_collateral": 0.0,
+"median_latency": 0,
+"failures": {}
+},
+{
+"stress": "no stress",
+"controller": "noisy",
+"n": 20,
+"success_short": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"success_medium": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"success_long": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"mean_attempts": 0.2,
+"mean_interventions": 0.2,
+"mean_energy_use": 147.04,
+"mean_collateral": 0.0,
+"median_latency": 0,
+"failures": {}
+},
+{
+"stress": "no stress",
+"controller": "none",
+"n": 20,
+"success_short": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"success_medium": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"success_long": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 147.04,
+"mean_collateral": 0.0,
+"median_latency": 0,
+"failures": {}
+},
+{
+"stress": "no stress",
+"controller": "rule_based",
+"n": 20,
+"success_short": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"success_medium": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"success_long": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 147.04,
+"mean_collateral": 0.0,
+"median_latency": 0,
+"failures": {}
+},
+{
+"stress": "renewal efficiency 0.4 (stronger)",
+"controller": "cost_aware",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 102.76,
+"mean_collateral": 9.879,
+"median_latency": null,
+"failures": {
+"outside tested action space": 20
+}
+},
+{
+"stress": "renewal efficiency 0.4 (stronger)",
+"controller": "delayed",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 102.76,
+"mean_collateral": 9.879,
+"median_latency": null,
+"failures": {
+"outside tested action space": 20
+}
+},
+{
+"stress": "renewal efficiency 0.4 (stronger)",
+"controller": "fixed",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 1.0,
+"mean_energy_use": 103.96,
+"mean_collateral": 9.539,
+"median_latency": null,
+"failures": {
+"action too late": 20
+}
+},
+{
+"stress": "renewal efficiency 0.4 (stronger)",
+"controller": "noisy",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.2,
+"mean_interventions": 0.2,
+"mean_energy_use": 102.76,
+"mean_collateral": 9.879,
+"median_latency": null,
+"failures": {
+"action too late": 4,
+"outside tested action space": 16
+}
+},
+{
+"stress": "renewal efficiency 0.4 (stronger)",
+"controller": "none",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 102.76,
+"mean_collateral": 9.879,
+"median_latency": null,
+"failures": {
+"detection failure": 20
+}
+},
+{
+"stress": "renewal efficiency 0.4 (stronger)",
+"controller": "rule_based",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 4.0,
+"mean_energy_use": 102.76,
+"mean_collateral": 9.879,
+"median_latency": null,
+"failures": {
+"action too late": 20
+}
+},
+{
+"stress": "renewal efficiency 0.6",
+"controller": "cost_aware",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 3.0,
+"mean_interventions": 3.0,
+"mean_energy_use": 107.58,
+"mean_collateral": 8.605,
+"median_latency": null,
+"failures": {
+"action too late": 20
+}
+},
+{
+"stress": "renewal efficiency 0.6",
+"controller": "delayed",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 3.0,
+"mean_interventions": 3.0,
+"mean_energy_use": 108.01,
+"mean_collateral": 8.687,
+"median_latency": null,
+"failures": {
+"action too late": 20
+}
+},
+{
+"stress": "renewal efficiency 0.6",
+"controller": "fixed",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 1.0,
+"mean_energy_use": 104.68,
+"mean_collateral": 9.333,
+"median_latency": null,
+"failures": {
+"action too late": 20
+}
+},
+{
+"stress": "renewal efficiency 0.6",
+"controller": "noisy",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.2,
+"mean_interventions": 0.2,
+"mean_energy_use": 102.76,
+"mean_collateral": 9.879,
+"median_latency": null,
+"failures": {
+"no effective action": 4,
+"outside tested action space": 16
+}
+},
+{
+"stress": "renewal efficiency 0.6",
+"controller": "none",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 102.76,
+"mean_collateral": 9.879,
+"median_latency": null,
+"failures": {
+"detection failure": 20
+}
+},
+{
+"stress": "renewal efficiency 0.6",
+"controller": "rule_based",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 4.0,
+"mean_energy_use": 102.76,
+"mean_collateral": 9.879,
+"median_latency": null,
+"failures": {
+"action too late": 20
+}
+},
+{
+"stress": "renewal efficiency 0.8 (weaker)",
+"controller": "cost_aware",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 1.1,
+"mean_interventions": 1.1,
+"mean_energy_use": 104.82,
+"mean_collateral": 9.131,
+"median_latency": null,
+"failures": {
+"action too late": 1,
+"secondary collapse": 19
+}
+},
+{
+"stress": "renewal efficiency 0.8 (weaker)",
+"controller": "delayed",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 3.0,
+"mean_interventions": 3.0,
+"mean_energy_use": 108.01,
+"mean_collateral": 8.52,
+"median_latency": null,
+"failures": {
+"action too late": 20
+}
+},
+{
+"stress": "renewal efficiency 0.8 (weaker)",
+"controller": "fixed",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 1.0,
+"mean_energy_use": 104.64,
+"mean_collateral": 9.176,
+"median_latency": null,
+"failures": {
+"action too late": 1,
+"secondary collapse": 19
+}
+},
+{
+"stress": "renewal efficiency 0.8 (weaker)",
+"controller": "noisy",
+"n": 20,
+"success_short": {
+"k": 3,
+"n": 20,
+"p": 0.15,
+"wilson95": [
+0.0524,
+0.3604
+]
+},
+"success_medium": {
+"k": 3,
+"n": 20,
+"p": 0.15,
+"wilson95": [
+0.0524,
+0.3604
+]
+},
+"success_long": {
+"k": 3,
+"n": 20,
+"p": 0.15,
+"wilson95": [
+0.0524,
+0.3604
+]
+},
+"mean_attempts": 0.2,
+"mean_interventions": 0.2,
+"mean_energy_use": 109.4,
+"mean_collateral": 8.266,
+"median_latency": 0,
+"failures": {
+"action too late": 1,
+"outside tested action space": 16
+}
+},
+{
+"stress": "renewal efficiency 0.8 (weaker)",
+"controller": "none",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 102.76,
+"mean_collateral": 9.712,
+"median_latency": null,
+"failures": {
+"detection failure": 20
+}
+},
+{
+"stress": "renewal efficiency 0.8 (weaker)",
+"controller": "rule_based",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 4.0,
+"mean_energy_use": 102.76,
+"mean_collateral": 9.712,
+"median_latency": null,
+"failures": {
+"action too late": 20
+}
+},
+{
+"stress": "renewal stopped",
+"controller": "cost_aware",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 3.0,
+"mean_interventions": 3.0,
+"mean_energy_use": 103.26,
+"mean_collateral": 10.116,
+"median_latency": null,
+"failures": {
+"no effective action": 20
+}
+},
+{
+"stress": "renewal stopped",
+"controller": "delayed",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 3.0,
+"mean_interventions": 3.0,
+"mean_energy_use": 103.51,
+"mean_collateral": 10.144,
+"median_latency": null,
+"failures": {
+"no effective action": 20
+}
+},
+{
+"stress": "renewal stopped",
+"controller": "fixed",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 1.0,
+"mean_energy_use": 102.76,
+"mean_collateral": 10.231,
+"median_latency": null,
+"failures": {
+"no effective action": 20
+}
+},
+{
+"stress": "renewal stopped",
+"controller": "noisy",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.2,
+"mean_interventions": 0.2,
+"mean_energy_use": 102.76,
+"mean_collateral": 10.287,
+"median_latency": null,
+"failures": {
+"no effective action": 4,
+"outside tested action space": 16
+}
+},
+{
+"stress": "renewal stopped",
+"controller": "none",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 102.76,
+"mean_collateral": 10.297,
+"median_latency": null,
+"failures": {
+"detection failure": 20
+}
+},
+{
+"stress": "renewal stopped",
+"controller": "rule_based",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 4.0,
+"mean_energy_use": 102.76,
+"mean_collateral": 10.297,
+"median_latency": null,
+"failures": {
+"no effective action": 20
+}
+},
+{
+"stress": "renewal stopped at tick 130 (delayed failure)",
+"controller": "cost_aware",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 3.0,
+"mean_interventions": 3.0,
+"mean_energy_use": 94.86,
+"mean_collateral": 9.61,
+"median_latency": null,
+"failures": {
+"action too late": 20
+}
+},
+{
+"stress": "renewal stopped at tick 130 (delayed failure)",
+"controller": "delayed",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 3.0,
+"mean_interventions": 3.0,
+"mean_energy_use": 95.11,
+"mean_collateral": 9.639,
+"median_latency": null,
+"failures": {
+"action too late": 20
+}
+},
+{
+"stress": "renewal stopped at tick 130 (delayed failure)",
+"controller": "fixed",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 1.0,
+"mean_energy_use": 94.36,
+"mean_collateral": 9.742,
+"median_latency": null,
+"failures": {
+"action too late": 20
+}
+},
+{
+"stress": "renewal stopped at tick 130 (delayed failure)",
+"controller": "noisy",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.2,
+"mean_interventions": 0.2,
+"mean_energy_use": 94.36,
+"mean_collateral": 9.804,
+"median_latency": null,
+"failures": {
+"action too late": 4,
+"outside tested action space": 16
+}
+},
+{
+"stress": "renewal stopped at tick 130 (delayed failure)",
+"controller": "none",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 94.36,
+"mean_collateral": 9.815,
+"median_latency": null,
+"failures": {
+"detection failure": 20
+}
+},
+{
+"stress": "renewal stopped at tick 130 (delayed failure)",
+"controller": "rule_based",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 4.0,
+"mean_energy_use": 94.36,
+"mean_collateral": 9.815,
+"median_latency": null,
+"failures": {
+"action too late": 20
+}
+},
+{
+"stress": "resource regrow 0.01 charge 0.2",
+"controller": "cost_aware",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 3.0,
+"mean_interventions": 3.0,
+"mean_energy_use": 55.04,
+"mean_collateral": 4.65,
+"median_latency": null,
+"failures": {
+"action too late": 20
+}
+},
+{
+"stress": "resource regrow 0.01 charge 0.2",
+"controller": "delayed",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 3.0,
+"mean_interventions": 3.0,
+"mean_energy_use": 58.04,
+"mean_collateral": 3.48,
+"median_latency": null,
+"failures": {
+"action too late": 20
+}
+},
+{
+"stress": "resource regrow 0.01 charge 0.2",
+"controller": "fixed",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 1.0,
+"mean_energy_use": 52.04,
+"mean_collateral": 6.082,
+"median_latency": null,
+"failures": {
+"action too late": 20
+}
+},
+{
+"stress": "resource regrow 0.01 charge 0.2",
+"controller": "noisy",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.2,
+"mean_interventions": 0.2,
+"mean_energy_use": 51.38,
+"mean_collateral": 6.407,
+"median_latency": null,
+"failures": {
+"no effective action": 4,
+"outside tested action space": 16
+}
+},
+{
+"stress": "resource regrow 0.01 charge 0.2",
+"controller": "none",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 51.38,
+"mean_collateral": 6.431,
+"median_latency": null,
+"failures": {
+"detection failure": 20
+}
+},
+{
+"stress": "resource regrow 0.01 charge 0.2",
+"controller": "rule_based",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 4.0,
+"mean_energy_use": 68.18,
+"mean_collateral": 9.217,
+"median_latency": null,
+"failures": {
+"action too late": 20
+}
+},
+{
+"stress": "resource regrow 0.015 charge 0.3 (different profile)",
+"controller": "cost_aware",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 1.1,
+"mean_interventions": 1.1,
+"mean_energy_use": 78.73,
+"mean_collateral": 7.923,
+"median_latency": null,
+"failures": {
+"action too late": 1,
+"secondary collapse": 19
+}
+},
+{
+"stress": "resource regrow 0.015 charge 0.3 (different profile)",
+"controller": "delayed",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 3.0,
+"mean_interventions": 3.0,
+"mean_energy_use": 86.77,
+"mean_collateral": 5.047,
+"median_latency": null,
+"failures": {
+"action too late": 20
+}
+},
+{
+"stress": "resource regrow 0.015 charge 0.3 (different profile)",
+"controller": "fixed",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 1.0,
+"mean_energy_use": 78.48,
+"mean_collateral": 8.015,
+"median_latency": null,
+"failures": {
+"action too late": 1,
+"secondary collapse": 19
+}
+},
+{
+"stress": "resource regrow 0.015 charge 0.3 (different profile)",
+"controller": "noisy",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.2,
+"mean_interventions": 0.2,
+"mean_energy_use": 77.07,
+"mean_collateral": 8.553,
+"median_latency": null,
+"failures": {
+"action too late": 4,
+"outside tested action space": 16
+}
+},
+{
+"stress": "resource regrow 0.015 charge 0.3 (different profile)",
+"controller": "none",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 77.07,
+"mean_collateral": 8.553,
+"median_latency": null,
+"failures": {
+"detection failure": 20
+}
+},
+{
+"stress": "resource regrow 0.015 charge 0.3 (different profile)",
+"controller": "rule_based",
+"n": 20,
+"success_short": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_medium": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"success_long": {
+"k": 0,
+"n": 20,
+"p": 0.0,
+"wilson95": [
+0.0,
+0.1611
+]
+},
+"mean_attempts": 1.0,
+"mean_interventions": 4.0,
+"mean_energy_use": 85.47,
+"mean_collateral": 9.477,
+"median_latency": null,
+"failures": {
+"action too late": 20
+}
+}
+],
+"verdicts_known": [
+{
+"stress": "coupling gain 0.5",
+"controller": "fixed",
+"success": "20/20",
+"none": "0/20",
+"difference": 1.0,
+"cohens_h": 3.1416,
+"fisher_p": 0.0,
+"holm_p": 0.0,
+"survives_holm": true,
+"verdict": "effective"
+},
+{
+"stress": "coupling gain 0.5",
+"controller": "rule_based",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "coupling gain 0.5",
+"controller": "cost_aware",
+"success": "20/20",
+"none": "0/20",
+"difference": 1.0,
+"cohens_h": 3.1416,
+"fisher_p": 0.0,
+"holm_p": 0.0,
+"survives_holm": true,
+"verdict": "effective"
+},
+{
+"stress": "coupling gain 0.5",
+"controller": "delayed",
+"success": "9/20",
+"none": "0/20",
+"difference": 0.45,
+"cohens_h": 1.4706,
+"fisher_p": 0.00123,
+"holm_p": 0.03444,
+"survives_holm": true,
+"verdict": "effective"
+},
+{
+"stress": "coupling gain 0.5",
+"controller": "noisy",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "resource regrow 0.01 charge 0.2",
+"controller": "fixed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "resource regrow 0.01 charge 0.2",
+"controller": "rule_based",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "resource regrow 0.01 charge 0.2",
+"controller": "cost_aware",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "resource regrow 0.01 charge 0.2",
+"controller": "delayed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "resource regrow 0.01 charge 0.2",
+"controller": "noisy",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "renewal efficiency 0.6",
+"controller": "fixed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "renewal efficiency 0.6",
+"controller": "rule_based",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "renewal efficiency 0.6",
+"controller": "cost_aware",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "renewal efficiency 0.6",
+"controller": "delayed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "renewal efficiency 0.6",
+"controller": "noisy",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "renewal stopped",
+"controller": "fixed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "renewal stopped",
+"controller": "rule_based",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "renewal stopped",
+"controller": "cost_aware",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "renewal stopped",
+"controller": "delayed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "renewal stopped",
+"controller": "noisy",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "Address partial 0.5",
+"controller": "fixed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "Address partial 0.5",
+"controller": "rule_based",
+"success": "8/20",
+"none": "0/20",
+"difference": 0.4,
+"cohens_h": 1.3694,
+"fisher_p": 0.00328,
+"holm_p": 0.082,
+"survives_holm": false,
+"verdict": "effective"
+},
+{
+"stress": "Address partial 0.5",
+"controller": "cost_aware",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "Address partial 0.5",
+"controller": "delayed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "Address partial 0.5",
+"controller": "noisy",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "history lost",
+"controller": "fixed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "history lost",
+"controller": "rule_based",
+"success": "9/20",
+"none": "0/20",
+"difference": 0.45,
+"cohens_h": 1.4706,
+"fisher_p": 0.00123,
+"holm_p": 0.03444,
+"survives_holm": true,
+"verdict": "effective"
+},
+{
+"stress": "history lost",
+"controller": "cost_aware",
+"success": "9/20",
+"none": "0/20",
+"difference": 0.45,
+"cohens_h": 1.4706,
+"fisher_p": 0.00123,
+"holm_p": 0.03444,
+"survives_holm": true,
+"verdict": "effective"
+},
+{
+"stress": "history lost",
+"controller": "delayed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "history lost",
+"controller": "noisy",
+"success": "3/20",
+"none": "0/20",
+"difference": 0.15,
+"cohens_h": 0.7954,
+"fisher_p": 0.23077,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+}
+],
+"verdicts_unknown": [
+{
+"stress": "coupling gain 0.3 (stronger drop)",
+"controller": "fixed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "coupling gain 0.3 (stronger drop)",
+"controller": "rule_based",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "coupling gain 0.3 (stronger drop)",
+"controller": "cost_aware",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "coupling gain 0.3 (stronger drop)",
+"controller": "delayed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "coupling gain 0.3 (stronger drop)",
+"controller": "noisy",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "coupling gain 0.7 (weaker drop)",
+"controller": "fixed",
+"success": "20/20",
+"none": "0/20",
+"difference": 1.0,
+"cohens_h": 3.1416,
+"fisher_p": 0.0,
+"holm_p": 0.0,
+"survives_holm": true,
+"verdict": "effective"
+},
+{
+"stress": "coupling gain 0.7 (weaker drop)",
+"controller": "rule_based",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "coupling gain 0.7 (weaker drop)",
+"controller": "cost_aware",
+"success": "20/20",
+"none": "0/20",
+"difference": 1.0,
+"cohens_h": 3.1416,
+"fisher_p": 0.0,
+"holm_p": 0.0,
+"survives_holm": true,
+"verdict": "effective"
+},
+{
+"stress": "coupling gain 0.7 (weaker drop)",
+"controller": "delayed",
+"success": "20/20",
+"none": "0/20",
+"difference": 1.0,
+"cohens_h": 3.1416,
+"fisher_p": 0.0,
+"holm_p": 0.0,
+"survives_holm": true,
+"verdict": "effective"
+},
+{
+"stress": "coupling gain 0.7 (weaker drop)",
+"controller": "noisy",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "resource regrow 0.015 charge 0.3 (different profile)",
+"controller": "fixed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "resource regrow 0.015 charge 0.3 (different profile)",
+"controller": "rule_based",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "resource regrow 0.015 charge 0.3 (different profile)",
+"controller": "cost_aware",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "resource regrow 0.015 charge 0.3 (different profile)",
+"controller": "delayed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "resource regrow 0.015 charge 0.3 (different profile)",
+"controller": "noisy",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "renewal efficiency 0.4 (stronger)",
+"controller": "fixed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "renewal efficiency 0.4 (stronger)",
+"controller": "rule_based",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "renewal efficiency 0.4 (stronger)",
+"controller": "cost_aware",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "renewal efficiency 0.4 (stronger)",
+"controller": "delayed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "renewal efficiency 0.4 (stronger)",
+"controller": "noisy",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "renewal efficiency 0.8 (weaker)",
+"controller": "fixed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "renewal efficiency 0.8 (weaker)",
+"controller": "rule_based",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "renewal efficiency 0.8 (weaker)",
+"controller": "cost_aware",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "renewal efficiency 0.8 (weaker)",
+"controller": "delayed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "renewal efficiency 0.8 (weaker)",
+"controller": "noisy",
+"success": "3/20",
+"none": "0/20",
+"difference": 0.15,
+"cohens_h": 0.7954,
+"fisher_p": 0.23077,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "renewal stopped at tick 130 (delayed failure)",
+"controller": "fixed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "renewal stopped at tick 130 (delayed failure)",
+"controller": "rule_based",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "renewal stopped at tick 130 (delayed failure)",
+"controller": "cost_aware",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "renewal stopped at tick 130 (delayed failure)",
+"controller": "delayed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "renewal stopped at tick 130 (delayed failure)",
+"controller": "noisy",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "Address partial 0.3 (stronger)",
+"controller": "fixed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "Address partial 0.3 (stronger)",
+"controller": "rule_based",
+"success": "4/20",
+"none": "0/20",
+"difference": 0.2,
+"cohens_h": 0.9273,
+"fisher_p": 0.10603,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "Address partial 0.3 (stronger)",
+"controller": "cost_aware",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "Address partial 0.3 (stronger)",
+"controller": "delayed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "Address partial 0.3 (stronger)",
+"controller": "noisy",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "Address partial 0.7 (weaker)",
+"controller": "fixed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "Address partial 0.7 (weaker)",
+"controller": "rule_based",
+"success": "17/20",
+"none": "0/20",
+"difference": 0.85,
+"cohens_h": 2.3462,
+"fisher_p": 0.0,
+"holm_p": 0.0,
+"survives_holm": true,
+"verdict": "effective"
+},
+{
+"stress": "Address partial 0.7 (weaker)",
+"controller": "cost_aware",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "Address partial 0.7 (weaker)",
+"controller": "delayed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "Address partial 0.7 (weaker)",
+"controller": "noisy",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "Address partial 0.5 at tick 80 (earlier)",
+"controller": "fixed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "Address partial 0.5 at tick 80 (earlier)",
+"controller": "rule_based",
+"success": "8/20",
+"none": "0/20",
+"difference": 0.4,
+"cohens_h": 1.3694,
+"fisher_p": 0.00328,
+"holm_p": 0.16072,
+"survives_holm": false,
+"verdict": "effective"
+},
+{
+"stress": "Address partial 0.5 at tick 80 (earlier)",
+"controller": "cost_aware",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "Address partial 0.5 at tick 80 (earlier)",
+"controller": "delayed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "Address partial 0.5 at tick 80 (earlier)",
+"controller": "noisy",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "Address partial 0.5 at tick 130 (later)",
+"controller": "fixed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "Address partial 0.5 at tick 130 (later)",
+"controller": "rule_based",
+"success": "8/20",
+"none": "0/20",
+"difference": 0.4,
+"cohens_h": 1.3694,
+"fisher_p": 0.00328,
+"holm_p": 0.16072,
+"survives_holm": false,
+"verdict": "effective"
+},
+{
+"stress": "Address partial 0.5 at tick 130 (later)",
+"controller": "cost_aware",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "Address partial 0.5 at tick 130 (later)",
+"controller": "delayed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "Address partial 0.5 at tick 130 (later)",
+"controller": "noisy",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "coupling gain 0.5 at tick 130 (later)",
+"controller": "fixed",
+"success": "20/20",
+"none": "0/20",
+"difference": 1.0,
+"cohens_h": 3.1416,
+"fisher_p": 0.0,
+"holm_p": 0.0,
+"survives_holm": true,
+"verdict": "effective"
+},
+{
+"stress": "coupling gain 0.5 at tick 130 (later)",
+"controller": "rule_based",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "coupling gain 0.5 at tick 130 (later)",
+"controller": "cost_aware",
+"success": "20/20",
+"none": "0/20",
+"difference": 1.0,
+"cohens_h": 3.1416,
+"fisher_p": 0.0,
+"holm_p": 0.0,
+"survives_holm": true,
+"verdict": "effective"
+},
+{
+"stress": "coupling gain 0.5 at tick 130 (later)",
+"controller": "delayed",
+"success": "6/20",
+"none": "0/20",
+"difference": 0.3,
+"cohens_h": 1.1593,
+"fisher_p": 0.0202,
+"holm_p": 0.9494,
+"survives_holm": false,
+"verdict": "effective"
+},
+{
+"stress": "coupling gain 0.5 at tick 130 (later)",
+"controller": "noisy",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+}
+],
+"unknown_stresses": [
+{
+"id": "coupling gain 0.3 (stronger drop)",
+"varies": "severity",
+"onset": 100
+},
+{
+"id": "coupling gain 0.7 (weaker drop)",
+"varies": "severity",
+"onset": 100
+},
+{
+"id": "resource regrow 0.015 charge 0.3 (different profile)",
+"varies": "profile",
+"onset": 100
+},
+{
+"id": "renewal efficiency 0.4 (stronger)",
+"varies": "severity",
+"onset": 100
+},
+{
+"id": "renewal efficiency 0.8 (weaker)",
+"varies": "severity",
+"onset": 100
+},
+{
+"id": "renewal stopped at tick 130 (delayed failure)",
+"varies": "onset",
+"onset": 130
+},
+{
+"id": "Address partial 0.3 (stronger)",
+"varies": "severity",
+"onset": 100
+},
+{
+"id": "Address partial 0.7 (weaker)",
+"varies": "severity",
+"onset": 100
+},
+{
+"id": "Address partial 0.5 at tick 80 (earlier)",
+"varies": "onset",
+"onset": 80
+},
+{
+"id": "Address partial 0.5 at tick 130 (later)",
+"varies": "onset",
+"onset": 130
+},
+{
+"id": "coupling gain 0.5 at tick 130 (later)",
+"varies": "onset",
+"onset": 130
+}
+],
+"false_positives": [
+{
+"stress": "no stress",
+"controller": "cost_aware",
+"n": 20,
+"success_short": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"success_medium": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"success_long": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 147.04,
+"mean_collateral": 0.0,
+"median_latency": 0,
+"failures": {}
+},
+{
+"stress": "no stress",
+"controller": "delayed",
+"n": 20,
+"success_short": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"success_medium": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"success_long": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 147.04,
+"mean_collateral": 0.0,
+"median_latency": 0,
+"failures": {}
+},
+{
+"stress": "no stress",
+"controller": "fixed",
+"n": 20,
+"success_short": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"success_medium": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"success_long": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 147.04,
+"mean_collateral": 0.0,
+"median_latency": 0,
+"failures": {}
+},
+{
+"stress": "no stress",
+"controller": "noisy",
+"n": 20,
+"success_short": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"success_medium": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"success_long": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"mean_attempts": 0.2,
+"mean_interventions": 0.2,
+"mean_energy_use": 147.04,
+"mean_collateral": 0.0,
+"median_latency": 0,
+"failures": {}
+},
+{
+"stress": "no stress",
+"controller": "none",
+"n": 20,
+"success_short": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"success_medium": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"success_long": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 147.04,
+"mean_collateral": 0.0,
+"median_latency": 0,
+"failures": {}
+},
+{
+"stress": "no stress",
+"controller": "rule_based",
+"n": 20,
+"success_short": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"success_medium": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"success_long": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"mean_attempts": 0.0,
+"mean_interventions": 0.0,
+"mean_energy_use": 147.04,
+"mean_collateral": 0.0,
+"median_latency": 0,
+"failures": {}
+}
+],
+"criteria": "MEOS-0, sixth stage: the repair library, the comparison of repair controllers, unknown stresses and false positives.\n\nThe library is built from the exploration and validation results only (seeds 1-10); the controllers are evaluated on seeds 11-30. Unknown stresses are variations of the stresses the library was built for (a different severity, profile or onset): they test whether a repair found for one\nstress carries over to a nearby one, and nothing is assumed about it.\n\nA controller *succeeds* in a run if the run recovers at the long horizon (``repair6.outcome_at``, ACTIVE on the last 30 ticks, no secondary collapse, resource not exhausted). It is *effective* against a stress if its success rate exceeds that of no repair by at least 0.30 and Fisher's exact p is below 0.05\n(fixed before the runs). Holm's correction over all comparisons is reported beside the unadjusted p. A failure is classified into one of ten classes (``failure_class``) from the run and its controller log.\n",
+"seconds": 128.5,
+"limit": "The library holds the settings validated at the default action tick for the six stresses; the unknown stresses are variations of them. A formal model; a result here is about these controllers and this library."
+}

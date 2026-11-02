@@ -1,0 +1,245 @@
+{
+ "stage": "04-live-before",
+ "commit": "fab4d63",
+ "browser": "Chrome/151.0.7922.34",
+ "base": "http://127.0.0.1:3011",
+ "viewport": [
+  1200,
+  866
+ ],
+ "devicePixelRatio": 1,
+ "scenes": [
+  {
+   "name": "14-live-operation",
+   "record": "live",
+   "note": "live run started from the viewer (preset systems)",
+   "liveStatus": "LIVE running · t 857/960 · seq 857 · coalesced frames 0",
+   "commit": "fab4d63",
+   "viewport": [
+    1200,
+    866
+   ],
+   "devicePixelRatio": 1,
+   "browser": "Chrome/151.0.7922.34",
+   "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified Version)",
+   "state": {
+    "cam": "overview",
+    "sel": null,
+    "sys": null,
+    "domain": "0",
+    "layers": {
+     "A": true,
+     "B": true,
+     "C": true
+    },
+    "quality": "balanced",
+    "step": 857,
+    "index": 856,
+    "camera": [
+     30,
+     26,
+     34
+    ],
+    "target": [
+     0,
+     1.5,
+     0
+    ],
+    "pixelRatio": 1,
+    "canvas": [
+     800,
+     723
+    ]
+   },
+   "selfTest": {
+    "step": 857,
+    "positionsChecked": 40,
+    "worstPositionError": 5.072509780052955e-7,
+    "layers": {
+     "A": 42,
+     "B": 113,
+     "C": 74
+    },
+    "drawCalls": 579,
+    "triangles": 92096,
+    "quality": "balanced"
+   },
+   "frames": {
+    "n": 151,
+    "mean": 16.67,
+    "p50": 16.7,
+    "p95": 18.6,
+    "p99": 18.7,
+    "max": 18.8
+   },
+   "longTasks": 0,
+   "liveProfile": [
+    {
+     "label": "early",
+     "liveStepAtEnd": 122,
+     "windowMs": 6000,
+     "displayed": {
+      "n": 360,
+      "mean": 16.67,
+      "p50": 16.7,
+      "p95": 18.6,
+      "p99": 18.7,
+      "max": 18.8
+     },
+     "longTasks": 0,
+     "longTaskMs": 0,
+     "panelMs": {
+      "n": 65,
+      "mean": 1.58,
+      "p50": 1.5,
+      "p95": 2,
+      "p99": 2.1,
+      "max": 2.1
+     },
+     "applyMs": {
+      "n": 361,
+      "mean": 0.43,
+      "p50": 0.4,
+      "p95": 0.8,
+      "p99": 1,
+      "max": 1.3
+     },
+     "renderMs": {
+      "n": 361,
+      "mean": 3.94,
+      "p50": 3.9,
+      "p95": 4.5,
+      "p99": 5.6,
+      "max": 8.5
+     },
+     "wsMessageMs": {
+      "n": 60,
+      "mean": 0.14,
+      "p50": 0.1,
+      "p95": 0.2,
+      "p99": 0.3,
+      "max": 0.3
+     },
+     "wsMessages": 60,
+     "browserSeconds": {
+      "ScriptDuration": 1.768,
+      "TaskDuration": 1.926,
+      "RecalcStyleDuration": 0.001,
+      "LayoutDuration": 0.028
+     },
+     "jsHeapMB": 62.4
+    },
+    {
+     "label": "t>=400",
+     "liveStepAtEnd": 461,
+     "windowMs": 6000,
+     "displayed": {
+      "n": 360,
+      "mean": 16.67,
+      "p50": 16.7,
+      "p95": 18.6,
+      "p99": 18.7,
+      "max": 18.7
+     },
+     "longTasks": 0,
+     "longTaskMs": 0,
+     "panelMs": {
+      "n": 67,
+      "mean": 1.79,
+      "p50": 1.6,
+      "p95": 2.7,
+      "p99": 3.7,
+      "max": 3.7
+     },
+     "applyMs": {
+      "n": 361,
+      "mean": 0.43,
+      "p50": 0.4,
+      "p95": 0.8,
+      "p99": 1.4,
+      "max": 1.9
+     },
+     "renderMs": {
+      "n": 361,
+      "mean": 4.01,
+      "p50": 3.8,
+      "p95": 5.8,
+      "p99": 7.7,
+      "max": 8.7
+     },
+     "wsMessageMs": {
+      "n": 61,
+      "mean": 0.16,
+      "p50": 0.2,
+      "p95": 0.2,
+      "p99": 0.3,
+      "max": 0.3
+     },
+     "wsMessages": 61,
+     "browserSeconds": {
+      "ScriptDuration": 1.812,
+      "TaskDuration": 1.974,
+      "RecalcStyleDuration": 0.001,
+      "LayoutDuration": 0.029
+     },
+     "jsHeapMB": 42.9
+    },
+    {
+     "label": "t>=800",
+     "liveStepAtEnd": 856,
+     "windowMs": 6000,
+     "displayed": {
+      "n": 355,
+      "mean": 16.91,
+      "p50": 16.7,
+      "p95": 18.7,
+      "p99": 32.7,
+      "max": 50.4
+     },
+     "longTasks": 0,
+     "longTaskMs": 0,
+     "panelMs": {
+      "n": 61,
+      "mean": 3.09,
+      "p50": 3.2,
+      "p95": 5.1,
+      "p99": 5.8,
+      "max": 5.8
+     },
+     "applyMs": {
+      "n": 356,
+      "mean": 0.79,
+      "p50": 0.7,
+      "p95": 2.2,
+      "p99": 3.7,
+      "max": 4
+     },
+     "renderMs": {
+      "n": 356,
+      "mean": 7.42,
+      "p50": 7.7,
+      "p95": 13.5,
+      "p99": 23.4,
+      "max": 39.7
+     },
+     "wsMessageMs": {
+      "n": 55,
+      "mean": 0.22,
+      "p50": 0.2,
+      "p95": 0.4,
+      "p99": 0.5,
+      "max": 0.5
+     },
+     "wsMessages": 55,
+     "browserSeconds": {
+      "ScriptDuration": 3.288,
+      "TaskDuration": 3.513,
+      "RecalcStyleDuration": 0.002,
+      "LayoutDuration": 0.044
+     },
+     "jsHeapMB": 61.2
+    }
+   ]
+  }
+ ]
+}

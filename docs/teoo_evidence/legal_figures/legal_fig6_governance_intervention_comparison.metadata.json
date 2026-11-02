@@ -1,0 +1,73 @@
+{
+ "body": null,
+ "claim": "an illustration of the stated data under the stated conditions; no claim beyond them",
+ "evidence": {
+  "band": [
+   "EVIDENCE: SYNTHETIC  ·  artificial functional-test data, not a measurement",
+   "REAL-WORLD EXPERIMENT: none recorded (no measurement exists behind this figure)",
+   "BODY: none",
+   "RECORDS: 2 (rec-d030ee566a, rec-e81f9b8bf5)  ·  generated 2026-11-01  ·  TEOO teoo/0.1"
+  ],
+  "classes": [
+   "SYNTHETIC"
+  ],
+  "real_world_experiment_recorded": false,
+  "watermarks": [
+   "SYNTHETIC"
+  ]
+ },
+ "experiment": {
+  "conditions": [
+   "institution_self_review",
+   "independent_body_with_authority",
+   "independent_body_with_consent_and_formal_procedure",
+   "subject_initiated_correction_no_consent_step"
+  ],
+  "protocol_id": "LEG-EXP-10",
+  "seeds": [
+   2001,
+   2030
+  ],
+  "trials_per_condition": 1,
+  "version": 1
+ },
+ "figure_id": "fig-789ec8b56c40cc61",
+ "generated_at": "2026-11-01T00:00:00.000000Z",
+ "kind": "bars",
+ "metadata_digest": "123df197f6a79313e9e073d1d08d9ddaa89aa8f4ef54d2307ba5f4e6ad009597",
+ "observation_limits": {
+  "config_version": null,
+  "note": "A synthetic institution or a drawing: what lies outside what is stated here is unknown, not absent.",
+  "summary": {
+   "conditions": "first implementation (legal_v1): provisional catalogue; kept as run"
+  },
+  "t": null
+ },
+ "provenance": {
+  "records": [
+   {
+    "kind": "OBSERVATION",
+    "lineage_classes": [
+     "SYNTHETIC"
+    ],
+    "provenance": "SYNTHETIC",
+    "record_digest": "d030ee566ac041fbea765b2231f36dfd281acbeb435a8bdd0a5f8aa7fc8c7fac",
+    "record_id": "rec-d030ee566ac041fbea765b22"
+   },
+   {
+    "kind": "OBSERVATION",
+    "lineage_classes": [
+     "SYNTHETIC"
+    ],
+    "provenance": "SYNTHETIC",
+    "record_digest": "e81f9b8bf5f7b7f69a78ad045acc9aaa799802fca11ff20ac4a05dc877f7330e",
+    "record_id": "rec-e81f9b8bf5f7b7f69a78ad04"
+   }
+  ],
+  "source_digest": "789ec8b56c40cc613d0ce49a7bd4f16f7aa9bcf4f5551b8d5457e891e73275ec"
+ },
+ "schema": "teoo.figure/1",
+ "teoo_version": "teoo/0.1",
+ "title": "Fig L6 · Governance reconfiguration and planners (EXP-10, CMP-01; first implementation)",
+ "units": {}
+}

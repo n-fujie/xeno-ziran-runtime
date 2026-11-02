@@ -1,0 +1,151 @@
+{
+ "schema": "xzr.perf/1",
+ "environment": {
+  "python": "3.12.13",
+  "platform": "macOS-27.0.1-arm64-arm-64bit",
+  "cpu_count": 8,
+  "xzr_force_compat": ""
+ },
+ "protocol_digest_example": "9661bb9952eb65582ac775fbf20836f08f6adc0431624c42694b7b06a05f1a7d",
+ "parallel": {
+  "protocol": "quick",
+  "n_seeds": 4,
+  "horizon": 120,
+  "runs_per_execution": 8,
+  "rows": [
+   {
+    "procs": 1,
+    "wall_s": 6.18,
+    "speedup": 1.0,
+    "efficiency": 1.0,
+    "runs": 8,
+    "ok": 8,
+    "failure_rate": 0.0,
+    "mean_run_wall_s": 0.638,
+    "mean_cpu_utilisation": 0.98,
+    "peak_run_rss_mb": 104.9,
+    "study": "S20261022-1ae34100-be77"
+   },
+   {
+    "procs": 2,
+    "wall_s": 3.97,
+    "speedup": 1.56,
+    "efficiency": 0.78,
+    "runs": 8,
+    "ok": 8,
+    "failure_rate": 0.0,
+    "mean_run_wall_s": 0.632,
+    "mean_cpu_utilisation": 0.99,
+    "peak_run_rss_mb": 107.0,
+    "study": "S20261022-1ae34100-758e"
+   },
+   {
+    "procs": 4,
+    "wall_s": 4.02,
+    "speedup": 1.54,
+    "efficiency": 0.38,
+    "runs": 8,
+    "ok": 8,
+    "failure_rate": 0.0,
+    "mean_run_wall_s": 1.111,
+    "mean_cpu_utilisation": 0.94,
+    "peak_run_rss_mb": 107.1,
+    "study": "S20261022-1ae34100-233a"
+   }
+  ],
+  "note": "speed-up is relative to one worker; process start-up and the shared first import are included in the wall time"
+ },
+ "storage_replay": {
+  "study": "S20261022-1ae34100-b499",
+  "runs": 8,
+  "read_runs_s": 0.001,
+  "bytes_per_run": 5612,
+  "analyse_s": 0.034,
+  "report_s": 0.013,
+  "package_s": 0.058,
+  "package_bytes": 40881,
+  "verify_s": 0.003,
+  "verify_ok": true,
+  "replay": {
+   "runs": 8,
+   "agree": 8,
+   "agreement_rate": 1.0,
+   "wall_s": 4.86,
+   "condition": "same machine and software versions"
+  }
+ },
+ "history_load": {
+  "study": "S20261022-f0f96e81-2d39",
+  "n_seeds": 4,
+  "mean_wall_s": {
+   "recursive": 1.063925,
+   "no-history": 1.0548
+  },
+  "mean_reinsertions": {
+   "recursive": 22.75,
+   "no-history": 3.25
+  },
+  "wall_ratio_with_over_without": 1.0086509290860828,
+  "note": "the two arms also differ in what the controller does with the extra events; one process, sequential, so wall times are comparable"
+ },
+ "lab": {
+  "stages": [
+   {
+    "systems": 3,
+    "steps": 40,
+    "wall_s": 1.01,
+    "steps_per_s": 39.4,
+    "cpu_utilisation": 0.99,
+    "events": 0,
+    "requests": 4,
+    "completed": 1,
+    "peak_rss_mb": 122.7
+   },
+   {
+    "systems": 20,
+    "steps": 40,
+    "wall_s": 1.15,
+    "steps_per_s": 34.6,
+    "cpu_utilisation": 1.0,
+    "events": 0,
+    "requests": 30,
+    "completed": 3,
+    "peak_rss_mb": 125.8
+   },
+   {
+    "systems": 50,
+    "steps": 40,
+    "wall_s": 1.43,
+    "steps_per_s": 27.9,
+    "cpu_utilisation": 1.0,
+    "events": 1,
+    "requests": 255,
+    "completed": 6,
+    "peak_rss_mb": 130.2
+   },
+   {
+    "systems": 100,
+    "steps": 40,
+    "wall_s": 1.8,
+    "steps_per_s": 22.3,
+    "cpu_utilisation": 0.99,
+    "events": 1,
+    "requests": 730,
+    "completed": 6,
+    "peak_rss_mb": 136.0
+   },
+   {
+    "systems": 300,
+    "steps": 40,
+    "wall_s": 2.61,
+    "steps_per_s": 15.3,
+    "cpu_utilisation": 0.99,
+    "events": 1,
+    "requests": 2730,
+    "completed": 6,
+    "peak_rss_mb": 155.5
+   }
+  ],
+  "note": "peak_rss is the process high-water mark and only grows; the number of systems is a load, not a measure of autonomy"
+ }
+}

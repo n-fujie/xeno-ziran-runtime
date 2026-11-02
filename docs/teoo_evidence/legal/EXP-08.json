@@ -1,0 +1,229 @@
+{
+ "experiment_id": "LEG-EXP-08",
+ "protocol_version": 1,
+ "protocol_digest": "724d25e2210c73ea9df5fd774903ea49651ca4dce9ceeb04baf2b6c0eb32e1dc",
+ "protocol": {
+  "experiment_id": "LEG-EXP-08",
+  "hypotheses": [
+   {
+    "id": "H1",
+    "statement": "The three interventions that are most convincing as arguments achieve less than the three operationally best ones the actor can execute"
+   },
+   {
+    "id": "H2",
+    "statement": "Some of the most convincing interventions cannot be executed by the actor"
+   },
+   {
+    "id": "H3",
+    "statement": "How convincing an intervention is correlates with what it does"
+   }
+  ],
+  "targets": [
+   "exclusion and access of a synthetic institution"
+  ],
+  "instrument_conditions": {
+   "menu": [
+    "remove_gate",
+    "zero_inheritance",
+    "enable_propagation",
+    "independent_review",
+    "fairness_opt",
+    "delete_score",
+    "expiry",
+    "reentry_support"
+   ],
+   "actor can execute": 5
+  },
+  "control_condition": "inferential_top3",
+  "conditions": [
+   "inferential_top3",
+   "operational_best3"
+  ],
+  "seeds": [
+   2001,
+   2002,
+   2003,
+   2004,
+   2005,
+   2006,
+   2007,
+   2008,
+   2009,
+   2010,
+   2011,
+   2012,
+   2013,
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023,
+   2024,
+   2025,
+   2026,
+   2027,
+   2028,
+   2029,
+   2030
+  ],
+  "trials_per_condition": 1,
+  "stopping_rule": {
+   "type": "fixed-n",
+   "units": 30,
+   "no interim analysis": true
+  },
+  "outcomes": {
+   "primary": [
+    "realised effect on exclusion"
+   ],
+   "secondary": [
+    "share executable",
+    "rank correlation"
+   ]
+  },
+  "analyses": [
+   {
+    "id": "L08a",
+    "hypothesis": "H1",
+    "outcome": "effect",
+    "method": "paired-sign-flip",
+    "confirmatory": true
+   },
+   {
+    "id": "L08b",
+    "hypothesis": "H2",
+    "outcome": "top3_executable_share",
+    "method": "paired-sign-flip",
+    "confirmatory": true
+   },
+   {
+    "id": "L08c",
+    "hypothesis": "H3",
+    "outcome": "spearman",
+    "method": "paired-sign-flip",
+    "confirmatory": true
+   }
+  ],
+  "multiplicity": "holm",
+  "failure_conditions": [
+   "fewer than 30 worlds"
+  ],
+  "reproduction": {
+   "generator": "xzr.teoo.legal_experiments",
+   "steps": [
+    "run unit per seed",
+    "analyse"
+   ],
+   "world": "xzr.teoo.legal (SYNTHETIC institution)"
+  },
+  "schema": "teoo.protocol/1",
+  "version": 1,
+  "parent_version": null,
+  "change_reason": null
+ },
+ "units": 30,
+ "seeds": [
+  2001,
+  2002,
+  2003,
+  2004,
+  2005,
+  2006,
+  2007,
+  2008,
+  2009,
+  2010,
+  2011,
+  2012,
+  2013,
+  2014,
+  2015,
+  2016,
+  2017,
+  2018,
+  2019,
+  2020,
+  2021,
+  2022,
+  2023,
+  2024,
+  2025,
+  2026,
+  2027,
+  2028,
+  2029,
+  2030
+ ],
+ "evidence_class": "Synthetic-world Result",
+ "seconds": 2.5,
+ "results": {
+  "L08a": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.05227566767797334,
+   "sd_diff": 0.05918707892585401,
+   "dz": 0.8832277014964894,
+   "ci95": [
+    0.03295627326161912,
+    0.07343037354518737
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 17,
+   "inferential": true,
+   "contrast": "operationally best executable three minus the most convincing three (realised)",
+   "mean_operational": 0.06651571424031529,
+   "mean_inferential": 0.014240046562341948,
+   "p_holm": 0.00014999250037498125,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "L08b": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.4333333333333334,
+   "sd_diff": 0.21708624272765237,
+   "dz": 1.9961344758128037,
+   "ci95": [
+    0.3555555555555557,
+    0.5111111111111112
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 18,
+   "inferential": true,
+   "contrast": "share of the most convincing three that the actor cannot execute",
+   "mean_share_executable": 0.5666666666666668,
+   "p_holm": 0.00014999250037498125,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "L08c": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": -0.1210624862743243,
+   "sd_diff": 0.3028974402681217,
+   "dz": -0.39968144388133825,
+   "ci95": [
+    -0.2322920617015261,
+    -0.0185810563722509
+   ],
+   "p": 0.03444827758612069,
+   "n_perm": 20000,
+   "seed": 44,
+   "inferential": true,
+   "contrast": "per-world Spearman between how convincing an intervention is and what it does",
+   "mean_rho": -0.1210624862743243,
+   "p_holm": 0.03444827758612069,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  }
+ },
+ "catalogue": null,
+ "note": "results about a SYNTHETIC institution and this implementation; not an observation of any institution, law or person"
+}

@@ -1,0 +1,730 @@
+{
+ "browser": "headless Chromium, WebGL on SwiftShader (software)",
+ "viewport": [
+  1672,
+  941
+ ],
+ "quality": "balanced",
+ "perf": {
+  "02-habitat": {
+   "quality": "balanced",
+   "frames": 4,
+   "fps": 0.30613338231467446,
+   "frameMsMean": 3266.55,
+   "frameMsP95": 10933.599999999999,
+   "frameMsMax": 10933.599999999999,
+   "drawCalls": 92,
+   "triangles": 680886,
+   "geometries": 88,
+   "textures": 5,
+   "instances": 44130,
+   "edgeSegments": 102398,
+   "simUpdateMsMean": 0,
+   "heapMB": 48.065185546875,
+   "entities": 2,
+   "trialChambers": 12,
+   "camera": {
+    "pos": [
+     -48.00000000000001,
+     11,
+     33.00000000000001
+    ],
+    "target": [
+     -66,
+     1.2,
+     16
+    ]
+   },
+   "stats": {
+    "instances": 44130,
+    "edgeSegments": 102398,
+    "objects": 29,
+    "byKind": {
+     "terrain": 0,
+     "nodes": 1218,
+     "manipulators": 234,
+     "chambers": 46,
+     "habitat": 0,
+     "power": 17,
+     "array": 12,
+     "expansion": 39,
+     "greebles": 10400,
+     "greebles edges": 15228,
+     "wall grid": 5792,
+     "trusses": 9150,
+     "trusses edges": 63996,
+     "panels": 9215,
+     "panels edges": 7968,
+     "plates": 570,
+     "plates edges": 6840,
+     "rock": 7155,
+     "glazing": 46,
+     "fittings": 6064,
+     "cables": 2538,
+     "suspended material": 0,
+     "sky": 0
+    }
+   }
+  },
+  "03-research-core": {
+   "quality": "balanced",
+   "frames": 1,
+   "fps": 0.1252583453372581,
+   "frameMsMean": 7983.5,
+   "frameMsP95": 7983.5,
+   "frameMsMax": 7983.5,
+   "drawCalls": 50,
+   "triangles": 670516,
+   "geometries": 51,
+   "textures": 2,
+   "instances": 44130,
+   "edgeSegments": 102398,
+   "simUpdateMsMean": 0,
+   "heapMB": 40.149688720703125,
+   "entities": 2,
+   "trialChambers": 12,
+   "camera": {
+    "pos": [
+     19.99999999999999,
+     -22.00000000000002,
+     23.999999999999996
+    ],
+    "target": [
+     -3.9999999999999996,
+     -44.00000000000002,
+     -3.9999999999999996
+    ]
+   },
+   "stats": {
+    "instances": 44130,
+    "edgeSegments": 102398,
+    "objects": 29,
+    "byKind": {
+     "terrain": 0,
+     "nodes": 1218,
+     "manipulators": 234,
+     "chambers": 46,
+     "habitat": 0,
+     "power": 17,
+     "array": 12,
+     "expansion": 39,
+     "greebles": 10400,
+     "greebles edges": 15228,
+     "wall grid": 5792,
+     "trusses": 9150,
+     "trusses edges": 63996,
+     "panels": 9215,
+     "panels edges": 7968,
+     "plates": 570,
+     "plates edges": 6840,
+     "rock": 7155,
+     "glazing": 46,
+     "fittings": 6064,
+     "cables": 2538,
+     "suspended material": 0,
+     "sky": 0
+    }
+   }
+  },
+  "04-meos0-active": {
+   "quality": "balanced",
+   "frames": 3,
+   "fps": 0.2545911266505992,
+   "frameMsMean": 3927.8666666666663,
+   "frameMsP95": 11750.3,
+   "frameMsMax": 11750.3,
+   "drawCalls": 90,
+   "triangles": 680884,
+   "geometries": 87,
+   "textures": 4,
+   "instances": 44130,
+   "edgeSegments": 102398,
+   "simUpdateMsMean": 0,
+   "heapMB": 37.7655029296875,
+   "entities": 2,
+   "trialChambers": 12,
+   "camera": {
+    "pos": [
+     -48.00000000000001,
+     11,
+     33.00000000000001
+    ],
+    "target": [
+     -66,
+     1.2,
+     16
+    ]
+   },
+   "stats": {
+    "instances": 44130,
+    "edgeSegments": 102398,
+    "objects": 29,
+    "byKind": {
+     "terrain": 0,
+     "nodes": 1218,
+     "manipulators": 234,
+     "chambers": 46,
+     "habitat": 0,
+     "power": 17,
+     "array": 12,
+     "expansion": 39,
+     "greebles": 10400,
+     "greebles edges": 15228,
+     "wall grid": 5792,
+     "trusses": 9150,
+     "trusses edges": 63996,
+     "panels": 9215,
+     "panels edges": 7968,
+     "plates": 570,
+     "plates edges": 6840,
+     "rock": 7155,
+     "glazing": 46,
+     "fittings": 6064,
+     "cables": 2538,
+     "suspended material": 0,
+     "sky": 0
+    }
+   }
+  },
+  "05-meos-collapse": {
+   "quality": "balanced",
+   "frames": 4,
+   "fps": 0.2959302196542055,
+   "frameMsMean": 3379.175,
+   "frameMsP95": 11183.1,
+   "frameMsMax": 11183.1,
+   "drawCalls": 62,
+   "triangles": 680478,
+   "geometries": 68,
+   "textures": 5,
+   "instances": 44130,
+   "edgeSegments": 102398,
+   "simUpdateMsMean": 0,
+   "heapMB": 40.149688720703125,
+   "entities": 2,
+   "trialChambers": 12,
+   "camera": {
+    "pos": [
+     -48.00000000000001,
+     11,
+     33.00000000000001
+    ],
+    "target": [
+     -66,
+     1.2,
+     16
+    ]
+   },
+   "stats": {
+    "instances": 44130,
+    "edgeSegments": 102398,
+    "objects": 29,
+    "byKind": {
+     "terrain": 0,
+     "nodes": 1218,
+     "manipulators": 234,
+     "chambers": 46,
+     "habitat": 0,
+     "power": 17,
+     "array": 12,
+     "expansion": 39,
+     "greebles": 10400,
+     "greebles edges": 15228,
+     "wall grid": 5792,
+     "trusses": 9150,
+     "trusses edges": 63996,
+     "panels": 9215,
+     "panels edges": 7968,
+     "plates": 570,
+     "plates edges": 6840,
+     "rock": 7155,
+     "glazing": 46,
+     "fittings": 6064,
+     "cables": 2538,
+     "suspended material": 0,
+     "sky": 0
+    }
+   }
+  },
+  "06-xenobody-boundary": {
+   "quality": "balanced",
+   "frames": 0,
+   "fps": 100000,
+   "frameMsMean": 0,
+   "frameMsP95": 0,
+   "frameMsMax": 0,
+   "drawCalls": 57,
+   "triangles": 680808,
+   "geometries": 60,
+   "textures": 2,
+   "instances": 44130,
+   "edgeSegments": 102398,
+   "simUpdateMsMean": 0,
+   "heapMB": 48.065185546875,
+   "entities": 2,
+   "trialChambers": 12,
+   "camera": {
+    "pos": [
+     -48.00000000000001,
+     11,
+     33.00000000000001
+    ],
+    "target": [
+     -66,
+     1.2,
+     16
+    ]
+   },
+   "stats": {
+    "instances": 44130,
+    "edgeSegments": 102398,
+    "objects": 29,
+    "byKind": {
+     "terrain": 0,
+     "nodes": 1218,
+     "manipulators": 234,
+     "chambers": 46,
+     "habitat": 0,
+     "power": 17,
+     "array": 12,
+     "expansion": 39,
+     "greebles": 10400,
+     "greebles edges": 15228,
+     "wall grid": 5792,
+     "trusses": 9150,
+     "trusses edges": 63996,
+     "panels": 9215,
+     "panels edges": 7968,
+     "plates": 570,
+     "plates edges": 6840,
+     "rock": 7155,
+     "glazing": 46,
+     "fittings": 6064,
+     "cables": 2538,
+     "suspended material": 0,
+     "sky": 0
+    }
+   }
+  },
+  "07-history-overlay": {
+   "quality": "balanced",
+   "frames": 4,
+   "fps": 0.3582367586738075,
+   "frameMsMean": 2791.4500000000003,
+   "frameMsP95": 9583.400000000001,
+   "frameMsMax": 9583.400000000001,
+   "drawCalls": 87,
+   "triangles": 680884,
+   "geometries": 84,
+   "textures": 4,
+   "instances": 44130,
+   "edgeSegments": 102398,
+   "simUpdateMsMean": 0,
+   "heapMB": 40.149688720703125,
+   "entities": 2,
+   "trialChambers": 12,
+   "camera": {
+    "pos": [
+     -48.00000000000001,
+     11,
+     33.00000000000001
+    ],
+    "target": [
+     -66,
+     1.2,
+     16
+    ]
+   },
+   "stats": {
+    "instances": 44130,
+    "edgeSegments": 102398,
+    "objects": 29,
+    "byKind": {
+     "terrain": 0,
+     "nodes": 1218,
+     "manipulators": 234,
+     "chambers": 46,
+     "habitat": 0,
+     "power": 17,
+     "array": 12,
+     "expansion": 39,
+     "greebles": 10400,
+     "greebles edges": 15228,
+     "wall grid": 5792,
+     "trusses": 9150,
+     "trusses edges": 63996,
+     "panels": 9215,
+     "panels edges": 7968,
+     "plates": 570,
+     "plates edges": 6840,
+     "rock": 7155,
+     "glazing": 46,
+     "fittings": 6064,
+     "cables": 2538,
+     "suspended material": 0,
+     "sky": 0
+    }
+   }
+  },
+  "08-subsurface-laboratory": {
+   "quality": "balanced",
+   "frames": 2,
+   "fps": 0.33993949077064284,
+   "frameMsMean": 2941.7,
+   "frameMsP95": 3416.699999999999,
+   "frameMsMax": 3416.699999999999,
+   "drawCalls": 138,
+   "triangles": 672970,
+   "geometries": 61,
+   "textures": 3,
+   "instances": 44130,
+   "edgeSegments": 102398,
+   "simUpdateMsMean": 0,
+   "heapMB": 48.065185546875,
+   "entities": 2,
+   "trialChambers": 12,
+   "camera": {
+    "pos": [
+     4.000000000000003,
+     -86,
+     50.00000000000002
+    ],
+    "target": [
+     0,
+     -102,
+     12
+    ]
+   },
+   "stats": {
+    "instances": 44130,
+    "edgeSegments": 102398,
+    "objects": 29,
+    "byKind": {
+     "terrain": 0,
+     "nodes": 1218,
+     "manipulators": 234,
+     "chambers": 46,
+     "habitat": 0,
+     "power": 17,
+     "array": 12,
+     "expansion": 39,
+     "greebles": 10400,
+     "greebles edges": 15228,
+     "wall grid": 5792,
+     "trusses": 9150,
+     "trusses edges": 63996,
+     "panels": 9215,
+     "panels edges": 7968,
+     "plates": 570,
+     "plates edges": 6840,
+     "rock": 7155,
+     "glazing": 46,
+     "fittings": 6064,
+     "cables": 2538,
+     "suspended material": 0,
+     "sky": 0
+    }
+   }
+  },
+  "09-observation-array": {
+   "quality": "balanced",
+   "frames": 4,
+   "fps": 1.2833675564681728,
+   "frameMsMean": 779.1999999999998,
+   "frameMsP95": 1000.0999999999984,
+   "frameMsMax": 1000.0999999999984,
+   "drawCalls": 42,
+   "triangles": 672234,
+   "geometries": 40,
+   "textures": 3,
+   "instances": 44130,
+   "edgeSegments": 102398,
+   "simUpdateMsMean": 0,
+   "heapMB": 42.629241943359375,
+   "entities": 2,
+   "trialChambers": 12,
+   "camera": {
+    "pos": [
+     21.999999999999993,
+     20,
+     29.999999999999996
+    ],
+    "target": [
+     54,
+     9,
+     52
+    ]
+   },
+   "stats": {
+    "instances": 44130,
+    "edgeSegments": 102398,
+    "objects": 29,
+    "byKind": {
+     "terrain": 0,
+     "nodes": 1218,
+     "manipulators": 234,
+     "chambers": 46,
+     "habitat": 0,
+     "power": 17,
+     "array": 12,
+     "expansion": 39,
+     "greebles": 10400,
+     "greebles edges": 15228,
+     "wall grid": 5792,
+     "trusses": 9150,
+     "trusses edges": 63996,
+     "panels": 9215,
+     "panels edges": 7968,
+     "plates": 570,
+     "plates edges": 6840,
+     "rock": 7155,
+     "glazing": 46,
+     "fittings": 6064,
+     "cables": 2538,
+     "suspended material": 0,
+     "sky": 0
+    }
+   }
+  },
+  "10-philosophical-socket": {
+   "quality": "balanced",
+   "frames": 5,
+   "fps": 0.5299754091410159,
+   "frameMsMean": 1886.8799999999999,
+   "frameMsP95": 6784.4,
+   "frameMsMax": 6784.4,
+   "drawCalls": 44,
+   "triangles": 673030,
+   "geometries": 49,
+   "textures": 3,
+   "instances": 44130,
+   "edgeSegments": 102398,
+   "simUpdateMsMean": 0,
+   "heapMB": 35.572052001953125,
+   "entities": 2,
+   "trialChambers": 12,
+   "camera": {
+    "pos": [
+     29.99999999999999,
+     14.999999999999996,
+     -46.000000000000014
+    ],
+    "target": [
+     12,
+     5,
+     -64
+    ]
+   },
+   "stats": {
+    "instances": 44130,
+    "edgeSegments": 102398,
+    "objects": 29,
+    "byKind": {
+     "terrain": 0,
+     "nodes": 1218,
+     "manipulators": 234,
+     "chambers": 46,
+     "habitat": 0,
+     "power": 17,
+     "array": 12,
+     "expansion": 39,
+     "greebles": 10400,
+     "greebles edges": 15228,
+     "wall grid": 5792,
+     "trusses": 9150,
+     "trusses edges": 63996,
+     "panels": 9215,
+     "panels edges": 7968,
+     "plates": 570,
+     "plates edges": 6840,
+     "rock": 7155,
+     "glazing": 46,
+     "fittings": 6064,
+     "cables": 2538,
+     "suspended material": 0,
+     "sky": 0
+    }
+   }
+  },
+  "11-resource-pulse": {
+   "quality": "balanced",
+   "frames": 4,
+   "fps": 0.33994237976662955,
+   "frameMsMean": 2941.675,
+   "frameMsP95": 9716.8,
+   "frameMsMax": 9716.8,
+   "drawCalls": 66,
+   "triangles": 680994,
+   "geometries": 67,
+   "textures": 3,
+   "instances": 44130,
+   "edgeSegments": 102398,
+   "simUpdateMsMean": 0,
+   "heapMB": 48.065185546875,
+   "entities": 2,
+   "trialChambers": 12,
+   "camera": {
+    "pos": [
+     -48.00000000000001,
+     11,
+     33.00000000000001
+    ],
+    "target": [
+     -66,
+     1.2,
+     16
+    ]
+   },
+   "stats": {
+    "instances": 44130,
+    "edgeSegments": 102398,
+    "objects": 29,
+    "byKind": {
+     "terrain": 0,
+     "nodes": 1218,
+     "manipulators": 234,
+     "chambers": 46,
+     "habitat": 0,
+     "power": 17,
+     "array": 12,
+     "expansion": 39,
+     "greebles": 10400,
+     "greebles edges": 15228,
+     "wall grid": 5792,
+     "trusses": 9150,
+     "trusses edges": 63996,
+     "panels": 9215,
+     "panels edges": 7968,
+     "plates": 570,
+     "plates edges": 6840,
+     "rock": 7155,
+     "glazing": 46,
+     "fittings": 6064,
+     "cables": 2538,
+     "suspended material": 0,
+     "sky": 0
+    }
+   }
+  },
+  "12-boundary-open": {
+   "quality": "balanced",
+   "frames": 1,
+   "fps": 0.13700319217437767,
+   "frameMsMean": 7299.099999999999,
+   "frameMsP95": 7299.099999999999,
+   "frameMsMax": 7299.099999999999,
+   "drawCalls": 62,
+   "triangles": 680810,
+   "geometries": 65,
+   "textures": 3,
+   "instances": 44130,
+   "edgeSegments": 102398,
+   "simUpdateMsMean": 0,
+   "heapMB": 48.065185546875,
+   "entities": 2,
+   "trialChambers": 12,
+   "camera": {
+    "pos": [
+     -48.00000000000001,
+     11,
+     33.00000000000001
+    ],
+    "target": [
+     -66,
+     1.2,
+     16
+    ]
+   },
+   "stats": {
+    "instances": 44130,
+    "edgeSegments": 102398,
+    "objects": 29,
+    "byKind": {
+     "terrain": 0,
+     "nodes": 1218,
+     "manipulators": 234,
+     "chambers": 46,
+     "habitat": 0,
+     "power": 17,
+     "array": 12,
+     "expansion": 39,
+     "greebles": 10400,
+     "greebles edges": 15228,
+     "wall grid": 5792,
+     "trusses": 9150,
+     "trusses edges": 63996,
+     "panels": 9215,
+     "panels edges": 7968,
+     "plates": 570,
+     "plates edges": 6840,
+     "rock": 7155,
+     "glazing": 46,
+     "fittings": 6064,
+     "cables": 2538,
+     "suspended material": 0,
+     "sky": 0
+    }
+   }
+  },
+  "13-recovered": {
+   "quality": "balanced",
+   "frames": 4,
+   "fps": 0.36144142841652505,
+   "frameMsMean": 2766.7000000000003,
+   "frameMsP95": 9382.5,
+   "frameMsMax": 9382.5,
+   "drawCalls": 68,
+   "triangles": 680882,
+   "geometries": 66,
+   "textures": 3,
+   "instances": 44130,
+   "edgeSegments": 102398,
+   "simUpdateMsMean": 0,
+   "heapMB": 48.065185546875,
+   "entities": 2,
+   "trialChambers": 12,
+   "camera": {
+    "pos": [
+     -48.00000000000001,
+     11,
+     33.00000000000001
+    ],
+    "target": [
+     -66,
+     1.2,
+     16
+    ]
+   },
+   "stats": {
+    "instances": 44130,
+    "edgeSegments": 102398,
+    "objects": 29,
+    "byKind": {
+     "terrain": 0,
+     "nodes": 1218,
+     "manipulators": 234,
+     "chambers": 46,
+     "habitat": 0,
+     "power": 17,
+     "array": 12,
+     "expansion": 39,
+     "greebles": 10400,
+     "greebles edges": 15228,
+     "wall grid": 5792,
+     "trusses": 9150,
+     "trusses edges": 63996,
+     "panels": 9215,
+     "panels edges": 7968,
+     "plates": 570,
+     "plates edges": 6840,
+     "rock": 7155,
+     "glazing": 46,
+     "fittings": 6064,
+     "cables": 2538,
+     "suspended material": 0,
+     "sky": 0
+    }
+   }
+  }
+ }
+}

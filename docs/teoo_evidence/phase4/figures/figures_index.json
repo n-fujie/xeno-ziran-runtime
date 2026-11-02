@@ -1,0 +1,14 @@
+{
+ "results_dir": "../docs/teoo_evidence/phase4/confirmatory_v2",
+ "total_observation_record": 1001,
+ "figures": [
+  "fig1_total_relational_observation.svg",
+  "fig2_observation_resolution.svg",
+  "fig3_open_body_reconfiguration.svg",
+  "fig4_open_revision.svg",
+  "fig5_disconnection.svg",
+  "fig6_reconstruction_limits.svg",
+  "fig7_non_redundancy.svg",
+  "fig8_evidence_summary.svg"
+ ]
+}

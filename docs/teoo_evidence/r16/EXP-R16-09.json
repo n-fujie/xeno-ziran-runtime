@@ -1,0 +1,323 @@
+{
+ "experiment_id": "EXP-R16-09",
+ "protocol_version": 1,
+ "protocol_digest": "b60bbc73b68de09f4b74a5e86633385b25dc906e525eef2310744b8efab7cfd6",
+ "protocol": {
+  "experiment_id": "EXP-R16-09",
+  "hypotheses": [
+   {
+    "id": "H1",
+    "statement": "For each of the fifteen R16 principles, the guarantee that matches it best by protected function is its ordinal counterpart, and no other guarantee is close"
+   },
+   {
+    "id": "H2",
+    "statement": "The functional match is exact for twelve principles and differs for P5, P10 and P15"
+   },
+   {
+    "id": "H3",
+    "statement": "Titles alone do not establish correspondence: some coincide and most differ in wording"
+   },
+   {
+    "id": "H4",
+    "statement": "P1 corresponds to no duty (G1 is named by no duty) and every duty is covered by at least one principle"
+   },
+   {
+    "id": "H5",
+    "statement": "The August Recursive Double Audit version is kept as a separate historical version"
+   }
+  ],
+  "targets": [
+   "a synthetic ledger, its worlds and the registries of duties, guarantees and governance principles"
+  ],
+  "instrument_conditions": {
+   "profiles": "protected functions read from the supplied descriptions (this implementation's analytic reading, not verified against the sources); near pairs count 0.5",
+   "threshold": 0.5
+  },
+  "control_condition": "by number",
+  "conditions": [
+   "by protected function",
+   "by number",
+   "by title"
+  ],
+  "seeds": [
+   8301
+  ],
+  "trials_per_condition": 1,
+  "stopping_rule": {
+   "type": "fixed-n",
+   "units": 1,
+   "no interim analysis": true
+  },
+  "outcomes": {
+   "primary": [
+    "best functional match",
+    "differences"
+   ],
+   "secondary": [
+    "titles",
+    "duty coverage"
+   ]
+  },
+  "analyses": [
+   {
+    "id": "R901",
+    "hypothesis": "H1",
+    "outcome": "best match",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "R902",
+    "hypothesis": "H2",
+    "outcome": "differences",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "R903",
+    "hypothesis": "H3",
+    "outcome": "titles",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "R904",
+    "hypothesis": "H4",
+    "outcome": "duties",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "R905",
+    "hypothesis": "H5",
+    "outcome": "versions",
+    "method": "descriptive",
+    "confirmatory": true
+   }
+  ],
+  "multiplicity": "holm",
+  "failure_conditions": [
+   "fewer than 1 units"
+  ],
+  "reproduction": {
+   "generator": "xzr.teoo.r16experiments",
+   "steps": [
+    "run unit per seed",
+    "analyse"
+   ],
+   "world": "xzr.teoo.lawledger on xzr.teoo.lawworld (own world and a world built to the stated R16 aggregates); registries in xzr.teoo.mheg"
+  },
+  "schema": "teoo.protocol/1",
+  "version": 1,
+  "parent_version": null,
+  "change_reason": null
+ },
+ "units": 1,
+ "seeds": [
+  8301
+ ],
+ "evidence_class": "Implementation Property",
+ "seconds": 0.6,
+ "results": {
+  "R901": {
+   "method": "descriptive",
+   "ordinal_counterpart_is_best_match": {
+    "P1": true,
+    "P2": true,
+    "P3": true,
+    "P4": true,
+    "P5": true,
+    "P6": true,
+    "P7": true,
+    "P8": true,
+    "P9": true,
+    "P10": true,
+    "P11": true,
+    "P12": true,
+    "P13": true,
+    "P14": true,
+    "P15": true
+   },
+   "close_guarantees": {
+    "P1": 1,
+    "P2": 1,
+    "P3": 1,
+    "P4": 1,
+    "P5": 1,
+    "P6": 1,
+    "P7": 1,
+    "P8": 1,
+    "P9": 1,
+    "P10": 1,
+    "P11": 1,
+    "P12": 1,
+    "P13": 1,
+    "P14": 1,
+    "P15": 1
+   },
+   "criterion": "the ordinal counterpart is the best and the only close guarantee for all fifteen",
+   "criterion_met": true,
+   "reading": "met on these profiles; the profiles are an analytic reading, so this shows what the supplied descriptions say, not what the sources say",
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  },
+  "R902": {
+   "method": "descriptive",
+   "functionally_identical": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P6",
+    "P7",
+    "P8",
+    "P9",
+    "P11",
+    "P12",
+    "P13",
+    "P14"
+   ],
+   "differs": {
+    "P5": {
+     "only_in_first": [
+      "purpose_and_downstream_use"
+     ],
+     "only_in_second": [],
+     "near": []
+    },
+    "P10": {
+     "only_in_first": [],
+     "only_in_second": [
+      "downstream_propagation"
+     ],
+     "near": []
+    },
+    "P15": {
+     "only_in_first": [],
+     "only_in_second": [],
+     "near": [
+      {
+       "principle": "remedy",
+       "guarantee": "material_restoration",
+       "reading": "remedy is broader than material restoration"
+      },
+      {
+       "principle": "review_mechanism_challenge",
+       "guarantee": "mutual_audit_systemic",
+       "reading": "a challenge to the review mechanism overlaps a systemic challenge and a mutual audit"
+      }
+     ]
+    }
+   },
+   "criterion": "exact for twelve; P5, P10, P15 differ",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  },
+  "R903": {
+   "method": "descriptive",
+   "identical_titles": [
+    "P1",
+    "P4",
+    "P13",
+    "P14"
+   ],
+   "n_identical": 4,
+   "n_different": 11,
+   "criterion": "some titles coincide and most differ",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  },
+  "R904": {
+   "method": "descriptive",
+   "principles_without_a_duty": [
+    "P1"
+   ],
+   "duties_covered_by_principles": {
+    "M1": [
+     "P3"
+    ],
+    "M2": [
+     "P6"
+    ],
+    "M3": [
+     "P2",
+     "P6",
+     "P7",
+     "P8",
+     "P11",
+     "P12",
+     "P14"
+    ],
+    "M4": [
+     "P7",
+     "P8",
+     "P9"
+    ],
+    "M5": [
+     "P4",
+     "P5",
+     "P8"
+    ],
+    "M6": [
+     "P10",
+     "P14",
+     "P15"
+    ],
+    "M7": [
+     "P7",
+     "P8",
+     "P11",
+     "P12",
+     "P14"
+    ],
+    "M8": [
+     "P9"
+    ],
+    "M9": [
+     "P12"
+    ],
+    "M10": [
+     "P11",
+     "P12",
+     "P13",
+     "P15"
+    ],
+    "M11": [
+     "P15"
+    ],
+    "M12": [
+     "P15"
+    ]
+   },
+   "criterion": "only P1 has no duty; every duty has a principle",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  },
+  "R905": {
+   "method": "descriptive",
+   "versions": [
+    "r16_section_7",
+    "recursive_double_audit_august"
+   ],
+   "criterion": "both versions are kept",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  }
+ },
+ "catalogue": {
+  "source": "The Minimum Guarantees of Human Legal Subjecthood, Publication Final V3.0, Chapter 6.2 (identical in the 100_POINT_EDITION and in R2 section 4: all fifteen titles and definitions compared character for character)",
+  "verified_against_original": true,
+  "sha256": {
+   "v3_0": "cf4d4f0c51169451da5af4c33e7081e947dacbade855068a889965d8c523b848",
+   "v3_0_100_point_edition": "afb59d1a0c3b28854f14113f843645539e07a2e466949d22de4b67da0a22bf99",
+   "ai_law_osr_r2": "a9984451b281df3252b05842dc5109dd396e0b0c54d3560849344ad41059a501"
+  },
+  "editions_identical_for_guarantees": true,
+  "note": "V3.0 uses two vocabularies for the same five findings (Appendix A table: Secured/Partial/Absent/Indeterminate/Inapplicable; A.3 and 8.4 text: Satisfied/Partially Satisfied/Failed/Indeterminate/Not Applicable). R2 section 16 and this implementation use the table's."
+ },
+ "note": "results about a SYNTHETIC ledger; the stated-aggregates world is an independent verification model built to the stated numbers, not the manuscript's world, and its match is by construction; the principles' profiles are an analytic reading; a closure, a measurement or a match here is not a legal judgment or a restoration; not an observation of any institution, law or person"
+}

@@ -1,0 +1,11 @@
+{
+  "measured": "2026-10-28, Claude desktop app browser pane, WebGL2 on ANGLE Metal, Apple M1; scene with the stage-two research device and gantry arches; overview camera, tick 120, playing; 240 frames after an 8 s warm-up",
+  "balanced": {
+    "quality": "balanced", "frames": 240, "fps": 59.9985, "frameMsMean": 16.667, "frameMsP95": 17.7, "frameMsMax": 17.8,
+    "drawCalls": 95, "triangles": 670958, "instances": 44130, "edgeSegments": 102398, "simUpdateMsMean": 0.45, "heapMB": 25.3,
+    "note": "vsync-limited at 60 fps: the true headroom is not measured; draw calls rose from 86 to 95 and instances from 42684 to 44130 against the stage-one scene (arches, device layer)"
+  },
+  "high": "not measured: the browser pane was hidden when the run was attempted, so requestAnimationFrame was throttled and no frames were drawn (frames = 0). Instance count of the high tier: 67785 instances, 145618 edge segments (static count only).",
+  "headless_captures": "the screenshots in docs/ecosystem/visual were taken in headless Chromium on SwiftShader (software); frame rates there (0.1-1.3 fps) are software rendering and are not a performance measure",
+  "performance_target": "no explicit target was set; 60 fps (the display limit) was reached at the balanced tier on this one machine"
+}

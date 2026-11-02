@@ -1,0 +1,66 @@
+{
+ "body": null,
+ "claim": "an illustration of the stated data under the stated conditions; no claim beyond them",
+ "evidence": {
+  "band": [
+   "EVIDENCE: SYNTHETIC  ·  artificial functional-test data, not a measurement",
+   "REAL-WORLD EXPERIMENT: none recorded (no measurement exists behind this figure)",
+   "BODY: none",
+   "RECORDS: 1 (rec-6b91f0bb06)  ·  generated 2026-11-01  ·  TEOO teoo/0.1"
+  ],
+  "classes": [
+   "SYNTHETIC"
+  ],
+  "real_world_experiment_recorded": false,
+  "watermarks": [
+   "SYNTHETIC"
+  ]
+ },
+ "experiment": {
+  "conditions": [
+   "appeal_only",
+   "plus_propagation",
+   "plus_material_relief",
+   "plus_reentry_support",
+   "plus_resources_support",
+   "plus_material_relief_without_relief"
+  ],
+  "protocol_id": "LG2-EXP-04",
+  "seeds": [
+   4001,
+   4030
+  ],
+  "trials_per_condition": 1,
+  "version": 1
+ },
+ "figure_id": "fig-4e5088623ccbf9a6",
+ "generated_at": "2026-11-01T00:00:00.000000Z",
+ "kind": "bars",
+ "metadata_digest": "25e8b9a116f3bf7a11ba3f210f548df6285d1a4b559c98178661673791a467f2",
+ "observation_limits": {
+  "config_version": null,
+  "note": "A synthetic institution or a drawing: what lies outside what is stated here is unknown, not absent.",
+  "summary": {
+   "conditions": "review delay 3 periods; 300 people, 24 periods"
+  },
+  "t": null
+ },
+ "provenance": {
+  "records": [
+   {
+    "kind": "OBSERVATION",
+    "lineage_classes": [
+     "SYNTHETIC"
+    ],
+    "provenance": "SYNTHETIC",
+    "record_digest": "6b91f0bb062f897882e0accbfad29712862a4b336fe5e361e9f7f272d4f96ee9",
+    "record_id": "rec-6b91f0bb062f897882e0accb"
+   }
+  ],
+  "source_digest": "4e5088623ccbf9a62c4725850a9107144af7cab398def3e9536cd4cbc799048f"
+ },
+ "schema": "teoo.figure/1",
+ "teoo_version": "teoo/0.1",
+ "title": "Fig L5 · Material restoration: correction, propagation, relief, re-entry, resources (LG2-EXP-04)",
+ "units": {}
+}

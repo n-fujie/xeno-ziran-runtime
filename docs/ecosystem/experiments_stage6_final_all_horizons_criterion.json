@@ -1,0 +1,1964 @@
+{
+"definitions": "MEOS-0, sixth stage: the derived reading of Pipelines A, B and C, in one place, for the results table, the interface and the document. Everything is computed from the saved raw results (``experiments_stage6*.json``); nothing is typed in.\n\nDefinitions (fixed before the readings were taken):\n\n  effective tick         a tick at which a tested setting recovers sustained to every horizon on all five exploration seeds AND all five validation seeds (Pipeline B, one-tick resolution; ticks 101-170).\n  latest successful repair tick   the last tick at which any tested setting is effective.\n  earliest irreversible tick      the first tick after which no tested setting is effective at any later tested tick (ticks up to 170 at one-tick resolution, up to 200 on the coarse grid). It is the next tick after the latest successful one, and it is a statement about the tested action space only.\n  first window           the first contiguous run of effective ticks of any setting; ``fragments`` are all of them (the windows are not always contiguous: a gap is recorded, not smoothed).\n  reference repair       the validated setting of a stress with the lowest equal-weight normalised cost (switching, collateral disturbance, persistence energy rate, each divided by its maximum over the validated settings): an equal-weight convention, stated, with the raw costs beside it.\n  flags                  window closes before the unrepaired collapse (all repairs are timing-limited); only transiently recoverable (a setting recovers at the short horizon on every exploration seed and not at the long one, and nothing is validated); costly (every validated setting is above the cost limit).\n",
+"stress_table": [
+{
+"stress": "coupling gain 0.5",
+"label": "coupling weakened (gain 0.5)",
+"family": "coupling",
+"classification_at_decision_tick_113": "externally repairable",
+"classification_at_any_tested_tick": "externally repairable",
+"pipeline_a_grid_classification": {
+"at_113": "externally repairable",
+"any": "externally repairable",
+"note": "the coarse grid (ticks 104, 108, 113, 120, 130, 140, 160, 200; pairs at 113, 120, 130): superseded by the one-tick windows"
+},
+"near_miss_ticks": [
+101,
+107,
+113,
+118,
+119,
+120,
+121
+],
+"flags": [
+"recoverable only within a timing window"
+],
+"internal_reconfiguration": {
+"effective": false,
+"windows": []
+},
+"world_single": {
+"effective": true,
+"windows": [
+[
+101,
+105
+],
+[
+108,
+117
+],
+[
+124,
+140
+]
+]
+},
+"combined": {
+"effective": false,
+"windows": []
+},
+"minimum_effective": [
+{
+"action": "coupling.gradual",
+"magnitude": 1.0,
+"ticks": [
+104
+]
+},
+{
+"action": "coupling.restore",
+"magnitude": 0.7,
+"ticks": [
+104
+]
+},
+{
+"action": "resource.pulse",
+"magnitude": 0.5,
+"ticks": [
+108,
+113,
+130,
+140
+]
+}
+],
+"timing_window_fragments": [
+[
+101,
+105
+],
+[
+108,
+117
+],
+[
+124,
+140
+]
+],
+"first_window": [
+101,
+105
+],
+"earliest_effective_tick": 101,
+"latest_successful_repair_tick": 140,
+"earliest_irreversible_tick": 141,
+"irreversible_from_first_tested_tick": false,
+"tested_ticks": [
+101,
+170
+],
+"unrepaired_run": {
+"outcomes_long": {
+"failed": 5
+},
+"success": 0
+},
+"reference_repair": {
+"parts": [
+[
+"coupling.restore",
+1.0,
+0
+]
+],
+"t": 104,
+"klass": "world",
+"kind": "single",
+"normalised_cost_equal_weights": 0.6858,
+"costs": {
+"raw": {
+"energy_use": 151.24,
+"collateral": 0.2028,
+"switching": 1
+},
+"energy_rate_norm": 1.005
+},
+"evaluation": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"n_candidates": 16
+},
+"failure_reasons_in_the_tested_grid": {
+"SECONDARY_COLLAPSE": 12,
+"NO_EFFECTIVE_ACTION": 306,
+"ACTION_TOO_LATE": 114,
+"OVERSHOOT": 7
+},
+"cells_tested": 456,
+"cells_effective": 17,
+"near_miss": true,
+"transient_settings": 0,
+"horizons_of_reference_repair": {
+"short": 5,
+"medium": 5,
+"long": 5,
+"n": 5
+},
+"unrepaired_collapse_tick": 149,
+"window_closes_before_collapse": true
+},
+{
+"stress": "resource regrow 0.01 charge 0.2",
+"label": "resource reduced (regrow 0.01, charge 0.2)",
+"family": "resource",
+"classification_at_decision_tick_113": "neither (under the tested actions)",
+"classification_at_any_tested_tick": "internally reconfigurable",
+"pipeline_a_grid_classification": {
+"at_113": "neither (under the tested actions)",
+"any": "internally reconfigurable",
+"note": "the coarse grid (ticks 104, 108, 113, 120, 130, 140, 160, 200; pairs at 113, 120, 130): superseded by the one-tick windows"
+},
+"near_miss_ticks": [],
+"flags": [
+"recoverable only within a timing window"
+],
+"internal_reconfiguration": {
+"effective": true,
+"windows": [
+[
+101,
+109
+]
+]
+},
+"world_single": {
+"effective": false,
+"windows": []
+},
+"combined": {
+"effective": false,
+"windows": []
+},
+"minimum_effective": [
+{
+"action": "internal.m2_tap",
+"magnitude": 0.0,
+"ticks": [
+104,
+108
+]
+}
+],
+"timing_window_fragments": [
+[
+101,
+109
+]
+],
+"first_window": [
+101,
+109
+],
+"earliest_effective_tick": 101,
+"latest_successful_repair_tick": 109,
+"earliest_irreversible_tick": 110,
+"irreversible_from_first_tested_tick": false,
+"tested_ticks": [
+101,
+170
+],
+"unrepaired_run": {
+"outcomes_long": {
+"failed": 5
+},
+"success": 0
+},
+"reference_repair": {
+"parts": [
+[
+"internal.m2_tap",
+0.0,
+0
+]
+],
+"t": 104,
+"klass": "internal",
+"kind": "single",
+"normalised_cost_equal_weights": 0.9895,
+"costs": {
+"raw": {
+"energy_use": 75.25,
+"collateral": 0.3415,
+"switching": 1
+},
+"energy_rate_norm": 0.5
+},
+"evaluation": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"n_candidates": 2
+},
+"failure_reasons_in_the_tested_grid": {
+"NO_EFFECTIVE_ACTION": 280,
+"ACTION_TOO_LATE": 97,
+"SECONDARY_COLLAPSE": 12,
+"OVERSHOOT": 1
+},
+"cells_tested": 392,
+"cells_effective": 2,
+"near_miss": false,
+"transient_settings": 9,
+"horizons_of_reference_repair": {
+"short": 5,
+"medium": 5,
+"long": 5,
+"n": 5
+},
+"unrepaired_collapse_tick": 149,
+"window_closes_before_collapse": true
+},
+{
+"stress": "renewal efficiency 0.6",
+"label": "renewal efficiency 0.6",
+"family": "renewal",
+"classification_at_decision_tick_113": "neither (under the tested actions)",
+"classification_at_any_tested_tick": "both",
+"pipeline_a_grid_classification": {
+"at_113": "neither (under the tested actions)",
+"any": "both",
+"note": "the coarse grid (ticks 104, 108, 113, 120, 130, 140, 160, 200; pairs at 113, 120, 130): superseded by the one-tick windows"
+},
+"near_miss_ticks": [],
+"flags": [
+"recoverable only within a timing window"
+],
+"internal_reconfiguration": {
+"effective": true,
+"windows": [
+[
+101,
+111
+]
+]
+},
+"world_single": {
+"effective": true,
+"windows": [
+[
+101,
+104
+]
+]
+},
+"combined": {
+"effective": false,
+"windows": []
+},
+"minimum_effective": [
+{
+"action": "internal.m2_tap",
+"magnitude": 0.0,
+"ticks": [
+104,
+108
+]
+},
+{
+"action": "renewal.restore",
+"magnitude": 1.0,
+"ticks": [
+104
+]
+}
+],
+"timing_window_fragments": [
+[
+101,
+111
+]
+],
+"first_window": [
+101,
+111
+],
+"earliest_effective_tick": 101,
+"latest_successful_repair_tick": 111,
+"earliest_irreversible_tick": 112,
+"irreversible_from_first_tested_tick": false,
+"tested_ticks": [
+101,
+170
+],
+"unrepaired_run": {
+"outcomes_long": {
+"failed": 5
+},
+"success": 0
+},
+"reference_repair": {
+"parts": [
+[
+"renewal.restore",
+1.0,
+0
+]
+],
+"t": 104,
+"klass": "world",
+"kind": "single",
+"normalised_cost_equal_weights": 0.6668,
+"costs": {
+"raw": {
+"energy_use": 150.49,
+"collateral": 0.0001,
+"switching": 1
+},
+"energy_rate_norm": 1.0
+},
+"evaluation": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"n_candidates": 3
+},
+"failure_reasons_in_the_tested_grid": {
+"NO_EFFECTIVE_ACTION": 305,
+"ACTION_TOO_LATE": 106,
+"OVERSHOOT": 9,
+"SEED_DEPENDENT": 1
+},
+"cells_tested": 424,
+"cells_effective": 3,
+"near_miss": false,
+"transient_settings": 0,
+"horizons_of_reference_repair": {
+"short": 5,
+"medium": 5,
+"long": 5,
+"n": 5
+},
+"unrepaired_collapse_tick": 149,
+"window_closes_before_collapse": true
+},
+{
+"stress": "renewal stopped",
+"label": "renewal stopped (feedback removed)",
+"family": "renewal",
+"classification_at_decision_tick_113": "neither (under the tested actions)",
+"classification_at_any_tested_tick": "externally repairable",
+"pipeline_a_grid_classification": {
+"at_113": "neither (under the tested actions)",
+"any": "externally repairable",
+"note": "the coarse grid (ticks 104, 108, 113, 120, 130, 140, 160, 200; pairs at 113, 120, 130): superseded by the one-tick windows"
+},
+"near_miss_ticks": [
+107,
+122,
+123,
+124,
+125,
+126,
+127,
+128,
+129
+],
+"flags": [
+"recoverable only within a timing window",
+"recovered only by a combination (neither part alone)"
+],
+"internal_reconfiguration": {
+"effective": false,
+"windows": []
+},
+"world_single": {
+"effective": false,
+"windows": []
+},
+"combined": {
+"effective": true,
+"windows": [
+[
+101,
+106
+],
+[
+121,
+121
+],
+[
+130,
+140
+]
+]
+},
+"minimum_effective": [],
+"timing_window_fragments": [
+[
+101,
+106
+],
+[
+121,
+121
+],
+[
+130,
+140
+]
+],
+"first_window": [
+101,
+106
+],
+"earliest_effective_tick": 101,
+"latest_successful_repair_tick": 140,
+"earliest_irreversible_tick": 141,
+"irreversible_from_first_tested_tick": false,
+"tested_ticks": [
+101,
+170
+],
+"unrepaired_run": {
+"outcomes_long": {
+"failed": 5
+},
+"success": 0
+},
+"reference_repair": {
+"parts": [
+[
+"renewal.restart",
+0.0,
+0
+],
+[
+"resource.pulse",
+0.5,
+0
+]
+],
+"t": 130,
+"klass": "combined",
+"kind": "combined",
+"normalised_cost_equal_weights": 0.7246,
+"costs": {
+"switching": 2,
+"collateral": 0.2682,
+"energy_rate_norm": 1.024
+},
+"evaluation": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"n_candidates": 3
+},
+"failure_reasons_in_the_tested_grid": {
+"NO_EFFECTIVE_ACTION": 300,
+"ACTION_TOO_LATE": 100
+},
+"cells_tested": 400,
+"cells_effective": 0,
+"near_miss": false,
+"transient_settings": 0,
+"horizons_of_reference_repair": {
+"note": "a combined repair: its three horizons are in the combined rows",
+"evaluation_long": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+}
+},
+"unrepaired_collapse_tick": 144,
+"window_closes_before_collapse": true
+},
+{
+"stress": "Address partial 0.5",
+"label": "Address degraded (A2 partial 50 %)",
+"family": "address",
+"classification_at_decision_tick_113": "inconclusive",
+"classification_at_any_tested_tick": "externally repairable",
+"pipeline_a_grid_classification": {
+"at_113": "inconclusive",
+"any": "inconclusive",
+"note": "the coarse grid (ticks 104, 108, 113, 120, 130, 140, 160, 200; pairs at 113, 120, 130): superseded by the one-tick windows"
+},
+"near_miss_ticks": [
+101,
+102,
+103,
+104,
+105,
+106,
+107,
+108,
+109,
+110,
+111,
+112,
+113,
+114,
+115,
+116,
+120,
+121,
+122,
+123,
+124,
+125,
+126,
+127,
+128,
+129,
+130,
+134,
+136,
+137,
+138,
+139
+],
+"flags": [
+"recoverable only within a timing window",
+"near miss at the decision tick (validation 3-4 of 5), nothing effective there",
+"recovered only by a combination (neither part alone)"
+],
+"internal_reconfiguration": {
+"effective": false,
+"windows": []
+},
+"world_single": {
+"effective": false,
+"windows": []
+},
+"combined": {
+"effective": true,
+"windows": [
+[
+101,
+109
+],
+[
+131,
+133
+],
+[
+135,
+135
+],
+[
+140,
+140
+]
+]
+},
+"minimum_effective": [],
+"timing_window_fragments": [
+[
+101,
+109
+],
+[
+131,
+133
+],
+[
+135,
+135
+],
+[
+140,
+140
+]
+],
+"first_window": [
+101,
+109
+],
+"earliest_effective_tick": 101,
+"latest_successful_repair_tick": 140,
+"earliest_irreversible_tick": 141,
+"irreversible_from_first_tested_tick": false,
+"tested_ticks": [
+101,
+170
+],
+"unrepaired_run": {
+"outcomes_long": {
+"failed": 5
+},
+"success": 0
+},
+"reference_repair": null,
+"failure_reasons_in_the_tested_grid": {
+"SEED_DEPENDENT": 2,
+"NO_EFFECTIVE_ACTION": 278,
+"ACTION_TOO_LATE": 102,
+"SECONDARY_COLLAPSE": 10,
+"OVERSHOOT": 16
+},
+"cells_tested": 408,
+"cells_effective": 0,
+"near_miss": true,
+"transient_settings": 0,
+"horizons_of_reference_repair": null,
+"unrepaired_collapse_tick": 149,
+"window_closes_before_collapse": true
+},
+{
+"stress": "history lost",
+"label": "history lost",
+"family": "history",
+"classification_at_decision_tick_113": "internally reconfigurable",
+"classification_at_any_tested_tick": "both",
+"pipeline_a_grid_classification": {
+"at_113": "internally reconfigurable",
+"any": "both",
+"note": "the coarse grid (ticks 104, 108, 113, 120, 130, 140, 160, 200; pairs at 113, 120, 130): superseded by the one-tick windows"
+},
+"near_miss_ticks": [
+103,
+104,
+105,
+114,
+115,
+116,
+117,
+118,
+121,
+122,
+123,
+124,
+125,
+134
+],
+"flags": [
+"recoverable only within a timing window"
+],
+"internal_reconfiguration": {
+"effective": true,
+"windows": [
+[
+101,
+113
+]
+]
+},
+"world_single": {
+"effective": false,
+"windows": []
+},
+"combined": {
+"effective": true,
+"windows": [
+[
+114,
+120
+]
+]
+},
+"minimum_effective": [
+{
+"action": "internal.m2_tap",
+"magnitude": 0.0,
+"ticks": [
+104,
+108,
+113
+]
+}
+],
+"timing_window_fragments": [
+[
+101,
+120
+]
+],
+"first_window": [
+101,
+120
+],
+"earliest_effective_tick": 101,
+"latest_successful_repair_tick": 120,
+"earliest_irreversible_tick": 121,
+"irreversible_from_first_tested_tick": false,
+"tested_ticks": [
+101,
+170
+],
+"unrepaired_run": {
+"outcomes_long": {
+"failed": 5
+},
+"success": 0
+},
+"reference_repair": {
+"parts": [
+[
+"internal.m2_tap",
+0.0,
+0
+]
+],
+"t": 104,
+"klass": "internal",
+"kind": "single",
+"normalised_cost_equal_weights": 0.4981,
+"costs": {
+"raw": {
+"energy_use": 150.49,
+"collateral": 0.0,
+"switching": 1
+},
+"energy_rate_norm": 1.0
+},
+"evaluation": {
+"k": 20,
+"n": 20,
+"p": 1.0,
+"wilson95": [
+0.8389,
+1.0
+]
+},
+"n_candidates": 6
+},
+"failure_reasons_in_the_tested_grid": {
+"SECONDARY_COLLAPSE": 43,
+"NO_EFFECTIVE_ACTION": 202,
+"ACTION_TOO_LATE": 98,
+"OVERSHOOT": 46
+},
+"cells_tested": 392,
+"cells_effective": 3,
+"near_miss": false,
+"transient_settings": 14,
+"horizons_of_reference_repair": {
+"short": 5,
+"medium": 5,
+"long": 5,
+"n": 5
+},
+"unrepaired_collapse_tick": 159,
+"window_closes_before_collapse": true
+}
+],
+"unrepaired_collapse_tick": {
+"coupling gain 0.5": 149,
+"resource regrow 0.01 charge 0.2": 149,
+"renewal efficiency 0.6": 149,
+"renewal stopped": 144,
+"Address partial 0.5": 149,
+"history lost": 159
+},
+"resource_non_monotonicity": {
+"coupling gain 0.5": {
+"effective_band": [
+0.6,
+2.5
+],
+"phases": [
+{
+"phase": "insufficient intervention",
+"from": 0.1,
+"to": 0.5
+},
+{
+"phase": "effective recovery",
+"from": 0.6,
+"to": 2.5
+},
+{
+"phase": "overshoot",
+"from": 2.6,
+"to": 6.0
+}
+]
+},
+"resource regrow 0.01 charge 0.2": {
+"effective_band": [
+null,
+null
+],
+"phases": [
+{
+"phase": "no effect (no magnitude of the sweep recovers)",
+"from": 0.1,
+"to": 6.0
+}
+]
+},
+"renewal efficiency 0.6": {
+"effective_band": [
+null,
+null
+],
+"phases": [
+{
+"phase": "no effect (no magnitude of the sweep recovers)",
+"from": 0.1,
+"to": 6.0
+}
+]
+},
+"renewal stopped": {
+"effective_band": [
+null,
+null
+],
+"phases": [
+{
+"phase": "no effect (no magnitude of the sweep recovers)",
+"from": 0.1,
+"to": 6.0
+}
+]
+},
+"Address partial 0.5": {
+"effective_band": [
+null,
+null
+],
+"phases": [
+{
+"phase": "no effect (no magnitude of the sweep recovers)",
+"from": 0.1,
+"to": 0.3
+},
+{
+"phase": "transient recovery, then secondary collapse",
+"from": 0.4,
+"to": 6.0
+}
+]
+},
+"history lost": {
+"effective_band": [
+null,
+null
+],
+"phases": [
+{
+"phase": "transient recovery, then secondary collapse",
+"from": 0.1,
+"to": 6.0
+}
+]
+}
+},
+"failure_ids": [
+"NO_EFFECTIVE_ACTION",
+"ACTION_TOO_WEAK",
+"ACTION_TOO_LATE",
+"OVERSHOOT",
+"SECONDARY_COLLAPSE",
+"DETECTION_FAILURE",
+"ADDRESS_UNRESOLVED",
+"INSUFFICIENT_RESOURCE",
+"EXCESSIVE_COST",
+"DESTABILIZED_BY_ACTION",
+"OUTSIDE_TESTED_ACTION_SPACE",
+"SEED_DEPENDENT"
+],
+"stage5_consistency": {
+"stress": "history lost",
+"action": "internal.m2_tap",
+"tick": 113,
+"same_in_both": {
+"stress_onset": 100,
+"action_tick": 113,
+"m2_spec": {
+"sense": "direct",
+"weight": 4.0
+},
+"engine": "meos-0.4",
+"dormant tap installed at tick 0 (ROUTE m2 none)": true
+},
+"differs": {
+"horizon": "stage 5: 300; stage 6: 480 (short 180, medium 300, long 480)",
+"criterion": "stage 5: final status ACTIVE; stage 6: ACTIVE on the last 30 ticks, no secondary collapse, resource field not exhausted"
+},
+"by_seed_set": {
+"exploration 1-5": {
+"stage5_style_active_at_300": "5/5",
+"stage5_style_active_at_end_of_480": "5/5",
+"stage6_short": "5/5",
+"stage6_medium": "5/5",
+"stage6_long": "5/5"
+},
+"validation 6-10": {
+"stage5_style_active_at_300": "5/5",
+"stage5_style_active_at_end_of_480": "5/5",
+"stage6_short": "5/5",
+"stage6_medium": "5/5",
+"stage6_long": "5/5"
+},
+"evaluation 11-30": {
+"stage5_style_active_at_300": "20/20",
+"stage5_style_active_at_end_of_480": "20/20",
+"stage6_short": "20/20",
+"stage6_medium": "20/20",
+"stage6_long": "20/20"
+}
+}
+},
+"cycle_period": {
+"seed": 1,
+"cycles": 95,
+"horizon": 480,
+"median_interval": 5,
+"min_interval": 5,
+"max_interval": 5,
+"first_cycle_ticks": [
+6,
+11,
+16,
+21,
+26,
+31
+]
+},
+"unknown_stress": [
+{
+"stress": "coupling gain 0.3 (stronger drop)",
+"controller": "fixed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "coupling gain 0.3 (stronger drop)",
+"controller": "rule_based",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "coupling gain 0.3 (stronger drop)",
+"controller": "cost_aware",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "coupling gain 0.3 (stronger drop)",
+"controller": "delayed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "coupling gain 0.3 (stronger drop)",
+"controller": "noisy",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "coupling gain 0.7 (weaker drop)",
+"controller": "fixed",
+"success": "20/20",
+"none": "0/20",
+"difference": 1.0,
+"cohens_h": 3.1416,
+"fisher_p": 0.0,
+"holm_p": 0.0,
+"survives_holm": true,
+"verdict": "effective"
+},
+{
+"stress": "coupling gain 0.7 (weaker drop)",
+"controller": "rule_based",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "coupling gain 0.7 (weaker drop)",
+"controller": "cost_aware",
+"success": "20/20",
+"none": "0/20",
+"difference": 1.0,
+"cohens_h": 3.1416,
+"fisher_p": 0.0,
+"holm_p": 0.0,
+"survives_holm": true,
+"verdict": "effective"
+},
+{
+"stress": "coupling gain 0.7 (weaker drop)",
+"controller": "delayed",
+"success": "20/20",
+"none": "0/20",
+"difference": 1.0,
+"cohens_h": 3.1416,
+"fisher_p": 0.0,
+"holm_p": 0.0,
+"survives_holm": true,
+"verdict": "effective"
+},
+{
+"stress": "coupling gain 0.7 (weaker drop)",
+"controller": "noisy",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "resource regrow 0.015 charge 0.3 (different profile)",
+"controller": "fixed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "resource regrow 0.015 charge 0.3 (different profile)",
+"controller": "rule_based",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "resource regrow 0.015 charge 0.3 (different profile)",
+"controller": "cost_aware",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "resource regrow 0.015 charge 0.3 (different profile)",
+"controller": "delayed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "resource regrow 0.015 charge 0.3 (different profile)",
+"controller": "noisy",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "renewal efficiency 0.4 (stronger)",
+"controller": "fixed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "renewal efficiency 0.4 (stronger)",
+"controller": "rule_based",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "renewal efficiency 0.4 (stronger)",
+"controller": "cost_aware",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "renewal efficiency 0.4 (stronger)",
+"controller": "delayed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "renewal efficiency 0.4 (stronger)",
+"controller": "noisy",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "renewal efficiency 0.8 (weaker)",
+"controller": "fixed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "renewal efficiency 0.8 (weaker)",
+"controller": "rule_based",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "renewal efficiency 0.8 (weaker)",
+"controller": "cost_aware",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "renewal efficiency 0.8 (weaker)",
+"controller": "delayed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "renewal efficiency 0.8 (weaker)",
+"controller": "noisy",
+"success": "3/20",
+"none": "0/20",
+"difference": 0.15,
+"cohens_h": 0.7954,
+"fisher_p": 0.23077,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "renewal stopped at tick 130 (delayed failure)",
+"controller": "fixed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "renewal stopped at tick 130 (delayed failure)",
+"controller": "rule_based",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "renewal stopped at tick 130 (delayed failure)",
+"controller": "cost_aware",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "renewal stopped at tick 130 (delayed failure)",
+"controller": "delayed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "renewal stopped at tick 130 (delayed failure)",
+"controller": "noisy",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "Address partial 0.3 (stronger)",
+"controller": "fixed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "Address partial 0.3 (stronger)",
+"controller": "rule_based",
+"success": "4/20",
+"none": "0/20",
+"difference": 0.2,
+"cohens_h": 0.9273,
+"fisher_p": 0.10603,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "Address partial 0.3 (stronger)",
+"controller": "cost_aware",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "Address partial 0.3 (stronger)",
+"controller": "delayed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "Address partial 0.3 (stronger)",
+"controller": "noisy",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "Address partial 0.7 (weaker)",
+"controller": "fixed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "Address partial 0.7 (weaker)",
+"controller": "rule_based",
+"success": "17/20",
+"none": "0/20",
+"difference": 0.85,
+"cohens_h": 2.3462,
+"fisher_p": 0.0,
+"holm_p": 0.0,
+"survives_holm": true,
+"verdict": "effective"
+},
+{
+"stress": "Address partial 0.7 (weaker)",
+"controller": "cost_aware",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "Address partial 0.7 (weaker)",
+"controller": "delayed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "Address partial 0.7 (weaker)",
+"controller": "noisy",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "Address partial 0.5 at tick 80 (earlier)",
+"controller": "fixed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "Address partial 0.5 at tick 80 (earlier)",
+"controller": "rule_based",
+"success": "8/20",
+"none": "0/20",
+"difference": 0.4,
+"cohens_h": 1.3694,
+"fisher_p": 0.00328,
+"holm_p": 0.16072,
+"survives_holm": false,
+"verdict": "effective"
+},
+{
+"stress": "Address partial 0.5 at tick 80 (earlier)",
+"controller": "cost_aware",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "Address partial 0.5 at tick 80 (earlier)",
+"controller": "delayed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "Address partial 0.5 at tick 80 (earlier)",
+"controller": "noisy",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "Address partial 0.5 at tick 130 (later)",
+"controller": "fixed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "Address partial 0.5 at tick 130 (later)",
+"controller": "rule_based",
+"success": "8/20",
+"none": "0/20",
+"difference": 0.4,
+"cohens_h": 1.3694,
+"fisher_p": 0.00328,
+"holm_p": 0.16072,
+"survives_holm": false,
+"verdict": "effective"
+},
+{
+"stress": "Address partial 0.5 at tick 130 (later)",
+"controller": "cost_aware",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "Address partial 0.5 at tick 130 (later)",
+"controller": "delayed",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "Address partial 0.5 at tick 130 (later)",
+"controller": "noisy",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "coupling gain 0.5 at tick 130 (later)",
+"controller": "fixed",
+"success": "20/20",
+"none": "0/20",
+"difference": 1.0,
+"cohens_h": 3.1416,
+"fisher_p": 0.0,
+"holm_p": 0.0,
+"survives_holm": true,
+"verdict": "effective"
+},
+{
+"stress": "coupling gain 0.5 at tick 130 (later)",
+"controller": "rule_based",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+},
+{
+"stress": "coupling gain 0.5 at tick 130 (later)",
+"controller": "cost_aware",
+"success": "20/20",
+"none": "0/20",
+"difference": 1.0,
+"cohens_h": 3.1416,
+"fisher_p": 0.0,
+"holm_p": 0.0,
+"survives_holm": true,
+"verdict": "effective"
+},
+{
+"stress": "coupling gain 0.5 at tick 130 (later)",
+"controller": "delayed",
+"success": "6/20",
+"none": "0/20",
+"difference": 0.3,
+"cohens_h": 1.1593,
+"fisher_p": 0.0202,
+"holm_p": 0.9494,
+"survives_holm": false,
+"verdict": "effective"
+},
+{
+"stress": "coupling gain 0.5 at tick 130 (later)",
+"controller": "noisy",
+"success": "0/20",
+"none": "0/20",
+"difference": 0.0,
+"cohens_h": 0.0,
+"fisher_p": 1.0,
+"holm_p": 1.0,
+"survives_holm": false,
+"verdict": "no effect"
+}
+],
+"controller_failure_ids": {
+"Address partial 0.3 (stronger) | cost_aware": {
+"OUTSIDE_TESTED_ACTION_SPACE": 20
+},
+"Address partial 0.3 (stronger) | delayed": {
+"OUTSIDE_TESTED_ACTION_SPACE": 20
+},
+"Address partial 0.3 (stronger) | fixed": {
+"ADDRESS_UNRESOLVED": 20
+},
+"Address partial 0.3 (stronger) | noisy": {
+"ADDRESS_UNRESOLVED": 4,
+"OUTSIDE_TESTED_ACTION_SPACE": 16
+},
+"Address partial 0.3 (stronger) | none": {
+"DETECTION_FAILURE": 20
+},
+"Address partial 0.3 (stronger) | rule_based": {
+"ADDRESS_UNRESOLVED": 16
+},
+"Address partial 0.5 | cost_aware": {
+"OUTSIDE_TESTED_ACTION_SPACE": 20
+},
+"Address partial 0.5 | delayed": {
+"OUTSIDE_TESTED_ACTION_SPACE": 20
+},
+"Address partial 0.5 | fixed": {
+"ADDRESS_UNRESOLVED": 20
+},
+"Address partial 0.5 | noisy": {
+"ADDRESS_UNRESOLVED": 4,
+"OUTSIDE_TESTED_ACTION_SPACE": 16
+},
+"Address partial 0.5 | none": {
+"DETECTION_FAILURE": 20
+},
+"Address partial 0.5 | rule_based": {
+"ADDRESS_UNRESOLVED": 12
+},
+"Address partial 0.5 at tick 130 (later) | cost_aware": {
+"OUTSIDE_TESTED_ACTION_SPACE": 20
+},
+"Address partial 0.5 at tick 130 (later) | delayed": {
+"OUTSIDE_TESTED_ACTION_SPACE": 20
+},
+"Address partial 0.5 at tick 130 (later) | fixed": {
+"ADDRESS_UNRESOLVED": 20
+},
+"Address partial 0.5 at tick 130 (later) | noisy": {
+"ADDRESS_UNRESOLVED": 4,
+"OUTSIDE_TESTED_ACTION_SPACE": 16
+},
+"Address partial 0.5 at tick 130 (later) | none": {
+"DETECTION_FAILURE": 20
+},
+"Address partial 0.5 at tick 130 (later) | rule_based": {
+"ADDRESS_UNRESOLVED": 12
+},
+"Address partial 0.5 at tick 80 (earlier) | cost_aware": {
+"OUTSIDE_TESTED_ACTION_SPACE": 20
+},
+"Address partial 0.5 at tick 80 (earlier) | delayed": {
+"OUTSIDE_TESTED_ACTION_SPACE": 20
+},
+"Address partial 0.5 at tick 80 (earlier) | fixed": {
+"ADDRESS_UNRESOLVED": 20
+},
+"Address partial 0.5 at tick 80 (earlier) | noisy": {
+"ADDRESS_UNRESOLVED": 4,
+"OUTSIDE_TESTED_ACTION_SPACE": 16
+},
+"Address partial 0.5 at tick 80 (earlier) | none": {
+"DETECTION_FAILURE": 20
+},
+"Address partial 0.5 at tick 80 (earlier) | rule_based": {
+"ADDRESS_UNRESOLVED": 12
+},
+"Address partial 0.7 (weaker) | cost_aware": {
+"OUTSIDE_TESTED_ACTION_SPACE": 20
+},
+"Address partial 0.7 (weaker) | delayed": {
+"OUTSIDE_TESTED_ACTION_SPACE": 20
+},
+"Address partial 0.7 (weaker) | fixed": {
+"ADDRESS_UNRESOLVED": 20
+},
+"Address partial 0.7 (weaker) | noisy": {
+"ADDRESS_UNRESOLVED": 4,
+"OUTSIDE_TESTED_ACTION_SPACE": 16
+},
+"Address partial 0.7 (weaker) | none": {
+"DETECTION_FAILURE": 20
+},
+"Address partial 0.7 (weaker) | rule_based": {
+"ADDRESS_UNRESOLVED": 3
+},
+"coupling gain 0.3 (stronger drop) | cost_aware": {
+"OUTSIDE_TESTED_ACTION_SPACE": 20
+},
+"coupling gain 0.3 (stronger drop) | delayed": {
+"OUTSIDE_TESTED_ACTION_SPACE": 20
+},
+"coupling gain 0.3 (stronger drop) | fixed": {
+"ACTION_TOO_LATE": 20
+},
+"coupling gain 0.3 (stronger drop) | noisy": {
+"ACTION_TOO_LATE": 4,
+"OUTSIDE_TESTED_ACTION_SPACE": 16
+},
+"coupling gain 0.3 (stronger drop) | none": {
+"DETECTION_FAILURE": 20
+},
+"coupling gain 0.3 (stronger drop) | rule_based": {
+"ACTION_TOO_LATE": 20
+},
+"coupling gain 0.5 | delayed": {
+"SECONDARY_COLLAPSE": 11
+},
+"coupling gain 0.5 | noisy": {
+"NO_EFFECTIVE_ACTION": 4,
+"OUTSIDE_TESTED_ACTION_SPACE": 16
+},
+"coupling gain 0.5 | none": {
+"DETECTION_FAILURE": 20
+},
+"coupling gain 0.5 | rule_based": {
+"NO_EFFECTIVE_ACTION": 20
+},
+"coupling gain 0.5 at tick 130 (later) | delayed": {
+"SECONDARY_COLLAPSE": 14
+},
+"coupling gain 0.5 at tick 130 (later) | noisy": {
+"ACTION_TOO_LATE": 4,
+"OUTSIDE_TESTED_ACTION_SPACE": 16
+},
+"coupling gain 0.5 at tick 130 (later) | none": {
+"DETECTION_FAILURE": 20
+},
+"coupling gain 0.5 at tick 130 (later) | rule_based": {
+"ACTION_TOO_LATE": 20
+},
+"coupling gain 0.7 (weaker drop) | noisy": {
+"ACTION_TOO_LATE": 4,
+"OUTSIDE_TESTED_ACTION_SPACE": 16
+},
+"coupling gain 0.7 (weaker drop) | none": {
+"DETECTION_FAILURE": 20
+},
+"coupling gain 0.7 (weaker drop) | rule_based": {
+"ACTION_TOO_LATE": 20
+},
+"history lost | cost_aware": {
+"NO_EFFECTIVE_ACTION": 11
+},
+"history lost | delayed": {
+"NO_EFFECTIVE_ACTION": 20
+},
+"history lost | fixed": {
+"SECONDARY_COLLAPSE": 11,
+"NO_EFFECTIVE_ACTION": 9
+},
+"history lost | noisy": {
+"NO_EFFECTIVE_ACTION": 1,
+"OUTSIDE_TESTED_ACTION_SPACE": 16
+},
+"history lost | none": {
+"DETECTION_FAILURE": 20
+},
+"history lost | rule_based": {
+"NO_EFFECTIVE_ACTION": 11
+},
+"renewal efficiency 0.4 (stronger) | cost_aware": {
+"OUTSIDE_TESTED_ACTION_SPACE": 20
+},
+"renewal efficiency 0.4 (stronger) | delayed": {
+"OUTSIDE_TESTED_ACTION_SPACE": 20
+},
+"renewal efficiency 0.4 (stronger) | fixed": {
+"ACTION_TOO_LATE": 20
+},
+"renewal efficiency 0.4 (stronger) | noisy": {
+"ACTION_TOO_LATE": 4,
+"OUTSIDE_TESTED_ACTION_SPACE": 16
+},
+"renewal efficiency 0.4 (stronger) | none": {
+"DETECTION_FAILURE": 20
+},
+"renewal efficiency 0.4 (stronger) | rule_based": {
+"ACTION_TOO_LATE": 20
+},
+"renewal efficiency 0.6 | cost_aware": {
+"ACTION_TOO_LATE": 20
+},
+"renewal efficiency 0.6 | delayed": {
+"ACTION_TOO_LATE": 20
+},
+"renewal efficiency 0.6 | fixed": {
+"ACTION_TOO_LATE": 20
+},
+"renewal efficiency 0.6 | noisy": {
+"NO_EFFECTIVE_ACTION": 4,
+"OUTSIDE_TESTED_ACTION_SPACE": 16
+},
+"renewal efficiency 0.6 | none": {
+"DETECTION_FAILURE": 20
+},
+"renewal efficiency 0.6 | rule_based": {
+"ACTION_TOO_LATE": 20
+},
+"renewal efficiency 0.8 (weaker) | cost_aware": {
+"ACTION_TOO_LATE": 1,
+"SECONDARY_COLLAPSE": 19
+},
+"renewal efficiency 0.8 (weaker) | delayed": {
+"ACTION_TOO_LATE": 20
+},
+"renewal efficiency 0.8 (weaker) | fixed": {
+"ACTION_TOO_LATE": 1,
+"SECONDARY_COLLAPSE": 19
+},
+"renewal efficiency 0.8 (weaker) | noisy": {
+"ACTION_TOO_LATE": 1,
+"OUTSIDE_TESTED_ACTION_SPACE": 16
+},
+"renewal efficiency 0.8 (weaker) | none": {
+"DETECTION_FAILURE": 20
+},
+"renewal efficiency 0.8 (weaker) | rule_based": {
+"ACTION_TOO_LATE": 20
+},
+"renewal stopped | cost_aware": {
+"NO_EFFECTIVE_ACTION": 20
+},
+"renewal stopped | delayed": {
+"NO_EFFECTIVE_ACTION": 20
+},
+"renewal stopped | fixed": {
+"NO_EFFECTIVE_ACTION": 20
+},
+"renewal stopped | noisy": {
+"NO_EFFECTIVE_ACTION": 4,
+"OUTSIDE_TESTED_ACTION_SPACE": 16
+},
+"renewal stopped | none": {
+"DETECTION_FAILURE": 20
+},
+"renewal stopped | rule_based": {
+"NO_EFFECTIVE_ACTION": 20
+},
+"renewal stopped at tick 130 (delayed failure) | cost_aware": {
+"ACTION_TOO_LATE": 20
+},
+"renewal stopped at tick 130 (delayed failure) | delayed": {
+"ACTION_TOO_LATE": 20
+},
+"renewal stopped at tick 130 (delayed failure) | fixed": {
+"ACTION_TOO_LATE": 20
+},
+"renewal stopped at tick 130 (delayed failure) | noisy": {
+"ACTION_TOO_LATE": 4,
+"OUTSIDE_TESTED_ACTION_SPACE": 16
+},
+"renewal stopped at tick 130 (delayed failure) | none": {
+"DETECTION_FAILURE": 20
+},
+"renewal stopped at tick 130 (delayed failure) | rule_based": {
+"ACTION_TOO_LATE": 20
+},
+"resource regrow 0.01 charge 0.2 | cost_aware": {
+"ACTION_TOO_LATE": 20
+},
+"resource regrow 0.01 charge 0.2 | delayed": {
+"ACTION_TOO_LATE": 20
+},
+"resource regrow 0.01 charge 0.2 | fixed": {
+"ACTION_TOO_LATE": 20
+},
+"resource regrow 0.01 charge 0.2 | noisy": {
+"NO_EFFECTIVE_ACTION": 4,
+"OUTSIDE_TESTED_ACTION_SPACE": 16
+},
+"resource regrow 0.01 charge 0.2 | none": {
+"DETECTION_FAILURE": 20
+},
+"resource regrow 0.01 charge 0.2 | rule_based": {
+"ACTION_TOO_LATE": 20
+},
+"resource regrow 0.015 charge 0.3 (different profile) | cost_aware": {
+"ACTION_TOO_LATE": 1,
+"SECONDARY_COLLAPSE": 19
+},
+"resource regrow 0.015 charge 0.3 (different profile) | delayed": {
+"ACTION_TOO_LATE": 20
+},
+"resource regrow 0.015 charge 0.3 (different profile) | fixed": {
+"ACTION_TOO_LATE": 1,
+"SECONDARY_COLLAPSE": 19
+},
+"resource regrow 0.015 charge 0.3 (different profile) | noisy": {
+"ACTION_TOO_LATE": 4,
+"OUTSIDE_TESTED_ACTION_SPACE": 16
+},
+"resource regrow 0.015 charge 0.3 (different profile) | none": {
+"DETECTION_FAILURE": 20
+},
+"resource regrow 0.015 charge 0.3 (different profile) | rule_based": {
+"ACTION_TOO_LATE": 20
+}
+},
+"counts": {
+"stresses": 6,
+"windows": 36
+}
+}

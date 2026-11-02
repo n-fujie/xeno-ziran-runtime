@@ -16,6 +16,16 @@ Stated plainly so the tool is not read as more than it is.
 * **The practice layer is one explicit scorekeeping scheme**, inspired by inferential scorekeeping; it is not
   an implementation of any author's theory, and the sample claims are illustrative material, not assertions.
 
+## Heterogeneous Philosophical Operations
+
+* The six series are engineering proxies named after philosophical operations. They are not formalisations, and
+  no HPO result is evidence about a doctrine. The primary texts were not consulted (sources are cited
+  bibliographically; see docs/HPO.md).
+* The interaction rules, thresholds and parameters are design choices calibrated on development seeds. Results hold
+  for this runtime, world generator, size and horizon only.
+* Effects are simulation-internal. Recursive reconfiguration changes whitelisted settings and never code. A proposed
+  variable is not a validated one.
+
 ## Model limits
 
 * Dynamics are a single generic excitable-network rule set (threshold ignition, normalized emission with gain,

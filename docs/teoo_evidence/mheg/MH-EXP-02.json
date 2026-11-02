@@ -1,0 +1,246 @@
+{
+ "experiment_id": "MH-EXP-02",
+ "protocol_version": 1,
+ "protocol_digest": "a9316154f9db5922f768b42ee7589704770fa838f94bdce34786eab960e04e41",
+ "protocol": {
+  "experiment_id": "MH-EXP-02",
+  "hypotheses": [
+   {
+    "id": "H1",
+    "statement": "Itemising G3, G5, G9 and G15A never raises a finding relative to the single provision"
+   },
+   {
+    "id": "H2",
+    "statement": "A single yes/no provision reports SECURED for findings whose components are partly missing (false assurance of the single provision)"
+   },
+   {
+    "id": "H3",
+    "statement": "Fewer configurations are advised 'continue with monitored compliance' when the provisions are itemised than when they are single yes/no provisions"
+   }
+  ],
+  "targets": [
+   "findings, duties and outcomes of a synthetic institution"
+  ],
+  "instrument_conditions": {
+   "components_present_probability": 0.85,
+   "configurations_per_world": 8,
+   "itemised": {
+    "G3": 5,
+    "G5": 7,
+    "G9": 7,
+    "G15A": 8
+   }
+  },
+  "control_condition": "single provision",
+  "conditions": [
+   "single provision",
+   "itemised"
+  ],
+  "seeds": [
+   6101,
+   6102,
+   6103,
+   6104,
+   6105,
+   6106,
+   6107,
+   6108,
+   6109,
+   6110,
+   6111,
+   6112,
+   6113,
+   6114,
+   6115,
+   6116,
+   6117,
+   6118,
+   6119,
+   6120,
+   6121,
+   6122,
+   6123,
+   6124,
+   6125,
+   6126,
+   6127,
+   6128,
+   6129,
+   6130
+  ],
+  "trials_per_condition": 1,
+  "stopping_rule": {
+   "type": "fixed-n",
+   "units": 30,
+   "no interim analysis": true
+  },
+  "outcomes": {
+   "primary": [
+    "findings raised by itemising",
+    "flag-only SECURED but itemised not",
+    "configurations advised to continue with monitoring"
+   ],
+   "secondary": [
+    "itemised state distribution",
+    "duties unmet"
+   ]
+  },
+  "analyses": [
+   {
+    "id": "M201",
+    "hypothesis": "H1",
+    "outcome": "findings raised",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "M202",
+    "hypothesis": "H2",
+    "outcome": "false assurance",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "M203",
+    "hypothesis": "H3",
+    "outcome": "advice",
+    "method": "paired-sign-flip",
+    "confirmatory": true,
+    "paired": true
+   }
+  ],
+  "multiplicity": "holm",
+  "failure_conditions": [
+   "fewer than 30 units"
+  ],
+  "reproduction": {
+   "generator": "xzr.teoo.mheg_experiments",
+   "steps": [
+    "run unit per seed",
+    "analyse"
+   ],
+   "world": "xzr.teoo.legal (SYNTHETIC institution) and xzr.teoo.mheg (duties, crosswalk as reported, directive states)"
+  },
+  "schema": "teoo.protocol/1",
+  "version": 1,
+  "parent_version": null,
+  "change_reason": null
+ },
+ "units": 30,
+ "seeds": [
+  6101,
+  6102,
+  6103,
+  6104,
+  6105,
+  6106,
+  6107,
+  6108,
+  6109,
+  6110,
+  6111,
+  6112,
+  6113,
+  6114,
+  6115,
+  6116,
+  6117,
+  6118,
+  6119,
+  6120,
+  6121,
+  6122,
+  6123,
+  6124,
+  6125,
+  6126,
+  6127,
+  6128,
+  6129,
+  6130
+ ],
+ "evidence_class": "Implementation Property",
+ "seconds": 2.9,
+ "results": {
+  "M201": {
+   "method": "descriptive",
+   "findings_raised": 0,
+   "comparisons": 960,
+   "criterion": "0 findings raised",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  },
+  "M202": {
+   "method": "descriptive",
+   "configurations": 240,
+   "base_secured": 240,
+   "with_a_missing_component": 238,
+   "flag_only_SECURED_but_itemised_not": 238,
+   "rate_among_missing": 1.0,
+   "itemised_states": {
+    "G3": {
+     "SECURED": 100,
+     "PARTIAL": 140,
+     "ABSENT": 0,
+     "INDETERMINATE": 0
+    },
+    "G5": {
+     "SECURED": 68,
+     "PARTIAL": 172,
+     "ABSENT": 0,
+     "INDETERMINATE": 0
+    },
+    "G9": {
+     "SECURED": 83,
+     "PARTIAL": 157,
+     "ABSENT": 0,
+     "INDETERMINATE": 0
+    },
+    "G15A": {
+     "SECURED": 78,
+     "PARTIAL": 162,
+     "ABSENT": 0,
+     "INDETERMINATE": 0
+    }
+   },
+   "criterion": "flag-only SECURED but itemised not, in at least half of the configurations that lack a component",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  },
+  "M203": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 7.933333333333334,
+   "sd_diff": 0.2537081317024624,
+   "dz": 31.269527232328496,
+   "ci95": [
+    7.833333333333333,
+    8.0
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 31,
+   "inferential": true,
+   "contrast": "configurations per world advised 'continue with monitored compliance': single provision minus itemised",
+   "predicted_sign": 1,
+   "p_holm": 4.999750012499375e-05,
+   "supported": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  }
+ },
+ "catalogue": {
+  "source": "The Minimum Guarantees of Human Legal Subjecthood, Publication Final V3.0, Chapter 6.2 (identical in the 100_POINT_EDITION and in R2 section 4: all fifteen titles and definitions compared character for character)",
+  "verified_against_original": true,
+  "sha256": {
+   "v3_0": "cf4d4f0c51169451da5af4c33e7081e947dacbade855068a889965d8c523b848",
+   "v3_0_100_point_edition": "afb59d1a0c3b28854f14113f843645539e07a2e466949d22de4b67da0a22bf99",
+   "ai_law_osr_r2": "a9984451b281df3252b05842dc5109dd396e0b0c54d3560849344ad41059a501"
+  },
+  "editions_identical_for_guarantees": true,
+  "note": "V3.0 uses two vocabularies for the same five findings (Appendix A table: Secured/Partial/Absent/Indeterminate/Inapplicable; A.3 and 8.4 text: Satisfied/Partially Satisfied/Failed/Indeterminate/Not Applicable). R2 section 16 and this implementation use the table's."
+ },
+ "note": "results about a SYNTHETIC institution and this implementation; the twelve duties are functional summaries and their crosswalk is as reported (R16 not available); not an observation of any institution, law or person"
+}

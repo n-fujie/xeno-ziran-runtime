@@ -1,0 +1,30 @@
+{
+ "figures": [
+  "mheg_fig1_twelve_duty_architecture.svg",
+  "mheg_fig2_guarantees_seen_from_the_duties.svg",
+  "mheg_fig3_twelve_to_fifteen_crosswalk.svg",
+  "mheg_fig4_legal_transformation_chain.svg",
+  "mheg_fig5_information_lost_in_the_duty_view.svg",
+  "mheg_fig6_itemised_provisions.svg",
+  "mheg_fig7_chain_stage_failures.svg"
+ ],
+ "concept_figures": [
+  "mheg_fig1",
+  "mheg_fig2",
+  "mheg_fig3",
+  "mheg_fig4"
+ ],
+ "result_figures": [
+  "mheg_fig5",
+  "mheg_fig6",
+  "mheg_fig7"
+ ],
+ "earlier_figures_kept": [
+  "legal_fig1 fifteen guarantees",
+  "legal_fig2 legal translation chain",
+  "legal_fig4 contestation",
+  "legal_fig5 material restoration",
+  "legal_fig6 governance comparison",
+  "legal_fig7 negative results"
+ ]
+}

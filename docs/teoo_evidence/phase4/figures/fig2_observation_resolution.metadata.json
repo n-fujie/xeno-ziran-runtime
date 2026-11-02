@@ -1,0 +1,62 @@
+{
+ "body": null,
+ "claim": "an illustration of the stated data under the stated conditions; no claim beyond them",
+ "evidence": {
+  "band": [
+   "EVIDENCE: SYNTHETIC  ·  artificial functional-test data, not a measurement",
+   "REAL-WORLD EXPERIMENT: none recorded (no measurement exists behind this figure)",
+   "BODY: none",
+   "RECORDS: 1 (rec-5c9fbed58e)  ·  generated 2026-10-31  ·  TEOO teoo/0.1"
+  ],
+  "classes": [
+   "SYNTHETIC"
+  ],
+  "real_world_experiment_recorded": false,
+  "watermarks": [
+   "SYNTHETIC"
+  ]
+ },
+ "experiment": {
+  "conditions": [
+   "fixed-fine",
+   "variants"
+  ],
+  "protocol_id": "TEOO4-EXP-A",
+  "seeds": [
+   1001,
+   1030
+  ],
+  "trials_per_condition": 8,
+  "version": 2
+ },
+ "figure_id": "fig-6117f51011be140e",
+ "generated_at": "2026-10-31T00:00:00.000000Z",
+ "kind": "bars",
+ "metadata_digest": "529822a4940e8283d76b43493d7cd12787290322ddc131fe89a24af416669ae7",
+ "observation_limits": {
+  "config_version": null,
+  "note": "These are measurements by a simulated sensor of a synthetic world: the limits are those of the sensor conditions stated here; what lies outside them is unknown, not absent.",
+  "summary": {
+   "observation conditions": "grid: sampling period 0.02/0.2/1.0 s × resolution 0.5/4.0 × detection limit 0.05/0.8 × window 20/4 s; penetration 0.6"
+  },
+  "t": null
+ },
+ "provenance": {
+  "records": [
+   {
+    "kind": "OBSERVATION",
+    "lineage_classes": [
+     "SYNTHETIC"
+    ],
+    "provenance": "SYNTHETIC",
+    "record_digest": "5c9fbed58e016f5abe09cadfb16b8d406db21e404d4b3c58692db480c9a7eaa8",
+    "record_id": "rec-5c9fbed58e016f5abe09cadf"
+   }
+  ],
+  "source_digest": "6117f51011be140e43e922141773ddc225ff27c20a5920b598cced5e24efcb5d"
+ },
+ "schema": "teoo.figure/1",
+ "teoo_version": "teoo/0.1",
+ "title": "Fig 2 · Observation resolution: share of true differences identified by sampling period",
+ "units": {}
+}

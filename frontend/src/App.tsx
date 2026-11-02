@@ -6,7 +6,7 @@ import Orientation from './components/Orientation';
 import ScaleNav from './components/ScaleNav';
 import ShareStrip from './components/ShareStrip';
 import ViewBoundary from './components/ViewBoundary';
-import { NATIVE, nativeOpenResults } from './api/native';
+import { NATIVE, WEBRT, nativeOpenResults } from './api/native';
 import { t } from './i18n/strings';
 import staticViews from './static-views.json';
 import { pageTitle, searchForView, unknownRoute, viewFromSearch } from './routing';
@@ -16,6 +16,11 @@ import PhaseView from './views/research/PhaseView';
 import PrimitiveView from './views/research/PrimitiveView';
 import ReasonView from './views/research/ReasonView';
 import ReductionView from './views/research/ReductionView';
+import HPOView from './views/research/HPOView';
+const LabView = lazy(() => import('./views/lab/LabView'));
+const StudyView = lazy(() => import('./views/study/StudyView'));
+const EcosystemView = lazy(() => import('./views/ecosystem/EcosystemView'));
+const BodyView = lazy(() => import('./views/body/Workspace'));
 import CompressionView from './views/resolution/CompressionView';
 import DisconnectionView from './views/resolution/DisconnectionView';
 import HiddenDifferenceView from './views/resolution/HiddenDifferenceView';
@@ -29,6 +34,9 @@ import TimelineView from './views/TimelineView';
 // The WebGL projections (deck.gl, world atlas) load only when a graph or comparison view opens.
 const GraphView = lazy(() => import('./views/GraphView'));
 const CompareView = lazy(() => import('./views/CompareView'));
+
+// The in-tab runtime's start-up progress exists only in the browser build (the literal test removes it from the others).
+const WebBoot = import.meta.env.VITE_WEBRT === '1' ? lazy(() => import('./components/WebBoot')) : () => null;
 const loadingView = <div className="panel-view dim">loading view…</div>;
 
 const VIEWS: { id: View; label: () => string }[] = [
@@ -51,6 +59,11 @@ const VIEWS: { id: View; label: () => string }[] = [
   { id: 'res_structure', label: () => t('view_res_structure') },
   { id: 'res_disconnection', label: () => t('view_res_disconnection') },
   { id: 'res_compression', label: () => t('view_res_compression') },
+  { id: 'hpo', label: () => t('view_hpo') },
+  { id: 'laboratory', label: () => t('view_laboratory') },
+  { id: 'ecosystem', label: () => t('view_ecosystem') },
+  { id: 'body', label: () => t('view_body') },
+  { id: 'study', label: () => t('view_study') },
 ];
 
 // Static read-only mirror (VITE_STATIC=1): no backend session; only the research views, read from exported result
@@ -64,7 +77,7 @@ const RESEARCH = staticViews as View[];
 // stay on the public research-results site, opened from the app in the system browser.
 const RESULTS_SITE = 'https://ziran-xeno-simulator.vercel.app';
 const AVAILABLE: View[] = STATIC ? RESEARCH
-  : VIEWS.map((v) => v.id).filter((v) => v !== 'overview' && !(NATIVE && RESEARCH.includes(v)));
+  : VIEWS.map((v) => v.id).filter((v) => v !== 'overview' && !(NATIVE && RESEARCH.includes(v)) && !(v === 'study' && (NATIVE || WEBRT)) && !(v === 'ecosystem' && (NATIVE || WEBRT)) && !(v === 'body' && (NATIVE || WEBRT)));
 const DEFAULT_VIEW: View = STATIC ? 'overview' : 'network';
 const labelOf = (v: View) => VIEWS.find((x) => x.id === v)?.label() ?? v;
 
@@ -98,7 +111,8 @@ export default function App() {
     const on = (e: Event) => {
       const { state, detail } = (e as CustomEvent<{ state: string; detail?: { paused?: string[] } }>).detail;
       if (state === 'foreground' && detail?.paused?.length) {
-        useSim.setState({ notice: 'The simulation was paused while the app was in the background. Press Run to continue.' });
+        useSim.setState({ notice: WEBRT ? 'The simulation was paused while this tab was in the background. Press Run to continue.'
+          : 'The simulation was paused while the app was in the background. Press Run to continue.' });
       } else if (state === 'memory') {
         useSim.setState({ notice: 'The device reported memory pressure: the simulation was paused. Press Run to continue.' });
       }
@@ -162,6 +176,9 @@ export default function App() {
               aria-current={view === v.id && !missing ? 'page' : undefined}>{v.label()}
               {v.id === 'compare' && running > 0 && <span className="badge">{running}</span>}</button>
           ))}
+          {STATIC && <button className="external" onClick={() => location.assign('/app/')}
+            title="The simulator runs in your browser tab at /app/ (smaller workloads, nothing is sent to a server)">
+            Run the simulator ↗</button>}
           {NATIVE && <button className="external" onClick={nativeOpenResults}
             title={`Research results are published at ${RESULTS_SITE} (opens in the browser)`}>
             {t('research_results')} ↗</button>}
@@ -170,9 +187,16 @@ export default function App() {
       {STATIC ? (
         view === 'overview' && !missing ? null : (
           <div className="static-note small">Read-only research-result layer of XENO ZIRAN SIMULATOR, read from its
-            experiment result files. No simulation runs on this site; the interactive runtime is a local server.</div>
+            experiment result files. No simulation runs on this page. The interactive simulator runs in your browser at{' '}
+            <a href="/app/">/app/</a> (smaller workloads), or on a local server for full-size runs.</div>
         )
-      ) : <ControlBar />}
+      ) : view !== 'laboratory' && view !== 'ecosystem' && view !== 'body' && view !== 'study' && <ControlBar />}
+      {WEBRT && (
+        <div className="static-note small">This simulator runs in your browser tab: the engine is downloaded from this site once and
+          nothing you enter is sent anywhere. Workloads are smaller than in the desktop runtime, and floating-point results can
+          differ from the desktop runtime in the last digits (runs here replay exactly within this build). Published research
+          results are on the <a href="/">results site</a>.</div>
+      )}
       {error && (
         <div className="error">{error}
           {sessionGone && <> <button onClick={() => void resumeOrOpen(null)}>Start a new session</button></>}
@@ -190,8 +214,8 @@ export default function App() {
                 ? <p><span className="mono">{missing}</span> is a research-result view. Research results are published
                   on the research-results site ({RESULTS_SITE}), not inside the app.</p>
               : STATIC
-                ? <p><span className="mono">{missing}</span> is a view of the interactive runtime. It needs the runtime's
-                  local server and is not part of this deployment.</p>
+                ? <p><span className="mono">{missing}</span> is a view of the interactive runtime. It runs in your browser
+                  at <a href="/app/">/app/</a> (or on a local server) and is not part of this read-only page.</p>
                 : <p><span className="mono">{missing}</span> is the entry view of the hosted research-results site and
                   is not part of the local runtime build.</p>}
             <p className="small">Views in this build:</p>
@@ -200,7 +224,7 @@ export default function App() {
                 onClick={(e) => { e.preventDefault(); go(v); }}>{labelOf(v)}</a></li>)}
             </ul>
           </div>
-        ) : !info && !STATIC ? <div className="panel-view dim">building scenario…</div> : (
+        ) : !info && !STATIC ? <div className="panel-view dim">{WEBRT ? <Suspense fallback={null}><WebBoot /></Suspense> : 'building scenario…'}</div> : (
           <ViewBoundary view={view}><Suspense fallback={loadingView}>
             {graph && (
               <section className="stage">
@@ -229,6 +253,11 @@ export default function App() {
             {view === 'res_structure' && <ReasoningStructureView />}
             {view === 'res_disconnection' && <DisconnectionView />}
             {view === 'res_compression' && <CompressionView />}
+            {view === 'hpo' && <HPOView />}
+            {view === 'laboratory' && <LabView />}
+            {view === 'ecosystem' && <EcosystemView />}
+            {view === 'body' && <BodyView />}
+            {view === 'study' && <StudyView />}
             {view === 'overview' && (
               <div className="entry">
                 <Orientation views={AVAILABLE.filter((v) => v !== 'overview').map((v) => ({ id: v, label: labelOf(v) }))}

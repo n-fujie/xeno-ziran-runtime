@@ -1,0 +1,50 @@
+{
+ "body": null,
+ "claim": "an illustration of the stated data under the stated conditions; no claim beyond them",
+ "evidence": {
+  "band": [
+   "EVIDENCE: SYNTHETIC  ·  artificial functional-test data, not a measurement",
+   "REAL-WORLD EXPERIMENT: none recorded (no measurement exists behind this figure)",
+   "BODY: none",
+   "RECORDS: 1 (rec-d90fcc23fc)  ·  generated 2026-11-01  ·  TEOO teoo/0.1"
+  ],
+  "classes": [
+   "SYNTHETIC"
+  ],
+  "real_world_experiment_recorded": false,
+  "watermarks": [
+   "SYNTHETIC"
+  ]
+ },
+ "experiment": null,
+ "figure_id": "fig-cb592a69b862ed1a",
+ "generated_at": "2026-11-01T00:00:00.000000Z",
+ "kind": "table",
+ "metadata_digest": "8a19554a9d0ca71a2b1d5451b0c8a073b331e75d6ea5e59c9d87031290e67a91",
+ "observation_limits": {
+  "config_version": null,
+  "note": "A synthetic ledger or a drawing: what lies outside what is stated here is unknown, not absent.",
+  "summary": {
+   "conditions": "deterministic demonstration on a synthetic case"
+  },
+  "t": null
+ },
+ "provenance": {
+  "records": [
+   {
+    "kind": "OBSERVATION",
+    "lineage_classes": [
+     "SYNTHETIC"
+    ],
+    "provenance": "SYNTHETIC",
+    "record_digest": "d90fcc23fceb076ad8ee020dad9ff2e1f66099d7074cd594ed677279fd34d988",
+    "record_id": "rec-d90fcc23fceb076ad8ee020d"
+   }
+  ],
+  "source_digest": "cb592a69b862ed1ae7bbf21562a2386e02ae6a6f5620e42ec64103cf211b648f"
+ },
+ "schema": "teoo.figure/1",
+ "teoo_version": "teoo/0.1",
+ "title": "Fig R5 · Immutable measurements and their status events (a demonstration run)",
+ "units": {}
+}

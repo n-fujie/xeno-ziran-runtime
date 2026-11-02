@@ -1,0 +1,80 @@
+{
+ "body": null,
+ "claim": "an illustration of the stated data under the stated conditions; no claim beyond them",
+ "evidence": {
+  "band": [
+   "EVIDENCE: SYNTHETIC  ·  artificial functional-test data, not a measurement",
+   "REAL-WORLD EXPERIMENT: none recorded (no measurement exists behind this figure)",
+   "BODY: none",
+   "RECORDS: 3 (rec-5c9fbed58e, rec-8335e067fa…)  ·  generated 2026-10-31  ·  TEOO teoo/0.1"
+  ],
+  "classes": [
+   "SYNTHETIC"
+  ],
+  "real_world_experiment_recorded": false,
+  "watermarks": [
+   "SYNTHETIC"
+  ]
+ },
+ "experiment": {
+  "conditions": [
+   "fixed-fine",
+   "variants"
+  ],
+  "protocol_id": "TEOO4-EXP-A",
+  "seeds": [
+   1001,
+   1030
+  ],
+  "trials_per_condition": 8,
+  "version": 2
+ },
+ "figure_id": "fig-ab946779582f3d5a",
+ "generated_at": "2026-10-31T00:00:00.000000Z",
+ "kind": "forest",
+ "metadata_digest": "1a3fffa3a8021f87c848ef515f7b11049e15a0ddb3e9f371bb99fcd8614706e3",
+ "observation_limits": {
+  "config_version": null,
+  "note": "These are measurements by a simulated sensor of a synthetic world: the limits are those of the sensor conditions stated here; what lies outside them is unknown, not absent.",
+  "summary": {
+   "observation conditions": "see Figs 2-4"
+  },
+  "t": null
+ },
+ "provenance": {
+  "records": [
+   {
+    "kind": "OBSERVATION",
+    "lineage_classes": [
+     "SYNTHETIC"
+    ],
+    "provenance": "SYNTHETIC",
+    "record_digest": "5c9fbed58e016f5abe09cadfb16b8d406db21e404d4b3c58692db480c9a7eaa8",
+    "record_id": "rec-5c9fbed58e016f5abe09cadf"
+   },
+   {
+    "kind": "OBSERVATION",
+    "lineage_classes": [
+     "SYNTHETIC"
+    ],
+    "provenance": "SYNTHETIC",
+    "record_digest": "8335e067faeec7cce75798fbcaf15ea844fe0c9c4bfeb3f1a0bc9d3c17bbd59e",
+    "record_id": "rec-8335e067faeec7cce75798fb"
+   },
+   {
+    "kind": "OBSERVATION",
+    "lineage_classes": [
+     "SYNTHETIC"
+    ],
+    "provenance": "SYNTHETIC",
+    "record_digest": "1707620131708e820edbd5920fa894aa525ecad930223f4ecc5cf8087267c596",
+    "record_id": "rec-1707620131708e820edbd592"
+   }
+  ],
+  "source_digest": "ab946779582f3d5aac98c4339fac223784f71fe422da63b81d1b9de0cefcd52f"
+ },
+ "schema": "teoo.figure/1",
+ "teoo_version": "teoo/0.1",
+ "title": "Fig 7 · Non-redundancy: the new component against a simple comparator (paired differences, 95% intervals)",
+ "units": {}
+}

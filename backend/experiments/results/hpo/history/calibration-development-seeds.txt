@@ -1,0 +1,28 @@
+intermittent
+  withdrawal    n= 960 q10 0.0000 q50 0.0000 q75 0.0100 q90 0.0400 max 0.1100
+  transduction  n= 960 q10 0.0111 q50 0.0714 q75 0.1302 q90 0.1714 max 0.2571
+  concrescence  n= 960 q10 0.2000 q50 0.8658 q75 1.3744 q90 1.7321 max 1.7321
+  assemblage    n= 960 q10 0.0000 q50 0.0000 q75 0.0100 q90 0.0400 max 0.0750
+  closure       n= 960 q10 0.0000 q50 0.0000 q75 0.6667 q90 0.9091 max 1.0000
+  picturing     n= 952 q10 0.2912 q50 0.7767 q75 1.0134 q90 1.2438 max 3.5527
+sparse
+  withdrawal    n= 960 q10 0.0000 q50 0.0000 q75 0.0000 q90 0.0100 max 0.0300
+  transduction  n= 960 q10 0.0000 q50 0.0222 q75 0.0429 q90 0.0667 max 0.1762
+  concrescence  n= 960 q10 0.0000 q50 1.1055 q75 1.7321 q90 1.7321 max 1.7321
+  assemblage    n= 960 q10 0.0000 q50 0.0000 q75 0.0000 q90 0.0050 max 0.0300
+  closure       n= 960 q10 0.0000 q50 0.0000 q75 0.0000 q90 0.0000 max 1.0000
+  picturing     n= 952 q10 0.5874 q50 1.0057 q75 1.1102 q90 2.1639 max 6.0862
+churn
+  withdrawal    n= 960 q10 0.0000 q50 0.0000 q75 0.0000 q90 0.0100 max 0.0400
+  transduction  n= 960 q10 0.0095 q50 0.0524 q75 0.1099 q90 0.1571 max 0.2968
+  concrescence  n= 960 q10 0.0000 q50 1.0563 q75 1.7321 q90 1.7321 max 1.7321
+  assemblage    n= 960 q10 0.0000 q50 0.0000 q75 0.0050 q90 0.0150 max 0.0550
+  closure       n= 960 q10 0.0000 q50 0.0000 q75 0.3333 q90 0.8333 max 1.0000
+  picturing     n= 952 q10 0.5642 q50 1.1563 q75 1.8789 q90 3.7624 max 12.1046
+memory_heavy
+  withdrawal    n= 960 q10 0.0000 q50 0.0000 q75 0.0000 q90 0.0200 max 0.0600
+  transduction  n= 960 q10 0.0095 q50 0.0444 q75 0.0873 q90 0.1238 max 0.2143
+  concrescence  n= 960 q10 0.0000 q50 1.0044 q75 1.7321 q90 1.7321 max 1.7321
+  assemblage    n= 960 q10 0.0000 q50 0.0000 q75 0.0000 q90 0.0250 max 0.0650
+  closure       n= 960 q10 0.0000 q50 0.0000 q75 0.0000 q90 0.5000 max 1.0000
+  picturing     n= 952 q10 0.4220 q50 1.0337 q75 1.3962 q90 2.2893 max 11.1064

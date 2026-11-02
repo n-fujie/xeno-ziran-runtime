@@ -1,0 +1,83 @@
+{
+ "stage": "03-camera",
+ "commit": "8e9ff3b+uncommitted",
+ "browser": "Chrome/151.0.7922.34",
+ "base": "http://127.0.0.1:3011",
+ "viewport": [
+  1200,
+  866
+ ],
+ "devicePixelRatio": 1,
+ "scenes": [
+  {
+   "name": "07-sensor-assembly",
+   "record": "m7-systems-6000",
+   "recordSha256": "5a70291ada0f15a6",
+   "stepIndex": 480,
+   "note": "system A sensor head (local system)",
+   "url": "/?view=laboratory&hifi=1&rec=m7-systems-6000&step=480&cam=apparatus&quality=balanced&sel=sensor%3AA%3Ahead&sys=A",
+   "commit": "8e9ff3b+uncommitted",
+   "viewport": [
+    1200,
+    866
+   ],
+   "devicePixelRatio": 1,
+   "browser": "Chrome/151.0.7922.34",
+   "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified Version)",
+   "state": {
+    "cam": "apparatus",
+    "sel": {
+     "kind": "sensor",
+     "id": "A:head"
+    },
+    "sys": "A",
+    "domain": "0",
+    "layers": {
+     "A": true,
+     "B": true,
+     "C": true
+    },
+    "quality": "balanced",
+    "step": 481,
+    "index": 480,
+    "camera": [
+     16.526,
+     2.215,
+     -2.385
+    ],
+    "target": [
+     13.444,
+     1.09,
+     -3.378
+    ],
+    "pixelRatio": 1,
+    "canvas": [
+     800,
+     723
+    ]
+   },
+   "selfTest": {
+    "step": 481,
+    "positionsChecked": 40,
+    "worstPositionError": 5.072509780052955e-7,
+    "layers": {
+     "A": 42,
+     "B": 113,
+     "C": 74
+    },
+    "drawCalls": 263,
+    "triangles": 58308,
+    "quality": "balanced"
+   },
+   "frames": {
+    "n": 150,
+    "mean": 16.67,
+    "p50": 16.7,
+    "p95": 17.7,
+    "p99": 17.7,
+    "max": 17.8
+   },
+   "longTasks": 0
+  }
+ ]
+}

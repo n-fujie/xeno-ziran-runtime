@@ -1,0 +1,65 @@
+{
+ "body": null,
+ "claim": "an illustration of the stated data under the stated conditions; no claim beyond them",
+ "evidence": {
+  "band": [
+   "EVIDENCE: SYNTHETIC  ·  artificial functional-test data, not a measurement",
+   "REAL-WORLD EXPERIMENT: none recorded (no measurement exists behind this figure)",
+   "BODY: none",
+   "RECORDS: 1 (rec-45fa57a0e0)  ·  generated 2026-11-01  ·  TEOO teoo/0.1"
+  ],
+  "classes": [
+   "SYNTHETIC"
+  ],
+  "real_world_experiment_recorded": false,
+  "watermarks": [
+   "SYNTHETIC"
+  ]
+ },
+ "experiment": {
+  "conditions": [
+   "Boolean state machine",
+   "event sourcing",
+   "evidence-scoped revision model",
+   "causal model with fixed or adaptive observation",
+   "ledger"
+  ],
+  "protocol_id": "EXP-R16-08",
+  "seeds": [
+   8201,
+   8230
+  ],
+  "trials_per_condition": 1,
+  "version": 1
+ },
+ "figure_id": "fig-eaaf9924c2dae9fd",
+ "generated_at": "2026-11-01T00:00:00.000000Z",
+ "kind": "table",
+ "metadata_digest": "5752e1be219a599724d3c04d488750f486e85a6b864816e4854b14d3e083c686",
+ "observation_limits": {
+  "config_version": null,
+  "note": "A synthetic ledger or a drawing: what lies outside what is stated here is unknown, not absent.",
+  "summary": {
+   "conditions": "the same events, scope, policy and world"
+  },
+  "t": null
+ },
+ "provenance": {
+  "records": [
+   {
+    "kind": "OBSERVATION",
+    "lineage_classes": [
+     "SYNTHETIC"
+    ],
+    "provenance": "SYNTHETIC",
+    "record_digest": "45fa57a0e0c736b84c146a8534da04d2099b6adf22ee76cef68fe142703c4bf4",
+    "record_id": "rec-45fa57a0e0c736b84c146a85"
+   }
+  ],
+  "source_digest": "eaaf9924c2dae9fdde6d52e0533b892ea384aca52f6e698f638cbd3ede3c8eb5"
+ },
+ "schema": "teoo.figure/1",
+ "teoo_version": "teoo/0.1",
+ "title": "Fig R13 · Equal-information comparators on both worlds, with the evidence-scoped revision model (EXP-R16-08)",
+ "units": {}
+}

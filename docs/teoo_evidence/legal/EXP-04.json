@@ -1,0 +1,178 @@
+{
+ "experiment_id": "LEG-EXP-04",
+ "protocol_version": 1,
+ "protocol_digest": "78db4759460b7af35f83492f7cc4cc87742dd4d49438516e267b6ba827892c2b",
+ "protocol": {
+  "experiment_id": "LEG-EXP-04",
+  "hypotheses": [
+   {
+    "id": "H1",
+    "statement": "An appeal route that can reverse nothing files appeals but overturns no wrongful denial"
+   },
+   {
+    "id": "H2",
+    "statement": "An independent reviewer with authority overturns more wrongful denials than a formal-only route"
+   }
+  ],
+  "targets": [
+   "exclusion and access of a synthetic institution"
+  ],
+  "instrument_conditions": {
+   "population": 300,
+   "periods": 24
+  },
+  "control_condition": "formal_only",
+  "conditions": [
+   "formal_only",
+   "effective"
+  ],
+  "seeds": [
+   2001,
+   2002,
+   2003,
+   2004,
+   2005,
+   2006,
+   2007,
+   2008,
+   2009,
+   2010,
+   2011,
+   2012,
+   2013,
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023,
+   2024,
+   2025,
+   2026,
+   2027,
+   2028,
+   2029,
+   2030
+  ],
+  "trials_per_condition": 1,
+  "stopping_rule": {
+   "type": "fixed-n",
+   "units": 30,
+   "no interim analysis": true
+  },
+  "outcomes": {
+   "primary": [
+    "overturn_rate_of_wrongful"
+   ],
+   "secondary": [
+    "formal_appeal_rate",
+    "exclusion_qualified",
+    "burden_subject"
+   ]
+  },
+  "analyses": [
+   {
+    "id": "L04a",
+    "hypothesis": "H1",
+    "outcome": "overturn_rate_of_wrongful",
+    "method": "descriptive",
+    "confirmatory": false
+   },
+   {
+    "id": "L04b",
+    "hypothesis": "H2",
+    "outcome": "overturn_rate_of_wrongful",
+    "method": "paired-sign-flip",
+    "confirmatory": true
+   }
+  ],
+  "multiplicity": "holm",
+  "failure_conditions": [
+   "fewer than 30 worlds"
+  ],
+  "reproduction": {
+   "generator": "xzr.teoo.legal_experiments",
+   "steps": [
+    "run unit per seed",
+    "analyse"
+   ],
+   "world": "xzr.teoo.legal (SYNTHETIC institution)"
+  },
+  "schema": "teoo.protocol/1",
+  "version": 1,
+  "parent_version": null,
+  "change_reason": null
+ },
+ "units": 30,
+ "seeds": [
+  2001,
+  2002,
+  2003,
+  2004,
+  2005,
+  2006,
+  2007,
+  2008,
+  2009,
+  2010,
+  2011,
+  2012,
+  2013,
+  2014,
+  2015,
+  2016,
+  2017,
+  2018,
+  2019,
+  2020,
+  2021,
+  2022,
+  2023,
+  2024,
+  2025,
+  2026,
+  2027,
+  2028,
+  2029,
+  2030
+ ],
+ "evidence_class": "Synthetic-world Result",
+ "seconds": 0.5,
+ "results": {
+  "L04a": {
+   "method": "descriptive",
+   "formal_only_appeal_rate": 0.3964476171017625,
+   "formal_only_overturn_rate": 0.0,
+   "worlds_with_any_overturn_in_formal_only": 0,
+   "registered_class": "exploratory (declared but not marked confirmatory)",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "L04b": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.4308510923671627,
+   "sd_diff": 0.01834130277235503,
+   "dz": 23.490757320497643,
+   "ci95": [
+    0.4244407436085909,
+    0.4374206544006193
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 8,
+   "inferential": true,
+   "contrast": "effective minus formal_only on overturn_rate_of_wrongful",
+   "mean_effective": 0.4308510923671627,
+   "mean_formal_only": 0.0,
+   "p_holm": 4.999750012499375e-05,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  }
+ },
+ "catalogue": null,
+ "note": "results about a SYNTHETIC institution and this implementation; not an observation of any institution, law or person"
+}

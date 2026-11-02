@@ -1,0 +1,141 @@
+{
+ "what": "outcome of every decision of the adaptive controller, from its own log, 10 seeds per scenario",
+ "rows": [
+  {
+   "scenario": "history lost",
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "decisions": {
+    "already wholly enabled (cost 0, no action)": 25,
+    "no known route": 45
+   },
+   "first_decision": {
+    "already wholly enabled (cost 0, no action)": 10
+   },
+   "switches": 0
+  },
+  {
+   "scenario": "coupling weakened (gain 0.5)",
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "decisions": {
+    "already wholly enabled (cost 0, no action)": 70
+   },
+   "first_decision": {
+    "already wholly enabled (cost 0, no action)": 10
+   },
+   "switches": 0
+  },
+  {
+   "scenario": "resource reduced",
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "decisions": {
+    "already wholly enabled (cost 0, no action)": 70
+   },
+   "first_decision": {
+    "already wholly enabled (cost 0, no action)": 10
+   },
+   "switches": 0
+  },
+  {
+   "scenario": "renewal efficiency 0.6",
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "decisions": {
+    "already wholly enabled (cost 0, no action)": 70
+   },
+   "first_decision": {
+    "already wholly enabled (cost 0, no action)": 10
+   },
+   "switches": 0
+  },
+  {
+   "scenario": "renewal disabled",
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "decisions": {
+    "switch": 10,
+    "already wholly enabled (cost 0, no action)": 60
+   },
+   "first_decision": {
+    "switch": 10
+   },
+   "switches": 10
+  },
+  {
+   "scenario": "Address degraded (A2 partial 50 %)",
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "decisions": {
+    "already wholly enabled (cost 0, no action)": 70
+   },
+   "first_decision": {
+    "already wholly enabled (cost 0, no action)": 10
+   },
+   "switches": 0
+  }
+ ],
+ "reading": "In every scenario but 'renewal disabled' the controller's first decision, in all 10 seeds, was that the matched MFS is already wholly enabled (cost 0): the library holds sets that suffice when everything else is removed at tick 0, and the full arrangement already contains them, so the controller has nothing to enable and does not act while the run collapses. Only the fixed fallback adds a component that is in no MFS of the condition (the M2 tap). The library certifies configurations sustained from the start of a condition, not the passage through a stress in mid-run.",
+ "limit": "A statement about this controller and this library. It is not a finding that reconfiguration cannot help."
+}

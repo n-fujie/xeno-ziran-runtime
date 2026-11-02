@@ -1,0 +1,243 @@
+{
+ "statistics": [
+  "luminance_mean",
+  "luminance_std",
+  "chroma",
+  "detail_density",
+  "uniformity",
+  "dark_share"
+ ],
+ "references": {
+  "1": {
+   "size": [
+    1671,
+    941
+   ],
+   "luminance_mean": 0.7948,
+   "luminance_std": 0.2665,
+   "chroma": 0.0019,
+   "detail_density": 0.4943,
+   "fine_over_coarse": 0.778,
+   "uniformity": 0.7334,
+   "dark_share": 0.0167
+  },
+  "2": {
+   "size": [
+    1672,
+    941
+   ],
+   "luminance_mean": 0.2725,
+   "luminance_std": 0.2553,
+   "chroma": 0.0023,
+   "detail_density": 0.3477,
+   "fine_over_coarse": 0.533,
+   "uniformity": 0.8516,
+   "dark_share": 0.2554
+  },
+  "3": {
+   "size": [
+    1536,
+    1024
+   ],
+   "luminance_mean": 0.2602,
+   "luminance_std": 0.2611,
+   "chroma": 0.004,
+   "detail_density": 0.4404,
+   "fine_over_coarse": 0.697,
+   "uniformity": 0.9252,
+   "dark_share": 0.2817
+  },
+  "4": {
+   "size": [
+    1672,
+    941
+   ],
+   "luminance_mean": 0.286,
+   "luminance_std": 0.2333,
+   "chroma": 0.0014,
+   "detail_density": 0.3787,
+   "fine_over_coarse": 0.585,
+   "uniformity": 0.8515,
+   "dark_share": 0.2491
+  }
+ },
+ "captures": {
+  "01-overview": {
+   "metrics": {
+    "size": [
+     1672,
+     808
+    ],
+    "luminance_mean": 0.1214,
+    "luminance_std": 0.1849,
+    "chroma": 0.0059,
+    "detail_density": 0.2232,
+    "fine_over_coarse": 0.569,
+    "uniformity": 0.3991,
+    "dark_share": 0.623
+   },
+   "distance_to_reference": {
+    "1": 1.0065,
+    "2": 0.619,
+    "3": 0.6823,
+    "4": 0.631
+   },
+   "nearest_reference": "2"
+  },
+  "02-habitat": {
+   "metrics": {
+    "size": [
+     1672,
+     808
+    ],
+    "luminance_mean": 0.2853,
+    "luminance_std": 0.2034,
+    "chroma": 0.0097,
+    "detail_density": 0.1441,
+    "fine_over_coarse": 0.474,
+    "uniformity": 0.4746,
+    "dark_share": 0.0625
+   },
+   "distance_to_reference": {
+    "1": 0.6748,
+    "2": 0.473,
+    "3": 0.5856,
+    "4": 0.4826
+   },
+   "nearest_reference": "2"
+  },
+  "03-research-core": {
+   "metrics": {
+    "size": [
+     1672,
+     808
+    ],
+    "luminance_mean": 0.3753,
+    "luminance_std": 0.2525,
+    "chroma": 0.0162,
+    "detail_density": 0.1933,
+    "fine_over_coarse": 0.424,
+    "uniformity": 0.801,
+    "dark_share": 0.1162
+   },
+   "distance_to_reference": {
+    "1": 0.5305,
+    "2": 0.2378,
+    "3": 0.3426,
+    "4": 0.2513
+   },
+   "nearest_reference": "2"
+  },
+  "04-meos0-active": {
+   "metrics": {
+    "size": [
+     1672,
+     808
+    ],
+    "luminance_mean": 0.2858,
+    "luminance_std": 0.2046,
+    "chroma": 0.0097,
+    "detail_density": 0.1424,
+    "fine_over_coarse": 0.47,
+    "uniformity": 0.5057,
+    "dark_share": 0.062
+   },
+   "distance_to_reference": {
+    "1": 0.6639,
+    "2": 0.4494,
+    "3": 0.563,
+    "4": 0.4597
+   },
+   "nearest_reference": "2"
+  },
+  "05-meos-collapse": {
+   "metrics": {
+    "size": [
+     1672,
+     808
+    ],
+    "luminance_mean": 0.2774,
+    "luminance_std": 0.1958,
+    "chroma": 0.0097,
+    "detail_density": 0.1437,
+    "fine_over_coarse": 0.467,
+    "uniformity": 0.5493,
+    "dark_share": 0.0744
+   },
+   "distance_to_reference": {
+    "1": 0.658,
+    "2": 0.4116,
+    "3": 0.5262,
+    "4": 0.4226
+   },
+   "nearest_reference": "2"
+  },
+  "06-xenobody-boundary": {
+   "metrics": {
+    "size": [
+     1672,
+     808
+    ],
+    "luminance_mean": 0.2864,
+    "luminance_std": 0.2056,
+    "chroma": 0.0097,
+    "detail_density": 0.1464,
+    "fine_over_coarse": 0.478,
+    "uniformity": 0.4527,
+    "dark_share": 0.0632
+   },
+   "distance_to_reference": {
+    "1": 0.6813,
+    "2": 0.4892,
+    "3": 0.601,
+    "4": 0.4984
+   },
+   "nearest_reference": "2"
+  },
+  "07-history-overlay": {
+   "metrics": {
+    "size": [
+     1672,
+     808
+    ],
+    "luminance_mean": 0.2858,
+    "luminance_std": 0.2046,
+    "chroma": 0.0097,
+    "detail_density": 0.1425,
+    "fine_over_coarse": 0.471,
+    "uniformity": 0.4752,
+    "dark_share": 0.0624
+   },
+   "distance_to_reference": {
+    "1": 0.6749,
+    "2": 0.4731,
+    "3": 0.5858,
+    "4": 0.4828
+   },
+   "nearest_reference": "2"
+  },
+  "08-subsurface-laboratory": {
+   "metrics": {
+    "size": [
+     1672,
+     808
+    ],
+    "luminance_mean": 0.3191,
+    "luminance_std": 0.1789,
+    "chroma": 0.0229,
+    "detail_density": 0.1187,
+    "fine_over_coarse": 0.388,
+    "uniformity": 0.7014,
+    "dark_share": 0.0518
+   },
+   "distance_to_reference": {
+    "1": 0.6146,
+    "2": 0.3534,
+    "3": 0.4658,
+    "4": 0.3655
+   },
+   "nearest_reference": "2"
+  }
+ },
+ "note": "crude image statistics, not a perceptual judgement; see the module docstring"
+}

@@ -1,0 +1,240 @@
+{
+ "experiment_id": "LG2-EXP-05",
+ "protocol_version": 1,
+ "protocol_digest": "a3c2658cd8fdff9869e506e3861b5dab01d90bb22a9ea1d5516c816d1b686643",
+ "protocol": {
+  "experiment_id": "LG2-EXP-05",
+  "hypotheses": [
+   {
+    "id": "H1",
+    "statement": "A longer delay of review lengthens the time from denial to restoration"
+   },
+   {
+    "id": "H2",
+    "statement": "A longer retention of a reversed denial at the second institution lowers access there"
+   },
+   {
+    "id": "H3",
+    "statement": "Expiry of scores narrows the group gap in exclusion"
+   }
+  ],
+  "targets": [
+   "findings and outcomes of a synthetic institution"
+  ],
+  "instrument_conditions": {
+   "delay": [
+    0,
+    3,
+    6
+   ],
+   "retention": [
+    3,
+    8
+   ],
+   "expiry": [
+    null,
+    4
+   ]
+  },
+  "control_condition": "delay0",
+  "conditions": [
+   "delay0",
+   "delay3",
+   "delay6"
+  ],
+  "seeds": [
+   4001,
+   4002,
+   4003,
+   4004,
+   4005,
+   4006,
+   4007,
+   4008,
+   4009,
+   4010,
+   4011,
+   4012,
+   4013,
+   4014,
+   4015,
+   4016,
+   4017,
+   4018,
+   4019,
+   4020,
+   4021,
+   4022,
+   4023,
+   4024,
+   4025,
+   4026,
+   4027,
+   4028,
+   4029,
+   4030
+  ],
+  "trials_per_condition": 1,
+  "stopping_rule": {
+   "type": "fixed-n",
+   "units": 30,
+   "no interim analysis": true
+  },
+  "outcomes": {
+   "primary": [
+    "time to restoration",
+    "downstream access",
+    "group gap"
+   ],
+   "secondary": [
+    "exclusion",
+    "persistence"
+   ]
+  },
+  "analyses": [
+   {
+    "id": "L205a",
+    "hypothesis": "H1",
+    "outcome": "time_to_restoration_mean",
+    "method": "paired-sign-flip",
+    "confirmatory": true
+   },
+   {
+    "id": "L205b",
+    "hypothesis": "H2",
+    "outcome": "downstream_access_qualified",
+    "method": "paired-sign-flip",
+    "confirmatory": true
+   },
+   {
+    "id": "L205c",
+    "hypothesis": "H3",
+    "outcome": "group_exclusion_gap",
+    "method": "paired-sign-flip",
+    "confirmatory": true
+   }
+  ],
+  "multiplicity": "holm",
+  "failure_conditions": [
+   "fewer than 30 worlds"
+  ],
+  "reproduction": {
+   "generator": "xzr.teoo.legal_experiments2",
+   "steps": [
+    "run unit per seed",
+    "analyse"
+   ],
+   "world": "xzr.teoo.legal (SYNTHETIC institution; guarantees from the source text V3.0 6.2)"
+  },
+  "schema": "teoo.protocol/1",
+  "version": 1,
+  "parent_version": null,
+  "change_reason": null
+ },
+ "units": 30,
+ "seeds": [
+  4001,
+  4002,
+  4003,
+  4004,
+  4005,
+  4006,
+  4007,
+  4008,
+  4009,
+  4010,
+  4011,
+  4012,
+  4013,
+  4014,
+  4015,
+  4016,
+  4017,
+  4018,
+  4019,
+  4020,
+  4021,
+  4022,
+  4023,
+  4024,
+  4025,
+  4026,
+  4027,
+  4028,
+  4029,
+  4030
+ ],
+ "evidence_class": "Synthetic-world Result",
+ "seconds": 1.3,
+ "results": {
+  "L205a": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.958068513244413,
+   "sd_diff": 0.14104430403915674,
+   "dz": 6.792677802702574,
+   "ci95": [
+    0.9115523708443325,
+    1.0120319045580743
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 11,
+   "inferential": true,
+   "contrast": "time to restoration, delay 6 minus delay 0",
+   "p_holm": 0.00014999250037498125,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "L205b": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.025600419704722807,
+   "sd_diff": 0.008930372965910394,
+   "dz": 2.8666685929519864,
+   "ci95": [
+    0.02256071802393537,
+    0.028860487028610514
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 12,
+   "inferential": true,
+   "contrast": "downstream access, retention 3 minus 8",
+   "p_holm": 0.00014999250037498125,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "L205c": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.0070914119582673,
+   "sd_diff": 0.006708046502286505,
+   "dz": 1.0571500892025898,
+   "ci95": [
+    0.004783412445410249,
+    0.009426172594651743
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 13,
+   "inferential": true,
+   "contrast": "group gap, no expiry minus expiry",
+   "p_holm": 0.00014999250037498125,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  }
+ },
+ "catalogue": {
+  "source": "The Minimum Guarantees of Human Legal Subjecthood, Publication Final V3.0, Chapter 6.2 (identical in the 100_POINT_EDITION and in R2 section 4: all fifteen titles and definitions compared character for character)",
+  "verified_against_original": true,
+  "sha256": {
+   "v3_0": "cf4d4f0c51169451da5af4c33e7081e947dacbade855068a889965d8c523b848",
+   "v3_0_100_point_edition": "afb59d1a0c3b28854f14113f843645539e07a2e466949d22de4b67da0a22bf99",
+   "ai_law_osr_r2": "a9984451b281df3252b05842dc5109dd396e0b0c54d3560849344ad41059a501"
+  },
+  "editions_identical_for_guarantees": true,
+  "note": "V3.0 uses two vocabularies for the same five findings (Appendix A table: Secured/Partial/Absent/Indeterminate/Inapplicable; A.3 and 8.4 text: Satisfied/Partially Satisfied/Failed/Indeterminate/Not Applicable). R2 section 16 and this implementation use the table's."
+ },
+ "note": "results about a SYNTHETIC institution and this implementation; guarantees from the source text; operational definitions are the implementation's; not an observation of any institution, law or person"
+}

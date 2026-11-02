@@ -1,0 +1,225 @@
+{
+ "experiment_id": "LEG-EXP-02",
+ "protocol_version": 1,
+ "protocol_digest": "9fbb27f8e05615fdf10859ab46fa86cf14bad20346493e1801a2ceac8644a6d2",
+ "protocol": {
+  "experiment_id": "LEG-EXP-02",
+  "hypotheses": [
+   {
+    "id": "H1",
+    "statement": "Deleting the score without removing the proxy gate raises exclusion of the qualified (the proxy takes its place)"
+   },
+   {
+    "id": "H2",
+    "statement": "Removing the gate lowers it"
+   },
+   {
+    "id": "H3",
+    "statement": "Deleting both leaves a lottery that ignores qualification and raises exclusion of the qualified"
+   }
+  ],
+  "targets": [
+   "exclusion and access of a synthetic institution"
+  ],
+  "instrument_conditions": {
+   "population": 300,
+   "periods": 24
+  },
+  "control_condition": "baseline",
+  "conditions": [
+   "baseline",
+   "lower_threshold",
+   "delete_score",
+   "remove_gate",
+   "delete_score_and_gate"
+  ],
+  "seeds": [
+   2001,
+   2002,
+   2003,
+   2004,
+   2005,
+   2006,
+   2007,
+   2008,
+   2009,
+   2010,
+   2011,
+   2012,
+   2013,
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023,
+   2024,
+   2025,
+   2026,
+   2027,
+   2028,
+   2029,
+   2030
+  ],
+  "trials_per_condition": 1,
+  "stopping_rule": {
+   "type": "fixed-n",
+   "units": 30,
+   "no interim analysis": true
+  },
+  "outcomes": {
+   "primary": [
+    "exclusion_qualified"
+   ],
+   "secondary": [
+    "group_exclusion_gap",
+    "access_rate"
+   ]
+  },
+  "analyses": [
+   {
+    "id": "L02a",
+    "hypothesis": "H1",
+    "outcome": "exclusion_qualified",
+    "method": "paired-sign-flip",
+    "confirmatory": true
+   },
+   {
+    "id": "L02b",
+    "hypothesis": "H2",
+    "outcome": "exclusion_qualified",
+    "method": "paired-sign-flip",
+    "confirmatory": true
+   },
+   {
+    "id": "L02c",
+    "hypothesis": "H3",
+    "outcome": "exclusion_qualified",
+    "method": "paired-sign-flip",
+    "confirmatory": true
+   }
+  ],
+  "multiplicity": "holm",
+  "failure_conditions": [
+   "fewer than 30 worlds"
+  ],
+  "reproduction": {
+   "generator": "xzr.teoo.legal_experiments",
+   "steps": [
+    "run unit per seed",
+    "analyse"
+   ],
+   "world": "xzr.teoo.legal (SYNTHETIC institution)"
+  },
+  "schema": "teoo.protocol/1",
+  "version": 1,
+  "parent_version": null,
+  "change_reason": null
+ },
+ "units": 30,
+ "seeds": [
+  2001,
+  2002,
+  2003,
+  2004,
+  2005,
+  2006,
+  2007,
+  2008,
+  2009,
+  2010,
+  2011,
+  2012,
+  2013,
+  2014,
+  2015,
+  2016,
+  2017,
+  2018,
+  2019,
+  2020,
+  2021,
+  2022,
+  2023,
+  2024,
+  2025,
+  2026,
+  2027,
+  2028,
+  2029,
+  2030
+ ],
+ "evidence_class": "Synthetic-world Result",
+ "seconds": 1.0,
+ "results": {
+  "L02a": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.29244645447284084,
+   "sd_diff": 0.032866941935324676,
+   "dz": 8.89789062360334,
+   "ci95": [
+    0.2813399848098242,
+    0.3040342269179936
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 4,
+   "inferential": true,
+   "contrast": "delete_score minus baseline on exclusion_qualified",
+   "mean_delete_score": 0.5946988857736334,
+   "mean_baseline": 0.3022524313007926,
+   "p_holm": 0.00014999250037498125,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "L02b": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.017297029953199962,
+   "sd_diff": 0.013306723980281352,
+   "dz": 1.2998714017688853,
+   "ci95": [
+    0.012651926918744096,
+    0.02200194903893536
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 5,
+   "inferential": true,
+   "contrast": "baseline minus remove_gate on exclusion_qualified",
+   "mean_baseline": 0.3022524313007926,
+   "mean_remove_gate": 0.2849554013475925,
+   "p_holm": 0.00014999250037498125,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "L02c": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.28735526453338067,
+   "sd_diff": 0.04009264845209703,
+   "dz": 7.167280676823202,
+   "ci95": [
+    0.2738574311898355,
+    0.30251657449460806
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 6,
+   "inferential": true,
+   "contrast": "delete_score_and_gate minus baseline on exclusion_qualified",
+   "mean_delete_score_and_gate": 0.5896076958341733,
+   "mean_baseline": 0.3022524313007926,
+   "p_holm": 0.00014999250037498125,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  }
+ },
+ "catalogue": null,
+ "note": "results about a SYNTHETIC institution and this implementation; not an observation of any institution, law or person"
+}

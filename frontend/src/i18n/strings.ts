@@ -19,6 +19,11 @@ const en = {
   view_res_matrix: 'Resolution Matrix', view_res_hidden: 'Hidden Difference', view_res_penetration: 'Scale Penetration',
   view_res_structure: 'Reasoning Structure Inspector', view_res_disconnection: 'Disconnection Study',
   view_res_compression: 'Long-Run Compression', view_overview: 'Overview',
+  view_hpo: 'Heterogeneous Philosophical Operations',
+  view_laboratory: '3D Laboratory',
+  view_ecosystem: 'XENO ECOSYSTEM',
+  view_body: 'BODY / TOTAL OBSERVATION',
+  view_study: 'Experiments',
 };
 
 type Key = keyof typeof en;

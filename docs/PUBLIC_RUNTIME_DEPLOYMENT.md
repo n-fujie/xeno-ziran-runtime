@@ -1,5 +1,10 @@
 # Public runtime: security boundary and deployment plan
 
+> **Update.** The server container described below is still not deployed. A different public form now exists that needs no
+> host for compute: the simulator running in the visitor's browser tab at `/app/` of the static site
+> ([WEB_RUNTIME.md](WEB_RUNTIME.md)). Its trust boundary is different (no server-side execution, no sessions, no
+> authentication); the capability-session model below applies only to the server container.
+
 Status (2026-10-05, re-checked): **NO-GO — staging host unavailable. The runtime stays private.** Searched: hosting
 CLIs (Fly, Railway, Render, gcloud, AWS, Azure, doctl, Heroku, kubectl, helm, Koyeb, Hetzner, Scaleway, Vultr, OCI,
 Linode, Northflank, wrangler), their credential directories and environment variables, Docker registry logins (none),

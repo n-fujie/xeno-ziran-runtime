@@ -1,0 +1,234 @@
+{
+ "experiment_id": "LAW-L6",
+ "protocol_version": 1,
+ "protocol_digest": "1d41e7364f3ea3d78c0e1ea8dac50d94eee437ed9e35bb3c3925d7196e853d47",
+ "protocol": {
+  "experiment_id": "LAW-L6",
+  "hypotheses": [
+   {
+    "id": "H1",
+    "statement": "Material restoration and positive law are never verified, and the software makes no legal determination, in any scenario"
+   },
+   {
+    "id": "H2",
+    "statement": "Access changes in the synthetic world in some scenarios while restoration stays unverified: a change of access is not classified as relief"
+   },
+   {
+    "id": "H3",
+    "statement": "The six records are independent: a later one can be present while an earlier one is absent"
+   },
+   {
+    "id": "H4",
+    "statement": "Collapsing the chain into one SUCCESS would classify relief that has not been verified"
+   }
+  ],
+  "targets": [
+   "receipts, evidence, proceedings, plans, measurements and closures of a synthetic ledger"
+  ],
+  "instrument_conditions": {
+   "scenarios_per_world": 24
+  },
+  "control_condition": "collapsed SUCCESS",
+  "conditions": [
+   "six records",
+   "collapsed SUCCESS"
+  ],
+  "seeds": [
+   7501,
+   7502,
+   7503,
+   7504,
+   7505,
+   7506,
+   7507,
+   7508,
+   7509,
+   7510,
+   7511,
+   7512,
+   7513,
+   7514,
+   7515,
+   7516,
+   7517,
+   7518,
+   7519,
+   7520,
+   7521,
+   7522,
+   7523,
+   7524,
+   7525,
+   7526,
+   7527,
+   7528,
+   7529,
+   7530
+  ],
+  "trials_per_condition": 1,
+  "stopping_rule": {
+   "type": "fixed-n",
+   "units": 30,
+   "no interim analysis": true
+  },
+  "outcomes": {
+   "primary": [
+    "restoration verified",
+    "relief misclassified"
+   ],
+   "secondary": [
+    "presence patterns"
+   ]
+  },
+  "analyses": [
+   {
+    "id": "L601",
+    "hypothesis": "H1",
+    "outcome": "verified",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "L602",
+    "hypothesis": "H2",
+    "outcome": "access changed",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "L603",
+    "hypothesis": "H3",
+    "outcome": "independence",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "L604",
+    "hypothesis": "H4",
+    "outcome": "misclassified",
+    "method": "paired-sign-flip",
+    "confirmatory": true,
+    "paired": true
+   }
+  ],
+  "multiplicity": "holm",
+  "failure_conditions": [
+   "fewer than 30 units"
+  ],
+  "reproduction": {
+   "generator": "xzr.teoo.lawexperiments",
+   "steps": [
+    "run unit per seed",
+    "analyse"
+   ],
+   "world": "xzr.teoo.lawledger (SQLite, append-only) on xzr.teoo.lawworld (8 Booleans); this implementation's own world, not Appendix O"
+  },
+  "schema": "teoo.protocol/1",
+  "version": 1,
+  "parent_version": null,
+  "change_reason": null
+ },
+ "units": 30,
+ "seeds": [
+  7501,
+  7502,
+  7503,
+  7504,
+  7505,
+  7506,
+  7507,
+  7508,
+  7509,
+  7510,
+  7511,
+  7512,
+  7513,
+  7514,
+  7515,
+  7516,
+  7517,
+  7518,
+  7519,
+  7520,
+  7521,
+  7522,
+  7523,
+  7524,
+  7525,
+  7526,
+  7527,
+  7528,
+  7529,
+  7530
+ ],
+ "evidence_class": "Implementation Property",
+ "seconds": 2.0,
+ "results": {
+  "L601": {
+   "method": "descriptive",
+   "scenarios": 720,
+   "restoration_verified": 0,
+   "positive_law_verified": 0,
+   "determination_by_software": 0,
+   "access_changed_in_the_synthetic_world": 418,
+   "relief_misclassified_by_collapse": 671,
+   "distinct_presence_patterns": 2,
+   "stage_present_while_previous_absent": 202,
+   "criterion": "restoration, positive law and software determinations: 0",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  },
+  "L602": {
+   "method": "descriptive",
+   "access_changed_in_the_synthetic_world": 418,
+   "criterion": "access changed in at least one scenario while restoration is 0",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  },
+  "L603": {
+   "method": "descriptive",
+   "distinct_presence_patterns": 2,
+   "stage_present_while_previous_absent": 202,
+   "criterion": "at least three presence patterns",
+   "criterion_met": false,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  },
+  "L604": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 22.366666666666667,
+   "sd_diff": 1.1290317283753197,
+   "dz": 19.810485484630597,
+   "ci95": [
+    21.966666666666665,
+    22.766666666666666
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 16,
+   "inferential": true,
+   "contrast": "unverified relief misclassified per world: collapsed SUCCESS minus six records (0)",
+   "predicted_sign": 1,
+   "total": 671,
+   "p_holm": 4.999750012499375e-05,
+   "supported": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  }
+ },
+ "catalogue": {
+  "source": "The Minimum Guarantees of Human Legal Subjecthood, Publication Final V3.0, Chapter 6.2 (identical in the 100_POINT_EDITION and in R2 section 4: all fifteen titles and definitions compared character for character)",
+  "verified_against_original": true,
+  "sha256": {
+   "v3_0": "cf4d4f0c51169451da5af4c33e7081e947dacbade855068a889965d8c523b848",
+   "v3_0_100_point_edition": "afb59d1a0c3b28854f14113f843645539e07a2e466949d22de4b67da0a22bf99",
+   "ai_law_osr_r2": "a9984451b281df3252b05842dc5109dd396e0b0c54d3560849344ad41059a501"
+  },
+  "editions_identical_for_guarantees": true,
+  "note": "V3.0 uses two vocabularies for the same five findings (Appendix A table: Secured/Partial/Absent/Indeterminate/Inapplicable; A.3 and 8.4 text: Satisfied/Partially Satisfied/Failed/Indeterminate/Not Applicable). R2 section 16 and this implementation use the table's."
+ },
+ "note": "results about a SYNTHETIC ledger and this implementation's own world; the manuscripts R5-R16, the historical code and the world of Appendix O were not available and their numbers are not reproduced; a closure, a measurement or a match here is not a legal judgment or a restoration; not an observation of any institution, law or person"
+}

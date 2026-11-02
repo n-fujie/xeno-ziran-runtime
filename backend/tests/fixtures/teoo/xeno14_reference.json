@@ -1,0 +1,43 @@
+{
+ "body_ts": {
+  "path": "ziran-xeno-simulator/src/domains/body.ts",
+  "commit": "e37520f",
+  "XENO14": [
+   "lower-abdominal-continuity",
+   "whole-skin-sensing",
+   "axis-maintenance",
+   "endpoint-removal",
+   "low-noise-movement",
+   "minimal-approach-distance",
+   "zero-run-up-transition",
+   "tensegrity",
+   "slow-movement",
+   "narrow-step-balance",
+   "fingertip-tension",
+   "breathing-synchronization",
+   "anti-collapse-posture",
+   "long-duration-sedimentation"
+  ]
+ },
+ "xbtro_py": {
+  "path": "xeno-ziran-runtime feat/xb-tro backend/xzr/xbtro/xeno14.py",
+  "commit": "94c2e8e",
+  "PRINCIPLES_ids": [
+   "lower-abdominal-continuity",
+   "whole-skin-sensing",
+   "axis-maintenance",
+   "endpoint-removal",
+   "low-noise-movement",
+   "minimal-approach-distance",
+   "zero-run-up-transition",
+   "tensegrity",
+   "slow-movement",
+   "narrow-step-balance",
+   "fingertip-tension",
+   "breathing-synchronization",
+   "anti-collapse-posture",
+   "long-duration-sedimentation"
+  ]
+ },
+ "how": "extracted by regular expression from the two files"
+}

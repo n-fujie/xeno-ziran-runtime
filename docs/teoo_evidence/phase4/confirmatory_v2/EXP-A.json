@@ -1,0 +1,575 @@
+{
+ "experiment_id": "TEOO4-EXP-A",
+ "protocol_version": 2,
+ "protocol_digest": "feb0fc52982a911b1154f559b73d39266d657565552c44bfaa6e4fa68a618423",
+ "protocol": {
+  "analyses": [
+   {
+    "confirmatory": true,
+    "contrast": "ts 0.02 minus ts 1.0",
+    "hypothesis": "HA1",
+    "id": "A1",
+    "method": "paired-sign-flip",
+    "others": {
+     "lim": 0.05,
+     "r": 0.5,
+     "ts": 0.02,
+     "win": 20.0
+    },
+    "outcome": "sensitivity_frequency"
+   },
+   {
+    "confirmatory": true,
+    "contrast": "ts 0.02 minus ts 1.0",
+    "hypothesis": "HA2",
+    "id": "A2",
+    "method": "paired-sign-flip",
+    "others": {
+     "lim": 0.05,
+     "r": 0.5,
+     "ts": 0.02,
+     "win": 20.0
+    },
+    "outcome": "sensitivity_burst"
+   },
+   {
+    "confirmatory": true,
+    "contrast": "ts 0.02 minus ts 1.0",
+    "hypothesis": "HA3",
+    "id": "A3",
+    "margin": 0.1,
+    "method": "equivalence",
+    "others": {
+     "lim": 0.05,
+     "r": 0.5,
+     "ts": 0.02,
+     "win": 20.0
+    },
+    "outcome": "sensitivity_amplitude"
+   },
+   {
+    "confirmatory": true,
+    "contrast": "status valid minus not valid, true cases",
+    "hypothesis": "HA4",
+    "id": "A4",
+    "method": "paired-sign-flip",
+    "outcome": "rate_valid_minus_invalid"
+   },
+   {
+    "confirmatory": true,
+    "hypothesis": "HA5",
+    "id": "A5",
+    "method": "exact-upper-bound",
+    "outcome": "false_identification_rate",
+    "per": "configuration",
+    "threshold": 0.05
+   },
+   {
+    "confirmatory": false,
+    "contrast": "status predictor minus the one-parameter rule amplitude >= detection limit",
+    "hypothesis": "HA4",
+    "id": "A6",
+    "method": "paired-sign-flip",
+    "outcome": "accuracy_status_minus_limit_rule"
+   }
+  ],
+  "change_reason": "the pilot (version 1, seeds 1-30, and 101-130 for D) has been seen; version 2 repeats the same hypotheses, analyses, margins and criteria on fresh seeds so that the confirmatory run uses no seed whose outcome was known",
+  "conditions": [
+   "fixed-fine",
+   "variants"
+  ],
+  "control_condition": "fixed-fine",
+  "experiment_id": "TEOO4-EXP-A",
+  "failure_conditions": [
+   "a null false-identification rate above 0.05 in any configuration invalidates the simulation",
+   "fewer than 30 worlds"
+  ],
+  "hypotheses": [
+   {
+    "id": "HA1",
+    "statement": "Finer sampling raises the share of true frequency differences that are identified"
+   },
+   {
+    "id": "HA2",
+    "statement": "Finer sampling raises the share of true burst differences that are identified"
+   },
+   {
+    "id": "HA3",
+    "statement": "Sampling period does not change the share of true amplitude differences identified (equivalence within 0.10)"
+   },
+   {
+    "id": "HA4",
+    "statement": "A target whose TEOO status is MEASURED_VALID has a higher identification rate than one whose status is not"
+   },
+   {
+    "id": "HA5",
+    "statement": "Null cases are identified at a rate below 0.05 under every configuration (the simulation is calibrated)"
+   }
+  ],
+  "instrument_conditions": {
+   "alpha": 0.01,
+   "grid": {
+    "lim": [
+     0.05,
+     0.8
+    ],
+    "r": [
+     0.5,
+     4.0
+    ],
+    "ts": [
+     0.02,
+     0.2,
+     1.0
+    ],
+    "win": [
+     20.0,
+     4.0
+    ]
+   },
+   "penetration": 0.6
+  },
+  "multiplicity": "holm",
+  "outcomes": {
+   "primary": [
+    "identification rate of true differences by feature type",
+    "false identification rate of null cases"
+   ],
+   "secondary": [
+    "undetermined share",
+    "effect of resolution, detection limit and window"
+   ]
+  },
+  "parent_version": 1,
+  "reproduction": {
+   "generator": "xzr.teoo.experiments",
+   "steps": [
+    "run_a(seed) for each seed",
+    "analyse"
+   ],
+   "world": "xzr.teoo.world (SYNTHETIC)"
+  },
+  "schema": "teoo.protocol/1",
+  "seeds": [
+   1001,
+   1002,
+   1003,
+   1004,
+   1005,
+   1006,
+   1007,
+   1008,
+   1009,
+   1010,
+   1011,
+   1012,
+   1013,
+   1014,
+   1015,
+   1016,
+   1017,
+   1018,
+   1019,
+   1020,
+   1021,
+   1022,
+   1023,
+   1024,
+   1025,
+   1026,
+   1027,
+   1028,
+   1029,
+   1030
+  ],
+  "stopping_rule": {
+   "type": "fixed-n",
+   "units": 30,
+   "no interim analysis": true
+  },
+  "targets": [
+   "frequency, burst, amplitude, coupling features of one component"
+  ],
+  "trials_per_condition": 8,
+  "version": 2
+ },
+ "units": 30,
+ "seeds": [
+  1001,
+  1002,
+  1003,
+  1004,
+  1005,
+  1006,
+  1007,
+  1008,
+  1009,
+  1010,
+  1011,
+  1012,
+  1013,
+  1014,
+  1015,
+  1016,
+  1017,
+  1018,
+  1019,
+  1020,
+  1021,
+  1022,
+  1023,
+  1024,
+  1025,
+  1026,
+  1027,
+  1028,
+  1029,
+  1030
+ ],
+ "evidence_class": "Synthetic-world Result",
+ "seconds": 28.3,
+ "results": {
+  "A1": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.07777777777777777,
+   "sd_diff": 0.3117535785552716,
+   "dz": 0.24948479545356156,
+   "ci95": [
+    -0.022222222222222233,
+    0.1888888888888889
+   ],
+   "p": 0.26373681315934205,
+   "n_perm": 20000,
+   "seed": 1,
+   "inferential": true,
+   "feature": "frequency",
+   "mean_fine": 0.7444444444444444,
+   "mean_coarse": 0.6666666666666665,
+   "p_holm": 0.26373681315934205,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "A2": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.5777777777777776,
+   "sd_diff": 0.2758939955982224,
+   "dz": 2.0942020739703993,
+   "ci95": [
+    0.47777777777777775,
+    0.6777777777777777
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 1,
+   "inferential": true,
+   "feature": "burst",
+   "mean_fine": 0.6444444444444444,
+   "mean_coarse": 0.06666666666666667,
+   "p_holm": 0.00014999250037498125,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "A3": {
+   "method": "equivalence",
+   "margin": 0.1,
+   "ci90": [
+    0.19999999999999998,
+    0.3333333333333334
+   ],
+   "mean_diff": 0.26666666666666666,
+   "supported": false,
+   "feature": "amplitude",
+   "mean_fine": 0.9666666666666667,
+   "mean_coarse": 0.7,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "A4": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.4170899117619164,
+   "sd_diff": 0.13224288257807193,
+   "dz": 3.153968694804274,
+   "ci95": [
+    0.3711514439222564,
+    0.4629993512586673
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 2,
+   "inferential": true,
+   "rate_status_valid": 0.6498868778280543,
+   "rate_status_not_valid": 0.24025029103608847,
+   "n_true_rows": 8640,
+   "p_holm": 0.00014999250037498125,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "A5": {
+   "per_configuration": {
+    "ts0.02_r0.5_lim0.05_win20.0": {
+     "false_identifications": 1,
+     "null_cases": 360,
+     "rate": 0.002777777777777778,
+     "upper95": 0.013109079419950388
+    },
+    "ts0.02_r0.5_lim0.05_win4.0": {
+     "false_identifications": 3,
+     "null_cases": 360,
+     "rate": 0.008333333333333333,
+     "upper95": 0.021396105004510765
+    },
+    "ts0.02_r0.5_lim0.8_win20.0": {
+     "false_identifications": 2,
+     "null_cases": 360,
+     "rate": 0.005555555555555556,
+     "upper95": 0.017384265586503474
+    },
+    "ts0.02_r0.5_lim0.8_win4.0": {
+     "false_identifications": 4,
+     "null_cases": 360,
+     "rate": 0.011111111111111112,
+     "upper95": 0.02524487440688593
+    },
+    "ts0.02_r4.0_lim0.05_win20.0": {
+     "false_identifications": 5,
+     "null_cases": 360,
+     "rate": 0.013888888888888888,
+     "upper95": 0.028979724822428256
+    },
+    "ts0.02_r4.0_lim0.05_win4.0": {
+     "false_identifications": 2,
+     "null_cases": 360,
+     "rate": 0.005555555555555556,
+     "upper95": 0.017384265586503474
+    },
+    "ts0.02_r4.0_lim0.8_win20.0": {
+     "false_identifications": 1,
+     "null_cases": 360,
+     "rate": 0.002777777777777778,
+     "upper95": 0.013109079419950388
+    },
+    "ts0.02_r4.0_lim0.8_win4.0": {
+     "false_identifications": 1,
+     "null_cases": 360,
+     "rate": 0.002777777777777778,
+     "upper95": 0.013109079419950388
+    },
+    "ts0.2_r0.5_lim0.05_win20.0": {
+     "false_identifications": 4,
+     "null_cases": 360,
+     "rate": 0.011111111111111112,
+     "upper95": 0.02524487440688593
+    },
+    "ts0.2_r0.5_lim0.05_win4.0": {
+     "false_identifications": 2,
+     "null_cases": 360,
+     "rate": 0.005555555555555556,
+     "upper95": 0.017384265586503474
+    },
+    "ts0.2_r0.5_lim0.8_win20.0": {
+     "false_identifications": 3,
+     "null_cases": 360,
+     "rate": 0.008333333333333333,
+     "upper95": 0.021396105004510765
+    },
+    "ts0.2_r0.5_lim0.8_win4.0": {
+     "false_identifications": 0,
+     "null_cases": 360,
+     "rate": 0.0,
+     "upper95": 0.00828695087523565
+    },
+    "ts0.2_r4.0_lim0.05_win20.0": {
+     "false_identifications": 4,
+     "null_cases": 360,
+     "rate": 0.011111111111111112,
+     "upper95": 0.02524487440688593
+    },
+    "ts0.2_r4.0_lim0.05_win4.0": {
+     "false_identifications": 2,
+     "null_cases": 360,
+     "rate": 0.005555555555555556,
+     "upper95": 0.017384265586503474
+    },
+    "ts0.2_r4.0_lim0.8_win20.0": {
+     "false_identifications": 1,
+     "null_cases": 360,
+     "rate": 0.002777777777777778,
+     "upper95": 0.013109079419950388
+    },
+    "ts0.2_r4.0_lim0.8_win4.0": {
+     "false_identifications": 0,
+     "null_cases": 360,
+     "rate": 0.0,
+     "upper95": 0.00828695087523565
+    },
+    "ts1.0_r0.5_lim0.05_win20.0": {
+     "false_identifications": 2,
+     "null_cases": 360,
+     "rate": 0.005555555555555556,
+     "upper95": 0.017384265586503474
+    },
+    "ts1.0_r0.5_lim0.05_win4.0": {
+     "false_identifications": 0,
+     "null_cases": 360,
+     "rate": 0.0,
+     "upper95": 0.00828695087523565
+    },
+    "ts1.0_r0.5_lim0.8_win20.0": {
+     "false_identifications": 3,
+     "null_cases": 360,
+     "rate": 0.008333333333333333,
+     "upper95": 0.021396105004510765
+    },
+    "ts1.0_r0.5_lim0.8_win4.0": {
+     "false_identifications": 0,
+     "null_cases": 360,
+     "rate": 0.0,
+     "upper95": 0.00828695087523565
+    },
+    "ts1.0_r4.0_lim0.05_win20.0": {
+     "false_identifications": 2,
+     "null_cases": 360,
+     "rate": 0.005555555555555556,
+     "upper95": 0.017384265586503474
+    },
+    "ts1.0_r4.0_lim0.05_win4.0": {
+     "false_identifications": 0,
+     "null_cases": 360,
+     "rate": 0.0,
+     "upper95": 0.00828695087523565
+    },
+    "ts1.0_r4.0_lim0.8_win20.0": {
+     "false_identifications": 0,
+     "null_cases": 360,
+     "rate": 0.0,
+     "upper95": 0.00828695087523565
+    },
+    "ts1.0_r4.0_lim0.8_win4.0": {
+     "false_identifications": 0,
+     "null_cases": 360,
+     "rate": 0.0,
+     "upper95": 0.00828695087523565
+    }
+   },
+   "worst_upper95": 0.028979724822428256,
+   "criterion_met": true,
+   "max_rate": 0.013888888888888888,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "A6": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.4131944444444444,
+   "sd_diff": 0.10413872549908541,
+   "dz": 3.9677309518069075,
+   "ci95": [
+    0.3768460648148148,
+    0.450925925925926
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 3,
+   "inferential": true,
+   "accuracy_status": 0.7372685185185185,
+   "accuracy_rule": 0.3240740740740741,
+   "registered_class": "exploratory (declared but not marked confirmatory)",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "A7": {
+   "method": "descriptive",
+   "frequency_differences_identified_as_the_true_difference_by_sampling_period": {
+    "0.02": {
+     "identified": 386,
+     "identified_as_the_true_difference": 377,
+     "share": 0.9766839378238342
+    },
+    "0.2": {
+     "identified": 294,
+     "identified_as_the_true_difference": 192,
+     "share": 0.6530612244897959
+    },
+    "1.0": {
+     "identified": 120,
+     "identified_as_the_true_difference": 31,
+     "share": 0.25833333333333336
+    }
+   },
+   "evidence_class": "Synthetic-world Result",
+   "registered_class": "exploratory (not declared in this version)",
+   "note": "added after the pilot showed that a difference can survive aliasing without its value surviving; not part of any registered analysis"
+  },
+  "secondary": {
+   "identification_rate_by_factor_and_feature": {
+    "ts": {
+     "0.02": {
+      "amplitude": 0.7722222222222223,
+      "frequency": 0.5361111111111111,
+      "burst": 0.24583333333333332,
+      "coupling": 0.5319444444444444
+     },
+     "0.2": {
+      "amplitude": 0.5611111111111111,
+      "frequency": 0.4083333333333333,
+      "burst": 0.1736111111111111,
+      "coupling": 0.24861111111111112
+     },
+     "1.0": {
+      "amplitude": 0.175,
+      "frequency": 0.16666666666666666,
+      "burst": 0.016666666666666666,
+      "coupling": 0.05277777777777778
+     }
+    },
+    "r": {
+     "0.5": {
+      "amplitude": 0.5925925925925926,
+      "frequency": 0.4861111111111111,
+      "burst": 0.2074074074074074,
+      "coupling": 0.35
+     },
+     "4.0": {
+      "amplitude": 0.412962962962963,
+      "frequency": 0.25462962962962965,
+      "burst": 0.08333333333333333,
+      "coupling": 0.20555555555555555
+     }
+    },
+    "lim": {
+     "0.05": {
+      "amplitude": 0.6212962962962963,
+      "frequency": 0.4351851851851852,
+      "burst": 0.16203703703703703,
+      "coupling": 0.4388888888888889
+     },
+     "0.8": {
+      "amplitude": 0.38425925925925924,
+      "frequency": 0.3055555555555556,
+      "burst": 0.1287037037037037,
+      "coupling": 0.11666666666666667
+     }
+    },
+    "win": {
+     "20.0": {
+      "amplitude": 0.6564814814814814,
+      "frequency": 0.5,
+      "burst": 0.26944444444444443,
+      "coupling": 0.3851851851851852
+     },
+     "4.0": {
+      "amplitude": 0.3490740740740741,
+      "frequency": 0.24074074074074073,
+      "burst": 0.021296296296296296,
+      "coupling": 0.17037037037037037
+     }
+    }
+   },
+   "undetermined_share": 0.3554398148148148,
+   "status_valid_fraction_of_true_rows": 0.20462962962962963
+  }
+ },
+ "note": "results about a SYNTHETIC world and this implementation; not an observation of any body"
+}

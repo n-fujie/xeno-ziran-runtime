@@ -1,0 +1,414 @@
+{
+ "browser": "Chrome/151.0.7922.34",
+ "base": "http://127.0.0.1:3011",
+ "viewport": [
+  1600,
+  1000
+ ],
+ "scenes": [
+  {
+   "name": "01-overview",
+   "rec": "m9-separated-resources-7000",
+   "step": 480,
+   "cam": "overview",
+   "note": "full installation, M9-A separated-resources record",
+   "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified Version)",
+   "selfTest": {
+    "step": 481,
+    "positionsChecked": 80,
+    "worstPositionError": 5.072509780052955e-07,
+    "layers": {
+     "A": 42,
+     "B": 111,
+     "C": 74
+    },
+    "drawCalls": 828,
+    "triangles": 152344,
+    "quality": "balanced"
+   },
+   "frames": {
+    "frames": 180,
+    "meanMs": 16.67,
+    "p95Ms": 18.6,
+    "maxMs": 18.7,
+    "fps": 60
+   }
+  },
+  {
+   "name": "02-dense-domain",
+   "rec": "m9-separated-resources-7000",
+   "step": 480,
+   "cam": "domain",
+   "domain": "1",
+   "note": "one research domain: chambers, gantry, ports, sensors",
+   "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified Version)",
+   "selfTest": {
+    "step": 481,
+    "positionsChecked": 80,
+    "worstPositionError": 5.072509780052955e-07,
+    "layers": {
+     "A": 42,
+     "B": 111,
+     "C": 74
+    },
+    "drawCalls": 406,
+    "triangles": 99124,
+    "quality": "balanced"
+   },
+   "frames": {
+    "frames": 180,
+    "meanMs": 16.67,
+    "p95Ms": 18.7,
+    "maxMs": 18.7,
+    "fps": 60
+   }
+  },
+  {
+   "name": "03-physical-transfer",
+   "rec": "m9-separated-resources-7000",
+   "step": 121,
+   "cam": "transfer",
+   "sel": "sample:0.2#a",
+   "note": "sample 0.2#a carried (recorded) at index 121",
+   "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified Version)",
+   "selfTest": {
+    "step": 122,
+    "positionsChecked": 80,
+    "worstPositionError": 5.072509780052955e-07,
+    "layers": {
+     "A": 42,
+     "B": 111,
+     "C": 74
+    },
+    "drawCalls": 428,
+    "triangles": 93804,
+    "quality": "balanced"
+   },
+   "frames": {
+    "frames": 180,
+    "meanMs": 16.66,
+    "p95Ms": 18.6,
+    "maxMs": 18.7,
+    "fps": 60
+   }
+  },
+  {
+   "name": "04-shared-resource",
+   "rec": "m7-systems-6000",
+   "step": 480,
+   "cam": "apparatus",
+   "sel": "gantry:0",
+   "note": "shared bay-0 gantry in the M7 shared laboratory (mediation panel)",
+   "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified Version)",
+   "selfTest": {
+    "step": 481,
+    "positionsChecked": 40,
+    "worstPositionError": 5.072509780052955e-07,
+    "layers": {
+     "A": 42,
+     "B": 111,
+     "C": 74
+    },
+    "drawCalls": 424,
+    "triangles": 103644,
+    "quality": "balanced"
+   },
+   "frames": {
+    "frames": 180,
+    "meanMs": 16.67,
+    "p95Ms": 18.6,
+    "maxMs": 18.8,
+    "fps": 60
+   }
+  },
+  {
+   "name": "05-sensor-relocation",
+   "rec": "m9-extinction-relocation-7000",
+   "step": 15,
+   "cam": "sensor",
+   "sys": "A",
+   "note": "recorded sensor relocation 0.0 \u2192 0.3 at t16",
+   "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified Version)",
+   "selfTest": {
+    "step": 16,
+    "positionsChecked": 40,
+    "worstPositionError": 5.072509780052955e-07,
+    "layers": {
+     "A": 42,
+     "B": 100,
+     "C": 74
+    },
+    "drawCalls": 212,
+    "triangles": 63820,
+    "quality": "balanced"
+   },
+   "frames": {
+    "frames": 180,
+    "meanMs": 16.67,
+    "p95Ms": 18.6,
+    "maxMs": 18.7,
+    "fps": 60
+   }
+  },
+  {
+   "name": "06-observation-restricted",
+   "rec": "m9-extinction-relocation-7000",
+   "step": 324,
+   "cam": "domain",
+   "domain": "0",
+   "note": "A's observed chambers closed by the declared harness at t320",
+   "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified Version)",
+   "selfTest": {
+    "step": 325,
+    "positionsChecked": 40,
+    "worstPositionError": 5.072509780052955e-07,
+    "layers": {
+     "A": 42,
+     "B": 100,
+     "C": 74
+    },
+    "drawCalls": 353,
+    "triangles": 95272,
+    "quality": "balanced"
+   },
+   "frames": {
+    "frames": 180,
+    "meanMs": 16.68,
+    "p95Ms": 18.6,
+    "maxMs": 18.7,
+    "fps": 60
+   }
+  },
+  {
+   "name": "07-extinction",
+   "rec": "m9-extinction-relocation-7000",
+   "step": 439,
+   "cam": "domain",
+   "domain": "0",
+   "note": "inside the extinct interval (M9-C definition)",
+   "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified Version)",
+   "selfTest": {
+    "step": 440,
+    "positionsChecked": 40,
+    "worstPositionError": 5.072509780052955e-07,
+    "layers": {
+     "A": 42,
+     "B": 100,
+     "C": 74
+    },
+    "drawCalls": 358,
+    "triangles": 97192,
+    "quality": "balanced"
+   },
+   "frames": {
+    "frames": 180,
+    "meanMs": 16.67,
+    "p95Ms": 16.8,
+    "maxMs": 16.8,
+    "fps": 60
+   }
+  },
+  {
+   "name": "08-reignition",
+   "rec": "m9-extinction-relocation-7000",
+   "step": 689,
+   "cam": "domain",
+   "domain": "0",
+   "note": "first delivery after the extinct interval, t690",
+   "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified Version)",
+   "selfTest": {
+    "step": 690,
+    "positionsChecked": 40,
+    "worstPositionError": 5.072509780052955e-07,
+    "layers": {
+     "A": 42,
+     "B": 100,
+     "C": 74
+    },
+    "drawCalls": 373,
+    "triangles": 101032,
+    "quality": "balanced"
+   },
+   "frames": {
+    "frames": 180,
+    "meanMs": 16.67,
+    "p95Ms": 16.8,
+    "maxMs": 16.8,
+    "fps": 60
+   }
+  },
+  {
+   "name": "09-layer-A-only",
+   "rec": "m9-separated-resources-7000",
+   "step": 480,
+   "cam": "domain",
+   "domain": "1",
+   "layers": "A",
+   "note": "physical layer alone (MuJoCo-driven)",
+   "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified Version)",
+   "selfTest": {
+    "step": 481,
+    "positionsChecked": 80,
+    "worstPositionError": 5.072509780052955e-07,
+    "layers": {
+     "A": 42,
+     "B": 111,
+     "C": 74
+    },
+    "drawCalls": 226,
+    "triangles": 53624,
+    "quality": "balanced"
+   },
+   "frames": {
+    "frames": 180,
+    "meanMs": 16.67,
+    "p95Ms": 16.8,
+    "maxMs": 16.8,
+    "fps": 60
+   }
+  },
+  {
+   "name": "10-high-quality",
+   "rec": "m9-separated-resources-7000",
+   "step": 480,
+   "cam": "domain",
+   "domain": "1",
+   "quality": "high",
+   "note": "high-fidelity quality mode",
+   "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified Version)",
+   "selfTest": {
+    "step": 481,
+    "positionsChecked": 80,
+    "worstPositionError": 5.072509780052955e-07,
+    "layers": {
+     "A": 42,
+     "B": 111,
+     "C": 74
+    },
+    "drawCalls": 406,
+    "triangles": 100340,
+    "quality": "high"
+   },
+   "frames": {
+    "frames": 180,
+    "meanMs": 18.15,
+    "p95Ms": 16.8,
+    "maxMs": 100.1,
+    "fps": 55.1
+   }
+  },
+  {
+   "name": "11-live-run",
+   "note": "live run started from the viewer (preset systems), streamed while it runs",
+   "liveStatus": "LIVE running \u00b7 t 89/960 \u00b7 seq 89 \u00b7 coalesced frames 0",
+   "selfTest": {
+    "step": 89,
+    "positionsChecked": 40,
+    "worstPositionError": 5.072509780052955e-07,
+    "layers": {
+     "A": 42,
+     "B": 111,
+     "C": 74
+    },
+    "drawCalls": 756,
+    "triangles": 148400,
+    "quality": "balanced"
+   },
+   "frames": {
+    "frames": 180,
+    "meanMs": 21.39,
+    "p95Ms": 50,
+    "maxMs": 66.7,
+    "fps": 46.8
+   }
+  }
+ ],
+ "benchmark": [
+  {
+   "quality": "performance",
+   "frames": 480,
+   "meanMs": 4.98,
+   "p50Ms": 4.5,
+   "p95Ms": 8.8,
+   "maxMs": 35.3,
+   "equivalentFps": 200.7,
+   "drawCalls": 686,
+   "triangles": 120832,
+   "geometriesBefore": 646,
+   "geometriesAfter": 694,
+   "canvas": [
+    1200,
+    866
+   ],
+   "pixelRatio": 1,
+   "heapMB": 337.8,
+   "rafFrames": {
+    "frames": 180,
+    "meanMs": 16.67,
+    "p95Ms": 16.7,
+    "maxMs": 16.9,
+    "fps": 60
+   }
+  },
+  {
+   "quality": "balanced",
+   "frames": 480,
+   "meanMs": 10.02,
+   "p50Ms": 9.9,
+   "p95Ms": 15.5,
+   "maxMs": 26.8,
+   "equivalentFps": 99.8,
+   "drawCalls": 857,
+   "triangles": 160416,
+   "geometriesBefore": 817,
+   "geometriesAfter": 865,
+   "canvas": [
+    1200,
+    866
+   ],
+   "pixelRatio": 1,
+   "heapMB": 271.7,
+   "rafFrames": {
+    "frames": 180,
+    "meanMs": 16.76,
+    "p95Ms": 16.7,
+    "maxMs": 33.4,
+    "fps": 59.7
+   }
+  },
+  {
+   "quality": "high",
+   "frames": 480,
+   "meanMs": 13.5,
+   "p50Ms": 13,
+   "p95Ms": 19.4,
+   "maxMs": 34.8,
+   "equivalentFps": 74.1,
+   "drawCalls": 857,
+   "triangles": 160416,
+   "geometriesBefore": 829,
+   "geometriesAfter": 877,
+   "canvas": [
+    1200,
+    866
+   ],
+   "pixelRatio": 1,
+   "heapMB": 329.6,
+   "rafFrames": {
+    "frames": 180,
+    "meanMs": 16.76,
+    "p95Ms": 16.7,
+    "maxMs": 33.4,
+    "fps": 59.7
+   }
+  }
+ ],
+ "live_vs_headless": {
+  "live_record": "xzr-results/lab-live/a8562b8354b7.json (git-ignored; written by the live run the capture started)",
+  "steps": 137,
+  "replay_agreement": true,
+  "headless_batch_identical_steps": 137,
+  "science_events_identical": true,
+  "meaning": "the run streamed to the high-fidelity viewer equals, step by step, a headless batch run of the same configuration with no viewer"
+ }
+}

@@ -1,0 +1,942 @@
+{
+ "source": {
+  "repo": "xeno-ziran-runtime",
+  "branch": "feat/xb-tro",
+  "commit": "94c2e8e",
+  "how": "config.get_preset(name) dumped to JSON (read only)"
+ },
+ "presets": {
+  "human-like-planar": {
+   "name": "human-like-planar",
+   "family": "human-like",
+   "model": "xb-tro/1.0",
+   "links": [
+    {
+     "id": "shank",
+     "label": "shank + foot",
+     "region": "shank",
+     "length": 0.45,
+     "mass": 6.6,
+     "com_frac": 0.45
+    },
+    {
+     "id": "thigh",
+     "label": "thigh",
+     "region": "thigh",
+     "length": 0.45,
+     "mass": 14.0,
+     "com_frac": 0.45
+    },
+    {
+     "id": "trunk",
+     "label": "trunk + arms",
+     "region": "trunk",
+     "length": 0.55,
+     "mass": 38.0,
+     "com_frac": 0.5
+    },
+    {
+     "id": "head",
+     "label": "head + neck",
+     "region": "head",
+     "length": 0.3,
+     "mass": 4.8,
+     "com_frac": 0.5
+    }
+   ],
+   "joints": [
+    {
+     "id": "ankle",
+     "label": "ankle",
+     "tau_max": 120.0,
+     "k_passive": 720.0,
+     "c_passive": 45.0,
+     "q_range": 0.6,
+     "act_rise": 0.04,
+     "act_fall": 0.08
+    },
+    {
+     "id": "knee",
+     "label": "knee",
+     "tau_max": 150.0,
+     "k_passive": 700.0,
+     "c_passive": 40.0,
+     "q_range": 0.6,
+     "act_rise": 0.04,
+     "act_fall": 0.08
+    },
+    {
+     "id": "hip",
+     "label": "hip",
+     "tau_max": 180.0,
+     "k_passive": 420.0,
+     "c_passive": 35.0,
+     "q_range": 0.8,
+     "act_rise": 0.04,
+     "act_fall": 0.08
+    },
+    {
+     "id": "neck",
+     "label": "neck",
+     "tau_max": 25.0,
+     "k_passive": 45.0,
+     "c_passive": 4.0,
+     "q_range": 0.8,
+     "act_rise": 0.03,
+     "act_fall": 0.06
+    }
+   ],
+   "foot": {
+    "toe": 0.17,
+    "heel": 0.07
+   },
+   "environment": {
+    "gravity": 9.81,
+    "friction_mu": 0.8,
+    "compliance": 0.0,
+    "pushes": [],
+    "ledge": null,
+    "handrail": null
+   },
+   "sensors": {
+    "proprio": {
+     "noise": 0.002,
+     "gain": 1.0
+    },
+    "vestibular": {
+     "noise": 0.004,
+     "gain": 1.0
+    },
+    "visual": {
+     "noise": 0.004,
+     "gain": 1.0,
+     "blocked_windows": []
+    },
+    "tactile": {
+     "noise": 0.003,
+     "gain": 1.0
+    },
+    "cue": {
+     "noise": 0.15
+    }
+   },
+   "neural": {
+    "gain_ankle_p": 3.0,
+    "gain_ankle_d": 3.5,
+    "gain_cop": 0.0,
+    "gravity_comp": 0.5,
+    "gravity_ff": -0.4,
+    "gain_hip_p": 1.2,
+    "gain_hip_d": 0.8,
+    "gain_reflex_p": 0.6,
+    "gain_reflex_d": 0.05,
+    "gain_cue_ff": 1.0,
+    "motor_noise": 0.01,
+    "strategy": "endpoint",
+    "windup_s": 0.25,
+    "windup_frac": 0.35,
+    "visual_weight": 1.0,
+    "vestibular_weight": 1.0,
+    "proprio_weight": 2.0,
+    "tactile_weight": 0.6,
+    "cocontraction_base": 0.06,
+    "cocontraction_gain": 2.0
+   },
+   "internal": {
+    "breath_period": 4.0,
+    "breath_amp": 0.015,
+    "breath_variability": 0.05,
+    "energy0": 1.0,
+    "basal_cost": 0.0004,
+    "activation_cost": 0.004,
+    "fatigue_rate": 0.02,
+    "fatigue_recovery": 0.012,
+    "capacity_floor": 0.45,
+    "energy_floor": 0.3,
+    "resources_enabled": true
+   },
+   "adaptation": {
+    "enabled": true,
+    "eta": 0.2,
+    "error_target": 0.003,
+    "gain_min": 0.9,
+    "gain_max": 1.15,
+    "cost": 0.0
+   },
+   "task": {
+    "horizon": 8.0,
+    "dt": 0.01,
+    "substeps": 2,
+    "integrator": "rk4",
+    "t_cue": 1.0,
+    "x_target": 0.035,
+    "ramp_s": 0.35,
+    "t_turn": 4.2,
+    "x_turn": -0.02,
+    "initial_lean": 0.0
+   },
+   "lines": [
+    {
+     "id": "mech.passive",
+     "label": "viscoelastic joints (passive)",
+     "kind": "mechanical",
+     "enabled": true,
+     "timescale_s": 0.0,
+     "ignition": {
+      "signal": "always",
+      "threshold": 0.0,
+      "hold_s": 0.0
+     },
+     "resource": {
+      "pool": "energy",
+      "cost_per_s": 0.0
+     },
+     "observable_by": [
+      "posture",
+      "imu"
+     ],
+     "note": "always on; stiffness and damping per joint"
+    },
+    {
+     "id": "sens.proprio",
+     "label": "proprioceptive sensing",
+     "kind": "sensory",
+     "enabled": true,
+     "timescale_s": 0.03,
+     "ignition": {
+      "signal": "joint-velocity",
+      "threshold": 0.05,
+      "hold_s": 0.05
+     },
+     "resource": {
+      "pool": "energy",
+      "cost_per_s": 0.0
+     },
+     "observable_by": [
+      "posture",
+      "emg"
+     ],
+     "note": "timescale = sensory delay (s); ignites when a joint velocity exceeds the threshold (rad/s)"
+    },
+    {
+     "id": "sens.vestibular",
+     "label": "vestibular / head-motion sensing",
+     "kind": "sensory",
+     "enabled": true,
+     "timescale_s": 0.02,
+     "ignition": {
+      "signal": "trunk-tilt-rate",
+      "threshold": 0.03,
+      "hold_s": 0.05
+     },
+     "resource": {
+      "pool": "energy",
+      "cost_per_s": 0.0
+     },
+     "observable_by": [
+      "imu",
+      "eeg"
+     ],
+     "note": "timescale = delay; ignites on trunk tilt rate (rad/s)"
+    },
+    {
+     "id": "sens.visual",
+     "label": "visual feedback",
+     "kind": "sensory",
+     "enabled": true,
+     "timescale_s": 0.1,
+     "ignition": {
+      "signal": "com-offset",
+      "threshold": 0.004,
+      "hold_s": 0.1
+     },
+     "resource": {
+      "pool": "energy",
+      "cost_per_s": 0.0
+     },
+     "observable_by": [
+      "posture",
+      "eeg"
+     ],
+     "note": "timescale = delay; ignites on a visible COM offset (m); can be blocked"
+    },
+    {
+     "id": "sens.tactile",
+     "label": "tactile / contact-pressure sensing",
+     "kind": "sensory",
+     "enabled": true,
+     "timescale_s": 0.04,
+     "ignition": {
+      "signal": "cop-shift",
+      "threshold": 0.004,
+      "hold_s": 0.05
+     },
+     "resource": {
+      "pool": "energy",
+      "cost_per_s": 0.0
+     },
+     "observable_by": [
+      "contact",
+      "eeg"
+     ],
+     "note": "timescale = delay; ignites on a centre-of-pressure shift (m)"
+    },
+    {
+     "id": "sens.cue",
+     "label": "cue perception",
+     "kind": "sensory",
+     "enabled": true,
+     "timescale_s": 0.12,
+     "ignition": {
+      "signal": "cue",
+      "threshold": 0.5,
+      "hold_s": 0.05
+     },
+     "resource": {
+      "pool": "energy",
+      "cost_per_s": 0.0
+     },
+     "observable_by": [
+      "eeg",
+      "latency"
+     ],
+     "note": "timescale = delay; the movement / direction-change cues are sensed through it"
+    },
+    {
+     "id": "neural.reflex",
+     "label": "local joint reflex",
+     "kind": "neural",
+     "enabled": true,
+     "timescale_s": 0.04,
+     "ignition": {
+      "signal": "joint-velocity",
+      "threshold": 0.12,
+      "hold_s": 0.08
+     },
+     "resource": {
+      "pool": "energy",
+      "cost_per_s": 0.002
+     },
+     "observable_by": [
+      "emg",
+      "latency",
+      "eeg"
+     ],
+     "note": "timescale = loop latency; ignites on a fast sensed joint motion"
+    },
+    {
+     "id": "neural.central.ankle",
+     "label": "central balance command (ankle)",
+     "kind": "neural",
+     "enabled": true,
+     "timescale_s": 0.1,
+     "ignition": {
+      "signal": "com-offset",
+      "threshold": 0.003,
+      "hold_s": 0.2
+     },
+     "resource": {
+      "pool": "energy",
+      "cost_per_s": 0.004
+     },
+     "observable_by": [
+      "emg",
+      "eeg",
+      "latency"
+     ],
+     "note": "timescale = latency; ignites on a sensed COM offset from the reference"
+    },
+    {
+     "id": "neural.central.hip",
+     "label": "central balance command (hip)",
+     "kind": "neural",
+     "enabled": true,
+     "timescale_s": 0.1,
+     "ignition": {
+      "signal": "com-offset",
+      "threshold": 0.02,
+      "hold_s": 0.25
+     },
+     "resource": {
+      "pool": "energy",
+      "cost_per_s": 0.008
+     },
+     "observable_by": [
+      "emg",
+      "eeg",
+      "latency"
+     ],
+     "note": "timescale = latency; ignites on a large COM offset"
+    },
+    {
+     "id": "neural.central.cue",
+     "label": "central movement command (feed-forward)",
+     "kind": "neural",
+     "enabled": true,
+     "timescale_s": 0.1,
+     "ignition": {
+      "signal": "cue",
+      "threshold": 0.5,
+      "hold_s": 0.3
+     },
+     "resource": {
+      "pool": "energy",
+      "cost_per_s": 0.004
+     },
+     "observable_by": [
+      "emg",
+      "eeg",
+      "latency"
+     ],
+     "note": "timescale = latency; ignites on a sensed cue"
+    },
+    {
+     "id": "core.tonic",
+     "label": "tonic co-contraction (core)",
+     "kind": "internal",
+     "enabled": true,
+     "timescale_s": 0.0,
+     "ignition": {
+      "signal": "always",
+      "threshold": 0.0,
+      "hold_s": 0.0
+     },
+     "resource": {
+      "pool": "energy",
+      "cost_per_s": 0.003
+     },
+     "observable_by": [
+      "emg"
+     ],
+     "note": "baseline co-contraction level; costs energy while on"
+    },
+    {
+     "id": "breath.cycle",
+     "label": "breathing cycle",
+     "kind": "internal",
+     "enabled": true,
+     "timescale_s": 4.0,
+     "ignition": {
+      "signal": "always",
+      "threshold": 0.0,
+      "hold_s": 0.0
+     },
+     "resource": {
+      "pool": "energy",
+      "cost_per_s": 0.001
+     },
+     "observable_by": [
+      "respiration",
+      "imu",
+      "emg"
+     ],
+     "note": "timescale = period (s); modulates trunk drive and chest motion"
+    },
+    {
+     "id": "metabolic.supply",
+     "label": "energy supply / fatigue",
+     "kind": "internal",
+     "enabled": true,
+     "timescale_s": 30.0,
+     "ignition": {
+      "signal": "always",
+      "threshold": 0.0,
+      "hold_s": 0.0
+     },
+     "resource": {
+      "pool": "energy",
+      "cost_per_s": 0.0
+     },
+     "observable_by": [],
+     "note": "timescale = fatigue time constant (s); internal, no observation model sees it directly"
+    },
+    {
+     "id": "adapt.gain",
+     "label": "gain adaptation",
+     "kind": "internal",
+     "enabled": true,
+     "timescale_s": 20.0,
+     "ignition": {
+      "signal": "always",
+      "threshold": 0.0,
+      "hold_s": 0.0
+     },
+     "resource": {
+      "pool": "energy",
+      "cost_per_s": 0.0
+     },
+     "observable_by": [],
+     "note": "timescale = adaptation time constant (s); slow retained state"
+    }
+   ],
+   "xeno14": [],
+   "slow_state0": null
+  },
+  "machine-like-planar": {
+   "name": "machine-like-planar",
+   "family": "machine-like",
+   "model": "xb-tro/1.0",
+   "links": [
+    {
+     "id": "shank",
+     "label": "lower leg + foot plate",
+     "region": "shank",
+     "length": 0.4,
+     "mass": 8.0,
+     "com_frac": 0.4
+    },
+    {
+     "id": "thigh",
+     "label": "upper leg",
+     "region": "thigh",
+     "length": 0.4,
+     "mass": 10.0,
+     "com_frac": 0.45
+    },
+    {
+     "id": "trunk",
+     "label": "torso + battery",
+     "region": "trunk",
+     "length": 0.5,
+     "mass": 30.0,
+     "com_frac": 0.45
+    },
+    {
+     "id": "head",
+     "label": "sensor head",
+     "region": "head",
+     "length": 0.2,
+     "mass": 3.0,
+     "com_frac": 0.5
+    }
+   ],
+   "joints": [
+    {
+     "id": "ankle",
+     "label": "ankle actuator",
+     "tau_max": 160.0,
+     "k_passive": 60.0,
+     "c_passive": 6.0,
+     "q_range": 0.6,
+     "act_rise": 0.008,
+     "act_fall": 0.01
+    },
+    {
+     "id": "knee",
+     "label": "knee actuator",
+     "tau_max": 200.0,
+     "k_passive": 900.0,
+     "c_passive": 10.0,
+     "q_range": 0.6,
+     "act_rise": 0.008,
+     "act_fall": 0.01
+    },
+    {
+     "id": "hip",
+     "label": "hip actuator",
+     "tau_max": 220.0,
+     "k_passive": 720.0,
+     "c_passive": 12.0,
+     "q_range": 0.8,
+     "act_rise": 0.008,
+     "act_fall": 0.01
+    },
+    {
+     "id": "neck",
+     "label": "neck actuator",
+     "tau_max": 20.0,
+     "k_passive": 20.0,
+     "c_passive": 1.0,
+     "q_range": 0.8,
+     "act_rise": 0.008,
+     "act_fall": 0.01
+    }
+   ],
+   "foot": {
+    "toe": 0.14,
+    "heel": 0.08
+   },
+   "environment": {
+    "gravity": 9.81,
+    "friction_mu": 0.8,
+    "compliance": 0.0,
+    "pushes": [],
+    "ledge": null,
+    "handrail": null
+   },
+   "sensors": {
+    "proprio": {
+     "noise": 0.0006,
+     "gain": 1.0
+    },
+    "vestibular": {
+     "noise": 0.0015,
+     "gain": 1.0
+    },
+    "visual": {
+     "noise": 0.004,
+     "gain": 0.0,
+     "blocked_windows": []
+    },
+    "tactile": {
+     "noise": 0.001,
+     "gain": 1.0
+    },
+    "cue": {
+     "noise": 0.05
+    }
+   },
+   "neural": {
+    "gain_ankle_p": 1.5,
+    "gain_ankle_d": 1.5,
+    "gain_cop": 0.0,
+    "gravity_comp": 1.0,
+    "gravity_ff": 0.0,
+    "gain_hip_p": 1.6,
+    "gain_hip_d": 0.5,
+    "gain_reflex_p": 0.6,
+    "gain_reflex_d": 0.05,
+    "gain_cue_ff": 1.0,
+    "motor_noise": 0.002,
+    "strategy": "whole-body",
+    "windup_s": 0.0,
+    "windup_frac": 0.0,
+    "visual_weight": 0.0,
+    "vestibular_weight": 0.2,
+    "proprio_weight": 2.0,
+    "tactile_weight": 0.8,
+    "cocontraction_base": 0.02,
+    "cocontraction_gain": 2.0
+   },
+   "internal": {
+    "breath_period": 4.0,
+    "breath_amp": 0.0,
+    "breath_variability": 0.05,
+    "energy0": 1.0,
+    "basal_cost": 0.0002,
+    "activation_cost": 0.003,
+    "fatigue_rate": 0.0,
+    "fatigue_recovery": 0.0,
+    "capacity_floor": 1.0,
+    "energy_floor": 0.3,
+    "resources_enabled": true
+   },
+   "adaptation": {
+    "enabled": true,
+    "eta": 0.2,
+    "error_target": 0.003,
+    "gain_min": 0.9,
+    "gain_max": 1.15,
+    "cost": 0.0
+   },
+   "task": {
+    "horizon": 8.0,
+    "dt": 0.005,
+    "substeps": 2,
+    "integrator": "rk4",
+    "t_cue": 1.0,
+    "x_target": 0.035,
+    "ramp_s": 0.35,
+    "t_turn": 4.2,
+    "x_turn": -0.02,
+    "initial_lean": 0.0
+   },
+   "lines": [
+    {
+     "id": "mech.passive",
+     "label": "viscoelastic joints (passive)",
+     "kind": "mechanical",
+     "enabled": true,
+     "timescale_s": 0.0,
+     "ignition": {
+      "signal": "always",
+      "threshold": 0.0,
+      "hold_s": 0.0
+     },
+     "resource": {
+      "pool": "energy",
+      "cost_per_s": 0.0
+     },
+     "observable_by": [
+      "posture",
+      "imu"
+     ],
+     "note": "always on; stiffness and damping per joint"
+    },
+    {
+     "id": "sens.proprio",
+     "label": "proprioceptive sensing",
+     "kind": "sensory",
+     "enabled": true,
+     "timescale_s": 0.004,
+     "ignition": {
+      "signal": "joint-velocity",
+      "threshold": 0.05,
+      "hold_s": 0.05
+     },
+     "resource": {
+      "pool": "energy",
+      "cost_per_s": 0.0
+     },
+     "observable_by": [
+      "posture",
+      "emg"
+     ],
+     "note": "timescale = sensory delay (s); ignites when a joint velocity exceeds the threshold (rad/s)"
+    },
+    {
+     "id": "sens.vestibular",
+     "label": "vestibular / head-motion sensing",
+     "kind": "sensory",
+     "enabled": true,
+     "timescale_s": 0.003,
+     "ignition": {
+      "signal": "trunk-tilt-rate",
+      "threshold": 0.03,
+      "hold_s": 0.05
+     },
+     "resource": {
+      "pool": "energy",
+      "cost_per_s": 0.0
+     },
+     "observable_by": [
+      "imu",
+      "eeg"
+     ],
+     "note": "timescale = delay; ignites on trunk tilt rate (rad/s)"
+    },
+    {
+     "id": "sens.visual",
+     "label": "visual feedback",
+     "kind": "sensory",
+     "enabled": false,
+     "timescale_s": 0.1,
+     "ignition": {
+      "signal": "com-offset",
+      "threshold": 0.004,
+      "hold_s": 0.1
+     },
+     "resource": {
+      "pool": "energy",
+      "cost_per_s": 0.0
+     },
+     "observable_by": [
+      "posture",
+      "eeg"
+     ],
+     "note": "timescale = delay; ignites on a visible COM offset (m); can be blocked"
+    },
+    {
+     "id": "sens.tactile",
+     "label": "tactile / contact-pressure sensing",
+     "kind": "sensory",
+     "enabled": true,
+     "timescale_s": 0.006,
+     "ignition": {
+      "signal": "cop-shift",
+      "threshold": 0.004,
+      "hold_s": 0.05
+     },
+     "resource": {
+      "pool": "energy",
+      "cost_per_s": 0.0
+     },
+     "observable_by": [
+      "contact",
+      "eeg"
+     ],
+     "note": "timescale = delay; ignites on a centre-of-pressure shift (m)"
+    },
+    {
+     "id": "sens.cue",
+     "label": "cue perception",
+     "kind": "sensory",
+     "enabled": true,
+     "timescale_s": 0.02,
+     "ignition": {
+      "signal": "cue",
+      "threshold": 0.5,
+      "hold_s": 0.05
+     },
+     "resource": {
+      "pool": "energy",
+      "cost_per_s": 0.0
+     },
+     "observable_by": [
+      "eeg",
+      "latency"
+     ],
+     "note": "timescale = delay; the movement / direction-change cues are sensed through it"
+    },
+    {
+     "id": "neural.reflex",
+     "label": "local joint reflex",
+     "kind": "neural",
+     "enabled": true,
+     "timescale_s": 0.006,
+     "ignition": {
+      "signal": "joint-velocity",
+      "threshold": 0.12,
+      "hold_s": 0.08
+     },
+     "resource": {
+      "pool": "energy",
+      "cost_per_s": 0.002
+     },
+     "observable_by": [
+      "emg",
+      "latency",
+      "eeg"
+     ],
+     "note": "timescale = loop latency; ignites on a fast sensed joint motion"
+    },
+    {
+     "id": "neural.central.ankle",
+     "label": "central balance command (ankle)",
+     "kind": "neural",
+     "enabled": true,
+     "timescale_s": 0.015,
+     "ignition": {
+      "signal": "com-offset",
+      "threshold": 0.003,
+      "hold_s": 0.2
+     },
+     "resource": {
+      "pool": "energy",
+      "cost_per_s": 0.004
+     },
+     "observable_by": [
+      "emg",
+      "eeg",
+      "latency"
+     ],
+     "note": "timescale = latency; ignites on a sensed COM offset from the reference"
+    },
+    {
+     "id": "neural.central.hip",
+     "label": "central balance command (hip)",
+     "kind": "neural",
+     "enabled": true,
+     "timescale_s": 0.015,
+     "ignition": {
+      "signal": "com-offset",
+      "threshold": 0.02,
+      "hold_s": 0.25
+     },
+     "resource": {
+      "pool": "energy",
+      "cost_per_s": 0.008
+     },
+     "observable_by": [
+      "emg",
+      "eeg",
+      "latency"
+     ],
+     "note": "timescale = latency; ignites on a large COM offset"
+    },
+    {
+     "id": "neural.central.cue",
+     "label": "central movement command (feed-forward)",
+     "kind": "neural",
+     "enabled": true,
+     "timescale_s": 0.015,
+     "ignition": {
+      "signal": "cue",
+      "threshold": 0.5,
+      "hold_s": 0.3
+     },
+     "resource": {
+      "pool": "energy",
+      "cost_per_s": 0.004
+     },
+     "observable_by": [
+      "emg",
+      "eeg",
+      "latency"
+     ],
+     "note": "timescale = latency; ignites on a sensed cue"
+    },
+    {
+     "id": "core.tonic",
+     "label": "tonic co-contraction (core)",
+     "kind": "internal",
+     "enabled": true,
+     "timescale_s": 0.0,
+     "ignition": {
+      "signal": "always",
+      "threshold": 0.0,
+      "hold_s": 0.0
+     },
+     "resource": {
+      "pool": "energy",
+      "cost_per_s": 0.003
+     },
+     "observable_by": [
+      "emg"
+     ],
+     "note": "baseline co-contraction level; costs energy while on"
+    },
+    {
+     "id": "breath.cycle",
+     "label": "breathing cycle",
+     "kind": "internal",
+     "enabled": false,
+     "timescale_s": 4.0,
+     "ignition": {
+      "signal": "always",
+      "threshold": 0.0,
+      "hold_s": 0.0
+     },
+     "resource": {
+      "pool": "energy",
+      "cost_per_s": 0.001
+     },
+     "observable_by": [
+      "respiration",
+      "imu",
+      "emg"
+     ],
+     "note": "timescale = period (s); modulates trunk drive and chest motion"
+    },
+    {
+     "id": "metabolic.supply",
+     "label": "energy supply / fatigue",
+     "kind": "internal",
+     "enabled": true,
+     "timescale_s": 30.0,
+     "ignition": {
+      "signal": "always",
+      "threshold": 0.0,
+      "hold_s": 0.0
+     },
+     "resource": {
+      "pool": "energy",
+      "cost_per_s": 0.0
+     },
+     "observable_by": [],
+     "note": "timescale = thermal / battery time constant (s)"
+    },
+    {
+     "id": "adapt.gain",
+     "label": "gain adaptation",
+     "kind": "internal",
+     "enabled": true,
+     "timescale_s": 20.0,
+     "ignition": {
+      "signal": "always",
+      "threshold": 0.0,
+      "hold_s": 0.0
+     },
+     "resource": {
+      "pool": "energy",
+      "cost_per_s": 0.0
+     },
+     "observable_by": [],
+     "note": "timescale = adaptation time constant (s); slow retained state"
+    }
+   ],
+   "xeno14": [],
+   "slow_state0": null
+  }
+ }
+}

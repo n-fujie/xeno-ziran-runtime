@@ -1,0 +1,3 @@
+- Worktree `/Users/user/Desktop/BIM/xeno-ziran-runtime-meos`, branch `feat/meos-ecosystem`, from the zrs baseline `ec9667e`. **Local only: not pushed, not merged, not deployed.**
+- Stage 5 commits: `4a4e4bf` (checkpoint: engine meos-0.4, MFS search, reconfiguration, experiments F-K), `b2f9917` (backend finalisation: candidate/validation analysis, classes, service routes, deep-link module), `946d654` (frontend: saved-results panel, route states, rejected-candidate layer, replay markers), followed by the final commit of this stage (documents, captures, paired performance evidence, UI corrections). `git log` gives its id.
+- The baseline result digest and the 264 stored runs are unchanged; the Stage 3 comparison worktree (`/tmp/s5/s3wt`) was removed after the benchmark.

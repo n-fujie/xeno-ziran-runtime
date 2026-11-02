@@ -1,0 +1,71 @@
+{
+ "body": null,
+ "claim": "an illustration of the stated data under the stated conditions; no claim beyond them",
+ "evidence": {
+  "band": [
+   "EVIDENCE: SYNTHETIC  ·  artificial functional-test data, not a measurement",
+   "REAL-WORLD EXPERIMENT: none recorded (no measurement exists behind this figure)",
+   "BODY: none",
+   "RECORDS: 2 (rec-34d842b974, rec-51560a2ccd)  ·  generated 2026-11-01  ·  TEOO teoo/0.1"
+  ],
+  "classes": [
+   "SYNTHETIC"
+  ],
+  "real_world_experiment_recorded": false,
+  "watermarks": [
+   "SYNTHETIC"
+  ]
+ },
+ "experiment": {
+  "conditions": [
+   "separated closure",
+   "single SUCCESS"
+  ],
+  "protocol_id": "LAW-L5",
+  "seeds": [
+   7401,
+   7430
+  ],
+  "trials_per_condition": 1,
+  "version": 1
+ },
+ "figure_id": "fig-78c36e3dc8344f54",
+ "generated_at": "2026-11-01T00:00:00.000000Z",
+ "kind": "bars",
+ "metadata_digest": "e2b7fc6f1fa0666d926f967bc709368aef9714a08f675e4648ca820efbb17a1e",
+ "observation_limits": {
+  "config_version": null,
+  "note": "A synthetic ledger or a drawing: what lies outside what is stated here is unknown, not absent.",
+  "summary": {
+   "conditions": "720 scenarios (30 worlds x 24)"
+  },
+  "t": null
+ },
+ "provenance": {
+  "records": [
+   {
+    "kind": "OBSERVATION",
+    "lineage_classes": [
+     "SYNTHETIC"
+    ],
+    "provenance": "SYNTHETIC",
+    "record_digest": "34d842b9744988eec00a566cb381bb6072d12fffb888404a3c51d9084d98cc76",
+    "record_id": "rec-34d842b9744988eec00a566c"
+   },
+   {
+    "kind": "OBSERVATION",
+    "lineage_classes": [
+     "SYNTHETIC"
+    ],
+    "provenance": "SYNTHETIC",
+    "record_digest": "51560a2ccd2affc7a95c1e530e86ebc4bc016508e8ba473efa3bb9327cd31999",
+    "record_id": "rec-51560a2ccd2affc7a95c1e53"
+   }
+  ],
+  "source_digest": "78c36e3dc8344f54e7d220d8314ce59795cb3a6a0a9bad1838c69a94a9e8c14d"
+ },
+ "schema": "teoo.figure/1",
+ "teoo_version": "teoo/0.1",
+ "title": "Fig R8 · Administrative closure against legal determination and restoration (LAW-L5, LAW-L6)",
+ "units": {}
+}

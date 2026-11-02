@@ -1,0 +1,85 @@
+{
+ "level": "A (reproduction of the frozen experiments with their original code)",
+ "code": "git tag m7-verified = dd2ec81 (separate worktree; PYTHONPATH set to it)",
+ "processes": 4,
+ "machine": "macOS-26.6.2-arm64-arm-64bit",
+ "experiments": {
+  "m4": {
+   "runs": 144,
+   "fingerprints_identical": 144,
+   "verdicts_identical": true,
+   "contrasts_identical": true,
+   "means_identical": true,
+   "published_sha256": "1e38d4f2d01f86229eaa3dba55b0324ea4843e9cd4dedb07399f98e4b3916c80",
+   "reproduced_sha256": "1ad99b1b92a4d0409186315291378c014ec7537ef8cac7042c7633773d412b14",
+   "reproduced_provenance": {
+    "version": "0.2.0",
+    "git_head": "dd2ec81d7204817a9f5907f7aacbcd65fa5deaae",
+    "dirty": false,
+    "code_sha1": "ad1e5fa787e0addf",
+    "time": "2026-10-14 19:30:47",
+    "python": "3.12.13",
+    "numpy": "2.5.3"
+   },
+   "elapsed_s": 1153.7
+  },
+  "m5": {
+   "runs": 208,
+   "fingerprints_identical": 208,
+   "verdicts_identical": true,
+   "contrasts_identical": true,
+   "means_identical": true,
+   "published_sha256": "faaf365a3d362198d265913d8d5bac43c1ae0c3475632135fbc0db6332b12ae0",
+   "reproduced_sha256": "0bb8a21d3a0fe89dbd6a9b82cc61e90a1a8b6550c1b29cf534029580d21e900e",
+   "reproduced_provenance": {
+    "version": "0.2.0",
+    "git_head": "dd2ec81d7204817a9f5907f7aacbcd65fa5deaae",
+    "dirty": false,
+    "code_sha1": "ad1e5fa787e0addf",
+    "time": "2026-10-14 19:55:39",
+    "python": "3.12.13",
+    "numpy": "2.5.3"
+   },
+   "elapsed_s": 1491.9
+  },
+  "m6": {
+   "runs": 168,
+   "fingerprints_identical": 168,
+   "verdicts_identical": true,
+   "contrasts_identical": true,
+   "means_identical": true,
+   "published_sha256": "76182ce12c77cb1c4c29046f6987472333c67efadfcce0c0caf3bdd8a1be771d",
+   "reproduced_sha256": "ee114e7dfa32c6b863bc4bc98e37f808f9d428de13029fafb15b76b317cb9234",
+   "reproduced_provenance": {
+    "version": "0.2.0",
+    "git_head": "dd2ec81d7204817a9f5907f7aacbcd65fa5deaae",
+    "dirty": false,
+    "code_sha1": "ad1e5fa787e0addf",
+    "time": "2026-10-14 20:15:36",
+    "python": "3.12.13",
+    "numpy": "2.5.3"
+   },
+   "elapsed_s": 1196.6
+  },
+  "m7": {
+   "runs": 216,
+   "fingerprints_identical": 216,
+   "verdicts_identical": true,
+   "contrasts_identical": true,
+   "means_identical": true,
+   "published_sha256": "61fd9fce4783ecb2fa84f6a364c1df52eb0fcdf9564c86ca942f7020cca17df0",
+   "reproduced_sha256": "4b5a5dd3cb401275b1eec83942e870aaf29f823efe0795520c7993f39826fe8e",
+   "reproduced_provenance": {
+    "version": "0.2.0",
+    "git_head": "dd2ec81d7204817a9f5907f7aacbcd65fa5deaae",
+    "dirty": false,
+    "code_sha1": "ad1e5fa787e0addf",
+    "time": "2026-10-14 19:11:33",
+    "python": "3.12.13",
+    "numpy": "2.5.3"
+   },
+   "elapsed_s": 1850.5
+  }
+ },
+ "note": "Result files differ byte-wise only in provenance and timing fields; every run fingerprint, contrast, verdict and mean is identical. The code hash differs from the original runs (a94f2bc0c413ea6f) because of the later isolate-threshold fix and live streaming; neither changes any frozen run."
+}

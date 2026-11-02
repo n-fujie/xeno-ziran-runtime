@@ -23,11 +23,12 @@ from typing import Any
 from urllib.parse import parse_qs, urlsplit
 
 from .. import __version__
+from ..lod.hierarchy import HierarchyTooLarge
 from ..scenario.io import list_samples
 from ..service import operations as ops
 from ..service.limits import LIMITS, LimitError
 from ..service.security import check_payload, check_scenario
-from ..service.session import JOBS, CommandError, Session, cancel_job, prune_jobs
+from ..service.session import COOPERATIVE, DEFERRED, JOBS, CommandError, Session, cancel_job, prune_jobs, run_deferred
 
 SESSIONS: dict[str, Session] = {}
 _LOCK = threading.RLock()
@@ -106,7 +107,10 @@ def _create(_q: dict, body: dict) -> dict:
         if len(SESSIONS) >= LIMITS.max_sessions:  # on a single device the oldest session is replaced
             oldest = min(SESSIONS.values(), key=lambda x: x.touched)
             _close(oldest.id)
-        s = Session(sc, body.get("applied"), 10, flags)
+        try:
+            s = Session(sc, body.get("applied"), 10, flags)
+        except HierarchyTooLarge as e:  # named like every other refused limit, before anything was built
+            raise LimitError(e.limit, str(e), 422) from e
         SESSIONS[s.id] = s
     return s.info()
 
@@ -349,3 +353,18 @@ def poll() -> str:
         out.append({"stream": key, "items": _encode(items)})
     prune_jobs()
     return json.dumps(out)
+
+
+def tick(budget_ms: float = 12.0) -> str:
+    """The host loop where there are no threads (WebAssembly): advance every session and the queued comparison, each for a
+    share of `budget_ms`, then ``poll()``. With threads (iOS, desktop) this is just ``poll()``."""
+    if COOPERATIVE:
+        live = [s for s in list(SESSIONS.values()) if s.running or s.pending_steps > 0]
+        jobs = bool(DEFERRED)
+        # The slice goes to whatever has work; when both a session and a comparison do, they share it, so neither starves.
+        sessions_share = budget_ms / 1000.0 / (2 if jobs else 1) / max(1, len(live))
+        for s in live:
+            s.pump(sessions_share)
+        if jobs:
+            run_deferred(budget_ms / 1000.0 / (2 if live else 1))
+    return poll()

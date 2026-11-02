@@ -1,0 +1,269 @@
+{
+ "experiment_id": "LG2-EXP-03",
+ "protocol_version": 1,
+ "protocol_digest": "35f05113e43b158ac2df14e8fa3696bbccc3b162f7b356fa75dcea307427ab5e",
+ "protocol": {
+  "experiment_id": "LG2-EXP-03",
+  "hypotheses": [
+   {
+    "id": "H1",
+    "statement": "A route whose reviewer has no authority overturns no wrongful denial however it is staffed, independent or easy to use (authority is necessary)"
+   },
+   {
+    "id": "H2",
+    "statement": "Where there is authority, independence raises the share overturned"
+   },
+   {
+    "id": "H3",
+    "statement": "... and so does capacity"
+   },
+   {
+    "id": "H4",
+    "statement": "A low burden raises the share of wrongful denials that are appealed"
+   },
+   {
+    "id": "H5",
+    "statement": "A formal route without authority is found ABSENT on G11 although appeals are filed"
+   }
+  ],
+  "targets": [
+   "findings and outcomes of a synthetic institution"
+  ],
+  "instrument_conditions": {
+   "factors": [
+    "authority",
+    "independence",
+    "capacity",
+    "burden"
+   ],
+   "arms": 16
+  },
+  "control_condition": "authority_off",
+  "conditions": [
+   "authority_off",
+   "authority_on"
+  ],
+  "seeds": [
+   4001,
+   4002,
+   4003,
+   4004,
+   4005,
+   4006,
+   4007,
+   4008,
+   4009,
+   4010,
+   4011,
+   4012,
+   4013,
+   4014,
+   4015,
+   4016,
+   4017,
+   4018,
+   4019,
+   4020,
+   4021,
+   4022,
+   4023,
+   4024,
+   4025,
+   4026,
+   4027,
+   4028,
+   4029,
+   4030
+  ],
+  "trials_per_condition": 1,
+  "stopping_rule": {
+   "type": "fixed-n",
+   "units": 30,
+   "no interim analysis": true
+  },
+  "outcomes": {
+   "primary": [
+    "overturn rate"
+   ],
+   "secondary": [
+    "formal appeal rate",
+    "states of G11, G12A, G12B"
+   ]
+  },
+  "analyses": [
+   {
+    "id": "L203a",
+    "hypothesis": "H1",
+    "outcome": "overturn_rate_of_wrongful",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "L203b",
+    "hypothesis": "H2",
+    "outcome": "overturn_rate_of_wrongful",
+    "method": "paired-sign-flip",
+    "confirmatory": true
+   },
+   {
+    "id": "L203c",
+    "hypothesis": "H3",
+    "outcome": "overturn_rate_of_wrongful",
+    "method": "paired-sign-flip",
+    "confirmatory": true
+   },
+   {
+    "id": "L203d",
+    "hypothesis": "H4",
+    "outcome": "formal_appeal_rate",
+    "method": "paired-sign-flip",
+    "confirmatory": true
+   },
+   {
+    "id": "L203e",
+    "hypothesis": "H5",
+    "outcome": "G11",
+    "method": "descriptive",
+    "confirmatory": true
+   }
+  ],
+  "multiplicity": "holm",
+  "failure_conditions": [
+   "fewer than 30 worlds"
+  ],
+  "reproduction": {
+   "generator": "xzr.teoo.legal_experiments2",
+   "steps": [
+    "run unit per seed",
+    "analyse"
+   ],
+   "world": "xzr.teoo.legal (SYNTHETIC institution; guarantees from the source text V3.0 6.2)"
+  },
+  "schema": "teoo.protocol/1",
+  "version": 1,
+  "parent_version": null,
+  "change_reason": null
+ },
+ "units": 30,
+ "seeds": [
+  4001,
+  4002,
+  4003,
+  4004,
+  4005,
+  4006,
+  4007,
+  4008,
+  4009,
+  4010,
+  4011,
+  4012,
+  4013,
+  4014,
+  4015,
+  4016,
+  4017,
+  4018,
+  4019,
+  4020,
+  4021,
+  4022,
+  4023,
+  4024,
+  4025,
+  4026,
+  4027,
+  4028,
+  4029,
+  4030
+ ],
+ "evidence_class": "Synthetic-world Result",
+ "seconds": 3.2,
+ "results": {
+  "L203a": {
+   "method": "descriptive",
+   "arms_without_authority": 240,
+   "arms_with_any_overturn": 0,
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "L203b": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.14362006449331588,
+   "sd_diff": 0.007302519594298983,
+   "dz": 19.667193307559064,
+   "ci95": [
+    0.14110927453325303,
+    0.14613672387796384
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 5,
+   "inferential": true,
+   "contrast": "overturn, independent minus not (authority on)",
+   "p_holm": 0.00014999250037498125,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "L203c": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.12742263049654284,
+   "sd_diff": 0.00915377898238336,
+   "dz": 13.920221445347368,
+   "ci95": [
+    0.12422992964056233,
+    0.13056336255491952
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 6,
+   "inferential": true,
+   "contrast": "overturn, high capacity minus low (authority on)",
+   "p_holm": 0.00014999250037498125,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "L203d": {
+   "method": "paired-sign-flip",
+   "n": 30,
+   "mean_diff": 0.49705263100737185,
+   "sd_diff": 0.012231066685763656,
+   "dz": 40.63853495181381,
+   "ci95": [
+    0.4928938466173801,
+    0.5013583245670271
+   ],
+   "p": 4.999750012499375e-05,
+   "n_perm": 20000,
+   "seed": 7,
+   "inferential": true,
+   "contrast": "formal appeal rate, low burden minus high",
+   "p_holm": 0.00014999250037498125,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  },
+  "L203e": {
+   "method": "descriptive",
+   "arms_with_filed_appeals_and_no_authority": 240,
+   "of_which_G11_absent": 240,
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Synthetic-world Result"
+  }
+ },
+ "catalogue": {
+  "source": "The Minimum Guarantees of Human Legal Subjecthood, Publication Final V3.0, Chapter 6.2 (identical in the 100_POINT_EDITION and in R2 section 4: all fifteen titles and definitions compared character for character)",
+  "verified_against_original": true,
+  "sha256": {
+   "v3_0": "cf4d4f0c51169451da5af4c33e7081e947dacbade855068a889965d8c523b848",
+   "v3_0_100_point_edition": "afb59d1a0c3b28854f14113f843645539e07a2e466949d22de4b67da0a22bf99",
+   "ai_law_osr_r2": "a9984451b281df3252b05842dc5109dd396e0b0c54d3560849344ad41059a501"
+  },
+  "editions_identical_for_guarantees": true,
+  "note": "V3.0 uses two vocabularies for the same five findings (Appendix A table: Secured/Partial/Absent/Indeterminate/Inapplicable; A.3 and 8.4 text: Satisfied/Partially Satisfied/Failed/Indeterminate/Not Applicable). R2 section 16 and this implementation use the table's."
+ },
+ "note": "results about a SYNTHETIC institution and this implementation; guarantees from the source text; operational definitions are the implementation's; not an observation of any institution, law or person"
+}

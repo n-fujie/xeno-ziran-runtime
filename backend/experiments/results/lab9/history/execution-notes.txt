@@ -1,0 +1,12 @@
+M9 confirmatory execution (protocol docs/LAB_PROTOCOL_M9.md, SHA-256 4757ee7dc7dfbc9be25759a6491d65070b14fe6001cbf1faddfa24105bf1afbd)
+
+Code: commit 419aafe, run from a separate git worktree of that commit (nothing else changed in it during the runs:
+`git status` there shows only the untracked result directory). "dirty": true in the provenance of the later result
+files reflects only the earlier result files written into that worktree, as in M4-M7.
+
+Command: cd backend && PYTHONPATH=. python scripts/run_m9.py 7   (7 processes, Apple M1, 8 GB)
+Order and wall time: m9ab 3196 s, m9c 1633 s, m9d 1220 s, m9e 831 s, m9f 1211 s, m9w 3629 s, m9alt 781 s
+(2026-10-14 21:13 to 2026-10-15 00:42 JST). Runs: 456 + 312 + 240 + 168 + 240 + 560 + 60 = 2036.
+
+No confirmatory run was repeated, superseded or set aside. No amendment to the protocol was made.
+Pilot runs (seeds 8100-8103) are not part of these results; what they changed is recorded in §8 of the protocol.

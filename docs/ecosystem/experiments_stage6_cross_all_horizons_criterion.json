@@ -1,0 +1,3180 @@
+{
+"engine": "meos-0.4",
+"protocol": "MEOS-0, sixth stage: repairability across the MFS, across the SSS region, across observation, and the three restorations of an Address repair.\n\n  C1  MFS x repairability     the repairs Pipeline A validated (or nearly) on the full arrangement are tried on each distinct validated MFS (the arrangement with every component outside the MFS removed at tick 0, under the condition the MFS was found for): does the\n                              repairability profile of a stress depend on the MFS? A repair is judged exactly as in Pipeline A (three horizons, sustained, no secondary collapse, resource not exhausted), on seeds 1-5.\n  C2  SSS x repairability     for each MFS, a 3 x 3 grid of the SSS region (scale 0.75 / 1 / 1.25 x speed 0.9 / 1 / 1.1, size 1): where the unstressed MFS persists (its island on the grid), and there, for each stress, whether no action, the stress's recommended repair\n                              recovers (repairable), collapses secondarily (overshoot-sensitive), recovers at a cost above the costly limit (costly), or does not recover (unrecoverable). Seeds 1-3.\n  C3  observation x repairability   the same repaired and unrepaired runs, observed with limited sampling, spatial resolution, region and Address resolution (``analysis.observe``): operational recovery, observed recovery and the observability status, kept as three fields; and the observation repair (full\n                              observation) that restores agreement. An observation repair never changes the run.\n  C4  Address, three restorations   operational restoration (the run recovers), Address restoration (A2's address integrity over the last W ticks), observability restoration (the observer, with Address resolution 0.5, agrees with the run).\n\nNothing here is a claim about unrelated systems: it is how this model behaves under these perturbations.\n",
+"C4_address_three_restorations": {
+"stress": "Address partial 0.5",
+"rows": [
+{
+"case": "no repair",
+"t": 113,
+"seeds": 5,
+"operational_restoration": "0/5",
+"address_restoration": "0/5",
+"observability_restoration": "5/5",
+"mean_address_integrity": 0.5,
+"statuses": {
+"OBSERVABLE": 5
+}
+},
+{
+"case": "Address restore at 104",
+"t": 104,
+"seeds": 5,
+"operational_restoration": "2/5",
+"address_restoration": "5/5",
+"observability_restoration": "5/5",
+"mean_address_integrity": 1.0,
+"statuses": {
+"OBSERVABLE": 5
+}
+},
+{
+"case": "Address restore at 113",
+"t": 113,
+"seeds": 5,
+"operational_restoration": "0/5",
+"address_restoration": "5/5",
+"observability_restoration": "5/5",
+"mean_address_integrity": 1.0,
+"statuses": {
+"OBSERVABLE": 5
+}
+},
+{
+"case": "Address reassign at 113",
+"t": 113,
+"seeds": 5,
+"operational_restoration": "0/5",
+"address_restoration": "5/5",
+"observability_restoration": "5/5",
+"mean_address_integrity": 1.0,
+"statuses": {
+"OBSERVABLE": 5
+}
+},
+{
+"case": "resource pulse 1.0 at 113",
+"t": 113,
+"seeds": 5,
+"operational_restoration": "0/5",
+"address_restoration": "0/5",
+"observability_restoration": "5/5",
+"mean_address_integrity": 0.5,
+"statuses": {
+"OBSERVABLE": 5
+}
+},
+{
+"case": "Address restore + pulse 1.0 at 113",
+"t": 113,
+"seeds": 5,
+"operational_restoration": "5/5",
+"address_restoration": "5/5",
+"observability_restoration": "5/5",
+"mean_address_integrity": 1.0,
+"statuses": {
+"OBSERVABLE": 5
+}
+}
+],
+"reading": "operational restoration, Address restoration and observability restoration are three measures; a repair may give one without another"
+},
+"C3_observation": {
+"settings": [
+{
+"name": "full observation",
+"observation": {}
+},
+{
+"name": "sampling interval 2",
+"observation": {
+"sampling_interval": 2
+}
+},
+{
+"name": "sampling interval 4",
+"observation": {
+"sampling_interval": 4
+}
+},
+{
+"name": "sampling interval 8",
+"observation": {
+"sampling_interval": 8
+}
+},
+{
+"name": "spatial stride 2",
+"observation": {
+"spatial_stride": 2
+}
+},
+{
+"name": "region excluding the bodies",
+"observation": {
+"region": [
+0,
+0,
+2,
+2
+]
+}
+},
+{
+"name": "Address resolution 0.5",
+"observation": {
+"address_resolution": 0.5
+}
+}
+],
+"rows": [
+{
+"run": "coupling stress, resource pulse 1.0 at 113 (recovered)",
+"observation": "full observation",
+"operational_recovery": true,
+"operational_outcome": "prevented",
+"operational_state": "ACTIVE",
+"observed_state": "ACTIVE",
+"observed_recovery": true,
+"observability_status": "OBSERVABLE",
+"agrees": true
+},
+{
+"run": "coupling stress, resource pulse 1.0 at 113 (recovered)",
+"observation": "sampling interval 2",
+"operational_recovery": true,
+"operational_outcome": "prevented",
+"operational_state": "ACTIVE",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "INSUFFICIENT_TEMPORAL_RESOLUTION",
+"agrees": false
+},
+{
+"run": "coupling stress, resource pulse 1.0 at 113 (recovered)",
+"observation": "sampling interval 4",
+"operational_recovery": true,
+"operational_outcome": "prevented",
+"operational_state": "ACTIVE",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "INSUFFICIENT_TEMPORAL_RESOLUTION",
+"agrees": false
+},
+{
+"run": "coupling stress, resource pulse 1.0 at 113 (recovered)",
+"observation": "sampling interval 8",
+"operational_recovery": true,
+"operational_outcome": "prevented",
+"operational_state": "ACTIVE",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "INSUFFICIENT_TEMPORAL_RESOLUTION",
+"agrees": false
+},
+{
+"run": "coupling stress, resource pulse 1.0 at 113 (recovered)",
+"observation": "spatial stride 2",
+"operational_recovery": true,
+"operational_outcome": "prevented",
+"operational_state": "ACTIVE",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "INSUFFICIENT_SPATIAL_RESOLUTION",
+"agrees": false
+},
+{
+"run": "coupling stress, resource pulse 1.0 at 113 (recovered)",
+"observation": "region excluding the bodies",
+"operational_recovery": true,
+"operational_outcome": "prevented",
+"operational_state": "ACTIVE",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "REGION_EXCLUDES_ACTIVITY",
+"agrees": false
+},
+{
+"run": "coupling stress, resource pulse 1.0 at 113 (recovered)",
+"observation": "Address resolution 0.5",
+"operational_recovery": true,
+"operational_outcome": "prevented",
+"operational_state": "ACTIVE",
+"observed_state": "ACTIVE",
+"observed_recovery": true,
+"observability_status": "OBSERVABLE",
+"agrees": true
+},
+{
+"run": "coupling stress, no repair (collapsed)",
+"observation": "full observation",
+"operational_recovery": false,
+"operational_outcome": "failed",
+"operational_state": "COLLAPSED",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "OBSERVABLE",
+"agrees": true
+},
+{
+"run": "coupling stress, no repair (collapsed)",
+"observation": "sampling interval 2",
+"operational_recovery": false,
+"operational_outcome": "failed",
+"operational_state": "COLLAPSED",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "OBSERVABLE",
+"agrees": true
+},
+{
+"run": "coupling stress, no repair (collapsed)",
+"observation": "sampling interval 4",
+"operational_recovery": false,
+"operational_outcome": "failed",
+"operational_state": "COLLAPSED",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "OBSERVABLE",
+"agrees": true
+},
+{
+"run": "coupling stress, no repair (collapsed)",
+"observation": "sampling interval 8",
+"operational_recovery": false,
+"operational_outcome": "failed",
+"operational_state": "COLLAPSED",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "OBSERVABLE",
+"agrees": true
+},
+{
+"run": "coupling stress, no repair (collapsed)",
+"observation": "spatial stride 2",
+"operational_recovery": false,
+"operational_outcome": "failed",
+"operational_state": "COLLAPSED",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "OBSERVABLE",
+"agrees": true
+},
+{
+"run": "coupling stress, no repair (collapsed)",
+"observation": "region excluding the bodies",
+"operational_recovery": false,
+"operational_outcome": "failed",
+"operational_state": "COLLAPSED",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "OBSERVABLE",
+"agrees": true
+},
+{
+"run": "coupling stress, no repair (collapsed)",
+"observation": "Address resolution 0.5",
+"operational_recovery": false,
+"operational_outcome": "failed",
+"operational_state": "COLLAPSED",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "OBSERVABLE",
+"agrees": true
+},
+{
+"run": "coupling stress, coupling restore at 104 (prevented)",
+"observation": "full observation",
+"operational_recovery": true,
+"operational_outcome": "prevented",
+"operational_state": "ACTIVE",
+"observed_state": "ACTIVE",
+"observed_recovery": true,
+"observability_status": "OBSERVABLE",
+"agrees": true
+},
+{
+"run": "coupling stress, coupling restore at 104 (prevented)",
+"observation": "sampling interval 2",
+"operational_recovery": true,
+"operational_outcome": "prevented",
+"operational_state": "ACTIVE",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "INSUFFICIENT_TEMPORAL_RESOLUTION",
+"agrees": false
+},
+{
+"run": "coupling stress, coupling restore at 104 (prevented)",
+"observation": "sampling interval 4",
+"operational_recovery": true,
+"operational_outcome": "prevented",
+"operational_state": "ACTIVE",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "INSUFFICIENT_TEMPORAL_RESOLUTION",
+"agrees": false
+},
+{
+"run": "coupling stress, coupling restore at 104 (prevented)",
+"observation": "sampling interval 8",
+"operational_recovery": true,
+"operational_outcome": "prevented",
+"operational_state": "ACTIVE",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "INSUFFICIENT_TEMPORAL_RESOLUTION",
+"agrees": false
+},
+{
+"run": "coupling stress, coupling restore at 104 (prevented)",
+"observation": "spatial stride 2",
+"operational_recovery": true,
+"operational_outcome": "prevented",
+"operational_state": "ACTIVE",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "INSUFFICIENT_SPATIAL_RESOLUTION",
+"agrees": false
+},
+{
+"run": "coupling stress, coupling restore at 104 (prevented)",
+"observation": "region excluding the bodies",
+"operational_recovery": true,
+"operational_outcome": "prevented",
+"operational_state": "ACTIVE",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "REGION_EXCLUDES_ACTIVITY",
+"agrees": false
+},
+{
+"run": "coupling stress, coupling restore at 104 (prevented)",
+"observation": "Address resolution 0.5",
+"operational_recovery": true,
+"operational_outcome": "prevented",
+"operational_state": "ACTIVE",
+"observed_state": "ACTIVE",
+"observed_recovery": true,
+"observability_status": "OBSERVABLE",
+"agrees": true
+},
+{
+"run": "coupling stress, pulse 4.0 at 113 (overshoot)",
+"observation": "full observation",
+"operational_recovery": false,
+"operational_outcome": "secondary collapse",
+"operational_state": "COLLAPSED",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "OBSERVABLE",
+"agrees": true
+},
+{
+"run": "coupling stress, pulse 4.0 at 113 (overshoot)",
+"observation": "sampling interval 2",
+"operational_recovery": false,
+"operational_outcome": "secondary collapse",
+"operational_state": "COLLAPSED",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "OBSERVABLE",
+"agrees": true
+},
+{
+"run": "coupling stress, pulse 4.0 at 113 (overshoot)",
+"observation": "sampling interval 4",
+"operational_recovery": false,
+"operational_outcome": "secondary collapse",
+"operational_state": "COLLAPSED",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "OBSERVABLE",
+"agrees": true
+},
+{
+"run": "coupling stress, pulse 4.0 at 113 (overshoot)",
+"observation": "sampling interval 8",
+"operational_recovery": false,
+"operational_outcome": "secondary collapse",
+"operational_state": "COLLAPSED",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "OBSERVABLE",
+"agrees": true
+},
+{
+"run": "coupling stress, pulse 4.0 at 113 (overshoot)",
+"observation": "spatial stride 2",
+"operational_recovery": false,
+"operational_outcome": "secondary collapse",
+"operational_state": "COLLAPSED",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "OBSERVABLE",
+"agrees": true
+},
+{
+"run": "coupling stress, pulse 4.0 at 113 (overshoot)",
+"observation": "region excluding the bodies",
+"operational_recovery": false,
+"operational_outcome": "secondary collapse",
+"operational_state": "COLLAPSED",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "OBSERVABLE",
+"agrees": true
+},
+{
+"run": "coupling stress, pulse 4.0 at 113 (overshoot)",
+"observation": "Address resolution 0.5",
+"operational_recovery": false,
+"operational_outcome": "secondary collapse",
+"operational_state": "COLLAPSED",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "OBSERVABLE",
+"agrees": true
+},
+{
+"run": "history lost, M2 tap at 113 (recovered)",
+"observation": "full observation",
+"operational_recovery": true,
+"operational_outcome": "prevented",
+"operational_state": "ACTIVE",
+"observed_state": "ACTIVE",
+"observed_recovery": true,
+"observability_status": "OBSERVABLE",
+"agrees": true
+},
+{
+"run": "history lost, M2 tap at 113 (recovered)",
+"observation": "sampling interval 2",
+"operational_recovery": true,
+"operational_outcome": "prevented",
+"operational_state": "ACTIVE",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "INSUFFICIENT_TEMPORAL_RESOLUTION",
+"agrees": false
+},
+{
+"run": "history lost, M2 tap at 113 (recovered)",
+"observation": "sampling interval 4",
+"operational_recovery": true,
+"operational_outcome": "prevented",
+"operational_state": "ACTIVE",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "INSUFFICIENT_TEMPORAL_RESOLUTION",
+"agrees": false
+},
+{
+"run": "history lost, M2 tap at 113 (recovered)",
+"observation": "sampling interval 8",
+"operational_recovery": true,
+"operational_outcome": "prevented",
+"operational_state": "ACTIVE",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "INSUFFICIENT_TEMPORAL_RESOLUTION",
+"agrees": false
+},
+{
+"run": "history lost, M2 tap at 113 (recovered)",
+"observation": "spatial stride 2",
+"operational_recovery": true,
+"operational_outcome": "prevented",
+"operational_state": "ACTIVE",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "INSUFFICIENT_SPATIAL_RESOLUTION",
+"agrees": false
+},
+{
+"run": "history lost, M2 tap at 113 (recovered)",
+"observation": "region excluding the bodies",
+"operational_recovery": true,
+"operational_outcome": "prevented",
+"operational_state": "ACTIVE",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "REGION_EXCLUDES_ACTIVITY",
+"agrees": false
+},
+{
+"run": "history lost, M2 tap at 113 (recovered)",
+"observation": "Address resolution 0.5",
+"operational_recovery": true,
+"operational_outcome": "prevented",
+"operational_state": "ACTIVE",
+"observed_state": "ACTIVE",
+"observed_recovery": true,
+"observability_status": "OBSERVABLE",
+"agrees": true
+},
+{
+"run": "Address stress, restore + pulse 1.0 at 113, seed 1",
+"observation": "full observation",
+"operational_recovery": true,
+"operational_outcome": "prevented",
+"operational_state": "ACTIVE",
+"observed_state": "ACTIVE",
+"observed_recovery": true,
+"observability_status": "OBSERVABLE",
+"agrees": true
+},
+{
+"run": "Address stress, restore + pulse 1.0 at 113, seed 1",
+"observation": "sampling interval 2",
+"operational_recovery": true,
+"operational_outcome": "prevented",
+"operational_state": "ACTIVE",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "INSUFFICIENT_TEMPORAL_RESOLUTION",
+"agrees": false
+},
+{
+"run": "Address stress, restore + pulse 1.0 at 113, seed 1",
+"observation": "sampling interval 4",
+"operational_recovery": true,
+"operational_outcome": "prevented",
+"operational_state": "ACTIVE",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "INSUFFICIENT_TEMPORAL_RESOLUTION",
+"agrees": false
+},
+{
+"run": "Address stress, restore + pulse 1.0 at 113, seed 1",
+"observation": "sampling interval 8",
+"operational_recovery": true,
+"operational_outcome": "prevented",
+"operational_state": "ACTIVE",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "INSUFFICIENT_TEMPORAL_RESOLUTION",
+"agrees": false
+},
+{
+"run": "Address stress, restore + pulse 1.0 at 113, seed 1",
+"observation": "spatial stride 2",
+"operational_recovery": true,
+"operational_outcome": "prevented",
+"operational_state": "ACTIVE",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "INSUFFICIENT_SPATIAL_RESOLUTION",
+"agrees": false
+},
+{
+"run": "Address stress, restore + pulse 1.0 at 113, seed 1",
+"observation": "region excluding the bodies",
+"operational_recovery": true,
+"operational_outcome": "prevented",
+"operational_state": "ACTIVE",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "REGION_EXCLUDES_ACTIVITY",
+"agrees": false
+},
+{
+"run": "Address stress, restore + pulse 1.0 at 113, seed 1",
+"observation": "Address resolution 0.5",
+"operational_recovery": true,
+"operational_outcome": "prevented",
+"operational_state": "ACTIVE",
+"observed_state": "ACTIVE",
+"observed_recovery": true,
+"observability_status": "OBSERVABLE",
+"agrees": true
+},
+{
+"run": "Address stress, restore + pulse 1.0 at 113, seed 6",
+"observation": "full observation",
+"operational_recovery": false,
+"operational_outcome": "secondary collapse",
+"operational_state": "COLLAPSED",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "OBSERVABLE",
+"agrees": true
+},
+{
+"run": "Address stress, restore + pulse 1.0 at 113, seed 6",
+"observation": "sampling interval 2",
+"operational_recovery": false,
+"operational_outcome": "secondary collapse",
+"operational_state": "COLLAPSED",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "OBSERVABLE",
+"agrees": true
+},
+{
+"run": "Address stress, restore + pulse 1.0 at 113, seed 6",
+"observation": "sampling interval 4",
+"operational_recovery": false,
+"operational_outcome": "secondary collapse",
+"operational_state": "COLLAPSED",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "OBSERVABLE",
+"agrees": true
+},
+{
+"run": "Address stress, restore + pulse 1.0 at 113, seed 6",
+"observation": "sampling interval 8",
+"operational_recovery": false,
+"operational_outcome": "secondary collapse",
+"operational_state": "COLLAPSED",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "OBSERVABLE",
+"agrees": true
+},
+{
+"run": "Address stress, restore + pulse 1.0 at 113, seed 6",
+"observation": "spatial stride 2",
+"operational_recovery": false,
+"operational_outcome": "secondary collapse",
+"operational_state": "COLLAPSED",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "OBSERVABLE",
+"agrees": true
+},
+{
+"run": "Address stress, restore + pulse 1.0 at 113, seed 6",
+"observation": "region excluding the bodies",
+"operational_recovery": false,
+"operational_outcome": "secondary collapse",
+"operational_state": "COLLAPSED",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "OBSERVABLE",
+"agrees": true
+},
+{
+"run": "Address stress, restore + pulse 1.0 at 113, seed 6",
+"observation": "Address resolution 0.5",
+"operational_recovery": false,
+"operational_outcome": "secondary collapse",
+"operational_state": "COLLAPSED",
+"observed_state": "COLLAPSED",
+"observed_recovery": false,
+"observability_status": "OBSERVABLE",
+"agrees": true
+}
+],
+"operationally_recovered_but_not_observed": 20,
+"observation_repair": "a full observation (sampling interval 1, stride 1, whole arena, Address resolution 1) restores agreement in every case listed; it changes what is observed, never the run"
+},
+"C1_mfs": {
+"mfs": [
+{
+"id": "MFS-F1-1",
+"condition": "F1",
+"retained": [
+"A2",
+"interaction_channel",
+"sensor_resource",
+"sensor_alteration",
+"environmental_persistence",
+"feedback",
+"resource_renewal"
+]
+},
+{
+"id": "MFS-F2-1",
+"condition": "F2",
+"retained": [
+"A2",
+"interaction_channel",
+"sensor_resource",
+"sensor_alteration",
+"environmental_persistence",
+"feedback"
+]
+},
+{
+"id": "MFS-F8-1",
+"condition": "F8",
+"retained": [
+"A2",
+"history",
+"interaction_channel",
+"sensor_resource",
+"sensor_alteration",
+"environmental_persistence",
+"feedback",
+"resource_renewal"
+]
+},
+{
+"id": "MFS-F14-2",
+"condition": "F14",
+"retained": [
+"A2",
+"interaction_channel",
+"sensor_resource",
+"sensor_alteration",
+"environmental_persistence",
+"feedback",
+"resource_renewal",
+"m2_tap"
+]
+}
+],
+"seeds": [
+1,
+2,
+3,
+4,
+5
+],
+"table": [
+{
+"mfs": "MFS-F1-1",
+"stress": "Address partial 0.5",
+"repair": "address.reassign + resource.pulse",
+"t": 113,
+"applicable": true,
+"effective_seeds": "15/15",
+"reason": null,
+"klass": "B",
+"outcomes_long": {
+"prevented": 15
+}
+},
+{
+"mfs": "MFS-F1-1",
+"stress": "Address partial 0.5",
+"repair": "address.restore + resource.pulse",
+"t": 113,
+"applicable": true,
+"effective_seeds": "15/15",
+"reason": null,
+"klass": "B",
+"outcomes_long": {
+"prevented": 15
+}
+},
+{
+"mfs": "MFS-F1-1",
+"stress": "Address partial 0.5",
+"repair": "no action",
+"t": 113,
+"applicable": true,
+"effective_seeds": "0/5",
+"reason": null,
+"klass": null,
+"outcomes_long": {
+"failed": 5
+}
+},
+{
+"mfs": "MFS-F1-1",
+"stress": "coupling gain 0.5",
+"repair": "coupling.gradual",
+"t": 104,
+"applicable": true,
+"effective_seeds": "5/5",
+"reason": null,
+"klass": "B",
+"outcomes_long": {
+"prevented": 5
+}
+},
+{
+"mfs": "MFS-F1-1",
+"stress": "coupling gain 0.5",
+"repair": "coupling.restore",
+"t": 104,
+"applicable": true,
+"effective_seeds": "15/20",
+"reason": null,
+"klass": "B",
+"outcomes_long": {
+"failed": 5,
+"prevented": 15
+}
+},
+{
+"mfs": "MFS-F1-1",
+"stress": "coupling gain 0.5",
+"repair": "no action",
+"t": 113,
+"applicable": true,
+"effective_seeds": "0/5",
+"reason": null,
+"klass": null,
+"outcomes_long": {
+"failed": 5
+}
+},
+{
+"mfs": "MFS-F1-1",
+"stress": "coupling gain 0.5",
+"repair": "resource.pulse",
+"t": 108,
+"applicable": true,
+"effective_seeds": "0/20",
+"reason": null,
+"klass": "B",
+"outcomes_long": {
+"failed": 20
+}
+},
+{
+"mfs": "MFS-F1-1",
+"stress": "coupling gain 0.5",
+"repair": "resource.pulse",
+"t": 113,
+"applicable": true,
+"effective_seeds": "0/5",
+"reason": null,
+"klass": "B",
+"outcomes_long": {
+"failed": 5
+}
+},
+{
+"mfs": "MFS-F1-1",
+"stress": "history lost",
+"repair": "internal.m2_tap",
+"t": 104,
+"applicable": false,
+"effective_seeds": null,
+"reason": "this MFS's condition has no M2 tap",
+"klass": "A",
+"outcomes_long": null
+},
+{
+"mfs": "MFS-F1-1",
+"stress": "history lost",
+"repair": "internal.m2_tap + renewal.auxiliary",
+"t": 113,
+"applicable": false,
+"effective_seeds": null,
+"reason": "this MFS's condition has no M2 tap",
+"klass": "A+B",
+"outcomes_long": null
+},
+{
+"mfs": "MFS-F1-1",
+"stress": "history lost",
+"repair": "internal.m2_tap + renewal.pulse",
+"t": 113,
+"applicable": false,
+"effective_seeds": null,
+"reason": "this MFS's condition has no M2 tap",
+"klass": "A+B",
+"outcomes_long": null
+},
+{
+"mfs": "MFS-F1-1",
+"stress": "history lost",
+"repair": "internal.m2_tap + resource.inflow",
+"t": 113,
+"applicable": false,
+"effective_seeds": null,
+"reason": "this MFS's condition has no M2 tap",
+"klass": "A+B",
+"outcomes_long": null
+},
+{
+"mfs": "MFS-F1-1",
+"stress": "history lost",
+"repair": "internal.m2_tap + resource.pulse",
+"t": 113,
+"applicable": false,
+"effective_seeds": null,
+"reason": "this MFS's condition has no M2 tap",
+"klass": "A+B",
+"outcomes_long": null
+},
+{
+"mfs": "MFS-F1-1",
+"stress": "history lost",
+"repair": "internal.m2_tap + resource.reserve",
+"t": 113,
+"applicable": false,
+"effective_seeds": null,
+"reason": "this MFS's condition has no M2 tap",
+"klass": "A+B",
+"outcomes_long": null
+},
+{
+"mfs": "MFS-F1-1",
+"stress": "history lost",
+"repair": "no action",
+"t": 113,
+"applicable": true,
+"effective_seeds": "5/5",
+"reason": null,
+"klass": null,
+"outcomes_long": {
+"prevented": 5
+}
+},
+{
+"mfs": "MFS-F1-1",
+"stress": "renewal efficiency 0.6",
+"repair": "internal.m2_tap",
+"t": 104,
+"applicable": false,
+"effective_seeds": null,
+"reason": "this MFS's condition has no M2 tap",
+"klass": "A",
+"outcomes_long": null
+},
+{
+"mfs": "MFS-F1-1",
+"stress": "renewal efficiency 0.6",
+"repair": "no action",
+"t": 113,
+"applicable": true,
+"effective_seeds": "0/5",
+"reason": null,
+"klass": null,
+"outcomes_long": {
+"failed": 5
+}
+},
+{
+"mfs": "MFS-F1-1",
+"stress": "renewal efficiency 0.6",
+"repair": "renewal.restore",
+"t": 104,
+"applicable": true,
+"effective_seeds": "5/5",
+"reason": null,
+"klass": "B",
+"outcomes_long": {
+"prevented": 5
+}
+},
+{
+"mfs": "MFS-F1-1",
+"stress": "renewal stopped",
+"repair": "no action",
+"t": 113,
+"applicable": true,
+"effective_seeds": "0/5",
+"reason": null,
+"klass": null,
+"outcomes_long": {
+"failed": 5
+}
+},
+{
+"mfs": "MFS-F1-1",
+"stress": "resource regrow 0.01 charge 0.2",
+"repair": "internal.m2_tap",
+"t": 104,
+"applicable": false,
+"effective_seeds": null,
+"reason": "this MFS's condition has no M2 tap",
+"klass": "A",
+"outcomes_long": null
+},
+{
+"mfs": "MFS-F1-1",
+"stress": "resource regrow 0.01 charge 0.2",
+"repair": "no action",
+"t": 113,
+"applicable": true,
+"effective_seeds": "0/5",
+"reason": null,
+"klass": null,
+"outcomes_long": {
+"failed": 5
+}
+},
+{
+"mfs": "MFS-F14-2",
+"stress": "Address partial 0.5",
+"repair": "address.reassign + resource.pulse",
+"t": 113,
+"applicable": true,
+"effective_seeds": "13/15",
+"reason": null,
+"klass": "B",
+"outcomes_long": {
+"failed": 2,
+"prevented": 13
+}
+},
+{
+"mfs": "MFS-F14-2",
+"stress": "Address partial 0.5",
+"repair": "address.restore + resource.pulse",
+"t": 113,
+"applicable": true,
+"effective_seeds": "13/15",
+"reason": null,
+"klass": "B",
+"outcomes_long": {
+"failed": 2,
+"prevented": 13
+}
+},
+{
+"mfs": "MFS-F14-2",
+"stress": "Address partial 0.5",
+"repair": "no action",
+"t": 113,
+"applicable": true,
+"effective_seeds": "0/5",
+"reason": null,
+"klass": null,
+"outcomes_long": {
+"failed": 5
+}
+},
+{
+"mfs": "MFS-F14-2",
+"stress": "coupling gain 0.5",
+"repair": "coupling.gradual",
+"t": 104,
+"applicable": true,
+"effective_seeds": "3/5",
+"reason": null,
+"klass": "B",
+"outcomes_long": {
+"prevented": 3,
+"failed": 2
+}
+},
+{
+"mfs": "MFS-F14-2",
+"stress": "coupling gain 0.5",
+"repair": "coupling.restore",
+"t": 104,
+"applicable": true,
+"effective_seeds": "15/20",
+"reason": null,
+"klass": "B",
+"outcomes_long": {
+"failed": 5,
+"prevented": 15
+}
+},
+{
+"mfs": "MFS-F14-2",
+"stress": "coupling gain 0.5",
+"repair": "no action",
+"t": 113,
+"applicable": true,
+"effective_seeds": "0/5",
+"reason": null,
+"klass": null,
+"outcomes_long": {
+"failed": 5
+}
+},
+{
+"mfs": "MFS-F14-2",
+"stress": "coupling gain 0.5",
+"repair": "resource.pulse",
+"t": 108,
+"applicable": true,
+"effective_seeds": "0/20",
+"reason": null,
+"klass": "B",
+"outcomes_long": {
+"failed": 20
+}
+},
+{
+"mfs": "MFS-F14-2",
+"stress": "coupling gain 0.5",
+"repair": "resource.pulse",
+"t": 113,
+"applicable": true,
+"effective_seeds": "0/5",
+"reason": null,
+"klass": "B",
+"outcomes_long": {
+"failed": 5
+}
+},
+{
+"mfs": "MFS-F14-2",
+"stress": "history lost",
+"repair": "internal.m2_tap",
+"t": 104,
+"applicable": true,
+"effective_seeds": "5/5",
+"reason": null,
+"klass": "A",
+"outcomes_long": {
+"prevented": 5
+}
+},
+{
+"mfs": "MFS-F14-2",
+"stress": "history lost",
+"repair": "internal.m2_tap + renewal.auxiliary",
+"t": 113,
+"applicable": true,
+"effective_seeds": "10/10",
+"reason": null,
+"klass": "A+B",
+"outcomes_long": {
+"prevented": 10
+}
+},
+{
+"mfs": "MFS-F14-2",
+"stress": "history lost",
+"repair": "internal.m2_tap + renewal.pulse",
+"t": 113,
+"applicable": true,
+"effective_seeds": "5/5",
+"reason": null,
+"klass": "A+B",
+"outcomes_long": {
+"prevented": 5
+}
+},
+{
+"mfs": "MFS-F14-2",
+"stress": "history lost",
+"repair": "internal.m2_tap + resource.inflow",
+"t": 113,
+"applicable": true,
+"effective_seeds": "5/5",
+"reason": null,
+"klass": "A+B",
+"outcomes_long": {
+"prevented": 5
+}
+},
+{
+"mfs": "MFS-F14-2",
+"stress": "history lost",
+"repair": "internal.m2_tap + resource.pulse",
+"t": 113,
+"applicable": true,
+"effective_seeds": "10/15",
+"reason": null,
+"klass": "A+B",
+"outcomes_long": {
+"prevented": 10,
+"failed": 5
+}
+},
+{
+"mfs": "MFS-F14-2",
+"stress": "history lost",
+"repair": "internal.m2_tap + resource.reserve",
+"t": 113,
+"applicable": true,
+"effective_seeds": "5/5",
+"reason": null,
+"klass": "A+B",
+"outcomes_long": {
+"prevented": 5
+}
+},
+{
+"mfs": "MFS-F14-2",
+"stress": "history lost",
+"repair": "no action",
+"t": 113,
+"applicable": true,
+"effective_seeds": "5/5",
+"reason": null,
+"klass": null,
+"outcomes_long": {
+"prevented": 5
+}
+},
+{
+"mfs": "MFS-F14-2",
+"stress": "renewal efficiency 0.6",
+"repair": "internal.m2_tap",
+"t": 104,
+"applicable": true,
+"effective_seeds": "0/5",
+"reason": null,
+"klass": "A",
+"outcomes_long": {
+"failed": 5
+}
+},
+{
+"mfs": "MFS-F14-2",
+"stress": "renewal efficiency 0.6",
+"repair": "no action",
+"t": 113,
+"applicable": true,
+"effective_seeds": "0/5",
+"reason": null,
+"klass": null,
+"outcomes_long": {
+"failed": 5
+}
+},
+{
+"mfs": "MFS-F14-2",
+"stress": "renewal efficiency 0.6",
+"repair": "renewal.restore",
+"t": 104,
+"applicable": true,
+"effective_seeds": "0/5",
+"reason": null,
+"klass": "B",
+"outcomes_long": {
+"failed": 5
+}
+},
+{
+"mfs": "MFS-F14-2",
+"stress": "renewal stopped",
+"repair": "no action",
+"t": 113,
+"applicable": true,
+"effective_seeds": "0/5",
+"reason": null,
+"klass": null,
+"outcomes_long": {
+"failed": 5
+}
+},
+{
+"mfs": "MFS-F14-2",
+"stress": "resource regrow 0.01 charge 0.2",
+"repair": "internal.m2_tap",
+"t": 104,
+"applicable": true,
+"effective_seeds": "0/5",
+"reason": null,
+"klass": "A",
+"outcomes_long": {
+"failed": 5
+}
+},
+{
+"mfs": "MFS-F14-2",
+"stress": "resource regrow 0.01 charge 0.2",
+"repair": "no action",
+"t": 113,
+"applicable": true,
+"effective_seeds": "0/5",
+"reason": null,
+"klass": null,
+"outcomes_long": {
+"failed": 5
+}
+},
+{
+"mfs": "MFS-F2-1",
+"stress": "Address partial 0.5",
+"repair": "address.reassign + resource.pulse",
+"t": 113,
+"applicable": true,
+"effective_seeds": "15/15",
+"reason": null,
+"klass": "B",
+"outcomes_long": {
+"prevented": 15
+}
+},
+{
+"mfs": "MFS-F2-1",
+"stress": "Address partial 0.5",
+"repair": "address.restore + resource.pulse",
+"t": 113,
+"applicable": true,
+"effective_seeds": "15/15",
+"reason": null,
+"klass": "B",
+"outcomes_long": {
+"prevented": 15
+}
+},
+{
+"mfs": "MFS-F2-1",
+"stress": "Address partial 0.5",
+"repair": "no action",
+"t": 113,
+"applicable": true,
+"effective_seeds": "0/5",
+"reason": null,
+"klass": null,
+"outcomes_long": {
+"failed": 5
+}
+},
+{
+"mfs": "MFS-F2-1",
+"stress": "coupling gain 0.5",
+"repair": "coupling.gradual",
+"t": 104,
+"applicable": true,
+"effective_seeds": "5/5",
+"reason": null,
+"klass": "B",
+"outcomes_long": {
+"prevented": 5
+}
+},
+{
+"mfs": "MFS-F2-1",
+"stress": "coupling gain 0.5",
+"repair": "coupling.restore",
+"t": 104,
+"applicable": true,
+"effective_seeds": "15/20",
+"reason": null,
+"klass": "B",
+"outcomes_long": {
+"failed": 5,
+"prevented": 15
+}
+},
+{
+"mfs": "MFS-F2-1",
+"stress": "coupling gain 0.5",
+"repair": "no action",
+"t": 113,
+"applicable": true,
+"effective_seeds": "0/5",
+"reason": null,
+"klass": null,
+"outcomes_long": {
+"failed": 5
+}
+},
+{
+"mfs": "MFS-F2-1",
+"stress": "coupling gain 0.5",
+"repair": "resource.pulse",
+"t": 108,
+"applicable": true,
+"effective_seeds": "0/20",
+"reason": null,
+"klass": "B",
+"outcomes_long": {
+"failed": 20
+}
+},
+{
+"mfs": "MFS-F2-1",
+"stress": "coupling gain 0.5",
+"repair": "resource.pulse",
+"t": 113,
+"applicable": true,
+"effective_seeds": "0/5",
+"reason": null,
+"klass": "B",
+"outcomes_long": {
+"failed": 5
+}
+},
+{
+"mfs": "MFS-F2-1",
+"stress": "history lost",
+"repair": "internal.m2_tap",
+"t": 104,
+"applicable": false,
+"effective_seeds": null,
+"reason": "this MFS's condition has no M2 tap",
+"klass": "A",
+"outcomes_long": null
+},
+{
+"mfs": "MFS-F2-1",
+"stress": "history lost",
+"repair": "internal.m2_tap + renewal.auxiliary",
+"t": 113,
+"applicable": false,
+"effective_seeds": null,
+"reason": "this MFS's condition has no M2 tap",
+"klass": "A+B",
+"outcomes_long": null
+},
+{
+"mfs": "MFS-F2-1",
+"stress": "history lost",
+"repair": "internal.m2_tap + renewal.pulse",
+"t": 113,
+"applicable": false,
+"effective_seeds": null,
+"reason": "this MFS's condition has no M2 tap",
+"klass": "A+B",
+"outcomes_long": null
+},
+{
+"mfs": "MFS-F2-1",
+"stress": "history lost",
+"repair": "internal.m2_tap + resource.inflow",
+"t": 113,
+"applicable": false,
+"effective_seeds": null,
+"reason": "this MFS's condition has no M2 tap",
+"klass": "A+B",
+"outcomes_long": null
+},
+{
+"mfs": "MFS-F2-1",
+"stress": "history lost",
+"repair": "internal.m2_tap + resource.pulse",
+"t": 113,
+"applicable": false,
+"effective_seeds": null,
+"reason": "this MFS's condition has no M2 tap",
+"klass": "A+B",
+"outcomes_long": null
+},
+{
+"mfs": "MFS-F2-1",
+"stress": "history lost",
+"repair": "internal.m2_tap + resource.reserve",
+"t": 113,
+"applicable": false,
+"effective_seeds": null,
+"reason": "this MFS's condition has no M2 tap",
+"klass": "A+B",
+"outcomes_long": null
+},
+{
+"mfs": "MFS-F2-1",
+"stress": "history lost",
+"repair": "no action",
+"t": 113,
+"applicable": true,
+"effective_seeds": "5/5",
+"reason": null,
+"klass": null,
+"outcomes_long": {
+"prevented": 5
+}
+},
+{
+"mfs": "MFS-F2-1",
+"stress": "renewal efficiency 0.6",
+"repair": "internal.m2_tap",
+"t": 104,
+"applicable": false,
+"effective_seeds": null,
+"reason": "this MFS's condition has no M2 tap",
+"klass": "A",
+"outcomes_long": null
+},
+{
+"mfs": "MFS-F2-1",
+"stress": "renewal efficiency 0.6",
+"repair": "no action",
+"t": 113,
+"applicable": true,
+"effective_seeds": "0/5",
+"reason": null,
+"klass": null,
+"outcomes_long": {
+"failed": 5
+}
+},
+{
+"mfs": "MFS-F2-1",
+"stress": "renewal efficiency 0.6",
+"repair": "renewal.restore",
+"t": 104,
+"applicable": true,
+"effective_seeds": "5/5",
+"reason": null,
+"klass": "B",
+"outcomes_long": {
+"prevented": 5
+}
+},
+{
+"mfs": "MFS-F2-1",
+"stress": "renewal stopped",
+"repair": "no action",
+"t": 113,
+"applicable": true,
+"effective_seeds": "0/5",
+"reason": null,
+"klass": null,
+"outcomes_long": {
+"failed": 5
+}
+},
+{
+"mfs": "MFS-F2-1",
+"stress": "resource regrow 0.01 charge 0.2",
+"repair": "internal.m2_tap",
+"t": 104,
+"applicable": false,
+"effective_seeds": null,
+"reason": "this MFS's condition has no M2 tap",
+"klass": "A",
+"outcomes_long": null
+},
+{
+"mfs": "MFS-F2-1",
+"stress": "resource regrow 0.01 charge 0.2",
+"repair": "no action",
+"t": 113,
+"applicable": true,
+"effective_seeds": "5/5",
+"reason": null,
+"klass": null,
+"outcomes_long": {
+"prevented": 5
+}
+},
+{
+"mfs": "MFS-F8-1",
+"stress": "Address partial 0.5",
+"repair": "address.reassign + resource.pulse",
+"t": 113,
+"applicable": true,
+"effective_seeds": "15/15",
+"reason": null,
+"klass": "B",
+"outcomes_long": {
+"prevented": 15
+}
+},
+{
+"mfs": "MFS-F8-1",
+"stress": "Address partial 0.5",
+"repair": "address.restore + resource.pulse",
+"t": 113,
+"applicable": true,
+"effective_seeds": "15/15",
+"reason": null,
+"klass": "B",
+"outcomes_long": {
+"prevented": 15
+}
+},
+{
+"mfs": "MFS-F8-1",
+"stress": "Address partial 0.5",
+"repair": "no action",
+"t": 113,
+"applicable": true,
+"effective_seeds": "0/5",
+"reason": null,
+"klass": null,
+"outcomes_long": {
+"failed": 5
+}
+},
+{
+"mfs": "MFS-F8-1",
+"stress": "coupling gain 0.5",
+"repair": "coupling.gradual",
+"t": 104,
+"applicable": true,
+"effective_seeds": "5/5",
+"reason": null,
+"klass": "B",
+"outcomes_long": {
+"prevented": 5
+}
+},
+{
+"mfs": "MFS-F8-1",
+"stress": "coupling gain 0.5",
+"repair": "coupling.restore",
+"t": 104,
+"applicable": true,
+"effective_seeds": "20/20",
+"reason": null,
+"klass": "B",
+"outcomes_long": {
+"prevented": 20
+}
+},
+{
+"mfs": "MFS-F8-1",
+"stress": "coupling gain 0.5",
+"repair": "no action",
+"t": 113,
+"applicable": true,
+"effective_seeds": "5/5",
+"reason": null,
+"klass": null,
+"outcomes_long": {
+"prevented": 5
+}
+},
+{
+"mfs": "MFS-F8-1",
+"stress": "coupling gain 0.5",
+"repair": "resource.pulse",
+"t": 108,
+"applicable": true,
+"effective_seeds": "15/20",
+"reason": null,
+"klass": "B",
+"outcomes_long": {
+"prevented": 15,
+"failed": 5
+}
+},
+{
+"mfs": "MFS-F8-1",
+"stress": "coupling gain 0.5",
+"repair": "resource.pulse",
+"t": 113,
+"applicable": true,
+"effective_seeds": "5/5",
+"reason": null,
+"klass": "B",
+"outcomes_long": {
+"prevented": 5
+}
+},
+{
+"mfs": "MFS-F8-1",
+"stress": "history lost",
+"repair": "internal.m2_tap",
+"t": 104,
+"applicable": true,
+"effective_seeds": "0/5",
+"reason": null,
+"klass": "A",
+"outcomes_long": {
+"failed": 5
+}
+},
+{
+"mfs": "MFS-F8-1",
+"stress": "history lost",
+"repair": "internal.m2_tap + renewal.auxiliary",
+"t": 113,
+"applicable": true,
+"effective_seeds": "0/10",
+"reason": null,
+"klass": "A+B",
+"outcomes_long": {
+"failed": 10
+}
+},
+{
+"mfs": "MFS-F8-1",
+"stress": "history lost",
+"repair": "internal.m2_tap + renewal.pulse",
+"t": 113,
+"applicable": true,
+"effective_seeds": "0/5",
+"reason": null,
+"klass": "A+B",
+"outcomes_long": {
+"failed": 5
+}
+},
+{
+"mfs": "MFS-F8-1",
+"stress": "history lost",
+"repair": "internal.m2_tap + resource.inflow",
+"t": 113,
+"applicable": true,
+"effective_seeds": "0/5",
+"reason": null,
+"klass": "A+B",
+"outcomes_long": {
+"failed": 5
+}
+},
+{
+"mfs": "MFS-F8-1",
+"stress": "history lost",
+"repair": "internal.m2_tap + resource.pulse",
+"t": 113,
+"applicable": true,
+"effective_seeds": "0/15",
+"reason": null,
+"klass": "A+B",
+"outcomes_long": {
+"secondary collapse": 15
+}
+},
+{
+"mfs": "MFS-F8-1",
+"stress": "history lost",
+"repair": "internal.m2_tap + resource.reserve",
+"t": 113,
+"applicable": true,
+"effective_seeds": "0/5",
+"reason": null,
+"klass": "A+B",
+"outcomes_long": {
+"failed": 5
+}
+},
+{
+"mfs": "MFS-F8-1",
+"stress": "history lost",
+"repair": "no action",
+"t": 113,
+"applicable": true,
+"effective_seeds": "0/5",
+"reason": null,
+"klass": null,
+"outcomes_long": {
+"failed": 5
+}
+},
+{
+"mfs": "MFS-F8-1",
+"stress": "renewal efficiency 0.6",
+"repair": "internal.m2_tap",
+"t": 104,
+"applicable": true,
+"effective_seeds": "5/5",
+"reason": null,
+"klass": "A",
+"outcomes_long": {
+"prevented": 5
+}
+},
+{
+"mfs": "MFS-F8-1",
+"stress": "renewal efficiency 0.6",
+"repair": "no action",
+"t": 113,
+"applicable": true,
+"effective_seeds": "0/5",
+"reason": null,
+"klass": null,
+"outcomes_long": {
+"failed": 5
+}
+},
+{
+"mfs": "MFS-F8-1",
+"stress": "renewal efficiency 0.6",
+"repair": "renewal.restore",
+"t": 104,
+"applicable": true,
+"effective_seeds": "5/5",
+"reason": null,
+"klass": "B",
+"outcomes_long": {
+"prevented": 5
+}
+},
+{
+"mfs": "MFS-F8-1",
+"stress": "renewal stopped",
+"repair": "no action",
+"t": 113,
+"applicable": true,
+"effective_seeds": "0/5",
+"reason": null,
+"klass": null,
+"outcomes_long": {
+"failed": 5
+}
+},
+{
+"mfs": "MFS-F8-1",
+"stress": "resource regrow 0.01 charge 0.2",
+"repair": "internal.m2_tap",
+"t": 104,
+"applicable": true,
+"effective_seeds": "0/5",
+"reason": null,
+"klass": "A",
+"outcomes_long": {
+"secondary collapse": 5
+}
+},
+{
+"mfs": "MFS-F8-1",
+"stress": "resource regrow 0.01 charge 0.2",
+"repair": "no action",
+"t": 113,
+"applicable": true,
+"effective_seeds": "0/5",
+"reason": null,
+"klass": null,
+"outcomes_long": {
+"failed": 5
+}
+}
+],
+"profile": {
+"MFS-F1-1": {
+"coupling gain 0.5": "externally repairable",
+"resource regrow 0.01 charge 0.2": "neither (under the tested actions)",
+"renewal efficiency 0.6": "externally repairable",
+"renewal stopped": "neither (under the tested actions)",
+"Address partial 0.5": "externally repairable",
+"history lost": "neither (under the tested actions)"
+},
+"MFS-F2-1": {
+"coupling gain 0.5": "externally repairable",
+"resource regrow 0.01 charge 0.2": "neither (under the tested actions)",
+"renewal efficiency 0.6": "externally repairable",
+"renewal stopped": "neither (under the tested actions)",
+"Address partial 0.5": "externally repairable",
+"history lost": "neither (under the tested actions)"
+},
+"MFS-F8-1": {
+"coupling gain 0.5": "externally repairable",
+"resource regrow 0.01 charge 0.2": "neither (under the tested actions)",
+"renewal efficiency 0.6": "both",
+"renewal stopped": "neither (under the tested actions)",
+"Address partial 0.5": "externally repairable",
+"history lost": "neither (under the tested actions)"
+},
+"MFS-F14-2": {
+"coupling gain 0.5": "inconclusive",
+"resource regrow 0.01 charge 0.2": "neither (under the tested actions)",
+"renewal efficiency 0.6": "neither (under the tested actions)",
+"renewal stopped": "neither (under the tested actions)",
+"Address partial 0.5": "inconclusive",
+"history lost": "both"
+}
+},
+"note": "the repairs were validated on the full arrangement and are tried unchanged on each MFS; 'external' here counts class B and mixed repairs that are effective; an MFS without an M2 tap has no internal route of this kind"
+},
+"C2_sss": {
+"grid": [
+[
+0.75,
+0.9
+],
+[
+0.75,
+1.0
+],
+[
+0.75,
+1.1
+],
+[
+1.0,
+0.9
+],
+[
+1.0,
+1.0
+],
+[
+1.0,
+1.1
+],
+[
+1.25,
+0.9
+],
+[
+1.25,
+1.0
+],
+[
+1.25,
+1.1
+]
+],
+"size": 1.0,
+"seeds": [
+1,
+2,
+3
+],
+"cells": [
+{
+"mfs": "MFS-F1-1",
+"scale": 0.75,
+"speed": 0.9,
+"unstressed_persists": true,
+"stress": {
+"coupling gain 0.5": {
+"class": "repairable on some seeds only",
+"no_action_recovers": "0/3",
+"repair": "coupling.gradual",
+"effective": "1/3"
+},
+"resource regrow 0.01 charge 0.2": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"renewal efficiency 0.6": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"renewal stopped": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"Address partial 0.5": {
+"class": "repairable on some seeds only",
+"no_action_recovers": "0/3",
+"repair": "address.reassign + resource.pulse",
+"effective": "1/3"
+},
+"history lost": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "3/3",
+"repair": null,
+"effective": "0/0"
+}
+}
+},
+{
+"mfs": "MFS-F1-1",
+"scale": 0.75,
+"speed": 1.0,
+"unstressed_persists": true,
+"stress": {
+"coupling gain 0.5": {
+"class": "repairable",
+"no_action_recovers": "0/3",
+"repair": "coupling.gradual",
+"effective": "3/3"
+},
+"resource regrow 0.01 charge 0.2": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"renewal efficiency 0.6": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"renewal stopped": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"Address partial 0.5": {
+"class": "repairable",
+"no_action_recovers": "0/3",
+"repair": "address.reassign + resource.pulse",
+"effective": "3/3"
+},
+"history lost": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "3/3",
+"repair": null,
+"effective": "0/0"
+}
+}
+},
+{
+"mfs": "MFS-F1-1",
+"scale": 0.75,
+"speed": 1.1,
+"unstressed_persists": true,
+"stress": {
+"coupling gain 0.5": {
+"class": "repairable",
+"no_action_recovers": "0/3",
+"repair": "coupling.gradual",
+"effective": "3/3"
+},
+"resource regrow 0.01 charge 0.2": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"renewal efficiency 0.6": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"renewal stopped": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"Address partial 0.5": {
+"class": "repairable",
+"no_action_recovers": "0/3",
+"repair": "address.reassign + resource.pulse",
+"effective": "3/3"
+},
+"history lost": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "3/3",
+"repair": null,
+"effective": "0/0"
+}
+}
+},
+{
+"mfs": "MFS-F1-1",
+"scale": 1.0,
+"speed": 0.9,
+"unstressed_persists": true,
+"stress": {
+"coupling gain 0.5": {
+"class": "repairable on some seeds only",
+"no_action_recovers": "0/3",
+"repair": "coupling.gradual",
+"effective": "1/3"
+},
+"resource regrow 0.01 charge 0.2": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"renewal efficiency 0.6": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"renewal stopped": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"Address partial 0.5": {
+"class": "repairable on some seeds only",
+"no_action_recovers": "0/3",
+"repair": "address.reassign + resource.pulse",
+"effective": "1/3"
+},
+"history lost": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "3/3",
+"repair": null,
+"effective": "0/0"
+}
+}
+},
+{
+"mfs": "MFS-F1-1",
+"scale": 1.0,
+"speed": 1.0,
+"unstressed_persists": true,
+"stress": {
+"coupling gain 0.5": {
+"class": "repairable",
+"no_action_recovers": "0/3",
+"repair": "coupling.gradual",
+"effective": "3/3"
+},
+"resource regrow 0.01 charge 0.2": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"renewal efficiency 0.6": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"renewal stopped": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"Address partial 0.5": {
+"class": "repairable",
+"no_action_recovers": "0/3",
+"repair": "address.reassign + resource.pulse",
+"effective": "3/3"
+},
+"history lost": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "3/3",
+"repair": null,
+"effective": "0/0"
+}
+}
+},
+{
+"mfs": "MFS-F1-1",
+"scale": 1.0,
+"speed": 1.1,
+"unstressed_persists": false,
+"stress": {}
+},
+{
+"mfs": "MFS-F1-1",
+"scale": 1.25,
+"speed": 0.9,
+"unstressed_persists": false,
+"stress": {}
+},
+{
+"mfs": "MFS-F1-1",
+"scale": 1.25,
+"speed": 1.0,
+"unstressed_persists": false,
+"stress": {}
+},
+{
+"mfs": "MFS-F1-1",
+"scale": 1.25,
+"speed": 1.1,
+"unstressed_persists": false,
+"stress": {}
+},
+{
+"mfs": "MFS-F2-1",
+"scale": 0.75,
+"speed": 0.9,
+"unstressed_persists": true,
+"stress": {
+"coupling gain 0.5": {
+"class": "repairable on some seeds only",
+"no_action_recovers": "0/3",
+"repair": "coupling.gradual",
+"effective": "1/3"
+},
+"resource regrow 0.01 charge 0.2": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "3/3",
+"repair": null,
+"effective": "0/0"
+},
+"renewal efficiency 0.6": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"renewal stopped": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"Address partial 0.5": {
+"class": "repairable on some seeds only",
+"no_action_recovers": "0/3",
+"repair": "address.reassign + resource.pulse",
+"effective": "1/3"
+},
+"history lost": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "3/3",
+"repair": null,
+"effective": "0/0"
+}
+}
+},
+{
+"mfs": "MFS-F2-1",
+"scale": 0.75,
+"speed": 1.0,
+"unstressed_persists": true,
+"stress": {
+"coupling gain 0.5": {
+"class": "repairable",
+"no_action_recovers": "0/3",
+"repair": "coupling.gradual",
+"effective": "3/3"
+},
+"resource regrow 0.01 charge 0.2": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "3/3",
+"repair": null,
+"effective": "0/0"
+},
+"renewal efficiency 0.6": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"renewal stopped": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"Address partial 0.5": {
+"class": "repairable",
+"no_action_recovers": "0/3",
+"repair": "address.reassign + resource.pulse",
+"effective": "3/3"
+},
+"history lost": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "3/3",
+"repair": null,
+"effective": "0/0"
+}
+}
+},
+{
+"mfs": "MFS-F2-1",
+"scale": 0.75,
+"speed": 1.1,
+"unstressed_persists": true,
+"stress": {
+"coupling gain 0.5": {
+"class": "repairable",
+"no_action_recovers": "0/3",
+"repair": "coupling.gradual",
+"effective": "3/3"
+},
+"resource regrow 0.01 charge 0.2": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "3/3",
+"repair": null,
+"effective": "0/0"
+},
+"renewal efficiency 0.6": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"renewal stopped": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"Address partial 0.5": {
+"class": "repairable",
+"no_action_recovers": "0/3",
+"repair": "address.reassign + resource.pulse",
+"effective": "3/3"
+},
+"history lost": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "3/3",
+"repair": null,
+"effective": "0/0"
+}
+}
+},
+{
+"mfs": "MFS-F2-1",
+"scale": 1.0,
+"speed": 0.9,
+"unstressed_persists": true,
+"stress": {
+"coupling gain 0.5": {
+"class": "repairable on some seeds only",
+"no_action_recovers": "0/3",
+"repair": "coupling.gradual",
+"effective": "1/3"
+},
+"resource regrow 0.01 charge 0.2": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "3/3",
+"repair": null,
+"effective": "0/0"
+},
+"renewal efficiency 0.6": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"renewal stopped": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"Address partial 0.5": {
+"class": "repairable on some seeds only",
+"no_action_recovers": "0/3",
+"repair": "address.reassign + resource.pulse",
+"effective": "1/3"
+},
+"history lost": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "3/3",
+"repair": null,
+"effective": "0/0"
+}
+}
+},
+{
+"mfs": "MFS-F2-1",
+"scale": 1.0,
+"speed": 1.0,
+"unstressed_persists": true,
+"stress": {
+"coupling gain 0.5": {
+"class": "repairable",
+"no_action_recovers": "0/3",
+"repair": "coupling.gradual",
+"effective": "3/3"
+},
+"resource regrow 0.01 charge 0.2": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "3/3",
+"repair": null,
+"effective": "0/0"
+},
+"renewal efficiency 0.6": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"renewal stopped": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"Address partial 0.5": {
+"class": "repairable",
+"no_action_recovers": "0/3",
+"repair": "address.reassign + resource.pulse",
+"effective": "3/3"
+},
+"history lost": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "3/3",
+"repair": null,
+"effective": "0/0"
+}
+}
+},
+{
+"mfs": "MFS-F2-1",
+"scale": 1.0,
+"speed": 1.1,
+"unstressed_persists": false,
+"stress": {}
+},
+{
+"mfs": "MFS-F2-1",
+"scale": 1.25,
+"speed": 0.9,
+"unstressed_persists": false,
+"stress": {}
+},
+{
+"mfs": "MFS-F2-1",
+"scale": 1.25,
+"speed": 1.0,
+"unstressed_persists": false,
+"stress": {}
+},
+{
+"mfs": "MFS-F2-1",
+"scale": 1.25,
+"speed": 1.1,
+"unstressed_persists": false,
+"stress": {}
+},
+{
+"mfs": "MFS-F8-1",
+"scale": 0.75,
+"speed": 0.9,
+"unstressed_persists": true,
+"stress": {
+"coupling gain 0.5": {
+"class": "repairable",
+"no_action_recovers": "3/3",
+"repair": "coupling.gradual",
+"effective": "3/3"
+},
+"resource regrow 0.01 charge 0.2": {
+"class": "unrecoverable",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "0/3"
+},
+"renewal efficiency 0.6": {
+"class": "repairable",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "3/3"
+},
+"renewal stopped": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"Address partial 0.5": {
+"class": "repairable on some seeds only",
+"no_action_recovers": "0/3",
+"repair": "address.reassign + resource.pulse",
+"effective": "1/3"
+},
+"history lost": {
+"class": "unrecoverable",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "0/3"
+}
+}
+},
+{
+"mfs": "MFS-F8-1",
+"scale": 0.75,
+"speed": 1.0,
+"unstressed_persists": true,
+"stress": {
+"coupling gain 0.5": {
+"class": "repairable",
+"no_action_recovers": "3/3",
+"repair": "coupling.gradual",
+"effective": "3/3"
+},
+"resource regrow 0.01 charge 0.2": {
+"class": "unrecoverable",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "0/3"
+},
+"renewal efficiency 0.6": {
+"class": "repairable",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "3/3"
+},
+"renewal stopped": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"Address partial 0.5": {
+"class": "repairable",
+"no_action_recovers": "0/3",
+"repair": "address.reassign + resource.pulse",
+"effective": "3/3"
+},
+"history lost": {
+"class": "unrecoverable",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "0/3"
+}
+}
+},
+{
+"mfs": "MFS-F8-1",
+"scale": 0.75,
+"speed": 1.1,
+"unstressed_persists": true,
+"stress": {
+"coupling gain 0.5": {
+"class": "repairable",
+"no_action_recovers": "3/3",
+"repair": "coupling.gradual",
+"effective": "3/3"
+},
+"resource regrow 0.01 charge 0.2": {
+"class": "unrecoverable",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "0/3"
+},
+"renewal efficiency 0.6": {
+"class": "repairable",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "3/3"
+},
+"renewal stopped": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"Address partial 0.5": {
+"class": "repairable",
+"no_action_recovers": "0/3",
+"repair": "address.reassign + resource.pulse",
+"effective": "3/3"
+},
+"history lost": {
+"class": "unrecoverable",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "0/3"
+}
+}
+},
+{
+"mfs": "MFS-F8-1",
+"scale": 1.0,
+"speed": 0.9,
+"unstressed_persists": true,
+"stress": {
+"coupling gain 0.5": {
+"class": "repairable",
+"no_action_recovers": "3/3",
+"repair": "coupling.gradual",
+"effective": "3/3"
+},
+"resource regrow 0.01 charge 0.2": {
+"class": "overshoot-sensitive / unstable recovery",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "0/3"
+},
+"renewal efficiency 0.6": {
+"class": "repairable",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "3/3"
+},
+"renewal stopped": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"Address partial 0.5": {
+"class": "repairable",
+"no_action_recovers": "0/3",
+"repair": "address.reassign + resource.pulse",
+"effective": "3/3"
+},
+"history lost": {
+"class": "unrecoverable",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "0/3"
+}
+}
+},
+{
+"mfs": "MFS-F8-1",
+"scale": 1.0,
+"speed": 1.0,
+"unstressed_persists": true,
+"stress": {
+"coupling gain 0.5": {
+"class": "repairable",
+"no_action_recovers": "3/3",
+"repair": "coupling.gradual",
+"effective": "3/3"
+},
+"resource regrow 0.01 charge 0.2": {
+"class": "overshoot-sensitive / unstable recovery",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "0/3"
+},
+"renewal efficiency 0.6": {
+"class": "repairable",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "3/3"
+},
+"renewal stopped": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"Address partial 0.5": {
+"class": "repairable",
+"no_action_recovers": "0/3",
+"repair": "address.reassign + resource.pulse",
+"effective": "3/3"
+},
+"history lost": {
+"class": "unrecoverable",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "0/3"
+}
+}
+},
+{
+"mfs": "MFS-F8-1",
+"scale": 1.0,
+"speed": 1.1,
+"unstressed_persists": true,
+"stress": {
+"coupling gain 0.5": {
+"class": "repairable",
+"no_action_recovers": "3/3",
+"repair": "coupling.gradual",
+"effective": "3/3"
+},
+"resource regrow 0.01 charge 0.2": {
+"class": "overshoot-sensitive / unstable recovery",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "0/3"
+},
+"renewal efficiency 0.6": {
+"class": "repairable",
+"no_action_recovers": "3/3",
+"repair": "internal.m2_tap",
+"effective": "3/3"
+},
+"renewal stopped": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"Address partial 0.5": {
+"class": "repairable",
+"no_action_recovers": "0/3",
+"repair": "address.reassign + resource.pulse",
+"effective": "3/3"
+},
+"history lost": {
+"class": "unrecoverable",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "0/3"
+}
+}
+},
+{
+"mfs": "MFS-F8-1",
+"scale": 1.25,
+"speed": 0.9,
+"unstressed_persists": true,
+"stress": {
+"coupling gain 0.5": {
+"class": "repairable",
+"no_action_recovers": "3/3",
+"repair": "coupling.gradual",
+"effective": "3/3"
+},
+"resource regrow 0.01 charge 0.2": {
+"class": "overshoot-sensitive / unstable recovery",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "0/3"
+},
+"renewal efficiency 0.6": {
+"class": "repairable",
+"no_action_recovers": "2/3",
+"repair": "internal.m2_tap",
+"effective": "3/3"
+},
+"renewal stopped": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"Address partial 0.5": {
+"class": "repairable",
+"no_action_recovers": "0/3",
+"repair": "address.reassign + resource.pulse",
+"effective": "3/3"
+},
+"history lost": {
+"class": "unrecoverable",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "0/3"
+}
+}
+},
+{
+"mfs": "MFS-F8-1",
+"scale": 1.25,
+"speed": 1.0,
+"unstressed_persists": true,
+"stress": {
+"coupling gain 0.5": {
+"class": "repairable",
+"no_action_recovers": "3/3",
+"repair": "coupling.gradual",
+"effective": "3/3"
+},
+"resource regrow 0.01 charge 0.2": {
+"class": "overshoot-sensitive / unstable recovery",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "0/3"
+},
+"renewal efficiency 0.6": {
+"class": "repairable",
+"no_action_recovers": "3/3",
+"repair": "internal.m2_tap",
+"effective": "3/3"
+},
+"renewal stopped": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"Address partial 0.5": {
+"class": "repairable",
+"no_action_recovers": "0/3",
+"repair": "address.reassign + resource.pulse",
+"effective": "3/3"
+},
+"history lost": {
+"class": "unrecoverable",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "0/3"
+}
+}
+},
+{
+"mfs": "MFS-F8-1",
+"scale": 1.25,
+"speed": 1.1,
+"unstressed_persists": true,
+"stress": {
+"coupling gain 0.5": {
+"class": "repairable",
+"no_action_recovers": "3/3",
+"repair": "coupling.gradual",
+"effective": "3/3"
+},
+"resource regrow 0.01 charge 0.2": {
+"class": "overshoot-sensitive / unstable recovery",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "0/3"
+},
+"renewal efficiency 0.6": {
+"class": "repairable",
+"no_action_recovers": "3/3",
+"repair": "internal.m2_tap",
+"effective": "3/3"
+},
+"renewal stopped": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"Address partial 0.5": {
+"class": "repairable",
+"no_action_recovers": "0/3",
+"repair": "address.reassign + resource.pulse",
+"effective": "3/3"
+},
+"history lost": {
+"class": "unrecoverable",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "0/3"
+}
+}
+},
+{
+"mfs": "MFS-F14-2",
+"scale": 0.75,
+"speed": 0.9,
+"unstressed_persists": true,
+"stress": {
+"coupling gain 0.5": {
+"class": "repairable on some seeds only",
+"no_action_recovers": "0/3",
+"repair": "coupling.gradual",
+"effective": "1/3"
+},
+"resource regrow 0.01 charge 0.2": {
+"class": "unrecoverable",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "0/3"
+},
+"renewal efficiency 0.6": {
+"class": "unrecoverable",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "0/3"
+},
+"renewal stopped": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"Address partial 0.5": {
+"class": "unrecoverable",
+"no_action_recovers": "0/3",
+"repair": "address.reassign + resource.pulse",
+"effective": "0/3"
+},
+"history lost": {
+"class": "repairable",
+"no_action_recovers": "3/3",
+"repair": "internal.m2_tap",
+"effective": "3/3"
+}
+}
+},
+{
+"mfs": "MFS-F14-2",
+"scale": 0.75,
+"speed": 1.0,
+"unstressed_persists": true,
+"stress": {
+"coupling gain 0.5": {
+"class": "repairable",
+"no_action_recovers": "0/3",
+"repair": "coupling.gradual",
+"effective": "3/3"
+},
+"resource regrow 0.01 charge 0.2": {
+"class": "unrecoverable",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "0/3"
+},
+"renewal efficiency 0.6": {
+"class": "unrecoverable",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "0/3"
+},
+"renewal stopped": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"Address partial 0.5": {
+"class": "repairable",
+"no_action_recovers": "0/3",
+"repair": "address.reassign + resource.pulse",
+"effective": "3/3"
+},
+"history lost": {
+"class": "repairable",
+"no_action_recovers": "3/3",
+"repair": "internal.m2_tap",
+"effective": "3/3"
+}
+}
+},
+{
+"mfs": "MFS-F14-2",
+"scale": 0.75,
+"speed": 1.1,
+"unstressed_persists": true,
+"stress": {
+"coupling gain 0.5": {
+"class": "repairable",
+"no_action_recovers": "0/3",
+"repair": "coupling.gradual",
+"effective": "3/3"
+},
+"resource regrow 0.01 charge 0.2": {
+"class": "unrecoverable",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "0/3"
+},
+"renewal efficiency 0.6": {
+"class": "unrecoverable",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "0/3"
+},
+"renewal stopped": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"Address partial 0.5": {
+"class": "repairable",
+"no_action_recovers": "0/3",
+"repair": "address.reassign + resource.pulse",
+"effective": "3/3"
+},
+"history lost": {
+"class": "repairable",
+"no_action_recovers": "3/3",
+"repair": "internal.m2_tap",
+"effective": "3/3"
+}
+}
+},
+{
+"mfs": "MFS-F14-2",
+"scale": 1.0,
+"speed": 0.9,
+"unstressed_persists": true,
+"stress": {
+"coupling gain 0.5": {
+"class": "repairable on some seeds only",
+"no_action_recovers": "0/3",
+"repair": "coupling.gradual",
+"effective": "1/3"
+},
+"resource regrow 0.01 charge 0.2": {
+"class": "unrecoverable",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "0/3"
+},
+"renewal efficiency 0.6": {
+"class": "unrecoverable",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "0/3"
+},
+"renewal stopped": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"Address partial 0.5": {
+"class": "repairable on some seeds only",
+"no_action_recovers": "0/3",
+"repair": "address.reassign + resource.pulse",
+"effective": "2/3"
+},
+"history lost": {
+"class": "repairable",
+"no_action_recovers": "3/3",
+"repair": "internal.m2_tap",
+"effective": "3/3"
+}
+}
+},
+{
+"mfs": "MFS-F14-2",
+"scale": 1.0,
+"speed": 1.0,
+"unstressed_persists": true,
+"stress": {
+"coupling gain 0.5": {
+"class": "repairable",
+"no_action_recovers": "0/3",
+"repair": "coupling.gradual",
+"effective": "3/3"
+},
+"resource regrow 0.01 charge 0.2": {
+"class": "unrecoverable",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "0/3"
+},
+"renewal efficiency 0.6": {
+"class": "unrecoverable",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "0/3"
+},
+"renewal stopped": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"Address partial 0.5": {
+"class": "repairable",
+"no_action_recovers": "0/3",
+"repair": "address.reassign + resource.pulse",
+"effective": "3/3"
+},
+"history lost": {
+"class": "repairable",
+"no_action_recovers": "3/3",
+"repair": "internal.m2_tap",
+"effective": "3/3"
+}
+}
+},
+{
+"mfs": "MFS-F14-2",
+"scale": 1.0,
+"speed": 1.1,
+"unstressed_persists": true,
+"stress": {
+"coupling gain 0.5": {
+"class": "repairable",
+"no_action_recovers": "0/3",
+"repair": "coupling.gradual",
+"effective": "3/3"
+},
+"resource regrow 0.01 charge 0.2": {
+"class": "unrecoverable",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "0/3"
+},
+"renewal efficiency 0.6": {
+"class": "unrecoverable",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "0/3"
+},
+"renewal stopped": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"Address partial 0.5": {
+"class": "repairable",
+"no_action_recovers": "0/3",
+"repair": "address.reassign + resource.pulse",
+"effective": "3/3"
+},
+"history lost": {
+"class": "repairable",
+"no_action_recovers": "3/3",
+"repair": "internal.m2_tap",
+"effective": "3/3"
+}
+}
+},
+{
+"mfs": "MFS-F14-2",
+"scale": 1.25,
+"speed": 0.9,
+"unstressed_persists": true,
+"stress": {
+"coupling gain 0.5": {
+"class": "repairable on some seeds only",
+"no_action_recovers": "0/3",
+"repair": "coupling.gradual",
+"effective": "1/3"
+},
+"resource regrow 0.01 charge 0.2": {
+"class": "unrecoverable",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "0/3"
+},
+"renewal efficiency 0.6": {
+"class": "unrecoverable",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "0/3"
+},
+"renewal stopped": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"Address partial 0.5": {
+"class": "repairable on some seeds only",
+"no_action_recovers": "0/3",
+"repair": "address.reassign + resource.pulse",
+"effective": "2/3"
+},
+"history lost": {
+"class": "repairable",
+"no_action_recovers": "3/3",
+"repair": "internal.m2_tap",
+"effective": "3/3"
+}
+}
+},
+{
+"mfs": "MFS-F14-2",
+"scale": 1.25,
+"speed": 1.0,
+"unstressed_persists": true,
+"stress": {
+"coupling gain 0.5": {
+"class": "repairable",
+"no_action_recovers": "0/3",
+"repair": "coupling.gradual",
+"effective": "3/3"
+},
+"resource regrow 0.01 charge 0.2": {
+"class": "unrecoverable",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "0/3"
+},
+"renewal efficiency 0.6": {
+"class": "unrecoverable",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "0/3"
+},
+"renewal stopped": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"Address partial 0.5": {
+"class": "repairable",
+"no_action_recovers": "0/3",
+"repair": "address.reassign + resource.pulse",
+"effective": "3/3"
+},
+"history lost": {
+"class": "repairable",
+"no_action_recovers": "3/3",
+"repair": "internal.m2_tap",
+"effective": "3/3"
+}
+}
+},
+{
+"mfs": "MFS-F14-2",
+"scale": 1.25,
+"speed": 1.1,
+"unstressed_persists": true,
+"stress": {
+"coupling gain 0.5": {
+"class": "repairable",
+"no_action_recovers": "0/3",
+"repair": "coupling.gradual",
+"effective": "3/3"
+},
+"resource regrow 0.01 charge 0.2": {
+"class": "unrecoverable",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "0/3"
+},
+"renewal efficiency 0.6": {
+"class": "repairable",
+"no_action_recovers": "0/3",
+"repair": "internal.m2_tap",
+"effective": "3/3"
+},
+"renewal stopped": {
+"class": "unrecoverable (no tested repair at or before the decision tick)",
+"no_action_recovers": "0/3",
+"repair": null,
+"effective": "0/0"
+},
+"Address partial 0.5": {
+"class": "repairable",
+"no_action_recovers": "0/3",
+"repair": "address.reassign + resource.pulse",
+"effective": "3/3"
+},
+"history lost": {
+"class": "repairable",
+"no_action_recovers": "3/3",
+"repair": "internal.m2_tap",
+"effective": "3/3"
+}
+}
+}
+]
+},
+"seconds": 247.0
+}

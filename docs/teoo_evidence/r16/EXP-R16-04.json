@@ -1,0 +1,239 @@
+{
+ "experiment_id": "EXP-R16-04",
+ "protocol_version": 1,
+ "protocol_digest": "ae5bc53001a7077a70c2b20e40e1eb943fec59833d07cb382c4059e087f2cfad",
+ "protocol": {
+  "experiment_id": "EXP-R16-04",
+  "hypotheses": [
+   {
+    "id": "H1",
+    "statement": "A world of eight Booleans exists whose enumeration gives the stated aggregates (model access 32, 32, 32, 32, 40, 60; sensor access 32, 32, 32, 32, 32, 42; disagreements 8 and 18; none without execution); this world is constructed to the aggregates and is not the original"
+   },
+   {
+    "id": "H2",
+    "statement": "In that world the sensor's access is contained in the model's, so the disagreements are the model's extra access"
+   },
+   {
+    "id": "H3",
+    "statement": "An ordinary Boolean model with the same information agrees on all 1,536 comparisons"
+   },
+   {
+    "id": "H4",
+    "statement": "The ledger realises the world on a 96-pair sample"
+   },
+   {
+    "id": "H5",
+    "statement": "The EXPANDED mode leaves some disagreements unexplained by the stipulated hidden condition"
+   }
+  ],
+  "targets": [
+   "a synthetic ledger, its worlds and the registries of duties, guarantees and governance principles"
+  ],
+  "instrument_conditions": {
+   "states": 256,
+   "conditions": 6,
+   "comparisons": 1536,
+   "note": "an independent verification model built to the stated aggregates; not a reproduction of the manuscript"
+  },
+  "control_condition": "boolean comparator",
+  "conditions": [
+   "stated-aggregates world",
+   "boolean comparator",
+   "ledger"
+  ],
+  "seeds": [
+   8101
+  ],
+  "trials_per_condition": 1,
+  "stopping_rule": {
+   "type": "fixed-n",
+   "units": 1,
+   "no interim analysis": true
+  },
+  "outcomes": {
+   "primary": [
+    "aggregate match",
+    "agreement of the Boolean comparator"
+   ],
+   "secondary": [
+    "ledger realisation",
+    "unexplained disagreements"
+   ]
+  },
+  "analyses": [
+   {
+    "id": "R401",
+    "hypothesis": "H1",
+    "outcome": "aggregates",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "R402",
+    "hypothesis": "H2",
+    "outcome": "containment",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "R403",
+    "hypothesis": "H3",
+    "outcome": "agreement",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "R404",
+    "hypothesis": "H4",
+    "outcome": "realisation",
+    "method": "descriptive",
+    "confirmatory": true
+   },
+   {
+    "id": "R405",
+    "hypothesis": "H5",
+    "outcome": "unexplained",
+    "method": "descriptive",
+    "confirmatory": true
+   }
+  ],
+  "multiplicity": "holm",
+  "failure_conditions": [
+   "fewer than 1 units"
+  ],
+  "reproduction": {
+   "generator": "xzr.teoo.r16experiments",
+   "steps": [
+    "run unit per seed",
+    "analyse"
+   ],
+   "world": "xzr.teoo.lawledger on xzr.teoo.lawworld (own world and a world built to the stated R16 aggregates); registries in xzr.teoo.mheg"
+  },
+  "schema": "teoo.protocol/1",
+  "version": 1,
+  "parent_version": null,
+  "change_reason": null
+ },
+ "units": 1,
+ "seeds": [
+  8101
+ ],
+ "evidence_class": "Implementation Property",
+ "seconds": 0.8,
+ "results": {
+  "R401": {
+   "method": "descriptive",
+   "model_access": [
+    32,
+    32,
+    32,
+    32,
+    40,
+    60
+   ],
+   "sensor_access": [
+    32,
+    32,
+    32,
+    32,
+    32,
+    42
+   ],
+   "disagreements": {
+    "BASE": 0,
+    "RECEIPT_ONLY": 0,
+    "DECLARATION_ONLY": 0,
+    "PLAN_ONLY": 0,
+    "EXEC_GATE": 8,
+    "EXEC_LINKED": 18
+   },
+   "stated_model_access": [
+    32,
+    32,
+    32,
+    32,
+    40,
+    60
+   ],
+   "stated_sensor_access": [
+    32,
+    32,
+    32,
+    32,
+    32,
+    42
+   ],
+   "stated_disagreements": {
+    "EXEC_GATE": 8,
+    "EXEC_LINKED": 18
+   },
+   "nested": true,
+   "sensor_access_contained_in_model": true,
+   "boolean_model_agrees": 1536,
+   "boolean_sensor_agrees": 1536,
+   "comparisons": 1536,
+   "ledger_realisation": {
+    "checked": 96,
+    "agree": 96
+   },
+   "unexplained_by_q": {
+    "EXEC_GATE": 4,
+    "EXEC_LINKED": 4
+   },
+   "criterion": "the enumeration equals the stated aggregates (by construction)",
+   "criterion_met": true,
+   "reading": "the match is by construction: it shows that the stated aggregates are jointly realisable by a nested eight-Boolean world, not that this is the manuscript's world",
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  },
+  "R402": {
+   "method": "descriptive",
+   "criterion": "sensor access contained in model access",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  },
+  "R403": {
+   "method": "descriptive",
+   "boolean_model_agrees": 1536,
+   "boolean_sensor_agrees": 1536,
+   "criterion": "1,536 / 1,536 on both",
+   "criterion_met": true,
+   "reading": "met: no predictive advantage of the ledger or its vocabulary over an ordinary Boolean model with the same information",
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  },
+  "R404": {
+   "method": "descriptive",
+   "checked": 96,
+   "agree": 96,
+   "criterion": "96 / 96",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  },
+  "R405": {
+   "method": "descriptive",
+   "unexplained_by_q": {
+    "EXEC_GATE": 4,
+    "EXEC_LINKED": 4
+   },
+   "criterion": "some disagreements stay unexplained",
+   "criterion_met": true,
+   "registered_class": "confirmatory",
+   "evidence_class": "Implementation Property"
+  }
+ },
+ "catalogue": {
+  "source": "The Minimum Guarantees of Human Legal Subjecthood, Publication Final V3.0, Chapter 6.2 (identical in the 100_POINT_EDITION and in R2 section 4: all fifteen titles and definitions compared character for character)",
+  "verified_against_original": true,
+  "sha256": {
+   "v3_0": "cf4d4f0c51169451da5af4c33e7081e947dacbade855068a889965d8c523b848",
+   "v3_0_100_point_edition": "afb59d1a0c3b28854f14113f843645539e07a2e466949d22de4b67da0a22bf99",
+   "ai_law_osr_r2": "a9984451b281df3252b05842dc5109dd396e0b0c54d3560849344ad41059a501"
+  },
+  "editions_identical_for_guarantees": true,
+  "note": "V3.0 uses two vocabularies for the same five findings (Appendix A table: Secured/Partial/Absent/Indeterminate/Inapplicable; A.3 and 8.4 text: Satisfied/Partially Satisfied/Failed/Indeterminate/Not Applicable). R2 section 16 and this implementation use the table's."
+ },
+ "note": "results about a SYNTHETIC ledger; the stated-aggregates world is an independent verification model built to the stated numbers, not the manuscript's world, and its match is by construction; the principles' profiles are an analytic reading; a closure, a measurement or a match here is not a legal judgment or a restoration; not an observation of any institution, law or person"
+}

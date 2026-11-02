@@ -131,6 +131,13 @@ a rerun reproduced every status cell (`xzr compare`: 90 / 90 and 35 / 35 *same*)
   re-entry criteria, retained prior difference and re-addressability hold; actual re-entry and a downstream
   difference were not detected. A larger region, a longer retained history or more seeds may change this.
 
+## Heterogeneous Philosophical Operations (`xzr hpo run NAME`)
+
+`hpo-001`, `hpo-002`, `hpo-003` and `generalization` follow the frozen protocol docs/HPO_PROTOCOL.md (conditions,
+seed ranges, measures, hypotheses, stopping conditions). Results are written to backend/experiments/results/hpo/. With
+`--pilot`, the run uses the smoke seed range and writes to `xzr-results/hpo-pilot/`. Design and limits:
+docs/HPO.md. Results: docs/HPO_RESULTS.md.
+
 ## Long studies (`xzr study NAME`)
 
 | name | what | wall time of the published run (7 worker processes) |
