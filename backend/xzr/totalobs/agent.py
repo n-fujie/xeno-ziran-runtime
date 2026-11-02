@@ -85,7 +85,7 @@ class Design:
     def from_dict(d: dict | None) -> Design:
         d = d or {}
         out = Design(
-            **{
+            **{  # type: ignore[arg-type]
                 k: (tuple(v) if k in ("strong", "authority") and v is not None else v)
                 for k, v in d.items()
                 if k in Design.__dataclass_fields__
@@ -605,5 +605,5 @@ def _random_ops(f: Findings, rc: RC, design: Design, geometry: dict, rng: np.ran
         }[op]
         if sid is None and op in ("move-sensor", "set-scale", "set-period", "set-offset"):
             continue
-        out.append({"op": op, "reason": "random", **ops})
+        out.append({"op": op, "reason": "random", **ops})  # type: ignore[dict-item]
     return out

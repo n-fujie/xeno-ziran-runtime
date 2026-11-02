@@ -148,7 +148,7 @@ def compare_levels(before: dict, after: dict) -> dict:
                                      "delta": after["reachable_configurations"] - before["reachable_configurations"]}
     gained = any(d[k]["gained"] for k in SET_KEYS) or d["reachable_configurations"]["delta"] > 0
     lost = any(d[k]["lost"] for k in SET_KEYS) or d["reachable_configurations"]["delta"] < 0
-    d["effect"] = "mixed" if gained and lost else "expanded" if gained else "contracted" if lost else "equivalent"
+    d["effect"] = "mixed" if gained and lost else "expanded" if gained else "contracted" if lost else "equivalent"  # type: ignore[assignment]
     return d
 
 

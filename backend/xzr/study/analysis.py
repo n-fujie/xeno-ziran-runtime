@@ -486,7 +486,7 @@ def ziran_records(doc: dict, runs: list[dict], arms: list[str]) -> dict:
         }
         lv_changes = [c for c in chs if c.get("levels")]
         if lv_changes:
-            eff = {"static": {}, "dynamic": {}}
+            eff: dict[str, dict] = {"static": {}, "dynamic": {}}
             for c in lv_changes:
                 eff["static"][c["levels"]["static"]["effect"]] = eff["static"].get(c["levels"]["static"]["effect"], 0) + 1
                 if "dynamic" in c["levels"]:

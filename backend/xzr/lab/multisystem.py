@@ -26,6 +26,7 @@ import numpy as np
 
 from .population import population
 from .record import LabRun
+from .science import Science
 
 
 # Harness steps are numbered from 1: the first recorded step has t = 1 (a harness entry at 0 never fires).
@@ -109,6 +110,12 @@ def _exchange_diagnosis(m: dict) -> str | None:
     return "the stored results changed some of the reader's decisions"
 
 
+def _science(r: LabRun) -> Science:
+    """The run's science object; a multi-system run always has one (the type of the attribute is optional because other runs have none)."""
+    assert r.science is not None
+    return r.science
+
+
 def _jaccard(a: set, b: set) -> float:
     return len(a & b) / len(a | b) if a | b else 0.0
 
@@ -120,7 +127,7 @@ def productive_writer(arm: dict, gen: int, seed: int, steps: int) -> tuple[str |
     r = LabRun(build_config(ctl, gen, seed, steps))
     for _ in range(steps):
         r.step()
-    hist = [(len(s.memory), s.spec.sid) for s in r.science.systems.values() if s.spec.kind == "history"]
+    hist = [(len(s.memory), s.spec.sid) for s in _science(r).systems.values() if s.spec.kind == "history"]
     if not hist or max(hist)[0] == 0:
         return None, 0
     n, sid = max(hist, key=lambda x: (x[0], -ord(x[1][-1])))
@@ -143,7 +150,7 @@ def run(arm: dict, gen: int, seed: int, steps: int) -> dict:
     cfg = build_config(arm, gen, seed, steps)
     t0 = time.time()
     r = LabRun(cfg)
-    sci = r.science
+    sci = _science(r)
     sids = list(sci.systems)
     cov_series: dict[str, list[int]] = {s: [] for s in sids}
     req_prev = {s: 0 for s in sids}
@@ -214,7 +221,7 @@ def run(arm: dict, gen: int, seed: int, steps: int) -> dict:
     r_hits = sum(summ[s]["memory_hits"] for s in readers)
     r_dec = sum(d.get("decisions", 0) for d in rd)
     r_changed = sum(d.get("changed_without_memory", 0) for d in rd)
-    store_entries = sum(len(sci.systems[w].memory) for w in {specs[s].shared_memory_from for s in readers})
+    store_entries = sum([len(sci.systems[w].memory) for w in {specs[s].shared_memory_from for s in readers} if w])
     basis_memory = sum(
         1 for e in rec_events if e["type"] == "experiment_selected" and e["system"] in readers and e["basis"] == "memory"
     )

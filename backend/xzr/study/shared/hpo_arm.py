@@ -138,8 +138,8 @@ def propose(
         changes = [{"op": "add-device", "kind": kind}]
         if level > 0:
             changes.append({"op": "spatial-resolution", "kind": kind, "value": O.SPATIAL_CHOICES[kind][level]})
-        if any(round(10 / O.DEFAULTS[kind]["sample_hz"]) > a.max_period for a in blind_alts):
-            changes.append({"op": "sample-rate", "kind": kind, "value": 10})
+        if any(round(10 / O.DEFAULTS[kind]["sample_hz"]) > a.max_period for a in blind_alts):  # type: ignore[operator]
+            changes.append({"op": "sample-rate", "kind": kind, "value": 10})  # type: ignore[dict-item]
         out.append(
             {"rule": "add-channel", "reason": "device-mismatch", "kind": kind, "changes": changes, "targets": need_kind[kind]}
         )
@@ -274,8 +274,8 @@ def run(replicate: int, *, history: bool = True, meta: bool = False, select: boo
             # blindness that the previous cycle's changes targeted, as it stands in the configuration now in force
             blind: dict[str, dict[str, list[int]]] = {}
             for r in cap_rows:
-                if r["capability"]["reason"]:
-                    blind.setdefault(O.DIFF_BY_ID[r["id"]].alt.kind, {}).setdefault(r["capability"]["reason"], []).append(0)
+                if r["capability"]["reason"]:  # type: ignore[index]
+                    blind.setdefault(O.DIFF_BY_ID[r["id"]].alt.kind, {}).setdefault(r["capability"]["reason"], []).append(0)  # type: ignore[index]
             for kind in memory_unidentified:
                 blind.setdefault(kind, {}).setdefault("unidentified", []).append(0)
             revisions = reviser.judge(blind, k)

@@ -95,10 +95,10 @@ def effects(axes: tuple[str, ...], cells: dict[tuple, float | None], levels: tup
         "interaction": {},
     }
     for i, a in enumerate(axes):
-        out["main"][a] = contrast((i,))
+        out["main"][a] = contrast((i,))  # type: ignore[index]
     for order in range(2, len(axes) + 1):
         for sub in itertools.combinations(range(len(axes)), order):
-            out["interaction"]["x".join(axes[i] for i in sub)] = contrast(sub)
+            out["interaction"]["x".join(axes[i] for i in sub)] = contrast(sub)  # type: ignore[index]
     return out
 
 

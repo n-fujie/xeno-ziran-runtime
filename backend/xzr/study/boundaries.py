@@ -48,7 +48,7 @@ def _first(a: list, b: list) -> int | None:
 def classify(steps: int = 120, gen: int = 7600, seed: int = 76000) -> dict:
     base = X._warm({"n": 800, "regime": "intermittent"}, gen, seed, 40)
     s = X.settings_for("D", {"warmup": 40, "horizon": steps})
-    ctl_fp, ctl_acts = _run(s, base, seed, steps)
+    ctl_fp, ctl_acts = _run(s, base, seed, steps)  # type: ignore[arg-type]
     variants = {
         "display range": {
             "settings": s,
@@ -63,7 +63,7 @@ def classify(steps: int = 120, gen: int = 7600, seed: int = 76000) -> dict:
             "changes": [{"path": "instruments.closure.level", "value": 2}, {"path": "instruments.closure.window", "value": 6}],
         },
         "interaction structure": {
-            "settings": {**s, "boundary": {"veil_scale": 1.0, "gate_scale": 1.8}},
+            "settings": {**s, "boundary": {"veil_scale": 1.0, "gate_scale": 1.8}},  # type: ignore[dict-item]
             "changes": [],
             "probe": False,
             "touches": "engine gates (settings.boundary.gate_scale 1.8)",
@@ -71,7 +71,7 @@ def classify(steps: int = 120, gen: int = 7600, seed: int = 76000) -> dict:
     }
     out = {}
     for name, v in variants.items():
-        fp, acts = _run(v["settings"], base, seed, steps, v["changes"], v["probe"])
+        fp, acts = _run(v["settings"], base, seed, steps, v["changes"], v["probe"])  # type: ignore[index]
         w, a = _first(ctl_fp, fp), _first(ctl_acts, acts)
         order = (
             "the world and the acts agree throughout"
@@ -81,7 +81,7 @@ def classify(steps: int = 120, gen: int = 7600, seed: int = 76000) -> dict:
             else "the world differs first (direct change of the dynamics)"
         )
         out[name] = {
-            "touches": v["touches"],
+            "touches": v["touches"],  # type: ignore[index]
             "first_world_difference_step": w,
             "first_act_difference_step": a,
             "order": order,

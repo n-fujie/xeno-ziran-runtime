@@ -133,20 +133,20 @@ def identify(cfg: WorldConfig, records: list[Record], p: IdentParams, d: np.ndar
             continue
         v = [vals_of[i] for i in g if i in vals_of]
         out.append({"key": key_of(cfg, g), "cells": sorted(g), "peak": round(max(v), 6), "mean": round(float(np.mean(v)), 6)})
-    out.sort(key=lambda o: (o["key"], o["cells"][0]))
+    out.sort(key=lambda o: (o["key"], o["cells"][0]))  # type: ignore[index]
     # equal keys (two objects in one bin) are kept apart by a suffix, so that identified sets can be compared as sets
     seen: dict[str, int] = {}
     for o in out:
         k = o["key"]
-        seen[k] = seen.get(k, 0) + 1
-        if seen[k] > 1:
-            o["key"] = f"{k}#{seen[k]}"
+        seen[k] = seen.get(k, 0) + 1  # type: ignore[call-overload,index]
+        if seen[k] > 1:  # type: ignore[index]
+            o["key"] = f"{k}#{seen[k]}"  # type: ignore[index]
     return out
 
 
 def coverage_cells(records: list[Record]) -> set[int]:
     return {
-        i
+        i  # type: ignore[misc]
         for r in _latest_by_sensor(records).values()
         for i in r[-1].blocks and {j for _, (_, idx) in r[-1].blocks.items() for j in idx}
     }
