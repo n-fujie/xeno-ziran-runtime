@@ -5,8 +5,10 @@ from __future__ import annotations
 
 import json
 import os
+import platform
 import subprocess
 import sys
+import warnings
 from pathlib import Path
 
 import numpy as np
@@ -31,6 +33,39 @@ REFERENCE = json.loads((ROOT / "tests" / "fixtures" / "conformance_reference.jso
 # the only observation that may differ: the sampled shortest-path bottleneck metric (BFS vs scipy's Dijkstra
 # tie-breaking among equally short paths); it never feeds back into the dynamics
 OBSERVATION_TOLERANCE = 0.05
+# The golden fixture was generated natively on macOS arm64 (Accelerate BLAS, Apple libm) — the platform the iOS app
+# shares. Bit-level identity is documented for the same machine and software only (docs/REPRODUCIBILITY.md): on other
+# platforms the vectorised exp() of the world generator and ARPACK on another BLAS give other last bits (observed on
+# Linux x86_64 CI with the same numpy / scipy versions: every fingerprint differs from t0 on, graph structure is
+# identical, rewind and save/load stay bit-identical within the run). There the platform-independent guarantees are
+# checked instead of the golden values; the golden comparison runs on macOS arm64 (locally and in the macOS CI job).
+# On macOS arm64 the stand-in path (numpy + the cached reference hierarchy) reproduces every golden value on macOS 14
+# (CI) and 26 (where the fixture was generated); the scipy path computes the hierarchy with ARPACK on the OS's
+# Accelerate, whose last bits differ between macOS versions, so its golden values apply only where that computed
+# hierarchy equals the reference one — otherwise the environment difference is reported and the platform-independent
+# guarantees are checked.
+REFERENCE_PLATFORM = ("Darwin", "arm64")
+
+
+def on_reference_platform() -> bool:
+    return (platform.system(), platform.machine()) == REFERENCE_PLATFORM
+
+
+def platform_independent_differences(reference: dict, candidate: dict, compat: bool) -> list[str]:
+    """What must hold on every platform: the same graph (size, live connections, start step), bit-identical rewind and
+    save/load within the run, and — on the stand-in path — the cached desktop reference hierarchy."""
+    out = []
+    for name, ref in reference.items():
+        c = candidate[name]
+        for k in ("n", "edges", "t0"):
+            if c.get(k) != ref.get(k):
+                out.append(f"{name}.{k}: {ref.get(k)} != {c.get(k)}")
+        for a, b in (("fp_load_t0", "fp_t0"), ("fp_rewind_60", "fp_60"), ("fp_load_50", "fp_50")):
+            if c.get(a) != c.get(b):
+                out.append(f"{name}: {a} != {b} within the run")
+        if compat and c.get("hierarchy") != ref.get("hierarchy"):
+            out.append(f"{name}.hierarchy: the stand-in path did not use the cached reference hierarchy")
+    return out
 
 
 def _graph(seed: int, n: int = 300, m: int = 1500):
@@ -150,9 +185,32 @@ def _snapshot(names: list[str], compat: bool) -> dict:
 @pytest.mark.parametrize("compat", [False, True], ids=["desktop-scipy", "ios-standins"])
 def test_engine_conformance_against_the_golden_fixture(compat):
     names = ["small-600", "reason-lab", "demo-3k"]
-    r = compare({k: REFERENCE[k] for k in names}, _snapshot(names, compat), tol=OBSERVATION_TOLERANCE)
+    ref = {k: REFERENCE[k] for k in names}
+    snap = _snapshot(names, compat)
+    assert platform_independent_differences(ref, snap, compat) == []
+    if not on_reference_platform():
+        return  # golden bit-level values are defined for REFERENCE_PLATFORM only (see the comment there)
+    other_hierarchy = [k for k in names if snap[k]["hierarchy"] != ref[k]["hierarchy"]]
+    if other_hierarchy:
+        assert not compat, "the stand-in path must use the cached reference hierarchy"
+        warnings.warn(f"scipy/ARPACK on this OS computed another hierarchy for {other_hierarchy}; golden values apply "
+                      "to the reference hierarchy (checked on the stand-in path)", stacklevel=1)
+        return
+    r = compare(ref, snap, tol=OBSERVATION_TOLERANCE)
     assert r["exact_differences"] == []  # dynamics, hierarchy, rewind, save/load: bit-identical
     assert r["observation_differences"] == []
+
+
+def test_platform_independent_checks_catch_broken_guarantees():
+    ref = {"s": {"n": 10, "edges": 20, "t0": 0, "hierarchy": "h"}}
+    ok = {"s": {"n": 10, "edges": 20, "t0": 0, "hierarchy": "h", "fp_t0": "a", "fp_load_t0": "a", "fp_50": "b",
+                "fp_load_50": "b", "fp_60": "c", "fp_rewind_60": "c"}}
+    assert platform_independent_differences(ref, ok, compat=True) == []
+    for key, val in (("edges", 21), ("fp_rewind_60", "x"), ("fp_load_t0", "x"), ("hierarchy", "other")):
+        bad = {"s": {**ok["s"], key: val}}
+        assert platform_independent_differences(ref, bad, compat=True), key
+    # a hierarchy computed by scipy may differ by platform; only the stand-in path must use the cached one
+    assert platform_independent_differences(ref, {"s": {**ok["s"], "hierarchy": "other"}}, compat=False) == []
 
 
 def test_a_hierarchy_without_a_reference_is_labelled_as_computed_on_device():
