@@ -358,13 +358,13 @@ def plan_test(net: ObserverNet, w: World) -> dict | None:
         ]
         return max(DELTA, 4 * float(np.std(np.diff(ser)))) if len(ser) >= 4 else DELTA
 
-    ok = [(s, natural_delta(s)) for s in ok if quiet(s)]
-    ok = [
-        (s, dl) for s, dl in ok if dl <= MAX_DELTA
+    ok_d = [(s, natural_delta(s)) for s in ok if quiet(s)]
+    ok_d = [
+        (s, dl) for s, dl in ok_d if dl <= MAX_DELTA
     ]  # a detector noisier than a fraction of the injected effect cannot attribute a rise to the test
-    if not ok:
+    if not ok_d:
         return None
-    b, delta = ok[0]
+    b, delta = ok_d[0]
     # the site lies TEST_DISTANCE regions outside the detector's footprint, so the detector cannot see the injection itself, only what propagates to it
     site = next((int(i) for i in range(w.cfg.n) if w.d[b.region, i] == b.radius + TEST_DISTANCE), None)
     return None if site is None else {"B": b.sid, "site": site, "D": TEST_DISTANCE, "delta": round(delta, 4)}

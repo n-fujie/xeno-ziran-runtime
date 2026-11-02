@@ -501,4 +501,4 @@ def amend(doc: dict, path: str, new: Any, reason: str, runs_started: bool, phase
 
 def is_registered_unchanged(doc: dict) -> bool:
     fr = doc.get("freeze")
-    return bool(fr) and fr["digest"] == digest(doc)
+    return bool(fr) and fr["digest"] == digest(doc)  # type: ignore[index]

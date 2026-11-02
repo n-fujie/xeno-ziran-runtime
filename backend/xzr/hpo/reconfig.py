@@ -202,7 +202,7 @@ class Controller:
         if self.meta is not None and self.mode == "recursive":
             self.meta.judge(self._blindness(f, evs), epoch)
         changes = self._decide(f, evs) if self.mode == "recursive" else self._random(f, epoch)
-        applied = []
+        applied: list[Any] = []
         lv_before = levels(f) if self.trace_reachability and changes else None
         for ch, causes in changes:
             try:
@@ -218,7 +218,7 @@ class Controller:
                 if before is not None:
                     rec["reachability"] = delta(before, reachability(f))
                     lv_after = levels(f)
-                    rec["levels"] = {"before": lv_before, "after": lv_after, "static": compare_levels(lv_before, lv_after)}
+                    rec["levels"] = {"before": lv_before, "after": lv_after, "static": compare_levels(lv_before, lv_after)}  # type: ignore[arg-type]
                     lv_before = lv_after  # the next change of this epoch starts from the state this one left
                     self._pending.append(rec)
                 applied.append(rec)

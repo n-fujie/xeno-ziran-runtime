@@ -150,6 +150,6 @@ def scaling_law(points: list[tuple[float, float]]) -> dict:
                 continue
             bs.append(np.polyfit(lx[idx], ly[idx], 1)[0])
         if bs:
-            out["interval"] = [round(float(np.percentile(bs, 2.5)), 4), round(float(np.percentile(bs, 97.5)), 4)]
-    out["note"] = "an empirical fit of this synthetic model over the sweep; no law is asserted"
+            out["interval"] = [round(float(np.percentile(bs, 2.5)), 4), round(float(np.percentile(bs, 97.5)), 4)]  # type: ignore[assignment]
+    out["note"] = "an empirical fit of this synthetic model over the sweep; no law is asserted"  # type: ignore[assignment]
     return out

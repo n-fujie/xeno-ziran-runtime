@@ -12,6 +12,8 @@ Neither measurement says the variable is *useful*; they say whether it is distin
 
 from __future__ import annotations
 
+from typing import Any
+
 import numpy as np
 
 from ..hpo import experiments as X
@@ -67,7 +69,8 @@ def novelty(n_seeds: int = 8, level: int = 1, window: int = 16, gen: int = 7200,
 
 
 def downstream(n_seeds: int = 8, horizon: int = 240, gen_base: int = 7300, seed_base: int = 73000) -> dict:
-    with_v, without = [], []
+    with_v: list[Any] = []
+    without: list[Any] = []
     for i in range(n_seeds):
         base = X._warm({"n": 800, "regime": "intermittent"}, gen_base + i, seed_base + i, 40)
         ref = base.fork()
@@ -75,7 +78,7 @@ def downstream(n_seeds: int = 8, horizon: int = 240, gen_base: int = 7300, seed_
             ref.step()
         s = X.settings_for("D", {"warmup": 40, "horizon": horizon})
         for store, extra in ((without, {}), (with_v, {"variables": ["activity_trend"]})):
-            f = Field(base.fork().track_rng(), {**s, **extra}, seed_base + i, keep_states=False)
+            f = Field(base.fork().track_rng(), {**s, **extra}, seed_base + i, keep_states=False)  # type: ignore[dict-item]
             f.run(horizon)
             store.append(measure(f, ref))
     names = ["picturing_error", "revisions", "fired_samples", "ignitions", "field_ignitions"]
@@ -139,7 +142,7 @@ def availability() -> dict:
     from ..hpo.reachability import compare_levels, levels
 
     base = X._warm({"n": 800, "regime": "intermittent"}, 7500, 75000, 40)
-    f = Field(base.fork(), X.settings_for("D"), 75000, keep_states=False)
+    f = Field(base.fork(), X.settings_for("D"), 75000, keep_states=False)  # type: ignore[arg-type]
     f.run(40)
     before = levels(f)
     reconfig.apply(f, {"path": "variables", "value": "activity_trend", "op": "add", "why": "variable adopted"}, [])

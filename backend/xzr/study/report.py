@@ -636,7 +636,7 @@ def build(study: Study, an: dict) -> dict:
     rep.mkdir(exist_ok=True)
     files: dict[str, str] = {"methods.md": methods(study, an), "results.md": results(study, an)}
     files.update(tables(study, an))
-    figs = []
+    figs: list[Any] = []
     for i, m in enumerate(an["metrics"][:6]):
         svg, cap = fig_arms(study, an, m)
         if svg:

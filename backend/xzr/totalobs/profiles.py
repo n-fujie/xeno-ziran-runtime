@@ -34,14 +34,14 @@ def effective_env(env: dict, arm: dict | None = None) -> dict:
 def validate_env(e: dict, where: str) -> list[str]:
     out: list[str] = []
     g, t = int(e["generations"]), int(e["gen_steps"])
-    if not LIMITS["generations"][0] <= g <= LIMITS["generations"][1]:
+    if not LIMITS["generations"][0] <= g <= LIMITS["generations"][1]:  # type: ignore[index]
         out.append(f"{where}: generations must be in {LIMITS['generations']}")
-    if not LIMITS["gen_steps"][0] <= t <= LIMITS["gen_steps"][1]:
+    if not LIMITS["gen_steps"][0] <= t <= LIMITS["gen_steps"][1]:  # type: ignore[index]
         out.append(f"{where}: gen_steps must be in {LIMITS['gen_steps']}")
     w = e["world"]
-    if int(w.get("rows", 8)) * int(w.get("cols", 12)) > LIMITS["regions"]:
+    if int(w.get("rows", 8)) * int(w.get("cols", 12)) > LIMITS["regions"]:  # type: ignore[operator]
         out.append(f"{where}: more than {LIMITS['regions']} regions")
-    if int(e["net"]["n_sensors"]) > LIMITS["sensors"] or int(e["net"]["n_sensors"]) < 1:
+    if int(e["net"]["n_sensors"]) > LIMITS["sensors"] or int(e["net"]["n_sensors"]) < 1:  # type: ignore[operator]
         out.append(f"{where}: n_sensors must be in 1..{LIMITS['sensors']}")
     for ev in e["events"]:
         if ev.get("do") not in EVENTS or "gen" not in ev:
