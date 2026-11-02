@@ -18,9 +18,12 @@ import ReasonView from './views/research/ReasonView';
 import ReductionView from './views/research/ReductionView';
 import HPOView from './views/research/HPOView';
 const LabView = lazy(() => import('./views/lab/LabView'));
-const StudyView = lazy(() => import('./views/study/StudyView'));
-const EcosystemView = lazy(() => import('./views/ecosystem/EcosystemView'));
-const BodyView = lazy(() => import('./views/body/Workspace'));
+// The static public site offers only the views listed in static-views.json; the views that exist only in the local app are not bundled into it
+// (VITE_STATIC is replaced by its value at build time, so the dynamic imports below are removed from the static build and no chunk of them is published).
+const STATIC_BUILD = import.meta.env.VITE_STATIC === '1';
+const StudyView = STATIC_BUILD ? null : lazy(() => import('./views/study/StudyView'));
+const EcosystemView = STATIC_BUILD ? null : lazy(() => import('./views/ecosystem/EcosystemView'));
+const BodyView = STATIC_BUILD ? null : lazy(() => import('./views/body/Workspace'));
 import CompressionView from './views/resolution/CompressionView';
 import DisconnectionView from './views/resolution/DisconnectionView';
 import HiddenDifferenceView from './views/resolution/HiddenDifferenceView';
@@ -255,9 +258,9 @@ export default function App() {
             {view === 'res_compression' && <CompressionView />}
             {view === 'hpo' && <HPOView />}
             {view === 'laboratory' && <LabView />}
-            {view === 'ecosystem' && <EcosystemView />}
-            {view === 'body' && <BodyView />}
-            {view === 'study' && <StudyView />}
+            {view === 'ecosystem' && EcosystemView && <EcosystemView />}
+            {view === 'body' && BodyView && <BodyView />}
+            {view === 'study' && StudyView && <StudyView />}
             {view === 'overview' && (
               <div className="entry">
                 <Orientation views={AVAILABLE.filter((v) => v !== 'overview').map((v) => ({ id: v, label: labelOf(v) }))}
