@@ -201,12 +201,12 @@ def rp3_planetary_placement(n_seeds: int = 6) -> dict:
         for p, (design, env) in placements.items():
             e = {**env, "net": {**env.get("net", {}), "latency": lat}}
             arms.append(
-                _arm(name(p, lat, False), f"{p} placement, {lat} step(s) per hop to the hub, low interference.", dict(design), e)
+                _arm(name(p, lat, False), f"{p} placement, {lat} step(s) per hop to the hub, low interference.", dict(design), e)  # type: ignore[call-overload]
             )
     for p, (design, env) in placements.items():
         e = {**env, "net": {**env.get("net", {}), "latency": 1, "backaction": 0.4}}
         arms.append(
-            _arm(name(p, 1, True), f"{p} placement, 1 step per hop, strong absorption by observation (0.4).", dict(design), e)
+            _arm(name(p, 1, True), f"{p} placement, 1 step per hop, strong absorption by observation (0.4).", dict(design), e)  # type: ignore[call-overload]
         )
     i = 1
     for lat in (1, 4):

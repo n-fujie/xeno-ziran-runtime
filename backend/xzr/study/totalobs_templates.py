@@ -241,7 +241,7 @@ def planetary_observation(n_seeds: int = 6) -> dict:
             {"world": {"rows": 12, "cols": 24, "span": 3}, "net": {"n_sensors": 4, "latency": 2, "pool": 24.0}},
         ),
     ]
-    arms = [_arm(n, desc, dict(basic), env or None) for n, desc, env in conds]
+    arms = [_arm(n, desc, dict(basic), env or None) for n, desc, env in conds]  # type: ignore[arg-type]
     contrasts = [
         {
             "id": f"C{i}",

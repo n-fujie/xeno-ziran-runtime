@@ -857,4 +857,4 @@ TEMPLATES.update(_programme_templates.TEMPLATES)
 
 
 def template(name: str, **kw) -> dict:
-    return copy.deepcopy(TEMPLATES[name](**kw))
+    return copy.deepcopy(TEMPLATES[name](**kw))  # type: ignore[operator]

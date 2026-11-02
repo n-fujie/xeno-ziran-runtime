@@ -70,7 +70,7 @@ DEFAULTS = {k: {"sample_hz": 5, "noise": 1, "spatial": "macro"} for k in KINDS}
 SPATIAL_CHOICES = {k: (list(SPATIAL[:3]) if k == "boundary_flow" else list(SPATIAL)) for k in KINDS}
 SCALE = {k: {c: i for i, c in enumerate(SPATIAL_CHOICES[k])} for k in KINDS}
 DEFAULT_WINDOW_STEPS = 8  # a configuration without a window aggregates the last 8 steps
-START_CONFIG = {"name": "control", "kinds": ["activity", "tension", "memory"], "overrides": {}, "window": None}
+START_CONFIG: dict[str, Any] = {"name": "control", "kinds": ["activity", "tension", "memory"], "overrides": {}, "window": None}
 
 
 @dataclass(frozen=True)
@@ -399,7 +399,7 @@ _TRUTH: dict[str, Any] | None = None
 def _ref_features(preset: str, alteration: str) -> dict[str, list[float]]:
     out: dict[str, list[float]] = {d.id: [] for d in DIFFS}
     ids = [d.id for d in DIFFS]
-    for i in range(TRUTH_REF["n"]):
+    for i in range(TRUTH_REF["n"]):  # type: ignore[call-overload]
         seed = TRUTH_REF["base"] + i
         w, recs = recorded(preset, alteration, seed)
         f = _features(w, recs, IDEAL, seed, ids)

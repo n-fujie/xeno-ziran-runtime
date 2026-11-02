@@ -125,7 +125,7 @@ def history_load(root: Path, n_seeds: int = 4, horizon: int = 240) -> dict:
         "n_seeds": n_seeds,
         "mean_wall_s": w,
         "mean_reinsertions": reins,
-        "wall_ratio_with_over_without": (w["recursive"] / w["no-history"]) if w["no-history"] else None,
+        "wall_ratio_with_over_without": (w["recursive"] / w["no-history"]) if w["no-history"] else None,  # type: ignore[operator]
         "note": "the two arms also differ in what the controller does with the extra events; one process, sequential, so wall times are comparable",
     }
 
@@ -145,7 +145,7 @@ def lab_stages(stages: tuple[int, ...] = (3, 20, 50, 100, 300), steps: int = 40)
             r.step()
         rec = r.record()
         wall = time.time() - t0
-        st = r.science.systems
+        st = r.science.systems  # type: ignore[union-attr]
         rows.append(
             {
                 "systems": n,

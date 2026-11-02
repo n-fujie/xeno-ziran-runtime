@@ -102,7 +102,7 @@ def reachability_check(changes: list[dict], acts: dict[str, list[int]], epochs: 
     epoch; an opened operation that did not act is *opened, not used* (opening is not success). ``closed`` predicted: the
     operation cannot observe an essential channel; consistent means it did not act in the next epoch.
     """
-    rows = {"opened": {"n": 0, "acted": 0}, "closed": {"n": 0, "silent": 0}, "skipped_last_epoch": 0}
+    rows: dict[str, Any] = {"opened": {"n": 0, "acted": 0}, "closed": {"n": 0, "silent": 0}, "skipped_last_epoch": 0}
     for ch in changes:
         r = ch.get("reachability")
         if not r:
