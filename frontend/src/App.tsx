@@ -18,12 +18,13 @@ import ReasonView from './views/research/ReasonView';
 import ReductionView from './views/research/ReductionView';
 import HPOView from './views/research/HPOView';
 const LabView = lazy(() => import('./views/lab/LabView'));
-// The static public site offers only the views listed in static-views.json; the views that exist only in the local app are not bundled into it
-// (VITE_STATIC is replaced by its value at build time, so the dynamic imports below are removed from the static build and no chunk of them is published).
-const STATIC_BUILD = import.meta.env.VITE_STATIC === '1';
-const StudyView = STATIC_BUILD ? null : lazy(() => import('./views/study/StudyView'));
-const EcosystemView = STATIC_BUILD ? null : lazy(() => import('./views/ecosystem/EcosystemView'));
-const BodyView = STATIC_BUILD ? null : lazy(() => import('./views/body/Workspace'));
+// Only the local app (no VITE_STATIC / VITE_WEBRT / VITE_NATIVE) offers the study, ecosystem and body views, which talk to the local backend (/api/...). The
+// static public site, the browser edition and the iOS app do not list them, and they are not bundled into them either (the build variables are replaced by their
+// values at build time, so the dynamic imports below are removed from those builds and no chunk of these views is published).
+const LOCAL_ONLY_BUILD = import.meta.env.VITE_STATIC === '1' || import.meta.env.VITE_WEBRT === '1' || import.meta.env.VITE_NATIVE === '1';
+const StudyView = LOCAL_ONLY_BUILD ? null : lazy(() => import('./views/study/StudyView'));
+const EcosystemView = LOCAL_ONLY_BUILD ? null : lazy(() => import('./views/ecosystem/EcosystemView'));
+const BodyView = LOCAL_ONLY_BUILD ? null : lazy(() => import('./views/body/Workspace'));
 import CompressionView from './views/resolution/CompressionView';
 import DisconnectionView from './views/resolution/DisconnectionView';
 import HiddenDifferenceView from './views/resolution/HiddenDifferenceView';
