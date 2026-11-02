@@ -157,7 +157,7 @@ describe('View I: AI legal governance (public specification; the source wording 
     expect(h).toContain('counted, never added into a score');
   });
   it('lays out sections I-A to I-I in order: subjecthood, MHEG duties, governance principles, legal transformation, receipt and proceedings, evidence and revision, model against sensor, intervention and restoration, experimental evidence', () => {
-    const idx = ['I-A · Legal subjecthood: fifteen guarantees', 'I-B · MHEG twelve duties', 'I-C · Governance principles', 'I-D · Legal transformation', 'I-E · Receipt and proceedings', 'I-F · Evidence and revision', 'I-G · Model against synthetic sensor', 'I-H · Intervention and restoration', 'I-I · Experimental evidence'].map((t) => h.indexOf(t));
+    const idx = ['I-A · Legal subjecthood: fifteen guarantees', 'I-B · MHEG twelve duties', 'I-C · Governance principles', 'I-D · Legal transformation', 'I-E · Receipt and proceedings', 'I-F · Evidence and revision', 'I-G · Model against synthetic sensor', 'I-H · Intervention and restoration', 'I-I · Research evidence and historical lineage'].map((t) => h.indexOf(t));
     expect(idx.every((i) => i >= 0)).toBe(true); expect([...idx].sort((x, y) => x - y)).toEqual(idx);
   });
   it('shows the twelve duties as a registry of their own, each as its worst mapped finding, with the functional-summary status', () => {
@@ -173,12 +173,30 @@ describe('View I: AI legal governance (public specification; the source wording 
     expect(cw.not_named_by_any_duty).toEqual(['G1']); expect(cw.matrix.M9[cw.findings.indexOf('G12B')]).toBe(1); expect(cw.matrix.M11.reduce((x, y) => x + y, 0)).toBe(1); expect(cw.duties_per_finding.G8).toBe(4);
     expect(h).toContain('data-testid="teoo-crosswalk"'); expect((h.match(/data-mapped="1"/g) ?? []).length).toBe(Object.values(cw.findings_per_duty).reduce((x, y) => x + y, 0)); expect(h).toContain('functional, not one-to-one');
   });
-  it('keeps the governance principles a separate series: only the fifteenth (Recursive Double Audit) is known, the rest unverified, nothing mapped', () => {
+  it('registers the fifteen R16 principles with the supplied titles, keeps the August version apart and maps by function, not by number', () => {
     const g = lg.mheg.governance_principles;
-    expect(g.status).toBe('PARTIALLY_KNOWN'); expect(g.items).toHaveLength(15); expect(g.items.filter((i) => i.name_status !== 'UNVERIFIED').map((i) => i.id)).toEqual(['P15']);
-    expect(g.items[14].name).toBe('Audit of the Auditor and Self-Audit of the Institutional Apparatus'); expect(g.items[14].version).toBe('Recursive Double Audit');
-    expect(g.proximity[0].verified).toBe(false); expect(g.proximity[0].relation).toContain('identity is not assumed');
-    expect(h).toContain('data-testid="teoo-governance"'); expect(h).toContain('Audit of the Auditor'); expect(h).toContain('none is mapped by ordinal position'); expect(h).toContain('identity is not assumed');
+    expect(g.status).toBe('SUPPLIED_BY_THE_RESEARCH_OWNER'); expect(g.items.map((i) => i.id)).toEqual(Array.from({ length: 15 }, (_, i) => `P${i + 1}`));
+    expect(g.items[0].name).toBe('Subject Recognition and Score Non-Identity'); expect(g.items[14].name).toBe('Effective Re-entry, Support, Remedy, and Mutual Audit'); expect(g.items[4].name).toBe('Score History, Expiry, Purpose, and Sharing Access');
+    expect(g.items.every((i) => i.verification === 'NOT_VERIFIED_AGAINST_SOURCE' && i.definition_status === 'FUNCTIONAL_SUMMARY')).toBe(true);
+    const aug = g.versions.find((v) => v.id === 'recursive_double_audit_august');
+    expect(aug?.p15?.name).toBe('Audit of the Auditor and Self-Audit of the Institutional Apparatus'); expect(aug?.note).toContain('not merged'); expect(g.versions).toHaveLength(2);
+    expect(g.items.filter((i) => i.title_identical_to_the_ordinal_guarantee).map((i) => i.id)).toEqual(['P1', 'P4', 'P13', 'P14']); expect(g.items.filter((i) => i.ordinal_similarity < 1).map((i) => i.id)).toEqual(['P5', 'P10', 'P15']);
+    expect(g.proximity.every((x) => x.verified === false && x.relation.includes('identity is not assumed'))).toBe(true);
+    expect(h).toContain('data-testid="teoo-governance"'); expect((h.match(/data-principle="P\d+" data-state=/g) ?? []).length).toBe(15); expect(h).toContain('Audit of the Auditor and Self-Audit'); expect(h).toContain('Recursive Double Audit version (August)');
+    expect(h).toContain('not taken from ordinal position'); expect(h).toContain('NOT_VERIFIED_AGAINST_SOURCE');
+    for (const k of Object.keys(lg.mheg.projections)) expect(Object.keys(lg.mheg.projections[k].principles)).toHaveLength(15);
+  });
+  it('lists the twelve registries with what theory requires, what software verifies and what only a real authority can do, and the historical lineage', () => {
+    const l = lg.ledger;
+    expect(l.registries).toHaveLength(12); expect(l.registries.every((r) => r.theory_requires && r.software_verifies && r.authority)).toBe(true); expect(l.registries.map((r) => r.name)).toEqual(expect.arrayContaining(['Fifteen Governance Principles Registry', 'Material Restoration Records', 'Immutable Measurement Registry']));
+    expect(l.lineage.map((x) => x.date)).toContain('2026-08'); expect(h).toContain('data-testid="teoo-registries"'); expect(h).toContain('data-testid="teoo-lineage"'); expect(h).toContain('Research evidence and historical lineage');
+  });
+  it('shows the independent verification model built to the stated aggregates and says it is not a reproduction', () => {
+    const w = lg.ledger.world_stated, a = lg.ledger.stated_aggregates;
+    expect(w.conditions.map((c) => w.per_condition[c].model_access)).toEqual(a.model_access); expect(w.conditions.map((c) => w.per_condition[c].sensor_access)).toEqual(a.sensor_access);
+    expect([w.per_condition.EXEC_GATE.disagreements, w.per_condition.EXEC_LINKED.disagreements]).toEqual([8, 18]); expect(w.boolean_model_agrees).toBe(1536); expect(w.historical_counts_reproduced).toBe(false);
+    expect(h).toContain('data-testid="teoo-world-stated"'); expect(h).toContain('by construction'); expect(h).toContain('not a reproduction');
+    expect(lg.ledger.results.map((e) => e.id)).toEqual(expect.arrayContaining(['EXP-R16-02', 'EXP-R16-04', 'EXP-R16-08', 'EXP-R16-09']));
   });
   it('shows the nine-stage transformation chain with its failure stage, and the unverified conditions', () => {
     const ch = Object.values(lg.mheg.chains);
@@ -215,8 +233,8 @@ describe('View I: AI legal governance (public specification; the source wording 
   });
   it('lists R5-R16 with what is implemented and what is not, and keeps the negative and unmet results', () => {
     const rs = lg.ledger.r_table.map((x) => x.r);
-    expect(rs).toEqual(['R5-R7', 'R8', 'R9', 'R10', 'R11', 'R12', 'R13', 'R14', 'R15', 'R16']); expect(lg.ledger.r_table.find((x) => x.r === 'R14')?.status).toBe('STRUCTURE_ONLY'); expect(lg.ledger.r_table.find((x) => x.r === 'R5-R7')?.status).toBe('NOT_AVAILABLE');
-    expect(lg.ledger.results.map((e) => e.id)).toEqual(['LAW-L1', 'LAW-L2', 'LAW-L3', 'LAW-L4', 'LAW-L5', 'LAW-L6', 'LAW-L7', 'LAW-A1']);
+    expect(rs).toEqual(['R5-R7', 'R8', 'R9', 'R10', 'R11', 'R12', 'R13', 'R14', 'R15', 'R16']); expect(lg.ledger.r_table.find((x) => x.r === 'R14')?.status).toBe('STRUCTURE_AND_STATED_AGGREGATES'); expect(lg.ledger.r_table.find((x) => x.r === 'R5-R7')?.status).toBe('NOT_AVAILABLE');
+    expect(lg.ledger.results.map((e) => e.id).slice(0, 8)).toEqual(['LAW-L1', 'LAW-L2', 'LAW-L3', 'LAW-L4', 'LAW-L5', 'LAW-L6', 'LAW-L7', 'LAW-A1']);
     expect(lg.ledger.negative_and_unmet.map((n) => n.analysis)).toEqual(expect.arrayContaining(['L403', 'L701']));
     expect(h).toContain('data-testid="teoo-r-table"'); expect(h).toContain('data-testid="teoo-law-negative"'); expect(h).toContain('criterion NOT met');
   });

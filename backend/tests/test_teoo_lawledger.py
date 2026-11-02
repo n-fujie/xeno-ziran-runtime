@@ -342,7 +342,7 @@ def test_the_bundle_is_deterministic_and_says_what_it_is_not():
     assert json.dumps(a, sort_keys=True) == json.dumps(b, sort_keys=True)
     assert a["synthetic"] and a["world"]["historical_counts_reproduced"] is False and set(a["invariants"]) == {"I9", "I10", "I11", "I12"}
     assert [r["r"] for r in a["r_table"]] == ["R5-R7", "R8", "R9", "R10", "R11", "R12", "R13", "R14", "R15", "R16"]
-    assert {r["r"]: r["status"] for r in a["r_table"]}["R14"] == "STRUCTURE_ONLY" and {r["r"]: r["status"] for r in a["r_table"]}["R5-R7"] == "NOT_AVAILABLE"
+    assert {r["r"]: r["status"] for r in a["r_table"]}["R14"] == "STRUCTURE_AND_STATED_AGGREGATES" and {r["r"]: r["status"] for r in a["r_table"]}["R5-R7"] == "NOT_AVAILABLE"
     assert a["demo"]["case"]["restoration"]["material_restoration_verified"] is False and a["demo"]["counts_65"]["ACTIVE"] == 12 and a["demo"]["counts_65"]["QUEUED"] == 53
     assert "no predictive advantage" in a["limits"]
 

@@ -90,20 +90,115 @@ DUTIES: tuple[dict[str, Any], ...] = tuple(
     for i, n, ja, fn, cw, tgt, ev, cv in _D)
 DUTY_IDS = tuple(d["id"] for d in DUTIES)
 
+# ------------------------------------------------------------------------------------------------ the fifteen governance principles (R16, section 7) and the historical version
+# id, title (as supplied), function (this implementation's summary of the supplied description), implemented by (findings of the evaluator that carry it), what a review of it needs, what is not implemented
+_P = [
+    ("P1", "Subject Recognition and Score Non-Identity", "the subject is not identified with a score, a class or a predicted value", "evidence that decisions can be altered by individual context", "the value given to testimony and to future capacity"),
+    ("P2", "Non-Reduction of Guarantees by Score", "a score is not a ground for reducing the minimum guarantees", "a measured comparison of access to review and appeal across score groups", "an independent justification of a different procedure"),
+    ("P3", "AI Use and Decision Involvement Notice", "the use of an automated system, the responsible body and the effect on the decision are notified", "notice records and their components", "delivery to and understanding by the person"),
+    ("P4", "Current Score and Classification Access", "the current score, class, rank and eligibility state can be seen", "access logs", "what the score means for the treatment, shown beside the number"),
+    ("P5", "Score History, Expiry, Purpose, and Sharing Access", "the history, expiry, purpose, recipients and downstream use of a score can be traced", "history and recipient records", "the purpose and the downstream use as separate itemised conditions (the evaluator itemises history, scope and recipients)"),
+    ("P6", "Legal Source and Institutional Basis Access", "the law, policy and institutional authority that support a decision are named", "the Translation Register's authority per variable", "validity of the named authority in a real legal order"),
+    ("P7", "Legal Concept-to-Variable Transformation Access", "the path from legal concept to proxy, weight, threshold and class can be followed", "the Translation Register (proxy, threshold, disclosed loss)", "weights and comparison groups as separate items"),
+    ("P8", "Separation of Facts, Inferences, Scores, and Normative Judgments", "observed fact, inference, score and normative judgment are kept apart", "record structure", "a test that an inference is not used as a fact"),
+    ("P9", "Individual Reasons and Inference Chain Access", "the reasons for an individual treatment and the chain of inference are available", "reason records and their components", "that the reason given is the real cause"),
+    ("P10", "Correction of Data, Inferences, Scores, and Derived Records", "source data, inferences, scores and derived records can be corrected", "correction records", "correction of inferred attributes; and the propagation of a correction downstream is named by G10 but not by this principle"),
+    ("P11", "Contestation, Rebuttal, and Non-Discounting of Testimony", "contestation and rebuttal are possible and testimony is not discounted without ground", "appeal records and review rates by score group", "contest of the purpose, proxy or threshold themselves (that is the systemic challenge)"),
+    ("P12", "Fair Burden of Proof and Independent Human Review", "the burden of proof is fairly allocated and an independent human review is effective", "the effort demanded of the subject; reviewer authority and independence", "the institution's duty to produce its basis; competence, time and protection of the reviewer"),
+    ("P13", "Suspension of Adverse Treatment and Score Use", "suspension of adverse treatment and score use can be reviewed where serious harm may follow", "a suspension provision and its applicability reason", "reasons for refusing suspension"),
+    ("P14", "Reversible Treatment, Temporal Limitation, and Future Subjecthood", "treatment is reversible, time-limited and does not close future subjecthood", "expiry and reassessment; the measured group gap", "withdrawal and re-examination as separate functions"),
+    ("P15", "Effective Re-entry, Support, Remedy, and Mutual Audit", "effective re-entry, support, remedy and a challenge to the review mechanism are ensured", "resources, restoration, re-entry and a systemic challenge route", "that the evaluators and the review body are themselves open to challenge; compensation"),
+]
+# functional profile of each guarantee (parent level) and of each principle: the protected functions their descriptions name (this implementation's analytic reading of the supplied descriptions; not verified against the sources)
+G_TAGS: dict[str, tuple[str, ...]] = {
+    "G1": ("recognition",), "G2": ("non_degradation",), "G3": ("notice",), "G4": ("score_access",), "G5": ("history_scope_sharing",), "G6": ("legal_source",), "G7": ("translation",), "G8": ("separation",), "G9": ("reasons",),
+    "G10": ("correction", "downstream_propagation"), "G11": ("contestation", "testimony_non_discount"), "G12": ("burden_allocation", "human_review"), "G13": ("suspension",), "G14": ("reversibility_time",),
+    "G15": ("resources_support", "material_restoration", "reentry", "mutual_audit_systemic")}
+P_TAGS: dict[str, tuple[str, ...]] = {
+    "P1": ("recognition",), "P2": ("non_degradation",), "P3": ("notice",), "P4": ("score_access",), "P5": ("history_scope_sharing", "purpose_and_downstream_use"), "P6": ("legal_source",), "P7": ("translation",), "P8": ("separation",),
+    "P9": ("reasons",), "P10": ("correction",), "P11": ("contestation", "testimony_non_discount"), "P12": ("burden_allocation", "human_review"), "P13": ("suspension",), "P14": ("reversibility_time",),
+    "P15": ("resources_support", "remedy", "reentry", "review_mechanism_challenge")}
+NEAR = {("remedy", "material_restoration"): "remedy is broader than material restoration", ("review_mechanism_challenge", "mutual_audit_systemic"): "a challenge to the review mechanism overlaps a systemic challenge and a mutual audit"}
+
+
+def functional_similarity(a: tuple[str, ...], b: tuple[str, ...]) -> dict[str, Any]:
+    """Overlap of protected functions: exact tags count 1, a named near pair counts 0.5 (and merges its two tags in the union). Ordinal position plays no part."""
+    A, B = set(a), set(b)
+    exact = A & B
+    ra, rb = A - exact, B - exact
+    near = [(x, y) for x in sorted(ra) for y in sorted(rb) if (x, y) in NEAR]  # sorted: set order differs between processes
+    union = len(A | B) - len(near)
+    score = (len(exact) + 0.5 * len(near)) / union if union else 0.0
+    return {"similarity": round(score, 4), "shared": sorted(exact), "near": [{"principle": x, "guarantee": y, "reading": NEAR[(x, y)]} for x, y in near], "only_in_first": sorted(ra - {x for x, _ in near}), "only_in_second": sorted(rb - {y for _, y in near})}
+
+
+def _containment(p: tuple[str, ...], m: tuple[str, ...]) -> float:
+    """The share of a principle's protected functions that a duty (through its guarantees) covers: exact 1, a near pair 0.5. A broad duty can cover a narrow principle; the converse is not claimed."""
+    P, Mm = set(p), set(m)
+    exact = P & Mm
+    near = [(x, y) for x in sorted(P - exact) for y in sorted(Mm - exact) if (x, y) in NEAR]
+    return round((len(exact) + 0.5 * len(near)) / len(P), 4) if P else 0.0
+
+
+G_TITLES = {g["number"]: g["title"] for g in L.GUARANTEES}
+
+
+def principle_crosswalk(threshold: float = 0.5) -> dict[str, Any]:
+    """Each principle against every guarantee and every duty by protected function (never by number). A guarantee or duty is *close* at or above the threshold. The ordinal counterpart is reported beside the best match so the two can be told apart."""
+    out: dict[str, Any] = {}
+    parent = lambda f: f if f in G_TAGS else f[:-1]  # noqa: E731  (G12A -> G12, G15D -> G15)
+    duty_tags = {d["id"]: tuple(sorted({t for f in d["findings"] for t in G_TAGS[parent(f)]})) for d in DUTIES}
+    for pid, ptags in P_TAGS.items():
+        ordinal = f"G{pid[1:]}"
+        sims = {g: functional_similarity(ptags, tags) for g, tags in G_TAGS.items()}
+        best = max(sims, key=lambda g: (sims[g]["similarity"], g == ordinal))
+        close = [g for g, v in sims.items() if v["similarity"] >= threshold]
+        dsims = {m: _containment(ptags, t) for m, t in duty_tags.items()}
+        out[pid] = {"ordinal_counterpart": ordinal, "ordinal_similarity": sims[ordinal]["similarity"], "ordinal_title_identical": G_TITLES[int(pid[1:])] == next(p[1] for p in _P if p[0] == pid), "best_guarantee": best, "best_similarity": sims[best]["similarity"],
+                    "close_guarantees": close, "differences_from_ordinal": {k: sims[ordinal][k] for k in ("only_in_first", "only_in_second", "near")}, "close_duties": [m for m, v in dsims.items() if v >= threshold],
+                    "duty_coverage": {m: v for m, v in dsims.items() if v > 0}}
+    return out
+
+
+def _findings_of(g: str) -> tuple[str, ...]:
+    return tuple(f for f in L.FINDING_IDS if f == g or (f.startswith(g) and not f[len(g):][:1].isdigit()))
+
+
+PRINCIPLE_CROSSWALK = principle_crosswalk()
 GOVERNANCE_PRINCIPLES: dict[str, Any] = {
-    "status": "PARTIALLY_KNOWN", "reported_count": 15, "reported_source": "Fujie, N. (2026). The End of Human Philosophy ..., governance self-review edition, 12 and 12.3 (as cited in R2 and as reported by the research owner); the manuscript was not available",
-    "items": [{"id": f"P{i}", "ordinal": i, "version": None, "name": None, "name_status": "UNVERIFIED", "scope": None, "definition_status": "NOT_AVAILABLE"} for i in range(1, 15)] + [
-        {"id": "P15", "ordinal": 15, "version": "Recursive Double Audit", "name": "Audit of the Auditor and Self-Audit of the Institutional Apparatus", "name_status": "REPORTED_BY_THE_RESEARCH_OWNER",
-         "scope": "the governing apparatus' own evaluation rules, powers, scales, thresholds, interests, invisibility and revisability are examined", "definition_status": "FUNCTIONAL_SUMMARY",
-         "note": "an independent fifteenth principle of the Recursive Double Audit version; kept as such"}],
-    "versions": [{"id": "recursive_double_audit", "label": "Recursive Double Audit", "known_items": ["P15"], "note": "the version whose independent fifteenth principle is the audit of the auditor"},
-                 {"id": "other_versions", "label": "other versions of the source", "known_items": [], "note": "differences between versions are to be kept when the source is available; none is available"}],
-    "proximity": [{"principle": "P15", "guarantee": "G15D", "relation": "functionally proximate (a systemic challenge, and a challenge of the evaluator); identity is not assumed", "verified": False}],
-    "crosswalk_to_guarantees": None, "crosswalk_to_duties": None,
-    "rule": "these principles are a separate historical series: the names of the guarantees are not reused for them, only the fifteenth is known (as reported), the other fourteen are not shown, and none is mapped by ordinal position",
-    "to_check_when_available": ["the fourteen unknown principles and the differences between the versions of the source", "correspondence with the fifteen guarantees by protected function, applicable authority and remedy", "correspondence with the twelve duties", "function in institutional operation",
-                                "implementation conditions", "independence of the three sets", "disagreements", "conditions not implemented"],
+    "status": "SUPPLIED_BY_THE_RESEARCH_OWNER", "version": "R16 section 7 (2026-11-01)", "reported_count": 15,
+    "reported_source": "AI law research R16, section 7 (2026-11-01), as supplied by the research owner; R16 itself and The End of Human Philosophy, 12.3, were not available, so the titles are as supplied, the functions are this implementation's summary, and nothing is verified against a source",
+    "items": [{"id": pid, "ordinal": int(pid[1:]), "version": "R16 section 7", "name": title, "name_status": "SUPPLIED", "function": fn, "definition_status": "FUNCTIONAL_SUMMARY", "verification": "NOT_VERIFIED_AGAINST_SOURCE",
+               "implemented_by": list(_findings_of(PRINCIPLE_CROSSWALK[pid]["best_guarantee"]) if PRINCIPLE_CROSSWALK[pid]["best_similarity"] >= 0.5 else ()), "required_evidence": ev, "not_implemented": ni,
+               "corresponding_guarantees": PRINCIPLE_CROSSWALK[pid]["close_guarantees"], "corresponding_duties": PRINCIPLE_CROSSWALK[pid]["close_duties"], "ordinal_counterpart": PRINCIPLE_CROSSWALK[pid]["ordinal_counterpart"],
+               "ordinal_similarity": PRINCIPLE_CROSSWALK[pid]["ordinal_similarity"], "title_identical_to_the_ordinal_guarantee": PRINCIPLE_CROSSWALK[pid]["ordinal_title_identical"],
+               "differences_from_the_ordinal_guarantee": PRINCIPLE_CROSSWALK[pid]["differences_from_ordinal"]} for pid, title, fn, ev, ni in _P],
+    "versions": [{"id": "r16_section_7", "label": "R16 section 7 (2026-11-01)", "known_items": [p[0] for p in _P], "note": "the version registered here, with its own P15 (Effective Re-entry, Support, Remedy, and Mutual Audit)"},
+                 {"id": "recursive_double_audit_august", "label": "Recursive Double Audit version (August)", "known_items": ["P15"], "p15": {"name": "Audit of the Auditor and Self-Audit of the Institutional Apparatus", "name_status": "REPORTED_BY_THE_RESEARCH_OWNER",
+                  "scope": "the governing apparatus' own evaluation rules, powers, scales, thresholds, interests, invisibility and revisability are examined", "definition_status": "FUNCTIONAL_SUMMARY"},
+                  "note": "a different composition: here the fifteenth principle is the self-audit of the governing apparatus. It is kept as a historical version and is not merged into the R16 P15; the other fourteen of that version are not available"}],
+    "proximity": [{"principle": "P15 (August, audit of the auditor)", "guarantee": "G15D", "relation": "functionally proximate (a systemic challenge, and a challenge of the evaluator); identity is not assumed", "verified": False},
+                  {"principle": "P15 (R16, support, remedy, mutual audit)", "guarantee": "G15", "relation": "close in protected functions, different in wording and in the weight of support and remedy; identity is not assumed", "verified": False}],
+    "crosswalk_to_guarantees": {pid: v["close_guarantees"] for pid, v in PRINCIPLE_CROSSWALK.items()}, "crosswalk_to_duties": {pid: v["close_duties"] for pid, v in PRINCIPLE_CROSSWALK.items()},
+    "crosswalk_method": "by protected function (the functions each description names), with a stated near-pair rule, and never by number; the profiles are this implementation's analytic reading of the supplied descriptions and are not verified against the sources",
+    "rule": "a separate historical series: the names of the principles are those supplied for R16 and are kept apart from the guarantees' (" + str(sum(v["ordinal_title_identical"] for v in PRINCIPLE_CROSSWALK.values())) + " titles coincide, " + str(sum(not v["ordinal_title_identical"] for v in PRINCIPLE_CROSSWALK.values())) + " differ in wording); correspondence is not taken from ordinal position",
+    "to_check_when_available": ["R16 section 7 and The End of Human Philosophy 12.3 against the supplied titles and descriptions", "the differences between the August version and R16", "the protected function, the applicable authority, the procedure and the remedy of each principle", "independence of the three sets", "conditions not implemented"],
 }
+
+
+def principle_projection(states: dict[str, dict[str, Any]]) -> dict[str, dict[str, Any]]:
+    """A principle as the worst of the findings of the guarantees that are functionally close to it (never an average); a projection of an audit of a synthetic institution, not an evaluation of the principle's definition."""
+    out = {}
+    for it in GOVERNANCE_PRINCIPLES["items"]:
+        fs = [f for g in it["corresponding_guarantees"] for f in _findings_of(g)]
+        live = {f: states[f]["state"] for f in dict.fromkeys(fs) if states[f]["state"] != "NOT_APPLICABLE"}
+        if not live:
+            out[it["id"]] = {"state": "NOT_APPLICABLE", "drivers": [], "findings": {}}
+            continue
+        worst = max(live.values(), key=lambda x: DRANK[x])
+        out[it["id"]] = {"state": worst, "drivers": [f for f, v in live.items() if v == worst and worst != "SATISFIED"], "findings": live}
+    return out
+
 
 # ------------------------------------------------------------------------------------------------ the crosswalk
 def crosswalk_matrix() -> dict[str, Any]:
@@ -254,12 +349,12 @@ def mheg_bundle(lb: dict) -> dict[str, Any]:
         for fid in L.FINDING_IDS:
             o = obs is None or fid in obs
             fs[fid] = {"state": directive_state(by[fid]["state"], o), "legacy_state": by[fid]["state"], "observed": o, "hard_failure": bool(by[fid]["hard_failure"])}
-        projections[name] = {"findings": fs, "duties": project(fs)}
+        projections[name] = {"findings": fs, "duties": project(fs), "principles": principle_projection(fs)}
     for name, inst in insts.items():
         ev = L.evidence_for(inst, seed)  # the same default as the audits in the legal bundle (the score-degradation test needs a minimum number of cases)
         chains[name] = assess_transformation(inst, L.audit(inst, seed, evidence=ev), ev)
     return {"duties": list(DUTIES), "crosswalk": crosswalk_matrix(), "projections": projections, "chains": chains, "chain_definition": [{"id": c[0], "label": c[1], "findings": list(c[4])} for c in CHAIN], "fidelity": FIDELITY,
-            "governance_principles": GOVERNANCE_PRINCIPLES, "states": list(DSTATES), "components": {k: list(v) for k, v in L.COMPONENTS.items()},
+            "governance_principles": GOVERNANCE_PRINCIPLES, "principle_crosswalk": PRINCIPLE_CROSSWALK, "states": list(DSTATES), "components": {k: list(v) for k, v in L.COMPONENTS.items()},
             "unverified": ["the initial MHEG source (the duties are functional summaries, not definitions)", "R16, the later correspondence table (the crosswalk is as reported)", "the fifteen governance principles (source not available; not mapped)", "the independence of the three sets",
                            "every normative condition listed under 'cannot verify' for each duty and under 'normative_unverifiable' for each finding", "validity of any of this for a real institution, law or person"],
             "limits": "a projection of the audit of a SYNTHETIC institution; not an evaluation of any duty's definition, and no total, rank or average is formed", "seed": seed}

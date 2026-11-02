@@ -1,0 +1,63 @@
+{
+ "body": null,
+ "claim": "an illustration of the stated data under the stated conditions; no claim beyond them",
+ "evidence": {
+  "band": [
+   "EVIDENCE: SYNTHETIC  ·  artificial functional-test data, not a measurement",
+   "REAL-WORLD EXPERIMENT: none recorded (no measurement exists behind this figure)",
+   "BODY: none",
+   "RECORDS: 1 (rec-7eff4f2552)  ·  generated 2026-11-01  ·  TEOO teoo/0.1"
+  ],
+  "classes": [
+   "SYNTHETIC"
+  ],
+  "real_world_experiment_recorded": false,
+  "watermarks": [
+   "SYNTHETIC"
+  ]
+ },
+ "experiment": {
+  "conditions": [
+   "stated-aggregates world",
+   "boolean comparator",
+   "ledger"
+  ],
+  "protocol_id": "EXP-R16-04",
+  "seeds": [
+   8101,
+   8101
+  ],
+  "trials_per_condition": 1,
+  "version": 1
+ },
+ "figure_id": "fig-33e8bfc1f6f436ad",
+ "generated_at": "2026-11-01T00:00:00.000000Z",
+ "kind": "bars",
+ "metadata_digest": "e89d131961701aecda7b26ca85e68cabb4e4b91bc607200021ef6b14b3957136",
+ "observation_limits": {
+  "config_version": null,
+  "note": "A synthetic ledger or a drawing: what lies outside what is stated here is unknown, not absent.",
+  "summary": {
+   "conditions": "256 states x 6 conditions = 1,536 comparisons"
+  },
+  "t": null
+ },
+ "provenance": {
+  "records": [
+   {
+    "kind": "OBSERVATION",
+    "lineage_classes": [
+     "SYNTHETIC"
+    ],
+    "provenance": "SYNTHETIC",
+    "record_digest": "7eff4f255232e4ddd99932756dc06bc75cd5df5f9ce252052c04f66b73cc9a94",
+    "record_id": "rec-7eff4f255232e4ddd9993275"
+   }
+  ],
+  "source_digest": "33e8bfc1f6f436ad01fbc61e1ef1dc40b6c9d8ea44f9ebe0ec3e13c6bbf22c20"
+ },
+ "schema": "teoo.figure/1",
+ "teoo_version": "teoo/0.1",
+ "title": "Fig R12 · The independent verification model built to the stated R16 aggregates (EXP-R16-04)",
+ "units": {}
+}

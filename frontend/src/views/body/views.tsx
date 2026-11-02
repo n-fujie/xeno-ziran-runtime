@@ -243,6 +243,10 @@ function ModelSensor({ lb }: { lb: LedgerBundle }) {
       <h4>I-G · Model against synthetic sensor: {w.states} states x {w.conditions.length} conditions = {w.comparisons} comparisons (this implementation's own world)</h4>
       <table className="small teoo-table" data-testid="teoo-world"><thead><tr><th>condition</th><th>model access</th><th>sensor access</th><th>disagreements</th><th>cause seen: EXPANDED</th><th>cause seen: ACCESS_ONLY</th></tr></thead>
         <tbody>{w.conditions.map((k) => <tr key={k} data-condition={k}><td>{k}</td><td>{w.per_condition[k].model_access}</td><td>{w.per_condition[k].sensor_access}</td><td>{w.per_condition[k].disagreements}</td><td>{w.per_condition[k].cause_identified_expanded}</td><td>{w.per_condition[k].cause_identified_access_only}</td></tr>)}</tbody></table>
+      <h4 className="dim">the independent verification model built to the stated R16 aggregates (model {lb.stated_aggregates.model_access.join('/')}, sensor {lb.stated_aggregates.sensor_access.join('/')}, disagreements {Object.entries(lb.stated_aggregates.disagreements).map(([k, v]) => `${k} ${v}`).join(', ')})</h4>
+      <table className="small teoo-table" data-testid="teoo-world-stated"><thead><tr><th>condition</th><th>model access</th><th>sensor access</th><th>disagreements</th><th>cause seen: EXPANDED</th></tr></thead>
+        <tbody>{lb.world_stated.conditions.map((k) => <tr key={k} data-condition={k}><td>{k}</td><td>{lb.world_stated.per_condition[k].model_access}</td><td>{lb.world_stated.per_condition[k].sensor_access}</td><td>{lb.world_stated.per_condition[k].disagreements}</td><td>{lb.world_stated.per_condition[k].cause_identified_expanded}</td></tr>)}</tbody></table>
+      <Note data-testid="teoo-world-stated-note">{lb.world_stated.note}. Boolean comparator on this world: {lb.world_stated.boolean_model_agrees} / {lb.world_stated.comparisons}.</Note>
       <Note>A disagreement is not a found cause: where the hidden condition q (stipulated by the experimenter, not discovered by the device) is not the reason, even EXPANDED leaves it unexplained. An ordinary Boolean model with the same information agrees with the world on <b data-testid="teoo-boolean-agree">{w.boolean_model_agrees} / {w.comparisons}</b> (model) and {w.boolean_sensor_agrees} / {w.comparisons} (sensor): no predictive advantage of the ledger or of its vocabulary is shown. {w.note}.</Note>
     </>
   );
@@ -264,7 +268,10 @@ function Restoration({ lb }: { lb: LedgerBundle }) {
 function ExperimentsPanel({ lb }: { lb: LedgerBundle }) {
   return (
     <>
-      <h4>I-I · Experimental evidence: R5-R16 and the new LAW experiments</h4>
+      <h4>I-I · Research evidence and historical lineage: R5-R16, the LAW and R16 experiments, the registries</h4>
+      <ol className="small" data-testid="teoo-lineage">{lb.lineage.map((x) => <li key={x.stage}><b>{x.date}</b> {x.stage} <span className="dim">— kept as {x.kept_as}</span></li>)}</ol>
+      <table className="small teoo-table" data-testid="teoo-registries"><thead><tr><th>registry</th><th>kept in</th><th>theory requires</th><th>software verifies</th><th>real authority</th></tr></thead>
+        <tbody>{lb.registries.map((r) => <tr key={r.name}><td>{r.name}</td><td className="mono">{r.kept_in}</td><td>{r.theory_requires}</td><td>{r.software_verifies}</td><td>{r.authority}</td></tr>)}</tbody></table>
       <table className="small teoo-table" data-testid="teoo-r-table"><thead><tr><th>R</th><th>what</th><th>implemented</th><th>where</th><th>experiment</th><th>status</th></tr></thead>
         <tbody>{lb.r_table.map((x) => <tr key={x.r} data-r={x.r} data-status={x.status}><td>{x.r}</td><td>{x.what}</td><td>{x.implemented}{x.note ? ` — ${x.note}` : ''}</td><td className="mono">{x.where}</td><td>{x.experiment}</td><td>{x.status}</td></tr>)}</tbody></table>
       <table className="small teoo-table" data-testid="teoo-law-results"><thead><tr><th>experiment</th><th>analysis</th><th>question</th><th>result</th></tr></thead>
@@ -307,9 +314,15 @@ export function ViewI({ b }: { b: LegalBundle }) {
       <h4>I-B · Functional crosswalk: twelve duties to the fifteen guarantees (functional, not one-to-one; colours are the selected institution's findings)</h4>
       <Crosswalk mh={mh} proj={proj} />
       <h4>I-C · Governance principles: the fifteen AI-legal-logic principles (a separate historical series)</h4>
-      <div className="teoo-banner" role="note" data-testid="teoo-governance">Status: <b>{mh.governance_principles.status}</b> — {mh.governance_principles.rule}. Reported source: {mh.governance_principles.reported_source}. To check when the source is available: {mh.governance_principles.to_check_when_available.join('; ')}.</div>
-      <table className="small teoo-table" data-testid="teoo-principles"><thead><tr><th>#</th><th>principle</th><th>version</th><th>name status</th></tr></thead>
-        <tbody>{mh.governance_principles.items.map((p) => <tr key={p.id} data-principle={p.id} data-known={p.name_status !== 'UNVERIFIED'}><td>{p.id}</td><td>{p.name ?? <span className="dim">unverified: not shown</span>}{p.scope ? <div className="dim">{p.scope}</div> : null}</td><td>{p.version ?? '—'}</td><td>{p.name_status}</td></tr>)}</tbody></table>
+      <div className="teoo-banner" role="note" data-testid="teoo-governance">Status: <b>{mh.governance_principles.status}</b> · {mh.governance_principles.version} — {mh.governance_principles.rule}. {mh.governance_principles.reported_source}. Correspondence is {mh.governance_principles.crosswalk_method}.</div>
+      <table className="small teoo-table" data-testid="teoo-principles"><thead><tr><th>#</th><th>principle (title as supplied)</th><th>state (projection)</th><th>implemented by</th><th>guarantees · duties (by function)</th><th>verification</th></tr></thead>
+        <tbody>{mh.governance_principles.items.map((p) => { const pj = proj.principles[p.id]; return (
+          <tr key={p.id} data-principle={p.id} data-state={pj.state}><td>{p.id}</td>
+            <td>{p.name}<details><summary className="dim">function · evidence · not implemented · differences</summary>
+              <div><b>Function (this implementation's summary; {p.definition_status}):</b> {p.function}</div><div><b>Version:</b> {p.version}</div><div><b>Required evidence:</b> {p.required_evidence}</div><div><b>Not implemented:</b> {p.not_implemented}</div>
+              <div><b>Against its ordinal guarantee {p.ordinal_counterpart}:</b> {p.title_identical_to_the_ordinal_guarantee ? 'the title is identical' : 'the title differs in wording'}; functional similarity {p.ordinal_similarity.toFixed(2)}{p.differences_from_the_ordinal_guarantee.only_in_first.length ? `; only in the principle: ${p.differences_from_the_ordinal_guarantee.only_in_first.join(', ')}` : ''}{p.differences_from_the_ordinal_guarantee.only_in_second.length ? `; only in the guarantee: ${p.differences_from_the_ordinal_guarantee.only_in_second.join(', ')}` : ''}{p.differences_from_the_ordinal_guarantee.near.length ? `; near: ${p.differences_from_the_ordinal_guarantee.near.map((n) => n.reading).join('; ')}` : ''}</div></details></td>
+            <td><DChip s={pj.state} /></td><td className="small">{p.implemented_by.join(', ') || '—'}</td><td className="small">{p.corresponding_guarantees.join(', ') || '—'} · {p.corresponding_duties.join(', ') || 'no duty'}</td><td className="small">{p.verification}</td></tr>); })}</tbody></table>
+      {mh.governance_principles.versions.map((v) => <div key={v.id} className="small" data-testid="teoo-principle-version" data-version={v.id}><b>{v.label}</b>: {v.known_items.length} principle(s) known{v.p15 ? ` — P15 there: ${v.p15.name} (${v.p15.name_status})` : ''}. {v.note}.</div>)}
       {mh.governance_principles.proximity.map((x) => <div key={x.principle + x.guarantee} className="small" data-testid="teoo-proximity">{x.principle} and {x.guarantee}: {x.relation}; verified: {String(x.verified)}.</div>)}
       <h4>I-D · Legal transformation: the chain of nine stages</h4>
       <div className="teoo-controls"><label>institution <select value={mn} onChange={(e) => setMn(e.target.value)} data-testid="teoo-transform-select">{Object.keys(mh.chains).map((n) => <option key={n}>{n}</option>)}</select></label>

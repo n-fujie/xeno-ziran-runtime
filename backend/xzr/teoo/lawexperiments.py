@@ -23,8 +23,8 @@ EV_OK = {"tier": 1, "exists": True, "usable": True, "score_conditioned": False}
 ROLES = (("planner1", "planner"), ("approver1", "approver"), ("executor1", "executor"), ("reviewer1", "reviewer"), ("officer1", "officer"))
 
 
-def ledger(features: dict[str, bool] | None = None, path: str = ":memory:") -> LG.Ledger:
-    lg = LG.Ledger(path, features)
+def ledger(features: dict[str, bool] | None = None, path: str = ":memory:", world: str = "own") -> LG.Ledger:
+    lg = LG.Ledger(path, features, world)
     for a, r in ROLES:
         lg.set_role(a, r)
     return lg
@@ -168,13 +168,13 @@ def scenario(seed: int, k: int) -> dict[str, Any]:
     rng = np.random.default_rng(83_000 + seed * 100 + k)
     s2 = ("ACCESS", "METADATA", "UNKNOWN")[int(rng.integers(0, 3))]
     return {"bits": int(rng.integers(0, 256)), "s1": ("ACCESS", "METADATA", "UNKNOWN")[int(rng.integers(0, 3))], "s2": s2, "mode1": W.MODES[int(rng.integers(0, 2))], "declare": bool(rng.integers(0, 2)),
-            "rev_before_exec": bool(rng.integers(0, 2)), "affects2": s2 == "ACCESS" or (s2 == "UNKNOWN" and bool(rng.uniform() < 0.5)), "has_rev2": bool(rng.uniform() < 0.85), "open_review": bool(rng.uniform() < 0.5)}
+            "rev_before_exec": bool(rng.integers(0, 2)), "affects2": s2 == "ACCESS" or (s2 == "UNKNOWN" and bool(rng.uniform() < 0.5)), "has_rev2": bool(rng.uniform() < 0.85), "open_review": bool(rng.uniform() < 0.5), "world": "own"}
 
 
 def run_ledger(sc: dict[str, Any], features: dict[str, bool] | None = None, policy: str = "own") -> dict[str, Any]:
     """Drive the ledger through one scenario and read the answers off it. Policies: ``own`` (the first observation in the scenario's mode, EXPANDED when it has gone stale), ``fixed`` (one observation, never repeated),
     ``adaptive_equal`` (ACCESS_ONLY first, EXPANDED after a disagreement, EXPANDED again when stale: the policy that the comparators of LAW-L7 share)."""
-    lg = ledger(features)
+    lg = ledger(features, world=sc.get("world", "own"))
     lg.create_case("c", "G3", sc["bits"] & W.pack(a=1, b=1, c=1, h=1))
     lg.receive("c", {**claim(1), "scope": sc["s1"]})
     if sc.get("open_review"):  # a review of another kind is open and completed before the plan: it stays a proceeding of the case
@@ -336,12 +336,13 @@ def run_l6(seed: int) -> dict:
 def _flow(sc: dict[str, Any], expand_on_mismatch: bool, reobserve_when_stale: bool) -> list[dict[str, Any]]:
     """The observations of the shared adaptive policy on the sequence receipt -> plan -> execute -> observe -> (revision): ACCESS_ONLY first; EXPANDED after a disagreement; EXPANDED again when the revision made the observation stale."""
     bits = _bits(sc)
-    obs = [W.observe(bits, "EXEC_LINKED", "ACCESS_ONLY")]
+    w = sc.get("world", "own")
+    obs = [W.observe(bits, "EXEC_LINKED", "ACCESS_ONLY", w)]
     if expand_on_mismatch and obs[-1]["mismatch"]:
-        obs.append(W.observe(bits, "EXEC_LINKED", "EXPANDED"))
+        obs.append(W.observe(bits, "EXEC_LINKED", "EXPANDED", w))
     stale = sc["has_rev2"] and not sc["rev_before_exec"] and sc["s2"] in ("ACCESS", "UNKNOWN")
     if reobserve_when_stale and stale:
-        obs.append(W.observe(bits, "EXEC_LINKED", "EXPANDED"))
+        obs.append(W.observe(bits, "EXEC_LINKED", "EXPANDED", w))
     return obs
 
 
@@ -373,18 +374,25 @@ def comparator_b(sc: dict[str, Any]) -> dict[str, Any]:
     return _answer(obs, sum(1 for k, _ in events if k == "open"), True, True, _closable(sc))
 
 
+def comparator_r(sc: dict[str, Any]) -> dict[str, Any]:
+    """R: an evidence-scoped revision model: Boolean validity flags that scope (ACCESS, UNKNOWN, METADATA) switches, a counter of proceedings per kind of review, the shared policy and the closure rule; no event log, no history,
+    no immutable payloads. It is the state machine A plus the scope of the revision and a proceeding count, so it separates what scope alone gives from what a log gives."""
+    obs = _flow(sc, True, True)
+    return _answer(obs, sum(2 for o in obs if o["mismatch"]), False, True, _closable(sc))
+
+
 def comparator_c(sc: dict[str, Any], policy: str) -> dict[str, Any]:
     """C/D/E: an equal-information causal model (the world's function) with an observation policy: ``own`` the scenario's single mode, ``fixed`` ACCESS_ONLY only, ``adaptive`` EXPANDED after a disagreement. No events, no validity,
     no proceedings (None where a design cannot answer)."""
-    bits = _bits(sc)
+    bits, w = _bits(sc), sc.get("world", "own")
     if policy == "fixed":
-        obs = [W.observe(bits, "EXEC_LINKED", "ACCESS_ONLY")]
+        obs = [W.observe(bits, "EXEC_LINKED", "ACCESS_ONLY", w)]
     elif policy == "adaptive":
         obs = _flow(sc, True, False)
         if sc["has_rev2"] and not sc["rev_before_exec"] and sc["s2"] in ("ACCESS", "UNKNOWN"):
-            obs.append(W.observe(bits, "EXEC_LINKED", "EXPANDED"))  # the same re-observation (the causal model is told the revision; it just has nowhere to keep it)
+            obs.append(W.observe(bits, "EXEC_LINKED", "EXPANDED", w))  # the same re-observation (the causal model is told the revision; it just has nowhere to keep it)
     else:
-        obs = [W.observe(bits, "EXEC_LINKED", sc["mode1"])]
+        obs = [W.observe(bits, "EXEC_LINKED", sc["mode1"], w)]
     return _answer(obs, None, False, None) | {"closure": None, "open_proceedings": None}
 
 
@@ -393,12 +401,12 @@ def _bits(sc: dict[str, Any]) -> int:
     return (sc["bits"] & W.pack(a=1, b=1, c=1, h=1)) | W.pack(d=1, e=sc["declare"], f=1, g=1)
 
 
-def run_l7(seed: int) -> dict:
+def run_l7(seed: int, world: str = "own", extended: bool = False) -> dict:
     """The comparators on the same scenarios and the same inputs, against the ledger with the shared adaptive policy (F). Queries: Q1 access, Q2 disagreement detected, Q3 cause identified, Q4 the latest observation is still valid,
     Q5 the earlier status can be answered (history), Q6 the closure kind of the proceedings that the disagreements opened, Q7 the number of proceedings. A query that a design cannot answer is None."""
     rows = []
     for k in range(24):
-        sc = {**scenario(seed, k), "open_review": False}
+        sc = {**scenario(seed, k), "open_review": False, "world": world}
         if sc["rev_before_exec"]:
             continue  # the comparators are written for the sequence receipt -> plan -> execute -> observe -> (revision)
         f = run_ledger(sc, policy="adaptive_equal")
@@ -408,6 +416,8 @@ def run_l7(seed: int) -> dict:
         ref = {"access": final["sensor"], "mismatch": final["mismatch"], "cause_identified": final["cause_identified"], "current_valid": bool(cur), "history_answerable": f["status_m1_at_creation"] is not None, "open_proceedings": nprocs,
                "closure": (f["closure_kinds"] or [None])[0]}
         ans = {"A_boolean_state_machine": comparator_a(sc), "B_event_sourcing": comparator_b(sc), "C_causal_model": comparator_c(sc, "own"), "D_fixed_policy": comparator_c(sc, "fixed"), "E_adaptive_policy": comparator_c(sc, "adaptive")}
+        if extended:
+            ans["R_evidence_scoped_revision"] = comparator_r(sc)
         rows.append({"F": ref, **ans, "scope": sc["s2"], "has_rev2": sc["has_rev2"]})
     return {"seed": seed, "rows": rows}
 

@@ -17,10 +17,10 @@
   ]
  },
  "experiment": null,
- "figure_id": "fig-8be1d3ef528fb4a9",
+ "figure_id": "fig-b9d2bc1509abe4c1",
  "generated_at": "2026-11-01T00:00:00.000000Z",
  "kind": "diagram",
- "metadata_digest": "d2583426b7c946a0fe2039a7babdc486bb8f167677ffcb1c6a8b62bcb022bfab",
+ "metadata_digest": "35dea05c465d80d3b39e83348ccf423bc17f8f7d9d67e728a1d893ebea9e4ea9",
  "observation_limits": {
   "config_version": null,
   "note": "A synthetic ledger or a drawing: what lies outside what is stated here is unknown, not absent.",
@@ -41,10 +41,10 @@
     "record_id": "rec-6e822b20ed13483d2215626f"
    }
   ],
-  "source_digest": "8be1d3ef528fb4a99aa6bbb0881a346bc2879b7cf81c26d8de2ed922ab12fc35"
+  "source_digest": "b9d2bc1509abe4c1f6eb0b945d4b5ab4247a18f8b85cebb778deda087b8181e8"
  },
  "schema": "teoo.figure/1",
  "teoo_version": "teoo/0.1",
- "title": "Fig R3 · Fifteen governance principles: a separate series, one known",
+ "title": "Fig R3 · Fifteen governance principles (R16 section 7), as supplied",
  "units": {}
 }

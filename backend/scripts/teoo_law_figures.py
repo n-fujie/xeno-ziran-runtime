@@ -12,6 +12,7 @@ import sys
 from pathlib import Path
 
 from xzr.teoo import export as EX
+from xzr.teoo import lawworld as W_
 from xzr.teoo import mheg as M
 from xzr.teoo.provenance import Kind, Provenance, seal
 
@@ -50,12 +51,23 @@ def main() -> None:
 
     D = lambda k: lf.doc(k, "law")  # noqa: E731
     gp = M.GOVERNANCE_PRINCIPLES
-    # ---- 3 governance principles
-    boxes = [{"id": f"p{i}", "x": 10 + (i % 5) * 158, "y": 40 + (i // 5) * 64, "w": 150, "h": 54, "label": f"P{i + 1}", "sub": ["unverified: not shown"], "fill": "#1c2230"} for i in range(14)]
-    boxes.append({"id": "p14", "x": 10 + 4 * 158, "y": 40 + 2 * 64, "w": 150, "h": 54, "label": "P15 Recursive Double Audit", "sub": ["audit of the auditor and", "self-audit of the apparatus"], "fill": "#3f3a26"})
-    boxes.append({"id": "n", "x": 10, "y": 240, "w": 790, "h": 52, "label": "A separate historical series (The End of Human Philosophy 12.3): only the fifteenth is known, as reported; the others are not shown; nothing is mapped by ordinal position.", "sub": ["P15 is functionally proximate to G15D (systemic challenge); identity is not assumed (not verified)."], "fill": "#2a2208"})
-    fig("law_fig3_governance_principles", "diagram", "Fig R3 · Fifteen governance principles: a separate series, one known",
-        {"title": "the series is kept apart from the twelve duties and the fifteen guarantees", "boxes": boxes, "arrows": [], "note": f"CONCEPTUAL; status {gp['status']}; source not available"}, concept("governance principles registry"), None, "specification")
+    # ---- 3 governance principles (R16 section 7) and the August version
+    it = gp["items"]
+
+    def wrap(t: str, n: int = 27) -> list[str]:
+        lines, cur = [], ""
+        for w in t.split():
+            if cur and len(cur) + 1 + len(w) > n:
+                lines.append(cur)
+                cur = w
+            else:
+                cur = (cur + " " + w).strip()
+        return (lines + [cur])[:4]
+
+    boxes = [{"id": f"p{i}", "x": 10 + (i % 5) * 158, "y": 40 + (i // 5) * 64, "w": 150, "h": 58, "label": x["id"] + " " + wrap(x["name"])[0], "sub": wrap(x["name"])[1:], "fill": "#3f3a26" if x["ordinal_similarity"] < 1 else "#1c2230"} for i, x in enumerate(it)]
+    boxes.append({"id": "n", "x": 10, "y": 240, "w": 790, "h": 60, "label": "R16 section 7: fifteen principles as supplied (amber: functionally different from the ordinal guarantee: P5, P10, P15). Kept apart from the guarantees by function, never by number.", "sub": ["The August Recursive Double Audit version has a different fifteenth (audit of the auditor); kept as a separate historical version, not merged.", "Titles as supplied; R16 itself was not available; verification against the source: not done."], "fill": "#2a2208"})
+    fig("law_fig3_governance_principles", "diagram", "Fig R3 · Fifteen governance principles (R16 section 7), as supplied",
+        {"title": "a separate series: functional comparison with the guarantees and the duties is in law_fig11", "boxes": boxes, "arrows": [], "note": f"CONCEPTUAL; status {gp['status']}; source not available"}, concept("governance principles registry"), None, "specification")
     # ---- 4 receipt-evidence-review sequence
     seq = [("submission receipt", "claim id, sequence, SHA-256", "R"), ("evidence finding", "container validated; E state", "E"), ("human review", "reviewer role; evidence version", "P"), ("proposed measure", "plan on an evidence version", "plan"),
            ("approval", "current evidence; reviews done", "plan"), ("execution", "another actor; world revision", "plan"), ("downstream observation", "model vs sensor; immutable", "M"), ("closure", "administrative only", "C"), ("material restoration", "never verified here", "X")]
@@ -126,7 +138,45 @@ def main() -> None:
     fig("law_fig10_negative_results", "table", "Fig R10 · Negative and unmet results kept (AI-law ledger)",
         {"title": "the ledger improves traceability, not prediction; nothing here is removed or re-labelled; earlier negative results stay in legal_fig7 and mheg_fig7", "header": ["analysis", "experiment", "class", "registered", "what was found"], "xs": [14, 70, 150, 255, 345], "rows": neg, "colors": []},
         lf.result_record("law", ["LAW-L4", "LAW-L6", "LAW-L7"]), None, "see each experiment")
-    (out / "law_figures_index.json").write_text(json.dumps({"figures": sorted(p.name for p in out.glob("law_fig*.svg")), "concept_figures": ["law_fig3", "law_fig4", "law_fig5"], "result_figures": ["law_fig6", "law_fig7", "law_fig8", "law_fig9", "law_fig10"],
+    # ---- 11 principle crosswalk by function (EXP-R16-09)
+    d9 = lf.doc("EXP-R16-09", "r16")
+    cwx = M.PRINCIPLE_CROSSWALK
+    rows9 = []
+    for pid, v in cwx.items():
+        diff = v["differences_from_ordinal"]
+        why = ", ".join(diff["only_in_first"] + diff["only_in_second"]) or ("near: " + "; ".join(n["principle"] for n in diff["near"]) if diff["near"] else "identical functions")
+        rows9.append([pid, v["ordinal_counterpart"], f"{v['ordinal_similarity']:.2f}", "same" if v["ordinal_title_identical"] else "differs", ", ".join(v["close_duties"]) or "none", why[:40]])
+    fig("law_fig11_principles_crosswalk_by_function", "table", "Fig R11 · Fifteen principles against the guarantees and the twelve duties, by protected function (EXP-R16-09)",
+        {"title": "function against the ordinal guarantee, title, covering duties, difference (analytic reading; unverified)", "header": ["principle", "guarantee", "function", "title", "duties", "difference"],
+         "xs": [14, 80, 150, 215, 280, 400], "rows": rows9, "colors": [(i, 2, "#c9a227") for i, r in enumerate(rows9) if r[2] != "1.00"]}, lf.result_record("r16", ["EXP-R16-09"]), proto(d9), "specification analysis; profiles are an analytic reading")
+    # ---- 12 the world built to the stated aggregates (EXP-R16-04)
+    d4b = lf.doc("EXP-R16-04", "r16")
+    pc2 = d4b["results"]["R401"]
+    conds2 = list(W_.CONDITIONS)
+    fig("law_fig12_stated_aggregates_world", "bars", "Fig R12 · The independent verification model built to the stated R16 aggregates (EXP-R16-04)",
+        {"title": "model and sensor access of 256 states and the disagreements under six conditions; equal to the stated numbers by construction", "ylabel": "states of 256", "groups": conds2,
+         "series": [{"name": "model", "values": [float(x) for x in pc2["model_access"]]}, {"name": "sensor", "values": [float(x) for x in pc2["sensor_access"]]}, {"name": "disagreements", "values": [float(pc2["disagreements"][c]) for c in conds2]}],
+         "note": "not a reproduction: the manuscript's world was not available; an ordinary Boolean model agrees on 1,536 / 1,536 here too"}, lf.result_record("r16", ["EXP-R16-04"]), proto(d4b), "256 states x 6 conditions = 1,536 comparisons")
+    # ---- 13 comparators on both worlds incl. the evidence-scoped revision model (EXP-R16-08)
+    d8 = lf.doc("EXP-R16-08", "r16")
+    u8 = lf.units("EXP-R16-08", "r16")
+    DES8 = ("A_boolean_state_machine", "B_event_sourcing", "R_evidence_scoped_revision", "C_causal_model", "D_fixed_policy", "E_adaptive_policy")
+    Q8 = ("access", "mismatch", "cause_identified", "current_valid", "history_answerable", "open_proceedings", "closure")
+    nr8 = []
+    for world in ("own", "r16_stated_aggregates"):
+        rws = [r for u in u8 for r in u["worlds"][world]]
+        for d in DES8:
+            row = [("own" if world == "own" else "stated") + " " + d.split("_", 1)[0]]
+            for q in Q8:
+                if d in DES8[3:] and q in ("current_valid", "open_proceedings", "closure"):
+                    row.append("n/a")
+                else:
+                    row.append(f"{sum(r[d][q] == r['F'][q] for r in rws) / len(rws):.2f}")
+            nr8.append(row)
+    fig("law_fig13_comparators_on_both_worlds", "table", "Fig R13 · Equal-information comparators on both worlds, with the evidence-scoped revision model (EXP-R16-08)",
+        {"title": "agreement with the ledger per query (A B R C D E: see EXP-R16-08)", "header": ["design"] + [q.replace("_", " ").replace("identified", "ident.").replace("answerable", "answ.").replace("proceedings", "procs") for q in Q8],
+         "xs": [14, 150, 205, 260, 335, 400, 505, 615], "rows": nr8, "colors": []}, lf.result_record("r16", ["EXP-R16-08"]), proto(d8), "the same events, scope, policy and world")
+    (out / "law_figures_index.json").write_text(json.dumps({"figures": sorted(p.name for p in out.glob("law_fig*.svg")), "concept_figures": ["law_fig3", "law_fig4", "law_fig5"], "result_figures": ["law_fig6", "law_fig7", "law_fig8", "law_fig9", "law_fig10", "law_fig11", "law_fig12", "law_fig13"],
                                                            "earlier_figures_kept": ["mheg_fig1 twelve-duty architecture", "mheg_fig2 guarantees seen from the duties", "mheg_fig3 twelve-to-fifteen crosswalk", "legal_fig1 fifteen guarantees", "legal_fig2 legal translation chain", "legal_fig7 and mheg_fig7 negative results"]}, indent=1))
 
 

@@ -46,15 +46,41 @@ def test_the_crosswalk_is_functional_not_one_to_one_and_g1_is_named_by_no_duty()
     assert [d["mapping_kind"] for d in M.DUTIES][:3] == ["direct", "direct", "broad"]
 
 
-def test_the_governance_principles_are_a_separate_series_with_only_the_fifteenth_known_and_nothing_maps_them():
+P_TITLES = ["Subject Recognition and Score Non-Identity", "Non-Reduction of Guarantees by Score", "AI Use and Decision Involvement Notice", "Current Score and Classification Access", "Score History, Expiry, Purpose, and Sharing Access",
+            "Legal Source and Institutional Basis Access", "Legal Concept-to-Variable Transformation Access", "Separation of Facts, Inferences, Scores, and Normative Judgments", "Individual Reasons and Inference Chain Access",
+            "Correction of Data, Inferences, Scores, and Derived Records", "Contestation, Rebuttal, and Non-Discounting of Testimony", "Fair Burden of Proof and Independent Human Review", "Suspension of Adverse Treatment and Score Use",
+            "Reversible Treatment, Temporal Limitation, and Future Subjecthood", "Effective Re-entry, Support, Remedy, and Mutual Audit"]
+
+
+def test_the_fifteen_r16_principles_are_a_separate_registry_with_the_supplied_titles_and_the_august_version_kept():
     g = M.GOVERNANCE_PRINCIPLES
-    assert g["status"] == "PARTIALLY_KNOWN" and len(g["items"]) == 15 and [i["id"] for i in g["items"] if i["name_status"] != "UNVERIFIED"] == ["P15"]
-    p15 = g["items"][14]
-    assert p15["name"] == "Audit of the Auditor and Self-Audit of the Institutional Apparatus" and p15["version"] == "Recursive Double Audit" and p15["definition_status"] == "FUNCTIONAL_SUMMARY"
-    assert all(i["name"] is None and i["scope"] is None for i in g["items"][:14]), "the other fourteen are not invented"
-    assert g["crosswalk_to_guarantees"] is None and g["crosswalk_to_duties"] is None and "not reused" in g["rule"] and "ordinal position" in g["rule"]
-    assert g["proximity"][0]["principle"] == "P15" and g["proximity"][0]["guarantee"] == "G15D" and g["proximity"][0]["verified"] is False and "identity is not assumed" in g["proximity"][0]["relation"]
-    assert not {i["name"] for i in g["items"]} & {x["title"] for x in L.GUARANTEES}, "the names of the guarantees are not reused"
+    assert g["status"] == "SUPPLIED_BY_THE_RESEARCH_OWNER" and g["version"].startswith("R16") and [i["id"] for i in g["items"]] == [f"P{i}" for i in range(1, 16)] and [i["name"] for i in g["items"]] == P_TITLES
+    for i in g["items"]:
+        assert i["definition_status"] == "FUNCTIONAL_SUMMARY" and i["verification"] == "NOT_VERIFIED_AGAINST_SOURCE" and i["function"] and i["required_evidence"] and i["not_implemented"] and i["version"] == "R16 section 7" and i["implemented_by"] is not None
+        assert i["corresponding_guarantees"] and "ordinal_similarity" in i
+    v = {x["id"]: x for x in g["versions"]}
+    assert set(v) == {"r16_section_7", "recursive_double_audit_august"} and v["recursive_double_audit_august"]["p15"]["name"] == "Audit of the Auditor and Self-Audit of the Institutional Apparatus" and "not merged" in v["recursive_double_audit_august"]["note"]
+    assert g["items"][14]["name"] != v["recursive_double_audit_august"]["p15"]["name"], "the August fifteenth is not the R16 fifteenth"
+    assert {x["guarantee"] for x in g["proximity"]} == {"G15D", "G15"} and all(x["verified"] is False and "identity is not assumed" in x["relation"] for x in g["proximity"])
+    assert "not taken from ordinal position" in g["rule"] and "by protected function" in g["crosswalk_method"]
+
+
+def test_principles_correspond_to_guarantees_and_duties_by_function_not_by_number():
+    cw = M.PRINCIPLE_CROSSWALK
+    ident = [p for p, v in cw.items() if v["ordinal_title_identical"]]
+    assert ident == ["P1", "P4", "P13", "P14"], "four titles coincide; the other eleven differ in wording"
+    assert all(v["best_guarantee"] == v["ordinal_counterpart"] and v["close_guarantees"] == [v["ordinal_counterpart"]] for v in cw.values())
+    assert sorted(p for p, v in cw.items() if v["ordinal_similarity"] < 1.0) == ["P10", "P15", "P5"]
+    assert cw["P5"]["differences_from_ordinal"]["only_in_first"] == ["purpose_and_downstream_use"] and cw["P10"]["differences_from_ordinal"]["only_in_second"] == ["downstream_propagation"]
+    assert {n["principle"] for n in cw["P15"]["differences_from_ordinal"]["near"]} == {"remedy", "review_mechanism_challenge"}
+    assert [p for p, v in cw.items() if not v["close_duties"]] == ["P1"], "G1 is named by no duty, so P1 reaches none"
+    covered = {m for v in cw.values() for m in v["close_duties"]}
+    assert covered == set(M.DUTY_IDS), "every duty is reached by at least one principle"
+    assert M.functional_similarity(("a",), ("b",))["similarity"] == 0.0 and M.functional_similarity(("remedy",), ("material_restoration",))["similarity"] == 0.5
+    st = {f: {"state": "SATISFIED"} for f in L.FINDING_IDS}
+    st["G12B"] = {"state": "VIOLATED"}
+    pr = M.principle_projection(st)
+    assert pr["P12"]["state"] == "VIOLATED" and pr["P12"]["drivers"] == ["G12B"] and pr["P11"]["state"] == "SATISFIED"
 
 
 def test_directive_states_keep_not_applicable_insufficient_evidence_and_not_evaluated_apart():
@@ -115,7 +141,7 @@ def test_the_fidelity_table_names_what_is_checked_and_what_is_not_for_every_find
 def test_the_bundle_carries_the_duties_the_projection_and_what_is_unverified():
     lb = L.legal_bundle(3)
     mb = M.mheg_bundle(lb)
-    assert len(mb["duties"]) == 12 and set(mb["projections"]) == set(lb["assessments"]) and mb["governance_principles"]["status"] == "PARTIALLY_KNOWN" and len(mb["unverified"]) >= 5
+    assert len(mb["duties"]) == 12 and set(mb["projections"]) == set(lb["assessments"]) and mb["governance_principles"]["status"] == "SUPPLIED_BY_THE_RESEARCH_OWNER" and len(mb["unverified"]) >= 5
     for p in mb["projections"].values():
         assert set(p["duties"]) == set(M.DUTY_IDS) and all(v["state"] in M.DSTATES for v in p["duties"].values())
         assert len(p["findings"]) == 19

@@ -13,8 +13,10 @@ from typing import Any
 from . import lawexperiments as X
 from . import lawledger as LG
 from . import lawworld as W
+from .r16experiments import STATED as X_STATED
 
 EVIDENCE_DIR = Path(__file__).resolve().parents[3] / "docs" / "teoo_evidence" / "law"
+R16_DIR = Path(__file__).resolve().parents[3] / "docs" / "teoo_evidence" / "r16"
 ORIGINAL_NOTE = "implemented from the operational description in the request; the manuscript, the historical code and (for R14) the world of Appendix O were not available, so names of states and events are this implementation's and no historical number is reproduced"
 
 R_TABLE: list[dict[str, Any]] = [
@@ -22,11 +24,12 @@ R_TABLE: list[dict[str, Any]] = [
     {"r": "R8", "what": "G1 judged SECURED, then an improper exception request turned it INDETERMINATE", "implemented": "kept as the problem that R9 corrects; the overwriting variant is the comparator", "where": "lawledger.Ledger (features: concurrent) and LAW-L2", "experiment": "LAW-L2", "status": "SPECIFIED_AND_TESTED"},
     {"r": "R9", "what": "evidence E, applicability A and proceedings W kept apart; G1 and G2 cannot be nullified by a general exception; contradiction in evidence is not a person's objection", "implemented": "yes", "where": "Ledger._request_exception, effective_state, decide_exception", "experiment": "LAW-L2", "status": "IMPLEMENTED"},
     {"r": "R10", "what": "receipt first: the claim is recorded before its evidence is validated; invariants I9-I12; historical limits 12 ACTIVE / 64 QUEUED", "implemented": "yes (the 64 limit only as the historical in-memory condition r10_batch)", "where": "Ledger.receive, r10_batch", "experiment": "LAW-L1", "status": "IMPLEMENTED"},
-    {"r": "R11", "what": "persistent SQLite intake: global receipt sequence, resend returns the same record, an id conflict is quarantined, an invalid submission does not block a later valid one, 65,536-byte contract", "implemented": "yes", "where": "Ledger.receive (SQLite, append-only)", "experiment": "LAW-L1", "status": "IMPLEMENTED"},
+    {"r": "R11", "what": "persistent SQLite intake: global receipt sequence, resend returns the same record, an id conflict is quarantined, an invalid submission does not block a later valid one, 65,536-byte contract", "implemented": "yes", "where": "Ledger.receive (SQLite, append-only)", "experiment": "LAW-L1, EXP-R16-02", "status": "IMPLEMENTED"},
     {"r": "R12", "what": "receipt, evidence finding, review, proposed measure, downstream observation and material restoration are separate records; restoration and positive law never verified", "implemented": "yes", "where": "Ledger.restoration_sequence", "experiment": "LAW-L6", "status": "IMPLEMENTED"},
     {"r": "R13", "what": "evidence registration, revision, review, plan, approval, execution and observation in one history; STALE_EVIDENCE; the executor is not the approver", "implemented": "yes", "where": "Ledger.plan / approve / execute", "experiment": "LAW-L3, LAW-A1", "status": "IMPLEMENTED"},
-    {"r": "R14", "what": "model against a synthetic sensor; ACCESS_ONLY and EXPANDED; a hidden stipulated condition; 256 states x 6 conditions = 1,536 comparisons; an ordinary Boolean model matched them all", "implemented": "structure only: this implementation's own world", "where": "lawworld", "experiment": "LAW-L4",
-     "status": "STRUCTURE_ONLY", "note": "the manuscript's counts (model 32/32/32/32/40/60, sensor 32/32/32/32/32/42, disagreements 8 and 18) are not reproduced"},
+    {"r": "R14", "what": "model against a synthetic sensor; ACCESS_ONLY and EXPANDED; a hidden stipulated condition; 256 states x 6 conditions = 1,536 comparisons; an ordinary Boolean model matched them all", "implemented": "two worlds: this implementation's own, and an independent verification model built to the stated aggregates",
+     "where": "lawworld (worlds own and r16_stated_aggregates)", "experiment": "LAW-L4, EXP-R16-04", "status": "STRUCTURE_AND_STATED_AGGREGATES",
+     "note": "the stated counts (model 32/32/32/32/40/60, sensor 32/32/32/32/32/42, disagreements 8 and 18) hold in the verification model by construction; the manuscript's own world was not available, so this is not a reproduction"},
     {"r": "R15", "what": "measurements anchored to evidence event, execution and world revision; STALE_EVIDENCE and STALE_WORLD; a duplicate comparison is refused", "implemented": "yes", "where": "Ledger.observe, register_evidence, execute", "experiment": "LAW-L3, LAW-L4", "status": "IMPLEMENTED"},
     {"r": "R16", "what": "immutable measurement payload and separate status events; evidence scope ACCESS / METADATA / UNKNOWN; administrative closure kept apart from legal determination and restoration (CLOSED_ADMIN_CONFLICT, CLOSED_ADMIN_MODEL_MATCH, UNRESOLVED_CONFLICT, MODEL_MATCH_NOT_LEGALLY_VERIFIED)",
      "implemented": "yes", "where": "Ledger (triggers, measurement_status_events, close_review)", "experiment": "LAW-L3, LAW-L5, LAW-A1", "status": "IMPLEMENTED"},
@@ -103,8 +106,8 @@ def demo(seed: int = 3) -> dict[str, Any]:
 
 def saved_results() -> list[dict[str, Any]]:
     out = []
-    for k in ("LAW-L1", "LAW-L2", "LAW-L3", "LAW-L4", "LAW-L5", "LAW-L6", "LAW-L7", "LAW-A1"):
-        f = EVIDENCE_DIR / f"{k}.json"
+    for k, base in [(k, EVIDENCE_DIR) for k in ("LAW-L1", "LAW-L2", "LAW-L3", "LAW-L4", "LAW-L5", "LAW-L6", "LAW-L7", "LAW-A1")] + [(k, R16_DIR) for k in ("EXP-R16-02", "EXP-R16-04", "EXP-R16-08", "EXP-R16-09")]:
+        f = base / f"{k}.json"
         if not f.exists():
             continue
         d = json.loads(f.read_text())
@@ -113,14 +116,50 @@ def saved_results() -> list[dict[str, Any]]:
     return out
 
 
+REGISTRIES: list[dict[str, str]] = [
+    {"name": "MHEG Twelve-Duty Registry", "kept_in": "xzr.teoo.mheg.DUTIES", "theory_requires": "for each duty: input, evidence, responsible subject, failure and indeterminate conditions", "software_verifies": "that the mapped findings are evaluated and projected (never summed)",
+     "authority": "whether a duty is met in a legal order is not decided here"},
+    {"name": "Fifteen Guarantees Registry", "kept_in": "xzr.teoo.legal (GUARANTEES, audit, itemised provisions)", "theory_requires": "an independent finding per guarantee; G12A/B and G15A-D separately; no total", "software_verifies": "the states from the evidence of a synthetic institution; hard failures; INDETERMINATE is not compliance",
+     "authority": "legal legitimacy is not decided here"},
+    {"name": "Fifteen Governance Principles Registry", "kept_in": "xzr.teoo.mheg.GOVERNANCE_PRINCIPLES", "theory_requires": "the R16 principles and the August version kept apart, with their sources", "software_verifies": "titles as supplied, the functional comparison with guarantees and duties, a projection of findings",
+     "authority": "the content of the sources is not verified (R16 and the book were not available)"},
+    {"name": "Legal Source Registry", "kept_in": "xzr.teoo.legal.RegisterEntry (the Translation Register)", "theory_requires": "an identified authority, purpose, proxy, threshold and disclosed loss for each variable", "software_verifies": "that each variable names an authority and discloses its proxy, threshold and loss",
+     "authority": "the validity of the named authority in a real legal order"},
+    {"name": "Receipt Registry", "kept_in": "lawledger: receipts, receipt_status_events, refusals", "theory_requires": "a claim is recorded before its evidence is validated and is not erased", "software_verifies": "idempotent resend, quarantine, per-case isolation, persistence, the input contract; I9-I11",
+     "authority": "a local row is not a receipt by a public body (I12)"},
+    {"name": "Evidence Registry", "kept_in": "lawledger: evidence_events, applicability_events", "theory_requires": "evidence, applicability and proceedings are separate; revisions have a scope", "software_verifies": "versions, container validity, E/A/W independence, scope effects",
+     "authority": "whether a revision is legally relevant is stipulated, not judged"},
+    {"name": "Proceedings Registry", "kept_in": "lawledger: proceedings, proceeding_events, reviews", "theory_requires": "several independent proceedings at once", "software_verifies": "concurrent proceedings, their states, reviews by an authorised actor of the TEST roles", "authority": "no review here has legal effect"},
+    {"name": "Intervention Registry", "kept_in": "lawledger: plans, plan_events, executions, declarations, roles", "theory_requires": "plans bound to evidence versions; approval, execution and observation separate", "software_verifies": "STALE_EVIDENCE, approval conditions, a different executor",
+     "authority": "approval and execution here are TEST roles, not an authority"},
+    {"name": "Immutable Measurement Registry", "kept_in": "lawledger: measurements", "theory_requires": "a measurement is never changed after it is stored", "software_verifies": "append-only triggers; duplicate comparisons refused", "authority": "the synthetic sensor is an experimenter's stipulation, not an observation of a real world"},
+    {"name": "Status Event Registry", "kept_in": "lawledger: measurement_status_events", "theory_requires": "validity changes by new events, never by editing", "software_verifies": "CURRENT, STALE_EVIDENCE, STALE_WORLD, HISTORICAL as appended events and the status at a past tick", "authority": "the names are this implementation's"},
+    {"name": "Administrative Closure Registry", "kept_in": "lawledger: closures, determinations", "theory_requires": "administrative closure, evidential resolution, legal determination and restoration are four things", "software_verifies": "the order of conditions for a closure; the flags UNRESOLVED_CONFLICT and MODEL_MATCH_NOT_LEGALLY_VERIFIED",
+     "authority": "a determination reported from outside is an input and verifies nothing"},
+    {"name": "Material Restoration Records", "kept_in": "lawledger: restoration_claims and restoration_sequence", "theory_requires": "restoration is a separate record that nothing earlier implies", "software_verifies": "that claims are recorded and that no claim is verified here", "authority": "real restoration is outside this environment"},
+]
+LINEAGE: list[dict[str, str]] = [
+    {"date": "2026-07", "stage": "MHEG: twelve operational duties", "kept_as": "mheg.DUTIES (functional summaries; the initial source was not available)"},
+    {"date": "2026", "stage": "The Minimum Guarantees of Human Legal Subjecthood V3.0 / 100_POINT_EDITION: fifteen guarantees", "kept_as": "legal.GUARANTEES (titles verified; wording held privately)"},
+    {"date": "2026-08", "stage": "The End of Human Philosophy 12.3, Recursive Double Audit version: a different fifteenth principle (audit of the auditor)", "kept_as": "a separate historical version in mheg.GOVERNANCE_PRINCIPLES"},
+    {"date": "2026-11-01", "stage": "AI law R16, section 7: fifteen governance principles P1-P15", "kept_as": "mheg.GOVERNANCE_PRINCIPLES.items (titles as supplied; R16 not available)"},
+    {"date": "2026-11-01", "stage": "R10-R16: receipt first, persistent intake, receipt-to-outcome, transaction-linked intervention, model-sensor comparison, evidence-anchored observation, immutable evidence-scoped observation", "kept_as": "lawledger, lawworld, LAW-L1..L7, LAW-A1, EXP-R16-02/04/08/09"},
+]
+
+
 def law_bundle(seed: int = 3) -> dict[str, Any]:
     en = W.enumerate_world()
+    st = W.enumerate_world("r16_stated_aggregates")
     res = saved_results()
     unmet = [{"experiment": e["id"], "analysis": a, "hypothesis": v["hypothesis"]} for e in res for a, v in e["analyses"].items() if v["criterion_met"] is False or v["supported"] is False]
-    return {"synthetic": True, "note": ORIGINAL_NOTE, "demo": demo(seed), "world": {k: en[k] for k in ("states", "conditions", "comparisons", "per_condition", "boolean_model_agrees", "boolean_sensor_agrees", "historical_counts_reproduced", "note")}, "r_table": R_TABLE,
+    return {"synthetic": True, "note": ORIGINAL_NOTE, "demo": demo(seed), "world": {k: en[k] for k in ("states", "conditions", "comparisons", "per_condition", "boolean_model_agrees", "boolean_sensor_agrees", "historical_counts_reproduced", "note")},
+            "world_stated": {k: st[k] for k in ("world", "states", "conditions", "comparisons", "per_condition", "boolean_model_agrees", "boolean_sensor_agrees", "historical_counts_reproduced", "note")}, "stated_aggregates": X_STATED,
+            "registries": REGISTRIES, "lineage": LINEAGE, "r_table": R_TABLE,
             "results": res, "negative_and_unmet": unmet + [
                 {"experiment": "LAW-L4", "analysis": "L403", "hypothesis": "an ordinary Boolean model with the same information agrees on 1,536 / 1,536: no predictive advantage of the ledger or its vocabulary (kept as a negative result)"},
-                {"experiment": "LAW-L7", "analysis": "L701", "hypothesis": "event sourcing with the same information agrees with the ledger on every query: non-redundancy of the ledger against it is not shown"}],
+                {"experiment": "LAW-L7", "analysis": "L701", "hypothesis": "event sourcing with the same information agrees with the ledger on every query: non-redundancy of the ledger against it is not shown"},
+                {"experiment": "EXP-R16-04", "analysis": "R403", "hypothesis": "in the world built to the stated aggregates too, an ordinary Boolean model agrees on 1,536 / 1,536: no predictive advantage"},
+                {"experiment": "EXP-R16-08", "analysis": "R801", "hypothesis": "on both worlds, event sourcing agrees with the ledger on every query; the evidence-scoped revision model agrees on all but the history query: what the ledger adds is history and the audit trail, which event sourcing has too"}],
             "invariants": {"I9": "a corrupt evidence container does not remove the receipt of a valid submission", "I10": "a submission beyond a limit is stated as not acknowledged, never as if it did not exist", "I11": "several independent proceedings are not overwritten by one state string",
                            "I12": "a receipt, a hash, a closure or a model match in a synthetic environment creates no judicial or administrative authority"},
             "limits": "a SYNTHETIC ledger and a world of this implementation's own: nothing here is a legal judgment, a restoration or an observation of any institution; no predictive advantage of operational-shape realism is shown", "seed": seed}

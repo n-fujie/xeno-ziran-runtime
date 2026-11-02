@@ -91,7 +91,10 @@ class Ledger:
     DELETE; ``concurrent`` several proceedings of a case are kept side by side; ``observation_revision`` an observation is invalidated by new evidence or a changed world; ``closure_separation`` a closure keeps its unresolved
     conflict and its absence of legal verification; ``transaction_linked`` an execution needs an approved plan on the current evidence."""
 
-    def __init__(self, path: str = ":memory:", features: dict[str, bool] | None = None) -> None:
+    def __init__(self, path: str = ":memory:", features: dict[str, bool] | None = None, world: str = "own") -> None:
+        if world not in W.WORLDS:
+            raise ValueError("unknown world")
+        self.world_name = world
         self.path = path
         self.f = {k: True for k in FEATURES} | (features or {})
         self._lock = threading.RLock()
@@ -473,7 +476,7 @@ class Ledger:
             dup = self.db.execute("SELECT id FROM measurements WHERE case_id = ? AND model_obs_id = ? AND mode = ? AND evidence_event_id IS ?", (case_id, mo, mode, eid)).fetchone()
             if dup is not None:
                 return {"ok": False, "duplicate_of": dup[0], "reason": "the same evidence, model observation and observation mode have already been compared"}
-            o = W.observe(w["bits"], w["condition"], mode)
+            o = W.observe(w["bits"], w["condition"], mode, self.world_name)
             tick = self._tick()
             cur = self.db.execute("INSERT INTO measurements(case_id, measure_id, tick, model_obs_id, world_revision, evidence_event_id, execution_id, mode, condition_name, model_output, sensor_output, hidden_q, mismatch) "
                                   "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)", (case_id, f"{case_id}/m{n}", tick, mo, w["world_revision"], eid, w["execution_id"], mode, w["condition"], int(o["model"]), int(o["sensor"]),
@@ -555,6 +558,12 @@ class Ledger:
             self.db.execute("INSERT INTO determinations(case_id, proceeding_id, authority, text, tick) VALUES(?,?,?,?,?)", (case_id, proceeding_id, authority, text, self._tick()))
             return {"ok": True, "positive_law_verified": False, "material_restoration_verified": False}
 
+    def record_restoration_claim(self, case_id: str, claimed_by: str, text: str) -> dict[str, Any]:
+        """A claim that something was restored (by the person or by the institution), kept as an input. It is not material restoration: nothing in this synthetic environment can verify one, and the record says so."""
+        with self._tx():
+            cur = self.db.execute("INSERT INTO restoration_claims(case_id, claimed_by, text, tick) VALUES(?,?,?,?)", (case_id, claimed_by, text, self._tick()))
+            return {"ok": True, "claim_id": int(cur.lastrowid or 0), "material_restoration_verified": False, "reason": "a claim of restoration is recorded as an input; this environment verifies none"}
+
     def restoration_sequence(self, case_id: str) -> dict[str, Any]:
         """The six independent records of R12 for a case: each present or absent on its own; none implies the next. Material restoration is never verified in this environment."""
         rc = [r for r in self.receipts(case_id) if r["state"] != "QUARANTINED"]
@@ -567,7 +576,7 @@ class Ledger:
         return {"stages": [{"stage": "submission_receipt", "present": bool(rc), "n": len(rc)}, {"stage": "evidence_finding", "present": any(e["valid"] for e in ev), "n": len(ev)},
                            {"stage": "human_review", "present": rv > 0, "n": rv}, {"stage": "proposed_measure", "present": pl > 0, "n": pl},
                            {"stage": "downstream_observation", "present": bool(ms), "n": len(ms), "current": sum(m["status"] == "CURRENT" for m in ms)}, {"stage": "material_restoration", "present": False, "n": 0}],
-                "administrative_closures": [c["kind"] for c in cl], "unresolved_conflict": any(c["flag"] == "UNRESOLVED_CONFLICT" for c in cl), "determinations_recorded": det,
+                "administrative_closures": [c["kind"] for c in cl], "unresolved_conflict": any(c["flag"] == "UNRESOLVED_CONFLICT" for c in cl), "determinations_recorded": det, "restoration_claims_recorded": self.db.execute("SELECT COUNT(*) FROM restoration_claims WHERE case_id = ?", (case_id,)).fetchone()[0],
                 "access_changed_in_the_synthetic_world": any(m["condition"] in ("EXEC_GATE", "EXEC_LINKED") and m["sensor"] for m in ms), "material_restoration_verified": False, "positive_law_verified": False,
                 "legal_determination_by_this_software": None}
 

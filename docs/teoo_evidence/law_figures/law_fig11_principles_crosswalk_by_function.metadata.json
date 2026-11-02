@@ -1,0 +1,63 @@
+{
+ "body": null,
+ "claim": "an illustration of the stated data under the stated conditions; no claim beyond them",
+ "evidence": {
+  "band": [
+   "EVIDENCE: SYNTHETIC  ·  artificial functional-test data, not a measurement",
+   "REAL-WORLD EXPERIMENT: none recorded (no measurement exists behind this figure)",
+   "BODY: none",
+   "RECORDS: 1 (rec-a2bb81433a)  ·  generated 2026-11-01  ·  TEOO teoo/0.1"
+  ],
+  "classes": [
+   "SYNTHETIC"
+  ],
+  "real_world_experiment_recorded": false,
+  "watermarks": [
+   "SYNTHETIC"
+  ]
+ },
+ "experiment": {
+  "conditions": [
+   "by protected function",
+   "by number",
+   "by title"
+  ],
+  "protocol_id": "EXP-R16-09",
+  "seeds": [
+   8301,
+   8301
+  ],
+  "trials_per_condition": 1,
+  "version": 1
+ },
+ "figure_id": "fig-b6b77ccaab589513",
+ "generated_at": "2026-11-01T00:00:00.000000Z",
+ "kind": "table",
+ "metadata_digest": "d306f6dea6fec05e7ccdc11186582078562bc7b2a05e0eb0a4531f70ced26656",
+ "observation_limits": {
+  "config_version": null,
+  "note": "A synthetic ledger or a drawing: what lies outside what is stated here is unknown, not absent.",
+  "summary": {
+   "conditions": "specification analysis; profiles are an analytic reading"
+  },
+  "t": null
+ },
+ "provenance": {
+  "records": [
+   {
+    "kind": "OBSERVATION",
+    "lineage_classes": [
+     "SYNTHETIC"
+    ],
+    "provenance": "SYNTHETIC",
+    "record_digest": "a2bb81433acfb7a839dc86907648ebd808dfab013ddf1583c3e8380f574e643e",
+    "record_id": "rec-a2bb81433acfb7a839dc8690"
+   }
+  ],
+  "source_digest": "b6b77ccaab58951358dee6ca1797537bf72d74a958863f63443ac0ae6e830bdd"
+ },
+ "schema": "teoo.figure/1",
+ "teoo_version": "teoo/0.1",
+ "title": "Fig R11 · Fifteen principles against the guarantees and the twelve duties, by protected function (EXP-R16-09)",
+ "units": {}
+}
