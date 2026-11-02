@@ -2,7 +2,7 @@
 // the engine's observation result; what each reading IS (observed, inferred, or the evaluator's reference state) is declared once in READING_SOURCES and tested, so that a hidden reference
 // state is never shown as a measurement. The module states what the engine cannot establish (UNRESOLVED / UNSUPPORTED) instead of filling it in.
 
-import { FULL_OBSERVATION, type Intervention, type Label, type MeosRecord, type Observation, type Observed, type PathActivity, type SssClassOut } from './meosApi';
+import { FULL_OBSERVATION, adAt, type Intervention, type Label, type MeosRecord, type Observation, type Observed, type PathActivity, type SssClassOut } from './meosApi';
 
 export type Epistemic = 'OBSERVED' | 'INFERRED' | 'REFERENCE';
 export type Availability = 'AVAILABLE' | 'UNRESOLVED';
@@ -60,6 +60,103 @@ export function inventory(rec: MeosRecord, tick: number, entity: 'A1' | 'A2', ob
     mk('unmet', 'unmet preconditions', e.failed.join('; ') || 'none', 'frames.entity'), mk('power', 'power reserve', f.power, 'frames.power'),
   ];
   return { observed: obs, inferred: inf, reference: ref };
+}
+
+// ------------------------------------------------------------------------------------------------ what cannot be settled
+
+export interface UnresolvedItem { id: string; label: string; reason: string }
+
+/** The fourth class of the inspector: what the current observation and experiment cannot settle. A difference the observation does not resolve is listed here, not dropped: the observer cannot tell
+ *  whether it happened. Nothing in this list is a finding about the target. */
+export function unresolvedItems(rec: MeosRecord, observed: Observed | null): UnresolvedItem[] {
+  const out: UnresolvedItem[] = [];
+  if (!observed) {
+    out.push({ id: 'no_observation', label: 'everything the observer would conclude', reason: 'no observation result exists for this run (full-resolution observation requests none): what a limited observer would have recorded is unresolved' });
+  } else {
+    const hidden = observed.true_cycles - observed.observed_cycles;
+    if (hidden > 0) out.push({ id: 'unobserved_cycles', label: `${hidden} of the ${observed.true_cycles} cycles of the run`, reason: `the observation array recorded ${observed.observed_cycles}; from the observer's side it cannot be told whether the other ${hidden} happened` });
+    if (observed.observed_state !== observed.operational_state) out.push({ id: 'status_disagreement', label: `observed ${observed.observed_state} against operational ${observed.operational_state}`, reason: `the observation alone does not settle which holds of the target (limiting: ${observed.limiting_parameters.join(', ') || 'none named'}); the operational status is the evaluator's reference, not an observation` });
+    const lost = observed.timeline.filter((r) => r.observability !== 'SUFFICIENT').length;
+    if (lost > 0) out.push({ id: 'observability_limit', label: `${lost} ticks at which the observation is limited`, reason: 'at these ticks the observed status may differ from the operation for reasons of the observation, which one record cannot separate from a change of the target' });
+  }
+  out.push({ id: 'intervention_possibilities', label: 'which interventions a regime makes possible', reason: 'the engine has no operation that tests it' });
+  out.push({ id: 'attribution', label: 'whether a difference belongs to the target or to the apparatus', reason: 'one record does not settle it; compare two regimes on one run (the target digest must be identical) or run an intervention branch' });
+  out.push({ id: 'addressability', label: 'whether a retained history can be retrieved under a later configuration', reason: 'not modelled: the Address Domain of MEOS addresses cells of the arena, not records' });
+  if (rec.termination.collapsed) out.push({ id: 'after_collapse', label: `the run after tick ${rec.termination.tick}`, reason: 'the run stopped at collapse; whether the operation could have been re-ignited later is not in the record' });
+  return out;
+}
+
+// ------------------------------------------------------------------------------------------------ the track of the operational shape
+
+export interface TrackSegment { from: number; to: number; label: Label }
+export type TrackMarkKind = 'intervention' | 'divergence' | 'formation' | 'cessation' | 'reignition';
+export interface TrackMark { tick: number; kind: TrackMarkKind; label: string }
+export interface ShapeTrack { length: number; operational: TrackSegment[]; observed: TrackSegment[] | null; marks: TrackMark[] }
+
+const runs = (n: number, at: (t: number) => Label): TrackSegment[] => {
+  const out: TrackSegment[] = [];
+  for (let t = 0; t < n; t++) { const l = at(t), last = out[out.length - 1]; if (last && last.label === l) last.to = t; else out.push({ from: t, to: t, label: l }); }
+  return out;
+};
+
+/** The operational status per tick (from the status log), the observed status per tick when there is an observation result, and the events that mark formation, interventions, cessation, re-ignition and
+ *  (when a baseline exists) the first divergence. Rows that differ are the observation's, not the target's. */
+export function shapeTrack(rec: MeosRecord, observed: Observed | null, divergence: number | null = null): ShapeTrack {
+  const n = rec.frames.length;
+  const op = (t: number): Label => { let l: Label = rec.status_log[0]?.label ?? 'DEGRADED'; for (const e of rec.status_log) { if (e.tick <= t) l = e.label; else break; } return l; };
+  const marks: TrackMark[] = [];
+  const first = rec.status_log.find((e) => e.label === 'ACTIVE');
+  if (first) marks.push({ tick: first.tick, kind: 'formation', label: 'operation forms (first ACTIVE)' });
+  let collapsed = false;
+  for (const e of rec.status_log) {
+    if (e.label === 'COLLAPSED' && !collapsed) { marks.push({ tick: e.tick, kind: 'cessation', label: 'collapse' }); collapsed = true; }
+    else if (e.label === 'ACTIVE' && collapsed) { marks.push({ tick: e.tick, kind: 'reignition', label: 're-ignition (ACTIVE after COLLAPSED)' }); collapsed = false; }
+  }
+  for (const i of rec.interventions) marks.push({ tick: i.tick, kind: 'intervention', label: `${i.op}${i.target ? ` ${i.target}` : ''}` });
+  if (divergence !== null) marks.push({ tick: divergence, kind: 'divergence', label: 'records first differ from the baseline' });
+  marks.sort((a, b) => a.tick - b.tick);
+  return { length: n, operational: runs(n, op), observed: observed ? runs(n, (t) => observed.timeline[t]?.observed ?? op(t)) : null, marks };
+}
+
+// ------------------------------------------------------------------------------------------------ history: retention, addressability, re-entry, consequence
+
+export interface HistoryReading {
+  /** a decaying history trace is held by each entity (the engine's own quantity); ``enabled`` is whether the re-entry channel is on at the tick */
+  retention: { A1: number; A2: number; enabled: boolean | null };
+  addressability: { status: 'NOT_MODELLED'; reason: string };
+  /** complete cycles up to the tick that contain a history re-entry, and the threshold each entity's firing is lowered by at the tick */
+  reentry: { cycles: number; ofCycles: number; A1: number; A2: number };
+}
+
+/** The four things that must not be taken for one another, as far as the record carries them. Retention and re-entry are read from the record; addressability is not modelled by MEOS; the effective
+ *  consequence of re-entry cannot be read from one record and needs a counterfactual run (``historyConsequence``). */
+export function historyReading(rec: MeosRecord, tick: number): HistoryReading {
+  const t = Math.max(0, Math.min(tick, rec.frames.length - 1)), f = rec.frames[t], ad = adAt(rec.frames, t);
+  const upTo = rec.cycles.filter((c) => c.tick <= t);
+  return {
+    retention: { A1: f.A1.h, A2: f.A2.h, enabled: ad ? ad.A1.history_reentry_enabled : null },
+    addressability: { status: 'NOT_MODELLED', reason: 'the Address Domain of MEOS addresses cells of the arena, not records: there is no retrieval of a retained history under a later configuration to observe' },
+    reentry: { cycles: upTo.filter((c) => c.history_reentry).length, ofCycles: upTo.length, A1: f.A1.reentry, A2: f.A2.reentry },
+  };
+}
+
+export interface HistoryConsequence {
+  verdict: 'DIFFERS' | 'NO_DIFFERENCE_IN_THIS_RUN';
+  base: { label: Label; cycles: number; reentryCycles: number }; withoutHistory: { label: Label; cycles: number; reentryCycles: number };
+  firstStatusDivergence: number | null; note: string;
+}
+
+/** The effective consequence of history re-entry, from two engine runs of one configuration: the baseline and the same run with the history disabled (``DISABLE_HISTORY``). It holds for this
+ *  configuration and seed only; a record that replays is not thereby a re-entry, and a difference here is a difference of these two runs, not a general law. */
+export function historyConsequence(base: MeosRecord, withoutHistory: MeosRecord): HistoryConsequence {
+  const side = (r: MeosRecord) => ({ label: r.final_status.label, cycles: r.cycles.length, reentryCycles: r.final_status.history_reentry_cycles });
+  const b = side(base), o = side(withoutHistory);
+  let first: number | null = null;
+  const n = Math.min(base.frames.length, withoutHistory.frames.length);
+  for (let t = 0; t < n; t++) if (base.frames[t].status !== withoutHistory.frames[t].status) { first = t; break; }
+  const differs = b.label !== o.label || b.cycles !== o.cycles || first !== null;
+  return { verdict: differs ? 'DIFFERS' : 'NO_DIFFERENCE_IN_THIS_RUN', base: b, withoutHistory: o, firstStatusDivergence: first,
+    note: differs ? 'with the history disabled the engine produced a different run: the re-entry had an effect on what followed in this configuration and seed' : 'disabling the history changed neither the final status, the cycles nor the status log of this run: no effect of re-entry is shown here (this does not show that there is none elsewhere)' };
 }
 
 // ------------------------------------------------------------------------------------------------ the five kinds of change under an observation regime

@@ -4,7 +4,7 @@ import { EXPERIMENTS, STATUS_TEXT } from './experiments';
 import { COUPLINGS, ORIGIN_TEXT, compareBranches, couplingDef, couplingStates, type CouplingId, type Origin } from './couplings';
 import { ENTITY_NAMES, type EntityName } from './layers';
 import {
-  compareRegimes, criticalIntervals, fiveS, humanDependencies, inventory, provenance, strongXenoscience,
+  compareRegimes, criticalIntervals, fiveS, historyConsequence, historyReading, humanDependencies, inventory, provenance, shapeTrack, strongXenoscience, unresolvedItems,
   type Reading, type RegimeSide,
 } from './xenoscience';
 
@@ -14,11 +14,11 @@ import {
 /** What is drawn in the coupling layer. These are display operations: none of them runs the engine or changes a record. */
 export interface CouplingDisplay { couplings: boolean; isolate: boolean; exploded: boolean; ghost: boolean }
 /** The baseline run kept while interventions are requested from the scene, and the request that made the branch. */
-export interface Branch { base: { record: MeosRecord; ivs: Intervention[] }; request: { id: CouplingId; tick: number; duration: number | null } }
+export interface Branch { base: { record: MeosRecord; ivs: Intervention[] }; request: { kind: 'cut'; id: CouplingId; tick: number; duration: number | null } | { kind: 'history-off'; tick: number } }
 
 export interface XenoscienceCtx { rec: MeosRecord | null; out: RunOut | null; tick: number; setTick: (t: number) => void; obs: Observation; entity: EntityName | null; sssClass: SssClassOut | null; pinned: RegimeSide | null; setPinned: (p: RegimeSide | null) => void;
   coupling: CouplingId | null; selectCoupling: (id: CouplingId | null) => void; display: CouplingDisplay; setDisplay: (d: CouplingDisplay) => void;
-  branch: Branch | null; requestCut: (id: CouplingId, at: number, duration: number | null) => Promise<void>; restoreBaseline: () => Promise<void>; clearBranch: () => void; busy: boolean; origin: Origin }
+  branch: Branch | null; playFrom: (t: number) => void; verifyReplay: () => Promise<void>; requestHistoryOff: (tick: number) => Promise<void>; requestCut: (id: CouplingId, at: number, duration: number | null) => Promise<void>; restoreBaseline: () => Promise<void>; clearBranch: () => void; busy: boolean; origin: Origin }
 
 const GROUPS: Array<{ key: 'observed' | 'inferred' | 'reference'; title: string; note: string }> = [
   { key: 'observed', title: 'OBSERVED', note: 'recorded through the configured observation array' },
@@ -28,7 +28,7 @@ const GROUPS: Array<{ key: 'observed' | 'inferred' | 'reference'; title: string;
 
 const ReadingRow = ({ r }: { r: Reading }) => <tr title={r.why} className={r.availability === 'UNRESOLVED' ? 'eco-unresolved' : undefined}><td>{r.label}</td><td>{r.value}</td></tr>;
 
-export default function XenosciencePane({ rec, out, tick, setTick, obs, entity, sssClass, pinned, setPinned, coupling, selectCoupling, display, setDisplay, branch, requestCut, restoreBaseline, clearBranch, busy, origin }: XenoscienceCtx) {
+export default function XenosciencePane({ rec, out, tick, setTick, obs, entity, sssClass, pinned, setPinned, coupling, selectCoupling, display, setDisplay, branch, playFrom, verifyReplay, requestHistoryOff, requestCut, restoreBaseline, clearBranch, busy, origin }: XenoscienceCtx) {
   const [who, setWho] = useState<EntityName>(entity ?? 'A1');
   const [dur, setDur] = useState<string>('50');
   const observed = out?.observed ?? null;
@@ -44,7 +44,11 @@ export default function XenosciencePane({ rec, out, tick, setTick, obs, entity, 
   const cmp = pinned && current ? compareRegimes(pinned, current) : null;
   const states = useMemo(() => (rec ? couplingStates(rec, tick) : null), [rec, tick]);
   const branchCmp = useMemo(() => (rec && branch ? compareBranches(branch.base.record, rec) : null), [rec, branch]);
-  if (!rec || !inv || !prov || !strong) return <div className="eco-note">Run an experiment first: the Xenoscience readings are read from its record.</div>;
+  const track = useMemo(() => (rec ? shapeTrack(rec, observed, branchCmp?.firstStateDivergence ?? null) : null), [rec, observed, branchCmp]);
+  const unresolved = useMemo(() => (rec ? unresolvedItems(rec, observed) : []), [rec, observed]);
+  const history = useMemo(() => (rec ? historyReading(rec, tick) : null), [rec, tick]);
+  const consequence = useMemo(() => (rec && branch && branch.request.kind === 'history-off' ? historyConsequence(branch.base.record, rec) : null), [rec, branch]);
+  if (!rec || !inv || !prov || !strong || !track || !history) return <div className="eco-note">Run an experiment first: the Xenoscience readings are read from its record.</div>;
   const n = rec.frames.length;
   const shown = entity ?? who;
 
@@ -80,6 +84,10 @@ export default function XenosciencePane({ rec, out, tick, setTick, obs, entity, 
       </div>
       <div className="eco-note">Isolate, exploded view and baseline markers are display operations: they change what is drawn and run nothing. The heights of the couplings and the lift of the exploded view are schematic layout offsets, not physical dimensions; positions of the configurations are the recorded cells.</div>
       <div className="eco-note" data-testid="xeno-origin"><span className={`eco-chip origin-${origin}`}>{origin.replace(/_/g, ' ')}</span> {ORIGIN_TEXT[origin]}. Moving the playhead plays this record back and runs nothing; REPLAY (EXPERIMENT tab) re-executes its inputs in the engine and compares the result digest.</div>
+      <div className="eco-row" role="group" aria-label="history playback">
+        <button onClick={() => playFrom(0)} title="move the playhead to tick 0 and play the record back: nothing is run">PLAY THE RECORD FROM TICK 0</button>
+        <button disabled={busy} onClick={() => void verifyReplay()} title="the engine re-executes the record's inputs and compares the result digest">VERIFY BY ENGINE REPLAY</button>
+      </div>
       {branchCmp && branch && (
         <>
           <h3>Baseline and intervention branch</h3>
@@ -105,6 +113,28 @@ export default function XenosciencePane({ rec, out, tick, setTick, obs, entity, 
         </>
       )}
 
+      <h3>Track of the operational shape</h3>
+      <div className="eco-track" data-testid="xeno-track">
+        <div className="eco-trackrow"><small>operational (the run itself)</small>
+          <div className="eco-strip" role="img" aria-label="operational status per tick">{track.operational.map((g) => <i key={g.from} className={g.label} style={{ flex: g.to - g.from + 1 }} title={`t=${g.from}-${g.to} ${g.label}`} onClick={() => setTick(g.from)} />)}</div></div>
+        {track.observed && <div className="eco-trackrow"><small>observed (the configured observation)</small>
+          <div className="eco-strip" role="img" aria-label="observed status per tick">{track.observed.map((g) => <i key={g.from} className={g.label} style={{ flex: g.to - g.from + 1 }} title={`t=${g.from}-${g.to} observed ${g.label}`} onClick={() => setTick(g.from)} />)}</div></div>}
+        <div className="eco-trackmarks" aria-hidden="true">{track.marks.map((m, i) => <button key={i} className={`mark ${m.kind}`} style={{ left: `${(m.tick / Math.max(1, track.length - 1)) * 100}%` }} title={`t=${m.tick} ${m.label}`} onClick={() => setTick(m.tick)} />)}<i className="head" style={{ left: `${(tick / Math.max(1, track.length - 1)) * 100}%` }} /></div>
+        <ul className="eco-log" data-testid="xeno-track-marks">{track.marks.map((m, i) => <li key={i}><button className="eco-span" onClick={() => setTick(m.tick)}>t={m.tick}</button> {m.kind}: {m.label}</li>)}</ul>
+      </div>
+      <div className="eco-note">The rows are read from the record: the status log (operational) and, when an observation result exists, the observed status per tick. Where they differ the observation is limited; that is not a change of the target. Every mark is an entry of the engine's own logs.</div>
+
+      <h3>History: retention, addressability, re-entry, consequence</h3>
+      <table className="eco-table" data-testid="xeno-history"><tbody>
+        <tr><td>retention (trace held at tick {tick})</td><td><span className="eco-chip epi-reference">REFERENCE</span></td><td>A1 {history.retention.A1.toFixed(3)} · A2 {history.retention.A2.toFixed(3)}; re-entry channel {history.retention.enabled === null ? 'not recorded' : history.retention.enabled ? 'on' : 'OFF'}</td></tr>
+        <tr><td>addressability</td><td><span className="eco-chip st-INSUFFICIENT_EVIDENCE">NOT MODELLED</span></td><td><small>{history.addressability.reason}</small></td></tr>
+        <tr><td>re-entry (up to tick {tick})</td><td><span className="eco-chip epi-reference">REFERENCE</span></td><td>{history.reentry.cycles} of {history.reentry.ofCycles} cycles contain a history re-entry; threshold lowered by {history.reentry.A1.toFixed(3)} (A1), {history.reentry.A2.toFixed(3)} (A2)</td></tr>
+        <tr><td>effective consequence</td><td><span className={`eco-chip ${consequence ? `verdict-${consequence.verdict === 'DIFFERS' ? 'CHANGED' : 'UNCHANGED'}` : 'verdict-UNRESOLVED'}`}>{consequence ? consequence.verdict.replace(/_/g, ' ') : 'UNRESOLVED'}</span></td>
+          <td>{consequence ? <small>{consequence.note}. Baseline {consequence.base.label}, {consequence.base.cycles} cycles ({consequence.base.reentryCycles} with re-entry); without history {consequence.withoutHistory.label}, {consequence.withoutHistory.cycles} cycles ({consequence.withoutHistory.reentryCycles}); status first differs at {consequence.firstStatusDivergence ?? 'never'}.</small> : <small>one record cannot show it: it needs a run of the same configuration with the history disabled</small>}</td></tr>
+      </tbody></table>
+      <div className="eco-row"><button disabled={busy} onClick={() => void requestHistoryOff(tick)} title="ask the engine to run the baseline's interventions plus DISABLE_HISTORY at this tick">TEST CONSEQUENCE: DISABLE HISTORY AT TICK {tick}</button></div>
+      <div className="eco-note">A record that replays is not a re-entry, and a retained trace is not one either: re-entry is read where a cycle contains it, and its consequence only from the second run, for this configuration and seed.</div>
+
       <h3>Operational shape inspector</h3>
       <div className="eco-row">{ENTITY_NAMES.map((e) => <button key={e} className={shown === e ? 'on' : ''} disabled={!!entity} onClick={() => setWho(e)}>{e}</button>)}</div>
       <div className="eco-note">Readings for {shown} at tick {tick}. {entity ? 'The entity is the one selected on the stage.' : 'Select an entity on the stage, or choose one here.'} A hidden reference value is not an observation: it is listed apart and may not be available to an operational observer.</div>
@@ -114,6 +144,11 @@ export default function XenosciencePane({ rec, out, tick, setTick, obs, entity, 
           <table className="eco-table"><tbody>{inv[g.key].map((r) => <ReadingRow key={r.id} r={r} />)}</tbody></table>
         </section>
       ))}
+
+      <section className="eco-epi eco-epi-unresolved" data-testid="xeno-unresolved">
+        <h4><span className="eco-chip epi-unresolved">UNRESOLVED</span> <small>not settled by the current observation and experiment; never dropped</small></h4>
+        <table className="eco-table"><tbody>{unresolved.map((u) => <tr key={u.id} className="eco-unresolved" title={u.reason}><td>{u.label}</td><td><small>{u.reason}</small></td></tr>)}</tbody></table>
+      </section>
 
       <h3>Observation regime comparison</h3>
       <div className="eco-row">
