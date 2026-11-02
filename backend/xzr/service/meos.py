@@ -33,6 +33,21 @@ MAX_HORIZON = 600
 MAX_SEEDS = 5
 
 
+def _like(value: Any, default: Any) -> Any:
+    """JSON has one number type and JavaScript writes 1.0 as 1, but the engine's digests tell 1 from 1.0 apart. A record whose configuration comes back from a browser must give the digest it had,
+    so a whole number given where the engine's default is a float is read as that float. A value without a default of its own (an optional block such as m2) is left as given: the record
+    already holds it as the client first sent it."""
+    if isinstance(value, bool) or isinstance(default, bool):
+        return value
+    if isinstance(default, float) and isinstance(value, int):
+        return float(value)
+    if isinstance(default, dict) and isinstance(value, dict):
+        return {k: _like(v, default.get(k)) for k, v in value.items()}
+    if isinstance(default, list) and isinstance(value, list) and len(default) == len(value):
+        return [_like(v, d) for v, d in zip(value, default, strict=True)]
+    return value
+
+
 def _config(body: dict) -> dict:
     over = body.get("config") or {}
     if not isinstance(over, dict):
@@ -47,6 +62,7 @@ def _config(body: dict) -> dict:
                     cfg[k][k2] = v2
         else:
             cfg[k] = v
+    cfg = _like(cfg, E.default_config())
     if isinstance(cfg.get("horizon"), int) and cfg["horizon"] > MAX_HORIZON:
         raise HTTPException(422, f"horizon is limited to {MAX_HORIZON} ticks on this API")
     return cfg
@@ -344,7 +360,13 @@ def address_intervention(request: Request, body: dict[str, Any]) -> dict:
     if target not in (*E.ENTITIES, "both"):
         raise HTTPException(422, "target must be A1, A2 or both")
     tick, duration, seed = body.get("tick", 100), body.get("duration", 40), body.get("seed", 1)
-    if not (isinstance(tick, int) and 20 <= tick <= 300 and isinstance(duration, int) and 1 <= duration <= 200 and isinstance(seed, int)):
+    if not (
+        isinstance(tick, int)
+        and 20 <= tick <= 300
+        and isinstance(duration, int)
+        and 1 <= duration <= 200
+        and isinstance(seed, int)
+    ):
         raise HTTPException(422, "tick must be an integer in 20..300, duration in 1..200, seed an integer")
     params = body.get("params") or {}
     if not isinstance(params, dict):
@@ -377,19 +399,38 @@ def sss_classify(request: Request, body: dict[str, Any]) -> dict:
 
 
 # ---------------------------------------------------------------------------------------------- fifth stage (routes, the MFS library, a controlled run)
-STAGE5_FILE = Path(os.environ.get("XZR_MEOS_STAGE5", Path(__file__).resolve().parents[3] / "docs" / "ecosystem" / "experiments_stage5.json"))
+STAGE5_FILE = Path(
+    os.environ.get("XZR_MEOS_STAGE5", Path(__file__).resolve().parents[3] / "docs" / "ecosystem" / "experiments_stage5.json")
+)
 
 
 def _stage5() -> dict:
     """The saved results of experiment F (the MFS library). The routes never run the exhaustive search: it takes minutes and is run by ``scripts/meos_experiments_v5.py``."""
     if not STAGE5_FILE.exists():
-        raise HTTPException(404, "the fifth-stage results are not saved on this server: run backend/scripts/meos_experiments_v5.py")
+        raise HTTPException(
+            404, "the fifth-stage results are not saved on this server: run backend/scripts/meos_experiments_v5.py"
+        )
     return json.loads(STAGE5_FILE.read_text())["experiments"]
 
 
 def _library_entries(f: dict) -> list[dict]:
-    return [{"id": m["id"], "condition_id": cid, "condition": r["condition"]["label"], "features": m["environment_condition"]["features"], "retained": m["retained_components"], "removed": m["removed_components"], "cardinality": m["cardinality"],
-             "route_kind": m["route_kind"], "retained_paths": m["retained_paths"], "lost_paths": m["lost_paths"], "digest": m["digest"]} for cid, r in f["by_condition"].items() for m in r["mfs"]]
+    return [
+        {
+            "id": m["id"],
+            "condition_id": cid,
+            "condition": r["condition"]["label"],
+            "features": m["environment_condition"]["features"],
+            "retained": m["retained_components"],
+            "removed": m["removed_components"],
+            "cardinality": m["cardinality"],
+            "route_kind": m["route_kind"],
+            "retained_paths": m["retained_paths"],
+            "lost_paths": m["lost_paths"],
+            "digest": m["digest"],
+        }
+        for cid, r in f["by_condition"].items()
+        for m in r["mfs"]
+    ]
 
 
 @router.get("/mfs-library")
@@ -412,15 +453,34 @@ def mfs_library(request: Request) -> dict:
         pr = f.get("profiles", {}).get(m["id"], {})
         sens = pr.get("perturbation_sensitivity") or {}
         m["card"] = {
-            "preserved_operation": pr.get("preserved_operation"), "energy_use": pr.get("energy_use"), "resource_throughput": pr.get("resource_throughput"), "recovery_latency": pr.get("recovery_latency"),
-            "perturbation_collapse_share": (sum(sens.values()) / len(sens)) if sens else None, "history_dependence": pr.get("history_dependence"), "address_dependence": pr.get("address_dependence"),
-            "observational_robustness": pr.get("observational_robustness"), "sss_region": pr.get("sss_region"), "ranges_along_axes": jr.get(m["id"], {}).get("ranges_along_axes"),
-            "operational_robustness": kr.get(m["id"], {}).get("operational_robustness"), "addressability": kr.get(m["id"], {}).get("addressability"), "recoverability": kr.get(m["id"], {}).get("recoverability"),
+            "preserved_operation": pr.get("preserved_operation"),
+            "energy_use": pr.get("energy_use"),
+            "resource_throughput": pr.get("resource_throughput"),
+            "recovery_latency": pr.get("recovery_latency"),
+            "perturbation_collapse_share": (sum(sens.values()) / len(sens)) if sens else None,
+            "history_dependence": pr.get("history_dependence"),
+            "address_dependence": pr.get("address_dependence"),
+            "observational_robustness": pr.get("observational_robustness"),
+            "sss_region": pr.get("sss_region"),
+            "ranges_along_axes": jr.get(m["id"], {}).get("ranges_along_axes"),
+            "operational_robustness": kr.get(m["id"], {}).get("operational_robustness"),
+            "addressability": kr.get(m["id"], {}).get("addressability"),
+            "recoverability": kr.get(m["id"], {}).get("recoverability"),
         }
         m["sss_points"] = pts.get(m["id"], [])
-    rejected = [{"condition_id": cid, **c} for cid, v in final.get("candidates", {}).items() for c in [*v["rejected"], *v["near_misses"]]]
-    return {"mfs": entries, "rejected_candidates": rejected, "conditions": [r["condition"] for r in f["by_condition"].values()], "classification_table": final.get("F_table", []), "scenarios": list(X5.SCENARIOS),
-            "controllers": list(X5.CONTROLLERS), "levels": f.get("levels", []), "route_equivalence": final.get("route_equivalence", [])}
+    rejected = [
+        {"condition_id": cid, **c} for cid, v in final.get("candidates", {}).items() for c in [*v["rejected"], *v["near_misses"]]
+    ]
+    return {
+        "mfs": entries,
+        "rejected_candidates": rejected,
+        "conditions": [r["condition"] for r in f["by_condition"].values()],
+        "classification_table": final.get("F_table", []),
+        "scenarios": list(X5.SCENARIOS),
+        "controllers": list(X5.CONTROLLERS),
+        "levels": f.get("levels", []),
+        "route_equivalence": final.get("route_equivalence", []),
+    }
 
 
 @router.post("/mfs-run")
@@ -435,9 +495,21 @@ def mfs_run(request: Request, body: dict[str, Any]) -> dict:
     if found is None:
         raise HTTPException(404, f"unknown MFS {mid}")
     cond = next(c for c in M5.conditions_f() if c["id"] == found[0])
-    rec = _guard(E.run_record, M5._config(cond, seed, 240), M5.retained_interventions(cond, frozenset(found[1]["retained_components"])))
-    return {"record": rec, "summary": A.summarize(rec), "paths": S4.path_activity(rec), "topology": R5.topology(rec),
-            "mfs": {"id": mid, "condition_id": found[0], "retained": found[1]["retained_components"], "removed": found[1]["removed_components"]}}
+    rec = _guard(
+        E.run_record, M5._config(cond, seed, 240), M5.retained_interventions(cond, frozenset(found[1]["retained_components"]))
+    )
+    return {
+        "record": rec,
+        "summary": A.summarize(rec),
+        "paths": S4.path_activity(rec),
+        "topology": R5.topology(rec),
+        "mfs": {
+            "id": mid,
+            "condition_id": found[0],
+            "retained": found[1]["retained_components"],
+            "removed": found[1]["removed_components"],
+        },
+    }
 
 
 @router.post("/route-topology")
@@ -460,7 +532,9 @@ def reconfigure(request: Request, body: dict[str, Any]) -> dict:
 
     kind, scen, seed = body.get("controller", "adaptive"), body.get("scenario", "history lost"), body.get("seed", 1)
     if kind not in X5.CONTROLLERS or scen not in X5.SCENARIOS or not isinstance(seed, int):
-        raise HTTPException(422, f"controller must be one of {X5.CONTROLLERS}, scenario one of {list(X5.SCENARIOS)}, seed an integer")
+        raise HTTPException(
+            422, f"controller must be one of {X5.CONTROLLERS}, scenario one of {list(X5.SCENARIOS)}, seed an integer"
+        )
     ex = _stage5()
     library = RC.library_from(ex["F"]["by_condition"])
     arrangement = {"tap": M5.M2_BASE, "tap_feature": "direct", "universe": M5.COMPONENTS5}
@@ -468,8 +542,15 @@ def reconfigure(request: Request, body: dict[str, Any]) -> dict:
     ivs = [{"tick": 0, "op": "ROUTE", "m2": {"sense": "none"}}, *copy.deepcopy(X5.SCENARIOS[scen][0])]
     ctl = None if kind == "none" else RC.Controller(kind, library, arrangement, noise=0.05, seed=seed)
     rec = _guard(RC.run_controlled, cfg, ivs, ctl)
-    return {"record": rec, "summary": A.summarize(rec), "paths": S4.path_activity(rec), "controller": rec["controller"], "outcomes": RC.switch_outcomes(rec, X5.STRESS_TICK), "topology": R5.topology(rec),
-            "replay_identical": E.replay(rec)["identical"]}
+    return {
+        "record": rec,
+        "summary": A.summarize(rec),
+        "paths": S4.path_activity(rec),
+        "controller": rec["controller"],
+        "outcomes": RC.switch_outcomes(rec, X5.STRESS_TICK),
+        "topology": R5.topology(rec),
+        "replay_identical": E.replay(rec)["identical"],
+    }
 
 
 # ---------------------------------------------------------------------------------------------------- stage 6: world-state repair
@@ -520,8 +601,23 @@ def repair_library(request: Request) -> dict:
     from ..meos import stage6_controllers as C6
 
     a, b, c = _s6(""), _s6("_refine"), _s6("_controllers")
-    return {"actions": R6.action_table(), "stresses": {sid: {"family": st.family, "label": st.label, "onset": on} for sid, (st, on) in _all_stresses().items()}, "controllers": list(RCTL.KINDS), "failure_classes": list(C6.FAILURE_CLASSES),
-            "horizons": R6.HORIZONS, "recovery_window": R6.W, "decision_tick": R6.T_ACT, "stress_tick": R6.STRESS_TICK, "results": a, "refine": b, "controller_results": c, "final": _s6("_final"), "cross": _s6("_cross"), "followup": {"actions": R6.followup_table(), "results": _s6("_followup"), "open_windows": _s6("_open_windows")}, "has_results": a is not None}
+    return {
+        "actions": R6.action_table(),
+        "stresses": {sid: {"family": st.family, "label": st.label, "onset": on} for sid, (st, on) in _all_stresses().items()},
+        "controllers": list(RCTL.KINDS),
+        "failure_classes": list(C6.FAILURE_CLASSES),
+        "horizons": R6.HORIZONS,
+        "recovery_window": R6.W,
+        "decision_tick": R6.T_ACT,
+        "stress_tick": R6.STRESS_TICK,
+        "results": a,
+        "refine": b,
+        "controller_results": c,
+        "final": _s6("_final"),
+        "cross": _s6("_cross"),
+        "followup": {"actions": R6.followup_table(), "results": _s6("_followup"), "open_windows": _s6("_open_windows")},
+        "has_results": a is not None,
+    }
 
 
 @router.post("/repair-run")
@@ -531,8 +627,15 @@ def repair_run(request: Request, body: dict[str, Any]) -> dict:
     local_only(request)
     sid, seed, kind = body.get("stress", "history lost"), body.get("seed", 1), body.get("controller")
     stresses = _all_stresses()
-    if (sid != "no stress" and sid not in stresses) or not isinstance(seed, int) or isinstance(seed, bool) or (kind is not None and kind not in RCTL.KINDS):
-        raise HTTPException(422, f"stress must be one of {list(stresses)} or 'no stress', seed an integer, controller one of {list(RCTL.KINDS)}")
+    if (
+        (sid != "no stress" and sid not in stresses)
+        or not isinstance(seed, int)
+        or isinstance(seed, bool)
+        or (kind is not None and kind not in RCTL.KINDS)
+    ):
+        raise HTTPException(
+            422, f"stress must be one of {list(stresses)} or 'no stress', seed an integer, controller one of {list(RCTL.KINDS)}"
+        )
     acts = body.get("actions") or []
     if not isinstance(acts, list) or len(acts) > 4:
         raise HTTPException(422, "actions: a list of at most 4 {action, magnitude, duration, t}")
@@ -551,7 +654,9 @@ def repair_run(request: Request, body: dict[str, Any]) -> dict:
     if kind and kind != "none":
         lib = _repair_library() if kind in ("cost_aware", "delayed", "noisy") else []
         if kind in ("cost_aware", "delayed", "noisy") and not lib:
-            raise HTTPException(503, "the repair library needs experiments_stage6.json: run backend/scripts/meos_experiments_stage6.py")
+            raise HTTPException(
+                503, "the repair library needs experiments_stage6.json: run backend/scripts/meos_experiments_stage6.py"
+            )
         ctl = RCTL.RepairController(kind, lib, seed=seed, noise=0.1)
     base = R6.schedule(st, sorted(reps, key=lambda i: i["tick"]), onset)
     cfg = R6.config(seed)
@@ -561,8 +666,19 @@ def repair_run(request: Request, body: dict[str, Any]) -> dict:
     ev = R6.evaluate(rec, R6.reference(seed), [*reps, *injected], t_act)
     fin = _s6("_final")
     row = next((r for r in (fin or {}).get("stress_table", []) if r["stress"] == sid), None)
-    irr = row["irreversible_tick"] if row else None  # null for a window still open at the end of the tested range (OPEN_THROUGH_TESTED_LIMIT): no irreversible marker is drawn
+    irr = (
+        row["irreversible_tick"] if row else None
+    )  # null for a window still open at the end of the tested range (OPEN_THROUGH_TESTED_LIMIT): no irreversible marker is drawn
     rep = RE.build(st, onset, norm, rec, ev, rec["controller"]["log"] if ctl else None, irr)
-    topo_rec = {**rec, "controller": {"kind": rec["controller"]["kind"], "log": [], "attempts": rec["controller"]["attempts"]}}  # the route topology reads the stage 5 controller log; a repair controller's log is returned in ``repair``
-    return {"record": rec, "summary": A.summarize(rec), "paths": S4.path_activity(rec), "topology": R5.topology(topo_rec), "repair": rep, "replay_identical": E.replay(rec)["identical"]}
-
+    topo_rec = {
+        **rec,
+        "controller": {"kind": rec["controller"]["kind"], "log": [], "attempts": rec["controller"]["attempts"]},
+    }  # the route topology reads the stage 5 controller log; a repair controller's log is returned in ``repair``
+    return {
+        "record": rec,
+        "summary": A.summarize(rec),
+        "paths": S4.path_activity(rec),
+        "topology": R5.topology(topo_rec),
+        "repair": rep,
+        "replay_identical": E.replay(rec)["identical"],
+    }

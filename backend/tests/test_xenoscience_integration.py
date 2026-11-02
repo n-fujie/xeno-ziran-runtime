@@ -99,3 +99,55 @@ def test_the_engine_is_deterministic_for_the_interface(client):
     a = client.post("/api/meos/run", json={"interventions": INTERVENTION_LISTS[3]}).json()["record"]
     b = client.post("/api/meos/run", json={"interventions": INTERVENTION_LISTS[3]}).json()["record"]
     assert a["full_digest"] == b["full_digest"] and a["frames"] == b["frames"]
+
+
+def js(x):
+    """What JSON.stringify does to a number: 1.0 is written 1 (a browser cannot keep the difference)."""
+    if isinstance(x, float) and x == int(x):
+        return int(x)
+    if isinstance(x, dict):
+        return {k: js(v) for k, v in x.items()}
+    if isinstance(x, list):
+        return [js(v) for v in x]
+    return x
+
+
+@pytest.mark.parametrize("ivs", INTERVENTION_LISTS)
+def test_a_record_replays_after_a_round_trip_through_javascript_numbers(client, ivs):
+    rec = client.post("/api/meos/run", json={"config": {"seed": 1, "horizon": 360}, "interventions": ivs}).json()["record"]
+    own = client.post(
+        "/api/meos/replay",
+        json={"config": rec["config"], "interventions": rec["interventions"], "result_digest": rec["result_digest"]},
+    ).json()
+    via_js = client.post(
+        "/api/meos/replay",
+        json={"config": js(rec["config"]), "interventions": js(rec["interventions"]), "result_digest": rec["result_digest"]},
+    ).json()
+    assert own["identical"] is True
+    assert via_js["identical"] is True, via_js
+
+
+def test_a_run_does_not_depend_on_whether_a_whole_number_is_written_as_a_float(client):
+    # power.capacity and sss.scale / size / speed are the values whose digest changes with the written type
+    # (found by trying every whole-number float of the default configuration)
+    as_float = client.post(
+        "/api/meos/run", json={"config": {"power": {"capacity": 24.0}, "sss": {"scale": 1.0, "size": 1.0, "speed": 1.0}}}
+    ).json()["record"]
+    as_int = client.post(
+        "/api/meos/run", json={"config": {"power": {"capacity": 24}, "sss": {"scale": 1, "size": 1, "speed": 1}}}
+    ).json()["record"]
+    assert as_int["result_digest"] == as_float["result_digest"] and as_int["full_digest"] == as_float["full_digest"]
+    assert as_int["config"] == as_float["config"]
+
+
+def test_a_value_the_engine_has_no_default_for_is_left_as_given(client):
+    out = client.post("/api/meos/run", json={"config": {"m2": {"sense": "direct", "weight": 1}}}).json()["record"]
+    assert out["config"]["m2"]["weight"] == 1 and isinstance(out["config"]["m2"]["weight"], int)
+
+
+def test_digests_of_runs_made_from_python_typed_configs_are_unchanged():
+    # the fix reads numbers at the API boundary only: a run made by the engine itself keeps the digests the stored records pin
+    assert E.run_record(E.default_config(horizon=360), [])["result_digest"].startswith("4b08c75a")
+    assert E.run_record(E.default_config(horizon=360), [{"tick": 100, "op": "DISABLE_HISTORY"}])["result_digest"].startswith(
+        "835cce00"
+    )

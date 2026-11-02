@@ -7,10 +7,15 @@ describe('the experiment registry', () => {
     expect(new Set(EXPERIMENTS.map((e) => e.id)).size).toBe(EXPERIMENTS.length);
     for (const e of EXPERIMENTS) expect(STATUS_TEXT[e.status]).toBeTruthy();
   });
-  it('makes exactly one experiment active in the scene, with every capability the scene has', () => {
+  it('makes only the MEOS experiments active in the scene, and the coupling cut has every capability', () => {
     const active = EXPERIMENTS.filter((e) => e.status === 'SCENE_ACTIVE');
-    expect(active.map((e) => e.id)).toEqual(['meos-coupling']);
-    expect(Object.values(active[0].capabilities).every(Boolean)).toBe(true);
+    expect(active.map((e) => e.id)).toEqual(['meos-coupling', 'meos-observation', 'meos-history']);
+    expect(Object.values(experimentById('meos-coupling')!.capabilities).every(Boolean)).toBe(true);
+    // a regime is applied to a run, it is not an intervention on the engine
+    expect(experimentById('meos-observation')!.capabilities.intervene).toBe(false);
+  });
+  it('lists the disconnection and escalation studies as stored results, from which nothing can be run', () => {
+    for (const id of ['disconnection', 'escalation']) { const e = experimentById(id)!; expect(e.status).toBe('RESULTS_ONLY'); expect(Object.values(e.capabilities).some(Boolean)).toBe(false); }
   });
   it('lets only an experiment with a live engine be intervened on', () => {
     for (const e of EXPERIMENTS) if (e.capabilities.intervene) expect(['SCENE_ACTIVE']).toContain(e.status);

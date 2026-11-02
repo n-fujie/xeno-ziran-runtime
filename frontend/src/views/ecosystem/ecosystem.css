@@ -100,3 +100,17 @@
 .eco-chip.verdict-UNRESOLVED, .eco-chip.iv-UNSUPPORTED, .eco-chip.st-UNTESTED, .eco-chip.st-INSUFFICIENT_EVIDENCE, .eco-chip.dep-NOT_REPRESENTED { font-style: italic; }
 .eco-spans { display: flex; flex-wrap: wrap; gap: 2px; }
 .eco-span { padding: 0 4px; font-size: 11px; }
+
+/* XENOSCIENCE: the track of the operational shape (the strips reuse .eco-strip; ACTIVE white, DEGRADED hatched, COLLAPSED dark) */
+.eco-trackrow { margin: 4px 0 2px; }
+.eco-trackrow small { display: block; opacity: .7; margin-bottom: 2px; }
+.eco-track .eco-strip { height: 12px; cursor: pointer; }
+.eco-trackmarks { position: relative; height: 14px; margin-top: 2px; }
+.eco-trackmarks .mark { position: absolute; top: 0; width: 7px; height: 12px; padding: 0; margin-left: -3px; border: 1px solid currentColor; background: none; cursor: pointer; }
+.eco-trackmarks .mark.intervention { border-radius: 50%; }
+.eco-trackmarks .mark.cessation { background: currentColor; }
+.eco-trackmarks .mark.reignition { border-style: dashed; }
+.eco-trackmarks .mark.divergence { transform: rotate(45deg); height: 8px; top: 2px; }
+.eco-trackmarks .head { position: absolute; top: -26px; bottom: 0; width: 1px; background: #fff; opacity: .5; pointer-events: none; }
+.eco-chip.epi-unresolved { border-style: double; }
+.eco-epi-unresolved .eco-table td:first-child { font-style: italic; }

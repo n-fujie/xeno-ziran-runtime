@@ -15,14 +15,14 @@ const dir = join(dirname(fileURLToPath(import.meta.url)), '__fixtures__');
 const rec = JSON.parse(readFileSync(join(dir, 'meos-stage2.json'), 'utf8')) as MeosRecord;
 const fx = JSON.parse(readFileSync(join(dir, 'meos-stage2-observed.json'), 'utf8')) as Record<'full' | 'coarse', { observed: Observed }>;
 const out = (observed: Observed | null, record: MeosRecord = rec): RunOut => ({ record, observed: observed ?? undefined } as unknown as RunOut);
-const cutFx = JSON.parse(readFileSync(join(dir, 'meos-coupling-cut.json'), 'utf8')) as Record<'base' | 'cut', MeosRecord>;
+const cutFx = JSON.parse(readFileSync(join(dir, 'meos-coupling-cut.json'), 'utf8')) as Record<'base' | 'cut' | 'history_off', MeosRecord>;
 const COARSE = { ...FULL_OBSERVATION, sampling_interval: 12 };
 const html = (o: RunOut | null, entity: 'A1' | 'A2' | null = 'A1', tick = 100, obs = FULL_OBSERVATION, pinned: RegimeSide | null = null, coupling: CouplingId | null = null, branch: Branch | null = null) =>
   renderToString(<XenosciencePane rec={o ? o.record : null} out={o} tick={tick} setTick={() => undefined} obs={obs} entity={entity} sssClass={null} pinned={pinned} setPinned={() => undefined}
       coupling={coupling} selectCoupling={() => undefined} display={{ couplings: true, isolate: false, exploded: false, ghost: true }} setDisplay={() => undefined}
-      branch={branch} requestCut={async () => undefined} restoreBaseline={async () => undefined} clearBranch={() => undefined} busy={false} origin="NEW_ENGINE_RUN" />);
+      branch={branch} playFrom={() => undefined} verifyReplay={async () => undefined} requestHistoryOff={async () => undefined} requestCut={async () => undefined} restoreBaseline={async () => undefined} clearBranch={() => undefined} busy={false} origin="NEW_ENGINE_RUN" />);
 const section = (h: string, id: string) => { const i = h.indexOf(`data-testid="${id}"`); const next = h.indexOf('data-testid=', i + 10); return h.slice(i, next < 0 ? undefined : next); };
-const text = (h: string) => h.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
+const text = (h: string) => h.replace(/<!-- -->/g, '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').replace(/\s+([,.;:)])/g, '$1').replace(/\(\s+/g, '(');  // tags become spaces: close up the spaces they leave before punctuation
 
 describe('the Xenoscience pane', () => {
   it('asks for a run when there is none', () => {
@@ -97,7 +97,7 @@ describe('the Xenoscience pane', () => {
     expect(text(html(out(null, cutFx.base), null, 120))).not.toContain('REQUEST CUT');
   });
   it('compares the baseline with the intervention branch, from the two records', () => {
-    const branch: Branch = { base: { record: cutFx.base, ivs: [] }, request: { id: 'interaction_channel', tick: 100, duration: 50 } };
+    const branch: Branch = { base: { record: cutFx.base, ivs: [] }, request: { kind: 'cut', id: 'interaction_channel', tick: 100, duration: 50 } };
     const t = text(section(html(out(null, cutFx.cut), null, 130, FULL_OBSERVATION, null, null, branch), 'xeno-branch'));
     expect(t).toMatch(/final status ACTIVE COLLAPSED/); expect(t).toMatch(/first COLLAPSED never 149/);
     const all = text(html(out(null, cutFx.cut), null, 130, FULL_OBSERVATION, null, null, branch));
@@ -115,5 +115,33 @@ describe('the Xenoscience pane', () => {
     expect(t).toContain('in the 3D scene'); expect(t).toContain('source missing'); expect(t).toContain('fixture only'); expect(t).toContain('stored results');
     expect(t).toMatch(/TO-C1 .* source missing/);
     expect(t).not.toMatch(/\b(490|270|432|162)\b/);
+  });
+  it('shows the unresolved class apart from the other three, with the cycles an observation did not record', () => {
+    const h = html(out(fx.coarse.observed)), u = text(section(h, 'xeno-unresolved'));
+    expect(u).toContain('UNRESOLVED'); expect(u).toMatch(/\d+ of the 27 cycles of the run/); expect(u).toContain('retrieved under a later configuration');
+    expect(h.indexOf('data-testid="xeno-reference"')).toBeLessThan(h.indexOf('data-testid="xeno-unresolved"'));
+    expect(text(section(html(out(null)), 'xeno-unresolved'))).toContain('no observation result exists');
+  });
+  it('tracks the operational shape: operational and observed rows, and the marks of the engine\'s logs', () => {
+    const h = html(out(fx.coarse.observed)), t = text(section(h, 'xeno-track-marks'));
+    expect(h).toContain('aria-label="operational status per tick"'); expect(h).toContain('aria-label="observed status per tick"');
+    for (const l of ['t=11 formation', 't=100 intervention', 't=149 cessation', 't=161 reignition']) if (!l.includes('100')) expect(t).toContain(l);
+    expect(html(out(null))).not.toContain('aria-label="observed status per tick"');
+  });
+  it('separates retention, addressability, re-entry and the effective consequence', () => {
+    const t = text(section(html(out(null, cutFx.base), null, 200), 'xeno-history'));
+    expect(t).toMatch(/retention \(trace held at tick 200\)/); expect(t).toContain('NOT MODELLED'); expect(t).toMatch(/\d+ of \d+ cycles contain a history re-entry/);
+    expect(t).toMatch(/effective consequence UNRESOLVED/); expect(t).toContain('needs a run of the same configuration with the history disabled');
+    expect(text(html(out(null, cutFx.base), null, 200))).toContain('TEST CONSEQUENCE: DISABLE HISTORY AT TICK 200');
+  });
+  it('states the effective consequence from the two engine runs once the history-disabled branch exists', () => {
+    const branch: Branch = { base: { record: cutFx.base, ivs: [] }, request: { kind: 'history-off', tick: 100 } };
+    const t = text(section(html(out(null, cutFx.history_off), null, 200, FULL_OBSERVATION, null, null, branch), 'xeno-history'));
+    expect(t).toContain('effective consequence DIFFERS'); expect(t).toMatch(/Baseline ACTIVE, 71 cycles \(9 with re-entry\); without history COLLAPSED, 22 cycles \(0\)/);
+    expect(t).toContain('this configuration and seed');
+  });
+  it('offers to play a record back and to verify it by engine replay, as two different things', () => {
+    const t = text(html(out(null)));
+    expect(t).toContain('PLAY THE RECORD FROM TICK 0'); expect(t).toContain('VERIFY BY ENGINE REPLAY');
   });
 });

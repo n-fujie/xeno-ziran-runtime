@@ -143,7 +143,15 @@ export default function EcosystemView() {
     const base = branch?.base ?? { record: out.record, ivs };
     okRun.current = false;
     await execute([...ivs, ...cutRequest(id, at, duration, out.record.frames.length - 1)], at);
-    if (okRun.current) setBranch({ base, request: { id, tick: at, duration } });
+    if (okRun.current) setBranch({ base, request: { kind: 'cut', id, tick: at, duration } });
+  }, [out, ivs, branch, execute]);
+  /** The effective consequence of history re-entry: the baseline's interventions plus DISABLE_HISTORY, run by the engine; the baseline record is kept to compare with. */
+  const requestHistoryOff = useCallback(async (at: number) => {
+    if (!out) return;
+    const base = branch?.base ?? { record: out.record, ivs };
+    okRun.current = false;
+    await execute([...base.ivs, { tick: Math.max(0, Math.min(at, out.record.frames.length - 1)), op: 'DISABLE_HISTORY' }], at);
+    if (okRun.current) setBranch({ base, request: { kind: 'history-off', tick: at } });
   }, [out, ivs, branch, execute]);
   /** Run the baseline again (its own interventions) and drop the branch. */
   const restoreBaseline = useCallback(async () => {
@@ -586,7 +594,7 @@ export default function EcosystemView() {
           {tab === 'research' && <ResearchPane {...{ rec, out, tick, setTick: (t: number) => { live.current.playhead = t; setTick(t); }, obs, setObs, conn, setConn, ivs, execute, cfg: runCfg, seed, markers, inspect, sssClass: sssKey ? sssCache[sssKey] ?? null : null, sssRegion, compare, setCompare, busy, wrap, setTab: (t: 'technical') => setTab(t), openMarker, setOpenMarker, library, routeState, outcomes,
             runControlled, libraryOut, repairLib, repair, runRepair, initialRepair: plan.run.kind === 'repair' ? { stress: plan.run.repair.stress, controller: plan.run.repair.controller, actions: plan.run.repair.actions } : {}, initialRoute: plan.run.kind === 'route' ? { controller: plan.run.controller, scenario: plan.run.scenario } : undefined, initialMfs: { mfs: plan.run.kind === 'mfs' ? plan.run.mfs : undefined, experiment: plan.experiment ?? undefined, sssmap: plan.sssmap ?? undefined }, runMfs: runMfsConfig }} />}
           {tab === 'xenoscience' && <XenosciencePane {...{ rec, out, tick, setTick: (t: number) => { live.current.playhead = t; setTick(t); }, obs, entity: sel?.kind === 'entity' ? sel.name : null, sssClass: sssKey ? sssCache[sssKey] ?? null : null, pinned: pinnedRegime, setPinned: setPinnedRegime,
-            coupling: sel?.kind === 'coupling' ? sel.id : null, selectCoupling: (id: CouplingId | null) => setSel(id ? { kind: 'coupling', id } : null), display, setDisplay, branch, requestCut, restoreBaseline, clearBranch: () => setBranch(null), busy: !!busy, origin: originOf(replay) }} />}
+            coupling: sel?.kind === 'coupling' ? sel.id : null, selectCoupling: (id: CouplingId | null) => setSel(id ? { kind: 'coupling', id } : null), display, setDisplay, branch, playFrom: (t: number) => { live.current.playhead = t; setTick(t); setPlaying(true); }, verifyReplay: doReplay, requestHistoryOff, requestCut, restoreBaseline, clearBranch: () => setBranch(null), busy: !!busy, origin: originOf(replay) }} />}
           {tab === 'inspect' && rec && <InspectPane rec={rec} tick={tick} sel={sel} setSel={setSel} ad={ad} mfs={mfsRes} trials={trials} />}
           {tab === 'reductions' && <ReductionsPane {...{ spec, abl, mfsRes, bnd, hist, sss, addr, runAblation, runMfs, runBoundary, runHistory, runSss, runAddr, busy }} />}
           {tab === 'technical' && <div className="eco-note">The technical inspection sheet is shown over the stage: orthographic drawings of the selected body's real geometry in the pose the run gives at the current tick, a probe detail, measured dimensions, component identifiers, cable routing and the state read from the run. Use the playhead to move through the run.</div>}

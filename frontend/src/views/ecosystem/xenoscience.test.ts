@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import type { MeosRecord, Observed } from './meosApi';
 import { FULL_OBSERVATION } from './meosApi';
-import { READING_SOURCES, compareRegimes, criticalIntervals, fiveS, humanDependencies, inventory, provenance, strongXenoscience } from './xenoscience';
+import { READING_SOURCES, compareRegimes, criticalIntervals, fiveS, historyConsequence, historyReading, humanDependencies, inventory, provenance, shapeTrack, strongXenoscience, unresolvedItems } from './xenoscience';
 
 const dir = join(dirname(fileURLToPath(import.meta.url)), '__fixtures__');
 const rec = JSON.parse(readFileSync(join(dir, 'meos-stage2.json'), 'utf8')) as MeosRecord;
@@ -181,5 +181,95 @@ describe('Five-S', () => {
   it('reads sensitivity from the engine\'s SSS classification when there is one', () => {
     const r = fiveS(rec, { scale: 1, size: 1, speed: 1, class: 'x', region: 'OBSERVATION-SENSITIVE', recovery_capable: null, observation_sensitive: true, seeds: [1] });
     expect(r[4].current).toBe('OBSERVATION-SENSITIVE (observation-sensitive)');
+  });
+});
+
+// ------------------------------------------------------------------------------------------------ the continued stage: unresolved, track, history
+const cf = JSON.parse(readFileSync(join(dir, 'meos-coupling-cut.json'), 'utf8')) as Record<'base' | 'cut' | 'history_off', MeosRecord>;
+
+describe('what cannot be settled', () => {
+  it('lists the cycles the observation did not record, instead of dropping them', () => {
+    const u = unresolvedItems(rec, coarse.observed), hid = coarse.observed.true_cycles - coarse.observed.observed_cycles;
+    expect(hid).toBeGreaterThan(0);
+    expect(u.find((x) => x.id === 'unobserved_cycles')!.label).toContain(`${hid} of the ${coarse.observed.true_cycles} cycles`);
+    expect(u.find((x) => x.id === 'observability_limit')).toBeDefined();
+  });
+  it('lists nothing about cycles when the observation recorded all of them', () => {
+    expect(unresolvedItems(rec, full.observed).find((x) => x.id === 'unobserved_cycles')).toBeUndefined();
+  });
+  it('says everything is unresolved when there is no observation result', () => {
+    expect(unresolvedItems(rec, null)[0].id).toBe('no_observation');
+  });
+  it('always names what the engine cannot test, and that addressability is not modelled', () => {
+    for (const o of [null, full.observed, coarse.observed]) {
+      const ids = unresolvedItems(rec, o).map((x) => x.id);
+      expect(ids).toEqual(expect.arrayContaining(['intervention_possibilities', 'attribution', 'addressability']));
+    }
+  });
+  it('notes that a collapsed run stops, so later re-ignition is not in the record', () => {
+    expect(unresolvedItems(cf.cut, null).some((x) => x.id === 'after_collapse')).toBe(true);
+    expect(unresolvedItems(cf.base, null).some((x) => x.id === 'after_collapse')).toBe(false);
+  });
+});
+
+describe('the track of the operational shape', () => {
+  it('covers every tick exactly once, in order, for the operational row', () => {
+    const tr = shapeTrack(cf.cut, null);
+    expect(tr.length).toBe(cf.cut.frames.length);
+    expect(tr.operational[0].from).toBe(0); expect(tr.operational.at(-1)!.to).toBe(tr.length - 1);
+    for (let i = 1; i < tr.operational.length; i++) { expect(tr.operational[i].from).toBe(tr.operational[i - 1].to + 1); expect(tr.operational[i].label).not.toBe(tr.operational[i - 1].label); }
+    expect(tr.observed).toBeNull();
+  });
+  it('places formation, the interventions and the collapse at the ticks of the engine\'s own logs', () => {
+    const m = shapeTrack(cf.cut, null).marks, at = (k: string) => m.filter((x) => x.kind === k).map((x) => x.tick);
+    expect(at('formation')).toEqual([11]); expect(at('intervention')).toEqual([100, 150]); expect(at('cessation')).toEqual([149]);
+    expect(m.map((x) => x.tick)).toEqual([...m.map((x) => x.tick)].sort((a, b) => a - b));
+  });
+  it('marks the re-ignition of the stage-two run and the divergence from a baseline when one is given', () => {
+    expect(shapeTrack(rec, null).marks.find((x) => x.kind === 'reignition')!.tick).toBe(161);
+    expect(shapeTrack(cf.cut, null, 126).marks.find((x) => x.kind === 'divergence')!.tick).toBe(126);
+    expect(shapeTrack(cf.cut, null).marks.some((x) => x.kind === 'divergence')).toBe(false);
+  });
+  it('keeps the observed row apart: under the coarse observation it reads COLLAPSED at ticks where the operation is ACTIVE', () => {
+    const tr = shapeTrack(rec, coarse.observed);
+    expect(tr.observed).not.toBeNull();
+    const at = (rows: NonNullable<typeof tr.observed>, t: number) => rows.find((s) => s.from <= t && t <= s.to)!.label;
+    expect(at(tr.operational, 60)).toBe('ACTIVE'); expect(at(tr.observed!, 60)).toBe('COLLAPSED');
+    expect(shapeTrack(rec, full.observed).observed!.map((s) => s.label)).toEqual(tr.operational.map((s) => s.label));
+  });
+});
+
+describe('history: retention, addressability, re-entry, consequence', () => {
+  it('reads retention and re-entry from the record, tick by tick', () => {
+    const h = historyReading(cf.base, 200), f = cf.base.frames[200];
+    expect(h.retention.A1).toBe(f.A1.h); expect(h.retention.A2).toBe(f.A2.h); expect(h.retention.enabled).toBe(true);
+    expect(h.reentry.A1).toBe(f.A1.reentry);
+    const upTo = cf.base.cycles.filter((c) => c.tick <= 200);
+    expect(h.reentry.ofCycles).toBe(upTo.length); expect(h.reentry.cycles).toBe(upTo.filter((c) => c.history_reentry).length);
+    expect(h.reentry.cycles).toBeGreaterThan(0);
+  });
+  it('counts re-entry cycles that grow with the tick and never exceed the cycles', () => {
+    let prev = 0;
+    for (const t of [20, 100, 200, 359]) { const r = historyReading(cf.base, t).reentry; expect(r.cycles).toBeGreaterThanOrEqual(prev); expect(r.cycles).toBeLessThanOrEqual(r.ofCycles); prev = r.cycles; }
+  });
+  it('says addressability is not modelled instead of inventing it', () => {
+    expect(historyReading(cf.base, 50).addressability.status).toBe('NOT_MODELLED');
+  });
+  it('shows the history as disabled after the intervention (the re-entry channel is read from the record)', () => {
+    expect(historyReading(cf.history_off, 99).retention.enabled).toBe(true);
+    expect(historyReading(cf.history_off, 120).retention.enabled).toBe(false);
+  });
+  it('finds an effective consequence of re-entry in this run: the history-disabled run differs (engine output)', () => {
+    const c = historyConsequence(cf.base, cf.history_off);
+    expect(c.verdict).toBe('DIFFERS');
+    expect(c.base).toEqual({ label: 'ACTIVE', cycles: 71, reentryCycles: 9 });
+    expect(c.withoutHistory).toEqual({ label: 'COLLAPSED', cycles: 22, reentryCycles: 0 });
+    expect(c.firstStatusDivergence).toBe(136);
+  });
+  it('reports no effect when the two runs are the same run, and limits the claim to this run', () => {
+    const c = historyConsequence(cf.base, cf.base);
+    expect(c.verdict).toBe('NO_DIFFERENCE_IN_THIS_RUN'); expect(c.firstStatusDivergence).toBeNull();
+    expect(c.note).toMatch(/does not show that there is none elsewhere/);
+    expect(historyConsequence(cf.base, cf.history_off).note).toMatch(/this configuration and seed/);
   });
 });
