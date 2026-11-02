@@ -7,16 +7,20 @@ import { renderToString } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import type { MeosRecord, Observed, RunOut } from './meosApi';
 import { FULL_OBSERVATION } from './meosApi';
-import XenosciencePane from './XenosciencePane';
+import XenosciencePane, { type Branch } from './XenosciencePane';
+import type { CouplingId } from './couplings';
 import type { RegimeSide } from './xenoscience';
 
 const dir = join(dirname(fileURLToPath(import.meta.url)), '__fixtures__');
 const rec = JSON.parse(readFileSync(join(dir, 'meos-stage2.json'), 'utf8')) as MeosRecord;
 const fx = JSON.parse(readFileSync(join(dir, 'meos-stage2-observed.json'), 'utf8')) as Record<'full' | 'coarse', { observed: Observed }>;
-const out = (observed: Observed | null): RunOut => ({ record: rec, observed: observed ?? undefined } as unknown as RunOut);
+const out = (observed: Observed | null, record: MeosRecord = rec): RunOut => ({ record, observed: observed ?? undefined } as unknown as RunOut);
+const cutFx = JSON.parse(readFileSync(join(dir, 'meos-coupling-cut.json'), 'utf8')) as Record<'base' | 'cut', MeosRecord>;
 const COARSE = { ...FULL_OBSERVATION, sampling_interval: 12 };
-const html = (o: RunOut | null, entity: 'A1' | 'A2' | null = 'A1', tick = 100, obs = FULL_OBSERVATION, pinned: RegimeSide | null = null) =>
-  renderToString(<XenosciencePane rec={o ? rec : null} out={o} tick={tick} setTick={() => undefined} obs={obs} entity={entity} sssClass={null} pinned={pinned} setPinned={() => undefined} />);
+const html = (o: RunOut | null, entity: 'A1' | 'A2' | null = 'A1', tick = 100, obs = FULL_OBSERVATION, pinned: RegimeSide | null = null, coupling: CouplingId | null = null, branch: Branch | null = null) =>
+  renderToString(<XenosciencePane rec={o ? o.record : null} out={o} tick={tick} setTick={() => undefined} obs={obs} entity={entity} sssClass={null} pinned={pinned} setPinned={() => undefined}
+      coupling={coupling} selectCoupling={() => undefined} display={{ couplings: true, isolate: false, exploded: false, ghost: true }} setDisplay={() => undefined}
+      branch={branch} requestCut={async () => undefined} restoreBaseline={async () => undefined} clearBranch={() => undefined} busy={false} origin="NEW_ENGINE_RUN" />);
 const section = (h: string, id: string) => { const i = h.indexOf(`data-testid="${id}"`); const next = h.indexOf('data-testid=', i + 10); return h.slice(i, next < 0 ? undefined : next); };
 const text = (h: string) => h.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
 
@@ -77,5 +81,39 @@ describe('the Xenoscience pane', () => {
   it('renders without an entity selected (the pane offers A1 and A2) and for a tick outside the run', () => {
     expect(() => html(out(fx.full.observed), null, 99999)).not.toThrow();
     expect(html(out(fx.full.observed), null)).toContain('Select an entity on the stage');
+  });
+
+  it('lists the four couplings with the state the record gives at the playhead tick', () => {
+    const at = (t: number) => text(section(html(out(null, cutFx.cut), 'A1', t), 'xeno-couplings'));
+    expect(at(120)).toMatch(/interaction channel \(alteration M1\) cut/);
+    expect(at(120)).toMatch(/feedback \(reconfigured resource R\) connected/);
+    expect(at(160)).toMatch(/interaction channel \(alteration M1\) connected/);
+    expect(at(120).match(/connected/g)!.length).toBe(3);
+  });
+  it('shows what the engine does with a selected coupling and offers the cut as a request', () => {
+    const h = html(out(null, cutFx.base), null, 120, FULL_OBSERVATION, null, 'feedback'), t = text(section(h, 'xeno-coupling-detail'));
+    expect(t).toContain('feedback (ISOLATE / RECONNECT)'); expect(t).toContain('no feedback to A1'); expect(t).toContain('state at tick 120 connected');
+    expect(text(h)).toContain('REQUEST CUT AT TICK 120');
+    expect(text(html(out(null, cutFx.base), null, 120))).not.toContain('REQUEST CUT');
+  });
+  it('compares the baseline with the intervention branch, from the two records', () => {
+    const branch: Branch = { base: { record: cutFx.base, ivs: [] }, request: { id: 'interaction_channel', tick: 100, duration: 50 } };
+    const t = text(section(html(out(null, cutFx.cut), null, 130, FULL_OBSERVATION, null, null, branch), 'xeno-branch'));
+    expect(t).toMatch(/final status ACTIVE COLLAPSED/); expect(t).toMatch(/first COLLAPSED never 149/);
+    const all = text(html(out(null, cutFx.cut), null, 130, FULL_OBSERVATION, null, null, branch));
+    expect(all).toContain('ISOLATE interaction_channel @100; RECONNECT interaction_channel @150');
+    expect(all).toContain('status first differs at tick 126'); expect(all).toContain('same configuration yes');
+    expect(all).toContain('does not attribute the later differences to the cut');
+    expect(text(html(out(null, cutFx.cut), null, 130))).not.toContain('Baseline and intervention branch');
+  });
+  it('says what produced the record on screen and that playing it back runs nothing', () => {
+    const t = text(section(html(out(null)), 'xeno-origin'));
+    expect(t).toContain('NEW ENGINE RUN'); expect(t).toContain('runs nothing');
+  });
+  it('lists the experiments with their real state, TO-C1 as a missing source', () => {
+    const t = text(section(html(out(null)), 'xeno-experiments'));
+    expect(t).toContain('in the 3D scene'); expect(t).toContain('source missing'); expect(t).toContain('fixture only'); expect(t).toContain('stored results');
+    expect(t).toMatch(/TO-C1 .* source missing/);
+    expect(t).not.toMatch(/\b(490|270|432|162)\b/);
   });
 });
