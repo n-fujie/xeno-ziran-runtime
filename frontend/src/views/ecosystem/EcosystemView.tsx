@@ -24,6 +24,8 @@ import { buildDeviceLayer, deviceState, observationCoverage, SPACES, type Device
 import ExperimentsPane from './ExperimentsPane';
 import TechnicalView from './TechnicalView';
 import ResearchPane from './ResearchPane';
+import XenosciencePane from './XenosciencePane';
+import type { RegimeSide } from './xenoscience';
 import { topologyAt, topologyOf, type LibraryMfs, type Outcome } from './routeGraph';
 import { deepLinkPlan, parseDeepLink } from './deeplink';
 import { repairMarkers } from './repair';
@@ -36,7 +38,7 @@ import './ecosystem.css';
 // tick (the record's frames) and the render frame rate are separate clocks, the camera never reaches the simulation, and every value in the panels is
 // read from the record. The surrounding megastructure is static architecture and is labelled as such.
 
-type Tab = 'experiment' | 'research' | 'inspect' | 'reductions' | 'studies' | 'technical' | 'data';
+type Tab = 'experiment' | 'research' | 'xenoscience' | 'inspect' | 'reductions' | 'studies' | 'technical' | 'data';
 type Sel = { kind: 'entity'; name: EntityName } | { kind: 'trial'; i: number } | null;
 const QUALITY: Quality[] = ['performance', 'balanced', 'high'];
 const PRESETS: Record<string, Intervention[]> = {
@@ -80,6 +82,7 @@ export default function EcosystemView() {
   type Conn = { m2: string; m2w: number; m2t: number; phil: string; channel: string; power: string };
   const [conn, setConn] = useState<Conn>(() => ({ m2: ['direct', 'delayed', 'noisy', 'threshold'].includes(url.get('m2') ?? '') ? url.get('m2')! : 'none', m2w: Number(url.get('m2w') ?? 1) || 1, m2t: 0.1, phil: ['expression', 'scorekeeping', 'revision'].includes(url.get('phil') ?? '') ? url.get('phil')! : 'none', channel: 'clean', power: 'finite' }));
   const fullObs = JSON.stringify(obs) === JSON.stringify(FULL_OBSERVATION);
+  const [pinnedRegime, setPinnedRegime] = useState<RegimeSide | null>(null);  // the observation kept as side A of the Xenoscience regime comparison
   const [tick, setTick] = useState(() => plan.tick);
   const [playing, setPlaying] = useState(url.get('play') === '1');
   const [rate, setRate] = useState(12);
@@ -87,7 +90,7 @@ export default function EcosystemView() {
   const [cam, setCam] = useState(plan.cam ?? 'overview');
   const [follow, setFollow] = useState<EntityName | null>(null);
   const [sel, setSel] = useState<Sel>(null);
-  const [tab, setTab] = useState<Tab>(() => (['ncb', 'observer'].includes(url.get('tech') ?? '') ? 'technical' : url.get('tab') === 'research' || plan.tab === 'research' ? 'research' : 'experiment'));
+  const [tab, setTab] = useState<Tab>(() => (['ncb', 'observer'].includes(url.get('tech') ?? '') ? 'technical' : url.get('tab') === 'research' || plan.tab === 'research' ? 'research' : url.get('tab') === 'xenoscience' ? 'xenoscience' : 'experiment'));
   const [techWhich, setTechWhich] = useState<'ncb' | 'observer'>(() => (url.get('tech') === 'observer' ? 'observer' : 'ncb'));
   const [techProbe, setTechProbe] = useState(() => url.get('probe') ?? (url.get('tech') === 'observer' ? 'O1' : 'A1'));
   const [busy, setBusy] = useState<string | null>(null);
@@ -546,12 +549,13 @@ export default function EcosystemView() {
       </div>
       {chrome && <aside className="eco-side">
         <div className="eco-tabs" role="tablist">
-          {(['experiment', 'research', 'inspect', 'reductions', 'studies', 'technical', 'data'] as Tab[]).map((t) => <button key={t} role="tab" aria-selected={tab === t} className={tab === t ? 'on' : ''} onClick={() => setTab(t)}>{t.toUpperCase()}</button>)}
+          {(['experiment', 'research', 'xenoscience', 'inspect', 'reductions', 'studies', 'technical', 'data'] as Tab[]).map((t) => <button key={t} role="tab" aria-selected={tab === t} className={tab === t ? 'on' : ''} onClick={() => setTab(t)}>{t.toUpperCase()}</button>)}
         </div>
         <div className="eco-pane">
           {tab === 'experiment' && <ExperimentPane {...{ rec, spec, tick, n, playing, setPlaying, rate, setRate, seed, setSeed, horizon, setHorizon, obs, setObs, conn, setConn, fullObs, layers, toggleLayer, cam, goCam, follow, setFollow, sel, focusSel, ivs, execute, intervene, doReplay, replay, quality, setQuality, out, setTick, live }} />}
           {tab === 'research' && <ResearchPane {...{ rec, out, tick, setTick: (t: number) => { live.current.playhead = t; setTick(t); }, obs, setObs, conn, setConn, ivs, execute, cfg: runCfg, seed, markers, inspect, sssClass: sssKey ? sssCache[sssKey] ?? null : null, sssRegion, compare, setCompare, busy, wrap, setTab: (t: 'technical') => setTab(t), openMarker, setOpenMarker, library, routeState, outcomes,
             runControlled, libraryOut, repairLib, repair, runRepair, initialRepair: plan.run.kind === 'repair' ? { stress: plan.run.repair.stress, controller: plan.run.repair.controller, actions: plan.run.repair.actions } : {}, initialRoute: plan.run.kind === 'route' ? { controller: plan.run.controller, scenario: plan.run.scenario } : undefined, initialMfs: { mfs: plan.run.kind === 'mfs' ? plan.run.mfs : undefined, experiment: plan.experiment ?? undefined, sssmap: plan.sssmap ?? undefined }, runMfs: runMfsConfig }} />}
+          {tab === 'xenoscience' && <XenosciencePane {...{ rec, out, tick, setTick: (t: number) => { live.current.playhead = t; setTick(t); }, obs, entity: sel?.kind === 'entity' ? sel.name : null, sssClass: sssKey ? sssCache[sssKey] ?? null : null, pinned: pinnedRegime, setPinned: setPinnedRegime }} />}
           {tab === 'inspect' && rec && <InspectPane rec={rec} tick={tick} sel={sel} setSel={setSel} ad={ad} mfs={mfsRes} trials={trials} />}
           {tab === 'reductions' && <ReductionsPane {...{ spec, abl, mfsRes, bnd, hist, sss, addr, runAblation, runMfs, runBoundary, runHistory, runSss, runAddr, busy }} />}
           {tab === 'technical' && <div className="eco-note">The technical inspection sheet is shown over the stage: orthographic drawings of the selected body's real geometry in the pose the run gives at the current tick, a probe detail, measured dimensions, component identifiers, cable routing and the state read from the run. Use the playhead to move through the run.</div>}
