@@ -66,13 +66,23 @@ The existing view, engine and records are unchanged; the work adds readings over
 ### Verified in the running app (local runtime, preview `xeno-3d`, port 3051, no console errors)
 * Clicking the horizontal coupling arrow in the 3D scene selected `interaction_channel` and the pane showed its engine component, role and the dependency the engine names when it is cut.
 * `REQUEST CUT AT TICK 120` for 50 ticks ran the engine: baseline ACTIVE, result digest `4b08c75a…` (identical to a direct engine run); branch COLLAPSED at tick 169, 24 cycles against 71; records first differ at tick 120, status first differs at tick 146; the coupling reads `cut` at tick 120 and 140 in the table and is drawn translucent and red in the scene.
-* Not captured visually: the exploded view in a well-framed screenshot (the browser pane was hidden for part of the session and the camera did not land on the arena). Its transforms are unit-tested (lift, return without drift, picking).
+* The exploded view was checked on screen with the camera focused on the selected coupling (feedback, tick 200): assembled, the coupling arrows overlap the configuration; exploded, the couplings and the configuration are lifted apart in separate layers. Its transforms are also unit-tested (lift, return without drift, picking).
 
 ### Rendering performance (measured, not estimated)
 The existing uncapped benchmark (`window.__meos.benchmark`, frames rendered back to back with the display rate removed), 120-150 frames per sample, balanced tier, habitat camera, software/driver as the preview provides. Five interleaved pairs with the coupling layer shown and hidden: median frame time shown 9.2-10.9 ms, hidden 10.2-11.1 ms; p95 13.1-16.1 ms and 13.1-16.6 ms. The layer adds 10 draw calls (235 against 225) and about 1,100 triangles (837,024 against 835,888). **No cost is measurable beyond noise** (the pairs run in the layer's favour, which a layer cannot cause; it is order drift). The simulation-update figure in the HUD stayed 2-4.6 ms. This is one machine and one camera; it is not a benchmark of other devices, and rendering was not measured on a low-power GPU. On-screen fps values read while the pane was hidden (one read "0 fps") are not valid and are not used.
 
 ### The timeout of the previous report (investigated)
 The failing test was `assemblies.test.ts` "no two sensor heads, hubs, remote sensors or stores overlap" (6,153 ms against 5,000 ms) in a full frontend run beside the backend suite. The file is unchanged since M8.2 and does not import the ecosystem code. Measured: 0.5 s alone (3 runs); 1.0-1.1 s with every one of the 8 cores busy; 2.0-2.7 s in four full frontend runs beside the backend suite (all 397 tests passed in those four). The failure did not recur, so it is an intermittent tail of a load-sensitive test, not a regression and not something the last change caused. What was wrong is the limit: four sibling tests that do the same work (load published records, build high-tier labs) carry an explicit 60 s limit; this one alone had the 5 s default. It now has the same 60 s limit with a comment holding these numbers. This is a change to a limit with the evidence stated, not a hidden slowdown; if the test's 0.5 s ever becomes seconds without load, that is a regression to look for, and the comment says what the baseline is.
+
+### Regression results (2026-11-02/03, this Mac, after all changes of this section)
+| Suite | Before (baseline) | After |
+|---|---|---|
+| Backend (`pytest`, whole suite, 26 min) | 1092 passed, 3 skipped | **1103 passed, 3 skipped** (the 11 new tests of `test_xenoscience_integration.py`; no failure, no skip added) |
+| Frontend (`vitest run`, whole suite, run twice with the backend suite finished) | 329 passed, 1 skipped (start of the first stage) | **403 passed, 1 skipped**, both runs |
+| Frontend beside the backend suite (the condition of the earlier timeout), 4 runs | - | 397 passed, 1 skipped each (before the last tests were added) |
+| `eslint .`, `tsc -b` | clean | clean (exit code 0) |
+| `vite build` (local), `VITE_STATIC=1`, `VITE_WEBRT=1` | - | all build; the static and browser builds contain no coupling, Strong-Xenoscience or experiment-registry code |
+The three warnings of the backend run are the published lab records that do not replay bit for bit on this platform (documented in `tests/envcheck.py`), as in the baseline.
 
 ### Not done / unsupported
 * TO-C1 (all of it): the three demonstrations, source reproduction and archived-state scene need the original package.
