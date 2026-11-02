@@ -100,6 +100,6 @@ describe('the view is part of the application', () => {
     expect(app).toContain("{ id: 'body'"); expect(app).toContain("view === 'body' && BodyView && <BodyView />"); expect(app).toContain("!(v === 'body' && (NATIVE || WEBRT))");
     const statics = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'static-views.json'), 'utf8')) as string[];
     expect(statics).not.toContain('body');  // the public read-only mirror has no body data and no local backend
-    expect(app).toContain("const BodyView = STATIC_BUILD ? null : lazy(");  // and the static build does not even bundle the workspace
+    expect(app).toContain("const BodyView = LOCAL_ONLY_BUILD ? null : lazy(");  // and the static, browser and iOS builds do not even bundle the workspace
   });
 });
