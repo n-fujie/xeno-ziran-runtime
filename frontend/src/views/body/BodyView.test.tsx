@@ -97,8 +97,9 @@ describe('the view is part of the application', () => {
   });
   it('is registered in the application and left out of the builds that have no backend', () => {
     const app = readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'App.tsx'), 'utf8');
-    expect(app).toContain("{ id: 'body'"); expect(app).toContain("view === 'body' && <BodyView />"); expect(app).toContain("!(v === 'body' && (NATIVE || WEBRT))");
+    expect(app).toContain("{ id: 'body'"); expect(app).toContain("view === 'body' && BodyView && <BodyView />"); expect(app).toContain("!(v === 'body' && (NATIVE || WEBRT))");
     const statics = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'static-views.json'), 'utf8')) as string[];
     expect(statics).not.toContain('body');  // the public read-only mirror has no body data and no local backend
+    expect(app).toContain("const BodyView = STATIC_BUILD ? null : lazy(");  // and the static build does not even bundle the workspace
   });
 });
