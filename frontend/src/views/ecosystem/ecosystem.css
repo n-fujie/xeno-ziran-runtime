@@ -114,3 +114,11 @@
 .eco-trackmarks .head { position: absolute; top: -26px; bottom: 0; width: 1px; background: #fff; opacity: .5; pointer-events: none; }
 .eco-chip.epi-unresolved { border-style: double; }
 .eco-epi-unresolved .eco-table td:first-child { font-style: italic; }
+
+/* TRUTH-ERROR: the kind of every reading (text carries the meaning; the border style only repeats it) */
+.eco-chip.tee-REFERENCE { border-style: dotted; }
+.eco-chip.tee-OBSERVED { border-style: solid; }
+.eco-chip.tee-INFERRED { border-style: dashed; }
+.eco-chip.tee-CLASSIFIED { border-style: double; border-width: 3px; }
+.eco-chip.tee-INSTITUTIONAL { font-weight: 600; }
+.eco-chip.tee-UNRESOLVED { font-style: italic; border-style: dashed; }
