@@ -1,0 +1,92 @@
+import * as THREE from 'three';
+import { EDGES, NODES, nodeValue, type NodeId, type TERun } from './truthError';
+
+// TRUTH-ERROR DYNAMICS in the 3D scene: the operational chain (subject -> sensors -> classifier / warrant -> acceptance -> score -> gates -> resources -> subject) as selectable objects. The brightness of every object is a
+// plain function of the engine's record of ONE sample subject at ONE period (``nodeValue``); the positions are SCHEMATIC layout coordinates, not physical ones. Each object carries two small markers, the baseline run's value
+// and the branch's, so that the two can be seen together. The pose frames are an abstract axis frame (three arrows), not a face: they show the reference pose and the pose a sensor measured, as rotations of that frame.
+// SYNTHETIC only: no real person is represented.
+
+export interface TruthFrame { run: TERun; branch: TERun | null; k: number; t: number; selected: NodeId | null }
+export interface TruthLayer {
+  group: THREE.Group; pickables: THREE.Mesh[]; meshOf(id: NodeId): THREE.Mesh; poseRef: THREE.Group; poseMeasured: THREE.Group; edgeLines: THREE.LineSegments; set(f: TruthFrame): void; dispose(): void;
+}
+
+const SHAPE: Record<string, () => THREE.BufferGeometry> = {
+  state: () => new THREE.SphereGeometry(0.55, 20, 14), sensor: () => new THREE.ConeGeometry(0.5, 1.0, 16), rule: () => new THREE.OctahedronGeometry(0.62), institution: () => new THREE.BoxGeometry(0.95, 0.95, 0.95),
+  store: () => new THREE.CylinderGeometry(0.5, 0.5, 0.9, 20), effect: () => new THREE.IcosahedronGeometry(0.58),  // solid: a shape with a hole would miss a click at its centre
+};
+const UNIT = 1.25;  // world units per layout unit (schematic)
+const rad = (d: number) => (d * Math.PI) / 180;
+
+/** The pose frame: three arrows along the axes of a frame, drawn in the scene as the rotation of a head's axes (yaw about the vertical axis, pitch about the lateral, roll about the frontal; order YXZ). */
+function poseFrame(color: number, opacity: number, owned: Array<THREE.BufferGeometry | THREE.Material>): THREE.Group {
+  const g = new THREE.Group(), mat = new THREE.MeshBasicMaterial({ color, transparent: opacity < 1, opacity, depthWrite: opacity >= 1 });
+  const shaft = new THREE.CylinderGeometry(0.04, 0.04, 1, 8), head = new THREE.ConeGeometry(0.11, 0.28, 10);
+  owned.push(shaft, head, mat);
+  const arrow = (dir: THREE.Vector3, len: number): void => {
+    const a = new THREE.Group(), s = new THREE.Mesh(shaft, mat), h = new THREE.Mesh(head, mat);
+    s.scale.y = len; s.position.y = len / 2; h.position.y = len + 0.14; a.add(s, h);
+    a.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.normalize());
+    g.add(a);
+  };
+  arrow(new THREE.Vector3(0, 1, 0), 1.0);   // the vertical axis (yaw turns about it)
+  arrow(new THREE.Vector3(1, 0, 0), 0.8);   // the lateral axis (pitch turns about it)
+  arrow(new THREE.Vector3(0, 0, 1), 0.9);   // the frontal axis (roll turns about it)
+  return g;
+}
+
+export function buildTruthLayer(parent: THREE.Object3D, centre: THREE.Vector3, span: number): TruthLayer {
+  const group = new THREE.Group(); group.name = 'truth-error';
+  const owned: Array<THREE.BufferGeometry | THREE.Material> = [];
+  const scale = span / (18 * UNIT);
+  group.position.copy(centre); group.scale.setScalar(scale);
+  const meshes = {} as Record<NodeId, THREE.Mesh>, pickables: THREE.Mesh[] = [], pips = {} as Record<NodeId, [THREE.Mesh, THREE.Mesh]>;
+  const pipGeo = new THREE.SphereGeometry(0.13, 10, 8); owned.push(pipGeo);
+  for (const n of NODES) {
+    const geo = SHAPE[n.kind](), mat = new THREE.MeshStandardMaterial({ color: 0xb8c4d0, emissive: 0xffffff, emissiveIntensity: 0.2, roughness: 0.5, metalness: 0.1 });
+    owned.push(geo, mat);
+    const m = new THREE.Mesh(geo, mat); m.position.set((n.x - 9) * UNIT, n.y * UNIT, 0); m.userData = { teNode: n.id }; m.name = `truth-node:${n.id}`;
+    const pm = [new THREE.Mesh(pipGeo, new THREE.MeshBasicMaterial({ color: 0x666666 })), new THREE.Mesh(pipGeo, new THREE.MeshBasicMaterial({ color: 0x666666 }))] as [THREE.Mesh, THREE.Mesh];
+    pm[0].position.set(-0.22, 0.85, 0); pm[1].position.set(0.22, 0.85, 0); pm.forEach((p) => { owned.push(p.material as THREE.Material); p.visible = false; m.add(p); });
+    pips[n.id] = pm; group.add(m); meshes[n.id] = m; pickables.push(m);
+  }
+  // the edges of the chain (a straight line each; the feedback to the subject crosses the whole chain)
+  const pts: number[] = [];
+  for (const [a, b] of EDGES) { const pa = meshes[a].position, pb = meshes[b].position; pts.push(pa.x, pa.y, pa.z, pb.x, pb.y, pb.z); }
+  const eg = new THREE.BufferGeometry(); eg.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+  const em = new THREE.LineBasicMaterial({ color: 0x8a94a0, transparent: true, opacity: 0.55 }); owned.push(eg, em);
+  const edgeLines = new THREE.LineSegments(eg, em); group.add(edgeLines);
+  // the pose frames, beside the subject: the reference (solid) and the measured (translucent)
+  const poseRef = poseFrame(0xe8e8ee, 1, owned), poseMeasured = poseFrame(0xe0a030, 0.6, owned);
+  poseRef.position.set(meshes.subject.position.x - 1.9, meshes.subject.position.y + 0.2, 0); poseMeasured.position.copy(poseRef.position); poseMeasured.scale.setScalar(1.12);
+  group.add(poseRef, poseMeasured);
+  parent.add(group);
+
+  const colorOf = (v: number | null): THREE.Color => (v === null ? new THREE.Color(0x444444) : new THREE.Color().setHSL(0.58, 0.18, 0.12 + 0.6 * v));
+  const set = (f: TruthFrame): void => {
+    const rec = f.run.records[f.k][Math.max(0, Math.min(f.t, f.run.records[f.k].length - 1))];
+    const bRec = f.branch ? f.branch.records[f.k][Math.max(0, Math.min(f.t, f.branch.records[f.k].length - 1))] : null;
+    for (const n of NODES) {
+      const m = meshes[n.id], mat = m.material as THREE.MeshStandardMaterial, v = nodeValue(n.id, rec);
+      mat.color.copy(colorOf(v)); mat.emissive.copy(colorOf(v)); mat.emissiveIntensity = f.selected === n.id ? 0.9 : 0.25;
+      m.scale.setScalar(f.selected === n.id ? 1.3 : 1);
+      const [pb, pr] = pips[n.id];
+      pb.visible = pr.visible = !!bRec;
+      if (bRec) { (pb.material as THREE.MeshBasicMaterial).color.copy(colorOf(v)); (pr.material as THREE.MeshBasicMaterial).color.copy(colorOf(nodeValue(n.id, bRec))); }
+    }
+    // a binding constraint is shown as the gate turned a quarter (a display mark, not a physical rotation)
+    meshes.gate_a.rotation.y = rec.locked ? Math.PI / 4 : 0;
+    const e = (g: THREE.Group, p: number[] | Array<number | null>): void => {
+      if (p.some((x) => x === null)) { g.visible = false; return; }
+      g.visible = true; g.rotation.set(rad(p[1] as number), rad(p[0] as number), rad(p[2] as number), 'YXZ');  // yaw about Y, pitch about X, roll about Z
+    };
+    e(poseRef, rec.pose_reference); e(poseMeasured, rec.pose_measured);
+  };
+  const dispose = (): void => { group.removeFromParent(); for (const o of owned) o.dispose(); for (const m of Object.values(meshes)) for (const c of m.children) ((c as THREE.Mesh).material as THREE.Material | undefined)?.dispose(); };
+  return { group, pickables, meshOf: (id) => meshes[id], poseRef, poseMeasured, edgeLines, set, dispose };
+}
+
+export const teNodeOf = (o: THREE.Object3D | undefined): NodeId | null => {
+  const id = (o?.userData as { teNode?: NodeId } | undefined)?.teNode;
+  return id && NODES.some((n) => n.id === id) ? id : null;
+};
