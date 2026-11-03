@@ -16,7 +16,7 @@ from xzr.truth_error import experiments as X
 from xzr.truth_error import experiments2 as X2
 
 DOCS = Path(__file__).resolve().parents[2] / "docs" / "truth_error"
-OUT, OUT2 = DOCS / "experiments.json", DOCS / "experiments2.json"
+OUT, OUT2, OUT3 = DOCS / "experiments.json", DOCS / "experiments2.json", DOCS / "appeal_trace.json"
 
 
 def slim(res: dict) -> dict:
@@ -42,3 +42,5 @@ if __name__ == "__main__":
     for k, v in res2["experiments"].items():
         print(f"{k:24s} arms={len(v['arms'])} invalid={v['invalid_if_any_failure_condition']} replication={v['replication']['counts']}")
     print("written", OUT2)
+    OUT3.write_text(json.dumps(X2.appeal_trace(), indent=1, sort_keys=True))
+    print("written", OUT3)
