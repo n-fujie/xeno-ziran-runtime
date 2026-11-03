@@ -13,11 +13,26 @@ export interface TEConfig {
   use_score: boolean; rho: number; tau_a: number; read_every_a: number; baseline_access: number; score_expiry: number | null; gain: number; loss: number; beta: number; gamma: number; lock_after: number | null;
   release_after: number; correct_at: number | null; correction_scope: string; correction_score_target: number; correction_clears_lock: boolean; reentry_support: number; transfer_at: number | null;
   transfer_weight: number; tau_b: number; propagate_correction: boolean; propagation_delay: number; pose_z_coupling: number;
+  // phase 2 (absent in a run saved before it)
+  audit_every?: number | null; audit_sensitivity?: number; audit_false_rate?: number; request_delay?: number; approval_delay?: number; score_delay?: number; release_mode?: string; release_delay?: number; opportunity_window?: number | null;
+  appeal?: boolean; appeal_access?: string; appeal_min_score?: number; appeal_filing_prob?: number; evidence_available_prob?: number; appeal_acceptance_prob?: number; review_delay?: number;
   pose_sensor: { view_angle: number; noise_sigma: number; bias: number[]; occlusion_prob: number; dropout_prob: number; fail_at: number | null; fail_mode: string };
   signal_sensor: { view_angle: number; noise_sigma: number; bias: number[]; occlusion_prob: number; dropout_prob: number; fail_at: number | null; fail_mode: string };
 }
+export const PROCESS_EVENTS = ['misclassified', 'adopted', 'denied', 'detected', 'requested', 'approved', 'score_updated', 'released', 'restored'] as const;
+export type ProcessEventId = (typeof PROCESS_EVENTS)[number];
+export const APPEAL_STAGES = ['appeal_filed', 'evidence_submitted', 'appeal_accepted', 'rejudged'] as const;
+export type AppealStage = (typeof APPEAL_STAGES)[number];
+export interface MetricDef { denominator: string; period: string; unit: string }
+/** The phase-2 record of a run: the nine times of every subject, the appeal, the fixed metrics with their definitions and the recoverability accounting. Outside the digested result. */
+export interface TEProcess {
+  events: Record<ProcessEventId, { times: Array<number | null>; n: number; mean_time: number | null }>; false_detections: number; reimposed_after_release: number;
+  metrics: Record<string, number | null>; metric_definitions: Record<string, MetricDef>;
+  appeal: { exists: boolean; access: string; blocked_subjects: number; stages: Record<AppealStage, number>; stage_times: Record<AppealStage, Array<number | null>>; rejudged_corrected: number; rejudged_upheld: number; relief_effective: number; filed_but_not_relieved: number; filed_share_of_fav_denied_ever: number };
+  recoverability: { declared_window: number | null; favourable_at_start: { window: number | null; periods: { recoverable: number; expired: number; unresolved: number }; episodes: { recoverable: number; partially_recoverable: number; unrecoverable: number; unresolved: number } } };
+}
 export interface TERun {
-  config: TEConfig; series: Record<string, number[]>; records: TERecord[][]; summary: Record<string, number | null>; target_state_digest: string; result_digest: string;
+  config: TEConfig; series: Record<string, number[]>; records: TERecord[][]; summary: Record<string, number | null>; target_state_digest: string; result_digest: string; process?: TEProcess; process_digest?: string;
 }
 
 /** The nodes of the chain. The chain is not linear: a warrant branches from the signal, a correction acts on the score, and a second institution takes a copy of it. ``x`` and ``y`` are SCHEMATIC layout coordinates. */
@@ -41,6 +56,7 @@ export const EDGES: Array<[NodeId, NodeId, string]> = [
   ['subject', 'pose_sensor', 'observed by'], ['subject', 'signal_sensor', 'observed by'], ['signal_sensor', 'warrant', 'evidence'], ['signal_sensor', 'classifier', 'input'], ['pose_sensor', 'classifier', 'input (invalid by construction)'],
   ['classifier', 'acceptance', 'proposes'], ['warrant', 'acceptance', 'may be required'], ['acceptance', 'score', 'adopted'], ['correction', 'score', 'retracts'], ['score', 'gate_a', 'read'],
   ['score', 'gate_b', 'transferred'], ['gate_a', 'resources', 'allocates'], ['resources', 'subject', 'changes (feedback)'],
+  ['subject', 'correction', 'audited against the verification label / appealed by the subject'], ['correction', 'gate_a', 'releases a binding constraint'],
 ];
 
 export const REFERENCE_NOTE = 'REFERENCE values are held by the evaluator only: no institution in the model reads them.';
@@ -86,11 +102,20 @@ export function fieldsAt(run: TERun, k: number, t: number): Fields {
     scoring: [...nodeReadings('acceptance', rec, c), ...nodeReadings('score', rec, c), ...nodeReadings('gate_a', rec, c)],
     consequences: [...nodeReadings('resources', rec, c), { label: 'real state change since the start', value: f(rec.reference_z - hist[0].reference_z, 3), epistemic: 'REFERENCE' }, { label: 'access granted so far', value: `${hist.filter((x) => x.access).length} of ${hist.length} periods`, epistemic: 'INSTITUTIONAL' }],
     reentry: [
-      { label: 'adopted adverse judgements so far', value: String(adverse.length), epistemic: 'INSTITUTIONAL' }, { label: 'appeal', value: 'NOT MODELLED in this module (the older legal_v1 line models appeals; a correction here is a retraction)', epistemic: 'UNRESOLVED' },
+      { label: 'adopted adverse judgements so far', value: String(adverse.length), epistemic: 'INSTITUTIONAL' }, appealReading(run, k),
       { label: 'correction', value: corrected ? `at period ${corrected.t}` : c.correct_at === null ? 'none' : `planned at ${c.correct_at}`, epistemic: 'INSTITUTIONAL' },
       { label: 're-evaluation after the correction', value: corrected ? `${hist.filter((x) => x.t > corrected.t && x.accepted).length} adoptions after it` : '-', epistemic: 'INSTITUTIONAL' },
       { label: 'binding constraint remaining', value: rec.locked ? 'yes' : 'no', epistemic: 'INSTITUTIONAL' }],
   };
+}
+
+/** The appeal of one subject. A run saved before phase 2 has no appeal record and says so; a run without an appeal says that; a run with one gives the stages this subject reached and what became of it. */
+function appealReading(run: TERun, k: number): Reading {
+  const a = run.process?.appeal;
+  if (!a) return { label: 'appeal', value: 'NOT MODELLED in this run (a run saved before the appeal was added; a correction there is a retraction)', epistemic: 'UNRESOLVED' };
+  if (!a.exists) return { label: 'appeal', value: 'no appeal procedure in this run (appeal off)', epistemic: 'INSTITUTIONAL' };
+  const reached = APPEAL_STAGES.filter((s) => a.stage_times[s][k] !== null).map((s) => `${s.replace(/_/g, ' ')} at ${a.stage_times[s][k]}`);
+  return { label: 'appeal', value: reached.length ? reached.join(', ') : a.access === 'score_gated' && a.blocked_subjects ? 'not filed (the appeal itself is gated by the score in this run)' : 'not filed', epistemic: 'INSTITUTIONAL' };
 }
 
 export type EventKind = 'judgement_adopted' | 'contradicted_by_reference' | 'warrant_contradicts' | 'access_denied' | 'constraint_set' | 'constraint_released' | 'withdrawn' | 're_adopted' | 'downstream_effect';
@@ -120,7 +145,9 @@ export function timelineEvents(run: TERun, k: number): TEEvent[] {
 export type Verdict = 'DIFFERENT' | 'NO_DIFFERENCE';
 export interface RunComparison { rows: Array<{ id: string; label: string; base: string; branch: string; verdict: Verdict }>; changed: string[]; targetStateIdentical: boolean; note: string }
 const CONFIG_KEYS = ['classifier', 'window', 'signal_threshold', 'yaw_threshold', 'use_score', 'tau_a', 'tau_b', 'correct_at', 'transfer_at', 'transfer_weight', 'propagate_correction', 'propagation_delay', 'beta', 'gamma', 'lock_after',
-  'release_after', 'reentry_support', 'requires_warrant', 'confidence_floor', 'correction_clears_lock', 'pose_z_coupling'] as const;
+  'release_after', 'reentry_support', 'requires_warrant', 'confidence_floor', 'correction_clears_lock', 'pose_z_coupling',
+  'audit_every', 'audit_sensitivity', 'audit_false_rate', 'request_delay', 'approval_delay', 'score_delay', 'release_mode', 'release_delay', 'opportunity_window', 'appeal', 'appeal_access', 'appeal_min_score', 'appeal_filing_prob',
+  'evidence_available_prob', 'appeal_acceptance_prob', 'review_delay'] as const;
 
 /** What was changed between a baseline run and a branch (configuration keys and sensor conditions) and what differs in the results. The change is listed first: a difference is only ever read next to what was changed. */
 export function compareRuns(base: TERun, branch: TERun): RunComparison {
@@ -199,4 +226,71 @@ export function modalityCounts(run: TERun, k: number, upTo: number): Record<Moda
   const out = { rule_forbidden: 0, institutionally_impossible: 0, measurement_invisible: 0, model_excluded: 0, reachable_after_intervention: 0 } as Record<ModalityId, number>;
   for (let t = 0; t <= Math.min(upTo, run.records[k].length - 1); t++) for (const [id] of MODALITIES) if (modalitiesAt(run, k, t)[id]) out[id]++;
   return out;
+}
+
+// ------------------------------------------------------------------------------------------------ phase 2: the nine times and the four paths
+export const PROCESS_EVENT_LABELS: Record<ProcessEventId, { label: string; epistemic: Epistemic }> = {
+  misclassified: { label: 'misclassification occurs (an adverse label for a subject favourable by the verification label)', epistemic: 'REFERENCE' },
+  adopted: { label: 'the institution adopts it', epistemic: 'INSTITUTIONAL' }, denied: { label: 'access is denied', epistemic: 'INSTITUTIONAL' },
+  detected: { label: 'the audit finds the error', epistemic: 'INSTITUTIONAL' }, requested: { label: 'a correction is requested', epistemic: 'INSTITUTIONAL' }, approved: { label: 'the correction is approved', epistemic: 'INSTITUTIONAL' },
+  score_updated: { label: 'the score is updated', epistemic: 'INSTITUTIONAL' }, released: { label: 'the binding constraint is released', epistemic: 'INSTITUTIONAL' }, restored: { label: 'the subsequent possibility is restored (access again, after the approval)', epistemic: 'INSTITUTIONAL' },
+};
+export type PathId = 'judgement' | 'effect' | 'correction' | 'subsequent';
+/** One step of a path: the period at which a variable or transition of the model first holds for a subject (null: not within the periods), and the edge of the chain it is a transition on (null: a state with no edge of its own). */
+export interface PathStep { id: string; label: string; variable: string; edge: [NodeId, NodeId] | null; at: (run: TERun, k: number) => number | null }
+const firstT = (run: TERun, k: number, pred: (r: TERecord) => boolean, from = 0): number | null => run.records[k].find((r) => r.t >= from && pred(r))?.t ?? null;
+const evAt = (name: ProcessEventId) => (run: TERun, k: number): number | null => run.process?.events[name]?.times[k] ?? null;
+const apAt = (name: AppealStage) => (run: TERun, k: number): number | null => run.process?.appeal.stage_times[name]?.[k] ?? null;
+const approvedAt = evAt('approved');
+const afterApproval = (pred: (r: TERecord) => boolean) => (run: TERun, k: number): number | null => { const a = approvedAt(run, k); return a === null ? null : firstT(run, k, pred, a); };
+
+/** Four paths through the chain, each an ordered list of real variables and transitions of the model, read for ONE subject so that a baseline and an intervention can be set side by side. Nothing here is a causal arrow: a step is
+ *  reached when its variable holds, and the later steps of a path are what the model's own transitions produce from the earlier ones in that run. */
+export const PATHS: Array<{ id: PathId; label: string; steps: PathStep[] }> = [
+  { id: 'judgement', label: 'judgement path: observation to institutional adoption', steps: [
+    { id: 'observed', label: 'a signal is obtained', variable: 'signal_measured', edge: ['subject', 'signal_sensor'], at: (r, k) => firstT(r, k, (x) => x.signal_measured !== null) },
+    { id: 'adverse', label: 'the classifier gives an adverse label', variable: 'classification = adverse', edge: ['signal_sensor', 'classifier'], at: (r, k) => firstT(r, k, (x) => x.classification === -1) },
+    { id: 'misclassified', label: 'it contradicts the verification label', variable: 'event misclassified (REFERENCE)', edge: ['classifier', 'acceptance'], at: evAt('misclassified') },
+    { id: 'adopted', label: 'the institution adopts it', variable: 'event adopted', edge: ['acceptance', 'score'], at: evAt('adopted') }] },
+  { id: 'effect', label: 'effect path: adoption to resources and access', steps: [
+    { id: 'below', label: 'the score is below the threshold', variable: 'score < tau_a', edge: ['score', 'gate_a'], at: (r, k) => (r.config.use_score ? firstT(r, k, (x) => x.score < r.config.tau_a) : null) },
+    { id: 'denied', label: 'access is denied', variable: 'event denied', edge: ['gate_a', 'resources'], at: evAt('denied') },
+    { id: 'locked', label: 'a binding constraint is set', variable: 'locked', edge: null, at: (r, k) => firstT(r, k, (x) => x.locked) },
+    { id: 'resources', label: 'resources fall below their starting level', variable: 'resources < 0.5', edge: ['resources', 'subject'], at: (r, k) => firstT(r, k, (x) => x.resources < 0.5) },
+    { id: 'lost', label: 'an opportunity is lost', variable: 'opportunities_lost > 0', edge: null, at: (r, k) => firstT(r, k, (x) => x.opportunities_lost > 0) }] },
+  { id: 'correction', label: 'correction path: refutation, appeal, correction, release', steps: [
+    { id: 'detected', label: 'the audit finds the error', variable: 'event detected', edge: ['subject', 'correction'], at: evAt('detected') },
+    { id: 'appeal_filed', label: 'the subject files an appeal', variable: 'appeal_filed', edge: null, at: apAt('appeal_filed') },
+    { id: 'evidence', label: 'evidence is submitted', variable: 'evidence_submitted', edge: null, at: apAt('evidence_submitted') },
+    { id: 'accepted', label: 'the appeal is accepted', variable: 'appeal_accepted', edge: null, at: apAt('appeal_accepted') },
+    { id: 'rejudged', label: 're-judgement', variable: 'rejudged', edge: null, at: apAt('rejudged') },
+    { id: 'requested', label: 'a correction is requested', variable: 'event requested', edge: null, at: evAt('requested') },
+    { id: 'approved', label: 'the correction is approved', variable: 'event approved', edge: null, at: evAt('approved') },
+    { id: 'score_updated', label: 'the score is updated', variable: 'event score_updated', edge: ['correction', 'score'], at: evAt('score_updated') },
+    { id: 'released', label: 'the binding constraint is released', variable: 'event released', edge: ['correction', 'gate_a'], at: evAt('released') }] },
+  { id: 'subsequent', label: 'subsequent path: what remains of the difference afterwards', steps: [
+    { id: 'restored', label: 'access again after the approval', variable: 'event restored', edge: ['gate_a', 'resources'], at: evAt('restored') },
+    { id: 'resources_back', label: 'resources are back at their starting level', variable: 'resources >= 0.5 after the approval', edge: ['resources', 'subject'], at: afterApproval((x) => x.resources >= 0.5) },
+    { id: 'b_back', label: 'access at institution B after the approval', variable: 'access_b after the approval', edge: ['score', 'gate_b'], at: afterApproval((x) => x.access_b === true) }] },
+];
+export const stepReached = (run: TERun, k: number, step: PathStep, t: number): boolean => { const a = step.at(run, k); return a !== null && a <= t; };
+
+export type PathStatus = 'SAME' | 'EARLIER' | 'LATER' | 'ONLY_IN_BRANCH' | 'ONLY_IN_BASELINE' | 'NEITHER';
+export interface PathRow { path: PathId; step: string; label: string; variable: string; base: number | null; branch: number | null; delta: number | null; status: PathStatus }
+/** The four paths of one subject in the baseline and in the branch: the period at which each step first holds in each, the difference and its direction. Both runs come from the same seed, so the subject is the same one; whether
+ *  the real state is the same is reported by ``compareRuns``. A step that holds in only one run is shown as that, not as a delay. */
+export function comparePaths(base: TERun, branch: TERun | null, k: number): PathRow[] {
+  const rows: PathRow[] = [];
+  for (const p of PATHS) for (const s of p.steps) {
+    const b = s.at(base, k), c = branch ? s.at(branch, k) : null;
+    const status: PathStatus = !branch ? (b === null ? 'NEITHER' : 'SAME') : b === null && c === null ? 'NEITHER' : b === null ? 'ONLY_IN_BRANCH' : c === null ? 'ONLY_IN_BASELINE' : c === b ? 'SAME' : c < b ? 'EARLIER' : 'LATER';
+    rows.push({ path: p.id, step: s.id, label: s.label, variable: s.variable, base: b, branch: c, delta: b !== null && c !== null ? c - b : null, status });
+  }
+  return rows;
+}
+
+/** The share of subjects that have each event and the mean period, for the table of the nine times. */
+export function eventTable(run: TERun): Array<{ id: ProcessEventId; label: string; epistemic: Epistemic; n: number; of: number; mean: number | null }> {
+  const p = run.process;
+  return PROCESS_EVENTS.map((id) => ({ id, ...PROCESS_EVENT_LABELS[id], n: p?.events[id].n ?? 0, of: run.config.n, mean: p?.events[id].mean_time ?? null }));
 }

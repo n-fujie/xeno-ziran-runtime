@@ -83,6 +83,26 @@ class Config:
     tau_b: float = 0.0
     propagate_correction: bool = False
     propagation_delay: int = 0
+    # ---- phase 2 (every default reproduces phase 1 exactly)
+    # the correction PROCESS, per subject: detection by audit, a request, an approval, a score update and the release of a binding constraint, each at its own time
+    audit_every: int | None = None  # the institution audits the judgements in force every this many periods (None: no audit, no process)
+    audit_sensitivity: float = 0.6  # the chance that an audit, an independent review read against the verification label, finds a wrongly denied (favourable) subject in a period
+    audit_false_rate: float = 0.01  # the chance that the same audit "finds" an error in a denial that was right (a false detection)
+    request_delay: int = 0  # periods from a detection to a correction request
+    approval_delay: int = 0  # periods from a request to its approval
+    score_delay: int = 0  # periods from an approval to the update of the score
+    release_mode: str = "by_score"  # by_score (phase 1: periods at or above the threshold), after_approval (released release_delay periods after approval), never
+    release_delay: int = 0
+    # the recoverability of a lost opportunity: it is regained if access returns within this many periods of the denial (None: never regained; irreversibility is a setting, not an assumption)
+    opportunity_window: int | None = None
+    # an appeal, as a procedure of the virtual institution (its existence and what it achieves are recorded apart)
+    appeal: bool = False
+    appeal_access: str = "open"  # open (every denied subject may file) or score_gated (only a subject at or above appeal_min_score may)
+    appeal_min_score: float = -0.2
+    appeal_filing_prob: float = 0.5  # per denied period: the effort asked of the subject
+    evidence_available_prob: float = 0.8  # the chance that the subject can produce evidence when filing
+    appeal_acceptance_prob: float = 0.7  # the institution's capacity to take an appeal up
+    review_delay: int = 2  # periods from acceptance to the re-judgement
 
     def asdict(self) -> dict:
         return asdict(self)
@@ -105,8 +125,8 @@ def run(cfg: Config) -> dict:
     if cfg.classifier not in CLASSIFIERS:
         raise ValueError(f"classifier must be one of {CLASSIFIERS}")
     n, T = cfg.n, cfg.periods
-    ss = np.random.SeedSequence(cfg.seed).spawn(6)
-    r_pop, r_pose, r_sig, r_cls, r_dyn, r_lot = (np.random.default_rng(s) for s in ss)
+    ss = np.random.SeedSequence(cfg.seed).spawn(7)
+    r_pop, r_pose, r_sig, r_cls, r_dyn, r_lot, r_app = (np.random.default_rng(s) for s in ss)
     z = r_pop.normal(size=n)  # the subjects' real operating condition (the evaluator's reference)
     z0 = z.copy()
     pose_ref = reference_pose(r_pop, n, T)
@@ -118,6 +138,8 @@ def run(cfg: Config) -> dict:
     rand_label = np.where(r_cls.uniform(size=(T, n)) < 0.5, 1, -1)
     eps_z = r_dyn.normal(size=(T, n))
     st_pose, st_sig = SensorState(n, 3), SensorState(n, 1)
+    u_file, u_evid, u_accept = r_app.uniform(size=(T, n)), r_app.uniform(size=(T, n)), r_app.uniform(size=(T, n))
+    u_audit = r_app.uniform(size=(T, n))
 
     score = np.zeros(n)  # institution A's score
     resources = np.full(n, 0.5)
@@ -178,6 +200,23 @@ def run(cfg: Config) -> dict:
     lost_fav = 0.0
     corrected_total = np.zeros(n, dtype=bool)
     extinguished_total = 0
+    # phase 2: the time of each event of a subject (-1: it did not occur within the periods), and the due times of the process
+    EV = ("misclassified", "adopted", "denied", "detected", "requested", "approved", "score_updated", "released", "restored")
+    ev = {k: np.full(n, -1, dtype=int) for k in EV}
+    APP = ("appeal_filed", "evidence_submitted", "appeal_accepted", "rejudged")
+    ap = {k: np.full(n, -1, dtype=int) for k in APP}
+    ap_blocked = np.zeros(n, dtype=bool)
+    ap_outcome = np.zeros(n, dtype=int)  # 0 none, 1 corrected, 2 upheld
+    req_due = np.full(n, -1, dtype=int)
+    appr_due = np.full(n, -1, dtype=int)
+    rel_due = np.full(n, -1, dtype=int)
+    sc_due = np.full(n, -1, dtype=int)
+    rej_due = np.full(n, -1, dtype=int)
+    false_detect = np.zeros(n, dtype=bool)
+    denied_at_approval = np.zeros(n, dtype=bool)  # still denied when the correction was approved: only for them is there something to restore
+    approved_flag = np.zeros(n, dtype=bool)
+    ever_locked = np.zeros(n, dtype=bool)
+    process_on = cfg.audit_every is not None or cfg.appeal
 
     for t in range(T):
         z_series[t] = z
@@ -225,17 +264,70 @@ def run(cfg: Config) -> dict:
         # ---- acceptance (an institutional act)
         consistent = ((cls == -1) & (warrant == 1)) | ((cls == 1) & (warrant == 0))
         accepted = classified & (conf_cls >= cfg.confidence_floor) & (consistent if cfg.requires_warrant else True)
+        ev["misclassified"] = _first(ev["misclassified"], wrongful_adverse_cls, t)
+        ev["adopted"] = _first(ev["adopted"], accepted & wrongful_adverse_cls, t)
         # ---- score
         if cfg.use_score:
             if cfg.score_expiry and t > 0 and t % cfg.score_expiry == 0:
                 score = np.zeros(n)
                 extinguished_total += 1
             score = np.where(accepted, (1 - cfg.rho) * score + cfg.rho * cls, score)
+        # ---- the correction process (phase 2): audit, appeal, request, approval, score update, release
+        if process_on:
+            under_adverse = (~access) & ((score < cfg.tau_a) | locked)  # denied by the score or by a constraint
+            if cfg.audit_every is not None and t % max(1, cfg.audit_every) == 0:
+                found = np.where(y, u_audit[t] < cfg.audit_sensitivity, u_audit[t] < cfg.audit_false_rate)  # an independent review: right with the declared sensitivity, wrong with the declared false rate
+                detect = under_adverse & found & (ev["detected"] < 0) & (req_due < 0)
+                ev["detected"] = np.where(detect, t, ev["detected"])
+                false_detect |= detect & ~y
+                req_due = np.where(detect, t + cfg.request_delay, req_due)
+            if cfg.appeal:
+                denied_now = ~access
+                can_file = denied_now & (ap["appeal_filed"] < 0)
+                blocked = can_file & ((score < cfg.appeal_min_score) if cfg.appeal_access == "score_gated" else np.zeros(n, bool))
+                ap_blocked |= blocked
+                file_now = can_file & ~blocked & (u_file[t] < cfg.appeal_filing_prob)
+                ap["appeal_filed"] = np.where(file_now, t, ap["appeal_filed"])
+                has_ev = file_now & (u_evid[t] < cfg.evidence_available_prob)
+                ap["evidence_submitted"] = np.where(has_ev, t, ap["evidence_submitted"])
+                taken = has_ev & (u_accept[t] < cfg.appeal_acceptance_prob)
+                ap["appeal_accepted"] = np.where(taken, t, ap["appeal_accepted"])
+                rej_due = np.where(taken, t + cfg.review_delay, rej_due)
+                rejudge = (rej_due == t) & (ap["rejudged"] < 0)
+                ap["rejudged"] = np.where(rejudge, t, ap["rejudged"])
+                supported = rejudge & (warrant == 0)  # the re-judgement follows the evidence at that time
+                ap_outcome = np.where(rejudge, np.where(supported, 1, 2), ap_outcome)
+                new_req = supported & (req_due < 0)
+                req_due = np.where(new_req, t + cfg.request_delay, req_due)
+            do_req = (req_due == t)
+            ev["requested"] = np.where(do_req & (ev["requested"] < 0), t, ev["requested"])
+            appr_due = np.where(do_req, t + cfg.approval_delay, appr_due)
+            do_appr = (appr_due == t) & (~approved_flag)
+            approved_flag |= do_appr
+            denied_at_approval |= do_appr & ~access  # `access` is the last period's, the state the correction meets
+            ev["approved"] = np.where(do_appr, t, ev["approved"])
+            sc_due = np.where(do_appr, t + cfg.score_delay, sc_due)
+            do_score = (sc_due == t) & (ev["score_updated"] < 0)
+            ev["score_updated"] = np.where(do_score, t, ev["score_updated"])
+            corrected_total |= do_score
+            score = np.where(do_score, np.maximum(score, cfg.correction_score_target), score)
+            if cfg.release_mode == "after_approval":
+                rel_due = np.where(do_appr, t + cfg.release_delay, rel_due)
+            do_rel = (rel_due == t) & locked
+            if do_rel.any():
+                locked = locked & ~do_rel
+                denied_run = np.where(do_rel, 0, denied_run)
+                ev["released"] = np.where(do_rel & (ev["released"] < 0), t, ev["released"])
+                cum_released += int(do_rel.sum())
         # ---- correction at t
         if cfg.correct_at is not None and t == cfg.correct_at:
             # wrongful: favourable by the verification label (an oracle retraction) and denied at the moment, whether by the score or by a binding constraint; all_adverse: everyone denied at the moment
             target = (y & ~access) if cfg.correction_scope == "wrongful" else ~access
             corrected_total |= target
+            ev["approved"] = np.where(target & (ev["approved"] < 0), t, ev["approved"])
+            ev["score_updated"] = np.where(target & (ev["score_updated"] < 0), t, ev["score_updated"])
+            approved_flag |= target
+            denied_at_approval |= target
             score = np.where(target, np.maximum(score, cfg.correction_score_target), score)
             if cfg.correction_clears_lock:
                 locked = locked & ~target
@@ -253,10 +345,16 @@ def run(cfg: Config) -> dict:
         released_now = np.zeros(n, dtype=bool)
         if cfg.lock_after is not None and cfg.use_score:
             locked = locked | ((~locked) & (denied_run >= cfg.lock_after))
-            released_now = locked & (ok_run >= cfg.release_after)
+            released_now = (locked & (ok_run >= cfg.release_after)) if cfg.release_mode == "by_score" else np.zeros(n, dtype=bool)
+            ev["released"] = np.where(released_now & (ev["released"] < 0), t, ev["released"])
             locked = locked & ~released_now
             cum_released += int(released_now.sum())
         access = access_score & ~locked
+        ever_locked |= locked
+        ev["denied"] = np.where((~access) & (ev["denied"] < 0), t, ev["denied"])
+        # the subsequent possibility is restored when, after the correction, a subject that had been denied has access again with no constraint in force
+        done = denied_at_approval & (ev["restored"] < 0) & access & (t >= ev["approved"])
+        ev["restored"] = np.where(done, t, ev["restored"])
         # ---- transfer and institution B
         if cfg.transfer_at is not None and t == cfg.transfer_at:
             snap_b = score.copy()
@@ -270,6 +368,10 @@ def run(cfg: Config) -> dict:
             snap_b = np.where(
                 corrected_total, np.maximum(snap_b, cfg.correction_score_target), snap_b
             )  # the correction reaches B (late if delayed)
+            score_b = cfg.transfer_weight * snap_b
+        if snap_b is not None and cfg.propagate_correction and process_on:
+            reach = approved_flag & (ev["approved"] + cfg.propagation_delay == t)
+            snap_b = np.where(reach, np.maximum(snap_b, cfg.correction_score_target), snap_b)
             score_b = cfg.transfer_weight * snap_b
         if snap_b is not None:
             access_b = score_b >= cfg.tau_b
@@ -385,9 +487,19 @@ def run(cfg: Config) -> dict:
     rows = {k: [None if (isinstance(v, float) and v != v) else v for v in vs] for k, vs in rows.items()}
     summary = {k: (None if (isinstance(v, float) and v != v) else v) for k, v in summary.items()}
     out = {"config": cfg.asdict(), "series": rows, "records": records, "summary": summary}
+    out["process"] = process_outputs(cfg, ev, ap, ap_blocked, ap_outcome, false_detect, ah, z0 > 0, z > 0, locked, denied_at_approval, access_b if snap_b is not None else None)
     out["target_state_digest"] = digest([[round(float(v), 9) for v in row] for row in z_series])
     out["result_digest"] = digest({k: out[k] for k in ("series", "summary")})
+    out["process_digest"] = digest(out["process"])  # the phase-2 record apart: result_digest is unchanged by it, so the saved phase-1 digests still hold
     return out
+
+
+from .process import process_outputs  # noqa: E402
+
+
+def _first(arr: np.ndarray, mask: np.ndarray, t: int) -> np.ndarray:
+    """the period of the first time a condition holds for each subject (-1: not yet)"""
+    return np.where(mask & (arr < 0), t, arr)
 
 
 def _conf_pose(cfg: Config) -> float:

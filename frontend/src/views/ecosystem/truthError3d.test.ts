@@ -5,11 +5,12 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as THREE from 'three';
 import { describe, expect, it } from 'vitest';
-import { EDGES, NODES, nodeValue, type NodeId, type TERun } from './truthError';
-import { buildTruthLayer, teNodeOf } from './truthError3d';
+import { EDGES, NODES, PATHS, nodeValue, stepReached, type NodeId, type TERun } from './truthError';
+import { PATH_COLORS, buildTruthLayer, teNodeOf } from './truthError3d';
 
 const runs = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '__fixtures__', 'truth-error-runs.json'), 'utf8')) as Record<'base' | 'invalid' | 'biased' | 'noscore', TERun>;
 const { base, invalid, biased } = runs;
+const runs2 = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '__fixtures__', 'truth-error-runs2.json'), 'utf8')) as Record<'base' | 'process' | 'no_release' | 'appeal' | 'appeal_gated', TERun>;
 const light = (m: THREE.Mesh) => { const c = (m.material as THREE.MeshStandardMaterial).color, h = { h: 0, s: 0, l: 0 }; c.getHSL(h); return h.l; };
 
 describe('the objects of the chain', () => {
@@ -98,5 +99,42 @@ describe('mounting and unmounting', () => {
       expect(parent.children.length).toBe(before);
     }
     expect(disposed).toHaveLength(15);
+  });
+});
+
+describe('the four paths in the scene', () => {
+  const parent = new THREE.Group(), layer = buildTruthLayer(parent, new THREE.Vector3(0, 12, 0), 18);
+  const colourOf = (lines: THREE.LineSegments, i: number): number => { const a = lines.geometry.getAttribute('color') as THREE.BufferAttribute; return new THREE.Color(a.getX(i * 2), a.getY(i * 2), a.getZ(i * 2)).getHex(); };
+  const steps = PATHS.flatMap((p) => p.steps.map((st) => ({ p: p.id, st }))).filter((x) => x.st.edge);
+  it('has one segment for each step of a path that is a transition on an edge, and none for a step with no transition', () => {
+    expect(layer.pathSegments).toHaveLength(steps.length);
+    expect((layer.pathLines.geometry.getAttribute('position') as THREE.BufferAttribute).count).toBe(steps.length * 2);
+    expect(layer.pathSegments.map((s) => `${s.path}/${s.step}`)).toEqual(steps.map((x) => `${x.p}/${x.st.id}`));
+    for (const sg of layer.pathSegments) expect(EDGES.some(([a, b]) => a === sg.edge[0] && b === sg.edge[1])).toBe(true);   // never a line the chain has no edge for
+  });
+  it('lights a segment in its path\'s colour exactly when the step holds for that subject at that period, and leaves it dark otherwise', () => {
+    for (const t of [0, 14, 30]) for (const k of [1, 6]) {
+      layer.set({ run: runs2.process, branch: null, k, t, selected: null });
+      layer.pathSegments.forEach((sg, i) => {
+        const st = PATHS.find((p) => p.id === sg.path)!.steps.find((x) => x.id === sg.step)!;
+        const lit = stepReached(runs2.process, k, st, t);
+        expect(colourOf(layer.pathLines, i), `${sg.path}/${sg.step} k${k} t${t}`).toBe(lit ? PATH_COLORS[sg.path] : 0x23282e);
+      });
+    }
+  });
+  it('shows the branch\'s own lines below the baseline\'s only when there is a branch, lit by the branch\'s record', () => {
+    layer.set({ run: runs2.process, branch: null, k: 1, t: 30, selected: null });
+    expect(layer.pathLinesBranch.visible).toBe(false);
+    layer.set({ run: runs2.process, branch: runs2.no_release, k: 1, t: 30, selected: null });
+    expect(layer.pathLinesBranch.visible).toBe(true);
+    const i = layer.pathSegments.findIndex((s) => s.step === 'released');
+    expect(colourOf(layer.pathLines, i)).toBe(PATH_COLORS.correction);       // released in the baseline run
+    expect(colourOf(layer.pathLinesBranch, i)).toBe(0x23282e);               // never released in the branch
+    const pa = layer.pathLines.geometry.getAttribute('position') as THREE.BufferAttribute, pb = layer.pathLinesBranch.geometry.getAttribute('position') as THREE.BufferAttribute;
+    expect(pb.getY(i * 2)).toBeLessThan(pa.getY(i * 2));
+  });
+  it('draws the two lines of a path along the endpoints of the node objects', () => {
+    const sg = layer.pathSegments[0], a = layer.meshOf(sg.edge[0]).position, pos = layer.pathLines.geometry.getAttribute('position') as THREE.BufferAttribute;
+    expect([pos.getX(0), pos.getY(0)]).toEqual([expect.closeTo(a.x, 5), expect.closeTo(a.y, 5)]);
   });
 });

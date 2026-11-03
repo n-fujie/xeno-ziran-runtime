@@ -4,10 +4,11 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { ADDRESS_STATES, EDGES, MODALITIES, NODES, addressStatesAt, compareRuns, fieldsAt, modalitiesAt, modalityCounts, nodeReadings, timelineEvents, type NodeId, type TERun } from './truthError';
+import { ADDRESS_STATES, EDGES, MODALITIES, NODES, PATHS, PROCESS_EVENTS, addressStatesAt, compareRuns, comparePaths, eventTable, fieldsAt, modalitiesAt, modalityCounts, nodeReadings, stepReached, timelineEvents, type NodeId, type TERun } from './truthError';
 
 const runs = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '__fixtures__', 'truth-error-runs.json'), 'utf8')) as Record<'base' | 'invalid' | 'biased' | 'noscore', TERun>;
 const { base, invalid, biased, noscore } = runs;
+const runs2 = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '__fixtures__', 'truth-error-runs2.json'), 'utf8')) as Record<'base' | 'process' | 'no_release' | 'appeal' | 'appeal_gated', TERun>;
 
 describe('the chain', () => {
   it('is not a line: a node has more than one source, the score is acted on by a correction, and the subject receives feedback', () => {
@@ -192,5 +193,82 @@ describe('five kinds of "cannot", kept apart', () => {
     const lockedAfterCorrection = rs.some((r) => r.some((x) => x.corrected && x.locked));
     const reached = rs.some((_, k) => modalityCounts(base, k, 39).reachable_after_intervention > 0);
     expect(lockedAfterCorrection || reached).toBe(true);
+  });
+});
+
+// ------------------------------------------------------------------------------------------------ phase 2: the nine times and the four paths, read from real engine runs
+describe('the nine times and the four paths', () => {
+  const { process: proc, no_release: noRel } = runs2;
+  it('keep nine separate events, each with a time per subject and a count, and mark the misclassification as the evaluator\'s', () => {
+    expect(PROCESS_EVENTS).toHaveLength(9);
+    const rows = eventTable(proc);
+    expect(rows.map((r) => r.id)).toEqual([...PROCESS_EVENTS]);
+    expect(rows.find((r) => r.id === 'misclassified')!.epistemic).toBe('REFERENCE');
+    for (const r of rows) { expect(proc.process!.events[r.id].times).toHaveLength(proc.config.n); expect(r.n).toBe(proc.process!.events[r.id].times.filter((x) => x !== null).length); expect(r.of).toBe(proc.config.n); }
+  });
+  it('are the same subject in two runs of one seed: the judgement path is identical when only the release differs', () => {
+    const rows = comparePaths(proc, noRel, 1);
+    for (const r of rows.filter((x) => x.path === 'judgement')) expect(r.status, r.step).toBe('SAME');
+    // the correction is the same too (approved at the same period), but the release exists only in the baseline
+    expect(rows.find((r) => r.step === 'approved')!.status).toBe('SAME');
+    const rel = rows.find((r) => r.step === 'released')!;
+    expect(rel.base).not.toBeNull(); expect(rel.branch).toBeNull(); expect(rel.status).toBe('ONLY_IN_BASELINE'); expect(rel.delta).toBeNull();
+  });
+  it('take every step from a recorded variable or event: a step holds at a period exactly when the engine\'s own time is at or before it', () => {
+    for (const p of PATHS) for (const s of p.steps) for (let k = 0; k < 4; k++) {
+      const at = s.at(proc, k);
+      for (const t of [0, 10, 25, 39]) expect(stepReached(proc, k, s, t), `${p.id}/${s.id}/${k}/${t}`).toBe(at !== null && at <= t);
+    }
+    const ev = proc.process!.events;
+    const get = (id: string) => PATHS.flatMap((p) => p.steps).find((s) => s.id === id)!;
+    expect(get('adopted').at(proc, 1)).toBe(ev.adopted.times[1]); expect(get('released').at(proc, 1)).toBe(ev.released.times[1]);
+    expect(get('denied').at(proc, 1)).toBe(ev.denied.times[1]);
+  });
+  it('order the correction path\'s own times as the process does: detection, request, approval (and the score update at the approval) never run backwards', () => {
+    const e = proc.process!.events;
+    for (let i = 0; i < proc.config.n; i++) {
+      const [d, q, a, u] = [e.detected.times[i], e.requested.times[i], e.approved.times[i], e.score_updated.times[i]];
+      if (d !== null && q !== null) expect(q - d).toBe(proc.config.request_delay);
+      if (q !== null && a !== null) expect(a - q).toBe(proc.config.approval_delay);
+      if (a !== null && u !== null) expect(u - a).toBe(proc.config.score_delay);
+    }
+  });
+  it('light only steps that are transitions on an edge of the chain', () => {
+    for (const p of PATHS) for (const s of p.steps) if (s.edge) expect(EDGES.some(([a, b]) => a === s.edge![0] && b === s.edge![1]), `${p.id}/${s.id}`).toBe(true);
+    expect(PATHS.map((p) => p.id)).toEqual(['judgement', 'effect', 'correction', 'subsequent']);
+  });
+  it('report a step as NEITHER and SAME-with-no-branch without inventing a time', () => {
+    const solo = comparePaths(base, null, 0);
+    expect(solo.every((r) => r.branch === null)).toBe(true);
+    expect(solo.find((r) => r.step === 'detected')!.status).toBe('NEITHER');   // the old baseline has no audit
+  });
+  it('read the appeal of a subject from the run: not modelled (old run), none, or the stages reached', () => {
+    const ap = (r: TERun, k: number) => fieldsAt(r, k, 30).reentry.find((x) => x.label === 'appeal')!;
+    expect(ap(base, 0).value).toContain('NOT MODELLED');
+    expect(ap(runs2.process, 0).value).toContain('no appeal procedure');
+    const filed = runs2.appeal.process!.appeal.stage_times.appeal_filed.findIndex((x) => x !== null);
+    expect(filed).toBeGreaterThanOrEqual(0);
+    expect(ap(runs2.appeal, filed < 12 ? filed : 0).value).toMatch(/appeal filed at \d+|not filed/);
+    expect(runs2.appeal_gated.process!.appeal.blocked_subjects).toBeGreaterThan(0);
+  });
+  it('keep a correction and a release apart in the engine\'s record: the no-release run approves corrections and releases none', () => {
+    expect(noRel.process!.events.approved.n).toBeGreaterThan(0); expect(noRel.process!.events.released.n).toBe(0);
+    expect(runs2.process.process!.events.released.n).toBeGreaterThan(0);
+  });
+  it('the fixed metrics carry their definitions (denominator, period, unit)', () => {
+    for (const k of ['access_rate_late_fav', 'denial_rate_late_fav', 'lost_opportunities_per_fav', 'recovery_time', 'persistent_constraint', 'propagation_b_denied_fav']) {
+      const d = proc.process!.metric_definitions[k]; expect(d.denominator).toBeTruthy(); expect(d.period).toBeTruthy(); expect(d.unit).toBeTruthy();
+    }
+  });
+});
+
+describe('what was changed between two runs includes the correction process', () => {
+  it('lists the release rule when only the release differs, and nothing for a run saved before phase 2 compared with itself', () => {
+    const c = compareRuns(runs2.process, runs2.no_release);
+    expect(c.changed).toEqual(expect.arrayContaining(['release_mode: "after_approval" -> "never"']));   // the fixture's no-release run also leaves the propagation off
+    expect(c.changed).toHaveLength(3);
+    expect(compareRuns(runs2.base, runs2.process).changed.join(' ')).toContain('audit_every: null -> 2');
+    expect(compareRuns(base, base).changed).toEqual([]);
+    expect(compareRuns(base, runs2.base).changed).not.toContain('undefined');   // a field absent in an old run is not reported as a change against the same default
   });
 });
