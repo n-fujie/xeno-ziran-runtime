@@ -20,8 +20,8 @@ from typing import Any
 import numpy as np
 
 from .experiments import BASE, SEEDS, _diff, _paired, _run_experiment
-from .institution import Config, digest
-from .process import METRICS, recoverability
+from .institution import Config, digest, run
+from .process import METRICS, OBS_LATE, recoverability
 
 SEEDS2 = tuple(range(21, 41))
 PRIMARY2 = (
@@ -86,7 +86,7 @@ def _mean_time(ev: str) -> Callable[[dict], Any]:
 
 EXTRA: dict[str, Callable[[dict], Any]] = {k: _pm(k) for k in (*PRIMARY2, "recovery_censored_share")}
 EXTRA.update({f"share_{e}": _share(e) for e in ("misclassified", "detected", "approved", "score_updated", "released", "restored")})
-EXTRA.update({f"time_{e}": _mean_time(e) for e in ("detected", "approved", "released", "restored")})
+EXTRA.update({f"time_{e}": _mean_time(e) for e in ("detected", "approved", "score_updated", "released", "restored")})
 EXTRA["reimposed_share"] = lambda r: r["process"]["reimposed_after_release"] / r["config"]["n"]
 EXTRA["false_detection_share"] = lambda r: r["process"]["false_detections"] / r["config"]["n"]
 
@@ -167,6 +167,18 @@ def _run2(spec: dict) -> dict:
         for c1, c2 in zip(a["contrasts"], b2, strict=True):
             c1["paired_seeds_21_40"] = c2["paired"]
             c1["class"] = _classify(c1["paired"], c2["paired"])
+    held_all = sorted(f.name for f in dataclasses.fields(Config) if f.name != "seed")
+    a["intervention_records"] = [
+        {
+            "arm": r["arm"],
+            "variables_changed": r["changed_vs_control"],
+            "variables_held": [k for k in held_all if k not in r["changed_vs_control"]],
+            "random_draws": "shared with the control in every seed (independent streams)",
+            "observation": {"periods": a["periods"], "late_window_periods": OBS_LATE, "subjects": a["n_subjects"], "seeds": a["seeds"], "replication_seeds": list(SEEDS2)},
+        }
+        for r in a["arms"]
+        if r["arm"] != a["control"]
+    ]
     a["questions"] = spec.get("questions", [])
     a["limits"] = LIMITS2
     a["metric_definitions"] = {k: METRICS[k] for k in PRIMARY2 if k in METRICS}
@@ -508,6 +520,151 @@ def te12_appeal() -> dict:
     )
 
 
+def te12_release() -> dict:
+    """Added AFTER the null result of TE12 (an exploratory arm set, kept apart so TE12's pre-registered content is unchanged): the appeal is connected to the correction in TE12, but the constraint ends there only by the score. Here the same appeal is combined with the release at the approval; no rule of the model is changed, a declared setting is."""
+    base = _with(NO_PROCESS, appeal=True, request_delay=0, approval_delay=1)
+    ctl = "no appeal, a constraint ends by the score (the TE12 control)"
+    named: dict[str, dict[str, Any]] = {
+        ctl: {"appeal": False},
+        "appeal open, a constraint ends by the score (the TE12 arm)": {},
+        "appeal open, the constraint is released at the approval": {"release_mode": "after_approval", "release_delay": 0},
+        "no appeal, the constraint is released only at an approval (none is made)": {"appeal": False, "release_mode": "after_approval", "release_delay": 0},
+        "appeal gated by the score, the constraint is released at the approval": {"release_mode": "after_approval", "release_delay": 0, "appeal_access": "score_gated", "appeal_min_score": 0.0},
+        "appeal open, evidence always available and always accepted, released at the approval": {"release_mode": "after_approval", "release_delay": 0, "evidence_available_prob": 1.0, "appeal_acceptance_prob": 1.0, "appeal_filing_prob": 1.0},
+    }
+    arms, declared = _grid(base, named, ctl)
+    contrasts = [
+        ("MATCHED: the appeal minus no appeal, both with the constraint released only at an approval", [(1.0, "appeal open, the constraint is released at the approval"), (-1.0, "no appeal, the constraint is released only at an approval (none is made)")]),
+        ("CONFOUNDED, shown for what it is: switching the release from the score to the approval (appeal present) loses the release by the score for everyone the appeal does not reach", [(1.0, "appeal open, the constraint is released at the approval"), (-1.0, "appeal open, a constraint ends by the score (the TE12 arm)")]),
+        ("a fully resourced appeal (always filed, with evidence, accepted) minus an ordinary one, both released at the approval", [(1.0, "appeal open, evidence always available and always accepted, released at the approval"), (-1.0, "appeal open, the constraint is released at the approval")]),
+    ]
+    return _run2(
+        {
+            "id": "EXP-TE12-release",
+            "title": "Appeals connected to the release (exploratory, added after the null result of TE12)",
+            "question": "TE12 found no effect of an appeal on the outcomes. The trace of the transitions (appeal_trace) shows the appeal reaches the correction and the score update but not the release of a constraint, which ends there by the score. Does the appeal change the outcomes when the release is made at the approval, a setting the model already has? The matched comparison is within that release rule: the model has no rule that releases by the score OR at an approval, and adding one after seeing the null would be a post-hoc change of the model, so it is not done.",
+            "control": ctl,
+            "arms": arms,
+            "declared": declared,
+            "primary": PRIMARY2 + ("share_approved", "share_released"),
+            "contrasts": contrasts,
+            "contrast_outcomes": ("denial_rate_late_fav", "lost_opportunities_per_fav", "persistent_constraint"),
+            "failure_conditions": {"an arm changed nothing in any seed (its factor was not operative)": lambda a: _no_idle_arm(a, ctl), "no wrongful denial without an appeal": lambda a: float(np.nanmean(a[ctl]["values"]["lost_opportunities_favourable_per_subject"])) < 0.5},
+            "protocol": {
+                "changed": "release_mode / release_delay (the release at the approval), the appeal's access rule, and for the last arm the evidence, acceptance and filing probabilities",
+                "unchanged": "NO_PROCESS with request delay 0, approval delay 1; no audit",
+                "seeds": list(SEEDS),
+                "failure": "no wrongful denial without an appeal",
+                "status": "exploratory: the arms were chosen after TE12's result was known, to test a diagnosis; no model rule was changed",
+            },
+        }
+    )
+
+
+def te15_separation() -> dict:
+    """The four things a correction is made of, manipulated one at a time: the time of the correction (approval), the update of the score, the release of the constraint, and (as the outcome) the restoration of access."""
+    ctl = "no correction process (a constraint ends by the score: the phase-1 rule)"
+    named: dict[str, dict[str, Any]] = {ctl: {"audit_every": None, "release_mode": "by_score"}}
+    for a in (0, 8):
+        for u in (0, 8):
+            for r in (0, 8):
+                named[f"approval {a} / score update +{u} / release +{r}"] = {"audit_every": 2, "release_mode": "after_approval", "approval_delay": a, "score_delay": u, "release_delay": r}
+    arms, declared = _grid(P0, named, ctl)
+    nm = lambda a, u, r: f"approval {a} / score update +{u} / release +{r}"  # noqa: E731
+
+    def eff(axis: int) -> list[tuple[float, str]]:
+        return [((0.25 if (i >> (2 - axis)) & 1 else -0.25), nm(*[(0, 8)[(i >> (2 - j)) & 1] for j in range(3)])) for i in range(8)]
+
+    def prod(ax: tuple[int, ...]) -> list[tuple[float, str]]:
+        return [(0.25 * float(np.prod([(1.0 if (i >> (2 - a)) & 1 else -1.0) for a in ax])), nm(*[(0, 8)[(i >> (2 - j)) & 1] for j in range(3)])) for i in range(8)]
+
+    contrasts = [
+        ("main effect of the time of the correction (approval 8 minus 0)", eff(0)),
+        ("main effect of the score update (+8 minus +0)", eff(1)),
+        ("main effect of the release (+8 minus +0)", eff(2)),
+        ("interaction correction time x score update", prod((0, 1))),
+        ("interaction correction time x release", prod((0, 2))),
+        ("interaction score update x release", prod((1, 2))),
+        ("three-way interaction", prod((0, 1, 2))),
+    ]
+    return _run2(
+        {
+            "id": "EXP-TE15",
+            "title": "Separating the correction, the score update, the release and the restoration",
+            "question": "The time of the correction (the approval), the update of the score and the release of the constraint are each delayed independently (2x2x2). Which of them does the restoration of access, the denial rate and the lost opportunities depend on, and do the dependences add?",
+            "control": ctl,
+            "arms": arms,
+            "declared": declared,
+            "primary": PRIMARY2 + ("time_approved", "time_score_updated", "time_released", "time_restored", "share_restored"),
+            "contrasts": contrasts,
+            "contrast_outcomes": ("denial_rate_late_fav", "lost_opportunities_per_fav", "persistent_constraint", "time_restored"),
+            "failure_conditions": {"an arm changed nothing in any seed (its factor was not operative)": lambda a: _no_idle_arm(a, ctl), "no constraint is set in the control": _failures_none_constraint(ctl)},
+            "protocol": {
+                "changed": "approval_delay (0, 8) x score_delay (0, 8) x release_delay (0, 8)",
+                "unchanged": "P0 otherwise (audit every 2, request delay 1, window 4, transfer at 12); the control has no audit",
+                "seeds": list(SEEDS),
+                "failure": "no constraint in the control",
+                "observation_period": "40 periods; the late window is the last 10",
+            },
+        }
+    )
+
+
+# guarantees of the transition rules: a difference of these kinds is built in (it follows from the code of one period), so an experiment cannot "find" it; each is checked by a test of the rule itself
+BY_CONSTRUCTION = {
+    "release_mode never": "no release event can occur (the release block is not reached)",
+    "lock_after none": "no constraint is ever set, so release and correction of a constraint are not distinct and the arms are identical runs",
+    "tau_a far below the scores": "the score cannot deny access, so updating it changes nothing",
+    "approval_delay / request_delay / score_delay / release_delay": "each shifts its own event by exactly that many periods (the times are stored, not estimated)",
+    "classifier adopts nothing (confidence_floor above 1)": "the score stays at its initial value, which meets the threshold: nobody is denied",
+    "appeal off": "no appeal event occurs and the run is the run without the procedure (same digest)",
+    "the audit and the appeal cannot see the subject's score": "the audit reads the verification label; the appeal reads the evidence at re-judgement (a rule of the model)",
+}
+
+
+def appeal_trace(seeds: tuple[int, ...] = SEEDS) -> dict:
+    """The connections of the appeal in the implemented transitions, counted over the seeds for the TE12 open-appeal configuration against the same configuration without the appeal. No rule is changed: this reads the runs."""
+    base = _with(NO_PROCESS, appeal=True, request_delay=0, approval_delay=1)
+    noap = dataclasses.replace(base, appeal=False)
+    t = dict.fromkeys(("subjects", "filed", "evidence", "accepted", "rejudged", "corrected_by_rejudgement", "upheld", "correction_requested_at_rejudgement", "approved_after_request_delay", "score_updated_at_approval", "released_at_or_after_approval", "corrected_and_favourable", "corrected_and_unfavourable", "favourable_subjects", "favourable_with_any_access_difference", "late_denied_periods_with_appeal", "late_denied_periods_without", "needing_relief_still_denied_at_end", "needing_relief_never_filed", "needing_relief_filed_no_evidence", "needing_relief_filed_not_accepted", "needing_relief_upheld", "needing_relief_corrected_yet_denied"), 0)
+    for seed in seeds:
+        a, b = run(dataclasses.replace(base, seed=seed)), run(dataclasses.replace(noap, seed=seed))
+        P = a["process"]
+        st = {k: np.array([-1 if x is None else x for x in v]) for k, v in P["appeal"]["stage_times"].items()}
+        ev = {k: np.array([-1 if x is None else x for x in P["events"][k]["times"]]) for k in P["events"]}
+        fav = np.array(P["favourable_at_start"])
+        rj = st["rejudged"] >= 0
+        corr = rj & (ev["requested"] >= 0) & (ev["requested"] == st["rejudged"] + base.request_delay)
+        t["subjects"] += base.n
+        t["filed"] += int((st["appeal_filed"] >= 0).sum())
+        t["evidence"] += int((st["evidence_submitted"] >= 0).sum())
+        t["accepted"] += int((st["appeal_accepted"] >= 0).sum())
+        t["rejudged"] += int(rj.sum())
+        t["corrected_by_rejudgement"] += int(corr.sum())
+        t["upheld"] += int((rj & ~corr).sum())
+        t["correction_requested_at_rejudgement"] += int(corr.sum())
+        t["approved_after_request_delay"] += int((corr & (ev["approved"] == ev["requested"] + base.approval_delay)).sum())
+        t["score_updated_at_approval"] += int((corr & (ev["score_updated"] == ev["approved"])).sum())
+        t["released_at_or_after_approval"] += int((corr & (ev["released"] >= ev["approved"])).sum())
+        t["corrected_and_favourable"] += int((corr & fav).sum())
+        t["corrected_and_unfavourable"] += int((corr & ~fav).sum())
+        ha, hb = np.array(P["access_history_favourable"], dtype=bool), np.array(b["process"]["access_history_favourable"], dtype=bool)
+        t["favourable_subjects"] += int(ha.shape[1])
+        t["favourable_with_any_access_difference"] += int((ha != hb).any(axis=0).sum())
+        t["late_denied_periods_with_appeal"] += int((~ha[-OBS_LATE:]).sum())
+        denied_end = np.zeros(base.n, dtype=bool)
+        denied_end[np.where(fav)[0]] = ~ha[-1]  # favourable at the start and still denied at the last period: the subjects an appeal would have to relieve
+        flt = st["appeal_filed"] >= 0
+        t["needing_relief_still_denied_at_end"] += int(denied_end.sum())
+        t["needing_relief_never_filed"] += int((denied_end & ~flt).sum())
+        t["needing_relief_filed_no_evidence"] += int((denied_end & flt & (st["evidence_submitted"] < 0)).sum())
+        t["needing_relief_filed_not_accepted"] += int((denied_end & (st["evidence_submitted"] >= 0) & (st["appeal_accepted"] < 0)).sum())
+        t["needing_relief_upheld"] += int((denied_end & rj & ~corr).sum())
+        t["needing_relief_corrected_yet_denied"] += int((denied_end & corr).sum())
+        t["late_denied_periods_without"] += int((~hb[-OBS_LATE:]).sum())
+    return {"configuration": "TE12 open appeal (NO_PROCESS, request delay 0, approval delay 1, constraint ends by the score) against the same without the appeal", "seeds": list(seeds), "counts": t, "by_construction": BY_CONSTRUCTION}
+
+
 # ------------------------------------------------------------------------------------------------ TE13: parameter sensitivity (one factor at a time, ranges fixed above)
 def te13_sensitivity() -> dict:
     named: dict[str, dict[str, Any]] = {"base (P0)": {}}
@@ -590,8 +747,10 @@ REGISTRY2: dict[str, Callable[[], dict]] = {
     "EXP-TE10": te10_causal,
     "EXP-TE11": te11_recoverability,
     "EXP-TE12": te12_appeal,
+    "EXP-TE12-release": te12_release,
     "EXP-TE13": te13_sensitivity,
     "EXP-TE14": te14_interaction,
+    "EXP-TE15": te15_separation,
 }
 
 

@@ -293,3 +293,70 @@ def test_an_observation_only_change_holds_the_real_state_only_when_the_resources
     assert seen["result_digest"] != I.run(held)["result_digest"]
     c = _contrast(e, "Q4 observation-only change with the real state held", "lost_opportunities_per_fav")
     assert c["class"] == "replicated" and c["paired"]["mean"] > 0
+
+
+# ------------------------------------------------------------------------------------------------ final verification: what is guaranteed by construction, what the appeal is connected to, the separation
+def test_every_experiment_records_what_was_changed_what_was_held_and_the_observation(saved2):
+    for k, e in saved2["experiments"].items():
+        recs = {r["arm"]: r for r in e["intervention_records"]}
+        assert set(recs) == {a["arm"] for a in e["arms"]} - {e["control"]}, k
+        for r in recs.values():
+            assert r["variables_changed"] and "seed" not in r["variables_held"] and not set(r["variables_changed"]) & set(r["variables_held"])
+            assert r["observation"]["periods"] == 40 and r["observation"]["late_window_periods"] == 10 and r["observation"]["seeds"] == e["seeds"]
+            assert "shared with the control" in r["random_draws"]
+
+
+def test_the_guarantees_of_the_transition_rules_hold_by_construction():
+    """these differences are built in: an experiment can only show their size, never their existence"""
+    kw = dict(seed=5, **PROC)
+    assert I.run(cfg(**{**kw, "release_mode": "never"}))["process"]["events"]["released"]["n"] == 0
+    assert I.run(cfg(**{**kw, "confidence_floor": 2.0}))["process"]["metrics"]["denial_rate_late_fav"] == 0.0  # nothing adopted: the score stays at its start and nobody is denied
+    for k, v in (("request_delay", 3), ("approval_delay", 4), ("score_delay", 2)):
+        a, b = I.run(cfg(**kw)), I.run(cfg(**{**kw, k: v}))
+        assert not np.array_equal(times(a, "approved"), times(b, "approved")) or k == "score_delay"
+    assert set(X2.BY_CONSTRUCTION) >= {"release_mode never", "lock_after none", "approval_delay / request_delay / score_delay / release_delay", "appeal off"}
+
+
+def test_the_appeal_is_connected_to_evidence_rejudgement_correction_and_the_score_update_but_not_to_the_release_by_the_score():
+    t = X2.appeal_trace()["counts"]
+    assert t["evidence"] <= t["filed"] and t["accepted"] <= t["evidence"] and t["rejudged"] == t["accepted"]   # each stage follows the last
+    assert t["corrected_by_rejudgement"] + t["upheld"] == t["rejudged"]
+    # every re-judgement that follows the evidence becomes a request, an approval after the declared delay, and a score update at the approval
+    assert t["correction_requested_at_rejudgement"] == t["approved_after_request_delay"] == t["score_updated_at_approval"] == t["corrected_by_rejudgement"] > 0
+    assert t["released_at_or_after_approval"] < t["corrected_by_rejudgement"] / 5   # the release is by the score in this configuration: the appeal does not reach it
+    # why the outcomes do not move: almost no favourable subject's access differs with the appeal, and of those still denied at the end every one filed
+    assert t["favourable_with_any_access_difference"] <= t["favourable_subjects"] * 0.01
+    assert t["needing_relief_never_filed"] == 0 and t["needing_relief_upheld"] > t["needing_relief_still_denied_at_end"] / 2
+
+
+def test_the_saved_appeal_trace_is_the_one_the_code_produces():
+    saved = json.loads((DOCS / "appeal_trace.json").read_text())
+    assert saved["counts"] == X2.appeal_trace()["counts"] and saved["seeds"] == list(X2.SEEDS)
+
+
+def test_the_appeal_stays_null_when_it_is_the_only_route_to_the_release_and_when_it_is_fully_resourced(saved2):
+    e = saved2["experiments"]["EXP-TE12-release"]
+    m = _contrast(e, "MATCHED", "denial_rate_late_fav")
+    assert m["class"] == "not detected" and abs(m["paired"]["mean"]) < 0.005
+    assert _contrast(e, "fully resourced", "denial_rate_late_fav")["class"] == "not detected"
+    c = _contrast(e, "CONFOUNDED", "denial_rate_late_fav")
+    assert c["class"] == "replicated" and c["paired"]["mean"] > 0.05   # the rule switch itself (loss of the release by the score) is what moves the outcome
+    assert e["protocol"]["status"].startswith("exploratory")
+    resourced = next(a for a in e["arms"] if a["arm"].startswith("appeal open, evidence always"))
+    assert resourced["mean"]["share_approved"]["mean"] > 0.1 and resourced["mean"]["time_released"]["mean"] is None   # approvals are made, and none of them meets a constraint in force
+
+
+def test_the_correction_the_score_update_and_the_release_are_separated_by_the_saved_2x2x2(saved2):
+    e = saved2["experiments"]["EXP-TE15"]
+    c = lambda lab, out: _contrast(e, lab, out)  # noqa: E731
+    assert c("main effect of the release", "denial_rate_late_fav")["class"] == "not detected"   # delaying the release alone leaves the late denial rate
+    assert c("main effect of the release", "time_restored")["class"] == "replicated" and c("main effect of the release", "time_restored")["paired"]["mean"] > 3   # but it delays the restoration
+    for lab in ("main effect of the time of the correction", "main effect of the score update"):
+        x = c(lab, "denial_rate_late_fav")
+        assert x["class"] == "replicated" and x["paired"]["mean"] > 0.01
+    arms = {a["arm"]: a for a in e["arms"]}
+    # the times are the declared delays: the approval at 8 comes later than at 0 and the score update lags it by its own delay
+    ta0, ta8 = (arms[f"approval {a} / score update +0 / release +0"]["mean"]["time_approved"]["mean"] for a in (0, 8))
+    assert ta8 > ta0 + 3
+    s8 = arms["approval 0 / score update +8 / release +0"]["mean"]
+    assert s8["time_score_updated"]["mean"] > s8["time_approved"]["mean"] + 3

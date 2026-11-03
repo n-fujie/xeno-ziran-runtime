@@ -150,6 +150,7 @@ def process_outputs(cfg, ev, ap, ap_blocked, ap_outcome, false_detect, ah, fav0,
     }
     return {
         "events": _events_block(ev),
+        "favourable_at_start": [bool(v) for v in fav0],
         "false_detections": int(false_detect.sum()),
         # a constraint released and then bound again (the denials that follow a release can set it anew)
         "reimposed_after_release": int(((ev["released"] >= 0) & locked_end).sum()),

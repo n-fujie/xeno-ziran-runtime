@@ -168,7 +168,7 @@ Defaults reproduce phase 1; phase-2 output sits outside the digested `{series, s
 
 ### 10.3 The experiments (ranges and primary metrics fixed in the code before the runs)
 
-Each arm is the control with exactly the declared change (checked), shares every random draw with the control, and every difference is a paired difference over seeds 1..20 **and again over seeds 21..40**. A difference is *replicated* only if it is beyond two standard errors on both lists with the same sign; *set-dependent* if on one list only; *not detected* if on neither. Over the nine experiments (517 arm-by-metric differences): 335 replicated, 28 set-dependent, 120 not detected, 34 without data (a metric that is empty in the control, such as recovery time without any approval). 131 not-detected primary results are kept in the files. A failure condition that is also checked: an arm that changes nothing in any seed (its factor inoperative) invalidates the experiment. Saved in `docs/truth_error/experiments2.json`.
+Each arm is the control with exactly the declared change (checked), shares every random draw with the control, and every difference is a paired difference over seeds 1..20 **and again over seeds 21..40**. A difference is *replicated* only if it is beyond two standard errors on both lists with the same sign; *set-dependent* if on one list only; *not detected* if on neither. Over the nine experiments at the time of writing (the totals of all eleven, with EXP-TE12-release and EXP-TE15 added in the final verification, are in section 11.3) (517 arm-by-metric differences): 335 replicated, 28 set-dependent, 120 not detected, 34 without data (a metric that is empty in the control, such as recovery time without any approval). 131 not-detected primary results are kept in the files. A failure condition that is also checked: an arm that changes nothing in any seed (its factor inoperative) invalidates the experiment. Saved in `docs/truth_error/experiments2.json`.
 
 | Id | What varies | Why |
 |---|---|---|
@@ -243,7 +243,7 @@ One factor at a time (12 settings, 24 arms and the base): 78 of 144 arm-by-metri
 | the audit target is the institution, not the individual | consistent with the metrics (population-level, per arm) and with the scope: no score of a person's direction or worth is computed |
 
   The correspondence scope: the propositions of DDAT concern institutions of real societies; the results above are results of a finite synthetic model with declared constants. They show which of DDAT's structural claims *can be expressed and hold in that model* (self-fulfilment through allocation, the persistence of a constraint after correction, the dependence of return on timing and the release rule) and which cannot be expressed (accurate-yet-unjust, hearing, four of the seven rates). They neither confirm nor refute DDAT. The several AI-society manuscripts in the same folder were not read.
-* **Operational-shape realism, 概象, Address Domain.** No primary definition of 概象 or of operational-shape realism was found; the words occur in this repository's own documents (`TEOO.md`, `ECOSYSTEM_MEOS*.md`, `CHANGELOG.md`), which are not sources. Nothing was inferred or completed. The Address-Domain use stays analogical (section 5).
+* **Operational-shape realism, 概象, Address Domain.** **Corrected in the final verification (section 11.4):** the earlier statement that no primary source was found was wrong for operational-shape realism and the Address Domain; manuscripts exist in `~/Downloads` and were retrieved. 概象 (Gaisho) has no definition in anything found.
 * **Badiou and Brassier.** Section 6. The formal model (this section) and the political-philosophical argument are kept apart: nothing in the engine, the experiments or the pane is taken from either. The Brassier thesis found is on Laruelle and matter; a correspondence with the model is not established.
 * **Novelty.** That prior work leaves parts unmeasured does not make the truth-error operational shape new, and no novelty is claimed.
 
@@ -270,3 +270,105 @@ The four paths (judgement, effect, correction, subsequent) are lines along the *
 | Real screen (preview server restarted, TRUTH-ERROR tab, baseline and a branch with audit every 2, approval delay 2, release never) | the nine times, four paths, metrics, recoverability and appeal tables render; the 3D chain shows the path lines. **A bug found only on screen and fixed:** the baseline/branch comparison said "nothing changed" because `compareRuns` did not list the phase-2 settings; it now lists them (test added). For sample subject 2 the screen shows correction without release: approved at 12 (earlier than the baseline's 18), never released, never restored, against the baseline's release at 15 and access at 18 |
 
 Not pushed, not deployed.
+
+
+## 11. Final verification of phase 2 (2026-11-03): what the results support, what the model guarantees, what remains unestablished
+
+This section changes no model rule. Where an experiment was added it was added to answer a stated question, is labelled, and leaves the earlier experiments' content unchanged.
+
+### 11.1 Separating the correction, the score update, the release and the restoration (EXP-TE15, with the records of TE07-TE14)
+
+Every experiment now stores, for each arm, an `intervention_record`: the variables changed (with the values), the variables held (every other configuration field, listed), the observation period (40 periods, the late window the last 10, 120 subjects, seeds 1-20 and 21-40) and that the random draws are shared with the control. EXP-TE15 delays three things independently, 2x2x2 (approval 0 or 8, score update +0 or +8, release +0 or +8), against a control with no process, and reads the restoration of access as an outcome (the period of the first access after the approval, and its share). Mean periods (seeds 1-20): approval 11.2 or 17.5; score update at the approval or 6 periods after it (17.5 against 11.2); release at 18.7 to 24.5: **the declared delays act on exactly their own event, and the other times are not moved** (the time of the approval is identical in arms that differ only in the score update or the release).
+
+| Contrast (main effect = mean of the four arms with the later setting minus the four with the earlier) | denial rate of favourable subjects | lost opportunities | time to restoration | Class |
+|---|---|---|---|---|
+| later correction (approval 8 against 0) | +0.027 ± 0.004 | +1.08 ± 0.11 | +10.4 ± 0.4 | replicated |
+| later score update (+8 against +0) | +0.030 ± 0.003 | +1.12 ± 0.10 | +0.85 ± 0.28 | replicated |
+| later release (+8 against +0) | +0.002 ± 0.002 (**not detected**) | +0.13 ± 0.05 | +4.4 ± 0.2 | denial not detected, others replicated |
+| correction time x score update | -0.030 ± 0.003 | -1.09 ± 0.10 | -1.7 ± 0.2 | replicated |
+| correction time x release | +0.013 ± 0.003 | +0.59 ± 0.08 | +2.3 ± 0.2 | replicated |
+| score update x release | -0.009 ± 0.002 | -0.44 ± 0.05 | +4.0 ± 0.4 | replicated |
+| three-way | +0.006 ± 0.001 | +0.17 ± 0.03 | -2.4 ± 0.2 | replicated |
+
+(Seeds 21-40 agree in sign and detection in every row.) Reading, within the model: delaying the correction and delaying the score update each raise the late denial rate and the lost opportunities; delaying the release alone barely moves the late denial rate but delays the restoration of access; and the dependences do not add (a late score update matters less if the correction is late too: the negative interaction, the two delays being substitutes for the same lateness). The correction and the score update are two separate effects here only because the model lets the score be updated later than the approval.
+
+**Built in, and what was found.** Some differences cannot be found because they follow from one period of the rules (`BY_CONSTRUCTION`, each checked by a test of the rule): the release never occurs under `release_mode` never; no constraint exists with `lock_after` none, so the arms are identical runs; a score that cannot deny makes its update irrelevant; each delay shifts its own event by exactly that amount; nothing is denied if nothing is adopted; the appeal is the same run when it is off. What the experiments found, and the rules do not state, are the sizes and signs of the downstream outcomes and the interactions above, and **that a correction process with an imperfect audit does not beat release by the score** (section 10.4). The non-identity of correction and release is therefore partly guaranteed (the two are separate mechanisms) and partly confirmed (when it has consequences).
+
+### 11.2 Why the appeal changed no outcome: the transitions, read, not altered
+
+`appeal_trace` (saved in `docs/truth_error/appeal_trace.json`, reproduced by a test) reads the TE12 open-appeal runs over seeds 1-20 against the same runs without the appeal (2400 subject-runs):
+
+* **The appeal is connected to evidence, re-judgement, correction and the score update.** 1725 filed; 1382 submitted evidence; 998 were accepted; all 998 accepted were re-judged. 137 re-judgements followed the evidence: every one of them became a correction request in the same period, an approval exactly `approval_delay` later and a score update at the approval (137 and 137 of 137); 861 were upheld. 132 of the corrected were favourable at the start and 5 were not (the appeal follows the evidence, not the label, so it can relieve a denial that was right).
+* **It is not connected to the release when the constraint ends by the score** (the TE12 setting): only 6 of the 137 corrections were followed by a release at or after the approval.
+* **Why the outcomes do not move:** of 1214 subjects favourable at the start, 1 had any difference in their access history with and without the appeal. Of the 111 favourable subjects still denied at the end, none had failed to file; 70 were upheld, 22 had no evidence, 18 were not accepted, 1 were corrected and still denied. The rules explain it: a subject has **one** appeal, filed at the first denial (median period 1, when the classification window has not yet turned and the evidence does not support "z > 0"), so it is upheld; a constraint that forms later (after four denied periods) can no longer be appealed; and a favourable re-judgement only duplicates what the score is already doing.
+* **The release is an event, not a state.** A release at an approval acts only on a constraint in force at that period. In the exploratory arms of EXP-TE12-release (added after the null result, labelled exploratory) the appeal made the only route to a release and was fully resourced (always filed, evidence always available, always accepted): approvals were made for 16 % of subjects (mean period about 4), **no release occurred in any seed** (all the approvals preceded the constraint), and the outcomes did not move (the matched comparison, appeal minus no appeal with the constraint released only at an approval: denial rate -0.001 ± 0.001, not detected on either list). The comparison that does move (denial +0.072 ± 0.007, replicated) switches the release rule from the score to the approval and so removes the release by the score for everyone the appeal does not reach: it is **confounded** and is shown labelled as such. A rule that releases by the score *or* at an approval would test the connection without that loss; **the model has none, and adding one after the null result would be a post-hoc change of the model, so it was not added.** It is recorded as a limit of the model, possibly a design deficiency of the one-shot appeal and of the event-type release, not as a finding about appeals in general.
+
+### 11.3 How far the present claims are supported
+
+| Claim | Status |
+|---|---|
+| Correcting a judgement does not by itself end a binding constraint, and releasing a constraint does not by itself restore access | **Confirmed in the model where a constraint forms and the score can bind** (TE07, TE15; replicated on a second seed list). **Built in as a possibility** (separate mechanisms); not shown for any real institution |
+| The two are not distinguishable where the mechanism is absent | **By construction** (identical runs) and where the mechanism rarely forms (`lock_after` 8: not detected, which is not evidence of identity) |
+| A late correction costs more than a late release | Confirmed in the model (TE08, TE15); depends on declared constants (TE13) |
+| A correction process with imperfect audit does not beat release by the score | Confirmed in the model for audit sensitivity 0.6; not tested for other audit designs beyond TE13's 0.3 and 0.9 |
+| An appeal that exists gives no relief | **Not a general claim.** In this model, with a one-shot appeal filed at the first denial, an evidence-only re-judgement and an event-type release, it changed nothing; the transitions explain why (11.2). It does not show that appeals are ineffective |
+| A score-gated appeal is harmless to the outcomes | **Not claimed.** The gating blocked 57 % of subjects from filing; the outcomes are unchanged only because the appeal itself had no effect. The Low-Score Subject Guarantee Principle (11.4) is violated in that arm by design, and the model has no outcome that could register the harm |
+| Self-fulfilment through allocation | Confirmed for the state-level share (Q3), not for the constraint; depends on beta |
+| Anything about real credit, institutions, persons or law | **None** |
+
+Totals over the nine experiment files plus the two added (EXP-TE12-release, EXP-TE15): 11 experiments, 645 arm-by-metric differences: 409 replicated, 35 set-dependent, 130 not detected, 71 without data; 141 not-detected primary results kept.
+
+### 11.4 The related manuscripts: search and what they say (2026-11-03)
+
+Searched: every .txt, .md, .tex, .docx, .pdf, .html, .rtf, .json, .py and .odt file under `~/Downloads`, `~/Desktop` and `~/Documents` (31,117 files; text layer of the PDFs, `word/document.xml` of the .docx files). Found, not found, and how much was read:
+
+| Term | Found | Read |
+|---|---|---|
+| Operational-Shape Realism | `~/Downloads/ai_law_osr_r2.docx` (N. Fujie, "Operational-Shape Realism for AI Law", 31 Oct 2026, R2); `XENOSCIENCE_Representative_FINAL_Validated_2026-10-22.docx` (section 3A, Non-Closure Realism, Operational-Shape Realism and Retrospective Identification); `~/Desktop/Phase3_audit_files/99_ERRATA_AND_CORRECTIONS/THEORY_SCOPE.md` (which says the primary manuscripts were not consulted) | the AI-law manuscript **in full**; section 3A in context only; the Xenoscience book (330,000 characters) not read |
+| AIスコア社会論 / AI score society | many manuscripts in `~/Downloads` (`AI_Score_Society*.docx`, `ontological_instability_ai_scored_society_*`, `score_inheritance_*`, `scored_cartesianism_*`, `New_Score_Pragmatism*`, `ddat.txt`, `ddat2.txt`, `ddat3.txt`) | only the DDAT text (section 10.9); the rest are listed, **not read** |
+| Address Domain | `Planetary_Precision_State_Space_Construction.docx` ("Address-Analytic Domain Physics"); the Xenoscience book; `pa-simulation-environment/docs/ZIRAN_ADDRESS_DOMAIN_*.md` | the abstract passage only |
+| Low-Score Subject Guarantee | `The_Minimum_Guarantees_Human_Legal_Subjecthood_PUBLICATION_FINAL_V3_0*.docx` (the 100-point edition adds it as "the constitutional premise") | the principle's statement; not the book (297,000 characters) |
+| Data Metabolism | `~/Desktop/BIM/world-market-audit/theory/source/vol123.txt` (Volume III, chapter 5, "Data Metabolism: From Collection to Reinsertion") and the world-market-audit docs | the table of contents and abstract passages only |
+| Gaisho (概象) | one occurrence, in `pa-simulation-environment/docs/ZIRAN_CURRENT_SPECIFICATION.md`, as the name of a layer that ZCA addresses ("configuration/physical state/observation/intervention/model/gaisho/concept/theory/system layers") | **no definition anywhere found** |
+| 正誤的作動形状 | **no file and no text** | |
+| 信用スコア作動形状浸透循環論 | **no file and no text** (the score-society manuscripts above are the nearest) | |
+
+Not filled in: the content of the unread files, the meaning of 概象, and any manuscript named 正誤的作動形状 or 信用スコア作動形状浸透循環論. A search can have missed a file in another folder, a differently spelled title, an image-only PDF or a file inside an archive.
+
+**The operational-shape-realism AI-law manuscript against this model.** It states the same research problem (a correction that leaves the score or the adverse status unchanged is not effective; correction must propagate through the network that propagated the error; reconstruction of the chain X to T to S to D to A with the contestation C and the restoration R kept as separate interventions; paired initial states and common exogenous inputs, otherwise only a scenario comparison; a negative result where an ordinary causal account reproduces the predictions). What the model does and does not do against it:
+
+| Statement of the manuscript | In the model |
+|---|---|
+| Interventions on S, D, C and R are distinct (section 2) | the score (S), the gate and constraint (D, A), the appeal and correction process (C) and the release/restoration (R) are separate variables and were intervened on separately (TE07, TE08, TE15) |
+| A corrected input that leaves the operative score or adverse status unchanged is not an effective correction (guarantee 10) | the model shows the other direction as well: a correction that updates the score but leaves a constraint (TE07); and a release that leaves the score denial (TE07-correction) |
+| Correction must propagate through the network that propagated the error (guarantee 10) | institution B with `propagate_correction` and `propagation_delay` (TE05, TE09, TE13): the propagation delay moves the harm at B at the end of the periods and nothing at A |
+| No score may reduce the availability of the other guarantees; interim protection may not depend on a favourable score (guarantees 2, 13; the Low-Score Subject Guarantee Principle) | the score-gated appeal is the model of a violation; see 11.3 for what its null effect does and does not mean |
+| An appeal whose reviewer lacks authority (benchmark E); independent reconsideration with authority (guarantee 12) | **not modelled**: the re-judgement is an evidence-following rule with no reviewer and no authority |
+| Effective re-entry and material restoration (guarantee 15) | restoration of access and the recoverability accounting (TE11); money, services, status and time are not modelled |
+| Counterfactual comparisons need paired initial states and common random inputs (section 17) | satisfied by the independent random streams; **not satisfied where the real state feeds back** (beta above 0: the arm's target-state flag is false), which is stated where it applies (Q4) |
+| Non-redundancy: ordinary causal accounts may reproduce the predictions (sections 7, 22) | **no non-redundancy of the operational-shape vocabulary is shown here.** The non-identity found is a property of two state variables and their update rules; an ordinary state-machine description reproduces it. The manuscript itself retains this as a live objection |
+| The fifteen guarantees return separate states, never a score | the model computes no composite index of them; it has none of the fifteen guarantee evaluators |
+
+The model variables are not identified with the manuscript's concepts: "release", "correction" and "appeal" here are the model's own transitions and carry none of the manuscript's legal content (jurisdiction, authority, remedy). Data Metabolism (collection to reinsertion) corresponds, at most, to the loop signal to classification to score to resources to the subject's state (beta); that was not compared with the text.
+
+### 11.5 Badiou and Brassier
+
+* **Primary sources:** no Badiou text is on this machine. The Brassier thesis (WRAP, 2001, on Laruelle and matter) is **not** used as a basis here, as asked. `rp121_article2_axiomaticheresy_brassier.pdf` (Brassier on Laruelle) mentions Badiou twice, in passing. `the-revenge-of-reason-0.docx` is by another author and mentions Badiou in passing. None bears on this model.
+* **Location of the primary source (from a web search, not from a copy):** Badiou, *Peut-on penser la politique ?*, Seuil, 1985; English: *Can Politics Be Thought?*, Duke University Press, 2018, trans. Bruno Bosteels ([PhilArchive record](https://dc2.philarchive.org/rec/BADCPB), [Cambridge chapter on Badiou's politics](https://www.cambridge.org/core/books/alain-badiou/politics/0A679BFFFA5AC2A10F1085390B06109B)). The same search found Brassier only as translator and editor of Badiou's *Theoretical Writings* and **found no source for a Brassier critique of this book, nor for a prohibition/impossibility distinction in it.** The text was not obtained.
+* **What can be said:** nothing about the argument of the book. Its concept of representation, of political intervention, the distinction of prohibition and impossibility and Brassier's critique of them are **unverified here and not supplied from memory**. The only connection available is the one already stated: this model's own definitions of "forbidden by a declared rule", "institutionally impossible" and "excluded by the score" (section 5) are formal categories of the model and are **not** a reading of Badiou. Whether they can be connected to his distinction is open until the text is read.
+
+### 11.6 PR #3 (feat/browser-edition)
+
+OPEN, `mergeable: CONFLICTING` (`DIRTY`): 41 files, +3,280 / -58, base `6804327`; main is now at `3e874c5`, 176 commits and 300 files later (read through the GitHub API, because `git merge-base` and `git merge-tree` are refused in this session). Of the 41 files, 25 were also changed on main; **17 of those 25 are byte-identical on main and on the PR branch** (the browser-edition scripts, `_compat`, `native`, `service/security.py`, `service/session.py`, `compare.py`; they apparently reached main through the deployment work, which was not verified), so they are not real conflicts. The files that differ are `.github/workflows/ci.yml`, `.gitignore`, `CHANGELOG.md`, `README.md`, `backend/scripts/export_static.py`, `backend/xzr/lod/hierarchy.py` and two test fixtures (`conformance_reference_wasm.json`, `test_cooperative.py`; the file API could not return them for the PR branch, so their difference is not established). 16 of the PR's files were not touched on main. Nothing was merged, forced or rewritten; the resolution (taking main's side of the shared files and keeping the PR's 16, with a hand merge of CI, README, CHANGELOG and `export_static.py`) is a decision for the owner of the PR.
+
+### 11.7 Regression at the final commit (2026-11-03, this Mac)
+
+| Check | Result |
+|---|---|
+| Backend, whole suite alone (19 min 26 s) | **1187 passed, 3 skipped** (1181 before this verification; +6 tests) |
+| Frontend, whole suite alone (includes the baseline/branch comparison fix) | **544 tests: 543 passed, 1 skipped**, 0 failed |
+| `ruff check xzr tests bench scripts`, `mypy xzr`, `eslint .`, `tsc -b` | clean |
+| `vite build` with `VITE_STATIC=1` and with `VITE_WEBRT=1` | no truth-error code or text |
+| Saved results | `experiments.json` unchanged; `experiments2.json` regenerated (11 experiments, intervention records added); `appeal_trace.json` added; all reproduced by tests |
+
+Not pushed, not deployed. TO-C1 remains SOURCE_MISSING.
