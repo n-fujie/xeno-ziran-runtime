@@ -360,3 +360,36 @@ def test_the_correction_the_score_update_and_the_release_are_separated_by_the_sa
     assert ta8 > ta0 + 3
     s8 = arms["approval 0 / score update +8 / release +0"]["mean"]
     assert s8["time_score_updated"]["mean"] > s8["time_approved"]["mean"] + 3
+
+
+# ------------------------------------------------------------------------------------------------ correspondence checks (docs/TRUTH_ERROR.md section 12)
+def test_extinguishing_the_score_does_not_extinguish_a_binding_constraint():
+    """the doc said this was tested; it was not: it is now. At every expiry period a subject under a constraint is still denied although the score has been reset"""
+    base = cfg(seed=1, beta=0.06)
+    held = 0
+    for seed in range(1, 6):
+        r = I.run(dataclasses.replace(base, seed=seed, score_expiry=10))
+        assert r["series"]["score_extinguished"][-1] == 3.0  # the score is reset at 10, 20 and 30
+        for rec in r["records"]:
+            for t in (10, 20, 30):
+                if rec[t]["locked"]:
+                    held += 1
+                    assert rec[t]["access"] is False
+    assert held > 20
+    a = np.mean([I.run(dataclasses.replace(base, seed=s, score_expiry=10))["summary"]["locked_fraction"] for s in range(1, 11)])
+    b = np.mean([I.run(dataclasses.replace(base, seed=s))["summary"]["locked_fraction"] for s in range(1, 11)])
+    assert abs(a - b) < 0.05  # the constraint at the end is about as common with the expiry as without it
+
+
+def test_a_correct_classification_still_lowers_the_real_state_of_the_subjects_it_correctly_denies():
+    """predictive correctness is not institutional direction: with an accurate classifier the subjects who are unfavourable at the start end lower with the score than with a lottery (through the resource feedback)"""
+    acc = cfg(beta=0.06, signal_sensor=dataclasses.replace(I.Config().signal_sensor, noise_sigma=0.05))
+    d_fav, d_unfav = [], []
+    for seed in range(1, 11):
+        s = I.run(dataclasses.replace(acc, seed=seed))
+        lot = I.run(dataclasses.replace(acc, seed=seed, use_score=False))
+        assert s["summary"]["classification_correct"] > 0.97   # the classification is accurate
+        for rs, rl in zip(s["records"], lot["records"], strict=True):
+            delta = (rs[-1]["reference_z"] - rs[0]["reference_z"]) - (rl[-1]["reference_z"] - rl[0]["reference_z"])
+            (d_fav if rs[0]["reference_z"] > 0 else d_unfav).append(delta)
+    assert np.mean(d_unfav) < -0.5 and np.mean(d_fav) > 0.5   # the score widens the gap between the two groups although it classifies them correctly
