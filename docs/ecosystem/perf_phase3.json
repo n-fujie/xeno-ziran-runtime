@@ -1,0 +1,100 @@
+{
+ "date": "2026-11-03",
+ "machine": "the development Mac (other applications running; not a controlled benchmark)",
+ "tier": "balanced",
+ "camera": "habitat preset, zoomed once (x0.35 toward the target), fixed",
+ "tick": 100,
+ "protocol": "frontend/scripts/render_protocol.js: 20 warm-up + 150 timed frames per condition, frames rendered back to back with GPU sync (window.__meos.benchmark); three rounds, same order each round; engine time = HTTP time of the /api/meos run call; state projection = simUpdateMsMean over 90 ticks stepped with goto()",
+ "render_median_ms_per_round": {
+  "normal": [
+   16.0,
+   15.0,
+   16.9
+  ],
+  "layer_hidden": [
+   16.4,
+   21.8,
+   20.4
+  ],
+  "exploded": [
+   16.2,
+   18.2,
+   17.2
+  ]
+ },
+ "render_p95_ms_normal": [
+  28.8,
+  21.6,
+  23.7
+ ],
+ "render_median_without_reflection_frames_normal": [
+  15.9,
+  14.9,
+  16.8
+ ],
+ "observation_overlay_median_ms": {
+  "overlay_shown_stride2": [
+   20.2,
+   17.1,
+   15.4
+  ],
+  "overlay_hidden_full_resolution": [
+   15.9,
+   17.3,
+   15.3
+  ]
+ },
+ "playback_state_projection_ms_per_tick": [
+  1.11,
+  0.85,
+  0.93
+ ],
+ "after_intervention": {
+  "engine_run_ms": [
+   882,
+   131,
+   990
+  ],
+  "render_median_ms_after": [
+   14.4,
+   19.0,
+   17.5
+  ]
+ },
+ "series_switching": [
+  {
+   "series": "preset recovery-demo",
+   "engine": "/run",
+   "engine_ms": 370,
+   "kB": 646,
+   "render_median_ms": 16.4
+  },
+  {
+   "series": "saved MFS (first)",
+   "engine": "/mfs-run",
+   "engine_ms": 344,
+   "kB": 497,
+   "render_median_ms": 19.6
+  },
+  {
+   "series": "controlled adaptive",
+   "engine": "/reconfigure",
+   "engine_ms": 1646,
+   "kB": 531,
+   "render_median_ms": 16.2
+  }
+ ],
+ "draw_calls": {
+  "typical_frame": "264-279",
+  "reflection_frame": "494-523",
+  "extra_per_reflection_frame": "about 230-245 calls and about 467 thousand triangles",
+  "triangles_typical_frame": "850 thousand",
+  "reflection_frame_cost_ms": {
+   "with": 18.8,
+   "without": 15.3
+  }
+ },
+ "the_514_draw_call_sample_explained": "every 30th frame at rest is a reflection frame (backend-independent; terrain.ts: the reflection is refreshed every 3rd frame while the camera moves and every 30th at rest). The benchmark returned the counters of the LAST frame of a sample, so a sample whose last frame was a reflection frame read about 500 calls. Reproduced: in every 60-240 frame sample the calls take exactly two values (264 or 272, and 494 or 510), at frame positions 27, 57, 87... (period 30), with the coupling layer shown or hidden.",
+ "reading": "No condition is distinguishable from another: the spread of one condition over the three rounds (14.4-21.8 ms) is larger than any difference between conditions, and the layer hidden was slower than shown in two of three rounds, which a hidden layer cannot cause (order or load drift). The coupling layer adds about 10 draw calls and about 1,100 triangles. After an intervention or a change of series the time the user waits is the engine's (0.13-1.6 s) and not drawing (about 15-20 ms per frame). No improvement is claimed.",
+ "reflection_followup": "docs/ecosystem/perf_log.jsonl (kind reflection_frames): the reflection frames were measured apart from normal frames over four samples at rest and three while the camera moves"
+}

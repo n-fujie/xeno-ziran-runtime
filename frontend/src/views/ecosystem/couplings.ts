@@ -2,7 +2,7 @@
 // or edits a record. A coupling is not a drawing choice: each one is a component of the engine (``spec.components``) that an ISOLATE / RECONNECT intervention switches, and its state at a tick is read
 // from the record's Address Domain (``ad.connectivity``), which the engine writes whenever an intervention changes it.
 
-import { adAt, type Frame, type Intervention, type Label, type MeosRecord } from './meosApi';
+import { adAt, type Frame, type Intervention, type Label, type MeosRecord, type Observed } from './meosApi';
 
 export type CouplingId = 'sensor_resource' | 'interaction_channel' | 'sensor_alteration' | 'feedback';
 export interface CouplingDef {
@@ -107,3 +107,47 @@ export const ORIGIN_TEXT: Record<Origin, string> = {
   REPLAY_DIFFERS: 'the engine re-executed the record\'s inputs and did NOT reproduce its result digest',
   SAVED_EXPERIMENT: 'a stored experiment configuration, executed by the engine on request',
 };
+
+// ------------------------------------------------------------------------------------------------ the branch compared, aspect by aspect
+
+export type AspectVerdict = 'DIFFERENT' | 'NO_DIFFERENCE' | 'UNRESOLVED';
+export interface BranchAspect {
+  id: string; label: string; verdict: AspectVerdict; base: string; branch: string; detail: string;
+  /** the fields of the two records (and, for the observation, of the observation results) the aspect reads */
+  reads: string[];
+}
+
+const cutSpans = (rec: MeosRecord, id: CouplingId): string => {
+  const out: string[] = []; let from = -1;
+  for (let t = 0; t < rec.frames.length; t++) {
+    const cut = couplingStates(rec, t)[id] === 'cut';
+    if (cut && from < 0) from = t; else if (!cut && from >= 0) { out.push(`${from}-${t - 1}`); from = -1; }
+  }
+  if (from >= 0) out.push(`${from}-${rec.frames.length - 1}`);
+  return out.join(', ') || 'never cut';
+};
+const firstChange = (rec: MeosRecord, t0: number): string => { const e = rec.status_log.find((x) => x.tick > t0); return e ? `${e.label} at ${e.tick} (${e.tick - t0} ticks after t=${t0})` : `no status change after t=${t0}`; };
+const reentryShare = (rec: MeosRecord): string => `${rec.cycles.filter((c) => c.history_reentry).length} of ${rec.cycles.length} cycles contain a re-entry`;
+const routeOps = (rec: MeosRecord): string => rec.interventions.filter((i) => i.op === 'ROUTE' || i.op === 'RECONFIGURE').map((i) => `t=${i.tick} ${i.op}`).join(', ') || 'none';
+
+/** Seven aspects of a baseline and its branch, from the two records (and, for the observation, the two observation results when both exist). Every aspect is kept whatever its verdict: NO_DIFFERENCE is a result
+ *  and stays on the table. No branch is created to make a difference show; a difference is only located, and attributing it to the intervention needs the engine's causal operations. */
+export function branchAspects(base: MeosRecord, branch: MeosRecord, baseObserved: Observed | null = null, branchObserved: Observed | null = null): BranchAspect[] {
+  const t0 = Math.min(...branch.interventions.filter((i) => !base.interventions.some((b) => JSON.stringify(b) === JSON.stringify(i))).map((i) => i.tick), Infinity);
+  const READS: Record<string, string[]> = { couplings: ['frames[].ad.connectivity'], observation: ['observed.observed_cycles', 'observed.observed_state'], reached: ['final_status', 'termination'], delay: ['status_log', 'interventions'], persistence: ['status_log'], history: ['cycles[].history_reentry'], routes: ['interventions'] };
+  const row = (id: string, label: string, b: string, r: string, detail: string, forced?: AspectVerdict): BranchAspect => ({ id, label, base: b, branch: r, detail, reads: READS[id], verdict: forced ?? (b === r ? 'NO_DIFFERENCE' : 'DIFFERENT') });
+  const coup = COUPLINGS.map((c) => [c.id, cutSpans(base, c.id), cutSpans(branch, c.id)] as const);
+  const changed = coup.filter(([, b, r]) => b !== r);
+  const rows: BranchAspect[] = [
+    row('couplings', 'coupling changes', coup.map(([id, b]) => `${id}: ${b}`).join('; '), coup.map(([id, , r]) => `${id}: ${r}`).join('; '), changed.length ? `changed: ${changed.map(([id]) => id).join(', ')}` : 'no coupling was cut in either run'),
+    baseObserved && branchObserved
+      ? row('observation', 'observation record', `${baseObserved.observed_cycles} of ${baseObserved.true_cycles} cycles observed, ${baseObserved.observed_state}`, `${branchObserved.observed_cycles} of ${branchObserved.true_cycles} cycles observed, ${branchObserved.observed_state}`, 'what the configured observation recorded of each run (the baseline\'s observation result is the one made when it was run)')
+      : row('observation', 'observation record', '-', '-', 'not compared: an observation result is needed for both runs (a regime other than full resolution)', 'UNRESOLVED'),
+    row('reached', 'state reached', `${base.final_status.label} at tick ${base.termination.tick}`, `${branch.final_status.label} at tick ${branch.termination.tick}`, 'the final operational status and where the run ended'),
+    row('delay', 'response delay', Number.isFinite(t0) ? firstChange(base, t0) : 'no added intervention', Number.isFinite(t0) ? firstChange(branch, t0) : 'no added intervention', 'the first change of operational status after the first added intervention, and how many ticks after it (the engine\'s own response indicator)'),
+    row('persistence', 'continuation or collapse', base.status_log.find((e) => e.label === 'COLLAPSED') ? `collapse at ${base.status_log.find((e) => e.label === 'COLLAPSED')!.tick}` : 'no collapse', branch.status_log.find((e) => e.label === 'COLLAPSED') ? `collapse at ${branch.status_log.find((e) => e.label === 'COLLAPSED')!.tick}` : 'no collapse', 'the first COLLAPSED of the status log'),
+    row('history', 'history dependence', reentryShare(base), reentryShare(branch), 'all cycles of the run that contain a history re-entry (the consequence of that re-entry needs the history-disabled run)'),
+    row('routes', 'reconfigured routes', routeOps(base), routeOps(branch), 'ROUTE and RECONFIGURE interventions in each run'),
+  ];
+  return rows;
+}

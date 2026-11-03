@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import type { MeosRecord, Observed } from './meosApi';
 import { FULL_OBSERVATION } from './meosApi';
-import { READING_SOURCES, compareRegimes, criticalIntervals, fiveS, historyConsequence, historyReading, humanDependencies, inventory, provenance, shapeTrack, strongXenoscience, unresolvedItems } from './xenoscience';
+import { READING_SOURCES, compareRegimes, criticalIntervals, fiveS, entityObservations, historyConsequence, historyReading, humanDependencies, inventory, operationalStates, provenance, shapeTrack, strongXenoscience, unresolvedItems } from './xenoscience';
 
 const dir = join(dirname(fileURLToPath(import.meta.url)), '__fixtures__');
 const rec = JSON.parse(readFileSync(join(dir, 'meos-stage2.json'), 'utf8')) as MeosRecord;
@@ -262,8 +262,8 @@ describe('history: retention, addressability, re-entry, consequence', () => {
   it('finds an effective consequence of re-entry in this run: the history-disabled run differs (engine output)', () => {
     const c = historyConsequence(cf.base, cf.history_off);
     expect(c.verdict).toBe('DIFFERS');
-    expect(c.base).toEqual({ label: 'ACTIVE', cycles: 71, reentryCycles: 9 });
-    expect(c.withoutHistory).toEqual({ label: 'COLLAPSED', cycles: 22, reentryCycles: 0 });
+    expect(c.base).toEqual({ label: 'ACTIVE', cycles: 71, reentryCyclesInFinalWindow: 9 });
+    expect(c.withoutHistory).toEqual({ label: 'COLLAPSED', cycles: 22, reentryCyclesInFinalWindow: 0 });
     expect(c.firstStatusDivergence).toBe(136);
   });
   it('reports no effect when the two runs are the same run, and limits the claim to this run', () => {
@@ -273,3 +273,118 @@ describe('history: retention, addressability, re-entry, consequence', () => {
     expect(historyConsequence(cf.base, cf.history_off).note).toMatch(/this configuration and seed/);
   });
 });
+
+describe('the six states of the operation, each with its basis', () => {
+  const st = (r: MeosRecord, o: Observed | null, t: number) => operationalStates(r, o, t);
+  const by = (r: MeosRecord, o: Observed | null, t: number, id: string) => st(r, o, t).states.find((x) => x.id === id)!;
+  it('reads each state from the engine\'s logs, with the rule and the values it used', () => {
+    const s = st(rec, full.observed, 100);
+    expect(s.states.map((x) => x.id)).toEqual(['formation', 'maintenance', 'transformation', 'cessation', 're_ignition', 'reconfiguration']);
+    for (const x of s.states) { expect(x.rule.length).toBeGreaterThan(20); expect(x.observationCondition.length).toBeGreaterThan(10); }
+    expect(by(rec, full.observed, 100, 'formation').spans).toEqual([[0, 11]]);
+    expect(by(rec, full.observed, 100, 'cessation').spans[0]).toEqual([149, 155]);
+    expect(by(rec, full.observed, 100, 're_ignition').spans).toContainEqual([161, 161]);
+    expect(by(rec, full.observed, 100, 'cessation').engineValues.join(' ')).toContain('no complete cycle in the last 48 ticks');
+  });
+  it('says at the playhead tick which rules hold, and they need not be in order', () => {
+    const at = (t: number) => st(rec, full.observed, t).states.filter((x) => x.holdsAt).map((x) => x.id);
+    expect(at(5)).toContain('formation'); expect(at(5)).not.toContain('maintenance');
+    expect(at(60)).toEqual(['maintenance']);
+    expect(at(150)).toContain('cessation');
+    expect(at(161)).toEqual(expect.arrayContaining(['re_ignition', 'maintenance']));  // two rules hold at once
+  });
+  it('maps interventions to transformation or reconfiguration by the engine\'s operation names, and leaves other operations out of both', () => {
+    const r = by(rec, null, 100, 'reconfiguration'), tf = by(rec, null, 100, 'transformation');
+    expect(r.spans).toEqual([[100, 100], [150, 150], [190, 190]].filter(([t]) => rec.interventions.some((i) => i.tick === t && ['ISOLATE', 'RECONNECT', 'REMOVE', 'ROUTE', 'DISABLE_HISTORY'].includes(i.op))));
+    expect(tf.engineValues.join(' ')).not.toContain('ISOLATE');
+    expect(rec.interventions.some((i) => i.op === 'ALTER_RESOURCE')).toBe(true);
+    expect(`${r.engineValues} ${tf.engineValues}`).not.toContain('ALTER_RESOURCE');
+  });
+  it('states what the observation could see: equal statuses at all ticks under full observation, limited ticks under the coarse one', () => {
+    expect(by(rec, full.observed, 60, 'maintenance').observationCondition).toMatch(/equals the operational status at (\d+) of \1 ticks/);
+    expect(by(rec, coarse.observed, 60, 'maintenance').observationCondition).toContain('the observation is limited');
+    expect(by(rec, null, 60, 'maintenance').observationCondition).toContain('no observation result');
+  });
+  it('says nothing to observe when a rule never holds, and does not judge the shape ontologically', () => {
+    const calm = st(cf.base, null, 100);
+    expect(calm.states.find((x) => x.id === 'cessation')!.spans).toEqual([]);
+    expect(calm.states.find((x) => x.id === 'cessation')!.engineValues).toEqual([]);
+    expect(calm.note).toMatch(/not a judgement that an operational shape was in fact formed/);
+    expect(st(cf.base, full.observed, 100).states.find((x) => x.id === 'cessation')!.observationCondition).toContain('does not hold anywhere');
+  });
+});
+
+describe('the reference and the observation of one entity', () => {
+  it('keeps the reference cell and activity apart from what the observation can see of it', () => {
+    const e = entityObservations(rec, { ...FULL_OBSERVATION, region: [8, 8, 12, 12] }, 60, null)[0];
+    expect(e.reference.cell).toEqual([rec.frames[60].A1.x, rec.frames[60].A1.y]);
+    expect(e.observation.cellSeen).toBe(false);
+    expect(e.reading).toContain('in a cell the observation does not see: its state is not observed');
+    expect(e.observation.observedStatus).toBeNull();
+  });
+  it('sees an entity in a seen cell only at a sampled tick', () => {
+    const at = (t: number) => entityObservations(rec, { ...FULL_OBSERVATION, sampling_interval: 3 }, t, full.observed)[0];
+    expect(at(60).observation.tickSampled).toBe(true); expect(at(61).observation.tickSampled).toBe(false);
+    expect(at(61).reading).toContain('not a sampled tick');
+    expect(at(60).reading).toContain('events there can be observed');
+  });
+  it('agrees with the lattice rule used for the overlay and with the engine\'s regimes (an entity on the lattice cell is seen)', () => {
+    const a1 = rec.frames[100].A1;
+    expect(entityObservations(rec, { ...FULL_OBSERVATION, spatial_stride: 2, spatial_offset: [1, 0] }, 100, null)[0].observation.cellSeen).toBe(a1.x % 2 === 1 && a1.y % 2 === 0);
+    expect(entityObservations(rec, { ...FULL_OBSERVATION, occluder: [a1.x, a1.y, a1.x, a1.y] }, 100, null)[0].observation.cellSeen).toBe(false);
+  });
+  it('reports an absent entity as absent', () => {
+    const gone = JSON.parse(readFileSync(join(dir, 'meos-a2-removed.json'), 'utf8')) as MeosRecord;
+    const t = gone.frames.findIndex((f) => !f.A2.present);
+    expect(entityObservations(gone, FULL_OBSERVATION, t, null)[1].reading).toContain('absent in the record');
+  });
+});
+
+describe('traceability of the six states: every span can be checked against a source the rule did not read', () => {
+  const records: Array<[string, MeosRecord]> = [['stage2', rec], ['base', cf.base], ['cut', cf.cut], ['history_off', cf.history_off]];
+  const inSpans = (spans: Array<[number, number]>, t: number) => spans.some(([a, b]) => a <= t && t <= b);
+  it('derives maintenance and cessation from the status log, and the frames\' own status field (an independent source) agrees at every tick', () => {
+    for (const [name, r] of records) {
+      const st = operationalStates(r, null, 0).states, m = st.find((x) => x.id === 'maintenance')!, c = st.find((x) => x.id === 'cessation')!;
+      for (let t = 0; t < r.frames.length; t++) {
+        expect(inSpans(m.spans, t), `${name} maintenance t=${t}`).toBe(r.frames[t].status === 'ACTIVE');
+        expect(inSpans(c.spans, t), `${name} cessation t=${t}`).toBe(r.frames[t].status === 'COLLAPSED');
+      }
+    }
+  });
+  it('places formation, re-ignition and the intervention states at ticks the logs carry', () => {
+    for (const [name, r] of records) {
+      const st = operationalStates(r, null, 0).states;
+      const first = r.status_log.find((e) => e.label === 'ACTIVE');
+      expect(st.find((x) => x.id === 'formation')!.spans, name).toEqual(first ? [[0, first.tick]] : []);
+      for (const [a] of st.find((x) => x.id === 're_ignition')!.spans) {
+        const i = r.status_log.findIndex((e) => e.tick === a && e.label === 'ACTIVE');
+        expect(i, `${name} re-ignition t=${a}`).toBeGreaterThan(0);
+        expect(r.status_log.slice(0, i).some((e) => e.label === 'COLLAPSED')).toBe(true);
+      }
+      for (const id of ['transformation', 'reconfiguration'] as const) for (const [a] of st.find((x) => x.id === id)!.spans) expect(r.interventions.some((iv) => iv.tick === a), `${name} ${id} t=${a}`).toBe(true);
+    }
+  });
+  it('names the record fields each rule reads, the rule, and the observation condition, for every state', () => {
+    for (const x of operationalStates(rec, full.observed, 100).states) {
+      expect(x.reads.length, x.id).toBeGreaterThan(0);
+      for (const f of x.reads) expect(['status_log', 'cycles', 'interventions', 'final_status.dependency']).toContain(f);
+      expect(x.rule.length).toBeGreaterThan(20); expect(x.observationCondition.length).toBeGreaterThan(10);
+    }
+  });
+  it('makes no ontological judgement, as data and in words, whatever the record', () => {
+    for (const [name, r] of records) {
+      const o = operationalStates(r, full.observed, 100);
+      expect(o.ontologicalJudgement, name).toBe('NOT_MADE');
+      const words = JSON.stringify(o).toLowerCase();
+      for (const bad of ['was formed', 'is formed', 'proves', 'proved', 'established that', 'genuine', 'truly', 'real operational shape']) expect(words, `${name}: ${bad}`).not.toContain(bad);
+    }
+  });
+  it('lets the observation change only what it could see of a state, never the span the engine\'s logs give', () => {
+    const spans = (o: Observed | null) => operationalStates(rec, o, 100).states.map((x) => JSON.stringify(x.spans));
+    expect(spans(coarse.observed)).toEqual(spans(full.observed)); expect(spans(null)).toEqual(spans(full.observed));
+    const obsc = (o: Observed | null) => operationalStates(rec, o, 100).states.map((x) => x.observationCondition);
+    expect(obsc(coarse.observed)).not.toEqual(obsc(full.observed));
+  });
+});
+
