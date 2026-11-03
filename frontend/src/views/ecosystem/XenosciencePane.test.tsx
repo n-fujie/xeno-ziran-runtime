@@ -16,11 +16,13 @@ const rec = JSON.parse(readFileSync(join(dir, 'meos-stage2.json'), 'utf8')) as M
 const fx = JSON.parse(readFileSync(join(dir, 'meos-stage2-observed.json'), 'utf8')) as Record<'full' | 'coarse', { observed: Observed }>;
 const out = (observed: Observed | null, record: MeosRecord = rec): RunOut => ({ record, observed: observed ?? undefined } as unknown as RunOut);
 const cutFx = JSON.parse(readFileSync(join(dir, 'meos-coupling-cut.json'), 'utf8')) as Record<'base' | 'cut' | 'history_off', MeosRecord>;
+const SERIES = { presets: ['baseline', 'recovery-demo'], loadPreset: async () => undefined, mfs: [{ id: 'MFS-F1-1', label: 'MFS-F1-1: condition F1' }], loadMfs: async () => undefined, controllers: ['none', 'adaptive'], scenarios: ['history lost'], loadControlled: async () => undefined, loaded: null, replayLine: null };
 const COARSE = { ...FULL_OBSERVATION, sampling_interval: 12 };
-const html = (o: RunOut | null, entity: 'A1' | 'A2' | null = 'A1', tick = 100, obs = FULL_OBSERVATION, pinned: RegimeSide | null = null, coupling: CouplingId | null = null, branch: Branch | null = null) =>
+const html = (o: RunOut | null, entity: 'A1' | 'A2' | null = 'A1', tick = 100, obs = FULL_OBSERVATION, pinned: RegimeSide | null = null, coupling: CouplingId | null = null, branch: Branch | null = null, observeMode: 'region' | 'occluder' | null = null, corner: [number, number] | null = null) =>
   renderToString(<XenosciencePane rec={o ? o.record : null} out={o} tick={tick} setTick={() => undefined} obs={obs} entity={entity} sssClass={null} pinned={pinned} setPinned={() => undefined}
-      coupling={coupling} selectCoupling={() => undefined} display={{ couplings: true, isolate: false, exploded: false, ghost: true }} setDisplay={() => undefined}
-      branch={branch} playFrom={() => undefined} verifyReplay={async () => undefined} requestHistoryOff={async () => undefined} requestCut={async () => undefined} restoreBaseline={async () => undefined} clearBranch={() => undefined} busy={false} origin="NEW_ENGINE_RUN" />);
+      coupling={coupling} selectCoupling={() => undefined} display={{ couplings: true, isolate: false, exploded: false, ghost: true, observedCells: true }} setDisplay={() => undefined}
+      observeMode={observeMode} setObserveMode={() => undefined} corner={corner} setObs={() => undefined}
+      series={SERIES} branch={branch} playFrom={() => undefined} verifyReplay={async () => undefined} requestHistoryOff={async () => undefined} requestCut={async () => undefined} restoreBaseline={async () => undefined} clearBranch={() => undefined} busy={false} origin="NEW_ENGINE_RUN" />);
 const section = (h: string, id: string) => { const i = h.indexOf(`data-testid="${id}"`); const next = h.indexOf('data-testid=', i + 10); return h.slice(i, next < 0 ? undefined : next); };
 const text = (h: string) => h.replace(/<!-- -->/g, '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').replace(/\s+([,.;:)])/g, '$1').replace(/\(\s+/g, '(');  // tags become spaces: close up the spaces they leave before punctuation
 
@@ -97,7 +99,7 @@ describe('the Xenoscience pane', () => {
     expect(text(html(out(null, cutFx.base), null, 120))).not.toContain('REQUEST CUT');
   });
   it('compares the baseline with the intervention branch, from the two records', () => {
-    const branch: Branch = { base: { record: cutFx.base, ivs: [] }, request: { kind: 'cut', id: 'interaction_channel', tick: 100, duration: 50 } };
+    const branch: Branch = { base: { record: cutFx.base, ivs: [], observed: null }, request: { kind: 'cut', id: 'interaction_channel', tick: 100, duration: 50 } };
     const t = text(section(html(out(null, cutFx.cut), null, 130, FULL_OBSERVATION, null, null, branch), 'xeno-branch'));
     expect(t).toMatch(/final status ACTIVE COLLAPSED/); expect(t).toMatch(/first COLLAPSED never 149/);
     const all = text(html(out(null, cutFx.cut), null, 130, FULL_OBSERVATION, null, null, branch));
@@ -112,8 +114,8 @@ describe('the Xenoscience pane', () => {
   });
   it('lists the experiments with their real state, TO-C1 as a missing source', () => {
     const t = text(section(html(out(null)), 'xeno-experiments'));
-    expect(t).toContain('in the 3D scene'); expect(t).toContain('source missing'); expect(t).toContain('fixture only'); expect(t).toContain('stored results');
-    expect(t).toMatch(/TO-C1 .* source missing/);
+    for (const m of ['live engine', 'verified replay', 'fixture / stored', 'unsupported']) expect(t).toContain(m);
+    expect(t).toMatch(/TO-C1 .* unsupported/); expect(t).toContain('SOURCE MISSING');
     expect(t).not.toMatch(/\b(490|270|432|162)\b/);
   });
   it('shows the unresolved class apart from the other three, with the cycles an observation did not record', () => {
@@ -135,13 +137,75 @@ describe('the Xenoscience pane', () => {
     expect(text(html(out(null, cutFx.base), null, 200))).toContain('TEST CONSEQUENCE: DISABLE HISTORY AT TICK 200');
   });
   it('states the effective consequence from the two engine runs once the history-disabled branch exists', () => {
-    const branch: Branch = { base: { record: cutFx.base, ivs: [] }, request: { kind: 'history-off', tick: 100 } };
+    const branch: Branch = { base: { record: cutFx.base, ivs: [], observed: null }, request: { kind: 'history-off', tick: 100 } };
     const t = text(section(html(out(null, cutFx.history_off), null, 200, FULL_OBSERVATION, null, null, branch), 'xeno-history'));
-    expect(t).toContain('effective consequence DIFFERS'); expect(t).toMatch(/Baseline ACTIVE, 71 cycles \(9 with re-entry\); without history COLLAPSED, 22 cycles \(0\)/);
+    expect(t).toContain('effective consequence DIFFERS'); expect(t).toMatch(/Baseline ACTIVE, 71 cycles \(9 with a re-entry in the final window\); without history COLLAPSED, 22 cycles \(0\)/);
     expect(t).toContain('this configuration and seed');
   });
   it('offers to play a record back and to verify it by engine replay, as two different things', () => {
     const t = text(html(out(null)));
     expect(t).toContain('PLAY THE RECORD FROM TICK 0'); expect(t).toContain('VERIFY BY ENGINE REPLAY');
   });
+  it('offers the observation controls of the engine and says the run itself does not change', () => {
+    const h = html(out(fx.coarse.observed), 'A1', 100, { ...FULL_OBSERVATION, sampling_interval: 12 }), t = text(section(h, 'xeno-observe-summary'));
+    for (const l of ['interval', 'resolution (stride)', 'aggregation', 'window', 'threshold']) expect(text(section(h, 'xeno-observe-controls'))).toContain(l);
+    expect(t).toContain('cells seen 196 of 196'); expect(t).toContain('0 of 27 cycles observed'); expect(t).toContain(`result digest ${rec.result_digest.slice(0, 12)}: it covers the run`);
+    expect(text(h)).toContain('SET REGION: PICK TWO CELLS'); expect(text(h)).toContain('SET OCCLUDER: PICK TWO CELLS');
+  });
+  it('counts the cells a region and a lattice leave unseen', () => {
+    const t = text(section(html(out(null), 'A1', 100, { ...FULL_OBSERVATION, region: [2, 4, 6, 8] }), 'xeno-observe-summary'));
+    expect(t).toContain('cells seen 25 of 196'); expect(t).toContain('region 2, 4, 6, 8');
+    expect(text(section(html(out(null), 'A1', 100, { ...FULL_OBSERVATION, spatial_stride: 2 }), 'xeno-observe-summary'))).toContain('cells seen 49 of 196');
+  });
+  it('tells the picking step while a region or occluder is being chosen', () => {
+    expect(text(html(out(null), 'A1', 100, FULL_OBSERVATION, null, null, null, 'region'))).toContain('Pick the first corner of the region');
+    expect(text(html(out(null), 'A1', 100, FULL_OBSERVATION, null, null, null, 'occluder', [4, 5]))).toContain('Pick the opposite corner of the occluder: first corner is cell (4, 5)');
+    expect(html(out(null))).not.toContain('xeno-pick-hint');
+  });
+  it('shows the reference and the observation of each entity in two columns, an unseen active entity included', () => {
+    const t = text(section(html(out(null), 'A1', 100, { ...FULL_OBSERVATION, region: [8, 8, 12, 12] }), 'xeno-entity-observation'));
+    expect(t).toContain('reference (evaluator)'); expect(t).toContain('cell NOT seen');
+    expect(text(html(out(null), 'A1', 100, { ...FULL_OBSERVATION, region: [8, 8, 12, 12] }))).toContain('in a cell the observation does not see: its state is not observed');
+  });
+  it('lists the six states with the rule, engine values and observation condition of each', () => {
+    const h = html(out(fx.full.observed), 'A1', 161), t = text(section(h, 'xeno-states'));
+    for (const l of ['formation', 'maintenance', 'transformation', 'cessation', 're-ignition', 'reconfiguration']) expect(t).toContain(l);
+    expect(t).toContain('rule holds'); expect(t).toMatch(/rule: ticks at which the operational status of the status log is ACTIVE/); expect(t).toMatch(/engine values: .*t=161 ACTIVE after COLLAPSED/);
+    expect(t).toContain('observation: the observed status equals the operational status');
+    expect(text(h)).toContain('That judgement is not made');
+  });
+  it('compares the branch aspect by aspect, with the verdict of every aspect kept', () => {
+    const branch: Branch = { base: { record: cutFx.base, ivs: [], observed: null }, request: { kind: 'cut', id: 'interaction_channel', tick: 100, duration: 50 } };
+    const t = text(section(html(out(null, cutFx.cut), null, 130, FULL_OBSERVATION, null, null, branch), 'xeno-aspects'));
+    for (const l of ['coupling changes', 'observation record', 'state reached', 'response delay', 'continuation or collapse', 'history dependence', 'reconfigured routes']) expect(t).toContain(l);
+    expect(t).toContain('DEGRADED at 126 (26 ticks after t=100)'); expect(t).toMatch(/reconfigured routes none none NO DIFFERENCE/); expect(t).toMatch(/observation record - - UNRESOLVED/);
+  });
+  it('lists the experiment series that the scene can load, each marked as run by the live engine', () => {
+    const t = text(section(html(out(null)), 'xeno-series'));
+    for (const l of ['preset', 'saved MFS', 'controlled run']) expect(t).toContain(l);
+    expect((t.match(/LOAD \(LIVE ENGINE\)/g) ?? []).length).toBe(3);
+    expect(t).toContain('recovery-demo'); expect(t).toContain('MFS-F1-1: condition F1'); expect(t).toContain('adaptive');
+  });
+  it('says what the engine did for a loaded series, with the mode, instead of treating the drawing as the integration', () => {
+    const loaded = (kind: 'preset' | 'mfs' | 'controlled', replayLine: string | null) => renderToString(<XenosciencePane rec={rec} out={out(null)} tick={100} setTick={() => undefined} obs={FULL_OBSERVATION} entity="A1" sssClass={null} pinned={null} setPinned={() => undefined}
+      observeMode={null} setObserveMode={() => undefined} corner={null} setObs={() => undefined} series={{ ...SERIES, loaded: { kind, label: `x ${kind}` }, replayLine }} branch={null} playFrom={() => undefined}
+      verifyReplay={async () => undefined} requestHistoryOff={async () => undefined} requestCut={async () => undefined} restoreBaseline={async () => undefined} clearBranch={() => undefined} busy={false} origin="NEW_ENGINE_RUN"
+      coupling={null} selectCoupling={() => undefined} display={{ couplings: true, isolate: false, exploded: false, ghost: true, observedCells: true }} setDisplay={() => undefined} />);
+    expect(text(section(loaded('mfs', null), 'xeno-series-evidence'))).toContain('LIVE ENGINE'); expect(text(section(loaded('mfs', null), 'xeno-series-evidence'))).toContain('not a verified replay');
+    expect(text(section(loaded('controlled', 'controlled run: the recorded schedule replays identically without the controller'), 'xeno-series-evidence'))).toContain('a replay of the schedule, not of a stored experiment');
+    expect(text(section(loaded('preset', null), 'xeno-series-evidence'))).toContain('Being drawn in this scene is not what makes an experiment live or verified');
+    expect(html(out(null))).not.toContain('xeno-series-evidence');
+  });
+  it('states what the digest covers, and compares it with the pinned side instead of asserting it', () => {
+    const pinned: RegimeSide = { obs: FULL_OBSERVATION, observed: fx.full.observed, resultDigest: rec.result_digest };
+    expect(text(section(html(out(fx.coarse.observed), 'A1', 100, COARSE, pinned), 'xeno-observe-summary'))).toContain('equal to the pinned side A: the same run');
+    expect(text(section(html(out(fx.coarse.observed), 'A1', 100, COARSE, { ...pinned, resultDigest: 'deadbeef0000' }), 'xeno-observe-summary'))).toContain('DIFFERENT from the pinned side A: not the same run');
+    expect(text(section(html(out(fx.coarse.observed), 'A1', 100, COARSE), 'xeno-observe-summary'))).toContain('not the observation');
+  });
+  it('shows the reads of each state and aspect and that no ontological judgement is made', () => {
+    const t = text(section(html(out(fx.full.observed)), 'xeno-states'));
+    expect(t).toMatch(/reads: status_log, cycles/);
+    expect(text(section(html(out(fx.full.observed)), 'xeno-judgement'))).toContain('ontological judgement: NOT MADE');
+  });
 });
+

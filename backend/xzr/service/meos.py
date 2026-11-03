@@ -124,16 +124,177 @@ def run(request: Request, body: dict[str, Any]) -> dict:
     return out
 
 
+# Keys whose value is a whole number by the engine's own rules (validate_interventions and the configuration), or a free annotation that the record echoes as it was given. Everything else numeric that
+# reaches the engine as a whole number may have been written 4.0 by the process that made the record and 4 by a browser, which cannot keep the difference.
+_WHOLE_KEYS = frozenset(
+    {
+        "tick",
+        "x",
+        "y",
+        "arena_radius",
+        "duration",
+        "delay",
+        "seed",
+        "horizon",
+        "grid",
+        "window",
+        "persist",
+        "refractory",
+        "sensor_radius",
+        "pos",
+        "why",
+        "from",
+        "to",
+        "cost",
+        "trigger",
+    }
+)
+
+
+def _as_float_where_the_engine_reads_one(x: Any, key: str | None = None) -> Any:
+    """Read a whole number as a float unless the engine requires a whole number there (``_WHOLE_KEYS``). Booleans, strings and everything else stay as given."""
+    if isinstance(x, bool):
+        return x
+    if isinstance(x, int):
+        return x if key in _WHOLE_KEYS else float(x)
+    if isinstance(x, dict):
+        return {k: _as_float_where_the_engine_reads_one(v, k) for k, v in x.items()}
+    if isinstance(x, list):
+        return [_as_float_where_the_engine_reads_one(v, key) for v in x]
+    return x
+
+
+def _reconfigure_values_like_their_parameter(ivs: list[dict], cfg: dict) -> list[dict]:
+    """The value of a RECONFIGURE is of the type of the parameter it sets (a window is a whole number, a gain a float): take the type from the configuration at its path."""
+    out = []
+    for iv in ivs:
+        if (
+            iv.get("op") == "RECONFIGURE"
+            and isinstance(iv.get("path"), str)
+            and isinstance(iv.get("value"), int | float)
+            and not isinstance(iv["value"], bool)
+        ):
+            try:
+                here = E._get(cfg, iv["path"])
+            except (KeyError, TypeError):
+                here = None
+            if isinstance(here, float):
+                iv = {**iv, "value": float(iv["value"])}
+        out.append(iv)
+    return out
+
+
+_COMPUTATION = ("frames", "events", "cycles", "status_log", "final_status", "termination")
+
+
+def _leaf_changes(a: Any, b: Any, path: str = "") -> list[str]:
+    """The paths of the leaves whose written form differs between two inputs (4 and 4.0 differ here, as they do in the digest)."""
+    if isinstance(a, dict) and isinstance(b, dict):
+        return [c for k in a for c in _leaf_changes(a[k], b.get(k), f"{path}.{k}" if path else str(k))]
+    if isinstance(a, list) and isinstance(b, list):
+        return [c for n, (x, y) in enumerate(zip(a, b, strict=False)) for c in _leaf_changes(x, y, f"{path}[{n}]")]
+    return [] if json.dumps(a) == json.dumps(b) else [path]
+
+
+def pick_reading(matches: dict[str, set[str]]) -> tuple[str, str | None]:
+    """Choose among the readings that reproduce the digest. ``matches`` maps a reading to the set of leaves it changed. Readings that changed the same leaves are one reading. The reading that changed the fewest
+    leaves is chosen when every other matching reading changed at least those leaves too (a larger reading that also matches only repeats it). Two matching readings whose changes are not nested are AMBIGUOUS and
+    none is chosen. Returns (verification, chosen)."""
+    if not matches:
+        return "NOT_REPRODUCED", None
+    distinct: dict[frozenset[str], str] = {}
+    for name, leaves in matches.items():
+        distinct.setdefault(frozenset(leaves), name)
+    sets = list(distinct)
+    minimal = [c for c in sets if not any(o < c for o in sets)]
+    if len(minimal) == 1 and all(o >= minimal[0] for o in sets):
+        return "VERIFIED_BY_READING", distinct[minimal[0]]
+    return "AMBIGUOUS", None
+
+
 @router.post("/replay")
 def replay(request: Request, body: dict[str, Any]) -> dict:
-    """Re-run a record's initial configuration, seed and interventions and compare the result digests bit for bit."""
+    """Re-run a record's initial configuration, seed and interventions and compare the result digests bit for bit.
+
+    JSON has one number type, and the engine's digests tell 4 from 4.0 apart. A record made by Python and sent back by a browser may have lost that difference. The inputs are first run as received; if that reproduces
+    the digest the answer is VERIFIED_AS_RECEIVED and nothing was read into them. Otherwise whole numbers are read as floats where the engine reads a float (``_WHOLE_KEYS`` stay whole), in three readings: the configuration,
+    the interventions, or both. The digest is the judge, and three more conditions must hold before a reading is accepted: only one reading (the one that changed the fewest leaves) may be the minimal match, otherwise the answer is
+    AMBIGUOUS; the reading must run the same computation as the inputs as received (frames, events, cycles, status log, final status and termination equal), otherwise COMPUTATION_DIFFERS; and a reading that
+    reproduces nothing is NOT_REPRODUCED. Only VERIFIED_AS_RECEIVED and VERIFIED_BY_READING are ``identical``. The answer lists every candidate with the leaves it changed."""
     local_only(request)
     cfg, ivs = _config(body), _ivs(body)
     expected = body.get("result_digest")
     if not isinstance(expected, str):
         raise HTTPException(422, "result_digest is required")
+    rule = "a whole number is read as a float unless the engine requires a whole number at that key (tick, x, y, arena_radius, duration, delay, seed, horizon, grid, window, persist, refractory, sensor_radius, pos, and free annotations)"
     rec = _guard(E.run_record, cfg, ivs)
-    return {"identical": rec["result_digest"] == expected, "expected": expected, "got": rec["result_digest"]}
+    base = {"expected": expected, "got": rec["result_digest"], "rule": rule, "input_record_digest": E.input_digest(cfg, ivs)}
+    if rec["result_digest"] == expected:
+        return {
+            **base,
+            "identical": True,
+            "verification": "VERIFIED_AS_RECEIVED",
+            "interpretation": "as_received",
+            "candidates": [{"reading": "as_received", "changed_leaves": 0, "digest": rec["result_digest"][:12], "matches": True}],
+        }
+    cfg2 = _as_float_where_the_engine_reads_one(cfg)
+    ivs2 = _reconfigure_values_like_their_parameter(_as_float_where_the_engine_reads_one(ivs), cfg2)
+    readings = {
+        "config_as_floats": (cfg2, ivs, [f"config.{c}" for c in _leaf_changes(cfg, cfg2)]),
+        "interventions_as_floats": (cfg, ivs2, [f"interventions.{c}" for c in _leaf_changes(ivs, ivs2)]),
+        "config_and_interventions_as_floats": (
+            cfg2,
+            ivs2,
+            [f"config.{c}" for c in _leaf_changes(cfg, cfg2)] + [f"interventions.{c}" for c in _leaf_changes(ivs, ivs2)],
+        ),
+    }
+    candidates: list[dict] = [
+        {"reading": "as_received", "changed_leaves": 0, "digest": rec["result_digest"][:12], "matches": False}
+    ]
+    matches: dict[str, set[str]] = {}
+    ran: dict[str, dict] = {}
+    for name, (c, i, changed) in readings.items():
+        if not changed:  # the same text as received: not a new candidate
+            continue
+        again = _guard(E.run_record, c, i)
+        ran[name] = again
+        ok = again["result_digest"] == expected
+        if ok:
+            matches[name] = set(changed)
+        candidates.append(
+            {
+                "reading": name,
+                "changed_leaves": len(changed),
+                "changed_example": changed[:6],
+                "digest": again["result_digest"][:12],
+                "matches": ok,
+            }
+        )
+    verification, chosen = pick_reading(matches)
+    if chosen is not None and any(ran[chosen][k] != rec[k] for k in _COMPUTATION):
+        return {
+            **base,
+            "identical": False,
+            "verification": "COMPUTATION_DIFFERS",
+            "interpretation": chosen,
+            "candidates": candidates,
+        }
+    if chosen is not None:
+        return {
+            **base,
+            "got": ran[chosen]["result_digest"],
+            "identical": True,
+            "verification": verification,
+            "interpretation": chosen,
+            "candidates": candidates,
+        }
+    return {
+        **base,
+        "identical": False,
+        "verification": verification,
+        "interpretation": "none_reproduces_the_digest",
+        "candidates": candidates,
+    }
 
 
 @router.post("/ablation")

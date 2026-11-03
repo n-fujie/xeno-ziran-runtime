@@ -27,7 +27,7 @@ export interface ResearchCtx {
 
 const REGIONS: Array<[string, number[] | null]> = [['whole arena', null], ['left half', [0, 0, 6, 13]], ['right half', [7, 0, 13, 13]], ['centre', [3, 3, 10, 10]], ['around A1 and A2', [2, 4, 6, 8]], ['A1 cell only', [3, 6, 3, 6]], ['away from both', [8, 8, 12, 12]], ['corner', [0, 0, 3, 3]]];
 const OCCLUDERS: Array<[string, number[] | null]> = [['none', null], ['over A1', [3, 6, 3, 6]], ['over A1 and A2', [3, 5, 5, 7]], ['left strip', [0, 0, 2, 13]]];
-const SCENARIO_NAMES = ['no stress (control for false switches)', 'history lost', 'coupling weakened (gain 0.5)', 'resource reduced', 'renewal efficiency 0.6', 'renewal disabled', 'Address degraded (A2 partial 50 %)'];
+export const SCENARIO_NAMES = ['no stress (control for false switches)', 'history lost', 'coupling weakened (gain 0.5)', 'resource reduced', 'renewal efficiency 0.6', 'renewal disabled', 'Address degraded (A2 partial 50 %)'];
 const Chip = ({ s }: { s: string }) => <span className={`eco-chip ${s}`}>{s}</span>;
 const download = (name: string, text: string, type: string) => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type })); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); };
 

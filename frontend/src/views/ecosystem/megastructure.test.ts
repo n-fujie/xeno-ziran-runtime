@@ -23,7 +23,10 @@ describe('the static architecture', () => {
   });
   it('is deterministic (seeded): two builds have the same statistics', () => {
     expect(buildMegastructure('performance').stats).toEqual(lo.stats);
-  });
+  // One full build of the architecture, under the 5 s default limit. Measured (2026-11-03, unchanged code): 0.46-0.53 s alone, 1.1-1.9 s with every core busy, and once more than 5 s in a whole-suite run
+  // at load average 11 (it passed on the repeat). The work does not grow with the code; the limit was too close to the loaded cost. 30 s is about 60 times the quiet time, so a real slowdown still fails here;
+  // frontend/scripts/slow_tests.mjs records the time of every run (docs/ecosystem/test_timing.jsonl) to watch the trend.
+  }, 30_000);
   it('keeps the draw-call count low through instancing', () => {
     expect(mid.stats.objects).toBeLessThan(80);
   });

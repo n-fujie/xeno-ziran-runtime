@@ -10,6 +10,8 @@ These are the properties the interface's provenance panel relies on."""
 from __future__ import annotations
 
 import copy
+import json
+from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
@@ -151,3 +153,218 @@ def test_digests_of_runs_made_from_python_typed_configs_are_unchanged():
     assert E.run_record(E.default_config(horizon=360), [{"tick": 100, "op": "DISABLE_HISTORY"}])["result_digest"].startswith(
         "835cce00"
     )
+
+
+# numeric types over the stored records
+
+FRONTEND = Path(__file__).resolve().parents[2] / "frontend" / "src" / "views" / "ecosystem"
+FIXTURES = FRONTEND / "__fixtures__"
+
+
+def stored_records() -> dict[str, dict]:
+    out = {}
+    for name in ("meos-stage2", "meos-a2-removed"):
+        out[name] = json.loads((FIXTURES / f"{name}.json").read_text())
+    for k, v in json.loads((FIXTURES / "meos-coupling-cut.json").read_text()).items():
+        out[f"coupling-{k}"] = v
+    out["stage5-controlled"] = json.loads((FIXTURES / "meos-stage5-controlled.json").read_text())["record"]
+    return out
+
+
+@pytest.mark.parametrize("name", list(stored_records()))
+def test_every_stored_record_replays_both_as_python_wrote_it_and_through_javascript_numbers(client, name):
+    rec = stored_records()[name]
+    py = client.post(
+        "/api/meos/replay",
+        json={"config": rec["config"], "interventions": rec["interventions"], "result_digest": rec["result_digest"]},
+    ).json()
+    via_js = client.post(
+        "/api/meos/replay",
+        json={"config": js(rec["config"]), "interventions": js(rec["interventions"]), "result_digest": rec["result_digest"]},
+    ).json()
+    assert py["identical"] is True and py["interpretation"] == "as_received" and py["verification"] == "VERIFIED_AS_RECEIVED"
+    assert via_js["identical"] is True, via_js
+
+
+def test_a_record_a_server_made_with_a_whole_number_float_needs_the_reading_and_says_so(client):
+    # the stage-5 controlled run: a ROUTE intervention carries m2.weight 4.0, which a browser writes 4
+    rec = stored_records()["stage5-controlled"]
+    via_js = client.post(
+        "/api/meos/replay",
+        json={"config": js(rec["config"]), "interventions": js(rec["interventions"]), "result_digest": rec["result_digest"]},
+    ).json()
+    assert via_js["identical"] is True and via_js["verification"] == "VERIFIED_BY_READING"
+    assert (
+        via_js["interpretation"] == "interventions_as_floats"
+    )  # the configuration was already right: only the interventions needed the reading
+
+
+def test_the_two_readings_run_the_same_computation_only_the_digest_differs():
+    rec = stored_records()["stage5-controlled"]
+    a = E.run_record(rec["config"], rec["interventions"])
+    b = E.run_record(rec["config"], js(rec["interventions"]))
+    assert a["result_digest"] != b["result_digest"]
+    for k in ("frames", "events", "cycles", "status_log", "final_status", "termination"):
+        assert a[k] == b[k], k
+
+
+def test_a_digest_that_nothing_reproduces_is_never_called_identical(client):
+    rec = stored_records()["stage5-controlled"]
+    out = client.post(
+        "/api/meos/replay",
+        json={"config": js(rec["config"]), "interventions": js(rec["interventions"]), "result_digest": "0" * 64},
+    ).json()
+    assert (
+        out["identical"] is False
+        and out["interpretation"] == "none_reproduces_the_digest"
+        and out["verification"] == "NOT_REPRODUCED"
+    )
+
+
+def test_the_reading_keeps_whole_numbers_where_the_engine_requires_them():
+    from xzr.service.meos import _as_float_where_the_engine_reads_one as read
+
+    ivs = [
+        {
+            "tick": 3,
+            "op": "ADDRESS",
+            "mode": "delayed",
+            "delay": 5,
+            "x": 4,
+            "y": 2,
+            "fraction": 1,
+            "duration": 20,
+            "inject": {"x": 3, "y": 6, "amount": 2},
+            "cost": 1,
+        }
+    ]
+    got = read(ivs)[0]
+    assert (got["tick"], got["delay"], got["x"], got["y"], got["duration"], got["cost"]) == (3, 5, 4, 2, 20, 1)
+    assert all(isinstance(got[k], int) for k in ("tick", "delay", "x", "y", "duration", "cost"))
+    assert (
+        isinstance(got["fraction"], float) and isinstance(got["inject"]["amount"], float) and isinstance(got["inject"]["x"], int)
+    )
+    assert read({"horizon": 360, "entities": {"A1": {"pos": [3, 6], "window": 6, "speed": 1}}}) == {
+        "horizon": 360,
+        "entities": {"A1": {"pos": [3, 6], "window": 6, "speed": 1.0}},
+    }
+    assert read({"flag": True}) == {"flag": True}
+
+
+def test_a_reconfigure_value_takes_the_type_of_the_parameter_it_sets():
+    from xzr.service.meos import _reconfigure_values_like_their_parameter as like
+
+    cfg = E.default_config()
+    out = like(
+        [
+            {"tick": 1, "op": "RECONFIGURE", "path": "environment.diffusion", "value": 1},
+            {"tick": 1, "op": "RECONFIGURE", "path": "entities.A1.window", "value": 6},
+        ],
+        cfg,
+    )
+    assert isinstance(out[0]["value"], float) and isinstance(out[1]["value"], int)
+
+
+# ---------------------------------------------------------------- the reading must not hide a real mismatch
+def replay_js(client, rec, mutate=None):
+    cfg, ivs = js(rec["config"]), js(rec["interventions"])
+    if mutate:
+        cfg, ivs = mutate(copy.deepcopy(cfg), copy.deepcopy(ivs))
+    return client.post(
+        "/api/meos/replay", json={"config": cfg, "interventions": ivs, "result_digest": rec["result_digest"]}
+    ).json()
+
+
+def test_the_answer_names_the_input_rule_the_candidates_and_the_leaves_each_changed(client):
+    out = replay_js(client, stored_records()["stage5-controlled"])
+    assert out["rule"].startswith("a whole number is read as a float unless") and out["input_record_digest"]
+    names = {c["reading"]: c for c in out["candidates"]}
+    assert names["as_received"]["matches"] is False
+    assert (
+        names["interventions_as_floats"]["matches"] is True
+        and "interventions.[3].m2.weight" in names["interventions_as_floats"]["changed_example"]
+    )
+    assert (
+        names["config_and_interventions_as_floats"]["matches"] is True
+    )  # a larger reading that also matches only repeats the minimal one
+    assert names["config_and_interventions_as_floats"]["changed_leaves"] >= names["interventions_as_floats"]["changed_leaves"]
+
+
+@pytest.mark.parametrize(
+    "what,mutate",
+    [
+        ("a changed parameter value", lambda c, i: (c, [{**x, "value": 0.4} if x["op"] == "RECONFIGURE" else x for x in i])),
+        ("a moved intervention tick", lambda c, i: (c, [{**x, "tick": x["tick"] + 1} if x["op"] == "REMOVE" else x for x in i])),
+        ("a different seed", lambda c, i: ({**c, "seed": 2}, i)),
+        ("a dropped intervention", lambda c, i: (c, i[:-1])),
+    ],
+)
+def test_a_genuine_difference_in_the_inputs_is_never_verified_by_a_reading(client, what, mutate):
+    out = replay_js(client, stored_records()["stage5-controlled"], mutate)
+    assert out["identical"] is False, what
+    assert out["verification"] == "NOT_REPRODUCED" and out["interpretation"] == "none_reproduces_the_digest"
+    assert all(c["matches"] is False for c in out["candidates"])
+
+
+def test_reading_numbers_as_floats_does_not_change_the_computation_of_any_stored_record():
+    from xzr.service.meos import _as_float_where_the_engine_reads_one as read
+    from xzr.service.meos import _reconfigure_values_like_their_parameter as like
+
+    for name, rec in stored_records().items():
+        cfg2 = read(js(rec["config"]))
+        a = E.run_record(js(rec["config"]), js(rec["interventions"]))
+        b = E.run_record(cfg2, like(read(js(rec["interventions"])), cfg2))
+        for k in ("frames", "events", "cycles", "status_log", "final_status", "termination"):
+            assert a[k] == b[k], f"{name}: {k}"
+
+
+def test_the_choice_among_matching_readings():
+    from xzr.service.meos import pick_reading
+
+    assert pick_reading({}) == ("NOT_REPRODUCED", None)
+    assert pick_reading({"a": {"x"}}) == ("VERIFIED_BY_READING", "a")
+    # nested: the larger reading only repeats the smaller one
+    assert pick_reading({"a": {"x"}, "both": {"x", "y"}}) == ("VERIFIED_BY_READING", "a")
+    # not nested: two different minimal readings reproduce the digest, so none is chosen
+    assert pick_reading({"a": {"x"}, "same": {"x"}}) == ("VERIFIED_BY_READING", "a")  # the same leaves changed: one reading
+    assert pick_reading({"a": {"x"}, "b": {"y"}}) == ("AMBIGUOUS", None)
+    assert pick_reading({"a": {"x"}, "b": {"y"}, "both": {"x", "y"}}) == ("AMBIGUOUS", None)
+
+
+def test_a_reading_that_would_change_the_computation_is_refused(client, monkeypatch):
+    rec = stored_records()["stage5-controlled"]
+    real = E.run_record
+    calls = {"n": 0}
+
+    def fake(config, interventions=None):
+        out = real(config, interventions)
+        calls["n"] += 1
+        if calls["n"] == 2:  # the first reading: claims the expected digest but with a different computation
+            out = {
+                **out,
+                "result_digest": rec["result_digest"],
+                "status_log": [*out["status_log"], {"tick": 999, "label": "ACTIVE", "reason": "tampered", "dependency": None}],
+            }
+        return out
+
+    monkeypatch.setattr(E, "run_record", fake)
+    out = replay_js(client, rec)
+    assert out["identical"] is False and out["verification"] == "COMPUTATION_DIFFERS"
+
+
+def test_the_observation_never_enters_the_digest_of_the_run(client):
+    # result_digest covers frames, events, cycles, status log, final status, termination and the fields:
+    # the outputs of the run, never an observation
+    ivs = INTERVENTION_LISTS[1]
+    plain = client.post("/api/meos/run", json={"config": {"horizon": 360}, "interventions": ivs}).json()["record"]
+    regimes = json.loads((FIXTURES / "meos-stage2-regimes.json").read_text())
+    assert len(regimes) >= 14
+    for r in regimes:
+        seen = client.post(
+            "/api/meos/run", json={"config": {"horizon": 360}, "interventions": ivs, "observation": r["obs"]}
+        ).json()
+        assert seen["record"]["result_digest"] == plain["result_digest"], r["name"]
+        assert seen["record"]["full_digest"] == plain["full_digest"], r["name"]
+        assert seen["record"]["frames"] == plain["frames"] and seen["record"]["status_log"] == plain["status_log"], r["name"]
+    # while the observation result itself does change with the regime
+    assert len({r["observed_cycles"] for r in regimes}) >= 3

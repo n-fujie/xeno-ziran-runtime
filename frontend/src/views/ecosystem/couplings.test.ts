@@ -5,7 +5,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import type { MeosRecord } from './meosApi';
-import { COUPLINGS, baselinePositions, compareBranches, couplingDef, couplingStates, cutRequest, originOf } from './couplings';
+import { COUPLINGS, baselinePositions, branchAspects, compareBranches, couplingDef, couplingStates, cutRequest, originOf } from './couplings';
 
 const fx = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '__fixtures__', 'meos-coupling-cut.json'), 'utf8')) as Record<'base' | 'cut' | 'feedback', MeosRecord>;
 
@@ -105,3 +105,64 @@ describe('where the displayed record comes from', () => {
     expect(originOf('MFS MFS-F14-1: 8 components retained')).toBe('SAVED_EXPERIMENT');
   });
 });
+
+describe('the branch compared aspect by aspect', () => {
+  const fxAll = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '__fixtures__', 'meos-coupling-cut.json'), 'utf8')) as Record<'base' | 'cut' | 'feedback' | 'history_off', MeosRecord>;
+  const obsFx = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '__fixtures__', 'meos-stage2-observed.json'), 'utf8')) as Record<'full' | 'coarse', { observed: import('./meosApi').Observed }>;
+  const get = (a: ReturnType<typeof branchAspects>, id: string) => a.find((x) => x.id === id)!;
+  it('has seven aspects, each with its two sides and a verdict', () => {
+    const a = branchAspects(fxAll.base, fxAll.cut);
+    expect(a.map((x) => x.id)).toEqual(['couplings', 'observation', 'reached', 'delay', 'persistence', 'history', 'routes']);
+    for (const x of a) expect(['DIFFERENT', 'NO_DIFFERENCE', 'UNRESOLVED']).toContain(x.verdict);
+  });
+  it('finds the cut coupling, the state reached, the collapse and the response delay of the interaction-channel cut', () => {
+    const a = branchAspects(fxAll.base, fxAll.cut);
+    expect(get(a, 'couplings').verdict).toBe('DIFFERENT'); expect(get(a, 'couplings').detail).toBe('changed: interaction_channel');
+    expect(get(a, 'couplings').branch).toContain('interaction_channel: 100-149');
+    expect(get(a, 'reached').base).toContain('ACTIVE'); expect(get(a, 'reached').branch).toContain('COLLAPSED');
+    expect(get(a, 'persistence').branch).toBe('collapse at 149'); expect(get(a, 'persistence').base).toBe('no collapse');
+    expect(get(a, 'delay').base).toBe('no status change after t=100'); expect(get(a, 'delay').branch).toBe('DEGRADED at 126 (26 ticks after t=100)'); expect(get(a, 'delay').verdict).toBe('DIFFERENT');
+  });
+  it('keeps the negative results: routes did not differ, and the history disabled run changed no coupling', () => {
+    expect(get(branchAspects(fxAll.base, fxAll.cut), 'routes').verdict).toBe('NO_DIFFERENCE');
+    const h = branchAspects(fxAll.base, fxAll.history_off);
+    expect(get(h, 'couplings').verdict).toBe('NO_DIFFERENCE'); expect(get(h, 'couplings').detail).toBe('no coupling was cut in either run');
+    expect(get(h, 'history').verdict).toBe('DIFFERENT'); expect(get(h, 'history').base).toBe('71 of 71 cycles contain a re-entry'); expect(get(h, 'history').branch).toBe('20 of 22 cycles contain a re-entry');
+  });
+  it('reports a record compared with itself as no difference throughout (except the observation, which needs two observation results)', () => {
+    const a = branchAspects(fxAll.base, fxAll.base);
+    for (const x of a.filter((y) => y.id !== 'observation')) expect(x.verdict, x.id).toBe('NO_DIFFERENCE');
+    expect(get(a, 'observation').verdict).toBe('UNRESOLVED');
+  });
+  it('compares the observation records of the two runs when both exist, and leaves it unresolved when one does not', () => {
+    const a = branchAspects(fxAll.base, fxAll.cut, obsFx.full.observed, obsFx.coarse.observed);
+    expect(get(a, 'observation').verdict).toBe('DIFFERENT'); expect(get(a, 'observation').base).toContain('27 of 27'); expect(get(a, 'observation').branch).toContain('0 of 27');
+    expect(get(branchAspects(fxAll.base, fxAll.cut, obsFx.full.observed, null), 'observation').verdict).toBe('UNRESOLVED');
+  });
+});
+
+describe('traceability of the branch aspects', () => {
+  const fxAll = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '__fixtures__', 'meos-coupling-cut.json'), 'utf8')) as Record<'base' | 'cut' | 'feedback' | 'history_off', MeosRecord>;
+  it('names the fields each aspect reads, for every branch', () => {
+    for (const k of ['cut', 'feedback', 'history_off'] as const) for (const a of branchAspects(fxAll.base, fxAll[k])) { expect(a.reads.length, `${k}.${a.id}`).toBeGreaterThan(0); expect(a.detail.length).toBeGreaterThan(10); }
+  });
+  it('agrees with the records themselves: the coupling spans and the first collapse are the ones the frames and logs hold', () => {
+    const a = branchAspects(fxAll.base, fxAll.cut);
+    const cutTicks = fxAll.cut.frames.map((f, t) => (f.ad && !f.ad.A1.connectivity.interaction ? t : -1)).filter((t) => t >= 0);
+    expect(cutTicks.length).toBeGreaterThan(0);   // the ad block is written only where it changes: the spans come from the latest ad frame
+    expect(a.find((x) => x.id === 'couplings')!.branch).toContain('interaction_channel: 100-149');
+    expect(a.find((x) => x.id === 'persistence')!.branch).toBe(`collapse at ${fxAll.cut.frames.findIndex((f) => f.status === 'COLLAPSED')}`);
+  });
+  it('keeps the negative result of every aspect that did not change, for every branch', () => {
+    for (const k of ['cut', 'feedback', 'history_off'] as const) {
+      const a = branchAspects(fxAll.base, fxAll[k]);
+      expect(a.some((x) => x.verdict === 'NO_DIFFERENCE'), k).toBe(true);
+      expect(a.filter((x) => x.verdict === 'NO_DIFFERENCE').every((x) => x.base === x.branch), k).toBe(true);
+    }
+  });
+  it('draws no conclusion about cause: the aspects only locate differences', () => {
+    const words = JSON.stringify(branchAspects(fxAll.base, fxAll.cut)).toLowerCase();
+    for (const bad of ['caused', 'because', 'proves', 'due to']) expect(words).not.toContain(bad);
+  });
+});
+

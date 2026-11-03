@@ -2,6 +2,7 @@
 // the engine's observation result; what each reading IS (observed, inferred, or the evaluator's reference state) is declared once in READING_SOURCES and tested, so that a hidden reference
 // state is never shown as a measurement. The module states what the engine cannot establish (UNRESOLVED / UNSUPPORTED) instead of filling it in.
 
+import { seenCells } from './observation3d';
 import { FULL_OBSERVATION, adAt, type Intervention, type Label, type MeosRecord, type Observation, type Observed, type PathActivity, type SssClassOut } from './meosApi';
 
 export type Epistemic = 'OBSERVED' | 'INFERRED' | 'REFERENCE';
@@ -62,6 +63,30 @@ export function inventory(rec: MeosRecord, tick: number, entity: 'A1' | 'A2', ob
   return { observed: obs, inferred: inf, reference: ref };
 }
 
+// ------------------------------------------------------------------------------------------------ the reference and the observation of one entity, side by side
+
+export interface EntityObservation {
+  entity: 'A1' | 'A2';
+  /** reference: the entity's recorded cell and whether it is firing at the tick (its firing-persistence counter is above zero; the evaluator's state) */
+  reference: { present: boolean; cell: [number, number]; active: boolean };
+  /** observation: whether the cell is seen by the lattice, the region and the occluder, whether this tick is a sampled one, and the observed status of the whole operation at the tick */
+  observation: { cellSeen: boolean; tickSampled: boolean; observedStatus: Label | null };
+  /** why the entity is, or is not, resolved by this observation at this tick */
+  reading: string;
+}
+
+/** For each entity at a tick, what the evaluator holds and what the configured observation can see of it. The two are kept as two columns: an entity that is active but in an unseen cell is not
+ *  thereby inactive, and the reading says so. ``observedStatus`` is the engine's observed status of the operation (not of the entity) and is null without an observation result. */
+export function entityObservations(rec: MeosRecord, obs: Partial<Observation>, tick: number, observed: Observed | null): EntityObservation[] {
+  const t = Math.max(0, Math.min(tick, rec.frames.length - 1)), f = rec.frames[t], o = { ...FULL_OBSERVATION, ...obs }, seen = seenCells(o, rec.config.grid);
+  const k = Math.max(1, Math.floor(o.sampling_interval));
+  return (['A1', 'A2'] as const).map((name) => {
+    const e = f[name], cellSeen = e.present && seen[e.y * rec.config.grid + e.x], tickSampled = t % k === 0;
+    const reading = !e.present ? `${name} is absent in the record` : !cellSeen ? `${name} is ${e.active > 0 ? 'firing' : 'not firing'} in the reference, in a cell the observation does not see: its state is not observed` : !tickSampled ? `${name} is in a seen cell, but tick ${t} is not a sampled tick (every ${k})` : `${name} is in a seen cell at a sampled tick: events there can be observed`;
+    return { entity: name, reference: { present: e.present, cell: [e.x, e.y] as [number, number], active: e.active > 0 }, observation: { cellSeen, tickSampled, observedStatus: observed?.timeline[t]?.observed ?? null }, reading };
+  });
+}
+
 // ------------------------------------------------------------------------------------------------ what cannot be settled
 
 export interface UnresolvedItem { id: string; label: string; reason: string }
@@ -118,6 +143,72 @@ export function shapeTrack(rec: MeosRecord, observed: Observed | null, divergenc
   return { length: n, operational: runs(n, op), observed: observed ? runs(n, (t) => observed.timeline[t]?.observed ?? op(t)) : null, marks };
 }
 
+// ------------------------------------------------------------------------------------------------ the six states of the operation, each with its basis
+
+export type StateId = 'formation' | 'maintenance' | 'transformation' | 'cessation' | 're_ignition' | 'reconfiguration';
+export interface StateBasis {
+  id: StateId; label: string;
+  /** spans of ticks at which the rule holds in the record (may be empty; they may overlap those of other states and need no order) */
+  spans: Span[];
+  /** does the rule hold at the playhead tick */
+  holdsAt: boolean;
+  /** the engine values the rule read */
+  engineValues: string[];
+  /** what the configured observation could see of this state (not a finding about the target) */
+  observationCondition: string;
+  /** the rule, in words */
+  rule: string;
+  /** the fields of the record the rule reads, so that every span can be traced to the engine's own logs */
+  reads: string[];
+}
+export interface OperationalStates {
+  tick: number; states: StateBasis[]; note: string;
+  /** whether an operational shape was in fact formed, kept, changed, ended or re-ignited: never judged by this function */
+  ontologicalJudgement: 'NOT_MADE';
+}
+
+// the interventions of each kind, by the engine's own operation names (this is this implementation's mapping, stated in each rule)
+const TRANSFORM_OPS = ['RECONFIGURE', 'CHANGE_BOUNDARY', 'ALTER_SSS', 'ADDRESS'] as const;
+const RECONFIG_OPS = ['ISOLATE', 'RECONNECT', 'REMOVE', 'ROUTE', 'DISABLE_HISTORY'] as const;
+
+/** Six implementation states of the operation at a tick, each with the engine values it was judged from, the observation condition, the rule and the time range. They are labels of how the record was read by
+ *  the stated rules. They are not a sequence (any may hold without another) and not a judgement that an operational shape was in fact formed, kept, changed, ended or re-ignited: that judgement is NOT made here. */
+export function operationalStates(rec: MeosRecord, observed: Observed | null, tick: number): OperationalStates {
+  const n = rec.frames.length, t = Math.max(0, Math.min(tick, n - 1));
+  const labelAt = (x: number): Label => { let l: Label = rec.status_log[0]?.label ?? 'DEGRADED'; for (const e of rec.status_log) { if (e.tick <= x) l = e.label; else break; } return l; };
+  const holds = (spans: Span[]) => spans.some(([a, b]) => a <= t && t <= b);
+  const seenOf = (spans: Span[]): string => {
+    if (!observed) return 'no observation result for this run: what the observer could see of it is not stated';
+    const ticks = spans.flatMap(([a, b]) => Array.from({ length: b - a + 1 }, (_, i) => a + i));
+    if (!ticks.length) return 'nothing to observe: the rule does not hold anywhere in the record';
+    const agree = ticks.filter((x) => observed.timeline[x] && observed.timeline[x].observed === observed.timeline[x].operational).length;
+    return `the observed status equals the operational status at ${agree} of ${ticks.length} ticks of the span${agree < ticks.length ? '; at the others the observation is limited' : ''}`;
+  };
+  const cyclesIn = (a: number, b: number) => rec.cycles.filter((c) => c.tick >= a && c.tick <= b).length;
+  const active = spansOf(n, (x) => labelAt(x) === 'ACTIVE'), collapsed = spansOf(n, (x) => labelAt(x) === 'COLLAPSED');
+  const firstActive = rec.status_log.find((e) => e.label === 'ACTIVE');
+  const reig: Span[] = []; let seen = false;
+  for (const e of rec.status_log) { if (e.label === 'COLLAPSED') seen = true; else if (seen && e.label === 'ACTIVE') { reig.push([e.tick, e.tick]); seen = false; } }
+  const ivSpans = (ops: readonly string[]): Span[] => rec.interventions.filter((i) => ops.includes(i.op)).map((i): Span => [i.tick, i.tick]);
+  const ivValues = (ops: readonly string[]): string[] => rec.interventions.filter((i) => ops.includes(i.op)).map((i) => `t=${i.tick} ${i.op}${i.target ? ` ${i.target}` : ''}${i.path ? ` ${i.path}` : ''}${i.value !== undefined ? ` = ${i.value}` : ''}`);
+  const sl = (label: Label) => rec.status_log.filter((e) => e.label === label).map((e) => `t=${e.tick} ${e.label}: ${e.reason}`);
+  const formation: Span[] = firstActive ? [[0, firstActive.tick]] : [], tr = ivSpans(TRANSFORM_OPS), rc = ivSpans(RECONFIG_OPS);
+  const states: StateBasis[] = [
+    { id: 'formation', label: 'formation', spans: formation, holdsAt: holds(formation), engineValues: firstActive ? [`status log: first ACTIVE at t=${firstActive.tick} (${firstActive.reason})`, `${cyclesIn(0, firstActive.tick)} complete cycles by then`] : ['the status log never reaches ACTIVE'],
+      observationCondition: seenOf(formation), rule: 'from tick 0 to the first ACTIVE entry of the status log', reads: ['status_log', 'cycles'] },
+    { id: 'maintenance', label: 'maintenance', spans: active, holdsAt: holds(active), engineValues: [`status at t=${t}: ${labelAt(t)}`, `${cyclesIn(Math.max(0, t - 47), t)} complete cycles in the 48 ticks up to t=${t}`, ...sl('ACTIVE').slice(0, 3)],
+      observationCondition: seenOf(active), rule: 'ticks at which the operational status of the status log is ACTIVE (the engine\'s criterion: complete cycles sustained within its window)', reads: ['status_log', 'cycles'] },
+    { id: 'transformation', label: 'transformation', spans: tr, holdsAt: holds(tr), engineValues: ivValues(TRANSFORM_OPS), observationCondition: seenOf(tr),
+      rule: `ticks of interventions that change an entity's parameters or boundary (${TRANSFORM_OPS.join(', ')}); this implementation's mapping`, reads: ['interventions'] },
+    { id: 'cessation', label: 'cessation', spans: collapsed, holdsAt: holds(collapsed), engineValues: [...sl('COLLAPSED').slice(0, 3), ...(rec.final_status.dependency ? [`failed dependency at the end: ${rec.final_status.dependency.precondition} (${rec.final_status.dependency.detail})`] : [])],
+      observationCondition: seenOf(collapsed), rule: 'ticks at which the operational status (the run itself, not the observation) is COLLAPSED; an observed collapse alone is not this', reads: ['status_log', 'final_status.dependency'] },
+    { id: 're_ignition', label: 're-ignition', spans: reig, holdsAt: holds(reig), engineValues: reig.map(([a]) => `t=${a} ACTIVE after COLLAPSED`), observationCondition: seenOf(reig), rule: 'a status-log entry ACTIVE that follows a COLLAPSED one', reads: ['status_log'] },
+    { id: 'reconfiguration', label: 'reconfiguration', spans: rc, holdsAt: holds(rc), engineValues: ivValues(RECONFIG_OPS), observationCondition: seenOf(rc),
+      rule: `ticks of interventions that change a coupling, route, component or the history (${RECONFIG_OPS.join(', ')}); this implementation's mapping`, reads: ['interventions'] },
+  ];
+  return { tick: t, states, ontologicalJudgement: 'NOT_MADE', note: 'Labels of how the record was read by the stated rules: not a sequence, and not a judgement that an operational shape was in fact formed, maintained, transformed, ended or re-ignited. That judgement is not made.' };
+}
+
 // ------------------------------------------------------------------------------------------------ history: retention, addressability, re-entry, consequence
 
 export interface HistoryReading {
@@ -142,14 +233,14 @@ export function historyReading(rec: MeosRecord, tick: number): HistoryReading {
 
 export interface HistoryConsequence {
   verdict: 'DIFFERS' | 'NO_DIFFERENCE_IN_THIS_RUN';
-  base: { label: Label; cycles: number; reentryCycles: number }; withoutHistory: { label: Label; cycles: number; reentryCycles: number };
+  base: { label: Label; cycles: number; reentryCyclesInFinalWindow: number }; withoutHistory: { label: Label; cycles: number; reentryCyclesInFinalWindow: number };
   firstStatusDivergence: number | null; note: string;
 }
 
 /** The effective consequence of history re-entry, from two engine runs of one configuration: the baseline and the same run with the history disabled (``DISABLE_HISTORY``). It holds for this
  *  configuration and seed only; a record that replays is not thereby a re-entry, and a difference here is a difference of these two runs, not a general law. */
 export function historyConsequence(base: MeosRecord, withoutHistory: MeosRecord): HistoryConsequence {
-  const side = (r: MeosRecord) => ({ label: r.final_status.label, cycles: r.cycles.length, reentryCycles: r.final_status.history_reentry_cycles });
+  const side = (r: MeosRecord) => ({ label: r.final_status.label, cycles: r.cycles.length, reentryCyclesInFinalWindow: r.final_status.history_reentry_cycles });
   const b = side(base), o = side(withoutHistory);
   let first: number | null = null;
   const n = Math.min(base.frames.length, withoutHistory.frames.length);
