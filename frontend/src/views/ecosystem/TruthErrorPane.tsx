@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { ADDRESS_STATES, MODALITIES, NODES, addressStatesAt, compareRuns, fieldsAt, modalityCounts, nodeReadings, timelineEvents, type NodeId, type Reading, type TERun } from './truthError';
+import { ADDRESS_STATES, APPEAL_STAGES, MODALITIES, NODES, PATHS, addressStatesAt, compareRuns, comparePaths, eventTable, fieldsAt, modalityCounts, nodeReadings, timelineEvents, type NodeId, type Reading, type TERun } from './truthError';
 import type { TEExperiment, TEOverrides } from './truthApi';
 
 // TRUTH-ERROR DYNAMICS — a research tab of the XENO ECOSYSTEM view. It runs a SYNTHETIC virtual institution (backend/xzr/truth_error) and reads the run: nothing here classifies, scores or simulates, and every value is
@@ -9,10 +9,13 @@ import type { TEExperiment, TEOverrides } from './truthApi';
 export interface TruthCtx {
   base: TERun | null; branch: TERun | null; k: number; setK: (k: number) => void; t: number; setT: (t: number) => void; selected: NodeId | null; select: (id: NodeId | null) => void;
   draft: TEOverrides; setDraft: (d: TEOverrides) => void; busy: boolean; err: string | null; runBase: () => Promise<void>; runBranch: () => Promise<void>; clearBranch: () => void; focus3d: () => void;
-  experiments: Record<string, TEExperiment> | null; expId: string; setExpId: (id: string) => void; loadArm: (expId: string, arm: string, as: 'base' | 'branch') => Promise<void>;
+  experiments: Record<string, TEExperiment> | null; expId: string; setExpId: (id: string) => void; experiments2: Record<string, TEExperiment> | null; exp2Id: string; setExp2Id: (id: string) => void; loadArm: (expId: string, arm: string, as: 'base' | 'branch') => Promise<void>;
 }
 
 const CLASSIFIERS = ['signal_rule', 'pose_rule', 'random_rule', 'none'];
+const PRIMARY_METRICS = ['access_rate_late_fav', 'denial_rate_late_fav', 'lost_opportunities_per_fav', 'recovery_time', 'recovery_censored_share', 'persistent_constraint', 'propagation_b_denied_fav'] as const;
+const n3 = (x: number | null | undefined): string => (x === null || x === undefined ? '-' : x.toFixed(3));
+const STATUS_TEXT: Record<string, string> = { SAME: 'same', EARLIER: 'earlier in the branch', LATER: 'later in the branch', ONLY_IN_BRANCH: 'only in the branch', ONLY_IN_BASELINE: 'only in the baseline', NEITHER: 'in neither' };
 const chip = (e: string) => <span className={`eco-chip tee-${e}`}>{e}</span>;
 const ReadingTable = ({ rows, testid }: { rows: Reading[]; testid?: string }) => <table className="eco-table" data-testid={testid}><tbody>{rows.map((r, i) => <tr key={i}><td>{r.label}</td><td>{chip(r.epistemic)}</td><td>{r.value}</td></tr>)}</tbody></table>;
 
@@ -45,6 +48,9 @@ export default function TruthErrorPane(c: TruthCtx) {
   const set = (patch: TEOverrides) => c.setDraft({ ...c.draft, ...patch });
   const sensor = (patch: Partial<NonNullable<TEOverrides['pose_sensor']>>) => c.setDraft({ ...c.draft, pose_sensor: { ...c.draft.pose_sensor, ...patch } });
   const periods = base?.config.periods ?? 40;
+  const paths = useMemo(() => (base ? comparePaths(base, branch, k) : []), [base, branch, k]);
+  const exp2 = c.experiments2?.[c.exp2Id] ?? null;
+  const proc = base?.process ?? null, bproc = branch?.process ?? null;
 
   return (
     <>
@@ -70,6 +76,16 @@ export default function TruthErrorPane(c: TruthCtx) {
         <label>calibration bias (yaw) <select value={String(c.draft.pose_sensor?.bias?.[0] ?? 0)} onChange={(e) => sensor({ bias: [Number(e.target.value), 0, 0] })}>{['0', '5', '10'].map((x) => <option key={x}>{x}</option>)}</select></label>
         <label>inject a failure at <select value={String(c.draft.pose_sensor?.fail_at ?? 'none')} onChange={(e) => sensor({ fail_at: e.target.value === 'none' ? null : Number(e.target.value), fail_mode: 'stuck' })}>{['none', '15', '30'].map((x) => <option key={x}>{x}</option>)}</select></label>
       </div>
+      <div className="eco-row" data-testid="te-process-controls" role="group" aria-label="correction process and appeal">
+        <label>audit every <select value={String(c.draft.audit_every ?? 'none')} onChange={(e) => set({ audit_every: e.target.value === 'none' ? null : Number(e.target.value) })}>{['none', '1', '2', '4'].map((x) => <option key={x}>{x}</option>)}</select></label>
+        <label>request delay <select value={String(c.draft.request_delay ?? 0)} onChange={(e) => set({ request_delay: Number(e.target.value) })}>{['0', '1', '3'].map((x) => <option key={x}>{x}</option>)}</select></label>
+        <label>approval delay <select value={String(c.draft.approval_delay ?? 0)} onChange={(e) => set({ approval_delay: Number(e.target.value) })}>{['0', '2', '8', '16'].map((x) => <option key={x}>{x}</option>)}</select></label>
+        <label>release <select value={c.draft.release_mode ?? 'by_score'} onChange={(e) => set({ release_mode: e.target.value })}>{['by_score', 'after_approval', 'never'].map((x) => <option key={x}>{x}</option>)}</select></label>
+        <label>release delay <select value={String(c.draft.release_delay ?? 0)} onChange={(e) => set({ release_delay: Number(e.target.value) })}>{['0', '4', '8', '16'].map((x) => <option key={x}>{x}</option>)}</select></label>
+        <label>appeal <select value={c.draft.appeal ? (c.draft.appeal_access === 'score_gated' ? 'gated by the score' : 'open') : 'none'} onChange={(e) => set({ appeal: e.target.value !== 'none', appeal_access: e.target.value === 'gated by the score' ? 'score_gated' : 'open', appeal_min_score: 0 })}>{['none', 'open', 'gated by the score'].map((x) => <option key={x}>{x}</option>)}</select></label>
+        <label>opportunity window <select value={String(c.draft.opportunity_window ?? 'none')} onChange={(e) => set({ opportunity_window: e.target.value === 'none' ? null : Number(e.target.value) })}>{['none', '2', '6', '12'].map((x) => <option key={x}>{x}</option>)}</select></label>
+      </div>
+      <div className="eco-note">The correction process is the audit, the request, the approval, the score update and the release, each at its own time; the correction time (approval delay) and the release time (release delay) are set apart. The appeal gated by the score is a hypothetical control for studying institutional design danger: it is not a procedure for judging any real person.</div>
       <div className="eco-row">
         <button disabled={c.busy} onClick={() => void c.runBase()}>RUN BASELINE</button>
         <button disabled={c.busy || !base} onClick={() => void c.runBranch()} title="the baseline with the settings above applied">RUN BRANCH (SETTINGS ABOVE)</button>
@@ -106,6 +122,56 @@ export default function TruthErrorPane(c: TruthCtx) {
           <h3>Operational consequences</h3><ReadingTable rows={fields.consequences} testid="te-f-consequences" />
           <h3>Historical re-entry</h3><ReadingTable rows={fields.reentry} testid="te-f-reentry" />
 
+          {proc && (
+            <>
+              <h3>The nine times of the correction process</h3>
+              <table className="eco-table" data-testid="te-process"><tbody>
+                <tr><th>event</th><th>kind</th><th>subject {k + 1}: baseline</th>{branch && <th>branch</th>}<th>subjects that have it</th><th>mean period</th></tr>
+                {eventTable(base).map((e) => <tr key={e.id}><td>{e.id.replace(/_/g, ' ')}<br /><small>{e.label}</small></td><td>{chip(e.epistemic)}</td><td>{proc.events[e.id].times[k] ?? 'not within the periods'}</td>{branch && <td>{bproc ? (bproc.events[e.id].times[k] ?? 'not within the periods') : '-'}</td>}<td>{e.n} of {e.of}</td><td>{e.mean === null ? '-' : e.mean.toFixed(1)}</td></tr>)}
+              </tbody></table>
+              <div className="eco-note">Nine times kept apart, none derived from another. The error is detected, requested, approved and the score updated at times the process sets; the release of a binding constraint is a separate time and may never come, and access restored afterwards is a further one. A misclassification is known to the evaluator only (REFERENCE).</div>
+
+              <h3>Four paths of subject {k + 1}</h3>
+              <table className="eco-table" data-testid="te-paths"><tbody>
+                <tr><th>path / step</th><th>variable of the model</th><th>baseline (period)</th>{branch && <><th>branch (period)</th><th>branch − baseline</th></>}</tr>
+                {PATHS.map((p) => (
+                  <>
+                    <tr key={p.id}><th colSpan={branch ? 5 : 3}>{p.label}</th></tr>
+                    {paths.filter((r) => r.path === p.id).map((r) => <tr key={r.path + r.step} className={base && t >= (r.base ?? Infinity) ? 'sel' : undefined}><td>{r.label}</td><td><small>{r.variable}</small></td><td>{r.base ?? '-'}</td>{branch && <><td>{r.branch ?? '-'}</td><td>{r.delta === null ? STATUS_TEXT[r.status] : r.delta === 0 ? 'same' : `${r.delta > 0 ? '+' : ''}${r.delta} (${STATUS_TEXT[r.status]})`}</td></>}</tr>)}
+                  </>
+                ))}
+              </tbody></table>
+              <div className="eco-note">The same subject (same seed) in the baseline and in the branch. A step is the period at which a variable or event the engine recorded first holds; the lines in the scene light the same steps. These are not causal arrows: the later steps are what the model's transitions produce from the earlier ones in that run, and a step that holds in only one run is shown as that, not as a delay.</div>
+
+              <h3>Fixed metrics</h3>
+              <table className="eco-table" data-testid="te-metrics"><tbody>
+                <tr><th>metric</th><th>baseline</th>{branch && <th>branch</th>}<th>denominator; period; unit</th></tr>
+                {PRIMARY_METRICS.map((m) => <tr key={m}><td>{m.replace(/_/g, ' ')}</td><td>{n3(proc.metrics[m])}</td>{branch && <td>{n3(bproc?.metrics[m])}</td>}<td><small>{proc.metric_definitions[m]?.denominator}; {proc.metric_definitions[m]?.period}; {proc.metric_definitions[m]?.unit}</small></td></tr>)}
+              </tbody></table>
+              <div className="eco-note">The virtual population is the same 120 synthetic subjects in every arm; "favourable at the start" means the reference state z0 &gt; 0. A single run is one seed: no general statement follows from these numbers, the saved experiments below repeat them over 20 seeds and again over 20 others.</div>
+
+              <h3>Recoverability of the lost opportunities</h3>
+              <table className="eco-table" data-testid="te-recover"><tbody>
+                <tr><th /><th>baseline</th>{branch && <th>branch</th>}</tr>
+                <tr><td>declared window</td><td>{proc.recoverability.declared_window === null ? 'none (irreversible by setting)' : `${proc.recoverability.declared_window} periods`}</td>{branch && <td>{bproc ? (bproc.recoverability.declared_window === null ? 'none (irreversible by setting)' : `${bproc.recoverability.declared_window} periods`) : '-'}</td>}</tr>
+                {(['recoverable', 'expired', 'unresolved'] as const).map((q) => <tr key={q}><td>lost periods {q}</td><td>{proc.recoverability.favourable_at_start.periods[q]}</td>{branch && <td>{bproc?.recoverability.favourable_at_start.periods[q] ?? '-'}</td>}</tr>)}
+                {(['recoverable', 'partially_recoverable', 'unrecoverable', 'unresolved'] as const).map((q) => <tr key={q}><td>episodes {q.replace('_', ' ')}</td><td>{proc.recoverability.favourable_at_start.episodes[q]}</td>{branch && <td>{bproc?.recoverability.favourable_at_start.episodes[q] ?? '-'}</td>}</tr>)}
+              </tbody></table>
+              <div className="eco-note">A lost opportunity is recoverable if access returns within the declared window of the denial, expired if the window closed first, unresolved if the periods ended first. Irreversibility is a setting (no window), not an assumption of the model: whether lost opportunities in fact return is read from the windows.</div>
+
+              <h3>Appeal</h3>
+              <table className="eco-table" data-testid="te-appeal"><tbody>
+                <tr><th /><th>baseline</th>{branch && <th>branch</th>}</tr>
+                <tr><td>procedure</td><td>{proc.appeal.exists ? `exists (${proc.appeal.access === 'score_gated' ? 'gated by the score' : 'open'})` : 'none'}</td>{branch && <td>{bproc ? (bproc.appeal.exists ? `exists (${bproc.appeal.access === 'score_gated' ? 'gated by the score' : 'open'})` : 'none') : '-'}</td>}</tr>
+                {APPEAL_STAGES.map((st) => <tr key={st}><td>{st.replace(/_/g, ' ')}</td><td>{proc.appeal.stages[st]} of {base.config.n}</td>{branch && <td>{bproc ? `${bproc.appeal.stages[st]} of ${branch.config.n}` : '-'}</td>}</tr>)}
+                <tr><td>blocked from filing by the score</td><td>{proc.appeal.blocked_subjects}</td>{branch && <td>{bproc?.appeal.blocked_subjects ?? '-'}</td>}</tr>
+                <tr><td>re-judged: corrected / upheld</td><td>{proc.appeal.rejudged_corrected} / {proc.appeal.rejudged_upheld}</td>{branch && <td>{bproc ? `${bproc.appeal.rejudged_corrected} / ${bproc.appeal.rejudged_upheld}` : '-'}</td>}</tr>
+                <tr><td>access at the end after a favourable re-judgement (a favourable subject, no constraint left)</td><td>{proc.appeal.relief_effective}</td>{branch && <td>{bproc?.appeal.relief_effective ?? '-'}</td>}</tr>
+              </tbody></table>
+              <div className="eco-note">That an appeal exists, that it is filed and that it gives relief are three different counts. The last row counts subjects who end with access after a re-judgement in their favour: it is an association, not an effect of the appeal (the same subject may have regained access anyway); the effect is read from the run without the appeal, in the saved experiment EXP-TE12.</div>
+            </>
+          )}
+
           <h3>Truth-error timeline of subject {k + 1}</h3>
           <ul className="eco-log" data-testid="te-timeline">{events.map((e, i) => <li key={i}><button className="eco-span" onClick={() => c.setT(e.t)}>t={e.t}</button> <b>{e.kind.replace(/_/g, ' ')}</b>: {e.label}</li>)}{!events.length && <li>no event for this subject</li>}</ul>
           {branch && <><h4>the branch</h4><ul className="eco-log" data-testid="te-timeline-branch">{branchEvents.map((e, i) => <li key={i}><button className="eco-span" onClick={() => c.setT(e.t)}>t={e.t}</button> <b>{e.kind.replace(/_/g, ' ')}</b>: {e.label}</li>)}{!branchEvents.length && <li>no event for this subject</li>}</ul></>}
@@ -131,6 +197,36 @@ export default function TruthErrorPane(c: TruthCtx) {
               </tbody></table>
               <div className="eco-note">{cmp.note}</div>
             </>
+          )}
+        </>
+      )}
+
+      <h3>Phase 2: correction, release, recoverability, appeals (saved results)</h3>
+      {!c.experiments2 && <div className="eco-note">The phase-2 results are not available on this server (run backend/scripts/truth_error_experiments.py).</div>}
+      {c.experiments2 && (
+        <>
+          <div className="eco-row"><label>experiment <select aria-label="phase 2 experiment" value={c.exp2Id} onChange={(e) => c.setExp2Id(e.target.value)}>{Object.values(c.experiments2).map((e) => <option key={e.id} value={e.id}>{e.id}: {e.title}</option>)}</select></label></div>
+          {exp2 && (
+            <div data-testid="te2-experiment">
+              <div className="eco-note"><b>Question:</b> {exp2.question} <b>Control:</b> {exp2.control}. <b>Seeds:</b> {exp2.seeds[0]}-{exp2.seeds.at(-1)}, replicated on {exp2.replication?.seeds[0]}-{exp2.replication?.seeds.at(-1)}. <b>Protocol:</b> {String(exp2.protocol.changed)}; protocol {exp2.protocol_digest.slice(0, 10)}.</div>
+              {exp2.contrasts && (
+                <table className="eco-table" data-testid="te2-contrasts"><tbody>
+                  <tr><th>contrast</th><th>outcome</th><th>mean ± se (seeds 1-20)</th><th>seeds 21-40</th><th>reading</th></tr>
+                  {exp2.contrasts.map((x, i) => <tr key={i}><td>{x.label}</td><td>{x.outcome.replace(/_/g, ' ')}</td><td>{n3(x.paired.mean)} ± {n3(x.paired.se)}</td><td>{n3(x.paired_seeds_21_40?.mean)} ± {n3(x.paired_seeds_21_40?.se)}</td><td><span className={`eco-chip verdict-${x.class === 'replicated' ? 'CHANGED' : 'UNCHANGED'}`}>{x.class}</span></td></tr>)}
+                </tbody></table>
+              )}
+              <table className="eco-table" data-testid="te2-arms"><tbody>
+                <tr><th>arm</th>{exp2.primary_outcomes.map((o) => <th key={o}>{o.replace(/_/g, ' ')}</th>)}<th /></tr>
+                {exp2.arms.map((a) => (
+                  <tr key={a.arm}><td>{a.arm}</td>{exp2.primary_outcomes.map((o) => { const m = a.mean[o]?.mean, d = a.paired_vs_control?.[o]; return <td key={o}>{n3(m)}{d?.detected ? ' *' : ''}</td>; })}
+                    <td><button disabled={c.busy} onClick={() => void c.loadArm(exp2.id, a.arm, a.arm === exp2.control ? 'base' : 'branch')}>{a.arm === exp2.control ? 'AS BASELINE' : 'AS BRANCH'}</button></td></tr>
+                ))}
+              </tbody></table>
+              {exp2.replication && <div className="eco-note" data-testid="te2-replication"><b>Replication of the paired differences from the control:</b> {Object.entries(exp2.replication.counts).map(([key, v]) => `${key}: ${v}`).join('; ')}. Replicated means detected (beyond two standard errors) in both seed lists with the same sign; set-dependent means in one only.</div>}
+              {exp2.questions && exp2.questions.length > 0 && <ul className="eco-log" data-testid="te2-questions">{exp2.questions.map((q) => <li key={q.id}><b>{q.id}</b> {q.question} <small>changed: {q.variable_changed}; held: {q.held}</small></li>)}</ul>}
+              <div className="eco-note" data-testid="te2-negatives"><b>Not detected (kept):</b> {exp2.negative_results.length ? exp2.negative_results.slice(0, 5).join('; ') : 'none of the primary outcomes'}{exp2.negative_results.length > 5 ? ` … (+${exp2.negative_results.length - 5})` : ''}</div>
+              <div className="eco-note">{exp2.limits}</div>
+            </div>
           )}
         </>
       )}

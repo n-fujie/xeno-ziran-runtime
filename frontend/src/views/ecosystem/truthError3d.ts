@@ -1,15 +1,21 @@
 import * as THREE from 'three';
-import { EDGES, NODES, nodeValue, type NodeId, type TERun } from './truthError';
+import { EDGES, NODES, PATHS, nodeValue, stepReached, type NodeId, type PathId, type TERun } from './truthError';
 
 // TRUTH-ERROR DYNAMICS in the 3D scene: the operational chain (subject -> sensors -> classifier / warrant -> acceptance -> score -> gates -> resources -> subject) as selectable objects. The brightness of every object is a
 // plain function of the engine's record of ONE sample subject at ONE period (``nodeValue``); the positions are SCHEMATIC layout coordinates, not physical ones. Each object carries two small markers, the baseline run's value
 // and the branch's, so that the two can be seen together. The pose frames are an abstract axis frame (three arrows), not a face: they show the reference pose and the pose a sensor measured, as rotations of that frame.
+// The four PATHS (judgement, effect, correction, subsequent) are drawn along the edges of the chain, one coloured line per step that is a transition on an edge, for the baseline and (a little below) the branch. A segment is lit
+// when that step holds for the selected subject at the selected period (``stepReached``: a variable or event the engine recorded); a segment that is not lit is dark. A line is never drawn for a step the model has no transition for.
 // SYNTHETIC only: no real person is represented.
 
 export interface TruthFrame { run: TERun; branch: TERun | null; k: number; t: number; selected: NodeId | null }
 export interface TruthLayer {
   group: THREE.Group; pickables: THREE.Mesh[]; meshOf(id: NodeId): THREE.Mesh; poseRef: THREE.Group; poseMeasured: THREE.Group; edgeLines: THREE.LineSegments; set(f: TruthFrame): void; dispose(): void;
+  pathLines: THREE.LineSegments; pathLinesBranch: THREE.LineSegments; pathSegments: PathSegment[];
 }
+export interface PathSegment { path: PathId; step: string; edge: [NodeId, NodeId] }
+export const PATH_COLORS: Record<PathId, number> = { judgement: 0xe0a030, effect: 0xd9534f, correction: 0x35b6a8, subsequent: 0x9b7fe0 };
+const DARK = new THREE.Color(0x23282e);
 
 const SHAPE: Record<string, () => THREE.BufferGeometry> = {
   state: () => new THREE.SphereGeometry(0.55, 20, 14), sensor: () => new THREE.ConeGeometry(0.5, 1.0, 16), rule: () => new THREE.OctahedronGeometry(0.62), institution: () => new THREE.BoxGeometry(0.95, 0.95, 0.95),
@@ -56,6 +62,21 @@ export function buildTruthLayer(parent: THREE.Object3D, centre: THREE.Vector3, s
   const eg = new THREE.BufferGeometry(); eg.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
   const em = new THREE.LineBasicMaterial({ color: 0x8a94a0, transparent: true, opacity: 0.55 }); owned.push(eg, em);
   const edgeLines = new THREE.LineSegments(eg, em); group.add(edgeLines);
+  // the four paths: one segment per step that is a transition on an edge, drawn beside the edge (offset by path) for the baseline and a little lower for the branch
+  const pathSegments: PathSegment[] = [], ppts: number[] = [], pBranch: number[] = [];
+  PATHS.forEach((p, pi) => p.steps.forEach((st) => {
+    if (!st.edge) return;
+    pathSegments.push({ path: p.id, step: st.id, edge: st.edge });
+    const a = meshes[st.edge[0]].position, b = meshes[st.edge[1]].position, z = (pi - 1.5) * 0.16;
+    ppts.push(a.x, a.y, a.z + z, b.x, b.y, b.z + z); pBranch.push(a.x, a.y - 0.2, a.z + z, b.x, b.y - 0.2, b.z + z);
+  }));
+  const mkLines = (pts: number[]): THREE.LineSegments => {
+    const g = new THREE.BufferGeometry(), m = new THREE.LineBasicMaterial({ vertexColors: true });
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3)); g.setAttribute('color', new THREE.Float32BufferAttribute(new Array(pts.length).fill(0.15), 3)); owned.push(g, m);
+    const l = new THREE.LineSegments(g, m); group.add(l); return l;
+  };
+  const pathLines = mkLines(ppts), pathLinesBranch = mkLines(pBranch);
+  pathLinesBranch.visible = false;
   // the pose frames, beside the subject: the reference (solid) and the measured (translucent)
   const poseRef = poseFrame(0xe8e8ee, 1, owned), poseMeasured = poseFrame(0xe0a030, 0.6, owned);
   poseRef.position.set(meshes.subject.position.x - 1.9, meshes.subject.position.y + 0.2, 0); poseMeasured.position.copy(poseRef.position); poseMeasured.scale.setScalar(1.12);
@@ -81,9 +102,19 @@ export function buildTruthLayer(parent: THREE.Object3D, centre: THREE.Vector3, s
       g.visible = true; g.rotation.set(rad(p[1] as number), rad(p[0] as number), rad(p[2] as number), 'YXZ');  // yaw about Y, pitch about X, roll about Z
     };
     e(poseRef, rec.pose_reference); e(poseMeasured, rec.pose_measured);
+    const paint = (lines: THREE.LineSegments, run: TERun | null): void => {
+      lines.visible = !!run; if (!run) return;
+      const col = lines.geometry.getAttribute('color') as THREE.BufferAttribute;
+      pathSegments.forEach((sg, i) => {
+        const step = PATHS.find((p) => p.id === sg.path)!.steps.find((x) => x.id === sg.step)!, c = stepReached(run, f.k, step, f.t) ? new THREE.Color(PATH_COLORS[sg.path]) : DARK;
+        col.setXYZ(i * 2, c.r, c.g, c.b); col.setXYZ(i * 2 + 1, c.r, c.g, c.b);
+      });
+      col.needsUpdate = true;
+    };
+    paint(pathLines, f.run); paint(pathLinesBranch, f.branch);
   };
   const dispose = (): void => { group.removeFromParent(); for (const o of owned) o.dispose(); for (const m of Object.values(meshes)) for (const c of m.children) ((c as THREE.Mesh).material as THREE.Material | undefined)?.dispose(); };
-  return { group, pickables, meshOf: (id) => meshes[id], poseRef, poseMeasured, edgeLines, set, dispose };
+  return { group, pickables, meshOf: (id) => meshes[id], poseRef, poseMeasured, edgeLines, set, dispose, pathLines, pathLinesBranch, pathSegments };
 }
 
 export const teNodeOf = (o: THREE.Object3D | undefined): NodeId | null => {

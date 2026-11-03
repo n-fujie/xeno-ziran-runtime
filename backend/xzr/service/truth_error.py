@@ -14,6 +14,7 @@ import numpy as np
 from fastapi import APIRouter, HTTPException, Request
 
 from ..truth_error import experiments as X
+from ..truth_error import experiments2 as X2
 from ..truth_error import institution as I  # noqa: E741
 from ..truth_error import pose as P
 from .studies import local_only
@@ -21,6 +22,11 @@ from .studies import local_only
 router = APIRouter(prefix="/api/truth-error")
 MAX_N, MAX_PERIODS = 300, 80
 SAVED = Path(__file__).resolve().parents[3] / "docs" / "truth_error" / "experiments.json"
+SAVED2 = Path(__file__).resolve().parents[3] / "docs" / "truth_error" / "experiments2.json"
+RELEASE_MODES = ("by_score", "after_approval", "never")
+APPEAL_ACCESS = ("open", "score_gated")
+_DELAYS = ("request_delay", "approval_delay", "score_delay", "release_delay", "review_delay", "propagation_delay")
+_PROBS = ("audit_sensitivity", "audit_false_rate", "appeal_filing_prob", "evidence_available_prob", "appeal_acceptance_prob")
 _CONFIG_FIELDS = {f.name for f in dataclasses.fields(I.Config)}
 _SENSOR_FIELDS = {f.name for f in dataclasses.fields(P.SensorConfig)}
 
@@ -70,7 +76,33 @@ def config_from(body: dict) -> I.Config:
         raise HTTPException(422, f"n is limited to 2..{MAX_N} and periods to 14..{MAX_PERIODS} on this API")
     if cfg.classifier not in I.CLASSIFIERS:
         raise HTTPException(422, f"classifier must be one of {I.CLASSIFIERS}")
+    _check_process(cfg)
     return cfg
+
+
+def _check_process(cfg: I.Config) -> None:
+    """the phase-2 settings: the process timing, the release rule, the appeal"""
+    isint = lambda v: isinstance(v, int) and not isinstance(v, bool)  # noqa: E731
+    if cfg.release_mode not in RELEASE_MODES:
+        raise HTTPException(422, f"release_mode must be one of {RELEASE_MODES}")
+    if cfg.appeal_access not in APPEAL_ACCESS:
+        raise HTTPException(422, f"appeal_access must be one of {APPEAL_ACCESS}")
+    if not isinstance(cfg.appeal, bool):
+        raise HTTPException(422, "appeal must be true or false")
+    if cfg.audit_every is not None and not (isint(cfg.audit_every) and 1 <= cfg.audit_every <= MAX_PERIODS):
+        raise HTTPException(422, f"audit_every must be null or an integer 1..{MAX_PERIODS}")
+    if cfg.opportunity_window is not None and not (isint(cfg.opportunity_window) and 0 <= cfg.opportunity_window <= MAX_PERIODS):
+        raise HTTPException(422, f"opportunity_window must be null or an integer 0..{MAX_PERIODS}")
+    for k in _DELAYS:
+        v = getattr(cfg, k)
+        if not (isint(v) and 0 <= v <= 200):
+            raise HTTPException(422, f"{k} must be an integer 0..200")
+    for k in _PROBS:
+        v = getattr(cfg, k)
+        if not (isinstance(v, int | float) and not isinstance(v, bool) and 0.0 <= v <= 1.0):
+            raise HTTPException(422, f"{k} must be a number 0..1")
+    if not (isinstance(cfg.appeal_min_score, int | float) and not isinstance(cfg.appeal_min_score, bool)):
+        raise HTTPException(422, "appeal_min_score must be a number")
 
 
 @router.get("/spec")
@@ -78,8 +110,17 @@ def spec(request: Request) -> dict:
     local_only(request)
     d = I.Config().asdict()
     return {
-        "engine": "truth_error/1",
+        "engine": "truth_error/2",
         "defaults": d,
+        "release_modes": list(RELEASE_MODES),
+        "appeal_access": list(APPEAL_ACCESS),
+        "phase2": {
+            "experiments": [{"id": k} for k in X2.REGISTRY2],
+            "primary_metrics": list(X2.PRIMARY2),
+            "metric_definitions": X2.METRICS,
+            "baseline": X2.P0.asdict(),
+            "parameter_ranges": {k: list(v) for k, v in X2.PARAMETER_RANGES.items()},
+        },
         "classifiers": list(I.CLASSIFIERS),
         "warrant_states": list(I.WARRANT),
         "axes": list(P.AXES),
@@ -94,7 +135,7 @@ def run(request: Request, body: dict[str, Any]) -> dict:
     local_only(request)
     try:
         return I.run(config_from(body))
-    except ValueError as exc:
+    except (ValueError, TypeError) as exc:
         raise HTTPException(422, str(exc)) from exc
 
 
@@ -133,3 +174,12 @@ def experiments(request: Request) -> dict:
             404, "the experiment results are not saved on this server: run backend/scripts/truth_error_experiments.py"
         )
     return json.loads(SAVED.read_text())
+
+
+@router.get("/experiments2")
+def experiments2(request: Request) -> dict:
+    """The saved phase-2 results (the correction process, release, recoverability, appeals, sensitivity)."""
+    local_only(request)
+    if not SAVED2.is_file():
+        raise HTTPException(404, "the phase-2 results are not saved on this server: run backend/scripts/truth_error_experiments.py")
+    return json.loads(SAVED2.read_text())

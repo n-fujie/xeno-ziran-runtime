@@ -110,6 +110,8 @@ def _run_experiment(spec: dict, seeds: tuple[int, ...] | None = None) -> dict:
         }
         if name != control:
             row["paired_vs_control"] = {k: _paired(vals[k], arms[control]["values"][k]) for k in outcomes}
+        if spec.get("keep_values"):
+            row["values"] = {k: vals[k] for k in outcomes}  # per seed, for contrasts between any two arms (phase 2)
         rows.append(row)
     primary = list(spec.get("primary", DEFAULT_PRIMARY))
     negatives = [
