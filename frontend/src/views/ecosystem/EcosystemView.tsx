@@ -28,7 +28,7 @@ import XenosciencePane from './XenosciencePane';
 import TruthErrorPane from './TruthErrorPane';
 import { buildTruthLayer, teNodeOf, type TruthLayer } from './truthError3d';
 import { teExperiments, teExperiments2, teRun, type TEExperiment, type TEOverrides } from './truthApi';
-import type { NodeId, TERun } from './truthError';
+import type { NodeId, RelationId, TERun } from './truthError';
 import type { RegimeSide } from './xenoscience';
 import { buildCouplingLayer, couplingOfObject, type CouplingLayer } from './couplings3d';
 import { buildObservationLayer, isFullObservation, rectFromCells, type ObservationLayer } from './observation3d';
@@ -95,7 +95,7 @@ export default function EcosystemView() {
   const okRun = useRef(false);
   const ILLUSTRATIVE: TEOverrides = { seed: 3, lock_after: 4, correct_at: 18, transfer_at: 12 };  // the baseline of the truth-error tab: illustrative values of a virtual institution
   const [teBase, setTeBase] = useState<TERun | null>(null), [teBranch, setTeBranch] = useState<TERun | null>(null);
-  const [teK, setTeK] = useState(0), [teT, setTeT] = useState(20), [teSel, setTeSel] = useState<NodeId | null>(null);
+  const [teK, setTeK] = useState(0), [teT, setTeT] = useState(20), [teSel, setTeSel] = useState<NodeId | null>(null), [teRel, setTeRel] = useState<RelationId | null>(null);
   const [teDraft, setTeDraft] = useState<TEOverrides>({}), [teBusy, setTeBusy] = useState(false), [teErr, setTeErr] = useState<string | null>(null);
   const [teExps, setTeExps] = useState<Record<string, TEExperiment> | null>(null), [teExpId, setTeExpId] = useState('EXP-TE02');
   const [teExps2, setTeExps2] = useState<Record<string, TEExperiment> | null>(null), [teExp2Id, setTeExp2Id] = useState('EXP-TE07-release');
@@ -578,7 +578,7 @@ export default function EcosystemView() {
     E.mega.arena.setFrame(f, fieldAt(fields, 'R', t), fieldAt(fields, 'M1', t), fieldAt(fields, 'M2', t));
     E.observation.set({ obs, overlay: display.observedCells && !isFullObservation(obs), pending: corner });
     E.truth.group.visible = !!teBase;
-    if (teBase) E.truth.set({ run: teBase, branch: teBranch, k: teK, t: teT, selected: teSel });
+    if (teBase) E.truth.set({ run: teBase, branch: teBranch, k: teK, t: teT, selected: teSel, relation: teRel });
     E.couplings.group.visible = display.couplings;
     E.couplings.set({ frame: f, states: couplingStates(rec, t), selected: sel?.kind === 'coupling' ? sel.id : null, isolated: display.isolate && sel?.kind === 'coupling' ? sel.id : null, exploded: display.exploded ? 1 : 0,
       baseline: display.ghost && branch ? baselinePositions(branch.base.record, t) : null });
@@ -597,7 +597,7 @@ export default function EcosystemView() {
     disposeGroup(E.overlays);
     E.overlays.add(...buildOverlays({ rec, t, arena: E.mega.arena, layers, ad, mfs: mfsRes, partitions: spec?.partitions ?? {}, selected: sel?.kind === 'entity' ? sel.name : null }).children.slice());
     E.simMs.push(performance.now() - t0); if (E.simMs.length > 120) E.simMs.shift();
-  }, [rec, fields, tick, layers, ad, mfsRes, spec, sel, obs, ready, out, sssRegion, display, branch, corner, teBase, teBranch, teK, teT, teSel]);
+  }, [rec, fields, tick, layers, ad, mfsRes, spec, sel, obs, ready, out, sssRegion, display, branch, corner, teBase, teBranch, teK, teT, teSel, teRel]);
   useEffect(() => { eng.current?.mega.trials.set(trials); }, [trials, ready]);
   useEffect(() => {
     const E = eng.current;
@@ -659,7 +659,7 @@ export default function EcosystemView() {
             runControlled, libraryOut, repairLib, repair, runRepair, initialRepair: plan.run.kind === 'repair' ? { stress: plan.run.repair.stress, controller: plan.run.repair.controller, actions: plan.run.repair.actions } : {}, initialRoute: plan.run.kind === 'route' ? { controller: plan.run.controller, scenario: plan.run.scenario } : undefined, initialMfs: { mfs: plan.run.kind === 'mfs' ? plan.run.mfs : undefined, experiment: plan.experiment ?? undefined, sssmap: plan.sssmap ?? undefined }, runMfs: runMfsConfig }} />}
           {tab === 'xenoscience' && <XenosciencePane {...{ rec, out, tick, setTick: (t: number) => { live.current.playhead = t; setTick(t); }, obs, entity: sel?.kind === 'entity' ? sel.name : null, sssClass: sssKey ? sssCache[sssKey] ?? null : null, pinned: pinnedRegime, setPinned: setPinnedRegime,
             coupling: sel?.kind === 'coupling' ? sel.id : null, selectCoupling: (id: CouplingId | null) => setSel(id ? { kind: 'coupling', id } : null), display, setDisplay, series, observeMode, setObserveMode: (m: 'region' | 'occluder' | null) => { setObserveMode(m); setCorner(null); }, corner, setObs, branch, playFrom: (t: number) => { live.current.playhead = t; setTick(t); setPlaying(true); }, verifyReplay: doReplay, requestHistoryOff, requestCut, restoreBaseline, clearBranch: () => setBranch(null), busy: !!busy, origin: originOf(replay) }} />}
-          {tab === 'truth' && <TruthErrorPane {...{ base: teBase, branch: teBranch, k: teK, setK: setTeK, t: teT, setT: setTeT, selected: teSel, select: setTeSel, draft: teDraft, setDraft: setTeDraft, busy: teBusy, err: teErr, runBase: truthActions.runBase, runBranch: truthActions.runBranch, clearBranch: () => setTeBranch(null), focus3d: truthActions.focus3d, experiments: teExps, expId: teExpId, setExpId: setTeExpId, experiments2: teExps2, exp2Id: teExp2Id, setExp2Id: setTeExp2Id, loadArm: truthActions.loadArm }} />}
+          {tab === 'truth' && <TruthErrorPane {...{ base: teBase, branch: teBranch, k: teK, setK: setTeK, t: teT, setT: setTeT, selected: teSel, select: setTeSel, relation: teRel, setRelation: setTeRel, draft: teDraft, setDraft: setTeDraft, busy: teBusy, err: teErr, runBase: truthActions.runBase, runBranch: truthActions.runBranch, clearBranch: () => setTeBranch(null), focus3d: truthActions.focus3d, experiments: teExps, expId: teExpId, setExpId: setTeExpId, experiments2: teExps2, exp2Id: teExp2Id, setExp2Id: setTeExp2Id, loadArm: truthActions.loadArm }} />}
           {tab === 'inspect' && rec && <InspectPane rec={rec} tick={tick} sel={sel} setSel={setSel} ad={ad} mfs={mfsRes} trials={trials} />}
           {tab === 'reductions' && <ReductionsPane {...{ spec, abl, mfsRes, bnd, hist, sss, addr, runAblation, runMfs, runBoundary, runHistory, runSss, runAddr, busy }} />}
           {tab === 'technical' && <div className="eco-note">The technical inspection sheet is shown over the stage: orthographic drawings of the selected body's real geometry in the pose the run gives at the current tick, a probe detail, measured dimensions, component identifiers, cable routing and the state read from the run. Use the playhead to move through the run.</div>}

@@ -456,3 +456,119 @@ All replicated except where marked. The ad hoc figure (-1.165) agrees with the s
 * **Brassier's critique of Badiou's political philosophy.** The lecture transcript that is to be provided separately has **not** been provided and is not on the machine (checked 2026-11-04). Until it is, nothing about it is asserted. Protocol for when it arrives, fixed now: (1) the transcript is a *record of speech* (possible transcription errors, no pagination, unknown revision by the speaker) and is kept apart from the *confirmed source text* (a published, paginated text) and from *secondary accounts* (the Valverde review); (2) a quotation is recorded with its status, *transcript-only*, *matched to the published text at page N*, or *unmatched*, and **no quotation is treated as settled while it is transcript-only**; (3) the argument is reconstructed from the transcript as the speaker's claim, then checked against Brassier's published essays (the 2000 *Pli* essay on the dice-throw, read in full; the 2006 *Continental Philosophy Review* article on presentation, abstract only) and against the text of Badiou he cites; (4) a philosophical concept is **not** assigned to a model variable mechanically: a candidate correspondence is stated with the rule it would have to satisfy and is marked *analogy*, *structural homology* or *not established*, as in 12.2 and 12.4.
 
 Checks for sections 12.6-12.7 (2026-11-04): backend whole suite alone **1192 passed, 3 skipped** (1187 before: +5 tests); frontend whole suite alone **546 tests: 545 passed, 1 skipped**, 0 failed; ruff, mypy (221 files), eslint, `tsc -b` clean; the static and Web-runtime builds contain no truth-error code. Not pushed, not deployed.
+
+## 13. Phase 4: operational correctness, institutional consequences and minimum guarantees (2026-11-04)
+
+Everything earlier (TE01-TE16, the 3D research environment, the results, the negative results, the tests) is kept; the new settings default to the earlier behaviour (a test re-runs every saved arm of phases 1 and 2 and compares its digest). Everything is synthetic. The guarantee and support conditions below are **hypothetical research conditions of a synthetic institution**, not procedures for judging any real person.
+
+### 13.1 The existing research assets, rechecked
+
+Searched again (new files since 3 Nov, names and text of the unretrieved works): no new file, no transcript, no manuscript carrying the names below. Recorded as **not retrieved in the searchable range** (not as non-existent): Xenoscience "R78" (the latest Xenoscience file found is the 22 Oct 2026 revision), Gaisho / 概象 operational shapes (one mention as a ZCA layer name, no definition), 正誤的作動形状, 信用スコア作動形状浸透循環論, Operational Nihilism. The AI-law operational-shape-realism R2 (31 Oct 2026) is the latest **of the AI-law line only**, not of operational-shape realism as a whole. Read for this phase, in addition to section 12: the definitions of guarantees 2, 13, 14 and 15 in the Minimum Guarantees V3.0 (100-point edition) itself. They are **functions without numeric levels**: G2 no score may reduce the availability of the other guarantees (so an appeal may not be gated by the score: the existing `appeal_access` open/gated); G13 timely suspension pending review without a favourable score as a condition (modelled here as `interim_access`); G14 expiry, reassessment and an audit of the feedback loops (`score_expiry`, the complementary metrics); G15 effective re-entry and restoration, with **G15A "minimum resources" meaning the resources needed to use the procedure** (time, information, language, representation: the model's appeal effort and evidence, `appeal_filing_prob`, `evidence_available_prob`), **not a material allocation that keeps the subject's state.** So a resource floor, a cap on a run of denials, support and recovery support are **new hypothetical control conditions**, not implementations of the theory; no number is theirs.
+
+### 13.2 EXP-TE16 reproduced, with the statistical unit stated
+
+One run is one unit (the mean over the ~60 subjects not favourable at the start); paired over seeds 1-20 (n = 20), the same seed in both arms; subjects are never counted as units (the ad hoc figure of section 12.6 counted 125 of them). Standard error = SD / sqrt(20); 95 % interval from the t distribution with 19 degrees of freedom. `experiments2.paired_summary` computes it from the per-seed values saved in `experiments2.json`; a test recomputes every row.
+
+| Contrast (change of the real state z, not favourable at the start unless stated) | mean | SD | SE | 95 % CI | seeds 21-40 |
+|---|---|---|---|---|---|
+| accurate score minus lottery | -1.134 | 0.141 | 0.031 | [-1.200, -1.068] | -1.104 ± 0.028 |
+| accurate score minus full access | -2.290 | 0.023 | 0.005 | [-2.300, -2.279] | -2.271 ± 0.009 |
+| gap between the groups (accurate score minus lottery) | +2.305 | 0.188 | 0.042 | [+2.217, +2.393] | +2.268 ± 0.045 |
+| denied subjects only (accurate score minus lottery) | -0.008 | 0.020 | 0.004 | [-0.017, +0.001] | +0.017 ± 0.009 (not detected) |
+| beta 0 (no feedback) minus lottery | +0.004 | 0.134 | 0.030 | [-0.059, +0.067] | +0.015 ± 0.029 |
+| beta 0.03 / 0.06 / 0.12 minus lottery | -0.566 / -1.134 / -2.264 | | 0.030 / 0.031 / 0.035 | | |
+
+(The levels at beta 0.03 / 0.06 / 0.12 are -0.57 / -1.14 / -2.27.) **By construction and identified.** By construction: the change of state of a subject denied in every period is beta x the sum of (resources - 0.5) = -0.06 x 19.2 = **-1.152**, and +1.152 if granted in every period (`resource_path_change`; the lottery arm's denied subjects give -1.143, full access +1.153; the noise has mean zero). Hence beta 0 gives 0, the effect is proportional to beta, and "the correctly denied are not worse off than the randomly denied" is the same number on both sides. What the experiment identified is **who is denied** under each rule (the shares of denial), which the constants do not fix: the accurate score denies 99 % of the not favourable against 50 % under the lottery, so the mean difference is about -2.3 x 0.49 = -1.13.
+
+### 13.3 The fourteen operations, kept distinct
+
+| Operation | Model variable or rule | Where recorded |
+|---|---|---|
+| 1 real state of the subject | the reference state z and the verification label (z > 0) | `reference_z`, `verification_label` (REFERENCE) |
+| 2 record of the instrument | the signal and pose measurements with conditions and failure kinds | `signal_measured`, `pose_measured` (OBSERVED) |
+| 3 estimation, classification | the rule on the window of the record | `classification` (CLASSIFIED) |
+| 4 accuracy of the classification | agreement with the label | `classification_correct` (REFERENCE) |
+| 5 evidential support of the proposition | the posterior with the declared noise | `p_positive`, `warrant` (INFERRED) |
+| 6 adoption by the institution | acceptance rule (confidence, optionally the warrant) | `accepted`, event `adopted` |
+| 7 generation of the score | update from adopted classifications | `score` |
+| 8 institutional constraint | binding after consecutive denials | `locked` |
+| 9 effect on resources and access | gate, then allocation | `access`, `resources`, `opportunities_lost` |
+| 10 later change of the subject's state | beta x (resources - 0.5) plus noise | the next `reference_z` |
+| 11 correction | retraction or approval, score update | events `approved`, `score_updated` |
+| 12 release of the constraint | its own rule and time | event `released` |
+| 13 effective recovery | access again after the approval, the recoverability accounting | event `restored`, `process.recoverability` |
+| 14 re-entry of the history | the score and the resources carry it; nothing else does | `score`, `resources`, the lock |
+
+None is assumed identical to another: each has its own record, and the experiments intervene on them separately. **The causal structure the transition rules implement** (reconstructed from the code of one period): reference state -> sensors (noise, bias, occlusion) -> window -> classification -> adoption -> score -> gate (threshold, lock, hypothetical guarantees) -> access -> resources (gain, loss, floor, support) -> the next reference state (only through beta) -> the next observation. It follows that **with beta 0 no setting of the observation, the classifier, the threshold or a guarantee can change a subject's state** (tested: the target-state digest is identical across eight such interventions and differs at beta 0.06). Interventions are the researcher's changes of one declared setting with shared initial conditions and random draws; an observed correlation in one run is not read as an effect, and every effect below is a paired difference of such interventions. No extrapolation to any real institution is made.
+
+### 13.4 P1, P2, P3 (EXP-TE17; 26 arms; the factors and metrics were fixed in the code before the run)
+
+* **P1: the accuracy of a classification does not guarantee the legitimacy of its institutional effect.** What the model measures is the *consequence*; it does **not** measure legitimacy, and no normative judgement is made. With the classifier correct (noise 0.05, `classification_correct` 1.000) the consequences are large (not favourable group: -2.290 against full access, gap +2.27, denial 99 %), and **they are set by other settings at the same accuracy**: the change of state of the not favourable runs from 0.00 (beta 0) to -1.14 (0.06) to -2.27 (0.12). Accuracy underdetermines the consequence in the model (a statement about the model's mechanisms, partly by construction).
+* **P2: an institutional disadvantage without classification error.** With the classifier correct (99.0 % at beta 0), the not favourable are denied 97 % of the late periods and their resources end at 0.03, without any feedback (against 0 % and 1.0 under full access): the denial and the loss of resources follow from the gate's rule applied to correct classifications (by construction). The change of **state** needs the feedback (accurate, beta 0 minus lottery: +0.004 ± 0.030, not detected; with beta 0.06: -1.134). So both conditions are compared and the dependence is the one the rules fix.
+* **P3: improving the accuracy changes the distribution of the disadvantage** (noise 0.8 to 0.05; every contrast replicated on seeds 21-40): denial of the favourable -0.081 ± 0.009, denial of the not favourable +0.039 ± 0.006, change of state of the not favourable -0.132 ± 0.012, of the favourable +0.219, the gap +0.351 ± 0.024: **the harm moves from the favourable subjects who were wrongly denied to the not favourable who are rightly denied.** The factors separated: the classifier (above); the allocation (gain = loss 0.06 / 0.24: the state change of the not favourable -0.95 / -1.04 against -1.005, a small change); the denial rule (threshold -0.2 / +0.2: -0.93 / -1.05; no binding constraint -0.975); the initial state (z_shift -0.5 / +0.5: -1.016 / -0.905; initial resources 0.8: -0.877); the feedback (beta 0 / 0.12: 0.00 / -1.96). The interaction accuracy x feedback equals the whole effect of the accuracy on the state (-0.132 ± 0.012: at beta 0 accuracy changes no state); accuracy x threshold, x constraint and x allocation are small (|interaction| below 0.05 on the not favourable's state; the allocation one not detected).
+* **Manufactured accuracy.** The same classifier is measured as more accurate when the institution acts: `classification_correct` is 0.984 under the score at beta 0.06 against 0.880 at beta 0 (0.918 under the lottery), because the denials and grants push the subjects away from the boundary and the verification label is read at the end. Protecting the states lowers it again (support to the denied 0.12: 0.954). The accuracy reported after an institutional action is partly produced by that action (DDAT's 21.4 in the model's terms).
+
+### 13.5 The hypothetical minimum guarantees and support (EXP-TE18; 28 arms, on a noisy and an accurate classifier)
+
+The six conditions of the directive and what implements each (all new, default off): **minimum resource allocation** = `resource_floor`; **minimum access guarantee / conditional access** = `denial_cap` (access after a run of consecutive denials); **cap on the accumulation of a denial** = `denial_cap` (the same mechanism, read as a cap); **access kept until the correction** = `interim_access` (from an audit finding to its approval, or while an accepted appeal awaits re-judgement); **recovery support after a release** = `release_support`; **no refusal of an appeal because of the score** = the existing `appeal_access` (TE12). Support to the denied or to the low-score subjects (`support_rule`, `support_amount`, `support_capacity`) is the additional measure. Results (change of the real state of the not favourable group, paired difference from the arm's own control; seeds 1-20, replicated on 21-40 unless marked):
+
+| Condition | noisy classifier | accurate classifier | cost (resources per subject) | note |
+|---|---|---|---|---|
+| resource floor 0.3 | +0.648 ± 0.005 | +0.673 ± 0.002 | 0 | the state improves; the gap narrows (-0.55 / -0.67); for the accurate classifier **the denial of the not favourable does not change** (-0.001, not detected) |
+| denial cap 3 / 6 | +0.159 / +0.042 | +0.090 / +0.037 | 0 | little: the access is intermittent; denial of the not favourable falls 0.955 to 0.662 (cap 3) |
+| support to the denied 0.06 / 0.12 | +0.234 / +1.296 | +0.180 / +1.174 | 1.2 / 2.1-2.3 | support equal to the loss (0.12) removes the fall; half of it removes about a fifth |
+| support to the low score 0.12 (no limit / capacity 25 % / 10 %) | +1.195 / +0.188 / +0.069 | +1.158 / +0.185 / +0.069 | 2.1-2.3 / 1.2 / 0.48 | **the capacity makes it nearly useless at 10 %**: the cost falls and the improvement with it |
+| floor 0.3 + cap 6 + support 0.06 (a combination: to read the interaction) | +0.930 | +0.927 | 1.1-1.2 | |
+| access kept pending the correction (with the process) | +0.107 | +0.084 | 0 | the favourable gain more (+0.19) in the noisy case |
+| recovery support 0.3 after the release (with the process) | +0.104 (gap not detected) | +0.100 | 0 | |
+| the two process guarantees together | +0.159 | +0.144 | 0 | **sub-additive**: the interaction is -0.052 / -0.040 (they substitute) |
+
+**Where it does not improve, what it costs, what it does to others.** Not improving or not identified: the gap under recovery support for the noisy classifier (not detected); a cap of 6 (+0.04); the denial under a floor for the accurate classifier (not detected); a capacity of 10 % (+0.07); the denial rate of the not favourable for the accurate classifier is unchanged by a floor (-0.001), by support to the denied 0.06 (-0.001), by a capacity-limited support (0.000) and by recovery support (0.000), and falls only a little under support 0.12 (-0.048 / -0.031) and access pending a correction (-0.030); the cap is the one condition that changes it (cap 3: -0.298, cap 6: -0.100), because it grants access by rule. **Costs and constraints:** the support is paid in resources, and a capacity bounds both the cost and the effect (`capacity_binding_periods` is reported). **Side effects:** protecting the states lowers the measured accuracy of the same classifier (noisy: 0.984 to 0.954 under support to the denied 0.12; to 0.967 under a floor), which is the manufactured accuracy of 13.4, not a worse classifier; the guarantees helped the favourable group too in the noisy case (their state change +0.10 to +0.20), because fewer of them are wrongly denied. **Accurate classification and the identification of recipients, measured separately:** the share of the support that reaches the not favourable (precision) is 0.995 with the accurate classifier against 0.942 with the noisy one; the support cost is the same; yet the state change of the not favourable under the same support is **lower** with the accurate classifier (+0.021 against +0.190 at support 0.12 to the low score), because the accurate classifier also denies nearly all of them in the first place (denial 0.994 against 0.955), so what it gains in identification it takes back in denial. Classification accuracy, the allocation of the support and the improvement of the real state are three different measures and they do not move together.
+
+### 13.6 The responses of the institution
+
+| Response | In the engine | Status |
+|---|---|---|
+| denial | the gate | existing |
+| access kept; conditional access | `interim_access`; `denial_cap` | **added**, default off |
+| resource guarantee | `resource_floor` | **added** |
+| additional support | `support_rule` / `support_amount` / `support_capacity` | **added** |
+| suspension of the judgement | `requires_warrant` (adopt only what the evidence supports) | existing; **not re-tested here** |
+| correction; release; recovery measure | the process; the release rules; `release_support` | existing; `release_support` added |
+
+The existing transition rules were not changed; each addition is an intervention that can be switched off, applied after the gate (access) or after the allocation (resources), and recorded apart (`guarantee_access`, `support` in the records; `process.guarantee` and the complement for the metrics).
+
+### 13.7 The 3D research environment
+
+The chain has a node for the hypothetical guarantee (edges to the gate and to the resources) and the pane offers **seven relations to select and compare**: sensor and subject; classifier and the observation record; score and the institutional judgement; judgement and the allocation of resources; allocation and the subject's state; correction and the release of a constraint; guarantee and the subsequent possibility. The selected relation is drawn in front of the chain and **coloured by the engine's own record at that subject and period**: green where the record satisfies the model's transition rule (access = gate or guarantee; resources = the allocation rule; change of state = beta x (resources - 0.5) + noise; classification = the rule on the recorded window; no release before its approval), red where it does not, white where there is no identity (a drawn sensor error) or it cannot be checked. A baseline and a branch (same subject, same seed) are shown side by side with the change of configuration listed first. The states are kept apart by their kind: REFERENCE (the state and the label, held by the evaluator), OBSERVED (the instrument's record), INFERRED (the posterior), CLASSIFIED, INSTITUTIONAL, and UNRESOLVED (not recorded in an older run, or nothing obtained). **The display equals the engine output:** the checks hold at every subject and period of the five saved runs (hundreds of periods per relation) and are contradicted when a record is altered (tests). The check found a real discrepancy during the work: the display computed the allocation with the support added before the clipping while the engine clips first and adds the support afterwards; the display was corrected. A line is a relation of the model's variables and **does not show that one thing causes another**: that is read from the interventions of EXP-TE07 to TE18.
+
+### 13.8 Badiou and Brassier against the model (sources as in 12.4 and 12.7; the 1985 text and any transcript still not obtained)
+
+| Term | What the sources read say | The model | Status |
+|---|---|---|---|
+| logical prohibition | not in the review (Valverde) nor in Brassier's essay | `rule_forbidden`: a rule the institution declares (its own definition) | **not established** |
+| historical impossibility | the review reports an "unrepresentable point" that the dialectic reaches; no source read states a prohibition/impossibility distinction | `institutionally_impossible` (a constraint), its own definition | **not established** |
+| representation | Brassier (2000): the state of the situation re-presents (counts) the subsets, an excess that cannot be measured; the review: political philosophy asks who is represented and counted | the classification and score are the institution's record of subjects: a *structural analogy*; the model has **no unmeasurable excess** (the record is a function of the measurement) | analogy only |
+| intervention | Brassier (2000): a subjective, collective decision on the undecidable; the review: politics intervenes in a contingent history | correction, appeal and guarantees are administrative acts; the researcher's *intervention* on a setting is the third, interventionist sense: **three different senses** | not corresponding |
+| truth-procedure | Brassier (2000): politics as a generic truth-procedure | none: the model's "truth" is the verification label, a proposition about the reference state, and the warrant is evidential support | not corresponding |
+| social determination | not found in the sources read | the feedback of resources on the state | no source: **not assessed** |
+| institutional classification and exclusion | the State's counting (Brassier, review) | direct: classification, denial, lock | the model's own object; correspondence **not established** |
+
+The formal, ontological argument of Badiou (as reported) does not predict anything about a finite model, and the model's results are about its declared constants: neither confirms nor refutes the other. Brassier's critique of the unlocalised Capital has no counterpart. **Not read: the 1985 text, the 2019 translation's body, and Brassier's critique of Badiou's political philosophy in any text beyond the 2000 essay; no transcript has been provided.** Nothing is asserted about them, and no concept was assigned to a variable.
+
+### 13.9 Limits and unresolved
+
+The institution can only deny, support or keep access: no diagnostic use, no reviewer with authority, no cost to anyone but the support budget, no multiple institutions beyond A and B; the guarantee numbers are arbitrary research values; every state effect is proportional to the declared beta; the classifications are checked against the label read at the end (13.4); the P1 legitimacy question is not measurable here; the retrieval of the manuscripts named in 13.1 is incomplete.
+
+### 13.10 Regression and verification (2026-11-04, this Mac)
+
+| Check | Result |
+|---|---|
+| Backend, whole suite alone (25 min 44 s) | **1201 passed, 3 skipped** (1192 before; +9 tests) |
+| Frontend, whole suite alone | **558 tests: 557 passed, 1 skipped**, 0 failed (546 before; +12) |
+| `ruff`, `mypy` (221 files), `eslint`, `tsc -b` | clean |
+| `vite build` with `VITE_STATIC=1` and `VITE_WEBRT=1` | no truth-error code or text |
+| Earlier results | every saved arm of phases 1 and 2 reproduces its digest with the new settings at their defaults (tests) |
+| Real screen (preview server restarted; TRUTH-ERROR tab; baseline, then a branch with a floor 0.3, a cap of 3 and support to the low score with capacity 25 %; relation "judgement and the allocation of resources") | the changes are listed first; for sample subject 3 the relation shows resources 0.000 in the baseline and 0.680 in the branch with the support 0.100 received, and the allocation rule holds in both against the record |
+
+Not pushed, not deployed. TO-C1 remains SOURCE_MISSING; PR #3 remains conflicting (unchanged).

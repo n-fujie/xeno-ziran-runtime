@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { ADDRESS_STATES, APPEAL_STAGES, COMPLEMENT_METRIC_IDS, MODALITIES, NODES, PATHS, addressStatesAt, compareRuns, comparePaths, eventTable, fieldsAt, modalityCounts, nodeReadings, timelineEvents, type NodeId, type Reading, type TERun } from './truthError';
+import { ADDRESS_STATES, APPEAL_STAGES, COMPLEMENT_METRIC_IDS, MODALITIES, NODES, PATHS, RELATIONS, addressStatesAt, compareRelation, compareRuns, comparePaths, eventTable, fieldsAt, modalityCounts, nodeReadings, timelineEvents, type NodeId, type Reading, type RelationId, type TERun } from './truthError';
 import type { TEExperiment, TEOverrides } from './truthApi';
 
 // TRUTH-ERROR DYNAMICS — a research tab of the XENO ECOSYSTEM view. It runs a SYNTHETIC virtual institution (backend/xzr/truth_error) and reads the run: nothing here classifies, scores or simulates, and every value is
@@ -7,7 +7,7 @@ import type { TEExperiment, TEOverrides } from './truthApi';
 // (measurement, classification, warrant, acceptance, score, access, resources, correction) are shown as separate records and are never reduced to one right/wrong variable.
 
 export interface TruthCtx {
-  base: TERun | null; branch: TERun | null; k: number; setK: (k: number) => void; t: number; setT: (t: number) => void; selected: NodeId | null; select: (id: NodeId | null) => void;
+  base: TERun | null; branch: TERun | null; k: number; setK: (k: number) => void; t: number; setT: (t: number) => void; selected: NodeId | null; select: (id: NodeId | null) => void; relation: RelationId | null; setRelation: (id: RelationId | null) => void;
   draft: TEOverrides; setDraft: (d: TEOverrides) => void; busy: boolean; err: string | null; runBase: () => Promise<void>; runBranch: () => Promise<void>; clearBranch: () => void; focus3d: () => void;
   experiments: Record<string, TEExperiment> | null; expId: string; setExpId: (id: string) => void; experiments2: Record<string, TEExperiment> | null; exp2Id: string; setExp2Id: (id: string) => void; loadArm: (expId: string, arm: string, as: 'base' | 'branch') => Promise<void>;
 }
@@ -86,6 +86,17 @@ export default function TruthErrorPane(c: TruthCtx) {
         <label>opportunity window <select value={String(c.draft.opportunity_window ?? 'none')} onChange={(e) => set({ opportunity_window: e.target.value === 'none' ? null : Number(e.target.value) })}>{['none', '2', '6', '12'].map((x) => <option key={x}>{x}</option>)}</select></label>
       </div>
       <div className="eco-note">The correction process is the audit, the request, the approval, the score update and the release, each at its own time; the correction time (approval delay) and the release time (release delay) are set apart. The appeal gated by the score is a hypothetical control for studying institutional design danger: it is not a procedure for judging any real person.</div>
+      <div className="eco-row" data-testid="te-guarantee-controls" role="group" aria-label="hypothetical guarantee and support conditions">
+        <label>resource floor <select value={String(c.draft.resource_floor ?? 0)} onChange={(e) => set({ resource_floor: Number(e.target.value) })}>{['0', '0.15', '0.3'].map((x) => <option key={x}>{x}</option>)}</select></label>
+        <label>cap on a run of denials <select value={String(c.draft.denial_cap ?? 'none')} onChange={(e) => set({ denial_cap: e.target.value === 'none' ? null : Number(e.target.value) })}>{['none', '3', '6'].map((x) => <option key={x}>{x}</option>)}</select></label>
+        <label>access kept pending a correction <select value={c.draft.interim_access ? 'yes' : 'no'} onChange={(e) => set({ interim_access: e.target.value === 'yes' })}><option>no</option><option>yes</option></select></label>
+        <label>recovery support after a release <select value={String(c.draft.release_support ?? 0)} onChange={(e) => set({ release_support: Number(e.target.value) })}>{['0', '0.15', '0.3'].map((x) => <option key={x}>{x}</option>)}</select></label>
+        <label>support to <select value={c.draft.support_rule ?? 'none'} onChange={(e) => set({ support_rule: e.target.value })}>{['none', 'denied', 'low_score'].map((x) => <option key={x}>{x}</option>)}</select></label>
+        <label>support amount <select value={String(c.draft.support_amount ?? 0.1)} onChange={(e) => set({ support_amount: Number(e.target.value) })}>{['0.06', '0.1', '0.12'].map((x) => <option key={x}>{x}</option>)}</select></label>
+        <label>support capacity <select value={String(c.draft.support_capacity ?? 'none')} onChange={(e) => set({ support_capacity: e.target.value === 'none' ? null : Number(e.target.value) })}>{['none', '0.1', '0.25'].map((x) => <option key={x}>{x}</option>)}</select></label>
+        <label>classifier accuracy (signal noise) <select value={String(c.draft.signal_sensor?.noise_sigma ?? 0.8)} onChange={(e) => c.setDraft({ ...c.draft, signal_sensor: { ...c.draft.signal_sensor, noise_sigma: Number(e.target.value) } })}>{['0.05', '0.4', '0.8', '1.6'].map((x) => <option key={x}>{x}</option>)}</select></label>
+      </div>
+      <div className="eco-note">These guarantee and support conditions are HYPOTHETICAL research conditions of the synthetic institution. The manuscripts' guarantees (Minimum Guarantees V3.0, G2, G13, G14, G15) are functions without numeric levels, so no number here is theirs; none is a procedure for judging any real person. Whether a condition helps is the question: it is read against the baseline, with its cost.</div>
       <div className="eco-row">
         <button disabled={c.busy} onClick={() => void c.runBase()}>RUN BASELINE</button>
         <button disabled={c.busy || !base} onClick={() => void c.runBranch()} title="the baseline with the settings above applied">RUN BRANCH (SETTINGS ABOVE)</button>
@@ -101,6 +112,25 @@ export default function TruthErrorPane(c: TruthCtx) {
             <label>period <input type="range" min={0} max={periods - 1} value={t} onChange={(e) => c.setT(Number(e.target.value))} aria-label="period" /> <span>{t}</span></label>
           </div>
           <div className="eco-note">Subject {k + 1} of {base.records.length} kept in full, at period {t}. Run {base.result_digest.slice(0, 10)}{branch ? `; branch ${branch.result_digest.slice(0, 10)}` : ''}.</div>
+
+          <h3>Relations (select one: it is drawn in the scene)</h3>
+          <div className="eco-row" data-testid="te-relation-select" role="group" aria-label="relation">
+            {RELATIONS.map((r) => <button key={r.id} className={c.relation === r.id ? 'sel' : undefined} aria-pressed={c.relation === r.id} onClick={() => c.setRelation(c.relation === r.id ? null : r.id)}>{r.label}</button>)}
+          </div>
+          {c.relation && (() => {
+            const rr = compareRelation(base, branch, k, t, c.relation), cell = (x: Reading[]) => x.map((y, i) => <div key={i}>{chip(y.epistemic)} {y.label}: {y.value}</div>);
+            const chk = (x: typeof rr.base) => (x.check.holds === null ? 'no identity to check here' : x.check.holds ? 'holds' : 'DOES NOT HOLD');
+            return (
+              <table className="eco-table" data-testid="te-relation"><tbody>
+                <tr><th /><th>baseline</th>{rr.branch && <th>branch</th>}</tr>
+                <tr><td>from</td><td>{cell(rr.base.from)}</td>{rr.branch && <td>{cell(rr.branch.from)}</td>}</tr>
+                <tr><td>the model's rule</td><td colSpan={rr.branch ? 2 : 1}><small>{rr.base.rule}</small></td></tr>
+                <tr><td>to</td><td>{cell(rr.base.to)}</td>{rr.branch && <td>{cell(rr.branch.to)}</td>}</tr>
+                <tr><td>checked against the record</td><td>{rr.base.check.name}: <b>{chk(rr.base)}</b> <small>({rr.base.check.detail})</small></td>{rr.branch && <td><b>{chk(rr.branch)}</b> <small>({rr.branch.check.detail})</small></td>}</tr>
+              </tbody></table>
+            );
+          })()}
+          <div className="eco-note">The line in the scene is green where the engine's own record satisfies the model's transition rule at this period, red where it does not, white where the relation is not an identity (a drawn error) or cannot be checked. A line is a relation of the model's variables; it does not show that one thing causes another: that is read from the interventions in the saved experiments (EXP-TE07 to TE18), with the reference states (REFERENCE), the observed, the inferred and the unresolved kept apart by the chips.</div>
 
           <h3>The chain</h3>
           <table className="eco-table" data-testid="te-chain"><tbody>

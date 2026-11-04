@@ -111,6 +111,30 @@ def complement_outputs(ah, ev, z0, z_end, resources_end) -> dict:
     }
 
 
+# metrics of the HYPOTHETICAL guarantee and support conditions (phase 4)
+GUARANTEE_METRICS: dict[str, dict[str, str]] = {
+    "guarantee_access_periods_per_subject": {"denominator": "all subjects", "period": "all periods", "unit": "periods in which a hypothetical guarantee granted access the gate had denied; mean per run"},
+    "support_units_per_subject": {"denominator": "all subjects", "period": "all periods", "unit": "resources the support rule gave, summed over periods; mean per run: the COST of the support in the units of resources"},
+    "support_share_to_unfav": {"denominator": "the support given", "period": "all periods", "unit": "share of the support units that went to subjects not favourable at the start (z0<=0): the precision of the recipients' identification; None if no support was given"},
+    "support_per_unfav": {"denominator": "subjects not favourable at the start (z0<=0)", "period": "all periods", "unit": "support units per subject"},
+    "support_per_fav": {"denominator": "subjects favourable at the start (z0>0)", "period": "all periods", "unit": "support units per subject (support that reached the favourable)"},
+    "capacity_binding_periods": {"denominator": "the periods", "period": "all periods", "unit": "number of periods in which the support capacity left targeted subjects unserved"},
+}
+
+
+def guarantee_outputs(z0, guard_periods, support_units, capacity_binding) -> dict:
+    un, fv = z0 <= 0, z0 > 0
+    tot = float(support_units.sum())
+    return {
+        "guarantee_access_periods_per_subject": float(guard_periods.mean()),
+        "support_units_per_subject": float(support_units.mean()),
+        "support_share_to_unfav": float(support_units[un].sum() / tot) if tot > 0 else None,
+        "support_per_unfav": float(support_units[un].mean()) if un.any() else None,
+        "support_per_fav": float(support_units[fv].mean()) if fv.any() else None,
+        "capacity_binding_periods": float(capacity_binding),
+    }
+
+
 def _events_block(ev: dict[str, np.ndarray]) -> dict:
     out: dict[str, dict] = {}
     for k in EVENTS:
@@ -162,7 +186,7 @@ def recoverability(access: np.ndarray, window: int | None) -> dict:
     return {"window": window, "periods": periods, "episodes": episodes}
 
 
-def process_outputs(cfg, ev, ap, ap_blocked, ap_outcome, false_detect, ah, fav0, fav_end, locked_end, denied_at_approval, access_b_end, z0=None, z_end=None, resources_end=None) -> dict:
+def process_outputs(cfg, ev, ap, ap_blocked, ap_outcome, false_detect, ah, fav0, fav_end, locked_end, denied_at_approval, access_b_end, z0=None, z_end=None, resources_end=None, guard_periods=None, support_units=None, capacity_binding=0) -> dict:
     ah = np.asarray(ah, dtype=bool)  # (periods, subjects)
     T, n = ah.shape
     nf = max(1, int(fav0.sum()))
@@ -204,6 +228,8 @@ def process_outputs(cfg, ev, ap, ap_blocked, ap_outcome, false_detect, ah, fav0,
         "metric_definitions": METRICS,
         "complement": complement_outputs(ah, ev, z0, z_end, resources_end) if z0 is not None else None,
         "complement_definitions": COMPLEMENT_METRICS,
+        "guarantee": guarantee_outputs(z0, guard_periods, support_units, capacity_binding) if z0 is not None and guard_periods is not None else None,
+        "guarantee_definitions": GUARANTEE_METRICS,
         "appeal": app,
         "recoverability": {
             "favourable_at_start": recoverability(ah[:, fav0], cfg.opportunity_window),

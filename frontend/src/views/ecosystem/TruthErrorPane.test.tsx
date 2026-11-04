@@ -13,9 +13,9 @@ const dir = join(dirname(fileURLToPath(import.meta.url)), '__fixtures__');
 const runs = JSON.parse(readFileSync(join(dir, 'truth-error-runs.json'), 'utf8')) as Record<'base' | 'invalid' | 'biased' | 'noscore', TERun>;
 const saved = JSON.parse(readFileSync(join(dir, '..', '..', '..', '..', '..', 'docs', 'truth_error', 'experiments.json'), 'utf8')) as { experiments: Record<string, TEExperiment> };
 const saved2 = JSON.parse(readFileSync(join(dir, '..', '..', '..', '..', '..', 'docs', 'truth_error', 'experiments2.json'), 'utf8')) as { experiments: Record<string, TEExperiment> };
-const runs2 = JSON.parse(readFileSync(join(dir, 'truth-error-runs2.json'), 'utf8')) as Record<'base' | 'process' | 'no_release' | 'appeal' | 'appeal_gated', TERun>;
+const runs2 = JSON.parse(readFileSync(join(dir, 'truth-error-runs2.json'), 'utf8')) as Record<'base' | 'process' | 'no_release' | 'appeal' | 'appeal_gated' | 'guarded', TERun>;
 const none = async () => undefined;
-const ctx = (over: Partial<TruthCtx> = {}): TruthCtx => ({ base: runs.base, branch: null, k: 0, setK: () => undefined, t: 25, setT: () => undefined, selected: null, select: () => undefined, draft: {}, setDraft: () => undefined, busy: false, err: null,
+const ctx = (over: Partial<TruthCtx> = {}): TruthCtx => ({ base: runs.base, branch: null, k: 0, setK: () => undefined, t: 25, setT: () => undefined, selected: null, select: () => undefined, relation: null, setRelation: () => undefined, draft: {}, setDraft: () => undefined, busy: false, err: null,
   runBase: none, runBranch: none, clearBranch: () => undefined, focus3d: () => undefined, experiments: saved.experiments, expId: 'EXP-TE02', setExpId: () => undefined, experiments2: saved2.experiments, exp2Id: 'EXP-TE07-release', setExp2Id: () => undefined, loadArm: none, ...over });
 const html = (over: Partial<TruthCtx> = {}) => renderToString(<TruthErrorPane {...ctx(over)} />);
 const text = (h: string) => h.replace(/<!-- -->/g, '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').replace(/\s+([,.;:)])/g, '$1').replace(/\(\s+/g, '(').replace(/&quot;/g, '"').replace(/&#x27;/g, "'").replace(/&gt;/g, '>').replace(/&lt;/g, '<').replace(/&amp;/g, '&');
@@ -147,5 +147,27 @@ describe('the truth-error pane', () => {
   });
   it('shows no complementary table for a run saved before it existed', () => {
     expect(html()).not.toContain('data-testid="te-complement"');
+  });
+  it('offers the seven relations, draws the selected one with the engine\'s check, and compares baseline and branch', () => {
+    const h = html({ base: runs2.process, branch: runs2.guarded, k: 1, t: 12, relation: 'judgement_resources' });
+    const sel = text(section(h, 'te-relation-select'));
+    for (const l of ['sensor and subject', 'classifier and the observation record', 'score and the institutional judgement', 'institutional judgement and the allocation of resources', 'subject\'s state', 'correction and the release of a constraint', 'guarantee and the subsequent possibility']) expect(sel, l).toContain(l);
+    const r = text(section(h, 'te-relation'));
+    expect(r).toContain('baseline'); expect(r).toContain('branch'); expect(r).toContain('resources = clip(clip('); expect(r).toContain('checked against the record'); expect(r).toContain('holds');
+    expect(text(h)).toContain('does not show that one thing causes another');
+  });
+  it('keeps observed, inferred, reference and unresolved states apart in a relation', () => {
+    const t = text(section(html({ base: runs2.process, k: 1, t: 12, relation: 'classifier_record' }), 'te-relation'));
+    for (const e of ['OBSERVED', 'CLASSIFIED', 'INFERRED', 'REFERENCE']) expect(t, e).toContain(e);
+    const t2 = text(section(html({ base: runs2.base, k: 1, t: 12, relation: 'guarantee_subsequent' }), 'te-relation'));
+    expect(t2).toContain('none');   // a run without guarantees says so
+  });
+  it('shows the guarantee controls as hypothetical research conditions and the guarantee node as such', () => {
+    const h = html({ base: runs2.guarded, selected: 'guarantee' as NodeId });
+    const c = text(section(h, 'te-guarantee-controls'));
+    for (const l of ['resource floor', 'cap on a run of denials', 'access kept pending a correction', 'recovery support after a release', 'support capacity', 'classifier accuracy']) expect(c, l).toContain(l);
+    expect(text(h)).toContain('HYPOTHETICAL research conditions'); expect(text(h)).toContain('no number here is theirs');
+    const n = text(section(h, 'te-node'));
+    expect(n).toContain('resource floor 0.2'); expect(n).toContain('denial cap 5'); expect(n).toContain('support to the low score');
   });
 });

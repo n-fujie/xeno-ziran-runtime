@@ -438,3 +438,148 @@ def test_the_saved_complement_experiment_is_the_one_the_code_produces(saved2):
         assert a["result_digest_seed1"] == b["result_digest_seed1"]
         for k in old["primary_outcomes"]:
             assert a["mean"][k] == b["mean"][k], (a["arm"], k)
+
+
+# ------------------------------------------------------------------------------------------------ phase 4: guarantees, support, P1-P3, the statistics of EXP-TE16
+DEFAULTS4 = dict(resource_floor=0.0, denial_cap=None, interim_access=False, release_support=0.0, support_rule="none", support_amount=0.1, support_capacity=None, resources_start=0.5, z_shift=0.0)
+
+
+def test_the_phase_4_settings_at_their_defaults_change_nothing_and_every_saved_phase_2_arm_still_reproduces(saved2):
+    a, b = I.run(cfg(seed=4)), I.run(cfg(seed=4, **DEFAULTS4))
+    assert a["result_digest"] == b["result_digest"] and a["target_state_digest"] == b["target_state_digest"]
+    n = 0
+    for eid, e in saved2["experiments"].items():
+        if eid in ("EXP-TE17", "EXP-TE18"):
+            continue   # these are the experiments that add the settings; their arms are checked by the reproduction test below
+        by = {r["arm"]: r["result_digest_seed1"] for r in e["arms"]}
+        for name, conf in e["arm_configs"].items():
+            assert I.run(config_from({"config": {**conf, "seed": 1}}))["result_digest"] == by[name], (eid, name)
+            n += 1
+    assert n > 100
+
+
+def test_the_guarantee_and_support_mechanisms_do_what_they_declare():
+    r = I.run(cfg(seed=2, resource_floor=0.3))
+    assert min(x["resources"] for rs in r["records"] for x in rs) >= 0.3 - 1e-9   # resources never fall below the floor
+    r = I.run(cfg(seed=2, denial_cap=3))
+    for rs in r["records"]:
+        run_len = 0
+        for x in rs:
+            run_len = 0 if x["access"] else run_len + 1
+            assert run_len <= 3   # no subject is denied for more than the cap in a row
+    assert any(x["guarantee_access"] for rs in r["records"] for x in rs)
+    p = I.run(cfg(seed=2, support_rule="low_score", support_amount=0.12, support_capacity=0.1))["process"]["guarantee"]
+    assert p["support_units_per_subject"] <= 0.12 * 0.1 * 40 + 1e-9 and p["capacity_binding_periods"] > 0   # a capacity of 10 % bounds the cost and is reached
+    none = I.run(cfg(seed=2))["process"]["guarantee"]
+    assert none["support_units_per_subject"] == 0.0 and none["support_share_to_unfav"] is None
+    # access kept pending a correction: with the audit on, subjects between a finding and its approval are not denied
+    kw = dict(seed=2, **{**PROC, "approval_delay": 6, "request_delay": 1})
+    a, b = I.run(cfg(**kw)), I.run(cfg(**kw, interim_access=True))
+    assert b["process"]["guarantee"]["guarantee_access_periods_per_subject"] > 0 and b["process"]["metrics"]["denial_rate_late_fav"] <= a["process"]["metrics"]["denial_rate_late_fav"]
+
+
+def test_with_no_feedback_the_real_state_depends_on_no_institutional_setting():
+    """an intervention on the observation, the classifier, the threshold or a guarantee cannot change the subjects' states unless resources feed back: the causal structure of the model, checked by the target-state digest"""
+    base = cfg(seed=3, beta=0.0)
+    ref = I.run(base)["target_state_digest"]
+    for kw in ({"classifier": "pose_rule"}, {"tau_a": 0.4}, {"signal_sensor": dataclasses.replace(base.signal_sensor, view_angle=40.0)}, {"resource_floor": 0.3}, {"support_rule": "denied"}, {"denial_cap": 3}, {"use_score": False}, {"lock_after": None}):
+        assert I.run(dataclasses.replace(base, **kw))["target_state_digest"] == ref, kw
+    assert I.run(dataclasses.replace(base, beta=0.06))["target_state_digest"] != ref   # with feedback the institution's access changes the state
+
+
+def test_the_change_of_state_of_a_subject_denied_or_granted_throughout_is_fixed_by_the_constants(saved2):
+    """by construction: beta x the sum of (resources - 0.5). The saved lottery arm (denied half of the time, always the same half) and full access reproduce it; an experiment only finds WHO is denied"""
+    c = X2.NO_PROCESS
+    den, gra = X2.resource_path_change(c, True), X2.resource_path_change(c, False)
+    assert den == pytest.approx(-1.152, abs=1e-6) and gra == pytest.approx(1.152, abs=1e-6)
+    e = saved2["experiments"]["EXP-TE16"]
+    arms = {a["arm"]: a["mean"] for a in e["arms"]}
+    lot, full = arms["lottery: no score, access for half at random"], arms["full access: no score, access for everyone"]
+    assert lot["state_change_unfav_denied"]["mean"] == pytest.approx(den, abs=0.03) and full["state_change_unfav"]["mean"] == pytest.approx(gra, abs=0.03)
+    # beta, floor and gain/loss enter only through this path: the saved arms at beta 0.03 and 0.12 are the same path scaled
+    for beta, arm in ((0.03, "score, accurate sensor, beta 0.03"), (0.12, "score, accurate sensor, beta 0.12")):
+        scaled = X2.resource_path_change(dataclasses.replace(c, beta=beta), True)
+        assert arms[arm]["state_change_unfav_denied"]["mean"] == pytest.approx(scaled, abs=0.05 * abs(scaled) + 0.02), arm
+
+
+def test_the_statistics_of_exp_te16_are_one_run_per_seed_with_the_interval_stated(saved2):
+    e = saved2["experiments"]["EXP-TE16"]
+    vals = {r["arm"]: r["values"] for r in e["arms"]}
+    acc, lot, full = "score, accurate sensor (noise 0.05)", "lottery: no score, access for half at random", "full access: no score, access for everyone"
+    s = X2.paired_summary(vals[acc]["state_change_unfav"], vals[lot]["state_change_unfav"])
+    assert s["n"] == 20 and s["mean"] == pytest.approx(-1.134, abs=0.002) and s["se"] == pytest.approx(0.031, abs=0.002)   # 20 seeds, one run per seed: not 1200 subjects
+    assert s["sd"] == pytest.approx(s["se"] * 20 ** 0.5) and s["ci95"][0] < s["mean"] < s["ci95"][1] and (s["ci95"][1] - s["ci95"][0]) / 2 == pytest.approx(2.093 * s["se"], rel=0.01)
+    c2 = _contrast(e, "accurate score minus lottery", "state_change_unfav")
+    assert c2["paired_seeds_21_40"]["mean"] == pytest.approx(-1.104, abs=0.002) and c2["paired_seeds_21_40"]["se"] == pytest.approx(0.028, abs=0.002)
+    d = X2.paired_summary(vals[acc]["state_change_unfav_denied"], vals[lot]["state_change_unfav_denied"])
+    assert d["mean"] == pytest.approx(-0.008, abs=0.002) and d["se"] == pytest.approx(0.004, abs=0.001) and d["ci95"][0] < 0 < d["ci95"][1] + 0.02
+    f = X2.paired_summary(vals[acc]["state_change_unfav"], vals[full]["state_change_unfav"])
+    g = X2.paired_summary(vals[acc]["state_gap_change"], vals[lot]["state_gap_change"])
+    assert f["mean"] == pytest.approx(-2.29, abs=0.005) and g["mean"] == pytest.approx(2.305, abs=0.005)
+    b0 = X2.paired_summary(vals["score, accurate sensor, no feedback of resources to the state (beta 0)"]["state_change_unfav"], vals[lot]["state_change_unfav"])
+    assert abs(b0["mean"]) < 2 * b0["se"]   # beta 0: no difference
+    arms = {r["arm"]: r["mean"]["state_change_unfav"]["mean"] for r in e["arms"]}
+    assert [round(arms[f"score, accurate sensor, beta {b}"], 2) for b in (0.03, 0.12)] == [-0.57, -2.27] and round(arms[acc], 2) == -1.14
+
+
+def test_p1_p2_p3_as_measured_by_the_saved_decomposition(saved2):
+    e = saved2["experiments"]["EXP-TE17"]
+    # P1: an accurate classification (correct in every period but a few thousandths) still has large consequences, and the consequence is set by other settings, not by the accuracy
+    acc_cc = next(a for a in e["arms"] if a["arm"] == "classifier noise 0.05")["mean"]["classification_correct"]["mean"]
+    assert acc_cc > 0.995
+    sc = {a["arm"]: a["mean"]["state_change_unfav"]["mean"] for a in e["arms"]}
+    assert sc["accurate, beta 0.0"] == pytest.approx(0.0, abs=0.02) and sc["accurate, beta 0.12"] < 2 * sc["classifier noise 0.05"] * 0.95 and sc["classifier noise 0.05"] < -1.0   # accuracy is the same, the consequence runs from 0 to -2.3 with beta
+    # P2: a disadvantage without classification error: denial and lost resources need no feedback, the change of state needs it
+    c = _contrast(e, "P2: accurate, no feedback minus lottery", "denial_rate_late_unfav")
+    assert c["class"] == "replicated" and c["paired"]["mean"] > 0.3
+    assert _contrast(e, "P2: accurate, no feedback minus lottery", "state_change_unfav")["class"] == "not detected"
+    # P3: improving the accuracy moves denial from the favourable to the not favourable and widens the gap; the interaction with the feedback is the whole effect
+    for out, sign in (("denial_rate_late_fav", -1), ("denial_rate_late_unfav", 1), ("state_change_unfav", -1), ("state_gap_change", 1)):
+        x = _contrast(e, "P3: improving the accuracy", out)
+        assert x["class"] == "replicated" and x["paired"]["mean"] * sign > 0, out
+    i1 = _contrast(e, "interaction: accuracy x feedback", "state_change_unfav")
+    p3 = _contrast(e, "P3: improving the accuracy", "state_change_unfav")
+    assert i1["paired"]["mean"] == pytest.approx(p3["paired"]["mean"], abs=0.02)   # at beta 0 accuracy changes no state: the effect exists only through the feedback
+
+
+def test_the_manufactured_accuracy_the_institution_produces_in_what_it_classifies(saved2):
+    """with the feedback the subjects are pushed away from the boundary, so the same classifier is measured as more accurate; protecting the states lowers the measured accuracy again"""
+    e = saved2["experiments"]["EXP-TE17"]
+    cc = {a["arm"]: a["mean"]["classification_correct"]["mean"] for a in e["arms"]}
+    assert cc["classifier noise 1.6"] < cc["noisy, beta 0.0"] + 0.1 and cc["noisy classifier (noise 0.8), the base"] > cc["noisy, beta 0.0"] + 0.05
+    g = saved2["experiments"]["EXP-TE18"]
+    gc = {a["arm"]: a["mean"]["classification_correct"]["mean"] for a in g["arms"]}
+    assert gc["noisy: support to the denied 0.12"] < gc["noisy: no guarantee"] - 0.02   # the guarantee improves the states and the measured accuracy falls
+
+
+def test_the_guarantees_improve_some_things_not_others_and_cost_resources_as_saved(saved2):
+    e = saved2["experiments"]["EXP-TE18"]
+    arms = {a["arm"]: a["mean"] for a in e["arms"]}
+    m = lambda arm, k: arms[arm][k]["mean"]  # noqa: E731
+    # a resource floor improves the state of the not favourable group and, for an accurate classifier, does not change who is denied
+    assert _contrast(e, "accurate: resource floor 0.3 minus no guarantee", "state_change_unfav")["paired"]["mean"] > 0.5
+    assert _contrast(e, "accurate: resource floor 0.3 minus no guarantee", "denial_rate_late_unfav")["paired"]["mean"] == pytest.approx(0.0, abs=0.01)
+    # support is bounded by its capacity: the cost falls and so does the improvement
+    full_c, cap_c = m("accurate: support to the low score 0.12", "support_units_per_subject"), m("accurate: support to the low score 0.12, capacity 10%", "support_units_per_subject")
+    assert cap_c < full_c / 3 and _contrast(e, "accurate: support to the low score 0.12, capacity 10% minus no guarantee", "state_change_unfav")["paired"]["mean"] < 0.2
+    # the accurate classifier identifies the recipients better (precision) and yet the not favourable group does better with the noisy one under the same support
+    assert m("accurate: support to the low score 0.12", "support_share_to_unfav") > m("noisy: support to the low score 0.12", "support_share_to_unfav")
+    assert _contrast(e, "accurate classification as the identifier", "state_change_unfav")["paired"]["mean"] < 0
+    # conditions that did not improve, kept: a recovery measure after a release leaves the gap unchanged for the noisy classifier; a long cap of 6 changes very little
+    assert _contrast(e, "noisy: process + recovery support after the release 0.3 minus the process alone", "state_gap_change")["class"] == "not detected"
+    assert _contrast(e, "accurate: denial cap 6 minus no guarantee", "state_change_unfav")["paired"]["mean"] < 0.05
+    # interaction of the two process guarantees: they substitute for each other (the combined effect is smaller than the sum)
+    assert _contrast(e, "noisy: interaction of access-kept and recovery support", "state_change_unfav")["paired"]["mean"] < 0
+
+
+def test_the_api_validates_the_hypothetical_guarantee_settings():
+    from fastapi.testclient import TestClient
+
+    from xzr.service import app as app_mod
+
+    c = TestClient(app_mod.app, headers={"origin": "http://testserver"})
+    ok = c.post("/api/truth-error/run", json={"config": {"seed": 2, "resource_floor": 0.3, "support_rule": "low_score", "support_capacity": 0.1, "denial_cap": 3, "interim_access": True}})
+    assert ok.status_code == 200 and ok.json()["process"]["guarantee"]["support_units_per_subject"] > 0
+    for bad in ({"support_rule": "everyone"}, {"resource_floor": 1.5}, {"denial_cap": 0}, {"support_capacity": -0.1}, {"interim_access": "yes"}, {"z_shift": 9}, {"resources_start": 2}):
+        assert c.post("/api/truth-error/run", json={"config": bad}).status_code == 422, bad
+    assert c.get("/api/truth-error/spec").json()["support_rules"] == ["none", "denied", "low_score"]
