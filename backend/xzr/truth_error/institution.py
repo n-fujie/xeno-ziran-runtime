@@ -109,7 +109,9 @@ class Config:
     denial_cap: int | None = None  # after this many consecutive denied periods access is granted (a cap on the accumulation of a denial)
     interim_access: bool = False  # access is kept while a correction is pending: from an audit finding to its approval, or while an accepted appeal awaits its re-judgement (suspension pending review)
     release_support: float = 0.0  # the share of lost resources returned per period after a constraint was released (a recovery measure)
-    support_rule: str = "none"  # none | denied (support goes to the subjects denied now) | low_score (support goes to the subjects whose score is below the threshold: the institution's own classification identifies the recipients)
+    support_rule: str = "none"  # none | denied (support goes to the subjects denied now) | low_score (support goes to the subjects whose score is below the threshold: the institution's own classification identifies the recipients) | on_request (the same eligibility, but only the subjects who APPLY receive it: the guarantee exists formally and has to be reached)
+    support_apply_prob: float = 0.5  # on_request: the chance that an eligible subject applies in a period
+    apply_min_resources: float = 0.0  # on_request: an applicant needs at least these resources to be able to apply (the resources needed to use the procedure)
     support_amount: float = 0.1  # resources added per period to a supported subject
     support_capacity: float | None = None  # the largest share of subjects supported in one period (None: no limit); the lowest resources are served first
     resources_start: float = 0.5  # the resources every subject starts with
@@ -151,6 +153,12 @@ def run(cfg: Config) -> dict:
     st_pose, st_sig = SensorState(n, 3), SensorState(n, 1)
     u_file, u_evid, u_accept = r_app.uniform(size=(T, n)), r_app.uniform(size=(T, n)), r_app.uniform(size=(T, n))
     u_audit = r_app.uniform(size=(T, n))
+    u_apply = r_app.uniform(size=(T, n))
+    cls_hist: list[np.ndarray] = []  # the classification of every period, for the evaluation of one set of decisions against several labels (phase 5)
+    sig_abs_sum, sig_abs_n = 0.0, 0
+    eligible_periods = np.zeros(n, dtype=int)  # periods in which a support rule made a subject eligible
+    served_periods = np.zeros(n, dtype=int)  # ... and in which the subject was served
+    first_support = np.full(n, -1, dtype=int)
 
     score = np.zeros(n)  # institution A's score
     resources = np.full(n, cfg.resources_start)
@@ -241,6 +249,9 @@ def run(cfg: Config) -> dict:
             pose_ref[:, t, :], cfg.pose_sensor, t, eps_pose[t], uo_pose[t], ud_pose[t], st_pose, denied_mult
         )
         sig_meas = measure_period(z[:, None], cfg.signal_sensor, t, eps_sig[t], uo_sig[t], ud_sig[t], st_sig, denied_mult)
+        _sv = sig_meas["values"][:, 0]
+        sig_abs_sum += float(np.nansum(np.abs(_sv)))
+        sig_abs_n += int((~np.isnan(_sv)).sum())
         pose_buf.append(np.abs(pose_meas["values"][:, 0]))
         sig_buf.append(sig_meas["values"][:, 0])
         conf_buf.append(np.where(np.isnan(sig_meas["values"][:, 0]), np.nan, sig_meas["confidence"]))
@@ -273,6 +284,7 @@ def run(cfg: Config) -> dict:
             cls = rand_label[t]
             conf_cls = np.full(n, _conf_pose(cfg))
         classified = cls != 0
+        cls_hist.append(cls.copy())
         cls_correct = classified & (cls == np.where(y, 1, -1))
         wrongful_adverse_cls = classified & (cls == -1) & y
         # ---- acceptance (an institutional act)
@@ -409,7 +421,16 @@ def run(cfg: Config) -> dict:
             resources = np.clip(resources + cfg.release_support * (1.0 - resources) * ((ev["released"] >= 0) & (ev["released"] < t)), cfg.resource_floor, 1.0)
         supported = np.zeros(n, dtype=bool)
         if cfg.support_rule != "none":
-            target = (~access) if cfg.support_rule == "denied" else ((score < cfg.tau_a) if cfg.use_score else np.zeros(n, dtype=bool))
+            low = (score < cfg.tau_a) if cfg.use_score else np.zeros(n, dtype=bool)
+            if cfg.support_rule == "denied":
+                eligible = ~access
+            else:
+                eligible = low
+            eligible_periods += eligible
+            if cfg.support_rule == "on_request":
+                target = eligible & (resources >= cfg.apply_min_resources) & (u_apply[t] < cfg.support_apply_prob)   # only the subjects who can apply and do apply
+            else:
+                target = eligible
             idx = np.where(target)[0]
             if cfg.support_capacity is not None:
                 k = int(np.floor(cfg.support_capacity * n))
@@ -417,6 +438,8 @@ def run(cfg: Config) -> dict:
                     capacity_binding += 1
                 idx = idx[np.argsort(resources[idx], kind="stable")][:k]  # the lowest resources are served first
             supported[idx] = True
+            served_periods += supported
+            first_support = np.where((first_support < 0) & supported, t, first_support)
             before = resources.copy()
             resources = np.clip(resources + cfg.support_amount * supported, cfg.resource_floor, 1.0)
             support_units += resources - before
@@ -489,6 +512,7 @@ def run(cfg: Config) -> dict:
         denied_prev = denied.copy()
         access_hist.append(access.copy())
 
+    labels = label_outputs(cfg, np.array(cls_hist), z0, z_series, z, eps_z, sig_abs_sum, sig_abs_n)
     y_end = z > 0
     summary = _summary(
         cfg,
@@ -526,15 +550,28 @@ def run(cfg: Config) -> dict:
     # a period with nothing to average is None (JSON has no NaN): the series and the summary are cleaned before they leave the engine
     rows = {k: [None if (isinstance(v, float) and v != v) else v for v in vs] for k, vs in rows.items()}
     summary = {k: (None if (isinstance(v, float) and v != v) else v) for k, v in summary.items()}
+    # the labels of the sample subjects under each evaluation condition (phase 5), patched in now that the whole path of the state is known
+    z_cf: np.ndarray = labels["_z_cf"]  # type: ignore[assignment]
+    z_nx: np.ndarray = labels["_z_next"]  # type: ignore[assignment]
+    for k, i in enumerate(sample_idx):
+        for t in range(T):
+            records[k][t]["label_initial"] = bool(z0[i] > 0)
+            records[k][t]["label_next"] = bool(z_nx[t, i] > 0)
+            records[k][t]["z_counterfactual"] = round(float(z_cf[t, i]), 4)
+            records[k][t]["label_counterfactual"] = bool(z_cf[t, i] > 0)
+    labels.pop("_z_cf")  # type: ignore[attr-defined]
+    labels.pop("_z_next")  # type: ignore[attr-defined]
     out = {"config": cfg.asdict(), "series": rows, "records": records, "summary": summary}
-    out["process"] = process_outputs(cfg, ev, ap, ap_blocked, ap_outcome, false_detect, ah, z0 > 0, z > 0, locked, denied_at_approval, access_b if snap_b is not None else None, z0, z, resources, guard_periods, support_units, capacity_binding)
+    out["process"] = process_outputs(cfg, ev, ap, ap_blocked, ap_outcome, false_detect, ah, z0 > 0, z > 0, locked, denied_at_approval, access_b if snap_b is not None else None, z0, z, resources, guard_periods, support_units, capacity_binding, eligible_periods, served_periods, first_support)
+    out_labels = labels
     out["target_state_digest"] = digest([[round(float(v), 9) for v in row] for row in z_series])
     out["result_digest"] = digest({k: out[k] for k in ("series", "summary")})
+    out["process"]["labels"] = out_labels  # type: ignore[index]
     out["process_digest"] = digest(out["process"])  # the phase-2 record apart: result_digest is unchanged by it, so the saved phase-1 digests still hold
     return out
 
 
-from .process import process_outputs  # noqa: E402
+from .process import label_outputs, process_outputs  # noqa: E402
 
 
 def _first(arr: np.ndarray, mask: np.ndarray, t: int) -> np.ndarray:

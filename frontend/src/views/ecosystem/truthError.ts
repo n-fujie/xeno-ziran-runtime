@@ -8,6 +8,7 @@ export interface TERecord {
   signal_measured: number | null; signal_missing: number; classification: -1 | 0 | 1; classification_correct: boolean | null; warrant: 'SUPPORTED' | 'REFUTED' | 'UNDECIDED'; p_positive: number;
   accepted: boolean; score: number; access: boolean; locked: boolean; resources: number; opportunities_lost: number; corrected: boolean; score_b: number | null; access_b: boolean | null;
   guarantee_access?: boolean; support?: number;   // phase 4 (absent in a run saved before it)
+  label_initial?: boolean; label_next?: boolean; label_counterfactual?: boolean; z_counterfactual?: number;   // phase 5
 }
 export interface TEConfig {
   seed: number; n: number; periods: number; classifier: string; window: number; signal_threshold: number; yaw_threshold: number; warrant_level: number; confidence_floor: number; requires_warrant: boolean;
@@ -16,6 +17,7 @@ export interface TEConfig {
   transfer_weight: number; tau_b: number; propagate_correction: boolean; propagation_delay: number; pose_z_coupling: number;
   // phase 2 (absent in a run saved before it)
   audit_every?: number | null; audit_sensitivity?: number; audit_false_rate?: number; request_delay?: number; approval_delay?: number; score_delay?: number; release_mode?: string; release_delay?: number; opportunity_window?: number | null;
+  support_apply_prob?: number; apply_min_resources?: number;
   resource_floor?: number; denial_cap?: number | null; interim_access?: boolean; release_support?: number; support_rule?: string; support_amount?: number; support_capacity?: number | null; resources_start?: number; z_shift?: number;
   appeal?: boolean; appeal_access?: string; appeal_min_score?: number; appeal_filing_prob?: number; evidence_available_prob?: number; appeal_acceptance_prob?: number; review_delay?: number;
   pose_sensor: { view_angle: number; noise_sigma: number; bias: number[]; occlusion_prob: number; dropout_prob: number; fail_at: number | null; fail_mode: string };
@@ -32,6 +34,7 @@ export interface TEProcess {
   metrics: Record<string, number | null>; metric_definitions: Record<string, MetricDef>;
   appeal: { exists: boolean; access: string; blocked_subjects: number; stages: Record<AppealStage, number>; stage_times: Record<AppealStage, Array<number | null>>; rejudged_corrected: number; rejudged_upheld: number; relief_effective: number; filed_but_not_relieved: number; filed_share_of_fav_denied_ever: number };
   complement?: Record<string, number | null> | null; complement_definitions?: Record<string, MetricDef>; guarantee?: Record<string, number | null> | null; guarantee_definitions?: Record<string, MetricDef>;
+  labels?: { metrics: Record<string, number | null>; series: Record<'initial' | 'current' | 'next' | 'counterfactual', number[]>; definitions: Record<string, MetricDef>; bin_edges: Array<number | null>; late_periods: number };
   recoverability: { declared_window: number | null; favourable_at_start: { window: number | null; periods: { recoverable: number; expired: number; unresolved: number }; episodes: { recoverable: number; partially_recoverable: number; unrecoverable: number; unresolved: number } } };
 }
 export interface TERun {
@@ -306,13 +309,14 @@ export function eventTable(run: TERun): Array<{ id: ProcessEventId; label: strin
 }
 
 // ------------------------------------------------------------------------------------------------ phase 4: the relations the user can select and compare, each tied to the engine's own records
-export type RelationId = 'sensor_subject' | 'classifier_record' | 'score_judgement' | 'judgement_resources' | 'resources_state' | 'correction_release' | 'guarantee_subsequent';
+export type RelationId = 'sensor_subject' | 'classifier_record' | 'score_judgement' | 'judgement_resources' | 'resources_state' | 'correction_release' | 'guarantee_subsequent' | 'target_transformation' | 'label_generation';
 export interface RelationReading {
   id: RelationId; from: Reading[]; rule: string; to: Reading[];
   /** holds: true or false where the relation is an identity of the model's own transition that the record lets us check at this period; null where it is not an identity (a drawn error) or cannot be checked here (the reason is in ``detail``) */
   check: { name: string; holds: boolean | null; detail: string };
 }
-export const RELATIONS: Array<{ id: RelationId; label: string; edges: Array<[NodeId, NodeId]> }> = [
+/** ``evaluator`` relations are not transitions of the institution: the evaluator reads the reference state to generate a label, and no institution reads it. They are drawn apart from the chain's edges. */
+export const RELATIONS: Array<{ id: RelationId; label: string; edges: Array<[NodeId, NodeId]>; evaluator?: boolean }> = [
   { id: 'sensor_subject', label: 'sensor and subject', edges: [['subject', 'pose_sensor'], ['subject', 'signal_sensor']] },
   { id: 'classifier_record', label: 'classifier and the observation record', edges: [['signal_sensor', 'classifier'], ['pose_sensor', 'classifier']] },
   { id: 'score_judgement', label: 'score and the institutional judgement', edges: [['score', 'gate_a']] },
@@ -320,6 +324,8 @@ export const RELATIONS: Array<{ id: RelationId; label: string; edges: Array<[Nod
   { id: 'resources_state', label: 'allocation of resources and the subject\'s state', edges: [['resources', 'subject']] },
   { id: 'correction_release', label: 'correction and the release of a constraint', edges: [['correction', 'score'], ['correction', 'gate_a']] },
   { id: 'guarantee_subsequent', label: 'guarantee and the subsequent possibility', edges: [['guarantee', 'gate_a'], ['guarantee', 'resources']] },
+  { id: 'target_transformation', label: 'institutional action and the transformed target (against the counterfactual)', edges: [['resources', 'subject']] },
+  { id: 'label_generation', label: 'the evaluation label: when, and from which state (evaluator only)', edges: [['subject', 'classifier']], evaluator: true },
 ];
 const R = (label: string, value: string, epistemic: Epistemic): Reading => ({ label, value, epistemic });
 const clamp = (x: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, x));
@@ -367,11 +373,12 @@ export function relationAt(run: TERun, k: number, t: number, id: RelationId): Re
         check: pred === null || !clean ? none('resources follow the allocation rule', pred === null ? 'the first period has no earlier value' : 'a recovery measure also acts: not checked') : { name: 'resources follow the allocation rule', holds: Math.abs(pred - x.resources) <= 0.002, detail: `rule gives ${f(pred, 3)}, record says ${f(x.resources, 3)}` } };
     }
     case 'resources_state': {
-      const d = p === null ? null : x.reference_z - p.reference_z, resid = d === null ? null : d - c.beta * (x.resources - 0.5);
-      return { id, from: [R('resources', f(x.resources, 3), 'INSTITUTIONAL'), R('feedback beta', String(c.beta), 'INSTITUTIONAL')],
-        rule: 'the state moves by beta x (resources - 0.5) plus noise of standard deviation 0.02: with beta 0 the institution does not change the state',
-        to: [R('reference state z', f(x.reference_z, 3), 'REFERENCE'), R('change since the previous period', f(d, 3), 'REFERENCE'), R('residual after the rule (the noise)', f(resid, 3), 'REFERENCE')],
-        check: resid === null ? none('change of state = beta x (resources - 0.5) + noise', 'the first period has no earlier value') : { name: 'change of state = beta x (resources - 0.5) + noise', holds: Math.abs(resid) <= 0.1, detail: `residual ${f(resid, 3)} (noise sd 0.02: within 5 sd)` } };
+      // the state moves AFTER the period's allocation: z at the next period = z now + beta x (resources now - 0.5) + noise
+      const nx = i + 1 < rs.length ? rs[i + 1] : null, d = nx === null ? null : nx.reference_z - x.reference_z, resid = d === null ? null : d - c.beta * (x.resources - 0.5);
+      return { id, from: [R('resources after this period\'s allocation', f(x.resources, 3), 'INSTITUTIONAL'), R('feedback beta', String(c.beta), 'INSTITUTIONAL')],
+        rule: 'z at the next period = z now + beta x (resources now - 0.5) + noise of standard deviation 0.02: with beta 0 the institution does not change the state',
+        to: [R('reference state z now', f(x.reference_z, 3), 'REFERENCE'), R('reference state z next period', nx === null ? 'no later period' : f(nx.reference_z, 3), nx === null ? 'UNRESOLVED' : 'REFERENCE'), R('residual after the rule (the noise)', f(resid, 3), 'REFERENCE')],
+        check: resid === null ? none('next state = this state + beta x (resources - 0.5) + noise', 'the last period has no later one') : { name: 'next state = this state + beta x (resources - 0.5) + noise', holds: Math.abs(resid) <= 0.1, detail: `residual ${f(resid, 3)} (noise sd 0.02: within 5 sd)` } };
     }
     case 'correction_release': {
       const pr = run.process, ev = (name: ProcessEventId) => pr?.events[name]?.times[k] ?? null, a = ev('approved'), u = ev('score_updated'), rel = ev('released'), res = ev('restored');
@@ -379,6 +386,22 @@ export function relationAt(run: TERun, k: number, t: number, id: RelationId): Re
         rule: 'the correction updates the score; the binding constraint ends only by its own rule (by the score, or after an approval, or never): two separate times',
         to: [R('constraint released', rel === null ? 'not within the periods' : `period ${rel}`, pr ? 'INSTITUTIONAL' : 'UNRESOLVED'), R('access restored', res === null ? 'not within the periods' : `period ${res}`, pr ? 'INSTITUTIONAL' : 'UNRESOLVED'), R('constraint in force now', x.locked ? 'yes' : 'no', 'INSTITUTIONAL')],
         check: pr ? { name: 'a release is never before the approval it follows (where it follows one)', holds: a === null || rel === null || c.release_mode !== 'after_approval' || rel >= a, detail: `approved ${a ?? '-'}, released ${rel ?? '-'}, rule ${c.release_mode ?? 'by_score'}` } : none('no process record', 'a run saved before phase 2 has no event times') };
+    }
+    case 'target_transformation': {
+      const cum = rs.slice(0, i).reduce((acc, r) => acc + c.beta * (r.resources - 0.5), 0), zc = x.z_counterfactual, has = zc !== undefined;
+      return { id, from: [R('resources over the earlier periods', i === 0 ? 'no earlier period' : rs.slice(0, i).map((r) => f(r.resources, 2)).join(' '), i === 0 ? 'UNRESOLVED' : 'INSTITUTIONAL'), R('feedback beta', String(c.beta), 'INSTITUTIONAL')],
+        rule: 'the state differs from the counterfactual (no institutional effect on the state, the same noise) by beta x the sum over the earlier periods of (resources - 0.5)',
+        to: [R('reference state z', f(x.reference_z, 3), 'REFERENCE'), R('counterfactual state', has ? f(zc, 3) : 'not recorded in this run', has ? 'REFERENCE' : 'UNRESOLVED'), R('difference: the transformation of the target', has ? f(x.reference_z - (zc as number), 3) : '-', has ? 'REFERENCE' : 'UNRESOLVED')],
+        check: has ? { name: 'z - counterfactual = beta x sum of (resources - 0.5)', holds: Math.abs(x.reference_z - (zc as number) - cum) <= 0.02, detail: `record ${f(x.reference_z - (zc as number), 3)}, rule ${f(cum, 3)}` } : none('z - counterfactual = beta x sum of (resources - 0.5)', 'a run saved before phase 5 has no counterfactual state') };
+    }
+    case 'label_generation': {
+      const nx = i + 1 < rs.length ? rs[i + 1] : null, has = x.label_initial !== undefined, ok = has && x.verification_label === (x.reference_z > 0) && x.label_counterfactual === ((x.z_counterfactual ?? 0) > 0) && (nx === null || x.label_next === (nx.reference_z > 0));
+      const lab = (v: boolean | undefined) => (v === undefined ? 'not recorded in this run' : v ? 'favourable' : 'unfavourable'), ep = (v: unknown): Epistemic => (v === undefined ? 'UNRESOLVED' : 'REFERENCE');
+      return { id, from: [R('state at the start of the period', f(x.reference_z, 3), 'REFERENCE'), R('initial state (before any institutional action)', f(rs[0].reference_z, 3), 'REFERENCE'), R('counterfactual state', x.z_counterfactual === undefined ? 'not recorded in this run' : f(x.z_counterfactual, 3), ep(x.z_counterfactual))],
+        rule: 'one classification is evaluated against four labels: INITIAL (z0 > 0, fixed), CURRENT (z at the start of the period: the model\'s own), NEXT (z after this period\'s own decision), COUNTERFACTUAL (the state with no institutional effect on the state). The evaluator generates them; no institution reads them',
+        to: [R('initial label', lab(x.label_initial), ep(x.label_initial)), R('current label', lab(x.verification_label), 'REFERENCE'), R('next label', lab(x.label_next), ep(x.label_next)), R('counterfactual label', lab(x.label_counterfactual), ep(x.label_counterfactual)),
+          R('classification', x.classification === 1 ? 'favourable' : x.classification === -1 ? 'adverse' : 'abstained', 'CLASSIFIED')],
+        check: has ? { name: 'each label = the sign of the state it is defined from', holds: ok, detail: `current ${x.verification_label}, counterfactual ${x.label_counterfactual}, next ${x.label_next ?? '-'}` } : none('each label = the sign of the state it is defined from', 'a run saved before phase 5 has only the current label') };
     }
     case 'guarantee_subsequent': {
       const after = rs.slice(i), futureAccess = after.filter((r) => r.access).length, cum = rs.slice(0, i + 1).reduce((a, r) => a + (r.support ?? 0), 0);
@@ -395,4 +418,64 @@ function relationGuaranteeText(c: TEConfig): string {
 /** The same relation in a baseline and in a branch, for the same subject and period; the change of the configuration is listed by ``compareRuns``. */
 export function compareRelation(base: TERun, branch: TERun | null, k: number, t: number, id: RelationId): { base: RelationReading; branch: RelationReading | null } {
   return { base: relationAt(base, k, t, id), branch: branch ? relationAt(branch, k, t, id) : null };
+}
+
+
+// ------------------------------------------------------------------------------------------------ phase 5: the institution's action returning to the evaluated target
+export interface EndogenyReading {
+  classifier: { fixed: boolean | null; changed: string[]; detail: string };
+  before: Reading[]; after: Reading[];
+  target: Reading[]; labelShift: Reading[]; distribution: Array<{ group: string; metric: string; base: string; branch: string }>;
+  accuracy: Array<{ label: string; base: string; branch: string }>;
+  unresolved: string[];
+  verdict: string;
+}
+const CLASSIFIER_KEYS = ['classifier', 'window', 'signal_threshold', 'yaw_threshold', 'confidence_floor', 'requires_warrant'] as const;
+const fx = (x: number | null | undefined, d = 3) => (x === null || x === undefined || Number.isNaN(x) ? '-' : x.toFixed(d));
+/** What the institution's action did to one subject at one period, to the evaluated target and to the accuracy, for a baseline and a branch. Every value is a record or a metric of the engine: the readings are not computed here. The classifier is called FIXED only if its declared parameters and the observation's are identical in the two runs. */
+export function endogenyAt(base: TERun, branch: TERun | null, k: number, t: number): EndogenyReading {
+  const rs = base.records[k], i = Math.max(0, Math.min(t, rs.length - 1)), x = rs[i], nx = i + 1 < rs.length ? rs[i + 1] : null, p = i > 0 ? rs[i - 1] : null;
+  const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
+  const changed: string[] = [];
+  if (branch) {
+    for (const key of CLASSIFIER_KEYS) if (!same(base.config[key], branch.config[key])) changed.push(String(key));
+    if (!same(base.config.signal_sensor, branch.config.signal_sensor)) changed.push('signal_sensor (the observation)');
+    if (!same(base.config.pose_sensor, branch.config.pose_sensor)) changed.push('pose_sensor (the observation)');
+  }
+  const classifier = { fixed: branch ? changed.length === 0 : null, changed, detail: branch ? (changed.length === 0 ? `FIXED: ${base.config.classifier}, window ${base.config.window}, threshold ${base.config.signal_threshold} and the sensors are identical in the baseline and the branch` : `CHANGED: ${changed.join(', ')}`) : 'no branch to compare with' };
+  const R = (label: string, value: string, epistemic: Epistemic): Reading => ({ label, value, epistemic });
+  const before = [R('state at the start of the period', fx(x.reference_z), 'REFERENCE'), R('observed signal', x.signal_measured === null ? 'nothing obtained' : fx(x.signal_measured), x.signal_measured === null ? 'UNRESOLVED' : 'OBSERVED'), R('classification', x.classification === 1 ? 'favourable' : x.classification === -1 ? 'adverse' : 'abstained', 'CLASSIFIED'),
+    R('resources before the allocation', p === null ? fx(base.config.resources_start ?? 0.5) : fx(p.resources), 'INSTITUTIONAL')];
+  const after = [R('state after the period\'s decision', nx === null ? 'no later period' : fx(nx.reference_z), nx === null ? 'UNRESOLVED' : 'REFERENCE'), R('resources after the allocation', fx(x.resources), 'INSTITUTIONAL'), R('next label', x.label_next === undefined ? 'not recorded in this run' : x.label_next ? 'favourable' : 'unfavourable', x.label_next === undefined ? 'UNRESOLVED' : 'REFERENCE'),
+    R('classification at the next period', nx === null ? 'no later period' : nx.classification === 1 ? 'favourable' : nx.classification === -1 ? 'adverse' : 'abstained', nx === null ? 'UNRESOLVED' : 'CLASSIFIED')];
+  const lm = (r: TERun | null, key: string) => r?.process?.labels?.metrics?.[key];
+  const row = (label: string, key: string, d = 3) => ({ label, base: fx(lm(base, key), d), branch: branch ? fx(lm(branch, key), d) : '-' });
+  const tc = x.z_counterfactual === undefined ? null : x.reference_z - x.z_counterfactual;
+  const target = [R('this subject: state minus the counterfactual state', tc === null ? 'not recorded in this run' : fx(tc), tc === null ? 'UNRESOLVED' : 'REFERENCE'), R('the run: mean |state - counterfactual|', fx(lm(base, 'target_change_abs')), lm(base, 'target_change_abs') === undefined ? 'UNRESOLVED' : 'REFERENCE'),
+    R('share of subject-periods near the boundary (|z| < 0.5): actual', fx(lm(base, 'boundary_mass_actual')), lm(base, 'boundary_mass_actual') === undefined ? 'UNRESOLVED' : 'REFERENCE'), R('... counterfactual', fx(lm(base, 'boundary_mass_counterfactual')), lm(base, 'boundary_mass_counterfactual') === undefined ? 'UNRESOLVED' : 'REFERENCE'), R('mean |signal| the classifier reads', fx(lm(base, 'signal_abs_mean')), lm(base, 'signal_abs_mean') === undefined ? 'UNRESOLVED' : 'OBSERVED')];
+  const shifted = base.records.map((r, j) => ({ j, a: r[i]?.label_counterfactual !== undefined && r[i].verification_label !== r[i].label_counterfactual })).filter((q) => q.a).map((q) => q.j + 1);
+  const labelShift = [R('this subject: current label differs from the counterfactual', x.label_counterfactual === undefined ? 'not recorded in this run' : x.verification_label !== x.label_counterfactual ? 'yes' : 'no', x.label_counterfactual === undefined ? 'UNRESOLVED' : 'REFERENCE'),
+    R(`sample subjects whose label is shifted at this period (of ${base.records.length})`, shifted.length ? shifted.join(', ') : base.records[0][0]?.label_counterfactual === undefined ? 'not recorded in this run' : 'none', 'REFERENCE'),
+    R('the run: share of subject-periods with a shifted label (current vs counterfactual)', fx(lm(base, 'label_shift_current_vs_counterfactual')), lm(base, 'label_shift_current_vs_counterfactual') === undefined ? 'UNRESOLVED' : 'REFERENCE')];
+  const g = (r: TERun | null, grp: 'fav' | 'unfav', key: string): string => {
+    const m = r?.process?.metrics, c = r?.process?.complement;
+    const v = grp === 'unfav' ? c?.[key] : key === 'denial' ? m?.denial_rate_late_fav : key === 'lost' ? m?.lost_opportunities_per_fav : key === 'state' ? c?.state_change_fav : key === 'resources' ? c?.resources_end_fav : undefined;
+    return fx(v as number | null | undefined);
+  };
+  const distribution = (['fav', 'unfav'] as const).flatMap((grp) => [
+    { group: grp === 'fav' ? 'favourable at the start' : 'not favourable at the start', metric: 'denial rate (late periods)', base: g(base, grp, grp === 'unfav' ? 'denial_rate_late_unfav' : 'denial'), branch: g(branch, grp, grp === 'unfav' ? 'denial_rate_late_unfav' : 'denial') },
+    { group: grp === 'fav' ? 'favourable at the start' : 'not favourable at the start', metric: 'resources at the end', base: g(base, grp, grp === 'unfav' ? 'resources_end_unfav' : 'resources'), branch: g(branch, grp, grp === 'unfav' ? 'resources_end_unfav' : 'resources') },
+    { group: grp === 'fav' ? 'favourable at the start' : 'not favourable at the start', metric: 'change of the real state', base: g(base, grp, grp === 'unfav' ? 'state_change_unfav' : 'state'), branch: g(branch, grp, grp === 'unfav' ? 'state_change_unfav' : 'state') },
+    { group: grp === 'fav' ? 'favourable at the start' : 'not favourable at the start', metric: 'denied periods per subject', base: g(base, grp, grp === 'unfav' ? 'lost_opportunities_per_unfav' : 'lost'), branch: g(branch, grp, grp === 'unfav' ? 'lost_opportunities_per_unfav' : 'lost') },
+  ]);
+  const accuracy = [row('accuracy against the INITIAL label (fixed)', 'accuracy_initial'), row('accuracy against the CURRENT label (the model\'s)', 'accuracy_current'), row('accuracy against the NEXT label', 'accuracy_next'), row('accuracy against the COUNTERFACTUAL label', 'accuracy_counterfactual')];
+  const dA = branch && lm(base, 'accuracy_current') != null && lm(branch, 'accuracy_current') != null ? (lm(branch, 'accuracy_current') as number) - (lm(base, 'accuracy_current') as number) : null;
+  const dCf = branch && lm(base, 'accuracy_counterfactual') != null && lm(branch, 'accuracy_counterfactual') != null ? (lm(branch, 'accuracy_counterfactual') as number) - (lm(base, 'accuracy_counterfactual') as number) : null;
+  let verdict = 'no branch: nothing to compare';
+  if (branch && dA !== null) {
+    const fixed = classifier.fixed, move = Math.abs(dA) > 0.005, tcB = lm(branch, 'target_change_abs'), tcA = lm(base, 'target_change_abs');
+    verdict = fixed ? (move ? `ACCURACY CHANGED WITH THE CLASSIFIER FIXED: ${dA > 0 ? '+' : ''}${fx(dA)} against the current label${dCf === null ? '' : `, ${dCf > 0 ? '+' : ''}${fx(dCf)} against the counterfactual label`}${tcA !== undefined && tcB !== undefined && tcB !== tcA ? '; the evaluated target differs between the runs' : ''}` : 'classifier and observation fixed; the accuracy against the current label is unchanged (to three decimals)') : `the classifier or the observation CHANGED (${classifier.changed.join(', ')}): a change of accuracy cannot be attributed to the target alone`;
+  }
+  const unresolved = ['whether the change of accuracy WITHIN a distance from the boundary comes from the observation, the lag of the classifier\'s window or the label timing: the data do not separate them (the remainder of the saved decomposition)', 'the effective reachability of a guarantee for a real person (information, trust, language): not measured; only the use of it is', 'any improvement of the target\'s real constitution: the accuracy rising is not read as one'];
+  return { classifier, before, after, target, labelShift, distribution, accuracy, unresolved, verdict };
 }

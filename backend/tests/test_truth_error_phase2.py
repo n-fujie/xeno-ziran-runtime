@@ -449,8 +449,6 @@ def test_the_phase_4_settings_at_their_defaults_change_nothing_and_every_saved_p
     assert a["result_digest"] == b["result_digest"] and a["target_state_digest"] == b["target_state_digest"]
     n = 0
     for eid, e in saved2["experiments"].items():
-        if eid in ("EXP-TE17", "EXP-TE18"):
-            continue   # these are the experiments that add the settings; their arms are checked by the reproduction test below
         by = {r["arm"]: r["result_digest_seed1"] for r in e["arms"]}
         for name, conf in e["arm_configs"].items():
             assert I.run(config_from({"config": {**conf, "seed": 1}}))["result_digest"] == by[name], (eid, name)
@@ -582,4 +580,148 @@ def test_the_api_validates_the_hypothetical_guarantee_settings():
     assert ok.status_code == 200 and ok.json()["process"]["guarantee"]["support_units_per_subject"] > 0
     for bad in ({"support_rule": "everyone"}, {"resource_floor": 1.5}, {"denial_cap": 0}, {"support_capacity": -0.1}, {"interim_access": "yes"}, {"z_shift": 9}, {"resources_start": 2}):
         assert c.post("/api/truth-error/run", json={"config": bad}).status_code == 422, bad
-    assert c.get("/api/truth-error/spec").json()["support_rules"] == ["none", "denied", "low_score"]
+    assert c.get("/api/truth-error/spec").json()["support_rules"] == ["none", "denied", "low_score", "on_request"]
+    assert c.post("/api/truth-error/run", json={"config": {"seed": 2, "support_rule": "on_request", "support_apply_prob": 0.5, "apply_min_resources": 0.1}}).status_code == 200
+    assert c.post("/api/truth-error/run", json={"config": {"support_apply_prob": 1.5}}).status_code == 422
+
+
+# ------------------------------------------------------------------------------------------------ phase 5: endogenous measurement, the labels, the decomposition, the reach of a guarantee
+def _arm(saved, eid, name):
+    return next(a for a in saved["experiments"][eid]["arms"] if a["arm"] == name)
+
+
+def _fresh(saved, eid, name, seeds=range(1, 21)):
+    conf = saved["experiments"][eid]["arm_configs"][name]
+    return [I.run(config_from({"config": {**conf, "seed": s}})) for s in seeds]
+
+
+def test_the_numbers_stated_for_exp_te17_and_te18_are_reproduced_by_a_fresh_run_of_their_arms(saved2):
+    m = lambda rs, k: float(np.mean([r["summary"][k] if k in r["summary"] else r["process"]["metrics"][k] if k in r["process"]["metrics"] else r["process"]["complement"][k] for r in rs]))  # noqa: E731
+    b0, base = _fresh(saved2, "EXP-TE17", "noisy, beta 0.0"), _fresh(saved2, "EXP-TE17", "noisy classifier (noise 0.8), the base")
+    assert m(b0, "classification_correct") == pytest.approx(0.880, abs=0.0006) and m(base, "classification_correct") == pytest.approx(0.984, abs=0.0006)   # beta 0 and 0.06
+    acc = _fresh(saved2, "EXP-TE17", "classifier noise 0.05")
+    assert m(acc, "denial_rate_late_unfav") > 0.99 and m(acc, "denial_rate_late_fav") < 0.02   # an accurate classifier: the denial concentrates on the not favourable
+    floor = _fresh(saved2, "EXP-TE18", "noisy: resource floor 0.3")
+    assert m(floor, "state_change_unfav") - m(base, "state_change_unfav") == pytest.approx(0.648, abs=0.005)
+    full = _fresh(saved2, "EXP-TE18", "noisy: support to the denied 0.12")
+    assert m(full, "state_change_unfav") - m(base, "state_change_unfav") == pytest.approx(1.296, abs=0.005)   # a support equal to the loss removes the fall (the level is about +0.29)
+    cap = _fresh(saved2, "EXP-TE18", "noisy: support to the low score 0.12, capacity 10%")
+    assert m(cap, "state_change_unfav") - m(base, "state_change_unfav") == pytest.approx(0.069, abs=0.005)
+    pr = lambda rs: float(np.mean([r["process"]["guarantee"]["support_share_to_unfav"] for r in rs]))  # noqa: E731
+    assert pr(_fresh(saved2, "EXP-TE18", "accurate: support to the low score 0.12")) == pytest.approx(0.995, abs=0.0006) and pr(_fresh(saved2, "EXP-TE18", "noisy: support to the low score 0.12")) == pytest.approx(0.942, abs=0.0006)
+    # and the saved values are the ones the fresh run gives
+    assert _arm(saved2, "EXP-TE17", "noisy, beta 0.0")["mean"]["classification_correct"]["mean"] == pytest.approx(m(b0, "classification_correct"))
+
+
+def test_the_classifier_is_the_same_function_whatever_the_feedback_and_it_is_fixed_across_the_arms(saved2):
+    e = saved2["experiments"]["EXP-TE19"]
+    keys = ("classifier", "window", "signal_threshold", "yaw_threshold", "confidence_floor", "requires_warrant")
+    base = e["arm_configs"]["feedback beta 0.06 (the base)"]
+    for name in ("intervention with no feedback to the state (beta 0)", "feedback beta 0.03", "feedback beta 0.12", "feedback beta 0.24"):
+        assert {k: e["arm_configs"][name][k] for k in keys} == {k: base[k] for k in keys} and e["arm_configs"][name]["signal_sensor"] == base["signal_sensor"]
+    # the same rule maps the recorded window to the classification in a run with and without the feedback
+    for beta in (0.0, 0.12):
+        r = I.run(cfg(seed=3, beta=beta))
+        for rs in r["records"]:
+            for t in range(len(rs)):
+                w = [x["signal_measured"] for x in rs[max(0, t - 3): t + 1] if x["signal_measured"] is not None]
+                if not w or abs(np.mean(w)) < 0.003:
+                    continue
+                assert rs[t]["classification"] == (1 if np.mean(w) > 0 else -1), (beta, t)
+    # before any institutional action the decisions of a run with and without the feedback are identical
+    a, b = I.run(cfg(seed=3, beta=0.0)), I.run(cfg(seed=3, beta=0.12))
+    assert [[x["classification"] for x in rs[:2]] for rs in a["records"]] == [[x["classification"] for x in rs[:2]] for rs in b["records"]]
+
+
+def test_the_four_labels_are_generated_at_the_times_and_from_the_states_they_are_defined_by():
+    r = I.run(cfg(seed=2, beta=0.06))
+    for rs in r["records"]:
+        z0 = rs[0]["reference_z"]
+        for t, x in enumerate(rs):
+            assert x["verification_label"] == (x["reference_z"] > 0) and x["label_initial"] == (z0 > 0)   # current = the state at the start of the period; initial = fixed
+            assert x["label_counterfactual"] == (x["z_counterfactual"] > 0)
+            if t + 1 < len(rs):
+                assert x["label_next"] == (rs[t + 1]["reference_z"] > 0)   # next = the state after the period's own decision
+    b0 = I.run(cfg(seed=2, beta=0.0))
+    for rs in b0["records"]:
+        assert all(abs(x["z_counterfactual"] - x["reference_z"]) < 1e-3 for x in rs)   # with no feedback the counterfactual state IS the state
+    m, m0 = r["process"]["labels"]["metrics"], b0["process"]["labels"]["metrics"]
+    assert m["accuracy_current"] == pytest.approx(r["summary"]["classification_correct"]) and m0["accuracy_current"] == pytest.approx(m0["accuracy_counterfactual"])
+    assert m["accuracy_current"] - m["accuracy_counterfactual"] > 0.03 and m["target_change_abs"] > 0.5 and m0["target_change_abs"] == pytest.approx(0.0, abs=1e-12)   # the label depends on the institution only through the state it moved
+    assert m["label_shift_current_vs_counterfactual"] > 0.0 and m0["label_shift_current_vs_counterfactual"] == 0.0
+
+
+def test_the_decomposition_of_an_accuracy_change_is_an_identity():
+    vals = {}
+    for tag, beta in (("c", 0.0), ("x", 0.06)):
+        rs = [I.run(cfg(seed=s, beta=beta)) for s in range(1, 6)]
+        vals[tag] = {k: [r["process"]["labels"]["metrics"][k] for r in rs] for k in ("accuracy_pooled_current", *[f"bin{b}_{y}" for b in range(5) for y in ("share", "accuracy")])}
+    d = X2.accuracy_decomposition(vals["x"], vals["c"])
+    for c, w, dl, px, pc in zip(d["per_seed"]["composition"], d["per_seed"]["within"], d["per_seed"]["delta"], vals["x"]["accuracy_pooled_current"], vals["c"]["accuracy_pooled_current"], strict=True):
+        assert c + w == pytest.approx(dl, abs=1e-12) and dl == pytest.approx(px - pc, abs=1e-9)   # composition + within = the change of the pooled accuracy = the pooled accuracies' difference
+
+
+def test_a_changed_accuracy_with_a_fixed_classifier_is_the_input_distribution_and_the_label(saved2):
+    e = saved2["experiments"]["EXP-TE19"]
+    d = e["analysis"]["seeds_1_20"]["decomposition"]["feedback beta 0.06 (the base)"]
+    assert d["change_of_pooled_accuracy"]["mean"] == pytest.approx(0.104, abs=0.01) and d["composition_input_distribution"]["mean"] > 0.09   # +0.104: the input distribution carries it
+    w = d["within_distance"]
+    assert abs(w["mean"]) < 2 * w["se"] + 0.005   # nothing detectable within a distance from the boundary: the classifier and the observation are unchanged
+    lab = d["accuracy_change_by_label"]
+    assert lab["current"]["mean"] > lab["counterfactual"]["mean"] + 0.03 and lab["counterfactual"]["mean"] > 0.02   # about half of the gain disappears against a label the institution did not move
+    for e2 in e["analysis"]["seeds_21_40"]["decomposition"]["feedback beta 0.06 (the base)"]["composition_input_distribution"], :
+        assert e2["mean"] > 0.09   # on the other seeds too
+    # a change of the classifier or of the observation at beta 0 is a change seen under every label alike; the feedback is not
+    for arm in ("beta 0, a different classifier (window 8)", "beta 0, a more precise observation (noise 0.4)", "beta 0, observation view angle 40"):
+        x = e["analysis"]["seeds_1_20"]["decomposition"][arm]["accuracy_change_by_label"]
+        assert abs(x["current"]["mean"] - x["counterfactual"]["mean"]) < 0.002, arm
+    f = next(a for a in e["arms"] if a["arm"] == "feedback beta 0.06 (the base)")["mean"]
+    assert f["boundary_mass_actual"]["mean"] < 0.05 and abs(f["favourable_share_current"]["mean"] - 0.505) < 0.05   # the population moved away from the boundary; its composition by label hardly changed
+
+
+def test_label_endogeneity_grows_with_the_feedback_and_is_absent_without_it(saved2):
+    e = saved2["experiments"]["EXP-TE20"]
+    gaps = {a["arm"]: a["mean"]["label_gap_current_minus_counterfactual"]["mean"] for a in e["arms"]}
+    assert gaps["intervention with no feedback to the state (beta 0)"] == pytest.approx(0.0, abs=1e-12)
+    seq = [gaps[f"feedback beta {b}"] for b in ("0.03", "0.06 (the base)", "0.12", "0.24")]
+    assert seq == sorted(seq) and seq[0] > 0.01 and seq[-1] > 0.08
+    assert _contrast(e, "within the base run", "label_gap_next_minus_current")["paired"]["mean"] == pytest.approx(0.0, abs=0.002)   # the label after the decision equals the label at the start of the next period: no further timing effect
+
+
+def test_the_same_mean_accuracy_can_hide_a_different_distribution_of_the_disadvantage(saved2):
+    pairs = saved2["experiments"]["EXP-TE21"]["analysis"]["seeds_1_20"]["pairs"]
+    assert pairs and all(p["accuracy_difference"]["ci95"][0] > -0.01 and p["accuracy_difference"]["ci95"][1] < 0.01 for p in pairs)   # equivalence, not mere non-detection
+    hit = next(p for p in pairs if {p["a"], p["b"]} == {"noisy classifier, the base", "accurate classifier, no feedback (beta 0)"})
+    assert "state_gap_change" in hit["metrics_that_differ"] and abs(hit["differences"]["state_gap_change"]["mean"]) > 1.5   # the same accuracy, a gap of 1.9 against 0.0
+    assert any(not p["metrics_that_differ"] for p in pairs) and any(len(p["metrics_that_differ"]) >= 6 for p in pairs)   # and pairs that are alike in everything are kept too
+    assert saved2["experiments"]["EXP-TE21"]["analysis"]["seeds_21_40"]["n_equivalent_pairs"] > 0
+
+
+def test_a_formal_guarantee_and_the_reach_of_it_are_different_measurements(saved2):
+    e = saved2["experiments"]["EXP-TE22"]
+    arms = {a["arm"]: a["mean"] for a in e["arms"]}
+    m = lambda arm, k: arms[arm][k]["mean"]  # noqa: E731
+    auto, req1, req5, req2 = (arms[x] for x in ("formal guarantee, delivered automatically to the low score", "formal guarantee, on request (everyone eligible applies)", "formal guarantee, on request (half of the eligible apply each period)", "formal guarantee, on request (one in five apply)"))
+    assert auto["state_change_unfav"]["mean"] == req1["state_change_unfav"]["mean"]   # by construction: if everyone applies and nothing stops them, on request is automatic
+    assert req5["support_utilisation"]["mean"] == pytest.approx(0.5, abs=0.02) and req2["support_utilisation"]["mean"] == pytest.approx(0.2, abs=0.02)
+    assert req5["state_change_unfav"]["mean"] < auto["state_change_unfav"]["mean"] - 0.5   # the same formal guarantee, a different effect on the state: the reach
+    assert m("formal guarantee, on request, applicants need resources 0.3", "support_utilisation") < m("formal guarantee, on request (everyone eligible applies)", "support_utilisation")
+    assert "NOT measured" in e["protocol"]["unresolved"] and "proxy" in e["protocol"]["unresolved"]
+    # the guarantees that need no application are read separately
+    assert m("resource floor 0.3 (no application)", "support_utilisation") is None and m("resource floor 0.3 (no application)", "state_change_unfav") > m("no support", "state_change_unfav") + 0.5
+    c = _contrast(e, "access kept pending a correction minus the process alone", "state_change_unfav")
+    assert c["class"] == "replicated" and c["paired"]["mean"] > 0
+
+
+def test_ablation_separates_the_score_from_the_allocation_and_the_allocation_from_the_state(saved2):
+    e = saved2["experiments"]["EXP-TE23"]
+    arms = {a["arm"]: a["mean"] for a in e["arms"]}
+    m = lambda arm, k: arms[arm][k]["mean"]  # noqa: E731
+    inert = "allocation inert: access does not change the resources (gain = loss = 0)"
+    assert m(inert, "denial_rate_late_unfav") > 0.9 and m(inert, "resources_end_unfav") == pytest.approx(0.5) and m(inert, "target_change_abs") == pytest.approx(0.0, abs=1e-12)   # the score changes who is denied; the allocation and the state do not move
+    assert m(inert, "accuracy_current") == pytest.approx(m("no feedback to the state (beta 0)", "accuracy_current"))
+    # a random institution lowers the accuracy against the label it did not move although it raises it against its own
+    lot = "no score gate: access by lottery"
+    assert m(lot, "accuracy_counterfactual") < 0.7 and m(lot, "accuracy_current") > m("no feedback to the state (beta 0)", "accuracy_current")
+    # the interaction of the feedback and the allocation is by construction: the state moves only when both are present
+    assert m("allocation inert with a stronger feedback (beta 0.12)", "target_change_abs") == pytest.approx(0.0, abs=1e-12) and m("no feedback to the state (beta 0)", "target_change_abs") == pytest.approx(0.0, abs=1e-12)

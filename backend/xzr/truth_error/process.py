@@ -83,6 +83,7 @@ COMPLEMENT_METRICS: dict[str, dict[str, str]] = {
     "state_change_unfav_denied": {"denominator": "subjects not favourable at the start (z0<=0) and denied in at least one period (the correctly denied, by the start label)", "period": "first to last period", "unit": "as state_change_unfav"},
     "state_change_fav": {"denominator": "subjects favourable at the start (z0>0)", "period": "first to last period", "unit": "as state_change_unfav"},
     "state_gap_change": {"denominator": "both groups", "period": "first to last period", "unit": "state_change_fav minus state_change_unfav: the change of the distance between the two groups"},
+    "resources_end_fav": {"denominator": "subjects favourable at the start (z0>0)", "period": "the last period", "unit": "resources in [0, 1]; mean per run"},
     "resources_end_unfav": {"denominator": "subjects not favourable at the start (z0<=0)", "period": "the last period", "unit": "resources in [0, 1]; mean per run"},
 }
 
@@ -108,6 +109,7 @@ def complement_outputs(ah, ev, z0, z_end, resources_end) -> dict:
         "state_change_fav": sc_fv,
         "state_gap_change": (sc_fv - sc_un) if sc_un is not None and sc_fv is not None else None,
         "resources_end_unfav": mean(resources_end, un),
+        "resources_end_fav": mean(resources_end, fv),
     }
 
 
@@ -119,10 +121,29 @@ GUARANTEE_METRICS: dict[str, dict[str, str]] = {
     "support_per_unfav": {"denominator": "subjects not favourable at the start (z0<=0)", "period": "all periods", "unit": "support units per subject"},
     "support_per_fav": {"denominator": "subjects favourable at the start (z0>0)", "period": "all periods", "unit": "support units per subject (support that reached the favourable)"},
     "capacity_binding_periods": {"denominator": "the periods", "period": "all periods", "unit": "number of periods in which the support capacity left targeted subjects unserved"},
+    "support_utilisation": {"denominator": "subject-periods in which a subject was eligible for the support", "period": "all periods", "unit": "share of them in which the subject was served: a PROXY of the reach of the guarantee (use of it), not the effective reachability, which the model does not measure"},
+    "unfav_ever_eligible": {"denominator": "subjects not favourable at the start (z0<=0)", "period": "all periods", "unit": "share eligible for the support in at least one period"},
+    "unfav_eligible_never_served": {"denominator": "subjects not favourable at the start (z0<=0) that were eligible in at least one period", "period": "all periods", "unit": "share never served: the guarantee existed for them and did not reach them"},
+    "time_to_first_support": {"denominator": "subjects eligible and served at least once", "period": "all periods", "unit": "mean period of the first support"},
 }
 
 
-def guarantee_outputs(z0, guard_periods, support_units, capacity_binding) -> dict:
+def _reach(z0, eligible_periods, served_periods, first_support) -> dict:
+    if eligible_periods is None:
+        return {"support_utilisation": None, "unfav_ever_eligible": None, "unfav_eligible_never_served": None, "time_to_first_support": None}
+    un = z0 <= 0
+    el = eligible_periods > 0
+    served_ever = served_periods > 0
+    tot = int(eligible_periods.sum())
+    return {
+        "support_utilisation": float(served_periods.sum() / tot) if tot else None,
+        "unfav_ever_eligible": float(el[un].mean()) if un.any() else None,
+        "unfav_eligible_never_served": float((~served_ever[un & el]).mean()) if (un & el).any() else None,
+        "time_to_first_support": float(first_support[served_ever].mean()) if served_ever.any() else None,
+    }
+
+
+def guarantee_outputs(z0, guard_periods, support_units, capacity_binding, eligible_periods=None, served_periods=None, first_support=None) -> dict:
     un, fv = z0 <= 0, z0 > 0
     tot = float(support_units.sum())
     return {
@@ -132,7 +153,97 @@ def guarantee_outputs(z0, guard_periods, support_units, capacity_binding) -> dic
         "support_per_unfav": float(support_units[un].mean()) if un.any() else None,
         "support_per_fav": float(support_units[fv].mean()) if fv.any() else None,
         "capacity_binding_periods": float(capacity_binding),
+        **_reach(z0, eligible_periods, served_periods, first_support),
     }
+
+
+# PHASE 5: the evaluation label under four conditions, kept apart. One set of classifications (made once, by the same classifier on the same inputs) is evaluated against:
+#   initial          the label of the state BEFORE any institutional action (z0 > 0), fixed for the whole run: the FIXED REFERENCE LABEL
+#   current          the label of the state at the start of the period (z_t > 0): the state after all the earlier institutional effects, before this period's decision. This is the label the model has always used
+#   next             the label of the state AFTER this period's own decision (z_(t+1) > 0): the POST-INTERVENTION label of that decision
+#   counterfactual   the label of the state the subject would have had with no institutional effect on the state (the matched run with beta = 0 and the same noise): the COUNTERFACTUAL REFERENCE
+# The bins split the subject-periods by the distance of the actual state from the boundary (|z|), so that a change of the accuracy can be divided into a change of the INPUT DISTRIBUTION (how many subject-periods lie where classification is easy) and a change WITHIN each distance (the classifier, the observation, the label).
+LATE_PERIODS = 8  # the window of the summary's classification_correct
+BIN_EDGES = (0.0, 0.25, 0.5, 1.0, 2.0)
+LABELS = ("initial", "current", "next", "counterfactual")
+LABEL_METRICS: dict[str, dict[str, str]] = {
+    "accuracy_initial": {"denominator": "classified subject-periods", "period": "the last 8 periods (the window of the summary)", "unit": "mean over periods of the share correct against the FIXED label z0>0"},
+    "accuracy_current": {"denominator": "classified subject-periods", "period": "the last 8 periods (the window of the summary)", "unit": "mean over periods of the share correct against the label of the state at the start of the period (the model's own metric, `classification_correct`)"},
+    "accuracy_next": {"denominator": "classified subject-periods", "period": "the last 8 periods", "unit": "mean per-period share correct against the label of the state after the period's own decision"},
+    "accuracy_counterfactual": {"denominator": "classified subject-periods", "period": "the last 8 periods", "unit": "mean per-period share correct against the label of the state with no institutional effect on the state (the matched run at beta 0 with the same noise)"},
+    "accuracy_current_all": {"denominator": "classified subject-periods", "period": "all periods", "unit": "as accuracy_current over the whole run"},
+    "accuracy_counterfactual_all": {"denominator": "classified subject-periods", "period": "all periods", "unit": "as accuracy_counterfactual over the whole run"},
+    "label_shift_current_vs_initial": {"denominator": "subject-periods", "period": "all periods", "unit": "share whose current label differs from the fixed label"},
+    "label_shift_current_vs_counterfactual": {"denominator": "subject-periods", "period": "all periods", "unit": "share whose current label differs from the counterfactual label: the labels the institution changed"},
+    "label_shift_next_vs_current": {"denominator": "subject-periods", "period": "all periods", "unit": "share whose label changes across the period's own decision"},
+    "target_change_abs": {"denominator": "subject-periods", "period": "all periods", "unit": "mean |z - z counterfactual|: how far the institution moved the evaluated state"},
+    "boundary_mass_actual": {"denominator": "subject-periods", "period": "all periods", "unit": "share with |z|<0.5 (near the boundary, where classification is hard), actual state"},
+    "boundary_mass_counterfactual": {"denominator": "subject-periods", "period": "all periods", "unit": "the same for the counterfactual state"},
+    "signal_abs_mean": {"denominator": "observed signal values", "period": "all periods", "unit": "mean |signal|: the input the classifier reads"},
+    "favourable_share_current": {"denominator": "subject-periods", "period": "all periods", "unit": "share favourable by the current label (the composition of the evaluated population)"},
+    "favourable_share_initial": {"denominator": "subjects", "period": "the start", "unit": "share favourable at the start"},
+    "accuracy_current_unfav": {"denominator": "classified subject-periods of subjects not favourable at the start", "period": "all periods", "unit": "pooled share correct against the current label"},
+    "accuracy_current_fav": {"denominator": "classified subject-periods of subjects favourable at the start", "period": "all periods", "unit": "pooled share correct against the current label"},
+    "accuracy_pooled_current": {"denominator": "classified subject-periods", "period": "all periods", "unit": "pooled share correct against the current label (the sum over the bins of share x accuracy: the quantity the decomposition divides)"},
+}
+
+
+def label_outputs(cfg, cls_hist, z0, z_series, z_end, eps_z, sig_abs_sum, sig_abs_n) -> dict:
+    """All the metrics are over the LATE window (the last 8 periods), as the summary's ``classification_correct`` is; ``accuracy_*_all`` and the series give the whole run."""
+    T, n = z_series.shape
+    cl = np.asarray(cls_hist)  # (T, n)
+    classified = cl != 0
+    z_cf = z0[None, :] + 0.02 * np.vstack([np.zeros((1, n)), np.cumsum(eps_z, axis=0)[:-1]])  # beta = 0, same noise (pose coupling does not enter the state)
+    z_next = np.vstack([z_series[1:], z_end[None, :]])
+    lab = {"initial": np.broadcast_to((z0 > 0)[None, :], (T, n)), "current": z_series > 0, "next": z_next > 0, "counterfactual": z_cf > 0}
+    pred = cl == 1
+    win = slice(max(0, T - LATE_PERIODS), T)
+    un, fv = z0 <= 0, z0 > 0
+
+    def rates(name: str) -> np.ndarray:
+        ok = classified & (pred == lab[name])
+        return ok.sum(axis=1) / np.maximum(1, classified.sum(axis=1))
+
+    def late(name: str) -> float | None:
+        return float(rates(name)[win].mean()) if classified[win].any() else None
+
+    def pooled(name: str, mask: np.ndarray) -> float | None:
+        c = classified[win][:, mask]
+        return float((c & (pred[win][:, mask] == lab[name][win][:, mask])).sum() / c.sum()) if c.sum() else None
+
+    az = np.abs(z_series)
+    edges = np.array(BIN_EDGES + (np.inf,))
+    idx = np.clip(np.searchsorted(edges, az, side="right") - 1, 0, len(edges) - 2)
+    ok_cur = classified & (pred == lab["current"])
+    nb = len(edges) - 1
+    cls_n = np.array([int((classified[win] & (idx[win] == b)).sum()) for b in range(nb)])
+    cor_n = np.array([int((ok_cur[win] & (idx[win] == b)).sum()) for b in range(nb)])
+    tot = max(1, int(cls_n.sum()))
+    m = {
+        "accuracy_initial": late("initial"),
+        "accuracy_current": late("current"),
+        "accuracy_next": late("next"),
+        "accuracy_counterfactual": late("counterfactual"),
+        "accuracy_current_all": float(rates("current").mean()),
+        "accuracy_counterfactual_all": float(rates("counterfactual").mean()),
+        "label_shift_current_vs_initial": float((lab["current"][win] != lab["initial"][win]).mean()),
+        "label_shift_current_vs_counterfactual": float((lab["current"][win] != lab["counterfactual"][win]).mean()),
+        "label_shift_next_vs_current": float((lab["next"][win] != lab["current"][win]).mean()),
+        "target_change_abs": float(np.abs(z_series - z_cf)[win].mean()),
+        "boundary_mass_actual": float((az[win] < 0.5).mean()),
+        "boundary_mass_counterfactual": float((np.abs(z_cf[win]) < 0.5).mean()),
+        "signal_abs_mean": float(sig_abs_sum / sig_abs_n) if sig_abs_n else None,
+        "favourable_share_current": float(lab["current"][win].mean()),
+        "favourable_share_initial": float(fv.mean()),
+        "accuracy_current_unfav": pooled("current", un),
+        "accuracy_current_fav": pooled("current", fv),
+        "accuracy_pooled_current": float(cor_n.sum() / tot),
+    }
+    for b in range(nb):
+        m[f"bin{b}_share"] = float(cls_n[b] / tot)
+        m[f"bin{b}_accuracy"] = float(cor_n[b] / cls_n[b]) if cls_n[b] else None
+    series = {name: [float(x) for x in rates(name)] for name in LABELS}
+    return {"metrics": m, "series": series, "definitions": LABEL_METRICS, "bin_edges": [float(e) if np.isfinite(e) else None for e in edges], "late_periods": LATE_PERIODS, "_z_cf": z_cf, "_z_next": z_next}
 
 
 def _events_block(ev: dict[str, np.ndarray]) -> dict:
@@ -186,7 +297,7 @@ def recoverability(access: np.ndarray, window: int | None) -> dict:
     return {"window": window, "periods": periods, "episodes": episodes}
 
 
-def process_outputs(cfg, ev, ap, ap_blocked, ap_outcome, false_detect, ah, fav0, fav_end, locked_end, denied_at_approval, access_b_end, z0=None, z_end=None, resources_end=None, guard_periods=None, support_units=None, capacity_binding=0) -> dict:
+def process_outputs(cfg, ev, ap, ap_blocked, ap_outcome, false_detect, ah, fav0, fav_end, locked_end, denied_at_approval, access_b_end, z0=None, z_end=None, resources_end=None, guard_periods=None, support_units=None, capacity_binding=0, eligible_periods=None, served_periods=None, first_support=None) -> dict:
     ah = np.asarray(ah, dtype=bool)  # (periods, subjects)
     T, n = ah.shape
     nf = max(1, int(fav0.sum()))
@@ -228,7 +339,7 @@ def process_outputs(cfg, ev, ap, ap_blocked, ap_outcome, false_detect, ah, fav0,
         "metric_definitions": METRICS,
         "complement": complement_outputs(ah, ev, z0, z_end, resources_end) if z0 is not None else None,
         "complement_definitions": COMPLEMENT_METRICS,
-        "guarantee": guarantee_outputs(z0, guard_periods, support_units, capacity_binding) if z0 is not None and guard_periods is not None else None,
+        "guarantee": guarantee_outputs(z0, guard_periods, support_units, capacity_binding, eligible_periods, served_periods, first_support) if z0 is not None and guard_periods is not None else None,
         "guarantee_definitions": GUARANTEE_METRICS,
         "appeal": app,
         "recoverability": {

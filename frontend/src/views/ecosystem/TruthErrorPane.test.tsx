@@ -13,7 +13,7 @@ const dir = join(dirname(fileURLToPath(import.meta.url)), '__fixtures__');
 const runs = JSON.parse(readFileSync(join(dir, 'truth-error-runs.json'), 'utf8')) as Record<'base' | 'invalid' | 'biased' | 'noscore', TERun>;
 const saved = JSON.parse(readFileSync(join(dir, '..', '..', '..', '..', '..', 'docs', 'truth_error', 'experiments.json'), 'utf8')) as { experiments: Record<string, TEExperiment> };
 const saved2 = JSON.parse(readFileSync(join(dir, '..', '..', '..', '..', '..', 'docs', 'truth_error', 'experiments2.json'), 'utf8')) as { experiments: Record<string, TEExperiment> };
-const runs2 = JSON.parse(readFileSync(join(dir, 'truth-error-runs2.json'), 'utf8')) as Record<'base' | 'process' | 'no_release' | 'appeal' | 'appeal_gated' | 'guarded', TERun>;
+const runs2 = JSON.parse(readFileSync(join(dir, 'truth-error-runs2.json'), 'utf8')) as Record<'base' | 'process' | 'no_release' | 'appeal' | 'appeal_gated' | 'guarded' | 'feedback' | 'on_request' | 'base5' | 'feedback5', TERun>;
 const none = async () => undefined;
 const ctx = (over: Partial<TruthCtx> = {}): TruthCtx => ({ base: runs.base, branch: null, k: 0, setK: () => undefined, t: 25, setT: () => undefined, selected: null, select: () => undefined, relation: null, setRelation: () => undefined, draft: {}, setDraft: () => undefined, busy: false, err: null,
   runBase: none, runBranch: none, clearBranch: () => undefined, focus3d: () => undefined, experiments: saved.experiments, expId: 'EXP-TE02', setExpId: () => undefined, experiments2: saved2.experiments, exp2Id: 'EXP-TE07-release', setExp2Id: () => undefined, loadArm: none, ...over });
@@ -169,5 +169,31 @@ describe('the truth-error pane', () => {
     expect(text(h)).toContain('HYPOTHETICAL research conditions'); expect(text(h)).toContain('no number here is theirs');
     const n = text(section(h, 'te-node'));
     expect(n).toContain('resource floor 0.2'); expect(n).toContain('denial cap 5'); expect(n).toContain('support to the low score');
+  });
+  it('shows the institution\'s action returning to the target: before and after, a fixed classifier, the changed target, the label shift, the four accuracies, the groups and what is unresolved', () => {
+    const h = html({ base: runs2.base, branch: runs2.feedback, k: 1, t: 20 });
+    for (const id of ['te-endo-badges', 'te-endo-verdict', 'te-endo', 'te-endo-accuracy', 'te-endo-distribution', 'te-endo-unresolved']) expect(h, id).toContain(`data-testid="${id}"`);
+    const b = text(section(h, 'te-endo-badges'));
+    for (const w of ['FIXED CLASSIFIER', 'CHANGED TARGET', 'LABEL SHIFT', 'DISTRIBUTIONAL CONSEQUENCES', 'UNRESOLVED']) expect(b, w).toContain(w);
+    expect(text(section(h, 'te-endo-verdict'))).toContain('ACCURACY CHANGED WITH THE CLASSIFIER FIXED');
+    const e = text(section(h, 'te-endo'));
+    for (const w of ['BEFORE the period', 'AFTER it', 'CHANGED TARGET', 'LABEL SHIFT', 'state minus the counterfactual state']) expect(e, w).toContain(w);
+    const a = text(section(h, 'te-endo-accuracy'));
+    for (const w of ['INITIAL', 'CURRENT', 'NEXT', 'COUNTERFACTUAL']) expect(a, w).toContain(w);
+    expect(text(section(h, 'te-endo-distribution'))).toContain('not favourable at the start');
+    expect(text(section(h, 'te-endo-unresolved'))).toContain('not measured');
+    expect(text(h)).toContain('A rising accuracy is not read as an improvement of the target'); expect(text(h)).toContain('a correct classification is not read as a justified action');
+  });
+  it('does not call the classifier fixed when the branch changed it or the observation, and shows no such section for an older run', () => {
+    const other = structuredClone(runs2.feedback) as TERun; other.config.window = 8;
+    expect(text(section(html({ base: runs2.base, branch: other, k: 1, t: 20 }), 'te-endo-badges'))).toContain('CLASSIFIER OR OBSERVATION CHANGED');
+    expect(html()).not.toContain('data-testid="te-endo"');
+  });
+  it('offers the application-based support and the two evaluator and target relations', () => {
+    const h = html({ base: runs2.on_request, k: 1, t: 12, relation: 'label_generation' });
+    expect(text(section(h, 'te-guarantee-controls'))).toContain('chance of applying'); expect(text(section(h, 'te-guarantee-controls'))).toContain('resources needed to apply');
+    expect(text(section(h, 'te-relation-select'))).toContain('transformed target'); expect(text(section(h, 'te-relation-select'))).toContain('evaluation label');
+    const r = text(section(h, 'te-relation'));
+    expect(r).toContain('INITIAL'); expect(r).toContain('COUNTERFACTUAL'); expect(r).toContain('evaluator'); expect(r).toContain('REFERENCE');
   });
 });

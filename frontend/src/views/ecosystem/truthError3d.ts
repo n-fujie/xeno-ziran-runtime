@@ -11,9 +11,11 @@ import { EDGES, NODES, PATHS, RELATIONS, nodeValue, relationAt, stepReached, typ
 export interface TruthFrame { run: TERun; branch: TERun | null; k: number; t: number; selected: NodeId | null; relation?: RelationId | null }
 export interface TruthLayer {
   group: THREE.Group; pickables: THREE.Mesh[]; meshOf(id: NodeId): THREE.Mesh; poseRef: THREE.Group; poseMeasured: THREE.Group; edgeLines: THREE.LineSegments; set(f: TruthFrame): void; dispose(): void;
-  pathLines: THREE.LineSegments; pathLinesBranch: THREE.LineSegments; pathSegments: PathSegment[]; relationLines: THREE.LineSegments;
+  pathLines: THREE.LineSegments; pathLinesBranch: THREE.LineSegments; pathSegments: PathSegment[]; relationLines: THREE.LineSegments; targetBar: THREE.Mesh; labelShiftMarker: THREE.Mesh;
 }
 export const RELATION_COLORS = { holds: 0x4caf50, fails: 0xe53935, open: 0xdddddd } as const;
+/** The height of the bar beside the subject is the model's own |state - counterfactual state| (capped for display at 3 and scaled by this); the marker above it is lit when the subject's current label differs from its counterfactual label. Both are read from the record, not animated. */
+export const TARGET_BAR_UNIT = 0.9;
 export interface PathSegment { path: PathId; step: string; edge: [NodeId, NodeId] }
 export const PATH_COLORS: Record<PathId, number> = { judgement: 0xe0a030, effect: 0xd9534f, correction: 0x35b6a8, subsequent: 0x9b7fe0 };
 const DARK = new THREE.Color(0x23282e);
@@ -86,6 +88,13 @@ export function buildTruthLayer(parent: THREE.Object3D, centre: THREE.Vector3, s
   const poseRef = poseFrame(0xe8e8ee, 1, owned), poseMeasured = poseFrame(0xe0a030, 0.6, owned);
   poseRef.position.set(meshes.subject.position.x - 1.9, meshes.subject.position.y + 0.2, 0); poseMeasured.position.copy(poseRef.position); poseMeasured.scale.setScalar(1.12);
   group.add(poseRef, poseMeasured);
+  // CHANGED TARGET and LABEL SHIFT, from the record of the selected subject: a bar the height of |z - z counterfactual| and a marker for a shifted label
+  const barGeo = new THREE.BoxGeometry(0.18, 1, 0.18); barGeo.translate(0, 0.5, 0);
+  const barMat = new THREE.MeshBasicMaterial({ color: 0xb0b8c4 }), mkGeo = new THREE.OctahedronGeometry(0.2), mkMat = new THREE.MeshBasicMaterial({ color: 0xf0a030 }); owned.push(barGeo, barMat, mkGeo, mkMat);
+  const targetBar = new THREE.Mesh(barGeo, barMat), labelShiftMarker = new THREE.Mesh(mkGeo, mkMat);
+  targetBar.name = 'truth-target-bar'; labelShiftMarker.name = 'truth-label-shift';
+  targetBar.position.set(meshes.subject.position.x, meshes.subject.position.y - 1.9, 0); labelShiftMarker.position.set(meshes.subject.position.x, meshes.subject.position.y + 1.35, 0);
+  targetBar.visible = false; labelShiftMarker.visible = false; group.add(targetBar, labelShiftMarker);
   parent.add(group);
 
   const colorOf = (v: number | null): THREE.Color => (v === null ? new THREE.Color(0x444444) : new THREE.Color().setHSL(0.58, 0.18, 0.12 + 0.6 * v));
@@ -117,6 +126,9 @@ export function buildTruthLayer(parent: THREE.Object3D, centre: THREE.Vector3, s
       col.needsUpdate = true;
     };
     paint(pathLines, f.run); paint(pathLinesBranch, f.branch);
+    const tc = rec.z_counterfactual === undefined ? null : Math.abs(rec.reference_z - rec.z_counterfactual);
+    targetBar.visible = tc !== null; targetBar.scale.y = (tc === null ? 0 : Math.min(3, tc)) * TARGET_BAR_UNIT + 0.001;
+    labelShiftMarker.visible = rec.label_counterfactual !== undefined && rec.verification_label !== rec.label_counterfactual;
     const rel = f.relation ? RELATIONS.find((r) => r.id === f.relation) : undefined;
     relationLines.visible = !!rel;
     if (rel) {
@@ -128,7 +140,7 @@ export function buildTruthLayer(parent: THREE.Object3D, centre: THREE.Vector3, s
     }
   };
   const dispose = (): void => { group.removeFromParent(); for (const o of owned) o.dispose(); for (const m of Object.values(meshes)) for (const c of m.children) ((c as THREE.Mesh).material as THREE.Material | undefined)?.dispose(); };
-  return { group, pickables, meshOf: (id) => meshes[id], poseRef, poseMeasured, edgeLines, set, dispose, pathLines, pathLinesBranch, pathSegments, relationLines };
+  return { group, pickables, meshOf: (id) => meshes[id], poseRef, poseMeasured, edgeLines, set, dispose, pathLines, pathLinesBranch, pathSegments, relationLines, targetBar, labelShiftMarker };
 }
 
 export const teNodeOf = (o: THREE.Object3D | undefined): NodeId | null => {

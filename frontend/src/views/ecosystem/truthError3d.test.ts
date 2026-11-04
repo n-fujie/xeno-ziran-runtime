@@ -6,11 +6,11 @@ import { fileURLToPath } from 'node:url';
 import * as THREE from 'three';
 import { describe, expect, it } from 'vitest';
 import { EDGES, NODES, PATHS, RELATIONS, nodeValue, relationAt, stepReached, type NodeId, type TERun } from './truthError';
-import { PATH_COLORS, RELATION_COLORS, buildTruthLayer, teNodeOf } from './truthError3d';
+import { PATH_COLORS, RELATION_COLORS, TARGET_BAR_UNIT, buildTruthLayer, teNodeOf } from './truthError3d';
 
 const runs = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '__fixtures__', 'truth-error-runs.json'), 'utf8')) as Record<'base' | 'invalid' | 'biased' | 'noscore', TERun>;
 const { base, invalid, biased } = runs;
-const runs2 = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '__fixtures__', 'truth-error-runs2.json'), 'utf8')) as Record<'base' | 'process' | 'no_release' | 'appeal' | 'appeal_gated' | 'guarded', TERun>;
+const runs2 = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '__fixtures__', 'truth-error-runs2.json'), 'utf8')) as Record<'base' | 'process' | 'no_release' | 'appeal' | 'appeal_gated' | 'guarded' | 'feedback' | 'on_request' | 'base5' | 'feedback5', TERun>;
 const light = (m: THREE.Mesh) => { const c = (m.material as THREE.MeshStandardMaterial).color, h = { h: 0, s: 0, l: 0 }; c.getHSL(h); return h.l; };
 
 describe('the objects of the chain', () => {
@@ -172,5 +172,39 @@ describe('the selected relation in the scene', () => {
     layer.set({ run: runs2.guarded, branch: null, k, t: on.t, selected: null }); const a = light(layer.meshOf('guarantee'));
     layer.set({ run: runs2.guarded, branch: null, k, t: off.t, selected: null });
     expect(light(layer.meshOf('guarantee'))).toBeLessThan(a);
+  });
+});
+
+describe('the changed target and the shifted label in the scene', () => {
+  const parent = new THREE.Group(), layer = buildTruthLayer(parent, new THREE.Vector3(0, 12, 0), 18);
+  it('draws a bar whose height is the record\'s |state - counterfactual state|, and none without the feedback', () => {
+    for (const t of [3, 20, 39]) for (const k of [0, 1, 2]) {
+      const x = runs2.feedback.records[k][t];
+      layer.set({ run: runs2.feedback, branch: null, k, t, selected: null });
+      expect(layer.targetBar.visible).toBe(true);
+      expect(layer.targetBar.scale.y).toBeCloseTo(Math.min(3, Math.abs(x.reference_z - (x.z_counterfactual as number))) * TARGET_BAR_UNIT + 0.001, 6);
+    }
+    layer.set({ run: runs2.base, branch: null, k: 1, t: 25, selected: null });
+    expect(layer.targetBar.scale.y).toBeLessThan(0.01);   // beta 0: the state is the counterfactual state
+    const stripped = structuredClone(runs2.base) as TERun; delete stripped.records[1][25].z_counterfactual;
+    layer.set({ run: stripped, branch: null, k: 1, t: 25, selected: null });
+    expect(layer.targetBar.visible).toBe(false);   // a record without the counterfactual shows nothing rather than a guess
+  });
+  it('lights the label-shift marker exactly when the current label differs from the counterfactual label', () => {
+    let lit = 0, dark = 0;
+    for (let k = 0; k < runs2.feedback5.records.length; k++) for (let t = 0; t < 40; t += 3) {
+      const x = runs2.feedback5.records[k][t], want = x.verification_label !== x.label_counterfactual;
+      layer.set({ run: runs2.feedback5, branch: null, k, t, selected: null });
+      expect(layer.labelShiftMarker.visible, `k${k} t${t}`).toBe(want); if (want) lit++; else dark++;
+    }
+    expect(lit).toBeGreaterThan(0); expect(dark).toBeGreaterThan(0);
+  });
+  it('draws the evaluator\'s label relation apart from the chain and colours it by the identity check', () => {
+    layer.set({ run: runs2.feedback, branch: null, k: 1, t: 12, selected: null, relation: 'label_generation' });
+    expect(layer.relationLines.visible).toBe(true);
+    expect((layer.relationLines.material as THREE.LineBasicMaterial).color.getHex()).toBe(RELATION_COLORS.holds);
+    const bad = structuredClone(runs2.feedback); bad.records[1][12].label_counterfactual = !bad.records[1][12].label_counterfactual;
+    layer.set({ run: bad, branch: null, k: 1, t: 12, selected: null, relation: 'label_generation' });
+    expect((layer.relationLines.material as THREE.LineBasicMaterial).color.getHex()).toBe(RELATION_COLORS.fails);
   });
 });
