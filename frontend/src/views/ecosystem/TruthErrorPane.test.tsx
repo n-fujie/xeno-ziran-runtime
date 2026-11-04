@@ -138,4 +138,14 @@ describe('the truth-error pane', () => {
     expect(text(h)).toContain('hypothetical control for studying institutional design danger');
     expect(text(h)).toContain('not a procedure for judging any real person');
   });
+  it('shows the complementary metrics for the subjects who were not favourable at the start, beside the fixed ones, with their denominators', () => {
+    const h = html({ base: runs2.process, k: 1, t: 30 });
+    const m = text(section(h, 'te-metrics')), c = text(section(h, 'te-complement'));
+    expect(m).toContain('access rate late fav');   // the primary metrics are still there
+    for (const s of ['state change unfav', 'state gap change', 'denial rate late unfav', 'subjects not favourable at the start', 'resource feedback beta']) expect(c + text(h), s).toContain(s);
+    expect(c).toContain('first to last period');
+  });
+  it('shows no complementary table for a run saved before it existed', () => {
+    expect(html()).not.toContain('data-testid="te-complement"');
+  });
 });

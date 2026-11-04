@@ -487,7 +487,7 @@ def run(cfg: Config) -> dict:
     rows = {k: [None if (isinstance(v, float) and v != v) else v for v in vs] for k, vs in rows.items()}
     summary = {k: (None if (isinstance(v, float) and v != v) else v) for k, v in summary.items()}
     out = {"config": cfg.asdict(), "series": rows, "records": records, "summary": summary}
-    out["process"] = process_outputs(cfg, ev, ap, ap_blocked, ap_outcome, false_detect, ah, z0 > 0, z > 0, locked, denied_at_approval, access_b if snap_b is not None else None)
+    out["process"] = process_outputs(cfg, ev, ap, ap_blocked, ap_outcome, false_detect, ah, z0 > 0, z > 0, locked, denied_at_approval, access_b if snap_b is not None else None, z0, z, resources)
     out["target_state_digest"] = digest([[round(float(v), 9) for v in row] for row in z_series])
     out["result_digest"] = digest({k: out[k] for k in ("series", "summary")})
     out["process_digest"] = digest(out["process"])  # the phase-2 record apart: result_digest is unchanged by it, so the saved phase-1 digests still hold

@@ -29,6 +29,7 @@ export interface TEProcess {
   events: Record<ProcessEventId, { times: Array<number | null>; n: number; mean_time: number | null }>; false_detections: number; reimposed_after_release: number;
   metrics: Record<string, number | null>; metric_definitions: Record<string, MetricDef>;
   appeal: { exists: boolean; access: string; blocked_subjects: number; stages: Record<AppealStage, number>; stage_times: Record<AppealStage, Array<number | null>>; rejudged_corrected: number; rejudged_upheld: number; relief_effective: number; filed_but_not_relieved: number; filed_share_of_fav_denied_ever: number };
+  complement?: Record<string, number | null> | null; complement_definitions?: Record<string, MetricDef>;
   recoverability: { declared_window: number | null; favourable_at_start: { window: number | null; periods: { recoverable: number; expired: number; unresolved: number }; episodes: { recoverable: number; partially_recoverable: number; unrecoverable: number; unresolved: number } } };
 }
 export interface TERun {
@@ -273,6 +274,7 @@ export const PATHS: Array<{ id: PathId; label: string; steps: PathStep[] }> = [
     { id: 'resources_back', label: 'resources are back at their starting level', variable: 'resources >= 0.5 after the approval', edge: ['resources', 'subject'], at: afterApproval((x) => x.resources >= 0.5) },
     { id: 'b_back', label: 'access at institution B after the approval', variable: 'access_b after the approval', edge: ['score', 'gate_b'], at: afterApproval((x) => x.access_b === true) }] },
 ];
+export const COMPLEMENT_METRIC_IDS = ['denial_rate_late_unfav', 'lost_opportunities_per_unfav', 'share_unfav_ever_denied', 'state_change_unfav', 'state_change_unfav_denied', 'state_change_fav', 'state_gap_change', 'resources_end_unfav'] as const;
 export const stepReached = (run: TERun, k: number, step: PathStep, t: number): boolean => { const a = step.at(run, k); return a !== null && a <= t; };
 
 export type PathStatus = 'SAME' | 'EARLIER' | 'LATER' | 'ONLY_IN_BRANCH' | 'ONLY_IN_BASELINE' | 'NEITHER';

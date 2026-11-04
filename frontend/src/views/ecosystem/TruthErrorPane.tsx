@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { ADDRESS_STATES, APPEAL_STAGES, MODALITIES, NODES, PATHS, addressStatesAt, compareRuns, comparePaths, eventTable, fieldsAt, modalityCounts, nodeReadings, timelineEvents, type NodeId, type Reading, type TERun } from './truthError';
+import { ADDRESS_STATES, APPEAL_STAGES, COMPLEMENT_METRIC_IDS, MODALITIES, NODES, PATHS, addressStatesAt, compareRuns, comparePaths, eventTable, fieldsAt, modalityCounts, nodeReadings, timelineEvents, type NodeId, type Reading, type TERun } from './truthError';
 import type { TEExperiment, TEOverrides } from './truthApi';
 
 // TRUTH-ERROR DYNAMICS — a research tab of the XENO ECOSYSTEM view. It runs a SYNTHETIC virtual institution (backend/xzr/truth_error) and reads the run: nothing here classifies, scores or simulates, and every value is
@@ -149,6 +149,17 @@ export default function TruthErrorPane(c: TruthCtx) {
                 {PRIMARY_METRICS.map((m) => <tr key={m}><td>{m.replace(/_/g, ' ')}</td><td>{n3(proc.metrics[m])}</td>{branch && <td>{n3(bproc?.metrics[m])}</td>}<td><small>{proc.metric_definitions[m]?.denominator}; {proc.metric_definitions[m]?.period}; {proc.metric_definitions[m]?.unit}</small></td></tr>)}
               </tbody></table>
               <div className="eco-note">The virtual population is the same 120 synthetic subjects in every arm; "favourable at the start" means the reference state z0 &gt; 0. A single run is one seed: no general statement follows from these numbers, the saved experiments below repeat them over 20 seeds and again over 20 others.</div>
+
+              {proc.complement && (
+                <>
+                  <h3>Complementary metrics: the subjects who were not favourable at the start</h3>
+                  <table className="eco-table" data-testid="te-complement"><tbody>
+                    <tr><th>metric</th><th>baseline</th>{branch && <th>branch</th>}<th>denominator; period; unit</th></tr>
+                    {COMPLEMENT_METRIC_IDS.map((m) => <tr key={m}><td>{m.replace(/_/g, ' ')}</td><td>{n3(proc.complement?.[m])}</td>{branch && <td>{n3(bproc?.complement?.[m])}</td>}<td><small>{proc.complement_definitions?.[m]?.denominator}; {proc.complement_definitions?.[m]?.period}; {proc.complement_definitions?.[m]?.unit}</small></td></tr>)}
+                  </tbody></table>
+                  <div className="eco-note">The fixed metrics above look only at the subjects favourable at the start and so cannot show what the institution does to the others, among them the subjects it denies correctly. These are added beside them, not instead. A change of the real state moves only through the resource feedback beta (set in the configuration); one run is one unit, so a difference is read over seeds in the saved experiment EXP-TE16, not from one run.</div>
+                </>
+              )}
 
               <h3>Recoverability of the lost opportunities</h3>
               <table className="eco-table" data-testid="te-recover"><tbody>

@@ -21,7 +21,7 @@ import numpy as np
 
 from .experiments import BASE, SEEDS, _diff, _paired, _run_experiment
 from .institution import Config, digest, run
-from .process import METRICS, OBS_LATE, recoverability
+from .process import COMPLEMENT_METRICS, METRICS, OBS_LATE, recoverability
 
 SEEDS2 = tuple(range(21, 41))
 PRIMARY2 = (
@@ -88,6 +88,11 @@ EXTRA: dict[str, Callable[[dict], Any]] = {k: _pm(k) for k in (*PRIMARY2, "recov
 EXTRA.update({f"share_{e}": _share(e) for e in ("misclassified", "detected", "approved", "score_updated", "released", "restored")})
 EXTRA.update({f"time_{e}": _mean_time(e) for e in ("detected", "approved", "score_updated", "released", "restored")})
 EXTRA["reimposed_share"] = lambda r: r["process"]["reimposed_after_release"] / r["config"]["n"]
+def _cm(k: str) -> Callable[[dict], Any]:
+    return lambda r: (r["process"]["complement"] or {}).get(k)
+
+
+EXTRA.update({k: _cm(k) for k in COMPLEMENT_METRICS})
 EXTRA["false_detection_share"] = lambda r: r["process"]["false_detections"] / r["config"]["n"]
 
 
@@ -665,6 +670,53 @@ def appeal_trace(seeds: tuple[int, ...] = SEEDS) -> dict:
     return {"configuration": "TE12 open appeal (NO_PROCESS, request delay 0, approval delay 1, constraint ends by the score) against the same without the appeal", "seeds": list(seeds), "counts": t, "by_construction": BY_CONSTRUCTION}
 
 
+def te16_complement() -> dict:
+    """Added in the verification of section 12.3 (a complement, nothing is removed): what the institution does to the subjects NOT favourable at the start, among them the subjects it denies correctly. One run is one unit, the comparison is paired over seeds, and the references are stated: a lottery (access for half at random) and full access."""
+    ctl = "lottery: no score, access for half at random"
+    named: dict[str, dict[str, Any]] = {
+        ctl: {"use_score": False},
+        "full access: no score, access for everyone": {"use_score": False, "baseline_access": 1.0},
+        "score, sensor noise 0.8 (the base sensor)": {},
+        "score, accurate sensor (noise 0.05)": {"signal_sensor__noise_sigma": 0.05},
+        "score, accurate sensor, no feedback of resources to the state (beta 0)": {"signal_sensor__noise_sigma": 0.05, "beta": 0.0},
+        "score, accurate sensor, beta 0.03": {"signal_sensor__noise_sigma": 0.05, "beta": 0.03},
+        "score, accurate sensor, beta 0.12": {"signal_sensor__noise_sigma": 0.05, "beta": 0.12},
+        "score, accurate sensor, no binding constraint": {"signal_sensor__noise_sigma": 0.05, "lock_after": None},
+    }
+    arms, declared = _grid(NO_PROCESS, named, ctl)
+    a, lo = "score, accurate sensor (noise 0.05)", ctl
+    contrasts = [
+        ("accurate score minus lottery", [(1.0, a), (-1.0, lo)]),
+        ("accurate score minus full access", [(1.0, a), (-1.0, "full access: no score, access for everyone")]),
+        ("base-sensor score minus lottery", [(1.0, "score, sensor noise 0.8 (the base sensor)"), (-1.0, lo)]),
+        ("accurate score without the feedback (beta 0) minus lottery", [(1.0, "score, accurate sensor, no feedback of resources to the state (beta 0)"), (-1.0, lo)]),
+        ("beta 0.12 minus beta 0.03 (accurate score)", [(1.0, "score, accurate sensor, beta 0.12"), (-1.0, "score, accurate sensor, beta 0.03")]),
+    ]
+    keys = tuple(COMPLEMENT_METRICS)
+    return _run2(
+        {
+            "id": "EXP-TE16",
+            "title": "Complementary metrics: what the score does to the subjects who were not favourable at the start",
+            "question": "The primary metrics count the lost opportunities of the subjects favourable at the start. What does a correct classification do to the others, in particular to those it correctly denies, measured against a lottery and against full access, and through which declared setting?",
+            "control": ctl,
+            "arms": arms,
+            "declared": declared,
+            "primary": keys + ("denial_rate_late_fav", "lost_opportunities_per_fav"),
+            "contrasts": contrasts,
+            "contrast_outcomes": ("state_change_unfav", "state_change_unfav_denied", "state_change_fav", "state_gap_change", "denial_rate_late_unfav"),
+            "failure_conditions": {"an arm changed nothing in any seed (its factor was not operative)": lambda x: _no_idle_arm(x, ctl)},
+            "protocol": {
+                "changed": "the use of the score, the base access, the signal-sensor noise, beta (0, 0.03, 0.12) and the binding constraint",
+                "unchanged": "NO_PROCESS otherwise: 120 subjects, 40 periods, beta 0.06 where not varied",
+                "unit": "one run = one unit (the mean over its subjects); the paired difference and its standard error are over the 20 seeds, replicated on 20 others",
+                "seeds": list(SEEDS),
+                "failure": "an arm identical to the control",
+                "status": "a complement added after a finding of the verification; the primary metrics are unchanged",
+            },
+        }
+    )
+
+
 # ------------------------------------------------------------------------------------------------ TE13: parameter sensitivity (one factor at a time, ranges fixed above)
 def te13_sensitivity() -> dict:
     named: dict[str, dict[str, Any]] = {"base (P0)": {}}
@@ -751,6 +803,7 @@ REGISTRY2: dict[str, Callable[[], dict]] = {
     "EXP-TE13": te13_sensitivity,
     "EXP-TE14": te14_interaction,
     "EXP-TE15": te15_separation,
+    "EXP-TE16": te16_complement,
 }
 
 
