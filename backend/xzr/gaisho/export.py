@@ -35,8 +35,13 @@ def run_experiment(spec: dict) -> dict:
     if dom is None:
         return {"model_version": MODEL_VERSION, "spec": spec, "executed": False, "status": STATUS.get(dom_id, {"completion": "UNKNOWN"}), "note": "this domain is specified and not executed; no substitute computation is made", "figure_kind": "CONCEPTUAL_RECONSTRUCTION"}
     obs = observation_from(spec.get("observation"))
-    seeds = tuple(spec.get("seeds") or SEEDS[: getattr(dom, "seed_count", len(SEEDS))])[:MAX_SEEDS]
-    conds = spec.get("conditions") or None
+    seeds = tuple(spec.get("seeds") or SEEDS[: getattr(dom, "seed_count", len(SEEDS))])
+    if len(seeds) > min(MAX_SEEDS, getattr(dom, "max_seeds", MAX_SEEDS)):
+        raise ValueError(f"{dom_id} runs at most {min(MAX_SEEDS, getattr(dom, 'max_seeds', MAX_SEEDS))} seeds in one experiment")
+    conds = spec.get("conditions")
+    if conds is not None and (len(conds) != len(set(conds)) or set(conds) - set(dom.conditions)):
+        raise ValueError("conditions must be distinct names of the domain's conditions")
+    conds = conds or None
     res = run_domain(dom, obs, seeds, conds)
     axes = {"x": dom.x_name, "y": dom.y_name}
     shapes = {c: {s: build_shape(res, c, s, axes) for s in dom.snapshots} for c in res["conditions"]}

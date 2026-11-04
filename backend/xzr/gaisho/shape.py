@@ -20,7 +20,7 @@ def build_shape(result: dict, cond: str, snapshot: str, dom_axes: dict, projecti
         return {**base, "recorded": False, "reason": (snap or {}).get("reason", "UNMEASURED"), "vertices": [], "edges": [], "branch": [], "cuts": [], "unresolved": [], "digest": digest(base)}
     nx, ny = snap["nx"], snap["ny"]
     by = {(k["i"], k["j"]): k for k in snap["cells"]}
-    src = {"operation_digest": c["operation_digest"], "seeds": c["seeds"], "provenance": "INTERVENTION_RELATIVE_DIFFERENCE"}
+    src = {"operation_digest": c["operation_digest"], "seeds": c["seeds"], "provenance": "RECORDED_OBSERVATION"}  # a cell is a recorded observation of the operation under an intervention (a difference between interventions is read from cells, as a relation)
     verts, unres = [], []
     for k in snap["cells"]:
         vid = f"v{k['i']}_{k['j']}"

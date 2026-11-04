@@ -15,6 +15,14 @@ from typing import Any
 
 import numpy as np
 
+LAYERS = {
+    "cell": {"real_operation": "the operation behind it is executed in the model: the agent's decision rule (weights at the snapshot) evaluated with E and S set by intervention", "recorded_observation": "THE VALUE of the cell: the share of its trials with the outcome, through the observation instrument (noise, scale, window, ...)",
+             "reconstructed_relation": "none: a cell is not derived from other cells", "display": "only its position (the projection)"},
+    "edge": {"real_operation": "none: an edge is not an operation", "recorded_observation": "none: only its two ends are recorded", "reconstructed_relation": "THE DIFFERENCE of the two recorded ends; a cut if it is at least 0.5 (a threshold of the laboratory)", "display": "the line that is drawn"},
+    "branch_point": {"real_operation": "none", "recorded_observation": "none", "reconstructed_relation": "THE LINEAR INTERPOLATION of the 0.5 crossing between two recorded ends: not a measured point", "display": "the marker"},
+    "unresolved": {"real_operation": "unknown: it may exist and was not recorded", "recorded_observation": "none: nothing was recorded", "reconstructed_relation": "none", "display": "THE MARKER of an absence, with the class of the reason"},
+    "surface_between_cells": {"real_operation": "none", "recorded_observation": "none", "reconstructed_relation": "an assumption of continuity between four recorded neighbours", "display": "THE DRAWN FACE and the colour (not drawn across a cut)"},
+}
 SURFACE_RULES = {
     "cell": "one cell per grid point (i, j) of the two interventions: nx x ny cells. It is RECORDED (a value from trials), or UNRESOLVED (a class of the reason it was not recorded): no cell is dropped.",
     "cell_value": "the share of the trials of the cell that had the outcome, averaged over the seeds (one run per seed is the replication unit; the sd is across seeds).",
@@ -62,7 +70,7 @@ def explain_shape(rec: dict, cond: str, snapshot: str, dom: Any = None) -> dict:
     """The construction of one shape of a record, cell by cell and edge by edge."""
     shape = rec["shapes"][cond][snapshot]
     res = rec["result"]
-    out: dict[str, Any] = {"domain": res["domain"], "condition": cond, "snapshot": snapshot, "shape_digest": shape["digest"], "rules": SURFACE_RULES, "axes": shape["projection"]["axes"]}
+    out: dict[str, Any] = {"domain": res["domain"], "condition": cond, "snapshot": snapshot, "shape_digest": shape["digest"], "rules": SURFACE_RULES, "layers": LAYERS, "axes": shape["projection"]["axes"]}
     if not shape.get("recorded"):
         return {**out, "recorded": False, "reason": shape.get("reason")}
     nx, ny = shape["nx"], shape["ny"]

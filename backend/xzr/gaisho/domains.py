@@ -154,6 +154,7 @@ class CreditDomain(Domain):
     }
     N, PERIODS = 60, 24
     seed_count = 6  # a run of the institution engine per cell: fewer seeds by default (the unit of replication is still the seed)
+    max_seeds = 10  # about 1.8 s of the institution engine per seed and condition: 10 seeds is about 18 s per request
 
     def _run(self, over: dict, seed: int, tau: float, beta: float):
         from ..truth_error.institution import Config, run
@@ -168,6 +169,8 @@ class CreditDomain(Domain):
         for j, beta in enumerate(self.y_values):
             for i, tau in enumerate(self.x_values):
                 r = self._run(over, seed, float(tau), float(beta))
+                if "labels" not in r["process"] or "complement" not in r["process"]:  # this domain reads outputs that exist only from TRUTH-ERROR phase 4 (complement) and phase 5 (labels, commit 1af5700)
+                    raise RuntimeError("005-credit needs the TRUTH-ERROR engine outputs process.complement (phase 4) and process.labels (phase 5, commit 1af5700); this engine does not provide them")
                 raw[j, i] = r["summary"]["access"]  # the share of subjects with access in the late periods
                 if i == 2:
                     sc.append((float(beta), r["process"]["complement"]["state_change_unfav"], r["process"]["labels"]["metrics"]["target_change_abs"]))

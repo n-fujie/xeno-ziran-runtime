@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { FIGURE_KIND_TEXT, LEVELS, OBS_PRESETS, cellTrace, claimGroups, UNOBSERVED_TEXT, constructionOf, domainStatusRows, exportRecord, figureTable, frameOf, levelRows, negativeCounts, num, observationDiff, operationPart, parseRecord, relationRows, relationSupport, snapshotsOf, type ConstructionOut, type GaishoObservation, type GaishoRecord, type GaishoSpecInfo, type GaishoUi, type ShapeReading } from './gaisho';
-import { gaishoCompareObservations, gaishoCompareShapes, gaishoConstruction, gaishoFigure, gaishoRestore, gaishoRun, type GaishoObsComparison, type GaishoShapeComparison } from './gaishoApi';
+import { FIGURE_KIND_TEXT, LEVELS, OBS_PRESETS, cellTrace, claimGroups, UNOBSERVED_TEXT, constructionOf, domainStatusRows, exportRecord, figureTable, frameOf, levelRows, negativeCounts, num, observationDiff, operationPart, parseRecord, relationRows, relationSupport, snapshotsOf, type ComparatorsOut, type ConstructionOut, type GaishoObservation, type GaishoRecord, type GaishoSpecInfo, type GaishoUi, type ShapeReading } from './gaisho';
+import { gaishoCompareObservations, gaishoComparators, gaishoCompareShapes, gaishoConstruction, gaishoFigure, gaishoRestore, gaishoRun, type GaishoObsComparison, type GaishoShapeComparison } from './gaishoApi';
 
 // GAISHO - Operational Shape Laboratory: a research tab of the XENO ECOSYSTEM view. It runs SYNTHETIC computational experiments in the engine (backend/xzr/gaisho) and reads the record: nothing here simulates, scores or
 // attributes. The operation, the operational shape, the conceptual operational shape, the Gaisho operational shape and the Gaisho attribution are five SEPARATE records; the attribution is never computed, and an operational
@@ -18,12 +18,12 @@ export default function GaishoPane(c: GaishoCtx) {
   const rec = ui.rec;
   const [obsCmp, setObsCmp] = useState<GaishoObsComparison | null>(null), [shapeCmp, setShapeCmp] = useState<GaishoShapeComparison | null>(null);
   const [svg, setSvg] = useState<{ svg: string; kind: string; digest: string } | null>(null), [note, setNote] = useState<string | null>(null);
-  const [showNeg, setShowNeg] = useState(false), [reading, setReading] = useState<ShapeReading | null>(null), [trace, setTrace] = useState<ConstructionOut | null>(null);
+  const [showNeg, setShowNeg] = useState(false), [reading, setReading] = useState<ShapeReading | null>(null), [trace, setTrace] = useState<ConstructionOut | null>(null), [cmpOut, setCmpOut] = useState<ComparatorsOut | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const dom = info?.domains[ui.domain] ?? null;
   const executed = !!dom?.status.executed;
   const guard = async (fn: () => Promise<void>) => { c.setBusy(true); c.setErr(null); try { await fn(); } catch (e) { c.setErr(String(e)); } finally { c.setBusy(false); } };
-  const spec = () => ({ domain: ui.domain, observation: ui.obs, seeds: Array.from({ length: ui.seeds }, (_, i) => i + 1), conditions: ui.picked.length ? ui.picked : undefined });
+  const spec = () => ({ domain: ui.domain, observation: ui.obs, seeds: Array.from({ length: Math.min(ui.seeds, dom?.max_seeds || 20) }, (_, i) => i + 1), conditions: ui.picked.length ? ui.picked : undefined });
 
   const load = (r: GaishoRecord, label: string) => setUi((u) => {
     const conds = r.result ? Object.keys(r.result.conditions) : [];
@@ -67,6 +67,7 @@ export default function GaishoPane(c: GaishoCtx) {
   });
   const download = (name: string, text: string, type: string) => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type })); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); };
   const traceShape = () => guard(async () => { if (!rec?.executed) return; setTrace(await gaishoConstruction({ domain: rec.spec.domain, observation: rec.spec.observation, seeds: rec.spec.seeds, conditions: rec.spec.conditions ?? undefined, condition: ui.cond, snapshot: ui.snap })); });
+  const compare = () => guard(async () => { if (!rec?.executed) return; setCmpOut(await gaishoComparators({ domain: rec.spec.domain, observation: rec.spec.observation, seeds: rec.spec.seeds.slice(0, 10) })); });
   const figure = () => guard(async () => { if (!rec?.executed) return; const f = await gaishoFigure({ domain: rec.spec.domain, observation: rec.spec.observation, seeds: rec.spec.seeds, conditions: rec.spec.conditions ?? undefined, snapshot: ui.snap }); setSvg({ svg: f.svg, kind: f.figure_kind, digest: f.digest }); });
 
   useEffect(() => { setTrace(null); }, [rec?.digest, ui.cond, ui.snap]);
@@ -114,7 +115,7 @@ export default function GaishoPane(c: GaishoCtx) {
           <label>probe <select value={ui.obs.probe} onChange={(e) => obsSet('probe', Number(e.target.value))}>{[0, 0.5, 1].map((x) => <option key={x}>{x}</option>)}</select></label>
           <span>outside the boundary: {['x', 'y'].map((a) => <label key={a}><input type="checkbox" checked={ui.obs.boundary.includes(a)} onChange={() => togg('boundary', a)} /> {a}</label>)}</span>
           <span>sensor channels: {['x', 'y', 'memory'].map((a) => <label key={a}><input type="checkbox" checked={ui.obs.sensor_channels.includes(a)} onChange={() => togg('sensor_channels', a)} /> {a}</label>)}</span>
-          <label>seeds <select value={ui.seeds} onChange={(e) => setUi((u) => ({ ...u, seeds: Number(e.target.value) }))}>{[5, 10, 20].map((x) => <option key={x}>{x}</option>)}</select></label>
+          <label>seeds <select value={Math.min(ui.seeds, dom?.max_seeds || 20)} onChange={(e) => setUi((u) => ({ ...u, seeds: Number(e.target.value) }))}>{[5, 10, 20].filter((x) => x <= (dom?.max_seeds || 20)).map((x) => <option key={x}>{x}</option>)}</select></label>
         </div>
         <div className="eco-row"><button onClick={run} disabled={c.busy || !info} data-testid="gs-run">{c.busy ? 'running...' : executed ? 'Run the experiment' : 'Show the specification'}</button>
           <button onClick={() => setUi((u) => ({ ...u, obs: { ...u.obs, ...info?.observation_defaults } }))} disabled={c.busy}>fullest observation</button></div>
@@ -161,6 +162,8 @@ export default function GaishoPane(c: GaishoCtx) {
             <div className="eco-note" data-testid="gs-trace-counts">{trace.counts.cells_total} cells = the {trace.counts.grid[0]} x {trace.counts.grid[1]} grid of the two interventions ({trace.counts.cells_recorded} recorded, {trace.counts.cells_unresolved} unresolved); {trace.counts.edges_drawn} edges drawn of {trace.counts.edges_expected_if_all_recorded} possible ({trace.counts.grid[0] - 1} x {trace.counts.grid[1]} along the first axis + {trace.counts.grid[0]} x {trace.counts.grid[1] - 1} along the second), {trace.counts.cuts} cut, {trace.counts.branch_points} branch points. Counts consistent: {String(trace.counts_consistent)}.</div>
             <div className="eco-note">A cell is {trace.what_a_cell_is}. {trace.outcome_of_the_domain}</div>
             <table className="eco-table"><tbody>{Object.entries(trace.rules).map(([k, v]) => <tr key={k}><td>{k}</td><td>{v}</td></tr>)}</tbody></table>
+            <div className="eco-note"><b>Which layer each element is</b> (real operation / recorded observation / reconstructed relation / display):</div>
+            <table className="eco-table" data-testid="gs-trace-layers"><thead><tr><th>element</th><th>real operation</th><th>recorded observation</th><th>reconstructed relation</th><th>display</th></tr></thead><tbody>{Object.entries(trace.layers).map(([k, v]) => <tr key={k}><td>{k}</td><td>{v.real_operation}</td><td>{v.recorded_observation}</td><td>{v.reconstructed_relation}</td><td>{v.display}</td></tr>)}</tbody></table>
             {trace.what_the_surface_carries && <div className="eco-note" data-testid="gs-trace-carries">Refitting the cells: weights {Object.entries(trace.what_the_surface_carries.fitted_weights).map(([k, v]) => `${k}=${num(v, 2)}`).join(', ')} against the operation's {Object.entries(trace.what_the_surface_carries.weights_of_the_operation).map(([k, v]) => `${k}=${num(v, 2)}`).join(', ')}; residual {num(trace.what_the_surface_carries.rms_residual_of_the_fit, 4)} against an expected sampling noise of {num(trace.what_the_surface_carries.expected_sampling_rms, 4)}. {trace.what_the_surface_carries.reading}</div>}
             {ui.selected && (() => { const t = cellTrace(trace, ui.selected); return t.cell ? <table className="eco-table" data-testid="gs-trace-cell"><tbody>
               <tr><td>cell</td><td>{t.cell.id} (i={t.cell.cell[0]}, j={t.cell.cell[1]})</td></tr><tr><td>intervention</td><td>{Object.entries(t.cell.intervention).map(([k, v]) => `${k} = ${num(v, 2)}`).join('; ')}</td></tr>
@@ -192,6 +195,13 @@ export default function GaishoPane(c: GaishoCtx) {
         {rec.models && <Section title="Competing explanations (same information, same held-out interventions)" testid="gs-models">
           <table className="eco-table"><tbody>{verdicts.map((v) => <tr key={v.competitor}><td>{v.competitor}</td><td>{chip(v.verdict)}</td></tr>)}</tbody></table>
           <div className="eco-note">{rec.models.rule} The verdicts are kept apart; they are not added into a score.</div>
+          <div className="eco-row"><button onClick={compare} disabled={c.busy} data-testid="gs-comparators-run">show what each model is given, and add the equal-parameter cue account</button></div>
+          {cmpOut && <div data-testid="gs-comparators">
+            <table className="eco-table"><thead><tr><th>model</th><th>fits</th><th>parameters</th><th>information</th><th>history</th><th>nested in</th></tr></thead><tbody>{Object.entries(cmpOut.comparators).map(([k, m]) => <tr key={k}><td>{k}: {m.label}</td><td>{m.fits}</td><td>{m.parameters}</td><td>{m.information}</td><td>{m.history ? 'yes' : 'none'}</td><td>{m.nested_in ?? '-'}</td></tr>)}</tbody></table>
+            <table className="eco-table"><tbody>{cmpOut.rows.map((r) => <tr key={r.condition}><td>{r.condition}</td><td>{r.verdicts.map((v) => `${v.competitor.split(' ')[0]} ${v.verdict}`).join(' - ')}</td></tr>)}</tbody></table>
+            <div className="eco-note">Held out: {cmpOut.held_out}. {cmpOut.reading}</div>
+            <div className="eco-note">Not run: {cmpOut.not_run.join(', ')}.</div>
+          </div>}
         </Section>}
 
         <Section title={`Negative results kept (${rec.negative_results?.length ?? 0})`} testid="gs-negative">

@@ -24,7 +24,12 @@ LEVEL_STATES = (
     "CRITERION_NEGATIVE",  # a pre-set test with the power to support it did not
     "ASSERTED_BY_RESEARCHER",  # recorded as asserted by the researcher with independent evidence; the laboratory computes nothing here
 )
-# the five kinds of what a shape's point or line comes from (every element of a shape carries one)
+# the five kinds of what a shape's point or line comes from (every element of a shape carries one):
+#   REALIZED_OPERATION               what the model executed (the run, the weights); not an element of a shape: it is what the elements are records OF
+#   RECORDED_OBSERVATION             a value recorded through the observation instrument (a CELL: the response of the operation under one intervention pair)
+#   RECONSTRUCTED_RELATION           derived from recorded values by a rule of the laboratory (an EDGE or CUT: a neighbour difference and a threshold; a BRANCH POINT: an interpolation)
+#   INTERVENTION_RELATIVE_DIFFERENCE a difference between interventions or conditions (the effects, revisions): relations, not elements of one surface
+#   VISUALIZATION_PROJECTION         a choice made for drawing (positions, the surface between cells, colours, the marker of an unrecorded cell)
 PROVENANCE = ("REALIZED_OPERATION", "RECORDED_OBSERVATION", "RECONSTRUCTED_RELATION", "INTERVENTION_RELATIVE_DIFFERENCE", "VISUALIZATION_PROJECTION")
 # what an unobserved difference can be
 UNOBSERVED = ("UNMEASURED", "INSTRUMENT_MISFIT", "SCALE_MISFIT", "TEMPORAL_MISFIT", "BOUNDARY_INVISIBLE", "IDENTIFICATION_UNRESOLVED")
