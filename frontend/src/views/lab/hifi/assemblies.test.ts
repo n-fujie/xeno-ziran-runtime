@@ -194,7 +194,7 @@ describe('full reachable envelope of every gantry', () => {
         }
       }
     }
-  });
+  }, 60_000);  // 0.5 s alone but 5.2 s under a loaded machine (found on 2026-11-04 with the backend suite running): the sibling tests have the same limit
   it('no recorded carriage, tool or mast position intersects a sensor, hub, store or chamber instrument', () => {
     for (const name of ['m7-systems-6000', 'm9-separated-resources-7000', 'm9-extinction-relocation-7000']) {
       const rec = load(name);
