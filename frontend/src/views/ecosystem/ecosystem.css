@@ -122,3 +122,17 @@
 .eco-chip.tee-CLASSIFIED { border-style: double; border-width: 3px; }
 .eco-chip.tee-INSTITUTIONAL { font-weight: 600; }
 .eco-chip.tee-UNRESOLVED { font-style: italic; border-style: dashed; }
+
+/* GAISHO - Operational Shape Laboratory tab */
+.eco-col { display: grid; gap: 2px; font-size: 11px; }
+.gs-sec { display: grid; gap: 6px; }
+.gs-sel td { background: #12141a; }
+.gs-list { margin: 0; padding-left: 16px; font-size: 10.5px; color: var(--dim); line-height: 1.4; }
+.gs-figure { background: #fff; border: 1px solid var(--line2); overflow: auto; max-height: 360px; }
+.gs-figure svg { width: 100%; height: auto; display: block; }
+.eco-chip.gs-UNRESOLVED, .eco-chip.gs-NOT_ESTABLISHED, .eco-chip.gs-NOT_MODELLED { border-style: dashed; }
+.eco-chip.gs-CRITERION_NEGATIVE, .eco-chip.gs-HARMFUL, .eco-chip.gs-REDUNDANT { border-color: #8a8a90; color: #b8b8be; border-style: dotted; }
+.eco-chip.gs-NON_REDUNDANT, .eco-chip.gs-NOT_NEGATED, .eco-chip.gs-EXECUTED_IN_MODEL, .eco-chip.gs-RECONSTRUCTED, .eco-chip.gs-EXECUTED_COMPUTATIONAL_EXPERIMENT { border-color: #4a7cf0; color: #9db8ff; }
+.gs-sec { min-width: 0; }
+.gs-sec .eco-table td, .gs-sec .eco-table th, .gs-sec .eco-note { overflow-wrap: anywhere; }
+.gs-sec .eco-table button { text-align: left; max-width: 100%; white-space: normal; }

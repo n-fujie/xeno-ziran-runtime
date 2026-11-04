@@ -904,6 +904,9 @@ app.include_router(_meos.router)
 from . import truth_error as _truth_error  # noqa: E402
 
 app.include_router(_truth_error.router)
+from . import gaisho as _gaisho  # noqa: E402
+
+app.include_router(_gaisho.router)
 
 # TEOO: the BODY / TOTAL OBSERVATION endpoints (nothing stored; local runtime only)
 from . import teoo as _teoo  # noqa: E402
