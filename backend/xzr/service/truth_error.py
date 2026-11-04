@@ -25,7 +25,7 @@ SAVED = Path(__file__).resolve().parents[3] / "docs" / "truth_error" / "experime
 SAVED2 = Path(__file__).resolve().parents[3] / "docs" / "truth_error" / "experiments2.json"
 RELEASE_MODES = ("by_score", "after_approval", "never")
 APPEAL_ACCESS = ("open", "score_gated")
-SUPPORT_RULES = ("none", "denied", "low_score")
+SUPPORT_RULES = ("none", "denied", "low_score", "on_request")
 _DELAYS = ("request_delay", "approval_delay", "score_delay", "release_delay", "review_delay", "propagation_delay")
 _PROBS = ("audit_sensitivity", "audit_false_rate", "appeal_filing_prob", "evidence_available_prob", "appeal_acceptance_prob")
 _CONFIG_FIELDS = {f.name for f in dataclasses.fields(I.Config)}
@@ -112,7 +112,7 @@ def _check_process(cfg: I.Config) -> None:
     if cfg.denial_cap is not None and not (isint(cfg.denial_cap) and 1 <= cfg.denial_cap <= MAX_PERIODS):
         raise HTTPException(422, f"denial_cap must be null or an integer 1..{MAX_PERIODS}")
     num = lambda v: isinstance(v, int | float) and not isinstance(v, bool)  # noqa: E731
-    for k in ("resource_floor", "release_support", "support_amount", "resources_start"):
+    for k in ("resource_floor", "release_support", "support_amount", "resources_start", "support_apply_prob", "apply_min_resources"):
         v = getattr(cfg, k)
         if not (num(v) and 0.0 <= v <= 1.0):
             raise HTTPException(422, f"{k} must be a number 0..1")

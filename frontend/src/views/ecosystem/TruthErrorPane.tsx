@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { ADDRESS_STATES, APPEAL_STAGES, COMPLEMENT_METRIC_IDS, MODALITIES, NODES, PATHS, RELATIONS, addressStatesAt, compareRelation, compareRuns, comparePaths, eventTable, fieldsAt, modalityCounts, nodeReadings, timelineEvents, type NodeId, type Reading, type RelationId, type TERun } from './truthError';
+import { ADDRESS_STATES, APPEAL_STAGES, COMPLEMENT_METRIC_IDS, MODALITIES, NODES, PATHS, RELATIONS, addressStatesAt, compareRelation, compareRuns, comparePaths, endogenyAt, eventTable, fieldsAt, modalityCounts, nodeReadings, timelineEvents, type NodeId, type Reading, type RelationId, type TERun } from './truthError';
 import type { TEExperiment, TEOverrides } from './truthApi';
 
 // TRUTH-ERROR DYNAMICS — a research tab of the XENO ECOSYSTEM view. It runs a SYNTHETIC virtual institution (backend/xzr/truth_error) and reads the run: nothing here classifies, scores or simulates, and every value is
@@ -51,6 +51,7 @@ export default function TruthErrorPane(c: TruthCtx) {
   const paths = useMemo(() => (base ? comparePaths(base, branch, k) : []), [base, branch, k]);
   const exp2 = c.experiments2?.[c.exp2Id] ?? null;
   const proc = base?.process ?? null, bproc = branch?.process ?? null;
+  const endo = useMemo(() => (base ? endogenyAt(base, branch, k, t) : null), [base, branch, k, t]);
 
   return (
     <>
@@ -91,7 +92,9 @@ export default function TruthErrorPane(c: TruthCtx) {
         <label>cap on a run of denials <select value={String(c.draft.denial_cap ?? 'none')} onChange={(e) => set({ denial_cap: e.target.value === 'none' ? null : Number(e.target.value) })}>{['none', '3', '6'].map((x) => <option key={x}>{x}</option>)}</select></label>
         <label>access kept pending a correction <select value={c.draft.interim_access ? 'yes' : 'no'} onChange={(e) => set({ interim_access: e.target.value === 'yes' })}><option>no</option><option>yes</option></select></label>
         <label>recovery support after a release <select value={String(c.draft.release_support ?? 0)} onChange={(e) => set({ release_support: Number(e.target.value) })}>{['0', '0.15', '0.3'].map((x) => <option key={x}>{x}</option>)}</select></label>
-        <label>support to <select value={c.draft.support_rule ?? 'none'} onChange={(e) => set({ support_rule: e.target.value })}>{['none', 'denied', 'low_score'].map((x) => <option key={x}>{x}</option>)}</select></label>
+        <label>support to <select value={c.draft.support_rule ?? 'none'} onChange={(e) => set({ support_rule: e.target.value })}>{['none', 'denied', 'low_score', 'on_request'].map((x) => <option key={x}>{x}</option>)}</select></label>
+        <label>chance of applying <select value={String(c.draft.support_apply_prob ?? 0.5)} onChange={(e) => set({ support_apply_prob: Number(e.target.value) })}>{['0.2', '0.5', '1'].map((x) => <option key={x}>{x}</option>)}</select></label>
+        <label>resources needed to apply <select value={String(c.draft.apply_min_resources ?? 0)} onChange={(e) => set({ apply_min_resources: Number(e.target.value) })}>{['0', '0.1', '0.3'].map((x) => <option key={x}>{x}</option>)}</select></label>
         <label>support amount <select value={String(c.draft.support_amount ?? 0.1)} onChange={(e) => set({ support_amount: Number(e.target.value) })}>{['0.06', '0.1', '0.12'].map((x) => <option key={x}>{x}</option>)}</select></label>
         <label>support capacity <select value={String(c.draft.support_capacity ?? 'none')} onChange={(e) => set({ support_capacity: e.target.value === 'none' ? null : Number(e.target.value) })}>{['none', '0.1', '0.25'].map((x) => <option key={x}>{x}</option>)}</select></label>
         <label>classifier accuracy (signal noise) <select value={String(c.draft.signal_sensor?.noise_sigma ?? 0.8)} onChange={(e) => c.setDraft({ ...c.draft, signal_sensor: { ...c.draft.signal_sensor, noise_sigma: Number(e.target.value) } })}>{['0.05', '0.4', '0.8', '1.6'].map((x) => <option key={x}>{x}</option>)}</select></label>
@@ -188,6 +191,33 @@ export default function TruthErrorPane(c: TruthCtx) {
                     {COMPLEMENT_METRIC_IDS.map((m) => <tr key={m}><td>{m.replace(/_/g, ' ')}</td><td>{n3(proc.complement?.[m])}</td>{branch && <td>{n3(bproc?.complement?.[m])}</td>}<td><small>{proc.complement_definitions?.[m]?.denominator}; {proc.complement_definitions?.[m]?.period}; {proc.complement_definitions?.[m]?.unit}</small></td></tr>)}
                   </tbody></table>
                   <div className="eco-note">The fixed metrics above look only at the subjects favourable at the start and so cannot show what the institution does to the others, among them the subjects it denies correctly. These are added beside them, not instead. A change of the real state moves only through the resource feedback beta (set in the configuration); one run is one unit, so a difference is read over seeds in the saved experiment EXP-TE16, not from one run.</div>
+                </>
+              )}
+
+              {endo && proc.labels && (
+                <>
+                  <h3>The institution's action returning to the evaluated target</h3>
+                  <div className="eco-row" data-testid="te-endo-badges">
+                    <span className={`eco-chip ${endo.classifier.fixed === false ? 'verdict-CHANGED' : 'verdict-UNCHANGED'}`}>{endo.classifier.fixed === null ? 'FIXED CLASSIFIER: no branch' : endo.classifier.fixed ? 'FIXED CLASSIFIER' : 'CLASSIFIER OR OBSERVATION CHANGED'}</span>
+                    <span className="eco-chip">CHANGED TARGET</span><span className="eco-chip">LABEL SHIFT</span><span className="eco-chip">DISTRIBUTIONAL CONSEQUENCES</span><span className="eco-chip tee-UNRESOLVED">UNRESOLVED</span>
+                  </div>
+                  <div className="eco-note" data-testid="te-endo-verdict"><b>{endo.verdict}</b>. {endo.classifier.detail}.</div>
+                  <table className="eco-table" data-testid="te-endo"><tbody>
+                    <tr><th>BEFORE the period's intervention (subject {k + 1}, period {t})</th><th>AFTER it</th></tr>
+                    <tr><td>{endo.before.map((y, i) => <div key={i}>{chip(y.epistemic)} {y.label}: {y.value}</div>)}</td><td>{endo.after.map((y, i) => <div key={i}>{chip(y.epistemic)} {y.label}: {y.value}</div>)}</td></tr>
+                    <tr><th>CHANGED TARGET</th><th>LABEL SHIFT</th></tr>
+                    <tr><td>{endo.target.map((y, i) => <div key={i}>{chip(y.epistemic)} {y.label}: {y.value}</div>)}</td><td>{endo.labelShift.map((y, i) => <div key={i}>{chip(y.epistemic)} {y.label}: {y.value}</div>)}</td></tr>
+                  </tbody></table>
+                  <table className="eco-table" data-testid="te-endo-accuracy"><tbody>
+                    <tr><th>one set of classifications, four labels</th><th>baseline</th>{branch && <th>branch</th>}</tr>
+                    {endo.accuracy.map((r) => <tr key={r.label}><td>{r.label}</td><td>{r.base}</td>{branch && <td>{r.branch}</td>}</tr>)}
+                  </tbody></table>
+                  <table className="eco-table" data-testid="te-endo-distribution"><tbody>
+                    <tr><th>group</th><th>metric</th><th>baseline</th>{branch && <th>branch</th>}</tr>
+                    {endo.distribution.map((r, i) => <tr key={i}><td>{r.group}</td><td>{r.metric}</td><td>{r.base}</td>{branch && <td>{r.branch}</td>}</tr>)}
+                  </tbody></table>
+                  <ul className="eco-log" data-testid="te-endo-unresolved">{endo.unresolved.map((u, i) => <li key={i}><span className="eco-chip tee-UNRESOLVED">UNRESOLVED</span> {u}</li>)}</ul>
+                  <div className="eco-note">The INITIAL label is the state before any institutional action; the CURRENT label is the model's own (the state at the start of the period, after the earlier effects); the NEXT label is the state after the period's own decision; the COUNTERFACTUAL label is the state with no institutional effect on the state. The bar and the marker in the scene beside the subject are these records: the bar's height is |state - counterfactual state|, the marker is lit when the labels differ. A rising accuracy is not read as an improvement of the target; a correct classification is not read as a justified action.</div>
                 </>
               )}
 

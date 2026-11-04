@@ -14,14 +14,15 @@ SYNTHETIC ONLY: nothing here says how a real institution behaves."""
 from __future__ import annotations
 
 import dataclasses
-from collections.abc import Callable
+import json
+from collections.abc import Callable, Sequence
 from typing import Any
 
 import numpy as np
 
 from .experiments import BASE, SEEDS, _diff, _paired, _run_experiment
 from .institution import Config, digest, run
-from .process import COMPLEMENT_METRICS, GUARANTEE_METRICS, METRICS, OBS_LATE, recoverability
+from .process import COMPLEMENT_METRICS, GUARANTEE_METRICS, LABEL_METRICS, METRICS, OBS_LATE, recoverability
 
 SEEDS2 = tuple(range(21, 41))
 PRIMARY2 = (
@@ -100,6 +101,38 @@ def _gm(k: str) -> Callable[[dict], Any]:
 
 
 EXTRA.update({k: _gm(k) for k in GUARANTEE_METRICS})
+
+
+def _lm(k: str) -> Callable[[dict], Any]:
+    return lambda r: (r["process"].get("labels") or {}).get("metrics", {}).get(k)
+
+
+_BIN_KEYS = [f"bin{b}_{x}" for b in range(5) for x in ("share", "accuracy")]
+EXTRA.update({k: _lm(k) for k in (*LABEL_METRICS, *_BIN_KEYS)})
+# the same decisions evaluated against two labels: the difference is a difference of the label, not of the classifier or of the population
+EXTRA["label_gap_current_minus_counterfactual"] = lambda r: _gap(r, "accuracy_current", "accuracy_counterfactual")
+EXTRA["label_gap_current_minus_initial"] = lambda r: _gap(r, "accuracy_current", "accuracy_initial")
+EXTRA["label_gap_next_minus_current"] = lambda r: _gap(r, "accuracy_next", "accuracy_current")
+
+
+def _gap(r: dict, a: str, b: str) -> float | None:
+    m = (r["process"].get("labels") or {}).get("metrics", {})
+    return None if m.get(a) is None or m.get(b) is None else m[a] - m[b]
+
+
+# runs are cached by configuration so that an experiment that re-reads the arms of another (EXP-TE20 reads those of EXP-TE19) does not run them again
+_RUN_CACHE: dict[str, dict] = {}
+
+
+def _cached_run(cfg: Config) -> dict:
+    key = json.dumps(cfg.asdict(), sort_keys=True, default=str)
+    if key not in _RUN_CACHE:
+        _RUN_CACHE[key] = run(cfg)
+    return _RUN_CACHE[key]
+
+
+def clear_run_cache() -> None:
+    _RUN_CACHE.clear()
 EXTRA["false_detection_share"] = lambda r: r["process"]["false_detections"] / r["config"]["n"]
 
 
@@ -191,6 +224,9 @@ def _run2(spec: dict) -> dict:
         for r in a["arms"]
         if r["arm"] != a["control"]
     ]
+    post = spec.get("post")
+    if post:
+        a["analysis"] = {"seeds_1_20": post(a), "seeds_21_40": post(b)}
     a["questions"] = spec.get("questions", [])
     a["limits"] = LIMITS2
     a["metric_definitions"] = {k: METRICS[k] for k in PRIMARY2 if k in METRICS}
@@ -858,7 +894,7 @@ def te18_guarantees() -> dict:
     )
 
 
-def paired_summary(a: list[float | None], b: list[float | None]) -> dict:
+def paired_summary(a: Sequence[float | None], b: Sequence[float | None]) -> dict:
     """The paired difference a - b over seeds, one run per seed as the unit: n, mean, standard deviation, standard error and the 95 % confidence interval from the t distribution (n - 1 degrees of freedom). Subjects are never counted as units."""
     from scipy import stats
 
@@ -879,6 +915,330 @@ def resource_path_change(cfg: Config, denied: bool) -> float:
         r = min(1.0, max(cfg.resource_floor, r + (-cfg.loss if denied else cfg.gain)))
         z += cfg.beta * (r - 0.5)
     return z
+
+
+# ------------------------------------------------------------------------------------------------ PHASE 5 (the factors, arms, metrics and decomposition are fixed here, before the runs)
+# One set of classifications is evaluated against four labels (process.LABELS) so that a change of the measured accuracy can be attributed: to the INPUT DISTRIBUTION (the share of subject-periods near the boundary), to the LABEL
+# (the evaluation condition), to the TARGET (the state the institution moved), to the OBSERVATION (the sensor's conditions) or to the CLASSIFIER (its own parameters). What the data cannot separate is reported as the
+# remainder, UNRESOLVED. The statistical unit is one run; every difference is paired over the seeds, 1-20 and replicated on 21-40. TE20 reads the arms of TE19 from the cached runs and runs nothing new.
+FIXED = "classifier: signal rule, window 4, threshold 0; observation: signal noise 0.8"
+
+
+def accuracy_decomposition(values_x: dict[str, list], values_c: dict[str, list]) -> dict:
+    """The change of the pooled accuracy against the current label between an arm x and the control c, per seed, divided exactly (the midpoint form of the Oaxaca-Blinder identity) into
+    COMPOSITION: sum over the distance-to-boundary bins of (the change of the bin's share of classified subject-periods) x (the mean accuracy of the bin): the change of the INPUT DISTRIBUTION, and
+    WITHIN: sum of (the change of the accuracy within the bin) x (the mean share): the classifier, the observation and the label evaluated at the same distance from the boundary.
+    The two sum to the change of the pooled accuracy (the identity is checked in a test)."""
+    n = len(values_x["bin0_share"])
+    comp, within, delta = [], [], []
+    for i in range(n):
+        c = w = d = 0.0
+        ok = True
+        for b in range(5):
+            wx, wc = values_x[f"bin{b}_share"][i], values_c[f"bin{b}_share"][i]
+            ax, ac = values_x[f"bin{b}_accuracy"][i], values_c[f"bin{b}_accuracy"][i]
+            if wx is None or wc is None:
+                ok = False
+                break
+            ax = ac if ax is None else ax
+            ac = ax if ac is None else ac
+            if ax is None:
+                continue
+            c += (wx - wc) * (ax + ac) / 2
+            w += (ax - ac) * (wx + wc) / 2
+            d += wx * ax - wc * ac
+        comp.append(c if ok else None)
+        within.append(w if ok else None)
+        delta.append(d if ok else None)
+    zero = [0.0] * n
+    return {"change_of_pooled_accuracy": paired_summary(delta, zero), "composition_input_distribution": paired_summary(comp, zero), "within_distance": paired_summary(within, zero), "per_seed": {"delta": delta, "composition": comp, "within": within}}
+
+
+def _decomposition_post(control: str, arms_of_interest: list[str] | None = None) -> Callable[[dict], dict]:
+    def post(res: dict) -> dict:
+        vals = {r["arm"]: r["values"] for r in res["arms"]}
+        out = {}
+        for name, v in vals.items():
+            if name == control or (arms_of_interest and name not in arms_of_interest):
+                continue
+            d = accuracy_decomposition(v, vals[control])
+            d.pop("per_seed")
+            d["accuracy_change_by_label"] = {lab: paired_summary(v[f"accuracy_{lab}"], vals[control][f"accuracy_{lab}"]) for lab in ("initial", "current", "next", "counterfactual")}
+            out[name] = d
+        return {"control": control, "decomposition": out, "unresolved": "the within-distance part mixes the classifier's lag over its window, the observation and the label timing; the data do not separate them further"}
+
+    return post
+
+
+def te19_fixed_classifier() -> dict:
+    ctl = "intervention with no feedback to the state (beta 0)"
+    nz, vw, oc = "signal_sensor__noise_sigma", "signal_sensor__view_angle", "signal_sensor__occlusion_prob"
+    named: dict[str, dict[str, Any]] = {
+        "no institutional action on the resources (score off, allocation inert)": {"use_score": False, "gain": 0.0, "loss": 0.0},
+        ctl: {"beta": 0.0},
+        "feedback beta 0.03": {"beta": 0.03},
+        "feedback beta 0.06 (the base)": {},
+        "feedback beta 0.12": {"beta": 0.12},
+        "feedback beta 0.24": {"beta": 0.24},
+        "beta 0.06, observation view angle 40": {vw: 40.0},
+        "beta 0.06, observation occlusion 0.25": {oc: 0.25},
+        "beta 0, observation view angle 40": {"beta": 0.0, vw: 40.0},
+        "beta 0.06, a different classifier (window 8)": {"window": 8},
+        "beta 0, a different classifier (window 8)": {"beta": 0.0, "window": 8},
+        "beta 0.06, a more precise observation (noise 0.4)": {nz: 0.4},
+        "beta 0, a more precise observation (noise 0.4)": {"beta": 0.0, nz: 0.4},
+    }
+    arms, declared = _grid(NO_PROCESS, named, ctl)
+    base = "feedback beta 0.06 (the base)"
+    contrasts = [
+        ("feedback 0.06 minus none: the accuracy against the label of the state at the start of the period (the model's own)", [(1.0, base), (-1.0, ctl)]),
+        ("feedback 0.12 minus none", [(1.0, "feedback beta 0.12"), (-1.0, ctl)]),
+        ("a more precise observation at beta 0 minus the control (a change of the observation, the target unchanged)", [(1.0, "beta 0, a more precise observation (noise 0.4)"), (-1.0, ctl)]),
+        ("a different classifier at beta 0 minus the control (a change of the classifier, the target unchanged)", [(1.0, "beta 0, a different classifier (window 8)"), (-1.0, ctl)]),
+        ("a change of the observation conditions at beta 0 (view angle 40) minus the control", [(1.0, "beta 0, observation view angle 40"), (-1.0, ctl)]),
+    ]
+    questions = [
+        {"id": "H1", "question": "Can the institution's allocation change the state of the evaluated subjects?", "reads": "target_change_abs, state change, boundary mass, favourable share, with the classifier and the observation fixed", "model": "by construction through beta; the experiment measures how far, and how the distribution of the state changes"},
+        {"id": "H2", "question": "Can the accuracy measured after the institution acts change without any change of the classifier?", "reads": "accuracy_current across beta with the classifier and the observation fixed; the decomposition into the input distribution and the within-distance part", "model": "the classifier is the same function; its inputs and its evaluation label depend on the state"},
+    ]
+    return _run2(
+        {
+            "id": "EXP-TE19",
+            "title": "Fixed classifier, changing target",
+            "question": f"With the classifier and the observation fixed ({FIXED}), only the feedback of resources to the state is changed. What happens to the state of the subjects, to the input the classifier reads, and to the accuracy measured against four labels, and how does that compare with changing the classifier or the observation instead?",
+            "control": ctl,
+            "arms": arms,
+            "declared": declared,
+            "runner": _cached_run,
+            "primary": ("accuracy_initial", "accuracy_current", "accuracy_next", "accuracy_counterfactual", "label_gap_current_minus_counterfactual", "target_change_abs", "boundary_mass_actual", "signal_abs_mean", "favourable_share_current", "state_gap_change"),
+            "questions": questions,
+            "contrasts": contrasts,
+            "contrast_outcomes": ("accuracy_current", "accuracy_initial", "accuracy_counterfactual", "label_gap_current_minus_counterfactual", "target_change_abs", "boundary_mass_actual", "signal_abs_mean"),
+            "post": _decomposition_post(ctl),
+            "failure_conditions": {"an arm changed nothing in any seed (its factor was not operative)": lambda x: _no_idle_arm(x, ctl)},
+            "protocol": {
+                "changed": "beta (0, 0.03, 0.06, 0.12, 0.24); the observation (view angle, occlusion, noise); the classifier's window; no institutional action (score off and allocation inert)",
+                "unchanged": f"NO_PROCESS otherwise; {FIXED}",
+                "unit": "one run = one unit; paired over seeds; the accuracy is the mean over the last 8 periods of the per-period share correct among the classified (the summary's classification_correct)",
+                "labels": "initial (z0>0, fixed), current (z at the start of the period, the model's), next (z after the period's own decision), counterfactual (the matched beta 0 state)",
+                "seeds": list(SEEDS),
+                "failure": "an arm identical to the control",
+                "note": "the arms 'feedback beta 0.06' and 'beta 0.06 with the allocation active' are the same arm: in this model an institutional intervention changes the state only through beta",
+            },
+        }
+    )
+
+
+def te20_label_endogeneity() -> dict:
+    """Reads the arms of TE19 that bear on the label question (the same configurations, taken from the cached runs: nothing is run again) and compares the labels of one set of decisions."""
+    ctl = "intervention with no feedback to the state (beta 0)"
+    nz, vw, oc = "signal_sensor__noise_sigma", "signal_sensor__view_angle", "signal_sensor__occlusion_prob"
+    named: dict[str, dict[str, Any]] = {
+        ctl: {"beta": 0.0},
+        "feedback beta 0.03": {"beta": 0.03},
+        "feedback beta 0.06 (the base)": {},
+        "feedback beta 0.12": {"beta": 0.12},
+        "feedback beta 0.24": {"beta": 0.24},
+        "beta 0.06, observation view angle 40": {vw: 40.0},
+        "beta 0.06, observation occlusion 0.25": {oc: 0.25},
+        "beta 0.06, a more precise observation (noise 0.4)": {nz: 0.4},
+    }
+    arms, declared = _grid(NO_PROCESS, named, ctl)
+    base = "feedback beta 0.06 (the base)"
+    contrasts = [
+        ("within the base run: accuracy against the current label minus against the counterfactual label (the same decisions)", [(1.0, base)]),
+    ]
+    return _run2(
+        {
+            "id": "EXP-TE20",
+            "title": "Label endogeneity: the same decisions, four evaluation labels",
+            "question": "When the label is generated from the state after the institution has acted, does the institution influence the condition under which its own classifications are called correct? The decisions are made once; they are evaluated against the label of the initial state (fixed), of the state at the start of the period (current), of the state after the period's own decision (next) and of the state without institutional effect (counterfactual).",
+            "control": ctl,
+            "arms": arms,
+            "declared": declared,
+            "runner": _cached_run,
+            "primary": ("accuracy_initial", "accuracy_current", "accuracy_next", "accuracy_counterfactual", "label_gap_current_minus_counterfactual", "label_gap_current_minus_initial", "label_gap_next_minus_current", "label_shift_current_vs_initial", "label_shift_current_vs_counterfactual", "label_shift_next_vs_current", "favourable_share_current"),
+            "contrasts": contrasts,
+            "contrast_outcomes": ("label_gap_current_minus_counterfactual", "label_gap_current_minus_initial", "label_gap_next_minus_current"),
+            "post": _decomposition_post(ctl),
+            "failure_conditions": {"an arm changed nothing in any seed (its factor was not operative)": lambda x: _no_idle_arm(x, ctl)},
+            "protocol": {
+                "changed": "as the TE19 arms that vary beta and the observation; the labels are evaluation conditions applied to the same runs",
+                "unchanged": f"NO_PROCESS otherwise; {FIXED}",
+                "unit": "one run = one unit; paired over seeds; the label gaps are differences between two accuracies of the SAME decisions, so the classifier, the inputs and the population are identical in them",
+                "reuse": "the runs of EXP-TE19 (cached): the contrasts and the arms duplicate none of its results",
+                "seeds": list(SEEDS),
+                "failure": "an arm identical to the control",
+            },
+        }
+    )
+
+
+def _matched_pairs_post(margin: float = 0.01) -> Callable[[dict], dict]:
+    """Pairs of arms whose mean accuracy is EQUIVALENT (the 95 % interval of the paired difference lies inside +/- margin) and the differences of the concentration of the disadvantage between them. A pair whose accuracy is not shown equivalent is not listed: not detecting a difference of accuracy is not equivalence."""
+    metrics = ("denial_rate_late_unfav", "denial_rate_late_fav", "state_change_unfav", "state_change_fav", "state_gap_change", "resources_end_unfav", "lost_opportunities_per_unfav", "lost_opportunities_per_fav")
+
+    def post(res: dict) -> dict:
+        vals = {r["arm"]: r["values"] for r in res["arms"]}
+        names = list(vals)
+        pairs = []
+        for i in range(len(names)):
+            for j in range(i + 1, len(names)):
+                a, b = names[i], names[j]
+                acc = paired_summary(vals[a]["accuracy_current"], vals[b]["accuracy_current"])
+                if acc["ci95"] is None:
+                    continue
+                equivalent = acc["ci95"][0] > -margin and acc["ci95"][1] < margin
+                if not equivalent:
+                    continue
+                diffs = {m: paired_summary(vals[a][m], vals[b][m]) for m in metrics}
+                differ = [m for m, d in diffs.items() if d["ci95"] is not None and (d["ci95"][0] > 0 or d["ci95"][1] < 0)]
+                pairs.append({"a": a, "b": b, "accuracy_difference": acc, "metrics_that_differ": differ, "differences": diffs})
+        return {"equivalence_margin": margin, "rule": "equivalent if the 95% CI of the paired difference of accuracy_current lies inside +/- margin; a difference is listed as present if its 95% CI excludes 0", "pairs": pairs, "n_pairs_compared": len(names) * (len(names) - 1) // 2, "n_equivalent_pairs": len(pairs)}
+
+    return post
+
+
+def te21_concentration() -> dict:
+    nz = "signal_sensor__noise_sigma"
+    ctl = "noisy classifier, the base"
+    named: dict[str, dict[str, Any]] = {
+        ctl: {},
+        "threshold +0.2": {"tau_a": 0.2},
+        "threshold -0.2": {"tau_a": -0.2},
+        "no binding constraint": {"lock_after": None},
+        "allocation gain = loss = 0.24": {"gain": 0.24, "loss": 0.24},
+        "initial state shifted +0.5": {"z_shift": 0.5},
+        "initial state shifted -0.5": {"z_shift": -0.5},
+        "resource floor 0.3": {"resource_floor": 0.3},
+        "denial cap 6": {"denial_cap": 6},
+        "support to the denied 0.06": {"support_rule": "denied", "support_amount": 0.06},
+        "support to the low score 0.12, capacity 25%": {"support_rule": "low_score", "support_amount": 0.12, "support_capacity": 0.25},
+        "accurate classifier, no feedback (beta 0)": {nz: 0.05, "beta": 0.0},
+        "accurate classifier": {nz: 0.05},
+        "feedback beta 0.12": {"beta": 0.12},
+        "feedback beta 0.03": {"beta": 0.03},
+    }
+    arms, declared = _grid(NO_PROCESS, named, ctl)
+    return _run2(
+        {
+            "id": "EXP-TE21",
+            "title": "Distributional concentration at the same mean accuracy",
+            "question": "Which institutional conditions have the same mean classification accuracy (shown equivalent within +/-0.01, not merely not different) and yet distribute the disadvantage differently between the groups favourable and not favourable at the start, in denial, resources, change of state and lost opportunities?",
+            "control": ctl,
+            "arms": arms,
+            "declared": declared,
+            "runner": _cached_run,
+            "primary": ("accuracy_current", "accuracy_current_unfav", "accuracy_current_fav", "denial_rate_late_unfav", "denial_rate_late_fav", "state_change_unfav", "state_change_fav", "state_gap_change", "resources_end_unfav", "resources_end_fav", "lost_opportunities_per_unfav", "lost_opportunities_per_fav"),
+            "post": _matched_pairs_post(),
+            "failure_conditions": {"an arm changed nothing in any seed (its factor was not operative)": lambda x: _no_idle_arm(x, ctl)},
+            "protocol": {
+                "changed": "the threshold, the constraint, the allocation, the initial state, the feedback, a floor, a cap, support, the observation; each alone, so that the pairs are conditions that differ in one respect",
+                "unchanged": "NO_PROCESS otherwise",
+                "unit": "one run = one unit; paired over seeds; the group metrics are means over the subjects of the group within a run",
+                "matching": "accuracy_current equivalent within +/-0.01 (95% CI of the paired difference inside the margin), fixed before the run",
+                "seeds": list(SEEDS),
+                "failure": "an arm identical to the control",
+            },
+        }
+    )
+
+
+def te22_reachability() -> dict:
+    nz = "signal_sensor__noise_sigma"
+    ctl = "no support"
+    sup = {"support_amount": 0.12}
+    named: dict[str, dict[str, Any]] = {
+        ctl: {},
+        "formal guarantee, delivered automatically to the low score": {"support_rule": "low_score", **sup},
+        "formal guarantee, on request (everyone eligible applies)": {"support_rule": "on_request", "support_apply_prob": 1.0, **sup},
+        "formal guarantee, on request (half of the eligible apply each period)": {"support_rule": "on_request", "support_apply_prob": 0.5, **sup},
+        "formal guarantee, on request (one in five apply)": {"support_rule": "on_request", "support_apply_prob": 0.2, **sup},
+        "formal guarantee, on request, applicants need resources 0.1": {"support_rule": "on_request", "support_apply_prob": 1.0, "apply_min_resources": 0.1, **sup},
+        "formal guarantee, on request, applicants need resources 0.3": {"support_rule": "on_request", "support_apply_prob": 1.0, "apply_min_resources": 0.3, **sup},
+        "on request (half apply), capacity 25%": {"support_rule": "on_request", "support_apply_prob": 0.5, "support_capacity": 0.25, **sup},
+        "resource floor 0.3 (no application)": {"resource_floor": 0.3},
+        "denial cap 3 (no application)": {"denial_cap": 3},
+        "access kept pending a correction (the process on)": {"audit_every": 2, "request_delay": 1, "approval_delay": 6, "release_mode": "after_approval", "release_delay": 0, "interim_access": True},
+        "the process alone, without it": {"audit_every": 2, "request_delay": 1, "approval_delay": 6, "release_mode": "after_approval", "release_delay": 0},
+        "accurate classifier, delivered automatically": {nz: 0.05, "support_rule": "low_score", **sup},
+        "accurate classifier, on request (half apply)": {nz: 0.05, "support_rule": "on_request", "support_apply_prob": 0.5, **sup},
+    }
+    arms, declared = _grid(NO_PROCESS, named, ctl)
+    contrasts = [
+        ("on request (everyone applies) minus delivered automatically: the same formal guarantee", [(1.0, "formal guarantee, on request (everyone eligible applies)"), (-1.0, "formal guarantee, delivered automatically to the low score")]),
+        ("on request (half apply) minus delivered automatically", [(1.0, "formal guarantee, on request (half of the eligible apply each period)"), (-1.0, "formal guarantee, delivered automatically to the low score")]),
+        ("applicants need resources 0.3 minus applicants need none (everyone applies)", [(1.0, "formal guarantee, on request, applicants need resources 0.3"), (-1.0, "formal guarantee, on request (everyone eligible applies)")]),
+        ("access kept pending a correction minus the process alone", [(1.0, "access kept pending a correction (the process on)"), (-1.0, "the process alone, without it")]),
+    ]
+    return _run2(
+        {
+            "id": "EXP-TE22",
+            "title": "A formal guarantee and the reach of it",
+            "question": "The same formal support guarantee (the amount and the eligibility are the same) is delivered automatically, or has to be applied for with different chances of applying and with a requirement of resources for applying, or is limited by a capacity. How much of the guarantee reaches the subjects, and what does the reach change in their state? Floor, cap and access pending a correction are varied separately.",
+            "control": ctl,
+            "arms": arms,
+            "declared": declared,
+            "runner": _cached_run,
+            "primary": ("support_utilisation", "unfav_ever_eligible", "unfav_eligible_never_served", "time_to_first_support", "support_units_per_subject", "state_change_unfav", "state_change_fav", "state_gap_change", "denial_rate_late_unfav", "resources_end_unfav", "accuracy_current"),
+            "contrasts": contrasts,
+            "contrast_outcomes": ("support_utilisation", "unfav_eligible_never_served", "state_change_unfav", "state_gap_change", "support_units_per_subject"),
+            "failure_conditions": {"an arm changed nothing in any seed (its factor was not operative)": lambda x: _no_idle_arm(x, ctl)},
+            "protocol": {
+                "changed": "the way the same support is delivered (automatically; on request with a chance of applying; with a resource requirement for applying; with a capacity), and, separately, a floor, a cap and access pending a correction",
+                "unchanged": "NO_PROCESS otherwise (the process arms add an audit every 2, request delay 1, approval delay 6 and the release at the approval)",
+                "unit": "one run = one unit; paired over seeds",
+                "unresolved": "the effective reachability of a real guarantee (information, trust, language, representation) is NOT measured. The model gives the use of the guarantee (support_utilisation, never served, time to first support): a proxy, kept apart from reachability",
+                "seeds": list(SEEDS),
+                "failure": "an arm identical to the control",
+            },
+        }
+    )
+
+
+def te23_ablation() -> dict:
+    ctl = "the base institution"
+    named: dict[str, dict[str, Any]] = {
+        ctl: {},
+        "no feedback to the state (beta 0)": {"beta": 0.0},
+        "allocation inert: access does not change the resources (gain = loss = 0)": {"gain": 0.0, "loss": 0.0},
+        "no score gate: access by lottery": {"use_score": False},
+        "nothing adopted: the score never moves": {"confidence_floor": 2.0},
+        "no binding constraint": {"lock_after": None},
+        "observation feedback on (a denied subject is observed worse, gamma 0.5)": {"gamma": 0.5},
+        "beta 0 and allocation inert together (to read the interaction)": {"beta": 0.0, "gain": 0.0, "loss": 0.0},
+        "allocation inert with a stronger feedback (beta 0.12)": {"gain": 0.0, "loss": 0.0, "beta": 0.12},
+    }
+    arms, declared = _grid(NO_PROCESS, named, ctl)
+    contrasts = [
+        ("the score changes and the allocation does not: allocation inert minus the base", [(1.0, "allocation inert: access does not change the resources (gain = loss = 0)"), (-1.0, ctl)]),
+        ("the allocation changes the state: the base minus beta 0", [(1.0, ctl), (-1.0, "no feedback to the state (beta 0)")]),
+        ("interaction of the feedback and the allocation", [(1.0, "beta 0 and allocation inert together (to read the interaction)"), (-1.0, "no feedback to the state (beta 0)"), (-1.0, "allocation inert: access does not change the resources (gain = loss = 0)"), (1.0, ctl)]),
+    ]
+    return _run2(
+        {
+            "id": "EXP-TE23",
+            "title": "Feedback ablation: which mechanism returns the institution's action to the evaluated state",
+            "question": "Each mechanism that returns an institutional action to the state, the score or the observation is disabled alone: the feedback of resources to the state, the allocation, the score gate, the adoption, the constraint, and the observation feedback is enabled. What changes in the state, in the accuracy against the four labels, in the gap between the groups and in the resources?",
+            "control": ctl,
+            "arms": arms,
+            "declared": declared,
+            "runner": _cached_run,
+            "primary": ("accuracy_current", "accuracy_counterfactual", "label_gap_current_minus_counterfactual", "target_change_abs", "state_change_unfav", "state_change_fav", "state_gap_change", "resources_end_unfav", "denial_rate_late_unfav", "boundary_mass_actual"),
+            "contrasts": contrasts,
+            "contrast_outcomes": ("accuracy_current", "label_gap_current_minus_counterfactual", "target_change_abs", "state_gap_change", "resources_end_unfav"),
+            "post": _decomposition_post(ctl),
+            "failure_conditions": {"an arm changed nothing in any seed (its factor was not operative)": lambda x: _no_idle_arm(x, ctl)},
+            "protocol": {
+                "changed": "one mechanism per arm (the two double arms are named as such and are there to read an interaction)",
+                "unchanged": "NO_PROCESS otherwise",
+                "unit": "one run = one unit; paired over seeds",
+                "reuse": "several of these arms have the configuration of arms of EXP-TE16 and EXP-TE17; they are cached runs where the same process computes both, and their earlier results are not changed",
+                "seeds": list(SEEDS),
+                "failure": "an arm identical to the control",
+            },
+        }
+    )
 
 
 # ------------------------------------------------------------------------------------------------ TE13: parameter sensitivity (one factor at a time, ranges fixed above)
@@ -970,11 +1330,20 @@ REGISTRY2: dict[str, Callable[[], dict]] = {
     "EXP-TE16": te16_complement,
     "EXP-TE17": te17_decomposition,
     "EXP-TE18": te18_guarantees,
+    "EXP-TE19": te19_fixed_classifier,
+    "EXP-TE20": te20_label_endogeneity,
+    "EXP-TE21": te21_concentration,
+    "EXP-TE22": te22_reachability,
+    "EXP-TE23": te23_ablation,
 }
 
 
 def run_all2() -> dict:
-    return {"engine": "truth_error/2", "experiments": {k: f() for k, f in REGISTRY2.items()}}
+    clear_run_cache()
+    try:
+        return {"engine": "truth_error/2", "experiments": {k: f() for k, f in REGISTRY2.items()}}
+    finally:
+        clear_run_cache()
 
 
 __all__ = ["REGISTRY2", "run_all2", "P0", "NO_PROCESS", "PRIMARY2", "PARAMETER_RANGES", "SEEDS2", "_diff"]

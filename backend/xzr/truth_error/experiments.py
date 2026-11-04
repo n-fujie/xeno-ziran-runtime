@@ -75,10 +75,10 @@ def _early_late(r: dict, key: str) -> tuple[float | None, float | None]:
     return float(np.mean(s[4:11])), float(np.mean(s[-8:]))
 
 
-def _arm_results(cfgs: dict[str, Config], seeds: tuple[int, ...], extra) -> dict[str, dict]:
+def _arm_results(cfgs: dict[str, Config], seeds: tuple[int, ...], extra, runner=None) -> dict[str, dict]:
     out: dict[str, dict] = {}
     for name, cfg in cfgs.items():
-        runs = [run(dataclasses.replace(cfg, seed=s)) for s in seeds]
+        runs = [(runner or run)(dataclasses.replace(cfg, seed=s)) for s in seeds]
         res = {k: [r["summary"].get(k) for r in runs] for k in OUTCOMES}
         for k, fn in extra.items():
             res[k] = [fn(r) for r in runs]
@@ -91,7 +91,7 @@ def _run_experiment(spec: dict, seeds: tuple[int, ...] | None = None) -> dict:
     cfgs: dict[str, Config] = spec["arms"]
     control = spec["control"]
     extra = spec.get("extra", {})
-    arms = _arm_results(cfgs, seeds, extra)
+    arms = _arm_results(cfgs, seeds, extra, spec.get("runner"))
     outcomes = list(OUTCOMES) + list(extra)
     rows = []
     for name, cfg in cfgs.items():
