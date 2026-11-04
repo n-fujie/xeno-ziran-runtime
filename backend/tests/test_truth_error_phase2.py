@@ -393,3 +393,48 @@ def test_a_correct_classification_still_lowers_the_real_state_of_the_subjects_it
             delta = (rs[-1]["reference_z"] - rs[0]["reference_z"]) - (rl[-1]["reference_z"] - rl[0]["reference_z"])
             (d_fav if rs[0]["reference_z"] > 0 else d_unfav).append(delta)
     assert np.mean(d_unfav) < -0.5 and np.mean(d_fav) > 0.5   # the score widens the gap between the two groups although it classifies them correctly
+
+
+# ------------------------------------------------------------------------------------------------ the complementary metrics (docs/TRUTH_ERROR.md section 12.6)
+def test_the_complementary_metrics_are_computed_over_every_subject_with_stated_denominators():
+    from xzr.truth_error.process import COMPLEMENT_METRICS
+
+    r = I.run(I.Config(seed=2, n=12, periods=40, lock_after=4, beta=0.06))   # n = 12: every subject is a sample subject with a full record
+    c = r["process"]["complement"]
+    assert set(c) == set(COMPLEMENT_METRICS) and all({"denominator", "period", "unit"} <= set(v) for v in COMPLEMENT_METRICS.values())
+    z0 = np.array([rs[0]["reference_z"] for rs in r["records"]])
+    dz = np.array([rs[-1]["reference_z"] - rs[0]["reference_z"] for rs in r["records"]])
+    un = z0 <= 0
+    # the metric is z after the last update minus z0; the record of the last period holds z before that update, so the two differ by one period's change (at most beta/2 plus noise)
+    assert c["state_change_unfav"] == pytest.approx(dz[un].mean(), abs=0.06) and c["state_change_fav"] == pytest.approx(dz[~un].mean(), abs=0.06)
+    assert c["state_gap_change"] == pytest.approx(c["state_change_fav"] - c["state_change_unfav"])
+    acc = np.array([[x["access"] for x in rs] for rs in r["records"]])
+    assert c["denial_rate_late_unfav"] == pytest.approx(1.0 - acc[un][:, -10:].mean())
+    # the primary metrics are untouched: the same keys, and the complement is a separate record
+    assert set(r["process"]["metrics"]) == set(X2.PRIMARY2) | {"recovery_censored_share"}
+
+
+def test_the_change_of_the_real_state_moves_only_through_the_resource_feedback(saved2):
+    e = saved2["experiments"]["EXP-TE16"]
+    arms = {a["arm"]: a["mean"] for a in e["arms"]}
+    m = lambda arm, k: arms[arm][k]["mean"]  # noqa: E731
+    acc = "score, accurate sensor (noise 0.05)"
+    b0, b3, b12 = (next(a for a in arms if a.startswith(f"score, accurate sensor, {t}")) for t in ("no feedback", "beta 0.03", "beta 0.12"))
+    assert abs(m(b0, "state_change_unfav")) < 0.02 and abs(m(b0, "state_gap_change")) < 0.1   # beta 0: the score changes who is denied, not the states
+    assert m(b3, "state_change_unfav") / m(acc, "state_change_unfav") == pytest.approx(0.5, abs=0.1) and m(b12, "state_change_unfav") / m(acc, "state_change_unfav") == pytest.approx(2.0, abs=0.2)   # proportional to beta
+    # the correctly denied are not worse off than the randomly denied: the harm per denied subject is the same, the score concentrates it
+    c = _contrast(e, "accurate score minus lottery", "state_change_unfav_denied")
+    assert c["class"] == "not detected" and abs(c["paired"]["mean"]) < 0.05
+    for out, sign in (("state_change_unfav", -1), ("state_change_fav", 1), ("state_gap_change", 1)):
+        x = _contrast(e, "accurate score minus lottery", out)
+        assert x["class"] == "replicated" and x["paired"]["mean"] * sign > 0.5, out
+    assert _contrast(e, "accurate score minus full access", "state_change_unfav")["paired"]["mean"] < -2.0
+
+
+def test_the_saved_complement_experiment_is_the_one_the_code_produces(saved2):
+    again, old = X2.REGISTRY2["EXP-TE16"](), saved2["experiments"]["EXP-TE16"]
+    assert again["protocol_digest"] == old["protocol_digest"]
+    for a, b in zip(again["arms"], old["arms"], strict=True):
+        assert a["result_digest_seed1"] == b["result_digest_seed1"]
+        for k in old["primary_outcomes"]:
+            assert a["mean"][k] == b["mean"][k], (a["arm"], k)

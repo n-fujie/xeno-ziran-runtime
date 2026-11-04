@@ -65,6 +65,52 @@ METRICS: dict[str, dict[str, str]] = {
 }
 
 
+# COMPLEMENTARY metrics, added after the verification of section 12.3: the primary metrics above look only at the subjects favourable at the start and so are blind to what the institution does to the others, among them the
+# subjects it denies CORRECTLY. They are additions: no primary metric is changed or removed. Subjects "not favourable at the start" are those with z0 <= 0 (about half of the population).
+COMPLEMENT_METRICS: dict[str, dict[str, str]] = {
+    "denial_rate_late_unfav": {
+        "denominator": "subjects not favourable at the start (z0<=0) x late periods",
+        "period": f"the last {OBS_LATE} periods",
+        "unit": "subject-period, averaged per subject within a run; the comparison is paired over seeds (one run = one unit)",
+    },
+    "lost_opportunities_per_unfav": {"denominator": "subjects not favourable at the start (z0<=0)", "period": "all periods", "unit": "denied periods per subject"},
+    "share_unfav_ever_denied": {"denominator": "subjects not favourable at the start (z0<=0)", "period": "all periods", "unit": "share denied in at least one period"},
+    "state_change_unfav": {
+        "denominator": "subjects not favourable at the start (z0<=0)",
+        "period": "from the start to the end of the 40 periods (z after the last update minus z0, so 40 updates)",
+        "unit": "change of the real reference state z, in the units of z (standard normal at the start); mean per run, paired over seeds. It moves through the resource feedback beta only",
+    },
+    "state_change_unfav_denied": {"denominator": "subjects not favourable at the start (z0<=0) and denied in at least one period (the correctly denied, by the start label)", "period": "first to last period", "unit": "as state_change_unfav"},
+    "state_change_fav": {"denominator": "subjects favourable at the start (z0>0)", "period": "first to last period", "unit": "as state_change_unfav"},
+    "state_gap_change": {"denominator": "both groups", "period": "first to last period", "unit": "state_change_fav minus state_change_unfav: the change of the distance between the two groups"},
+    "resources_end_unfav": {"denominator": "subjects not favourable at the start (z0<=0)", "period": "the last period", "unit": "resources in [0, 1]; mean per run"},
+}
+
+
+def complement_outputs(ah, ev, z0, z_end, resources_end) -> dict:
+    ah = np.asarray(ah, dtype=bool)
+    un, fv = z0 <= 0, z0 > 0
+    nu = max(1, int(un.sum()))
+    late = ah[-OBS_LATE:][:, un]
+    den = ev["denied"] >= 0
+    dz = z_end - z0
+
+    def mean(x, mask):
+        return float(x[mask].mean()) if mask.any() else None
+
+    sc_un, sc_fv = mean(dz, un), mean(dz, fv)
+    return {
+        "denial_rate_late_unfav": float(1.0 - late.mean()) if late.size else None,
+        "lost_opportunities_per_unfav": float((~ah[:, un]).sum() / nu),
+        "share_unfav_ever_denied": float(den[un].mean()) if un.any() else None,
+        "state_change_unfav": sc_un,
+        "state_change_unfav_denied": mean(dz, un & den),
+        "state_change_fav": sc_fv,
+        "state_gap_change": (sc_fv - sc_un) if sc_un is not None and sc_fv is not None else None,
+        "resources_end_unfav": mean(resources_end, un),
+    }
+
+
 def _events_block(ev: dict[str, np.ndarray]) -> dict:
     out: dict[str, dict] = {}
     for k in EVENTS:
@@ -116,7 +162,7 @@ def recoverability(access: np.ndarray, window: int | None) -> dict:
     return {"window": window, "periods": periods, "episodes": episodes}
 
 
-def process_outputs(cfg, ev, ap, ap_blocked, ap_outcome, false_detect, ah, fav0, fav_end, locked_end, denied_at_approval, access_b_end) -> dict:
+def process_outputs(cfg, ev, ap, ap_blocked, ap_outcome, false_detect, ah, fav0, fav_end, locked_end, denied_at_approval, access_b_end, z0=None, z_end=None, resources_end=None) -> dict:
     ah = np.asarray(ah, dtype=bool)  # (periods, subjects)
     T, n = ah.shape
     nf = max(1, int(fav0.sum()))
@@ -156,6 +202,8 @@ def process_outputs(cfg, ev, ap, ap_blocked, ap_outcome, false_detect, ah, fav0,
         "reimposed_after_release": int(((ev["released"] >= 0) & locked_end).sum()),
         "metrics": m,
         "metric_definitions": METRICS,
+        "complement": complement_outputs(ah, ev, z0, z_end, resources_end) if z0 is not None else None,
+        "complement_definitions": COMPLEMENT_METRICS,
         "appeal": app,
         "recoverability": {
             "favourable_at_start": recoverability(ah[:, fav0], cfg.opportunity_window),
