@@ -404,7 +404,7 @@ def test_every_cell_and_edge_of_every_shape_is_traced_to_its_construction(dom, f
             assert c["edges_expected_if_all_recorded"] == 12 * 7 + 13 * 6 == 162 and c["edges_drawn"] == 162 and e["counts_consistent"] is True
             assert len(e["cells"]) == 91 and len(e["edges"]) == 162
             cell = e["cells"][0]
-            assert set(cell["intervention"]) == {dom.x_name, dom.y_name} and cell["trials_per_cell_and_seed"] == 40 and cell["seeds"] == len(SEEDS) and cell["provenance"] == "INTERVENTION_RELATIVE_DIFFERENCE"
+            assert set(cell["intervention"]) == {dom.x_name, dom.y_name} and cell["trials_per_cell_and_seed"] == 40 and cell["seeds"] == len(SEEDS) and cell["provenance"] == "RECORDED_OBSERVATION"
             assert {ed["along"] for ed in e["edges"]} == {dom.x_name, dom.y_name}
             assert sum(1 for ed in e["edges"] if ed["along"] == dom.x_name) == 84 and sum(1 for ed in e["edges"] if ed["along"] == dom.y_name) == 78
     assert "P(J = +1" in explain_shape(rec, RESPONSIVE, "end", dom)["outcome_of_the_domain"]
@@ -560,3 +560,155 @@ def test_the_same_specification_gives_the_same_record_whatever_writes_its_number
     assert a["digest"] == saved["digest"] and json.loads(json.dumps(a["spec"]["observation"])) == saved["spec"]["observation"]
     o = observation_from(obs_js)
     assert isinstance(o.sensor_noise, float) and isinstance(o.probe, float) and isinstance(o.scale, int) and isinstance(o.temporal_window, int) and o.memory is True
+
+
+# ------------------------------------------------------------------------------------------------ the security invariants of the routes (reviewed one by one, not only listed)
+def _gaisho_routes():
+    from xzr.service import app as app_mod
+
+    out = []
+    for r in app_mod.app.routes:
+        out += list(r.original_router.routes) if hasattr(r, "original_router") else [r]
+    return [(m, r.path) for r in out if getattr(r, "path", "").startswith("/api/gaisho") for m in sorted(getattr(r, "methods", ()) or ()) if m not in ("HEAD", "OPTIONS")]
+
+
+def test_every_gaisho_route_refuses_before_it_computes_when_public_or_cross_origin(monkeypatch):
+    """The routes run CPU-bound experiments: the refusal must come BEFORE any computation, for every route (found by enumerating the app, so a new route that forgets local_only fails here)."""
+    from fastapi.testclient import TestClient
+
+    from xzr.service import app as app_mod
+    from xzr.service import gaisho as svc
+    from xzr.service import studies as studies_mod
+
+    def boom(*a, **k):
+        raise AssertionError("an experiment was computed for a refused request")
+    for name in ("run_experiment", "compare_observations", "restore", "figure_svg", "explain_shape", "compare_models"):
+        monkeypatch.setattr(svc, name, boom)
+    routes = _gaisho_routes()
+    assert {p for _, p in routes} == {f"/api/gaisho/{x}" for x in ("spec", "run", "compare-observations", "compare-shapes", "figure", "restore", "construction", "comparators")}
+    body = {"domain": "001-knowledge", "seeds": [1, 2], "condition": RESPONSIVE, "snapshot": "end", "spec": {"domain": "001-knowledge"}, "digest": "x", "first": {}, "second": {}}
+    c = TestClient(app_mod.app, headers={"origin": "http://testserver"})
+    call = lambda m, p, **kw: c.request(m, p, json=body if m == "POST" else None, **kw)  # noqa: E731
+    for m, p in routes:
+        assert call(m, p, headers={"origin": "http://evil.example"}).status_code == 403, (m, p)
+    monkeypatch.setattr(studies_mod, "LIMITS", dataclasses.replace(studies_mod.LIMITS, public=True))
+    for m, p in routes:
+        assert call(m, p).status_code == 403, (m, p)
+
+
+def test_the_gaisho_code_touches_no_file_no_network_and_starts_no_process():
+    """The routes read and write nothing: no file access, no network, no subprocess, no dynamic code, in the engine or in its service (the saved results are read by tests and by the script only)."""
+    import re
+
+    root = Path(__file__).resolve().parents[1] / "xzr"
+    sources = {p.name: p.read_text() for p in [*(root / "gaisho").glob("*.py"), root / "service" / "gaisho.py"]}
+    forbidden = r"\b(open|exec|eval|compile|__import__)\(|\b(subprocess|socket|urllib|requests|httpx|shutil|tempfile|pathlib|os\.system|os\.popen|importlib)\b|\.(write_text|write_bytes|read_text|read_bytes|unlink|mkdir)\("
+    for name, src in sources.items():
+        code = "\n".join(line for line in src.splitlines() if not line.lstrip().startswith("#"))
+        code = re.sub(r'""".*?"""', "", code, flags=re.S)  # docstrings may name what the code does not do
+        assert not re.search(forbidden, code), (name, re.search(forbidden, code).group(0))
+
+
+def test_the_cost_of_a_request_is_bounded_by_seeds_distinct_conditions_and_concurrency(monkeypatch):
+    from fastapi.testclient import TestClient
+
+    from xzr.service import app as app_mod
+    from xzr.service import gaisho as svc
+
+    c = TestClient(app_mod.app, headers={"origin": "http://testserver"})
+    k = "001-knowledge"
+    assert c.post("/api/gaisho/run", json={"domain": k, "conditions": [RESPONSIVE] * 50}).status_code == 422  # a repeated condition would repeat its runs
+    assert c.post("/api/gaisho/run", json={"domain": k, "conditions": []}).status_code == 422
+    assert c.post("/api/gaisho/run", json={"domain": k, "conditions": [1]}).status_code == 422
+    assert c.post("/api/gaisho/run", json={"domain": "005-credit", "seeds": list(range(1, 12))}).status_code == 422  # the institution engine costs about 1.8 s per seed and condition
+    assert c.post("/api/gaisho/run", json={"domain": k, "seeds": list(range(1, 22))}).status_code == 422
+    with pytest.raises(ValueError):
+        run_experiment({"domain": "005-credit", "seeds": list(range(1, 12))})  # the engine refuses it too, whoever calls it
+    with pytest.raises(ValueError):
+        run_experiment({"domain": k, "conditions": [RESPONSIVE, RESPONSIVE]})
+    held = [svc._BUSY.acquire(blocking=False) for _ in range(2)]
+    try:
+        assert all(held)
+        r = c.post("/api/gaisho/run", json={"domain": k, "seeds": [1, 2], "conditions": [RESPONSIVE]})
+        assert r.status_code == 429  # a third computation is refused, not queued
+        assert c.get("/api/gaisho/spec").status_code == 200  # reading the specification costs nothing
+    finally:
+        for _ in held:
+            svc._BUSY.release()
+    assert c.post("/api/gaisho/run", json={"domain": k, "seeds": [1, 2], "conditions": [RESPONSIVE]}).status_code == 200
+
+
+def test_the_figure_is_inert_markup_whatever_the_request_says(dom, full):
+    hostile = '"><script>alert(1)</script><img src=x onerror=alert(1)>'
+    rec = {"result": full, "shapes": {c: {s: build_shape(full, c, s, {"x": dom.x_name, "y": dom.y_name}) for s in dom.snapshots} for c in full["conditions"]}, "axes": {"x": dom.x_name, "y": dom.y_name},
+           "figure_kind": "EXECUTED_COMPUTATIONAL_EXPERIMENT", "model_version": MODEL_VERSION, "limits": "l", "digest": "d" * 64, "negative_results": []}
+    svg = figure_svg(rec, hostile)
+    assert "<script" not in svg and "<img" not in svg and "&lt;script&gt;" in svg and "&lt;img" in svg
+
+
+# ------------------------------------------------------------------------------------------------ the comparators: what each is given, and what the results do and do not say
+def test_the_comparators_are_declared_and_the_records_comparison_is_unchanged(dom):
+    from xzr.gaisho.compare import COMPARATORS
+
+    base, ext = compare_models(dom, SEEDS), compare_models(dom, SEEDS, extended=True)
+    assert base["digest"] == compare_models(dom, SEEDS)["digest"] and "comparators" not in base  # the record's own comparison (M0, M1, the candidate) is exactly as before
+    assert [v["competitor"][:2] for v in ext["rows"][0]["verdicts"]] == ["M0", "M1", "M4"]
+    assert {k: v["parameters"] for k, v in COMPARATORS.items()} == {"M0": 1, "M1": 3, "CAND": 2, "M4": 2}  # CAND and M4 have the same number of parameters
+    assert all(v["history"] is False and v["information"] == "end-snapshot training cells" for v in COMPARATORS.values()) and "attention" in ext["not_run"]
+    by = {r["condition"]: {v["competitor"][:2]: v["verdict"] for v in r["verdicts"]} for r in ext["rows"]}
+    # with the same number of parameters the right single factor wins: the candidate construction (evidence alone) has no advantage of its own
+    assert by[CUE]["M4"] == "HARMFUL" and by[NOFEEDBACK]["M4"] == "HARMFUL" and by[RESPONSIVE]["M4"] == "NON_REDUNDANT"
+    assert by[RESPONSIVE]["M1"] == "REDUNDANT" and by[BASE]["M1"] == "REDUNDANT" and by[CUE]["M1"] == "HARMFUL"
+    assert "nested model cannot beat" in ext["reading"]
+
+
+def test_the_comparators_endpoint_is_bounded_and_only_for_the_knowledge_domain():
+    from fastapi.testclient import TestClient
+
+    from xzr.service import app as app_mod
+
+    c = TestClient(app_mod.app, headers={"origin": "http://testserver"})
+    r = c.post("/api/gaisho/comparators", json={"domain": "001-knowledge", "seeds": [1, 2, 3]}).json()
+    assert r["comparators"]["M4"]["parameters"] == 2 and len(r["rows"]) == 6
+    assert c.post("/api/gaisho/comparators", json={"domain": "002-bias"}).status_code == 422
+    assert c.post("/api/gaisho/comparators", json={"domain": "001-knowledge", "conditions": [RESPONSIVE]}).status_code == 422
+
+
+# ------------------------------------------------------------------------------------------------ cell / edge / branch / unresolved / face: which layer each is
+def test_each_element_of_a_shape_is_classified_by_layer_and_the_first_run_results_are_kept(dom, full):
+    from xzr.gaisho.construction import LAYERS
+
+    assert set(LAYERS) == {"cell", "edge", "branch_point", "unresolved", "surface_between_cells"}
+    assert all(set(v) == {"real_operation", "recorded_observation", "reconstructed_relation", "display"} for v in LAYERS.values())
+    s = build_shape(full, CUE, "end", {"x": dom.x_name, "y": dom.y_name})
+    assert {v["source"]["provenance"] for v in s["vertices"]} == {"RECORDED_OBSERVATION"}  # a cell is a recorded observation, not a difference between interventions
+    assert {e["source"]["provenance"] for e in s["edges"] + s["cuts"]} == {"RECONSTRUCTED_RELATION"} and {b["source"]["provenance"] for b in s["branch"]} == {"RECONSTRUCTED_RELATION"}
+    assert {u["provenance"] for u in build_shape(run_domain(dom, Observation(scale=2), SEEDS[:2], [CUE]), CUE, "end", {"x": dom.x_name, "y": dom.y_name})["unresolved"]} == {"VISUALIZATION_PROJECTION"}
+
+
+def test_correcting_the_cell_label_changed_digests_and_nothing_else():
+    """The first run (before the label correction) is kept as experiments_first_run.json: every number, relation, verdict and negative result is identical; only the digests (which cover the label) differ."""
+    first = json.loads(SAVED.with_name("experiments_first_run.json").read_text())
+    now = json.loads(SAVED.read_text())
+
+    def strip(o):
+        if isinstance(o, dict):
+            return {k: strip(v) for k, v in o.items() if "digest" not in k}
+        return [strip(x) for x in o] if isinstance(o, list) else o
+    for k in ("001-knowledge", "002-bias", "003-freedom", "005-credit"):
+        assert strip(first["domains"][k]["result"]) == strip(now["domains"][k]["result"]), k
+        assert strip(first["domains"][k]["negative_results"]) == strip(now["domains"][k]["negative_results"]), k
+        assert first["domains"][k]["digest"] != now["domains"][k]["digest"], k
+    assert strip(first["domains"]["001-knowledge"]["models"]) == strip(now["domains"]["001-knowledge"]["models"]) and strip(first["knowledge_observation_sensitivity"]) == strip(now["knowledge_observation_sensitivity"])
+
+
+def test_the_credit_domain_names_the_engine_outputs_it_depends_on(monkeypatch):
+    """005-credit reads process.complement (TRUTH-ERROR phase 4) and process.labels (phase 5, commit 1af5700): an engine without them is refused with a message, not read as zero."""
+    from xzr.gaisho import domains as D
+    from xzr.truth_error import institution as I  # noqa: E741
+
+    d = D.CreditDomain()
+    real = I.run
+    monkeypatch.setattr(I, "run", lambda cfg: {**real(cfg), "process": {k: v for k, v in real(cfg)["process"].items() if k != "labels"}})
+    with pytest.raises(RuntimeError, match="1af5700"):
+        d.simulate(next(iter(d.conditions)), 1, FULL)

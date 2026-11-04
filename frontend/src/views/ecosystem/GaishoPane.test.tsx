@@ -80,7 +80,7 @@ describe('the GAISHO pane with an executed record', () => {
   });
   it('shows construction data for the selected point', () => {
     const id = fx.base.shapes![RESP].end.vertices[5].id, t = text(section(html({ ...run(fx.base), selected: id }), 'gs-construction'));
-    expect(t).toContain('INTERVENTION_RELATIVE_DIFFERENCE'); expect(t).toContain('operation digest');
+    expect(t).toContain('RECORDED_OBSERVATION'); expect(t).toContain('operation digest');
   });
 });
 

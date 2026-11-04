@@ -50,13 +50,15 @@ export interface ShapeReading {
 export interface TraceCell { id: string; cell: [number, number]; intervention: Record<string, number>; value: number; sd_across_seeds: number | null; se_of_mean: number | null; trials_per_cell_and_seed: number; seeds: number; expected_from_the_agents_weights: number | null; value_minus_expected: number | null; operation_digest: string; provenance: string }
 export interface TraceEdge { a: string; b: string; kind: 'edge' | 'cut'; along: string; difference: number; expected_difference_from_weights: number | null; provenance: string }
 export interface ConstructionOut {
-  recorded: boolean; reason?: string; condition: string; snapshot: string; shape_digest: string; digest: string; rules: Record<string, string>; axes: { x: string; y: string; z: string };
+  recorded: boolean; reason?: string; condition: string; snapshot: string; shape_digest: string; digest: string; rules: Record<string, string>; layers: Record<string, Record<'real_operation' | 'recorded_observation' | 'reconstructed_relation' | 'display', string>>; axes: { x: string; y: string; z: string };
   counts?: { grid: [number, number]; cells_expected: number; cells_recorded: number; cells_unresolved: number; cells_total: number; edges_expected_if_all_recorded: number; edges_drawn: number; cuts: number; branch_points: number };
   counts_consistent?: boolean; what_a_cell_is?: string; outcome_of_the_domain?: string | null; cells?: TraceCell[]; edges?: TraceEdge[]; weights_of_the_operation?: Record<string, number> | null; unresolved?: Array<{ id: string; reason: string }>;
   what_the_surface_carries?: { fitted_weights: Record<string, number>; weights_of_the_operation: Record<string, number>; rms_residual_of_the_fit: number; expected_sampling_rms: number; reading: string };
 }
+export interface ComparatorInfo { label: string; fits: string; parameters: number; information: string; history: boolean; nested_in: string | null }
+export interface ComparatorsOut { comparators: Record<string, ComparatorInfo>; not_run: string[]; held_out: string; reading: string; rule: string; rows: Array<{ condition: string; verdicts: Array<{ competitor: string; verdict: string; errors?: Record<string, number> }> }> }
 export interface Claim { id: string; status: 'SUPPORTED_IN_MODEL' | 'LIMITED_OR_NEGATIVE' | 'UNTESTED_PHILOSOPHICAL_HYPOTHESIS'; claim: string; rests_on: string }
-export interface GaishoDomainInfo { title: string | null; conditions: string[]; x: string | null; y: string | null; snapshots: string[]; relations: string[]; status: DomainStatus }
+export interface GaishoDomainInfo { title: string | null; conditions: string[]; x: string | null; y: string | null; snapshots: string[]; relations: string[]; max_seeds?: number; status: DomainStatus }
 export interface GaishoSpecInfo {
   model_version: string; scope: string; source_status: string; domains: Record<string, GaishoDomainInfo>; observation_axes: string[]; observation_defaults: GaishoObservation; environments: string[];
   levels: Record<string, string>; level_states: string[]; provenance_classes: string[]; unobserved_classes: Unobserved[]; verdicts: string[]; figure_kinds: string[]; prohibited_inferences: Array<{ premise: string; conclusion: string; reason: string }>; limits: string; claims: Claim[];

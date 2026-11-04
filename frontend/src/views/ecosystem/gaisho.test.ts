@@ -5,9 +5,9 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { FULL_OBSERVATION, LEVELS, OBS_PRESETS, cellTrace, claimGroups, constructionOf, domainStatusRows, exportRecord, figureTable, frameOf, initialGaishoUi, levelRows, negativeCounts, observationDiff, operationPart, parseRecord, relationRows, relationSupport, shapeOf, snapshotsOf, type ConstructionOut, type GaishoRecord, type GaishoSpecInfo, type ShapeReading } from './gaisho';
+import { FULL_OBSERVATION, LEVELS, OBS_PRESETS, cellTrace, claimGroups, constructionOf, domainStatusRows, exportRecord, figureTable, frameOf, initialGaishoUi, levelRows, negativeCounts, observationDiff, operationPart, parseRecord, relationRows, relationSupport, shapeOf, snapshotsOf, type ComparatorsOut, type ConstructionOut, type GaishoRecord, type GaishoSpecInfo, type ShapeReading } from './gaisho';
 
-const fx = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '__fixtures__', 'gaisho-records.json'), 'utf8')) as Record<'base' | 'passive' | 'scale4' | 'body', GaishoRecord> & { info: GaishoSpecInfo; construction: ConstructionOut; construction_scale: ConstructionOut; reading_same: ShapeReading; reading_changed: ShapeReading; obs_cmp: { change_kinds: { real_operation: string; recorded_observation: string; display: string } } };
+const fx = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '__fixtures__', 'gaisho-records.json'), 'utf8')) as Record<'base' | 'passive' | 'scale4' | 'body', GaishoRecord> & { info: GaishoSpecInfo; construction: ConstructionOut; construction_scale: ConstructionOut; reading_same: ShapeReading; reading_changed: ShapeReading; obs_cmp: { change_kinds: { real_operation: string; recorded_observation: string; display: string } }; comparators: ComparatorsOut };
 const { base, passive, scale4, body, info } = fx;
 const CUE = 'accidental correct: coincidental cue', RESP = 'ground-responsive judgement', FB = 'correction and reconfiguration (feedback on)';
 
@@ -69,7 +69,7 @@ describe('shapes', () => {
   it('make every point traceable: a vertex names its cell, its trials, its provenance and its operation digest, an unresolved region its class', () => {
     const s = shapeOf(base, CUE, 'end')!, v = constructionOf(s, s.vertices[10].id)!;
     const t = Object.fromEntries(v.rows);
-    expect(t.provenance).toBe('INTERVENTION_RELATIVE_DIFFERENCE'); expect(t['operation digest']).toBe(base.result!.conditions[CUE].operation_digest); expect(t['trials per cell and seed']).toBe('40');
+    expect(t.provenance).toBe('RECORDED_OBSERVATION'); expect(t['operation digest']).toBe(base.result!.conditions[CUE].operation_digest); expect(t['trials per cell and seed']).toBe('40');
     const s4 = shapeOf(scale4, RESP, 'end')!, u = constructionOf(s4, s4.unresolved[0].id)!;
     expect(Object.fromEntries(u.rows).class).toBe('SCALE_MISFIT'); expect(constructionOf(s, 'v99_99')).toBeNull();
   });
@@ -156,5 +156,24 @@ describe('claims', () => {
     expect(g.every((x) => x.items.length > 0)).toBe(true);
     const h = g[2].items.map((c) => c.id); expect(h).toContain('H1'); expect(g[0].items.some((c) => h.includes(c.id))).toBe(false);
     expect(g[2].items.find((c) => c.id === 'H3')!.rests_on).toContain('UNVERIFIED');
+  });
+});
+
+describe('which layer each element is, and the comparators', () => {
+  it('classifies the cell as the recorded observation, the edge and the branch point as reconstructed relations, the unresolved marker and the face as display', () => {
+    const L = fx.construction.layers;
+    expect(Object.keys(L).sort()).toEqual(['branch_point', 'cell', 'edge', 'surface_between_cells', 'unresolved']);
+    expect(L.cell.recorded_observation).toContain('THE VALUE'); expect(L.cell.reconstructed_relation).toContain('none'); expect(L.cell.real_operation).toContain('decision rule');
+    expect(L.edge.reconstructed_relation).toContain('THE DIFFERENCE'); expect(L.edge.recorded_observation).toContain('none'); expect(L.branch_point.reconstructed_relation).toContain('INTERPOLATION');
+    expect(L.unresolved.display).toContain('MARKER'); expect(L.surface_between_cells.display).toContain('DRAWN FACE');
+    expect(fx.construction.cells!.every((c) => c.provenance === 'RECORDED_OBSERVATION')).toBe(true); expect(fx.construction.edges!.every((e) => e.provenance === 'RECONSTRUCTED_RELATION')).toBe(true);
+  });
+  it('declares what each comparator is given: the same cells, no history, the number of parameters, and what was not run', () => {
+    const c = fx.comparators;
+    expect(Object.keys(c.comparators)).toEqual(['M0', 'M1', 'CAND', 'M4']); expect(c.comparators.CAND.parameters).toBe(c.comparators.M4.parameters);
+    expect(Object.values(c.comparators).every((m) => !m.history && m.information === 'end-snapshot training cells')).toBe(true);
+    expect(c.not_run).toContain('attention'); expect(c.reading).toContain('nested model cannot beat');
+    const by = Object.fromEntries(c.rows.map((r) => [r.condition, Object.fromEntries(r.verdicts.map((v) => [v.competitor.split(' ')[0], v.verdict]))]));
+    expect(by['accidental correct: coincidental cue'].M4).toBe('HARMFUL'); expect(by['ground-responsive judgement'].M4).toBe('NON_REDUNDANT'); expect(by['ground-responsive judgement'].M1).toBe('REDUNDANT');
   });
 });

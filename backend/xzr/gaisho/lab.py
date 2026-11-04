@@ -62,6 +62,7 @@ class Domain:
     relation_names: tuple[str, ...] = ()
     fine_scale = 1
     seed_count = 20
+    max_seeds = 20  # the most seeds one request may run (the cost of one run differs by domain)
 
     def simulate(self, cond: str, seed: int, obs: Observation) -> dict:  # pragma: no cover - interface
         raise NotImplementedError

@@ -1,6 +1,6 @@
 // GAISHO - Operational Shape Laboratory: the client side of /api/gaisho. A request carries a specification (a domain, an observation condition over the ten axes, seeds); the answer is the deterministic record of an
 // executed SYNTHETIC computational experiment. Nothing here computes a result, a shape or an attribution, and the server stores nothing: a history is restored by running a record's specification again.
-import type { ChangeKinds, ConstructionOut, GaishoObservation, GaishoRecord, GaishoShape, GaishoSpecInfo, ShapeReading } from './gaisho';
+import type { ChangeKinds, ComparatorsOut, ConstructionOut, GaishoObservation, GaishoRecord, GaishoShape, GaishoSpecInfo, ShapeReading } from './gaisho';
 
 async function call<T>(path: string, body?: unknown): Promise<T> {
   const r = await fetch(`/api/gaisho${path}`, body === undefined ? undefined : { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
@@ -18,3 +18,4 @@ export type { GaishoShape };
 export interface GaishoShapeComparison { comparable: boolean; reason?: string; cells_compared?: number; mean_abs_difference?: number | null; max_abs_difference?: number | null; mean_signed_difference?: number | null; cuts_only_in_first?: string[]; cuts_only_in_second?: string[]; unresolved_in_first_only?: string[]; unresolved_in_second_only?: string[]; branch_points?: [number, number] }
 export const gaishoCompareShapes = (req: GaishoRequest & { first: { condition: string; snapshot: string }; second: { condition: string; snapshot: string } }): Promise<{ comparison: GaishoShapeComparison; reading: ShapeReading | null; digest: string }> => call('/compare-shapes', req);
 export const gaishoConstruction = (req: GaishoRequest & { condition: string; snapshot: string }): Promise<ConstructionOut> => call('/construction', req);
+export const gaishoComparators = (req: GaishoRequest): Promise<ComparatorsOut> => call('/comparators', req);

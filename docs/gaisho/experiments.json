@@ -73,7 +73,7 @@
     "x": "evidence E (do)",
     "y": "coincidental cue S (do)"
    },
-   "digest": "fe9adc86a7826f7994b1d33143b6ce59b5baf9eadaa3739538335f7b43536acf",
+   "digest": "dae10f63af66751de7d2c1e5b6c89bb3330cb1411f9ae0a04bc9e598a5c1ed71",
    "executed": true,
    "figure_kind": "EXECUTED_COMPUTATIONAL_EXPERIMENT",
    "levels": {
@@ -2543,7 +2543,7 @@
     "x": "base rate of the world (do)",
     "y": "noise of the evidence (do)"
    },
-   "digest": "bd475103dd89930f6b873d63f4e063f8c51eda90190f895b3c02c3540075e347",
+   "digest": "c4e63a4a43cb27fe1dfb4e029606f4abeb0b0bceac74334108f61e56b1ee9325",
    "executed": true,
    "figure_kind": "EXECUTED_COMPUTATIONAL_EXPERIMENT",
    "levels": {
@@ -3272,7 +3272,7 @@
     "x": "material/bodily constraint (do)",
     "y": "self-interpretation as free (do)"
    },
-   "digest": "77cdf8deff01f43ccbcec22fd8420482990dc1a19e3f4703e08803c8e1f22b27",
+   "digest": "f79ae20cd834e64b9d5b15cd358f89169af556952720e33f8d81eb259d07d9d4",
    "executed": true,
    "figure_kind": "EXECUTED_COMPUTATIONAL_EXPERIMENT",
    "levels": {
@@ -4092,7 +4092,7 @@
     "x": "score threshold (do)",
     "y": "feedback of resources to the state beta (do)"
    },
-   "digest": "9626fcffe612f1b35068315b92f395592b15fdd66ac89c1b122c2437179007e5",
+   "digest": "b13cd5842df6391d3ec4b1fc98bf654c3cbe4751ea517c861f30d72effaad791",
    "executed": true,
    "figure_kind": "EXECUTED_COMPUTATIONAL_EXPERIMENT",
    "levels": {

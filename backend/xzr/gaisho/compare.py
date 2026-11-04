@@ -43,7 +43,19 @@ def _predict(w: np.ndarray, x: float, y: float) -> float:
     return float(1 / (1 + np.exp(-(w[0] * x + w[1] * y + w[2]))))
 
 
-def compare_models(dom: Domain, seeds: tuple[int, ...], obs: Observation = FULL, margin: float = 0.03) -> dict:
+# What each model of the comparison is given and what it may fit. All of them see the SAME recorded cells of the 'end' snapshot (the training cells), none sees the history (the other snapshots or the weights),
+# none sees the held-out cells, and the interventions of the test are the same. M0..M4 differ only in the structure they may fit; the number of parameters is stated, because a nested model cannot beat the model it is nested in
+# when that model contains the generating process (the knowledge domain's cells ARE a three-weight logistic response: M1 is the true model class, CAND is M1 with the cue weight fixed to zero, M4 is M1 with the evidence weight fixed to zero).
+COMPARATORS = {
+    "M0": {"label": "reliability only", "fits": "the marginal rate of the training cells (what an accuracy statistic holds)", "parameters": 1, "information": "end-snapshot training cells", "history": False, "nested_in": None},
+    "M1": {"label": "static causal model", "fits": "logistic response to the evidence E and the cue S, with an offset", "parameters": 3, "information": "end-snapshot training cells", "history": False, "nested_in": None},
+    "CAND": {"label": "the candidate construction (response to the evidence alone)", "fits": "logistic response to E and an offset; the cue is no part of the 'core'", "parameters": 2, "information": "end-snapshot training cells", "history": False, "nested_in": "M1 (cue weight 0)"},
+    "M4": {"label": "single-factor cue account", "fits": "logistic response to S and an offset; the evidence is no part of the account", "parameters": 2, "information": "end-snapshot training cells", "history": False, "nested_in": "M1 (evidence weight 0)"},
+}
+NOT_RUN = ("attention", "memory / history-informed prediction", "predictive processing", "sensorimotor", "cognitive appraisal", "concept learning", "SNN", "dynamical systems", "the existing operational-shape analysis")
+
+
+def compare_models(dom: Domain, seeds: tuple[int, ...], obs: Observation = FULL, margin: float = 0.03, extended: bool = False) -> dict:
     """The Gaisho-candidate profile against competing explanations, with the SAME information (the recorded response on the training cells), the same computation (a three-parameter fit each) and the same held-out interventions.
     Train: the cells on the natural manifold (evidence and cue move together, as they do without intervention) and the neutral-cue row (do(E)). Test: every other cell (evidence and cue set independently).
     M0 reliability only: predicts the marginal rate (what an accuracy statistic knows). M1 static causal model: logistic response to E and S fitted to the training cells. CAND the candidate construction: the
@@ -52,7 +64,7 @@ def compare_models(dom: Domain, seeds: tuple[int, ...], obs: Observation = FULL,
     cond_names = [c for c in dom.conditions]
     ny, nx = len(dom.y_values), len(dom.x_values)
     train = lambda i, j: abs(j - (ny - 1) * (i / max(1, nx - 1))) <= 0.9 or j == ny // 2  # noqa: E731
-    per: dict[str, dict[str, list[float]]] = {c: {"M0": [], "M1": [], "CAND": []} for c in cond_names}
+    per: dict[str, dict[str, list[float]]] = {c: {"M0": [], "M1": [], "CAND": [], **({"M4": []} if extended else {})} for c in cond_names}
     for cond in cond_names:
         for s in seeds:
             r = dom.simulate(cond, s, obs)
@@ -72,6 +84,11 @@ def compare_models(dom: Domain, seeds: tuple[int, ...], obs: Observation = FULL,
             cand = np.array([wc[0], 0.0, wc[1]])
             per[cond]["M0"].append(float(np.sqrt(np.mean([(m0 - p) ** 2 for _, _, p in te]))))
             per[cond]["M1"].append(float(np.sqrt(np.mean([(_predict(w, x, y) - p) ** 2 for x, y, p in te]))))
+            if extended:
+                Xs = np.array([[y, 1.0] for _, y, _ in tr])
+                ws = np.linalg.lstsq(Xs, _logit(np.array([p for _, _, p in tr])), rcond=None)[0]
+                m4 = np.array([0.0, ws[0], ws[1]])
+                per[cond]["M4"].append(float(np.sqrt(np.mean([(_predict(m4, x, y) - p) ** 2 for x, y, p in te]))))
             per[cond]["CAND"].append(float(np.sqrt(np.mean([(_predict(cand, x, y) - p) ** 2 for x, y, p in te]))))
     rows = []
     for cond in cond_names:
@@ -80,7 +97,7 @@ def compare_models(dom: Domain, seeds: tuple[int, ...], obs: Observation = FULL,
             rows.append({"condition": cond, "verdicts": [{"competitor": "all", "verdict": "UNRESOLVED", "why": "the held-out interventions were not recorded under this observation (no off-manifold cells): the explanations cannot be told apart"}]})
             continue
         verdicts = []
-        for comp, label in (("M0", "reliability only"), ("M1", "static causal model")):
+        for comp, label in (("M0", "reliability only"), ("M1", "static causal model"), *((("M4", "single-factor cue account"),) if extended else ())):
             diff = paired(list(d[comp]), list(d["CAND"]))  # competitor error minus candidate error: positive = the candidate predicts the held-out interventions better
             if diff["ci95"] is None:
                 v = "UNRESOLVED"
@@ -94,7 +111,9 @@ def compare_models(dom: Domain, seeds: tuple[int, ...], obs: Observation = FULL,
                 v = "UNRESOLVED"
             verdicts.append({"competitor": f"{comp} ({label})", "verdict": v, "error_difference": diff, "margin": margin, "errors": {k: float(np.mean(x)) for k, x in d.items()}})
         rows.append({"condition": cond, "verdicts": verdicts})
-    return {"rule": "NON_REDUNDANT if the candidate's held-out error is lower than the competitor's by more than the margin (95% CI); REDUNDANT if the CI lies inside +/- margin; HARMFUL if the candidate is worse by more than the margin; otherwise UNRESOLVED", "unit": "one run per seed; paired over seeds", "seeds": list(seeds), "rows": rows, "digest": digest(rows)}
+    out_extra = {"comparators": {k: v for k, v in COMPARATORS.items() if extended or k != "M4"}, "not_run": list(NOT_RUN), "held_out": "every cell off the natural manifold (the evidence and the cue set independently) except the neutral-cue row",
+                 "reading": "the verdicts compare the construction 'response to the evidence alone' with the explanations above, on the same cells; they say nothing about whether a Gaisho or non-accidentality exists, and a nested model cannot beat the model that contains the generating process"} if extended else {}
+    return {**out_extra, "rule": "NON_REDUNDANT if the candidate's held-out error is lower than the competitor's by more than the margin (95% CI); REDUNDANT if the CI lies inside +/- margin; HARMFUL if the candidate is worse by more than the margin; otherwise UNRESOLVED", "unit": "one run per seed; paired over seeds", "seeds": list(seeds), "rows": rows, "digest": digest(rows)}
 
 
 def attribution_tests(result: dict, stability_level: float = 0.7) -> list[dict]:
