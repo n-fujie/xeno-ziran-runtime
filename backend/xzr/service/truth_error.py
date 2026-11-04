@@ -25,6 +25,7 @@ SAVED = Path(__file__).resolve().parents[3] / "docs" / "truth_error" / "experime
 SAVED2 = Path(__file__).resolve().parents[3] / "docs" / "truth_error" / "experiments2.json"
 RELEASE_MODES = ("by_score", "after_approval", "never")
 APPEAL_ACCESS = ("open", "score_gated")
+SUPPORT_RULES = ("none", "denied", "low_score")
 _DELAYS = ("request_delay", "approval_delay", "score_delay", "release_delay", "review_delay", "propagation_delay")
 _PROBS = ("audit_sensitivity", "audit_false_rate", "appeal_filing_prob", "evidence_available_prob", "appeal_acceptance_prob")
 _CONFIG_FIELDS = {f.name for f in dataclasses.fields(I.Config)}
@@ -103,6 +104,22 @@ def _check_process(cfg: I.Config) -> None:
             raise HTTPException(422, f"{k} must be a number 0..1")
     if not (isinstance(cfg.appeal_min_score, int | float) and not isinstance(cfg.appeal_min_score, bool)):
         raise HTTPException(422, "appeal_min_score must be a number")
+    # the hypothetical guarantee and support conditions of the synthetic institution (phase 4)
+    if cfg.support_rule not in SUPPORT_RULES:
+        raise HTTPException(422, f"support_rule must be one of {SUPPORT_RULES}")
+    if not isinstance(cfg.interim_access, bool):
+        raise HTTPException(422, "interim_access must be true or false")
+    if cfg.denial_cap is not None and not (isint(cfg.denial_cap) and 1 <= cfg.denial_cap <= MAX_PERIODS):
+        raise HTTPException(422, f"denial_cap must be null or an integer 1..{MAX_PERIODS}")
+    num = lambda v: isinstance(v, int | float) and not isinstance(v, bool)  # noqa: E731
+    for k in ("resource_floor", "release_support", "support_amount", "resources_start"):
+        v = getattr(cfg, k)
+        if not (num(v) and 0.0 <= v <= 1.0):
+            raise HTTPException(422, f"{k} must be a number 0..1")
+    if cfg.support_capacity is not None and not (num(cfg.support_capacity) and 0.0 <= cfg.support_capacity <= 1.0):
+        raise HTTPException(422, "support_capacity must be null or a number 0..1")
+    if not (num(cfg.z_shift) and -3.0 <= cfg.z_shift <= 3.0):
+        raise HTTPException(422, "z_shift must be a number -3..3")
 
 
 @router.get("/spec")
@@ -114,6 +131,7 @@ def spec(request: Request) -> dict:
         "defaults": d,
         "release_modes": list(RELEASE_MODES),
         "appeal_access": list(APPEAL_ACCESS),
+        "support_rules": list(SUPPORT_RULES),
         "phase2": {
             "experiments": [{"id": k} for k in X2.REGISTRY2],
             "primary_metrics": list(X2.PRIMARY2),

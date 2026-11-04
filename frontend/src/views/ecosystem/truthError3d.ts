@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { EDGES, NODES, PATHS, nodeValue, stepReached, type NodeId, type PathId, type TERun } from './truthError';
+import { EDGES, NODES, PATHS, RELATIONS, nodeValue, relationAt, stepReached, type NodeId, type PathId, type RelationId, type TERun } from './truthError';
 
 // TRUTH-ERROR DYNAMICS in the 3D scene: the operational chain (subject -> sensors -> classifier / warrant -> acceptance -> score -> gates -> resources -> subject) as selectable objects. The brightness of every object is a
 // plain function of the engine's record of ONE sample subject at ONE period (``nodeValue``); the positions are SCHEMATIC layout coordinates, not physical ones. Each object carries two small markers, the baseline run's value
@@ -8,11 +8,12 @@ import { EDGES, NODES, PATHS, nodeValue, stepReached, type NodeId, type PathId, 
 // when that step holds for the selected subject at the selected period (``stepReached``: a variable or event the engine recorded); a segment that is not lit is dark. A line is never drawn for a step the model has no transition for.
 // SYNTHETIC only: no real person is represented.
 
-export interface TruthFrame { run: TERun; branch: TERun | null; k: number; t: number; selected: NodeId | null }
+export interface TruthFrame { run: TERun; branch: TERun | null; k: number; t: number; selected: NodeId | null; relation?: RelationId | null }
 export interface TruthLayer {
   group: THREE.Group; pickables: THREE.Mesh[]; meshOf(id: NodeId): THREE.Mesh; poseRef: THREE.Group; poseMeasured: THREE.Group; edgeLines: THREE.LineSegments; set(f: TruthFrame): void; dispose(): void;
-  pathLines: THREE.LineSegments; pathLinesBranch: THREE.LineSegments; pathSegments: PathSegment[];
+  pathLines: THREE.LineSegments; pathLinesBranch: THREE.LineSegments; pathSegments: PathSegment[]; relationLines: THREE.LineSegments;
 }
+export const RELATION_COLORS = { holds: 0x4caf50, fails: 0xe53935, open: 0xdddddd } as const;
 export interface PathSegment { path: PathId; step: string; edge: [NodeId, NodeId] }
 export const PATH_COLORS: Record<PathId, number> = { judgement: 0xe0a030, effect: 0xd9534f, correction: 0x35b6a8, subsequent: 0x9b7fe0 };
 const DARK = new THREE.Color(0x23282e);
@@ -77,6 +78,10 @@ export function buildTruthLayer(parent: THREE.Object3D, centre: THREE.Vector3, s
   };
   const pathLines = mkLines(ppts), pathLinesBranch = mkLines(pBranch);
   pathLinesBranch.visible = false;
+  // the selected relation: its edges drawn in front of the chain, green where the engine's record satisfies the model's own transition rule at this period, red where it does not, white where there is no identity to check
+  const rg = new THREE.BufferGeometry(), rm = new THREE.LineBasicMaterial({ color: RELATION_COLORS.open, depthTest: false }); owned.push(rg, rm);
+  rg.setAttribute('position', new THREE.Float32BufferAttribute(new Array(2 * 2 * 3).fill(0), 3));
+  const relationLines = new THREE.LineSegments(rg, rm); relationLines.renderOrder = 10; relationLines.visible = false; relationLines.name = 'truth-relation'; group.add(relationLines);
   // the pose frames, beside the subject: the reference (solid) and the measured (translucent)
   const poseRef = poseFrame(0xe8e8ee, 1, owned), poseMeasured = poseFrame(0xe0a030, 0.6, owned);
   poseRef.position.set(meshes.subject.position.x - 1.9, meshes.subject.position.y + 0.2, 0); poseMeasured.position.copy(poseRef.position); poseMeasured.scale.setScalar(1.12);
@@ -112,9 +117,18 @@ export function buildTruthLayer(parent: THREE.Object3D, centre: THREE.Vector3, s
       col.needsUpdate = true;
     };
     paint(pathLines, f.run); paint(pathLinesBranch, f.branch);
+    const rel = f.relation ? RELATIONS.find((r) => r.id === f.relation) : undefined;
+    relationLines.visible = !!rel;
+    if (rel) {
+      const pos = rg.getAttribute('position') as THREE.BufferAttribute;
+      rel.edges.forEach(([a, b], j) => { const pa = meshes[a].position, pb = meshes[b].position; pos.setXYZ(j * 2, pa.x, pa.y, pa.z + 0.35); pos.setXYZ(j * 2 + 1, pb.x, pb.y, pb.z + 0.35); });
+      pos.needsUpdate = true; rg.setDrawRange(0, rel.edges.length * 2);
+      const holds = relationAt(f.run, f.k, f.t, rel.id).check.holds;
+      rm.color.setHex(holds === true ? RELATION_COLORS.holds : holds === false ? RELATION_COLORS.fails : RELATION_COLORS.open);
+    }
   };
   const dispose = (): void => { group.removeFromParent(); for (const o of owned) o.dispose(); for (const m of Object.values(meshes)) for (const c of m.children) ((c as THREE.Mesh).material as THREE.Material | undefined)?.dispose(); };
-  return { group, pickables, meshOf: (id) => meshes[id], poseRef, poseMeasured, edgeLines, set, dispose, pathLines, pathLinesBranch, pathSegments };
+  return { group, pickables, meshOf: (id) => meshes[id], poseRef, poseMeasured, edgeLines, set, dispose, pathLines, pathLinesBranch, pathSegments, relationLines };
 }
 
 export const teNodeOf = (o: THREE.Object3D | undefined): NodeId | null => {

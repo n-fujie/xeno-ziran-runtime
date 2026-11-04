@@ -21,7 +21,7 @@ import numpy as np
 
 from .experiments import BASE, SEEDS, _diff, _paired, _run_experiment
 from .institution import Config, digest, run
-from .process import COMPLEMENT_METRICS, METRICS, OBS_LATE, recoverability
+from .process import COMPLEMENT_METRICS, GUARANTEE_METRICS, METRICS, OBS_LATE, recoverability
 
 SEEDS2 = tuple(range(21, 41))
 PRIMARY2 = (
@@ -93,6 +93,13 @@ def _cm(k: str) -> Callable[[dict], Any]:
 
 
 EXTRA.update({k: _cm(k) for k in COMPLEMENT_METRICS})
+
+
+def _gm(k: str) -> Callable[[dict], Any]:
+    return lambda r: (r["process"]["guarantee"] or {}).get(k)
+
+
+EXTRA.update({k: _gm(k) for k in GUARANTEE_METRICS})
 EXTRA["false_detection_share"] = lambda r: r["process"]["false_detections"] / r["config"]["n"]
 
 
@@ -717,6 +724,163 @@ def te16_complement() -> dict:
     )
 
 
+# PHASE 4 (fixed before the runs). The metrics of TE17 and TE18 are: classification_correct (the summary), the complementary metrics (process.COMPLEMENT_METRICS) and, for the guarantees, process.GUARANTEE_METRICS; one run is one
+# unit and every difference is paired over seeds 1-20 and replicated on 21-40. Initial conditions and random draws are shared by every arm. Each factor is varied alone unless an arm is named as a combination (the reason is in its name).
+# The guarantee and support conditions are HYPOTHETICAL conditions of the synthetic institution. The manuscripts' guarantees (G2, G13, G14, G15) are functions without numeric levels; none of the numbers below is theirs.
+SENS_NOISY, SENS_ACCURATE = 0.8, 0.05
+P4_PRIMARY = ("classification_correct", "denial_rate_late_fav", "denial_rate_late_unfav", "state_change_unfav", "state_change_fav", "state_gap_change", "lost_opportunities_per_fav", "resources_end_unfav")
+
+
+def te17_decomposition() -> dict:
+    """P1, P2 and P3 of the phase-4 directive, each with its own arms. P1: the accuracy of the classification does not guarantee the legitimacy of the institutional effect (the model measures consequences; it does not measure legitimacy). P2: a disadvantage arises without classification error (the feedback of resources present and absent, with the error at about zero). P3: improving the accuracy changes the distribution of the disadvantage (the classifier, the allocation of resources, the denial rule and the initial state, separately)."""
+    nz = "signal_sensor__noise_sigma"
+    ctl = "noisy classifier (noise 0.8), the base"
+    named: dict[str, dict[str, Any]] = {ctl: {}}
+    named["lottery: no score, access for half at random"] = {"use_score": False}
+    named["full access: no score, access for everyone"] = {"use_score": False, "baseline_access": 1.0}
+    for noise in (1.6, 0.4, SENS_ACCURATE):
+        named[f"classifier noise {noise}"] = {nz: noise}
+    for noise, tag in ((SENS_NOISY, "noisy"), (SENS_ACCURATE, "accurate")):
+        for beta in (0.0, 0.12):
+            named[f"{tag}, beta {beta}"] = {nz: noise, "beta": beta}
+        for label, kw in (
+            ("allocation gain = loss = 0.06", {"gain": 0.06, "loss": 0.06}),
+            ("allocation gain = loss = 0.24", {"gain": 0.24, "loss": 0.24}),
+            ("threshold -0.2", {"tau_a": -0.2}),
+            ("threshold +0.2", {"tau_a": 0.2}),
+            ("no binding constraint", {"lock_after": None}),
+            ("initial state shifted -0.5", {"z_shift": -0.5}),
+            ("initial state shifted +0.5", {"z_shift": 0.5}),
+            ("initial resources 0.8", {"resources_start": 0.8}),
+        ):
+            named[f"{tag}, {label}"] = {nz: noise, **kw}
+    arms, declared = _grid(NO_PROCESS, named, ctl)
+    acc, noi = "classifier noise 0.05", ctl
+    contrasts = [
+        ("P1: accurate classifier minus full access (the consequence of a classification that is correct)", [(1.0, acc), (-1.0, "full access: no score, access for everyone")]),
+        ("P1: accurate classifier minus lottery", [(1.0, acc), (-1.0, "lottery: no score, access for half at random")]),
+        ("P3: improving the accuracy (noise 0.8 -> 0.05)", [(1.0, acc), (-1.0, noi)]),
+        ("P2: accurate, no feedback (beta 0) minus accurate with feedback (beta 0.06)", [(1.0, "accurate, beta 0.0"), (-1.0, acc)]),
+        ("P2: accurate, no feedback minus lottery", [(1.0, "accurate, beta 0.0"), (-1.0, "lottery: no score, access for half at random")]),
+        ("interaction: accuracy x feedback (beta 0 vs 0.06)", [(1.0, acc), (-1.0, noi), (-1.0, "accurate, beta 0.0"), (1.0, "noisy, beta 0.0")]),
+        ("interaction: accuracy x threshold (0 vs +0.2)", [(1.0, "accurate, threshold +0.2"), (-1.0, "noisy, threshold +0.2"), (-1.0, acc), (1.0, noi)]),
+        ("interaction: accuracy x binding constraint (present vs none)", [(1.0, acc), (-1.0, noi), (-1.0, "accurate, no binding constraint"), (1.0, "noisy, no binding constraint")]),
+        ("interaction: accuracy x allocation (0.12 vs 0.24)", [(1.0, "accurate, allocation gain = loss = 0.24"), (-1.0, "noisy, allocation gain = loss = 0.24"), (-1.0, acc), (1.0, noi)]),
+    ]
+    questions = [
+        {"id": "P1", "question": "Does the accuracy of a classification guarantee the legitimacy of its institutional effect?", "reads": "the consequences the model measures (state change, denial, resources) of an accurate classifier against full access and a lottery", "limit": "the model measures consequences; a normative judgement of legitimacy is NOT measured and is not made here"},
+        {"id": "P2", "question": "Can an institutional disadvantage arise without classification error?", "reads": "denial rate, resources and state change of the accurate classifier with and without the feedback of resources to the state", "limit": "the error is about zero, not exactly zero (noise 0.05, classification_correct is reported); the disadvantage in access and resources needs no feedback, the disadvantage in state needs it by construction"},
+        {"id": "P3", "question": "Does improving the accuracy change the distribution of the disadvantage?", "reads": "denial and state change of the favourable and not favourable groups, and the gap, while the classifier, the allocation, the denial rule and the initial state are varied separately", "limit": "interactions are read from the contrasts, not assumed to be additive"},
+    ]
+    return _run2(
+        {
+            "id": "EXP-TE17",
+            "title": "P1-P3: accuracy, feedback and the distribution of the disadvantage",
+            "question": "Three propositions about the relation of the correctness of a classification to institutional consequences, each tested by interventions on separate mechanisms of the model under shared initial conditions and random draws.",
+            "control": ctl,
+            "arms": arms,
+            "declared": declared,
+            "primary": P4_PRIMARY,
+            "questions": questions,
+            "contrasts": contrasts,
+            "contrast_outcomes": ("classification_correct", "denial_rate_late_fav", "denial_rate_late_unfav", "state_change_unfav", "state_change_fav", "state_gap_change"),
+            "failure_conditions": {"an arm changed nothing in any seed (its factor was not operative)": lambda x: _no_idle_arm(x, ctl)},
+            "protocol": {
+                "changed": "the classifier noise, the feedback beta, the allocation (gain, loss), the threshold, the binding constraint, the initial state (z_shift, resources_start), each alone, on a noisy and on an accurate classifier",
+                "unchanged": "NO_PROCESS otherwise (120 subjects, 40 periods, beta 0.06 unless varied)",
+                "unit": "one run = one unit; paired over seeds",
+                "seeds": list(SEEDS),
+                "failure": "an arm identical to the control",
+            },
+        }
+    )
+
+
+def te18_guarantees() -> dict:
+    """Hypothetical minimum-guarantee and support conditions of the synthetic institution, on a noisy and on an accurate classifier. Whether a condition improves anything is the question, not an assumption: each arm is read against its own control and its cost, its precision and its effect on the other group are reported."""
+    nz = "signal_sensor__noise_sigma"
+    proc = {"audit_every": 2, "request_delay": 1, "approval_delay": 6, "release_mode": "after_approval", "release_delay": 0}
+    named: dict[str, dict[str, Any]] = {}
+    conds: dict[str, dict[str, Any]] = {
+        "no guarantee": {},
+        "resource floor 0.3": {"resource_floor": 0.3},
+        "denial cap 3": {"denial_cap": 3},
+        "denial cap 6": {"denial_cap": 6},
+        "support to the denied 0.06": {"support_rule": "denied", "support_amount": 0.06},
+        "support to the denied 0.12": {"support_rule": "denied", "support_amount": 0.12},
+        "support to the low score 0.12": {"support_rule": "low_score", "support_amount": 0.12},
+        "support to the low score 0.12, capacity 10%": {"support_rule": "low_score", "support_amount": 0.12, "support_capacity": 0.1},
+        "support to the low score 0.12, capacity 25%": {"support_rule": "low_score", "support_amount": 0.12, "support_capacity": 0.25},
+        "floor 0.3 + cap 6 + support to the low score 0.06 (a combination, to read the interaction)": {"resource_floor": 0.3, "denial_cap": 6, "support_rule": "low_score", "support_amount": 0.06},
+    }
+    proc_conds: dict[str, dict[str, Any]] = {
+        "process, no guarantee": {**proc},
+        "process + access kept pending the correction": {**proc, "interim_access": True},
+        "process + recovery support after the release 0.3": {**proc, "release_support": 0.3},
+        "process + both (a combination, to read the interaction)": {**proc, "interim_access": True, "release_support": 0.3},
+    }
+    for noise, tag in ((SENS_NOISY, "noisy"), (SENS_ACCURATE, "accurate")):
+        for lab, kw in conds.items():
+            named[f"{tag}: {lab}"] = {nz: noise, **kw}
+        for lab, kw in proc_conds.items():
+            named[f"{tag}: {lab}"] = {nz: noise, **kw}
+    ctl = "noisy: no guarantee"
+    arms, declared = _grid(NO_PROCESS, named, ctl)
+    contrasts: list[tuple[str, list[tuple[float, str]]]] = []
+    for tag in ("noisy", "accurate"):
+        for lab in list(conds)[1:]:
+            contrasts.append((f"{tag}: {lab} minus no guarantee", [(1.0, f"{tag}: {lab}"), (-1.0, f"{tag}: no guarantee")]))
+        for lab in list(proc_conds)[1:]:
+            contrasts.append((f"{tag}: {lab} minus the process alone", [(1.0, f"{tag}: {lab}"), (-1.0, f"{tag}: process, no guarantee")]))
+        contrasts.append((f"{tag}: interaction of access-kept and recovery support", [(1.0, f"{tag}: process + both (a combination, to read the interaction)"), (-1.0, f"{tag}: process + access kept pending the correction"), (-1.0, f"{tag}: process + recovery support after the release 0.3"), (1.0, f"{tag}: process, no guarantee")]))
+    contrasts.append(("accurate classification as the identifier of the recipients: share of the support reaching the not favourable, accurate minus noisy (support to the low score 0.12)", [(1.0, "accurate: support to the low score 0.12"), (-1.0, "noisy: support to the low score 0.12")]))
+    return _run2(
+        {
+            "id": "EXP-TE18",
+            "title": "Hypothetical minimum guarantees and support: what changes, what does not, what it costs",
+            "question": "A minimum resource allocation, a cap on the accumulation of a denial, access kept while a correction is pending, a recovery measure after a release, and support to the denied or to the low-score subjects (with and without a capacity), each on a noisy and on an accurate classifier. Do they change the state of the not favourable group, the gap and the denial, at what cost, and where do they not improve anything?",
+            "control": ctl,
+            "arms": arms,
+            "declared": declared,
+            "primary": P4_PRIMARY + ("support_units_per_subject", "support_share_to_unfav", "guarantee_access_periods_per_subject", "recovery_time"),
+            "contrasts": contrasts,
+            "contrast_outcomes": ("state_change_unfav", "state_change_fav", "state_gap_change", "denial_rate_late_unfav", "denial_rate_late_fav", "support_units_per_subject", "support_share_to_unfav", "classification_correct"),
+            "failure_conditions": {"an arm changed nothing in any seed (its factor was not operative)": lambda x: _no_idle_arm(x, ctl)},
+            "protocol": {
+                "changed": "one guarantee or support condition per arm (see the names; the two combinations are named as such), on the noisy (0.8) and the accurate (0.05) classifier; the process arms add an audit every 2 periods, request delay 1, approval delay 6 and the release at the approval",
+                "unchanged": "NO_PROCESS otherwise",
+                "unit": "one run = one unit; paired over seeds; the cost is the resources given (support_units_per_subject)",
+                "seeds": list(SEEDS),
+                "failure": "an arm identical to the control",
+                "status": "hypothetical conditions of a synthetic institution; not for any real person's credit review or eligibility",
+            },
+        }
+    )
+
+
+def paired_summary(a: list[float | None], b: list[float | None]) -> dict:
+    """The paired difference a - b over seeds, one run per seed as the unit: n, mean, standard deviation, standard error and the 95 % confidence interval from the t distribution (n - 1 degrees of freedom). Subjects are never counted as units."""
+    from scipy import stats
+
+    d = np.array([x - y for x, y in zip(a, b, strict=True) if x is not None and y is not None], dtype=float)
+    n = int(d.size)
+    if n < 2:
+        return {"n": n, "mean": float(d.mean()) if n else None, "sd": None, "se": None, "ci95": None}
+    sd = float(d.std(ddof=1))
+    se = sd / float(np.sqrt(n))
+    t = float(stats.t.ppf(0.975, n - 1))
+    return {"n": n, "mean": float(d.mean()), "sd": sd, "se": se, "ci95": [float(d.mean()) - t * se, float(d.mean()) + t * se]}
+
+
+def resource_path_change(cfg: Config, denied: bool) -> float:
+    """The change of the real state of a subject who is denied in every period (or granted in every period), from the declared constants alone: beta x the sum of (resources - 0.5) over the periods, with the resources moved by gain / loss and clipped at the floor and at 1 (the noise has mean zero). This is what the model fixes by construction; an experiment cannot discover it."""
+    r, z = cfg.resources_start, 0.0
+    for _ in range(cfg.periods):
+        r = min(1.0, max(cfg.resource_floor, r + (-cfg.loss if denied else cfg.gain)))
+        z += cfg.beta * (r - 0.5)
+    return z
+
+
 # ------------------------------------------------------------------------------------------------ TE13: parameter sensitivity (one factor at a time, ranges fixed above)
 def te13_sensitivity() -> dict:
     named: dict[str, dict[str, Any]] = {"base (P0)": {}}
@@ -804,6 +968,8 @@ REGISTRY2: dict[str, Callable[[], dict]] = {
     "EXP-TE14": te14_interaction,
     "EXP-TE15": te15_separation,
     "EXP-TE16": te16_complement,
+    "EXP-TE17": te17_decomposition,
+    "EXP-TE18": te18_guarantees,
 }
 
 

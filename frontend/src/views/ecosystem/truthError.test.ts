@@ -4,11 +4,11 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { ADDRESS_STATES, EDGES, MODALITIES, NODES, PATHS, PROCESS_EVENTS, addressStatesAt, compareRuns, comparePaths, eventTable, fieldsAt, modalitiesAt, modalityCounts, nodeReadings, stepReached, timelineEvents, type NodeId, type TERun } from './truthError';
+import { ADDRESS_STATES, EDGES, MODALITIES, NODES, PATHS, PROCESS_EVENTS, RELATIONS, addressStatesAt, compareRuns, comparePaths, compareRelation, relationAt, eventTable, fieldsAt, modalitiesAt, modalityCounts, nodeReadings, stepReached, timelineEvents, type NodeId, type TERun } from './truthError';
 
 const runs = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '__fixtures__', 'truth-error-runs.json'), 'utf8')) as Record<'base' | 'invalid' | 'biased' | 'noscore', TERun>;
 const { base, invalid, biased, noscore } = runs;
-const runs2 = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '__fixtures__', 'truth-error-runs2.json'), 'utf8')) as Record<'base' | 'process' | 'no_release' | 'appeal' | 'appeal_gated', TERun>;
+const runs2 = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '__fixtures__', 'truth-error-runs2.json'), 'utf8')) as Record<'base' | 'process' | 'no_release' | 'appeal' | 'appeal_gated' | 'guarded', TERun>;
 
 describe('the chain', () => {
   it('is not a line: a node has more than one source, the score is acted on by a correction, and the subject receives feedback', () => {
@@ -270,5 +270,52 @@ describe('what was changed between two runs includes the correction process', ()
     expect(compareRuns(runs2.base, runs2.process).changed.join(' ')).toContain('audit_every: null -> 2');
     expect(compareRuns(base, base).changed).toEqual([]);
     expect(compareRuns(base, runs2.base).changed).not.toContain('undefined');   // a field absent in an old run is not reported as a change against the same default
+  });
+});
+
+// ------------------------------------------------------------------------------------------------ phase 4: the relations are the model's own transition rules, checked against the engine's records
+describe('the relations of the scene', () => {
+  const all = [runs2.base, runs2.process, runs2.no_release, runs2.appeal, runs2.guarded];
+  it('are seven, each on real edges of the chain', () => {
+    expect(RELATIONS.map((r) => r.id)).toEqual(['sensor_subject', 'classifier_record', 'score_judgement', 'judgement_resources', 'resources_state', 'correction_release', 'guarantee_subsequent']);
+    for (const r of RELATIONS) for (const [a, b] of r.edges) expect(EDGES.some(([x, y]) => x === a && y === b), `${r.id} ${a}->${b}`).toBe(true);
+  });
+  it('hold, in the engine\'s own records, for every subject and period where an identity can be checked (the display equals the engine output)', () => {
+    const checked: Record<string, number> = {};
+    for (const run of all) for (let k = 0; k < run.records.length; k++) for (let t = 0; t < run.records[k].length; t++) for (const r of RELATIONS) {
+      const x = relationAt(run, k, t, r.id);
+      expect(x.check.holds === false, `${r.id} k${k} t${t}: ${x.check.detail}`).toBe(false);   // never contradicted
+      if (x.check.holds === true) checked[r.id] = (checked[r.id] ?? 0) + 1;
+    }
+    for (const id of ['score_judgement', 'judgement_resources', 'resources_state', 'classifier_record', 'correction_release']) expect(checked[id], id).toBeGreaterThan(100);
+  });
+  it('are contradicted when the record is altered: the check is a real comparison, not a label', () => {
+    const run = structuredClone(runs2.base) as TERun, k = 1, t = 15;
+    run.records[k][t].access = !run.records[k][t].access;
+    expect(relationAt(run, k, t, 'score_judgement').check.holds).toBe(false);
+    const r2 = structuredClone(runs2.base) as TERun; r2.records[k][t].resources += 0.2;
+    expect(relationAt(r2, k, t, 'judgement_resources').check.holds).toBe(false);
+    const r3 = structuredClone(runs2.base) as TERun; r3.records[k][t].classification = (r3.records[k][t].classification === 1 ? -1 : 1);
+    expect(relationAt(r3, k, t, 'classifier_record').check.holds === false || relationAt(r3, k, t, 'classifier_record').check.holds === null).toBe(true);
+  });
+  it('mark the sensor error as known to the evaluator only and no identity, and keep observed, reference and unresolved apart', () => {
+    const x = relationAt(runs2.process, 1, 10, 'sensor_subject');
+    expect(x.check.holds).toBeNull();
+    expect(x.to.find((r) => r.label.startsWith('error'))!.epistemic).toBe('REFERENCE');
+    expect(x.from.every((r) => r.epistemic === 'REFERENCE')).toBe(true);
+    expect(x.to.filter((r) => r.epistemic === 'OBSERVED').length + x.to.filter((r) => r.epistemic === 'UNRESOLVED').length).toBeGreaterThan(0);
+  });
+  it('compare a baseline with a branch for the same subject and period, and the configuration change lists the guarantees', () => {
+    const c = compareRelation(runs2.process, runs2.guarded, 2, 20, 'judgement_resources');
+    expect(c.branch).not.toBeNull(); expect(c.base.id).toBe('judgement_resources');
+    const ch = compareRuns(runs2.process, runs2.guarded).changed.join(' ');
+    for (const key of ['resource_floor', 'denial_cap', 'interim_access', 'support_rule', 'support_capacity']) expect(ch, key).toContain(key);
+  });
+  it('read the guarantee node from the record, and say so where an older run did not record it', () => {
+    const g = nodeReadings('guarantee', runs2.guarded.records[1][20], runs2.guarded.config);
+    expect(g[0].value).toContain('resource floor 0.2'); expect(g.at(-1)!.value).toContain('HYPOTHETICAL');
+    const old = nodeReadings('guarantee', base.records[1][20], base.config);
+    expect(old.find((r) => r.label.startsWith('access granted'))!.epistemic).toBe('UNRESOLVED');
+    expect(runs2.guarded.records.some((rs) => rs.some((r) => r.guarantee_access || (r.support ?? 0) > 0))).toBe(true);
   });
 });

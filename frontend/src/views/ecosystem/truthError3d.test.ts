@@ -5,12 +5,12 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as THREE from 'three';
 import { describe, expect, it } from 'vitest';
-import { EDGES, NODES, PATHS, nodeValue, stepReached, type NodeId, type TERun } from './truthError';
-import { PATH_COLORS, buildTruthLayer, teNodeOf } from './truthError3d';
+import { EDGES, NODES, PATHS, RELATIONS, nodeValue, relationAt, stepReached, type NodeId, type TERun } from './truthError';
+import { PATH_COLORS, RELATION_COLORS, buildTruthLayer, teNodeOf } from './truthError3d';
 
 const runs = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '__fixtures__', 'truth-error-runs.json'), 'utf8')) as Record<'base' | 'invalid' | 'biased' | 'noscore', TERun>;
 const { base, invalid, biased } = runs;
-const runs2 = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '__fixtures__', 'truth-error-runs2.json'), 'utf8')) as Record<'base' | 'process' | 'no_release' | 'appeal' | 'appeal_gated', TERun>;
+const runs2 = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '__fixtures__', 'truth-error-runs2.json'), 'utf8')) as Record<'base' | 'process' | 'no_release' | 'appeal' | 'appeal_gated' | 'guarded', TERun>;
 const light = (m: THREE.Mesh) => { const c = (m.material as THREE.MeshStandardMaterial).color, h = { h: 0, s: 0, l: 0 }; c.getHSL(h); return h.l; };
 
 describe('the objects of the chain', () => {
@@ -136,5 +136,41 @@ describe('the four paths in the scene', () => {
   it('draws the two lines of a path along the endpoints of the node objects', () => {
     const sg = layer.pathSegments[0], a = layer.meshOf(sg.edge[0]).position, pos = layer.pathLines.geometry.getAttribute('position') as THREE.BufferAttribute;
     expect([pos.getX(0), pos.getY(0)]).toEqual([expect.closeTo(a.x, 5), expect.closeTo(a.y, 5)]);
+  });
+});
+
+describe('the selected relation in the scene', () => {
+  const parent = new THREE.Group(), layer = buildTruthLayer(parent, new THREE.Vector3(0, 12, 0), 18);
+  const colour = () => (layer.relationLines.material as THREE.LineBasicMaterial).color.getHex();
+  it('is drawn only when one is selected, on the real edge of that relation, in front of the chain', () => {
+    layer.set({ run: runs2.process, branch: null, k: 1, t: 12, selected: null });
+    expect(layer.relationLines.visible).toBe(false);
+    for (const r of RELATIONS) {
+      layer.set({ run: runs2.process, branch: null, k: 1, t: 12, selected: null, relation: r.id });
+      expect(layer.relationLines.visible).toBe(true);
+      const pos = layer.relationLines.geometry.getAttribute('position') as THREE.BufferAttribute, draw = layer.relationLines.geometry.drawRange;
+      expect(draw.count).toBe(r.edges.length * 2);
+      r.edges.forEach(([a, b], j) => {
+        const pa = layer.meshOf(a).position, pb = layer.meshOf(b).position;
+        expect([pos.getX(j * 2), pos.getY(j * 2), pos.getX(j * 2 + 1), pos.getY(j * 2 + 1)]).toEqual([expect.closeTo(pa.x, 4), expect.closeTo(pa.y, 4), expect.closeTo(pb.x, 4), expect.closeTo(pb.y, 4)]);
+      });
+    }
+  });
+  it('takes its colour from the engine check: green where the record satisfies the model\'s rule, red where it does not, white where there is no identity', () => {
+    layer.set({ run: runs2.process, branch: null, k: 1, t: 12, selected: null, relation: 'score_judgement' });
+    expect(relationAt(runs2.process, 1, 12, 'score_judgement').check.holds).toBe(true); expect(colour()).toBe(RELATION_COLORS.holds);
+    const bad = structuredClone(runs2.process); bad.records[1][12].access = !bad.records[1][12].access;
+    layer.set({ run: bad, branch: null, k: 1, t: 12, selected: null, relation: 'score_judgement' });
+    expect(colour()).toBe(RELATION_COLORS.fails);
+    layer.set({ run: runs2.process, branch: null, k: 1, t: 12, selected: null, relation: 'sensor_subject' });
+    expect(colour()).toBe(RELATION_COLORS.open);
+  });
+  it('shows the guarantee node lit when a guarantee acted for that subject and period, dark otherwise', () => {
+    const rs = runs2.guarded.records.find((r) => r.some((x) => x.guarantee_access || (x.support ?? 0) > 0))!, k = runs2.guarded.records.indexOf(rs);
+    const on = rs.find((x) => x.guarantee_access || (x.support ?? 0) > 0)!, off = rs.find((x) => !x.guarantee_access && !(x.support ?? 0))!;
+    const light = (m: THREE.Mesh) => { const h = { h: 0, s: 0, l: 0 }; (m.material as THREE.MeshStandardMaterial).color.getHSL(h); return h.l; };
+    layer.set({ run: runs2.guarded, branch: null, k, t: on.t, selected: null }); const a = light(layer.meshOf('guarantee'));
+    layer.set({ run: runs2.guarded, branch: null, k, t: off.t, selected: null });
+    expect(light(layer.meshOf('guarantee'))).toBeLessThan(a);
   });
 });

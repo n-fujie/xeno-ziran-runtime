@@ -103,6 +103,17 @@ class Config:
     evidence_available_prob: float = 0.8  # the chance that the subject can produce evidence when filing
     appeal_acceptance_prob: float = 0.7  # the institution's capacity to take an appeal up
     review_delay: int = 2  # periods from acceptance to the re-judgement
+    # ---- phase 4: HYPOTHETICAL minimum-guarantee, support and initial-state conditions of the SYNTHETIC institution (every default reproduces the earlier behaviour). They are research conditions of this model:
+    # the manuscripts' guarantees (Minimum Guarantees V3.0, G2, G13, G14, G15) are functions without numeric levels, so no number below is theirs.
+    resource_floor: float = 0.0  # resources never fall below this (a minimum material allocation)
+    denial_cap: int | None = None  # after this many consecutive denied periods access is granted (a cap on the accumulation of a denial)
+    interim_access: bool = False  # access is kept while a correction is pending: from an audit finding to its approval, or while an accepted appeal awaits its re-judgement (suspension pending review)
+    release_support: float = 0.0  # the share of lost resources returned per period after a constraint was released (a recovery measure)
+    support_rule: str = "none"  # none | denied (support goes to the subjects denied now) | low_score (support goes to the subjects whose score is below the threshold: the institution's own classification identifies the recipients)
+    support_amount: float = 0.1  # resources added per period to a supported subject
+    support_capacity: float | None = None  # the largest share of subjects supported in one period (None: no limit); the lowest resources are served first
+    resources_start: float = 0.5  # the resources every subject starts with
+    z_shift: float = 0.0  # the mean of the initial real state of the population (0: the earlier standard normal)
 
     def asdict(self) -> dict:
         return asdict(self)
@@ -127,7 +138,7 @@ def run(cfg: Config) -> dict:
     n, T = cfg.n, cfg.periods
     ss = np.random.SeedSequence(cfg.seed).spawn(7)
     r_pop, r_pose, r_sig, r_cls, r_dyn, r_lot, r_app = (np.random.default_rng(s) for s in ss)
-    z = r_pop.normal(size=n)  # the subjects' real operating condition (the evaluator's reference)
+    z = r_pop.normal(size=n) + cfg.z_shift  # the subjects' real operating condition (the evaluator's reference)
     z0 = z.copy()
     pose_ref = reference_pose(r_pop, n, T)
     pose_ref[:, :, 0] += cfg.pose_z_coupling * z0[:, None]  # normally 0: the pose says nothing about z
@@ -142,7 +153,7 @@ def run(cfg: Config) -> dict:
     u_audit = r_app.uniform(size=(T, n))
 
     score = np.zeros(n)  # institution A's score
-    resources = np.full(n, 0.5)
+    resources = np.full(n, cfg.resources_start)
     access_score = lottery_u < cfg.baseline_access  # before the first reading
     access = access_score.copy()
     denied_run = np.zeros(n, dtype=int)
@@ -213,6 +224,9 @@ def run(cfg: Config) -> dict:
     sc_due = np.full(n, -1, dtype=int)
     rej_due = np.full(n, -1, dtype=int)
     false_detect = np.zeros(n, dtype=bool)
+    guard_periods = np.zeros(n, dtype=int)  # periods in which a hypothetical guarantee granted access that the gate had denied
+    support_units = np.zeros(n)  # resources a hypothetical support rule gave each subject over the periods
+    capacity_binding = 0  # periods in which the support capacity left some targeted subjects unserved
     denied_at_approval = np.zeros(n, dtype=bool)  # still denied when the correction was approved: only for them is there something to restore
     approved_flag = np.zeros(n, dtype=bool)
     ever_locked = np.zeros(n, dtype=bool)
@@ -350,6 +364,15 @@ def run(cfg: Config) -> dict:
             locked = locked & ~released_now
             cum_released += int(released_now.sum())
         access = access_score & ~locked
+        # hypothetical guarantees (phase 4): access kept pending a review, and a cap on the run of denials; both act after the gate and are recorded apart from it
+        guard = np.zeros(n, dtype=bool)
+        if cfg.interim_access:
+            pending = ((ev["detected"] >= 0) & (ev["approved"] < 0)) | ((ap["appeal_accepted"] >= 0) & (ap["rejudged"] < 0))
+            guard |= pending & ~access
+        if cfg.denial_cap is not None:
+            guard |= (denied_run >= cfg.denial_cap) & ~access
+        access = access | guard
+        guard_periods += guard
         ever_locked |= locked
         ev["denied"] = np.where((~access) & (ev["denied"] < 0), t, ev["denied"])
         # the subsequent possibility is restored when, after the correction, a subject that had been denied has access again with no constraint in force
@@ -379,9 +402,24 @@ def run(cfg: Config) -> dict:
         # ---- what access changes
         denied = ~access
         denied_run = np.where(denied, denied_run + 1, 0)
-        resources = np.clip(resources + cfg.gain * access - cfg.loss * denied, 0.0, 1.0)
+        resources = np.clip(resources + cfg.gain * access - cfg.loss * denied, cfg.resource_floor, 1.0)
         if cfg.correct_at is not None and t > cfg.correct_at and cfg.reentry_support > 0:
-            resources = np.clip(resources + cfg.reentry_support * (1.0 - resources) * corrected_total, 0.0, 1.0)
+            resources = np.clip(resources + cfg.reentry_support * (1.0 - resources) * corrected_total, cfg.resource_floor, 1.0)
+        if cfg.release_support > 0:
+            resources = np.clip(resources + cfg.release_support * (1.0 - resources) * ((ev["released"] >= 0) & (ev["released"] < t)), cfg.resource_floor, 1.0)
+        supported = np.zeros(n, dtype=bool)
+        if cfg.support_rule != "none":
+            target = (~access) if cfg.support_rule == "denied" else ((score < cfg.tau_a) if cfg.use_score else np.zeros(n, dtype=bool))
+            idx = np.where(target)[0]
+            if cfg.support_capacity is not None:
+                k = int(np.floor(cfg.support_capacity * n))
+                if idx.size > k:
+                    capacity_binding += 1
+                idx = idx[np.argsort(resources[idx], kind="stable")][:k]  # the lowest resources are served first
+            supported[idx] = True
+            before = resources.copy()
+            resources = np.clip(resources + cfg.support_amount * supported, cfg.resource_floor, 1.0)
+            support_units += resources - before
         opp_lost += denied
         opp_gained += access
         wrongly_denied = denied & y
@@ -440,6 +478,8 @@ def run(cfg: Config) -> dict:
                     "access": bool(access[i]),
                     "locked": bool(locked[i]),
                     "resources": round(float(resources[i]), 3),
+                    "guarantee_access": bool(guard[i]),
+                    "support": round(float(supported[i]) * cfg.support_amount, 3),
                     "opportunities_lost": float(opp_lost[i]),
                     "corrected": bool(corrected_total[i]),
                     "score_b": round(float(score_b[i]), 4) if snap_b is not None else None,
@@ -487,7 +527,7 @@ def run(cfg: Config) -> dict:
     rows = {k: [None if (isinstance(v, float) and v != v) else v for v in vs] for k, vs in rows.items()}
     summary = {k: (None if (isinstance(v, float) and v != v) else v) for k, v in summary.items()}
     out = {"config": cfg.asdict(), "series": rows, "records": records, "summary": summary}
-    out["process"] = process_outputs(cfg, ev, ap, ap_blocked, ap_outcome, false_detect, ah, z0 > 0, z > 0, locked, denied_at_approval, access_b if snap_b is not None else None, z0, z, resources)
+    out["process"] = process_outputs(cfg, ev, ap, ap_blocked, ap_outcome, false_detect, ah, z0 > 0, z > 0, locked, denied_at_approval, access_b if snap_b is not None else None, z0, z, resources, guard_periods, support_units, capacity_binding)
     out["target_state_digest"] = digest([[round(float(v), 9) for v in row] for row in z_series])
     out["result_digest"] = digest({k: out[k] for k in ("series", "summary")})
     out["process_digest"] = digest(out["process"])  # the phase-2 record apart: result_digest is unchanged by it, so the saved phase-1 digests still hold
