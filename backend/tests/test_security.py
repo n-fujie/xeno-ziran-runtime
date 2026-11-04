@@ -327,11 +327,18 @@ def test_no_route_runs_experiments_or_touches_the_filesystem():
         # TRUTH-ERROR (synthetic virtual institution): numbers in and out, nothing stored, no image, video or identifier accepted;
         # local runtime and same origin only, 403 under XZR_PUBLIC
         # (test_truth_error.py::test_the_api_is_local_only_and_stores_nothing)
-        ("POST", "/api/truth-error/run"), ("POST", "/api/truth-error/pose")])
+        ("POST", "/api/truth-error/run"), ("POST", "/api/truth-error/pose"),
+        # GAISHO (Operational Shape Laboratory, synthetic computational experiments): stateless, nothing stored, only names of the
+        # laboratory's own conditions and numbers are accepted; local runtime and same origin only, 403 under XZR_PUBLIC
+        # (test_gaisho.py::test_the_api_is_local_only_stateless_and_validated)
+        ("POST", "/api/gaisho/run"), ("POST", "/api/gaisho/compare-observations"), ("POST", "/api/gaisho/compare-shapes"),
+        ("POST", "/api/gaisho/figure"), ("POST", "/api/gaisho/restore"), ("POST", "/api/gaisho/construction")])
     meos_src = Path(app_mod.__file__).with_name("meos.py").read_text()
     assert meos_src.count("local_only(request)") >= len([1 for r in routes if "/api/meos" in getattr(r, "path", "")])
     te_src = Path(app_mod.__file__).with_name("truth_error.py").read_text()
     assert te_src.count("local_only(request)") >= len([1 for r in routes if "/api/truth-error" in getattr(r, "path", "")])
+    gaisho_src = Path(app_mod.__file__).with_name("gaisho.py").read_text()
+    assert gaisho_src.count("local_only(request)") >= len([1 for r in routes if "/api/gaisho" in getattr(r, "path", "")])
     teoo_src = Path(app_mod.__file__).with_name("teoo.py").read_text()
     assert teoo_src.count("local_only(request)") >= len([1 for r in routes if "/api/teoo" in getattr(r, "path", "")])
     studies_src = Path(app_mod.__file__).with_name("studies.py").read_text()

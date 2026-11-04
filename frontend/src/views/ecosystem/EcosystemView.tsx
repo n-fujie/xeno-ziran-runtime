@@ -26,6 +26,10 @@ import TechnicalView from './TechnicalView';
 import ResearchPane, { SCENARIO_NAMES } from './ResearchPane';
 import XenosciencePane from './XenosciencePane';
 import TruthErrorPane from './TruthErrorPane';
+import GaishoPane from './GaishoPane';
+import { buildGaishoLayer, gaishoIdOf, type GaishoLayer } from './gaisho3d';
+import { frameOf, initialGaishoUi, type GaishoSpecInfo, type GaishoUi } from './gaisho';
+import { gaishoSpec } from './gaishoApi';
 import { buildTruthLayer, teNodeOf, type TruthLayer } from './truthError3d';
 import { teExperiments, teExperiments2, teRun, type TEExperiment, type TEOverrides } from './truthApi';
 import type { NodeId, RelationId, TERun } from './truthError';
@@ -46,7 +50,7 @@ import './ecosystem.css';
 // tick (the record's frames) and the render frame rate are separate clocks, the camera never reaches the simulation, and every value in the panels is
 // read from the record. The surrounding megastructure is static architecture and is labelled as such.
 
-type Tab = 'experiment' | 'research' | 'xenoscience' | 'truth' | 'inspect' | 'reductions' | 'studies' | 'technical' | 'data';
+type Tab = 'experiment' | 'research' | 'xenoscience' | 'truth' | 'gaisho' | 'inspect' | 'reductions' | 'studies' | 'technical' | 'data';
 type Sel = { kind: 'entity'; name: EntityName } | { kind: 'trial'; i: number } | { kind: 'coupling'; id: CouplingId } | null;
 const QUALITY: Quality[] = ['performance', 'balanced', 'high'];
 const PRESETS: Record<string, Intervention[]> = {
@@ -99,6 +103,9 @@ export default function EcosystemView() {
   const [teDraft, setTeDraft] = useState<TEOverrides>({}), [teBusy, setTeBusy] = useState(false), [teErr, setTeErr] = useState<string | null>(null);
   const [teExps, setTeExps] = useState<Record<string, TEExperiment> | null>(null), [teExpId, setTeExpId] = useState('EXP-TE02');
   const [teExps2, setTeExps2] = useState<Record<string, TEExperiment> | null>(null), [teExp2Id, setTeExp2Id] = useState('EXP-TE07-release');
+  const [gsInfo, setGsInfo] = useState<GaishoSpecInfo | null>(null), [gsInfoErr, setGsInfoErr] = useState<string | null>(null), [gsUi, setGsUiState] = useState<GaishoUi>(initialGaishoUi), [gsBusy, setGsBusy] = useState(false), [gsErr, setGsErr] = useState<string | null>(null);
+  const setGsUi = useCallback((f: (u: GaishoUi) => GaishoUi) => setGsUiState(f), []);
+  const pickGaishoRef = useRef<(id: string) => void>(() => undefined);
   const pickNodeRef = useRef<(id: NodeId) => void>(() => undefined);
   const [controlledLine, setControlledLine] = useState<string | null>(null);  // the engine's own report on the controlled run's schedule, kept apart from the status line that a later replay overwrites
   const [loadedSeries, setLoadedSeries] = useState<{ kind: 'preset' | 'mfs' | 'controlled'; label: string } | null>(null);
@@ -113,7 +120,7 @@ export default function EcosystemView() {
   const [cam, setCam] = useState(plan.cam ?? 'overview');
   const [follow, setFollow] = useState<EntityName | null>(null);
   const [sel, setSel] = useState<Sel>(() => { const c = url.get('coupling'); return COUPLING_IDS.includes(c as CouplingId) ? { kind: 'coupling', id: c as CouplingId } : null; });  // ?coupling=<engine component> selects a coupling (nothing is run)
-  const [tab, setTab] = useState<Tab>(() => (['ncb', 'observer'].includes(url.get('tech') ?? '') ? 'technical' : url.get('tab') === 'research' || plan.tab === 'research' ? 'research' : url.get('tab') === 'xenoscience' ? 'xenoscience' : url.get('tab') === 'truth' ? 'truth' : 'experiment'));
+  const [tab, setTab] = useState<Tab>(() => (['ncb', 'observer'].includes(url.get('tech') ?? '') ? 'technical' : url.get('tab') === 'research' || plan.tab === 'research' ? 'research' : url.get('tab') === 'xenoscience' ? 'xenoscience' : url.get('tab') === 'truth' ? 'truth' : url.get('tab') === 'gaisho' ? 'gaisho' : 'experiment'));
   const [techWhich, setTechWhich] = useState<'ncb' | 'observer'>(() => (url.get('tech') === 'observer' ? 'observer' : 'ncb'));
   const [techProbe, setTechProbe] = useState(() => url.get('probe') ?? (url.get('tech') === 'observer' ? 'O1' : 'A1'));
   const [busy, setBusy] = useState<string | null>(null);
@@ -132,7 +139,7 @@ export default function EcosystemView() {
   const rec = out?.record ?? null;
   const fields = useMemo(() => (rec ? decodeFields(rec.fields, rec.frames.length) : null), [rec]);
   const live = useRef({ playing, rate, tick, playhead: tick, follow, goal: null as null | { pos: THREE.Vector3; target: THREE.Vector3 }, nFrames: 0 });
-  const eng = useRef<{ device: DeviceLayer; composer: EffectComposer | null; mega: Megastructure; renderer: THREE.WebGLRenderer; scene: THREE.Scene; camera: THREE.PerspectiveCamera; controls: OrbitControls; overlays: THREE.Group; simMs: number[]; couplings: CouplingLayer; observation: ObservationLayer; truth: TruthLayer } | null>(null);
+  const eng = useRef<{ device: DeviceLayer; composer: EffectComposer | null; mega: Megastructure; renderer: THREE.WebGLRenderer; scene: THREE.Scene; camera: THREE.PerspectiveCamera; controls: OrbitControls; overlays: THREE.Group; simMs: number[]; couplings: CouplingLayer; observation: ObservationLayer; truth: TruthLayer; gaisho: GaishoLayer } | null>(null);
   const setTickRef = useRef(setTick), setPlayingRef = useRef(setPlaying);
   setTickRef.current = setTick; setPlayingRef.current = setPlaying;
 
@@ -173,6 +180,8 @@ export default function EcosystemView() {
   /** TRUTH-ERROR: every action asks the engine (backend/xzr/truth_error) for a run; nothing is computed here. */
   const teWrap = async (fn: () => Promise<void>) => { setTeBusy(true); setTeErr(null); try { await fn(); } catch (e) { setTeErr(String(e)); } finally { setTeBusy(false); } };
   pickNodeRef.current = (id) => { setTeSel(id); setTab('truth'); };
+  pickGaishoRef.current = (id) => { setGsUi((u) => ({ ...u, selected: u.selected === id ? null : id })); setTab('gaisho'); };
+  useEffect(() => { if (tab === 'gaisho' && !gsInfo) gaishoSpec().then(setGsInfo).catch((e) => setGsInfoErr(String(e))); }, [tab, gsInfo]);
   const truthActions = {
     runBase: () => teWrap(async () => { const r = await teRun(ILLUSTRATIVE); setTeBase(r); setTeBranch(null); setTeT(Math.min(teT, r.config.periods - 1)); }),
     runBranch: () => teWrap(async () => { setTeBranch(await teRun({ ...ILLUSTRATIVE, ...teDraft, pose_sensor: { ...teDraft.pose_sensor }, signal_sensor: { ...teDraft.signal_sensor } })); }),
@@ -321,6 +330,8 @@ export default function EcosystemView() {
     const c0 = mega.arena.local(mega.arena.n / 2, mega.arena.n / 2), span = Math.abs(mega.arena.local(mega.arena.n - 1, 0).x - mega.arena.local(0, 0).x) || 20;
     const truth = buildTruthLayer(mega.arena.group, new THREE.Vector3(c0.x, 13, c0.z), span);
     truth.group.visible = false;
+    const gaisho = buildGaishoLayer(mega.arena.group, new THREE.Vector3(c0.x, 24, c0.z), span);
+    gaisho.group.visible = false;
     // post-processing (balanced and high): bloom on highlights and lamps, a vignette with fine grain, and at the high tier a depth-of-field pass focused on the orbit target
     // The post chain differs by tier because it is the largest fixed cost of a frame (measured: 9 ms of an empty scene at 1672 x 808 with multisampling, bloom, grade, output and FXAA).
     //   performance  none (the renderer draws to the screen with multisampling)
@@ -380,7 +391,7 @@ export default function EcosystemView() {
         composer.render();
       } else renderer.render(scene, camera);
     };
-    eng.current = { device, composer, mega, renderer, scene, camera, controls, overlays, simMs: [], couplings, observation, truth };
+    eng.current = { device, composer, mega, renderer, scene, camera, controls, overlays, simMs: [], couplings, observation, truth, gaisho };
     // A program depends on where it renders: into a render target there is no tone mapping and the output is linear, so the programs of the screen are not the programs of the composer's
     // target. The compile therefore runs with the composer's target bound (the target the frames are drawn into), and the reflection, which draws the scene into a target of its own, is
     // rendered once as well: measured, the first reflection pass of an orbit built 22 programs in flight, tens to hundreds of milliseconds each.
@@ -450,10 +461,10 @@ export default function EcosystemView() {
         if (c) pickCellRef.current(c);
         return;
       }
-      const hit = rc.intersectObjects([...mega.arena.pickables, ...couplings.pickables, ...(truth.group.visible ? truth.pickables : []), ...mega.trials.pickables], false)[0];
+      const hit = rc.intersectObjects([...mega.arena.pickables, ...couplings.pickables, ...(truth.group.visible ? truth.pickables : []), ...(gaisho.group.visible ? gaisho.pickables : []), ...mega.trials.pickables], false)[0];
       const ud = hit?.object.userData as { entity?: EntityName; trial?: number } | undefined;
-      const cid = couplingOfObject(hit?.object), nid = teNodeOf(hit?.object);
-      if (nid) { pickNodeRef.current(nid); } else if (cid) { setSel({ kind: 'coupling', id: cid }); setTab('xenoscience'); } else if (ud?.entity) { setSel({ kind: 'entity', name: ud.entity }); setTab('inspect'); } else if (ud?.trial !== undefined) { setSel({ kind: 'trial', i: ud.trial }); setTab('inspect'); } else setSel(null);
+      const cid = couplingOfObject(hit?.object), nid = teNodeOf(hit?.object), gid = gaishoIdOf(hit?.object);
+      if (gid) { pickGaishoRef.current(gid); } else if (nid) { pickNodeRef.current(nid); } else if (cid) { setSel({ kind: 'coupling', id: cid }); setTab('xenoscience'); } else if (ud?.entity) { setSel({ kind: 'entity', name: ud.entity }); setTab('inspect'); } else if (ud?.trial !== undefined) { setSel({ kind: 'trial', i: ud.trial }); setTab('inspect'); } else setSel(null);
     };
     renderer.domElement.addEventListener('pointerdown', onDown); renderer.domElement.addEventListener('pointerup', onUp);
     (window as unknown as { __meos?: unknown }).__meos = {
@@ -462,6 +473,9 @@ export default function EcosystemView() {
       couplingScreen: (id: CouplingId) => { const m = couplings.meshOf(id); const v = m.getWorldPosition(new THREE.Vector3()).project(camera); const r = renderer.domElement.getBoundingClientRect(); return { x: r.left + ((v.x + 1) / 2) * r.width, y: r.top + ((1 - v.y) / 2) * r.height, visible: m.visible && v.z < 1 }; },
       cellScreen: (x: number, y: number) => { const v = mega.arena.group.localToWorld(mega.arena.local(x, y).clone()).project(camera); const r = renderer.domElement.getBoundingClientRect(); return { x: r.left + ((v.x + 1) / 2) * r.width, y: r.top + ((1 - v.y) / 2) * r.height, visible: v.z < 1 }; },
       truthNodeScreen: (id: NodeId) => { const v = truth.meshOf(id).getWorldPosition(new THREE.Vector3()).project(camera); const r = renderer.domElement.getBoundingClientRect(); return { x: r.left + ((v.x + 1) / 2) * r.width, y: r.top + ((1 - v.y) / 2) * r.height, visible: truth.group.visible && v.z < 1 }; },
+      // the GAISHO shape in the scene (what is drawn and where a recorded cell is on the screen), for checking picking; reads the scene and changes nothing
+      gaisho: () => ({ visible: gaisho.group.visible, ...gaisho.counts(), pickables: gaisho.pickables.length }),
+      gaishoScreen: (i: number) => { const m = gaisho.pickables[i]; if (!m) return null; const v = m.getWorldPosition(new THREE.Vector3()).project(camera); const r = renderer.domElement.getBoundingClientRect(); return { id: gaishoIdOf(m), x: r.left + ((v.x + 1) / 2) * r.width, y: r.top + ((1 - v.y) / 2) * r.height, visible: gaisho.group.visible && v.z < 1 }; },
       perf: () => perfSnapshot(frames, renderer, mega, eng.current?.simMs ?? [], q),
       camera: () => ({ pos: camera.position.toArray(), target: controls.target.toArray(), fov: camera.fov, near: camera.near, far: camera.far, exposure: renderer.toneMappingExposure, toneMapping: 'ACESFilmic', pixelRatio: renderer.getPixelRatio(), size: [renderer.domElement.width, renderer.domElement.height], quality: q }), stats: () => mega.stats,
       goto: (t: number) => { live.current.playhead = t; live.current.tick = t; setTickRef.current(t); }, play: (on: boolean) => { live.current.playing = on; setPlayingRef.current(on); },
@@ -527,7 +541,7 @@ export default function EcosystemView() {
     return () => {
       cancelAnimationFrame(raf); ro.disconnect();
       renderer.domElement.removeEventListener('pointerdown', onDown); renderer.domElement.removeEventListener('pointerup', onUp);
-      disposeGroup(overlays); couplings.dispose(); observation.dispose(); truth.dispose(); device.dispose(); composer?.dispose(); mega.dispose(); disposeLabels(); controls.dispose();
+      disposeGroup(overlays); couplings.dispose(); observation.dispose(); truth.dispose(); gaisho.dispose(); device.dispose(); composer?.dispose(); mega.dispose(); disposeLabels(); controls.dispose();
       scene.traverse((o) => { const m = o as THREE.Mesh; if (m.isMesh && m.geometry) m.geometry.dispose(); });
       renderer.dispose(); renderer.domElement.remove(); eng.current = null; setReady(false);
     };
@@ -579,6 +593,8 @@ export default function EcosystemView() {
     E.observation.set({ obs, overlay: display.observedCells && !isFullObservation(obs), pending: corner });
     E.truth.group.visible = !!teBase;
     if (teBase) E.truth.set({ run: teBase, branch: teBranch, k: teK, t: teT, selected: teSel, relation: teRel });
+    E.gaisho.group.visible = tab === 'gaisho' && !!gsUi.rec?.executed;
+    if (E.gaisho.group.visible) E.gaisho.set(frameOf(gsUi));
     E.couplings.group.visible = display.couplings;
     E.couplings.set({ frame: f, states: couplingStates(rec, t), selected: sel?.kind === 'coupling' ? sel.id : null, isolated: display.isolate && sel?.kind === 'coupling' ? sel.id : null, exploded: display.exploded ? 1 : 0,
       baseline: display.ghost && branch ? baselinePositions(branch.base.record, t) : null });
@@ -597,7 +613,7 @@ export default function EcosystemView() {
     disposeGroup(E.overlays);
     E.overlays.add(...buildOverlays({ rec, t, arena: E.mega.arena, layers, ad, mfs: mfsRes, partitions: spec?.partitions ?? {}, selected: sel?.kind === 'entity' ? sel.name : null }).children.slice());
     E.simMs.push(performance.now() - t0); if (E.simMs.length > 120) E.simMs.shift();
-  }, [rec, fields, tick, layers, ad, mfsRes, spec, sel, obs, ready, out, sssRegion, display, branch, corner, teBase, teBranch, teK, teT, teSel, teRel]);
+  }, [rec, fields, tick, layers, ad, mfsRes, spec, sel, obs, ready, out, sssRegion, display, branch, corner, teBase, teBranch, teK, teT, teSel, teRel, tab, gsUi]);
   useEffect(() => { eng.current?.mega.trials.set(trials); }, [trials, ready]);
   useEffect(() => {
     const E = eng.current;
@@ -651,7 +667,7 @@ export default function EcosystemView() {
       </div>
       {chrome && <aside className="eco-side">
         <div className="eco-tabs" role="tablist">
-          {(['experiment', 'research', 'xenoscience', 'truth', 'inspect', 'reductions', 'studies', 'technical', 'data'] as Tab[]).map((t) => <button key={t} role="tab" aria-selected={tab === t} className={tab === t ? 'on' : ''} onClick={() => setTab(t)}>{t === 'truth' ? 'TRUTH-ERROR' : t.toUpperCase()}</button>)}
+          {(['experiment', 'research', 'xenoscience', 'truth', 'gaisho', 'inspect', 'reductions', 'studies', 'technical', 'data'] as Tab[]).map((t) => <button key={t} role="tab" aria-selected={tab === t} className={tab === t ? 'on' : ''} onClick={() => setTab(t)}>{t === 'truth' ? 'TRUTH-ERROR' : t.toUpperCase()}</button>)}
         </div>
         <div className="eco-pane">
           {tab === 'experiment' && <ExperimentPane {...{ rec, spec, tick, n, playing, setPlaying, rate, setRate, seed, setSeed, horizon, setHorizon, obs, setObs, conn, setConn, fullObs, layers, toggleLayer, cam, goCam, follow, setFollow, sel, focusSel, ivs, execute, intervene, doReplay, replay, quality, setQuality, out, setTick, live }} />}
@@ -660,6 +676,7 @@ export default function EcosystemView() {
           {tab === 'xenoscience' && <XenosciencePane {...{ rec, out, tick, setTick: (t: number) => { live.current.playhead = t; setTick(t); }, obs, entity: sel?.kind === 'entity' ? sel.name : null, sssClass: sssKey ? sssCache[sssKey] ?? null : null, pinned: pinnedRegime, setPinned: setPinnedRegime,
             coupling: sel?.kind === 'coupling' ? sel.id : null, selectCoupling: (id: CouplingId | null) => setSel(id ? { kind: 'coupling', id } : null), display, setDisplay, series, observeMode, setObserveMode: (m: 'region' | 'occluder' | null) => { setObserveMode(m); setCorner(null); }, corner, setObs, branch, playFrom: (t: number) => { live.current.playhead = t; setTick(t); setPlaying(true); }, verifyReplay: doReplay, requestHistoryOff, requestCut, restoreBaseline, clearBranch: () => setBranch(null), busy: !!busy, origin: originOf(replay) }} />}
           {tab === 'truth' && <TruthErrorPane {...{ base: teBase, branch: teBranch, k: teK, setK: setTeK, t: teT, setT: setTeT, selected: teSel, select: setTeSel, relation: teRel, setRelation: setTeRel, draft: teDraft, setDraft: setTeDraft, busy: teBusy, err: teErr, runBase: truthActions.runBase, runBranch: truthActions.runBranch, clearBranch: () => setTeBranch(null), focus3d: truthActions.focus3d, experiments: teExps, expId: teExpId, setExpId: setTeExpId, experiments2: teExps2, exp2Id: teExp2Id, setExp2Id: setTeExp2Id, loadArm: truthActions.loadArm }} />}
+          {tab === 'gaisho' && <GaishoPane {...{ info: gsInfo, infoErr: gsInfoErr, ui: gsUi, setUi: setGsUi, busy: gsBusy, setBusy: setGsBusy, err: gsErr, setErr: setGsErr, focus3d: () => { const E = eng.current; if (!E) return; const v = E.gaisho.centre(), sp = Math.abs(E.mega.arena.local(E.mega.arena.n - 1, 0).x - E.mega.arena.local(0, 0).x) || 20; E.camera.position.set(v.x, v.y + sp * 0.25, v.z + sp * 0.9); E.controls.target.copy(v); E.controls.update(); } }} />}
           {tab === 'inspect' && rec && <InspectPane rec={rec} tick={tick} sel={sel} setSel={setSel} ad={ad} mfs={mfsRes} trials={trials} />}
           {tab === 'reductions' && <ReductionsPane {...{ spec, abl, mfsRes, bnd, hist, sss, addr, runAblation, runMfs, runBoundary, runHistory, runSss, runAddr, busy }} />}
           {tab === 'technical' && <div className="eco-note">The technical inspection sheet is shown over the stage: orthographic drawings of the selected body's real geometry in the pose the run gives at the current tick, a probe detail, measured dimensions, component identifiers, cable routing and the state read from the run. Use the playhead to move through the run.</div>}

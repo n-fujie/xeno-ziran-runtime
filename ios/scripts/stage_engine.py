@@ -15,8 +15,8 @@ import shutil
 import sys
 from pathlib import Path
 
-EXCLUDE_DIRS = {"__pycache__", "experiments", "reasonlab", "hpo", "lab", "teoo", "meos", "study", "totalobs", "truth_error"}
-EXCLUDE_FILES = {Path("service") / "app.py", Path("service") / "meos.py", Path("service") / "studies.py", Path("service") / "teoo.py", Path("service") / "truth_error.py", Path("lineage.py")}
+EXCLUDE_DIRS = {"__pycache__", "experiments", "reasonlab", "hpo", "lab", "teoo", "meos", "study", "totalobs", "truth_error", "gaisho"}
+EXCLUDE_FILES = {Path("service") / "app.py", Path("service") / "meos.py", Path("service") / "studies.py", Path("service") / "teoo.py", Path("service") / "truth_error.py", Path("service") / "gaisho.py", Path("lineage.py")}
 
 
 def stage(backend: Path, dest: Path) -> list[str]:
