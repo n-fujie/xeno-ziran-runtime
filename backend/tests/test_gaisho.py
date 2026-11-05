@@ -582,10 +582,10 @@ def test_every_gaisho_route_refuses_before_it_computes_when_public_or_cross_orig
 
     def boom(*a, **k):
         raise AssertionError("an experiment was computed for a refused request")
-    for name in ("run_experiment", "compare_observations", "restore", "figure_svg", "explain_shape", "compare_models"):
+    for name in ("run_experiment", "compare_observations", "restore", "figure_svg", "explain_shape", "compare_models", "run_countermodels", "replay_cell"):
         monkeypatch.setattr(svc, name, boom)
     routes = _gaisho_routes()
-    assert {p for _, p in routes} == {f"/api/gaisho/{x}" for x in ("spec", "run", "compare-observations", "compare-shapes", "figure", "restore", "construction", "comparators")}
+    assert {p for _, p in routes} == {f"/api/gaisho/{x}" for x in ("spec", "run", "compare-observations", "compare-shapes", "figure", "restore", "construction", "comparators", "countermodels", "body-snn")}
     body = {"domain": "001-knowledge", "seeds": [1, 2], "condition": RESPONSIVE, "snapshot": "end", "spec": {"domain": "001-knowledge"}, "digest": "x", "first": {}, "second": {}}
     c = TestClient(app_mod.app, headers={"origin": "http://testserver"})
     call = lambda m, p, **kw: c.request(m, p, json=body if m == "POST" else None, **kw)  # noqa: E731
@@ -601,7 +601,7 @@ def test_the_gaisho_code_touches_no_file_no_network_and_starts_no_process():
     import re
 
     root = Path(__file__).resolve().parents[1] / "xzr"
-    sources = {p.name: p.read_text() for p in [*(root / "gaisho").glob("*.py"), root / "service" / "gaisho.py"] if p.name != "bodylink.py"}  # bodylink.py is the one reviewed exception (tests/test_gaisho_body.py)
+    sources = {p.name: p.read_text() for p in [*(root / "gaisho").glob("*.py"), root / "service" / "gaisho.py"] if p.name not in ("bodylink.py", "snnlink.py")}  # the two reviewed exceptions (tests/test_gaisho_body.py)
     forbidden = r"\b(open|exec|eval|compile|__import__)\(|\b(subprocess|socket|urllib|requests|httpx|shutil|tempfile|pathlib|os\.system|os\.popen|importlib)\b|\.(write_text|write_bytes|read_text|read_bytes|unlink|mkdir)\("
     for name, src in sources.items():
         code = "\n".join(line for line in src.splitlines() if not line.lstrip().startswith("#"))
@@ -764,7 +764,7 @@ def test_the_r37_constraints_are_stated_with_their_status_and_the_arms_with_miss
     assert len({c["id"] for c in CONSTRAINTS}) == len(CONSTRAINTS) and {c["status"] for c in CONSTRAINTS} <= {"IMPLEMENTED", "PARTIAL", "NOT_IMPLEMENTED"}
     assert all(c["where"] and c["constraint"] and c["how"] for c in CONSTRAINTS)
     by = {c["id"]: c["status"] for c in CONSTRAINTS}
-    assert by["R6"] == "NOT_IMPLEMENTED" and by["R8"] == "NOT_IMPLEMENTED" and by["R15"] == "NOT_IMPLEMENTED"  # R37's comparative claims, Gaisho ignition and the H1-H3 formation histories are not done
+    assert by["R6"] == "NOT_IMPLEMENTED" and by["R8"] == "NOT_IMPLEMENTED" and by["R15"] == "PARTIAL"  # R37's comparative claims and Gaisho ignition are not done; the formation histories only as finite models
     assert set(ARMS) == set("ABCDEFG") and {k for k, v in ARMS.items() if v["lab"] == "NOT_EXECUTED"} == set("BCDEF") and {k for k, v in ARMS.items() if v["lab"] == "PARTIAL"} == {"A", "G"}
 
 
@@ -810,7 +810,7 @@ def test_the_api_exposes_the_r37_correspondence_and_says_what_was_read():
     from xzr.service import app as app_mod
 
     sp = TestClient(app_mod.app, headers={"origin": "http://testserver"}).get("/api/gaisho/spec").json()
-    assert "read on 2026-11-05" in sp["source_status"] and "were not read in full" in sp["source_status"] and "R37 was not found" not in sp["source_status"]
+    assert "read on 2026-11-05" in sp["source_status"] and "NOT a full-text verification" in sp["source_status"] and "R37 was not found" not in sp["source_status"]
     assert {c["id"] for c in sp["r37"]["constraints"]} >= {"R1", "R2", "R16"} and set(sp["r37"]["arms"]) == set("ABCDEFG") and set(sp["r37"]["failure_registries"]) == {"F1", "F2", "F3", "F4", "F5"}
 
 
@@ -828,3 +828,72 @@ def test_a_record_does_not_depend_on_whether_the_body_link_is_configured(monkeyp
         bodylink._CACHE.clear()
         assert run_experiment(spec)["digest"] == a
     bodylink._CACHE.clear()
+
+
+# ------------------------------------------------------------------------------------------------ R37's finite countermodels, made executable (countermodels.py)
+def test_the_questioning_models_have_the_same_record_and_different_histories():
+    from fractions import Fraction
+
+    from xzr.gaisho.countermodels import questioning_models
+
+    q = questioning_models()["models"]
+    r = q["report"]
+    assert r["same_recorded_joint"] is True and r["joint"] == {"(0,BOT)": "1/2", "(1,0)": "1/4", "(1,1)": "1/4"}  # R37 A.3: P(X=0,R=bot)=1/2, P(1,0)=1/4, P(1,1)=1/4
+    assert r["P_E0_equals_1"] == {"H_R": "1/2", "H_F": "0"} and r["P_E0_identified_by_the_record"] is False
+    c = q["common_endpoint"]
+    assert c["same_recorded_joint"] is True and c["joint"] == {"(0,0)": "1/2", "(1,0)": "1/4", "(1,1)": "1/4"} and "(0,1)" not in c["joint"]
+    assert c["effect_identified"] is True and set(c["effect_of_the_question_on_Y"].values()) == {"1/2"} and Fraction(c["P_E0_equals_1"]["H_R*"]) == Fraction(1, 2) and Fraction(c["P_E0_equals_1"]["H_F*"]) == 0
+    assert "not modelled" in questioning_models()["limits"] and "third" in questioning_models()["limits"]  # R37's third history is not invented
+
+
+def test_no_report_only_rule_decides_the_prior_orientation_and_the_probe_is_what_would_break_the_equivalence():
+    from xzr.gaisho.countermodels import report_indeterminacy, z_equivalence
+
+    ri = report_indeterminacy()
+    assert ri["rules_that_decide_P_on_every_history"] == 0 and ri["report_only_rules_checked"] == 8 and len(ri["witness_pair"]) == 1
+    z = z_equivalence()
+    assert z["Z_equivalent_on_Z"] is True and z["Z_equivalent_with_probe"] is False and "validity is stipulated" in z["reading"]
+
+
+def test_the_r12_structural_study_is_reexecuted_and_agrees_with_what_r37_reports():
+    from xzr.gaisho.countermodels import R37_REPORTED, scm_equal_records
+
+    s = scm_equal_records()
+    assert s["worlds"] == 524_288 == R37_REPORTED["seeds"] * R37_REPORTED["units_per_seed"] * 1 and s["observational_records_identical_in_every_seed"] is True and s["masked_records_identical_in_every_seed"] is True
+    assert s["effect_of_do_M_in_B"] == {"mean": 0.0, "interval95": [0.0, 0.0], "seeds": 128}  # exactly zero for every seed
+    assert s["executed_sham_relabel_effect_is_zero"] is True  # the R13 control is executed, not entered analytically
+    assert abs(s["effect_of_do_M_in_A"]["mean"] - 0.8) < 0.003 and abs(s["association"]["mean"] - 0.8) < 0.003  # 1 - 2 P(E=1)
+    cmp = s["compared_with_r37"]
+    assert cmp["association_interval_overlaps"] and cmp["effect_A_interval_overlaps"] and cmp["effect_B_equal"] and "not of the seed-level numbers" in cmp["note"]
+    assert "Gaisho attribution unresolved" in s["reading"]
+
+
+def test_renaming_and_an_executed_update_are_different_interventions():
+    from xzr.gaisho.countermodels import label_control
+
+    g = label_control()["gates"]
+    a, b = g["A (the gate reads the marker)"], g["B (the gate does not read the marker)"]
+    assert a["renaming_changes_outcomes"] == 0 and b["renaming_changes_outcomes"] == 0 and a["executed_update_changes_outcomes"] == a["units"] and b["executed_update_changes_outcomes"] == 0
+
+
+def test_the_countermodels_never_support_an_attribution_and_the_api_bounds_them():
+    from fastapi.testclient import TestClient
+
+    from xzr.gaisho.countermodels import run_all
+    from xzr.service import app as app_mod
+
+    r = run_all(seeds=8, units=256)
+    assert r["supports_a_gaisho_attribution"] is False and r["attribution"] == "UNRESOLVED" and "do not simulate Gaisho" in r["scope"]
+    c = TestClient(app_mod.app, headers={"origin": "http://testserver"})
+    j = c.post("/api/gaisho/countermodels", json={"seeds": 8, "units": 256}).json()
+    assert j["digest"] == r["digest"] and j["questioning"]["models"]["report"]["same_recorded_joint"] is True
+    for bad in ({"seeds": 1}, {"seeds": 129}, {"units": 63}, {"units": 4097}, {"seeds": True}, {"seeds": "8"}):
+        assert c.post("/api/gaisho/countermodels", json=bad).status_code == 422, bad
+
+
+def test_the_new_r37_constraints_are_stated_with_their_status():
+    from xzr.gaisho.r37 import CONSTRAINTS
+
+    by = {c["id"]: c["status"] for c in CONSTRAINTS}
+    assert by["R15"] == "PARTIAL" and by["R17"] == "IMPLEMENTED" and by["R18"] == "IMPLEMENTED" and by["R19"] == "IMPLEMENTED" and by["R20"] == "NOT_IMPLEMENTED"
+    assert by["R6"] == "NOT_IMPLEMENTED" and by["R8"] == "NOT_IMPLEMENTED"  # the comparative claims and Gaisho ignition remain undone

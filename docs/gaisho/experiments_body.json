@@ -10,11 +10,137 @@
    "model_version": "xb-tro/1.0",
    "source_sha256": "4864c28938d197570333a71091a3a0f6164c1a90f44c6b0e986ce06fe3caa05a"
   },
-  "digest": "eb3dff228a1b550dc55ddf14f9705e3c0d4f249d7bf938b0d0c52bd6ec1c9bff",
+  "digest": "5e90007af8287f7e6f3624ccd2fbaa2d11a50f5179c33e45b6425f35f1ab720b",
   "executed": true,
   "figure_kind": "EXECUTED_COMPUTATIONAL_EXPERIMENT",
   "levels": {
    "human-like planar body": {
+    "conceptual_operational_shape": {
+     "applicability_gate": "",
+     "evidence": [],
+     "level": "conceptual_operational_shape",
+     "note": "",
+     "r37_term": "C: a warranted conceptual-operational-shape judgment under reidentification and revision conditions (R37 II 5, G-C-N)",
+     "state": "NOT_MODELLED"
+    },
+    "gaisho_attribution": {
+     "applicability_gate": "NOT_PASSED: no eligible bearer b, no bounded episode interval, no directed relation w and no independent evidential route is specified: a synthetic operation is not a target of an episode attribution, so the gate fails before any A_G value can be assigned",
+     "evidence": [],
+     "level": "gaisho_attribution",
+     "note": "no independent evidence (operational differences are not evidence of a Gaisho)",
+     "r37_term": "A_G(b,t,w;e,K) in {supported, defeated-for-K, unresolved} (R37 II 4); the laboratory also records ASSERTED_BY_RESEARCHER, which R37 does not have",
+     "state": "UNRESOLVED"
+    },
+    "gaisho_operational_shape": {
+     "applicability_gate": "",
+     "evidence": [],
+     "level": "gaisho_operational_shape",
+     "note": "no bearer and no historical interval: a synthetic operation has neither, so it is not a candidate",
+     "r37_term": "NO R37 TERM. R37 has Occ_G(b,t,w) (occurrence), Det_D(K,t) (detectability) and M_G (a candidate causal mediator); the brief's 'Gaisho operational shape' is the laboratory's own level",
+     "state": "NOT_ESTABLISHED"
+    },
+    "operational_shape": {
+     "applicability_gate": "",
+     "evidence": [],
+     "level": "operational_shape",
+     "note": "",
+     "r37_term": "Operational Shape (a P/A term, R37 Appendix C 003)",
+     "state": "RECONSTRUCTED"
+    },
+    "real_operation": {
+     "applicability_gate": "",
+     "evidence": [],
+     "level": "real_operation",
+     "note": "",
+     "r37_term": "Real Operation (a P/A term, R37 I and Appendix C 002)",
+     "state": "EXECUTED_IN_MODEL"
+    }
+   },
+   "human-like planar body, resource-constrained (resources)": {
+    "conceptual_operational_shape": {
+     "applicability_gate": "",
+     "evidence": [],
+     "level": "conceptual_operational_shape",
+     "note": "",
+     "r37_term": "C: a warranted conceptual-operational-shape judgment under reidentification and revision conditions (R37 II 5, G-C-N)",
+     "state": "NOT_MODELLED"
+    },
+    "gaisho_attribution": {
+     "applicability_gate": "NOT_PASSED: no eligible bearer b, no bounded episode interval, no directed relation w and no independent evidential route is specified: a synthetic operation is not a target of an episode attribution, so the gate fails before any A_G value can be assigned",
+     "evidence": [],
+     "level": "gaisho_attribution",
+     "note": "no independent evidence (operational differences are not evidence of a Gaisho)",
+     "r37_term": "A_G(b,t,w;e,K) in {supported, defeated-for-K, unresolved} (R37 II 4); the laboratory also records ASSERTED_BY_RESEARCHER, which R37 does not have",
+     "state": "UNRESOLVED"
+    },
+    "gaisho_operational_shape": {
+     "applicability_gate": "",
+     "evidence": [],
+     "level": "gaisho_operational_shape",
+     "note": "no bearer and no historical interval: a synthetic operation has neither, so it is not a candidate",
+     "r37_term": "NO R37 TERM. R37 has Occ_G(b,t,w) (occurrence), Det_D(K,t) (detectability) and M_G (a candidate causal mediator); the brief's 'Gaisho operational shape' is the laboratory's own level",
+     "state": "NOT_ESTABLISHED"
+    },
+    "operational_shape": {
+     "applicability_gate": "",
+     "evidence": [],
+     "level": "operational_shape",
+     "note": "",
+     "r37_term": "Operational Shape (a P/A term, R37 Appendix C 003)",
+     "state": "RECONSTRUCTED"
+    },
+    "real_operation": {
+     "applicability_gate": "",
+     "evidence": [],
+     "level": "real_operation",
+     "note": "",
+     "r37_term": "Real Operation (a P/A term, R37 I and Appendix C 002)",
+     "state": "EXECUTED_IN_MODEL"
+    }
+   },
+   "human-like planar body, slow gain adaptation off (memory)": {
+    "conceptual_operational_shape": {
+     "applicability_gate": "",
+     "evidence": [],
+     "level": "conceptual_operational_shape",
+     "note": "",
+     "r37_term": "C: a warranted conceptual-operational-shape judgment under reidentification and revision conditions (R37 II 5, G-C-N)",
+     "state": "NOT_MODELLED"
+    },
+    "gaisho_attribution": {
+     "applicability_gate": "NOT_PASSED: no eligible bearer b, no bounded episode interval, no directed relation w and no independent evidential route is specified: a synthetic operation is not a target of an episode attribution, so the gate fails before any A_G value can be assigned",
+     "evidence": [],
+     "level": "gaisho_attribution",
+     "note": "no independent evidence (operational differences are not evidence of a Gaisho)",
+     "r37_term": "A_G(b,t,w;e,K) in {supported, defeated-for-K, unresolved} (R37 II 4); the laboratory also records ASSERTED_BY_RESEARCHER, which R37 does not have",
+     "state": "UNRESOLVED"
+    },
+    "gaisho_operational_shape": {
+     "applicability_gate": "",
+     "evidence": [],
+     "level": "gaisho_operational_shape",
+     "note": "no bearer and no historical interval: a synthetic operation has neither, so it is not a candidate",
+     "r37_term": "NO R37 TERM. R37 has Occ_G(b,t,w) (occurrence), Det_D(K,t) (detectability) and M_G (a candidate causal mediator); the brief's 'Gaisho operational shape' is the laboratory's own level",
+     "state": "NOT_ESTABLISHED"
+    },
+    "operational_shape": {
+     "applicability_gate": "",
+     "evidence": [],
+     "level": "operational_shape",
+     "note": "",
+     "r37_term": "Operational Shape (a P/A term, R37 Appendix C 003)",
+     "state": "RECONSTRUCTED"
+    },
+    "real_operation": {
+     "applicability_gate": "",
+     "evidence": [],
+     "level": "real_operation",
+     "note": "",
+     "r37_term": "Real Operation (a P/A term, R37 I and Appendix C 002)",
+     "state": "EXECUTED_IN_MODEL"
+    }
+   },
+   "human-like planar body, visual feedback blocked (sensor)": {
     "conceptual_operational_shape": {
      "applicability_gate": "",
      "evidence": [],
@@ -121,6 +247,45 @@
      0.0
     ],
     "condition": "machine-like planar body",
+    "kind": "NOT_DETECTED",
+    "mean": 0.0,
+    "note": "no difference was detected: this is not shown to be zero",
+    "registry": "F1",
+    "registry_meaning": "no difference was detected (95 % interval includes 0): within this sensor, scale, window and horizon; not shown to be zero",
+    "relation": "baseline_fall"
+   },
+   {
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "condition": "human-like planar body, visual feedback blocked (sensor)",
+    "kind": "NOT_DETECTED",
+    "mean": 0.0,
+    "note": "no difference was detected: this is not shown to be zero",
+    "registry": "F1",
+    "registry_meaning": "no difference was detected (95 % interval includes 0): within this sensor, scale, window and horizon; not shown to be zero",
+    "relation": "baseline_fall"
+   },
+   {
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "condition": "human-like planar body, slow gain adaptation off (memory)",
+    "kind": "NOT_DETECTED",
+    "mean": 0.0,
+    "note": "no difference was detected: this is not shown to be zero",
+    "registry": "F1",
+    "registry_meaning": "no difference was detected (95 % interval includes 0): within this sensor, scale, window and horizon; not shown to be zero",
+    "relation": "baseline_fall"
+   },
+   {
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "condition": "human-like planar body, resource-constrained (resources)",
     "kind": "NOT_DETECTED",
     "mean": 0.0,
     "note": "no difference was detected: this is not shown to be zero",
@@ -355,6 +520,156 @@
       }
      }
     },
+    "human-like planar body, resource-constrained (resources)": {
+     "accuracy": {
+      "mean": 0.25333333333333335,
+      "n": 6,
+      "sd": 0.020655911179772907,
+      "se": 0.008432740427115686
+     },
+     "accuracy_pre_shift": {
+      "mean": null,
+      "n": 0,
+      "sd": null,
+      "se": null
+     },
+     "operation_digest": "e7cf72f454c5ca07a084aff33877a8dbb627177ff1cd6eb2c91abd908008da45",
+     "relations": {
+      "baseline_fall": {
+       "ci95": [
+        0.0,
+        0.0
+       ],
+       "n": 6,
+       "sd": 0.0,
+       "se": 0.0,
+       "status": "IDENTIFIED",
+       "value": 0.0
+      },
+      "effect_x": {
+       "ci95": [
+        0.6,
+        0.6
+       ],
+       "n": 6,
+       "sd": 0.0,
+       "se": 0.0,
+       "status": "IDENTIFIED",
+       "value": 0.6
+      },
+      "effect_y": {
+       "ci95": [
+        0.3999999999999999,
+        0.4
+       ],
+       "n": 6,
+       "sd": 6.080941944488117e-17,
+       "se": 2.482534153247273e-17,
+       "status": "IDENTIFIED",
+       "value": 0.39999999999999997
+      }
+     }
+    },
+    "human-like planar body, slow gain adaptation off (memory)": {
+     "accuracy": {
+      "mean": 0.24666666666666667,
+      "n": 6,
+      "sd": 0.016329931618554533,
+      "se": 0.006666666666666672
+     },
+     "accuracy_pre_shift": {
+      "mean": null,
+      "n": 0,
+      "sd": null,
+      "se": null
+     },
+     "operation_digest": "7dce95256b4c4ef2e9940d924c4e951ceeeba92d7741f7092edd6579857548ed",
+     "relations": {
+      "baseline_fall": {
+       "ci95": [
+        0.0,
+        0.0
+       ],
+       "n": 6,
+       "sd": 0.0,
+       "se": 0.0,
+       "status": "IDENTIFIED",
+       "value": 0.0
+      },
+      "effect_x": {
+       "ci95": [
+        0.6,
+        0.6
+       ],
+       "n": 6,
+       "sd": 0.0,
+       "se": 0.0,
+       "status": "IDENTIFIED",
+       "value": 0.6
+      },
+      "effect_y": {
+       "ci95": [
+        0.3999999999999999,
+        0.4
+       ],
+       "n": 6,
+       "sd": 6.080941944488117e-17,
+       "se": 2.482534153247273e-17,
+       "status": "IDENTIFIED",
+       "value": 0.39999999999999997
+      }
+     }
+    },
+    "human-like planar body, visual feedback blocked (sensor)": {
+     "accuracy": {
+      "mean": 0.26666666666666666,
+      "n": 6,
+      "sd": 0.04131182235954576,
+      "se": 0.01686548085423135
+     },
+     "accuracy_pre_shift": {
+      "mean": null,
+      "n": 0,
+      "sd": null,
+      "se": null
+     },
+     "operation_digest": "cbb68450ed3389472989d25cab39a529e16fbe03c7761880cc4f6642010a5f62",
+     "relations": {
+      "baseline_fall": {
+       "ci95": [
+        0.0,
+        0.0
+       ],
+       "n": 6,
+       "sd": 0.0,
+       "se": 0.0,
+       "status": "IDENTIFIED",
+       "value": 0.0
+      },
+      "effect_x": {
+       "ci95": [
+        0.6,
+        0.6
+       ],
+       "n": 6,
+       "sd": 0.0,
+       "se": 0.0,
+       "status": "IDENTIFIED",
+       "value": 0.6
+      },
+      "effect_y": {
+       "ci95": [
+        0.36356666666666665,
+        0.5030999999999999
+       ],
+       "n": 6,
+       "sd": 0.08164965809277258,
+       "se": 0.033333333333333326,
+       "status": "IDENTIFIED",
+       "value": 0.4333333333333333
+      }
+     }
+    },
     "machine-like planar body": {
      "accuracy": {
       "mean": 0.2733333333333334,
@@ -406,7 +721,7 @@
      }
     }
    },
-   "digest": "7df32b04f8c8465cb94632610f312d656ca5e2249dc6d3971e93f139097b01f7",
+   "digest": "208e97edc5bfb403f8e25819387b323ceaa5ca99011a946d82a3bbe34ebb0ba6",
    "domain": "004-body",
    "observation": {
     "boundary": [],
@@ -436,7 +751,13 @@
    "title": "BODY \u2014 SENSORIMOTOR CONTINUATION OF A PLANAR BODY UNDER INTERVENTION (XB-TRO)"
   },
   "spec": {
-   "conditions": null,
+   "conditions": [
+    "human-like planar body",
+    "machine-like planar body",
+    "human-like planar body, visual feedback blocked (sensor)",
+    "human-like planar body, slow gain adaptation off (memory)",
+    "human-like planar body, resource-constrained (resources)"
+   ],
    "domain": "004-body",
    "observation": {
     "boundary": [],
@@ -475,6 +796,60 @@
     "b": "machine-like planar body",
     "relations_compared": 3,
     "similarity": 0.8333333333333333
+   },
+   {
+    "a": "human-like planar body",
+    "b": "human-like planar body, visual feedback blocked (sensor)",
+    "relations_compared": 3,
+    "similarity": 0.9888888888888889
+   },
+   {
+    "a": "human-like planar body",
+    "b": "human-like planar body, slow gain adaptation off (memory)",
+    "relations_compared": 3,
+    "similarity": 1.0
+   },
+   {
+    "a": "human-like planar body",
+    "b": "human-like planar body, resource-constrained (resources)",
+    "relations_compared": 3,
+    "similarity": 1.0
+   },
+   {
+    "a": "machine-like planar body",
+    "b": "human-like planar body, visual feedback blocked (sensor)",
+    "relations_compared": 3,
+    "similarity": 0.8444444444444444
+   },
+   {
+    "a": "machine-like planar body",
+    "b": "human-like planar body, slow gain adaptation off (memory)",
+    "relations_compared": 3,
+    "similarity": 0.8333333333333333
+   },
+   {
+    "a": "machine-like planar body",
+    "b": "human-like planar body, resource-constrained (resources)",
+    "relations_compared": 3,
+    "similarity": 0.8333333333333333
+   },
+   {
+    "a": "human-like planar body, visual feedback blocked (sensor)",
+    "b": "human-like planar body, slow gain adaptation off (memory)",
+    "relations_compared": 3,
+    "similarity": 0.9888888888888889
+   },
+   {
+    "a": "human-like planar body, visual feedback blocked (sensor)",
+    "b": "human-like planar body, resource-constrained (resources)",
+    "relations_compared": 3,
+    "similarity": 0.9888888888888889
+   },
+   {
+    "a": "human-like planar body, slow gain adaptation off (memory)",
+    "b": "human-like planar body, resource-constrained (resources)",
+    "relations_compared": 3,
+    "similarity": 1.0
    }
   ]
  },

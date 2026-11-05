@@ -3,7 +3,8 @@ by running the specification), and for the knowledge domain the sensitivity of w
 
     PYTHONPATH=. python scripts/gaisho_experiments.py
 
-    XZR_XBTRO_PATH=<...>/backend/xzr/xbtro PYTHONPATH=. python scripts/gaisho_experiments.py body     # domain 004 (needs the XB-TRO package): writes docs/gaisho/experiments_body.json
+    XZR_XBTRO_PATH=<...>/backend/xzr/xbtro PYTHONPATH=. python scripts/gaisho_experiments.py body     # domain 004, all five body conditions (needs the XB-TRO package): docs/gaisho/experiments_body.json
+    XZR_XBTRO_PATH=... XZR_XENOSNN_URL=http://127.0.0.1:<port> PYTHONPATH=. python scripts/gaisho_experiments.py body-snn   # B2, the open-loop replay through a running XenoSNN server: docs/gaisho/experiments_body_snn.json
 
 SYNTHETIC computational experiments; the domain 004 (body) runs only where the XB-TRO link is configured, and is otherwise specified and not executed."""
 
@@ -59,8 +60,23 @@ def sensitivity() -> dict:
     return rows
 
 
-if __name__ == "__main__" and sys.argv[1:] == ["body"]:
-    rec = run_experiment({"domain": "004-body", "seeds": SEEDS[:6]})
+SNN_OUT = OUT.with_name("experiments_body_snn.json")
+
+if __name__ == "__main__" and sys.argv[1:] == ["body-snn"]:
+    from xzr.gaisho.bodysnn import replay_cell
+    from xzr.gaisho.domains import BodyDomain, domain_registry
+
+    dom = domain_registry()["004-body"]
+    if not isinstance(dom, BodyDomain):
+        raise SystemExit("the body domain is not executed: set XZR_XBTRO_PATH to the xbtro package")
+    recs = [replay_cell(dom, c, 2, 2, [1, 2, 3, 4]) for c in ("human-like planar body", "machine-like planar body")]
+    SNN_OUT.write_text(json.dumps({"model_version": "gaisho-lab/1", "records": recs}, indent=1, sort_keys=True))
+    print("body-snn", [r["digest"][:12] for r in recs], "written", SNN_OUT)
+elif __name__ == "__main__" and sys.argv[1:] == ["body"]:
+    from xzr.gaisho.domains import BodyDomain, domain_registry
+
+    _b = domain_registry()["004-body"]
+    rec = run_experiment({"domain": "004-body", "seeds": SEEDS[:6], "conditions": list(_b.conditions) if isinstance(_b, BodyDomain) else None})
     if not rec.get("executed"):
         raise SystemExit("the body domain is not executed: set XZR_XBTRO_PATH to the xbtro package")
     BODY_OUT.write_text(json.dumps({"model_version": "gaisho-lab/1", "seeds": SEEDS[:6], "domain": slim(rec)}, indent=1, sort_keys=True))

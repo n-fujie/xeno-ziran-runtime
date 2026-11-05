@@ -14,11 +14,14 @@ from typing import Any
 
 from fastapi import APIRouter, HTTPException, Request
 
-from ..gaisho import MODEL_VERSION
+from ..gaisho import MODEL_VERSION, snnlink
+from ..gaisho.bodysnn import ENCODING as SNN_ENCODING
+from ..gaisho.bodysnn import replay_cell
 from ..gaisho.claims import CLAIMS
 from ..gaisho.compare import compare_models, compare_observations
 from ..gaisho.construction import change_kinds_of_observations, explain_shape, reading_of_difference
-from ..gaisho.domains import domain_registry, status_of
+from ..gaisho.countermodels import run_all as run_countermodels
+from ..gaisho.domains import BodyDomain, domain_registry, status_of
 from ..gaisho.export import MAX_SEEDS, observation_from, restore, run_experiment
 from ..gaisho.figure import figure_svg
 from ..gaisho.knowledge import ENVIRONMENTS
@@ -98,7 +101,7 @@ def spec(request: Request) -> dict:
     return {
         "model_version": MODEL_VERSION,
         "scope": "SYNTHETIC computational experiments only: no human neural activity, no real institution, no real person. The laboratory executes operations and records differences; it never computes a Gaisho attribution.",
-        "source_status": "the manuscript GAISHO R37 was read on 2026-11-05 (the parts read are listed in r37.py; Part I, the rest of Part II, Parts IV-IX and XI and Appendices A and B were not read in full); the P/A Dictionary v40 itself was not available. The five levels (one of them, the Gaisho operational shape, is a term of the development brief that R37 does not use), the twelve questions and the verdict classes come from the brief; the correspondence with R37 is in r37.CONSTRAINTS",
+        "source_status": "the manuscript GAISHO R37 was read on 2026-11-05: in full or nearly so for Part II sections 4-5 and its individuation / comparison / levels-of-claim passages, Part III, Part X (programme, registries, withdrawal), most of Part XII, Appendix A and B.2b; in part for Parts I, V and VIII; headings only for the rest of Part II, Parts IV, VI, VII, IX, XI and the rest of Appendices B and C (so it is NOT a full-text verification). The P/A Dictionary v40 itself was not available. The five levels (one of them, the Gaisho operational shape, is a term of the development brief that R37 does not use), the twelve questions and the verdict classes come from the brief; the correspondence with R37 is in r37.CONSTRAINTS",
         "domains": {k: {"title": d.title if d else None, "conditions": list(d.conditions) if d else [], "x": d.x_name if d else None, "y": d.y_name if d else None, "snapshots": list(d.snapshots) if d else [], "relations": list(d.relation_names) if d else [], "max_seeds": getattr(d, "max_seeds", 0) if d else 0, "status": status_of(k)} for k, d in reg.items()},
         "observation_axes": list(OBSERVATION_AXES),
         "observation_defaults": FULL.asdict(),
@@ -112,6 +115,7 @@ def spec(request: Request) -> dict:
         "prohibited_inferences": [{"premise": p, "conclusion": c, "reason": w} for p, c, w in PROHIBITED_INFERENCES],
         "limits": LIMITS,
         "claims": list(CLAIMS),
+        "links": {"xbtro": domain_registry().get("004-body") is not None, "xenosnn": snnlink.base_url() is not None and snnlink.health() is not None, "snn_encoding": SNN_ENCODING},
         "r37": {"reference": R37_REF, "constraints": list(CONSTRAINTS), "arms": ARMS, "failure_registries": FAILURE_REGISTRIES, "level_terms": LEVEL_TERMS},
     }
 
@@ -206,3 +210,37 @@ def comparators(request: Request, body: dict[str, Any]) -> dict:
     seeds = tuple(s["seeds"] or range(1, 11))
     with _compute():
         return compare_models(dom, seeds, observation_from(s["observation"]), extended=True)
+
+
+@router.post("/countermodels")
+def countermodels(request: Request, body: dict[str, Any]) -> dict:
+    """R37's finite countermodels (exact enumeration, and the R12 structural study re-executed): numbers only, bounded (at most 128 seeds and 4,096 units)."""
+    local_only(request)
+    seeds, units = body.get("seeds", 128), body.get("units", 4096)
+    if not all(isinstance(v, int) and not isinstance(v, bool) for v in (seeds, units)) or not (2 <= seeds <= 128) or not (64 <= units <= 4096):
+        raise HTTPException(422, "seeds must be an integer 2..128 and units an integer 64..4096")
+    with _compute():
+        return run_countermodels(seeds, units)
+
+
+@router.post("/body-snn")
+def body_snn(request: Request, body: dict[str, Any]) -> dict:
+    """B2, the open-loop replay: the sensed signal of the body at one cell goes through the existing XenoSNN neuron; the records stay separate. Needs both the XB-TRO link and a reachable XenoSNN server (loopback); otherwise 422 and nothing is computed."""
+    local_only(request)
+    dom = domain_registry().get("004-body")
+    if not isinstance(dom, BodyDomain):
+        raise HTTPException(422, "the XB-TRO body is not linked (XZR_XBTRO_PATH)")
+    if snnlink.base_url() is None or snnlink.health() is None:
+        raise HTTPException(422, "the XenoSNN server is not reachable (XZR_XENOSNN_URL, loopback, with snnTorch)")
+    cond, i, j, seeds = body.get("condition"), body.get("i"), body.get("j"), body.get("seeds", [1, 2, 3, 4])
+    if cond not in dom.conditions:
+        raise HTTPException(422, "condition must be a condition of the body domain")
+    if not (isinstance(i, int) and isinstance(j, int)) or isinstance(i, bool) or isinstance(j, bool) or not (0 <= i < len(dom.x_values)) or not (0 <= j < len(dom.y_values)):
+        raise HTTPException(422, "i and j must be cell indices of the grid")
+    if not isinstance(seeds, list) or not (1 <= len(seeds) <= 4) or not all(isinstance(x, int) and not isinstance(x, bool) and 1 <= x <= 1000 for x in seeds):
+        raise HTTPException(422, "seeds must be 1..4 integers 1..1000")
+    with _compute():
+        try:
+            return replay_cell(dom, cond, i, j, seeds)
+        except snnlink.SnnLinkError as exc:
+            raise HTTPException(502, f"XenoSNN: {exc}") from exc

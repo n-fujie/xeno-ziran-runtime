@@ -116,4 +116,123 @@ def test_the_api_runs_the_body_within_its_seed_cap(linked):
     r = c.post("/api/gaisho/run", json={"domain": "004-body", "seeds": [1, 2], "conditions": [HUMAN]})
     assert r.status_code == 200 and r.json()["executed"] is True
     sp = c.get("/api/gaisho/spec").json()["domains"]["004-body"]
-    assert sp["status"]["executed"] is True and sp["max_seeds"] == 8 and sp["conditions"] == [HUMAN, MACHINE]
+    assert sp["status"]["executed"] is True and sp["max_seeds"] == 8 and sp["conditions"][:2] == [HUMAN, MACHINE] and len(sp["conditions"]) == 5
+
+
+# ------------------------------------------------------------------------------------------------ B2: the open-loop replay through the real XenoSNN server (loopback), kept as separate records
+import socket  # noqa: E402
+import subprocess  # noqa: E402
+import time  # noqa: E402
+
+from xzr.gaisho import snnlink  # noqa: E402
+
+SNN_PY = Path(os.environ.get("XZR_XENOSNN_TEST_PYTHON", "/Users/user/Desktop/BIM/.venv-snn/bin/python"))
+SNN_SERVER = Path(os.environ.get("XZR_XENOSNN_TEST_SERVER", "/Users/user/Desktop/BIM/pa-simulation-environment/python/ziran_pytorch_server.py"))
+needs_snn = pytest.mark.skipif(not (SNN_PY.is_file() and SNN_SERVER.is_file()), reason="no Python with torch + snnTorch, or no XenoSNN server file, on this machine")
+
+
+@pytest.fixture
+def snn_server(monkeypatch):
+    with socket.socket() as s:
+        s.bind(("127.0.0.1", 0))
+        port = s.getsockname()[1]
+    proc = subprocess.Popen([str(SNN_PY), str(SNN_SERVER), str(port)], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, env={"PATH": os.environ.get("PATH", ""), "PYTORCH_BACKEND_REQUIRE_TORCH": "true"})
+    monkeypatch.setenv(snnlink.ENV, f"http://127.0.0.1:{port}")
+    try:
+        for _ in range(60):
+            if snnlink.health(2.0):
+                break
+            time.sleep(0.5)
+        else:
+            pytest.fail("the XenoSNN server did not come up")
+        yield port
+    finally:
+        proc.terminate()
+        proc.wait(10)
+
+
+def test_the_snn_link_contacts_a_loopback_http_address_with_a_port_and_nothing_else(monkeypatch):
+    ok = {"http://127.0.0.1:4711": "http://127.0.0.1:4711", "http://localhost:4711/": "http://localhost:4711", "http://[::1]:4711": "http://[::1]:4711"}
+    for raw, want in ok.items():
+        monkeypatch.setenv(snnlink.ENV, raw)
+        assert snnlink.base_url() == want
+    for bad in ("", "https://127.0.0.1:4711", "http://127.0.0.1", "http://example.com:4711", "http://192.168.0.5:4711", "http://127.0.0.1:4711/run", "http://127.0.0.1:4711/?a=1", "http://user:pw@127.0.0.1:4711", "ftp://127.0.0.1:4711", "http://0.0.0.0:4711"):
+        monkeypatch.setenv(snnlink.ENV, bad)
+        assert snnlink.base_url() is None, bad
+    monkeypatch.delenv(snnlink.ENV)
+    assert snnlink.base_url() is None and snnlink.health() is None
+
+
+def test_the_snn_link_refuses_a_bad_input_before_any_network_call_and_has_no_other_reach(monkeypatch):
+    monkeypatch.setenv(snnlink.ENV, "http://127.0.0.1:9")  # nothing listens: any call would fail differently
+    for bad in ([], [float("nan")], [float("inf")], [True], ["1"], [0.0] * (snnlink.MAX_INPUT + 1)):
+        with pytest.raises(snnlink.SnnLinkError, match="finite numbers"):
+            snnlink.replay(bad, "x")
+    src = Path(snnlink.__file__).read_text()
+    code = re.sub(r'""".*?"""', "", "\n".join(line for line in src.splitlines() if not line.lstrip().startswith("#")), flags=re.S)
+    assert not re.search(r"\b(subprocess|socket|shutil|tempfile|eval|exec|importlib|pathlib)\b|(?<![\w.])open\(|\.write|sys\.path", code)
+    assert set(re.findall(r'_call\("(/[a-z]+)"', code)) == {"/health", "/run"} and code.count("os.environ.get(ENV") == 1 and "_NoRedirect" in code  # fixed endpoints; the address from the environment only; redirects refused
+
+
+@needs_snn
+def test_the_real_xenosnn_neuron_follows_its_stated_dynamics(snn_server):
+    """The server is the real snnTorch one: the trace obeys mem_t = beta mem_{t-1} + input_t - threshold spike_{t-1} with beta 0.9 and threshold 1.0 (its source constants), and a spike is a membrane above the threshold."""
+    x = [0.0, 0.5, 0.5, 0.5, 0.2, 0.0, 0.7, 0.7, 0.7, 0.0]
+    tr = snnlink.replay(x, "dynamics")
+    assert tr["runtime"]["library"] == "snntorch" and tr["runtime"]["beta"] == 0.9 and tr["runtime"]["threshold"] == 1.0
+    mem, spk = [s["membrane"] for s in tr["timesteps"]], [s["spike"] for s in tr["timesteps"]]
+    for t in range(1, len(x)):
+        assert mem[t] == pytest.approx(0.9 * mem[t - 1] + x[t] - 1.0 * spk[t - 1], abs=1e-5), t
+    assert all(spk[t] == int(mem[t] > 1.0) for t in range(len(x))) and sum(spk) >= 2
+    assert snnlink.replay(x, "dynamics")["timesteps"] == tr["timesteps"]  # deterministic
+
+
+@needs_snn
+@needs_body
+def test_the_open_loop_replay_keeps_the_records_apart_and_attributes_nothing(linked, snn_server):
+    from xzr.gaisho.bodysnn import ENCODING, replay_cell
+
+    dom = domain_registry()["004-body"]
+    a = replay_cell(dom, HUMAN, 2, 2, [1, 2, 3, 4])
+    assert a["kind"] == "B2_OPEN_LOOP_REPLAY" and a["figure_kind"] == "EXECUTED_COMPUTATIONAL_EXPERIMENT" and a["body"]["body"] == "XB-TRO" and ENCODING["status"].startswith("STIPULATED")
+    for rec in a["records"]:
+        assert {"sensor_input", "spikes", "internal_state", "bodily_output", "environment_return"} <= set(rec)  # separate records, not one number
+        assert len(rec["sensor_input"]["current"]) == len(rec["internal_state"]["membrane"]) == 800 and rec["spikes"]["count"] == len(rec["spikes"]["steps"])
+        assert all(c >= 0 for c in rec["sensor_input"]["current"])  # the stipulated encoding is an unsigned magnitude
+    assert a["weights"].startswith("NONE") and a["plasticity"].startswith("NONE") and a["memory"].startswith("NONE") and a["coupling"].startswith("OPEN LOOP")
+    assert a["attribution"] == "UNRESOLVED" and a["applicability_gate"].startswith("NOT_PASSED") and "Det_D, not Occ_G" in a["applicability_gate"]
+    assert "not a Gaisho" in a["operational_summary"]["reading"] and "bodily_output" in a["records"][0]
+    b = replay_cell(dom, HUMAN, 2, 2, [1, 2, 3, 4])
+    assert a["digest"] == b["digest"]  # reproducible
+    with pytest.raises(ValueError):
+        replay_cell(dom, HUMAN, 9, 9, [1])
+
+
+@needs_snn
+@needs_body
+def test_the_body_snn_route_needs_both_links_and_is_bounded(linked, snn_server):
+    from fastapi.testclient import TestClient
+
+    from xzr.service import app as app_mod
+
+    c = TestClient(app_mod.app, headers={"origin": "http://testserver"})
+    sp = c.get("/api/gaisho/spec").json()["links"]
+    assert sp["xbtro"] is True and sp["xenosnn"] is True and sp["snn_encoding"]["status"].startswith("STIPULATED")
+    ok = c.post("/api/gaisho/body-snn", json={"condition": HUMAN, "i": 2, "j": 2, "seeds": [1, 2]})
+    assert ok.status_code == 200 and ok.json()["records"][0]["spikes"]["count"] >= 0 and ok.json()["attribution"] == "UNRESOLVED"
+    for bad in ({"condition": "nope", "i": 2, "j": 2}, {"condition": HUMAN, "i": 9, "j": 2}, {"condition": HUMAN, "i": True, "j": 2}, {"condition": HUMAN, "i": 2, "j": 2, "seeds": [1, 2, 3, 4, 5]}, {"condition": HUMAN, "i": 2, "j": 2, "seeds": []}):
+        assert c.post("/api/gaisho/body-snn", json=bad).status_code == 422, bad
+
+
+def test_the_body_snn_route_refuses_without_the_links_and_computes_nothing(monkeypatch):
+    from fastapi.testclient import TestClient
+
+    from xzr.service import app as app_mod
+
+    monkeypatch.delenv(bodylink.ENV, raising=False)
+    monkeypatch.delenv(snnlink.ENV, raising=False)
+    bodylink._CACHE.clear()
+    c = TestClient(app_mod.app, headers={"origin": "http://testserver"})
+    r = c.post("/api/gaisho/body-snn", json={"condition": HUMAN, "i": 0, "j": 0})
+    assert r.status_code == 422 and "not linked" in r.json()["detail"]
+    assert c.get("/api/gaisho/spec").json()["links"]["xenosnn"] is False

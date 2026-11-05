@@ -196,9 +196,17 @@ class BodyDomain(Domain):
     y_values = np.linspace(0.0, 200.0, 5)
     snapshots = ("end",)
     relation_names = ("effect_x", "effect_y", "baseline_fall")
-    conditions = {"human-like planar body": {"preset": "human-like-planar"}, "machine-like planar body": {"preset": "machine-like-planar"}}
+    # R37 X (fourth family): sensor, memory and resource conditions of the bodily configuration, besides its morphology (the two presets). 'edits' are applied in order to the configuration before the two axes are set.
+    conditions = {
+        "human-like planar body": {"preset": "human-like-planar", "edits": []},
+        "machine-like planar body": {"preset": "machine-like-planar", "edits": []},
+        "human-like planar body, visual feedback blocked (sensor)": {"preset": "human-like-planar", "edits": [("intervention", "visual_block", 0.0)]},
+        "human-like planar body, slow gain adaptation off (memory)": {"preset": "human-like-planar", "edits": [("set", ("adaptation", "enabled"), False)]},
+        "human-like planar body, resource-constrained (resources)": {"preset": "human-like-planar", "edits": [("intervention", "resource_constraint", 0.4)]},
+    }
+    default_conditions = ("human-like planar body", "machine-like planar body")  # a run without a named condition runs the two morphologies (the others are chosen by name: about 20 s each for 6 seeds)
     seed_count = 6
-    max_seeds = 8  # about 0.9 s per cell for a batch of 8 seeds: 25 cells and 2 conditions are about 45 s
+    max_seeds = 8  # about 0.9 s per cell for a batch of 8 seeds: 25 cells and one condition are about 25 s
 
     def __init__(self) -> None:
         link = bodylink.load()
@@ -210,19 +218,37 @@ class BodyDomain(Domain):
     def provenance(self) -> dict:
         return {"body": "XB-TRO", "model_version": self.link.model_version, "source_sha256": self.link.source_sha256, "files": self.link.n_files}
 
+    def base_config(self, cond: str) -> dict:
+        """The body's configuration for a condition, before the two axes are set."""
+        import copy
+
+        spec = self.conditions[cond]
+        cfg0 = self.link.config.build(spec["preset"])
+        for kind, what, value in spec["edits"]:
+            if kind == "intervention":
+                cfg0 = self.link.config.apply_intervention(cfg0, what, value)
+            else:  # a plain switch of the body's own configuration (here: the slow adaptation), applied to a copy
+                cfg0 = copy.deepcopy(cfg0)
+                cfg0[what[0]][what[1]] = value
+        return cfg0
+
+    def run_cell(self, cond: str, delay: float, push: float, seeds: list[int], cfg0: dict | None = None):
+        """One body batch at a cell of the grid (the delay and the disturbance set by XB-TRO's interventions)."""
+        cfg = self.base_config(cond) if cfg0 is None else cfg0
+        if delay > 0:
+            cfg = self.link.config.apply_intervention(cfg, "sensory_delay", float(delay))
+        cfg = self.link.config.apply_intervention(cfg, "perturbation", float(push))
+        return self.link.engine.simulate(cfg, seeds=list(seeds))
+
     def prepare(self, cond: str, seeds: tuple[int, ...], obs: Observation) -> None:
         key = (cond, tuple(seeds))
         if key in self._cache:
             return
-        cfg0 = self.link.config.build(self.conditions[cond]["preset"])
+        cfg0 = self.base_config(cond)
         fell = np.zeros((len(self.y_values), len(self.x_values), len(seeds)))
         for j, push in enumerate(self.y_values):
             for i, delay in enumerate(self.x_values):
-                cfg = cfg0
-                if delay > 0:
-                    cfg = self.link.config.apply_intervention(cfg, "sensory_delay", float(delay))
-                cfg = self.link.config.apply_intervention(cfg, "perturbation", float(push))
-                run = self.link.engine.simulate(cfg, seeds=list(seeds))
+                run = self.run_cell(cond, float(delay), float(push), list(seeds), cfg0)
                 fell[j, i, :] = np.asarray(run.fell, dtype=float)
         self._cache[key] = fell
 
