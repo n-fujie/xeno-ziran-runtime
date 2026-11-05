@@ -187,7 +187,7 @@ The policy is published at https://xeno-ziran.platodesignlab.com/privacy/ (reach
 
 ## Screenshots
 
-**For version 1.0.1:** `ios/AppStore/screenshots-1.0.1/iphone-6.9/` — 9 images, 1320 × 2868 (iPhone 17 Pro Max simulator, taken 2026-11-06 from the 1.0.1 build 4 interface; 01 Network running, 03 Shape Space, 04 Address Space, 05 World Map, 06 3D Globe, 07 Timeline, 08 Compare, 09 Philosophical Practice, 10 About; 03–07 were taken a few minutes before a last CSS change that does not touch those views). **No new iPad set was made**: App Store Connect keeps the 1.0 screenshots of a version unless they are replaced, and the 1.0 iPad images below show the old layout.
+**For version 1.0.1:** `ios/AppStore/screenshots-1.0.1/iphone-6.9/` — 9 images, 1320 × 2868 (iPhone 17 Pro Max simulator, taken 2026-11-06 from the 1.0.1 build 4 interface; 01 Network running, 03 Shape Space, 04 Address Space, 05 World Map, 06 3D Globe, 07 Timeline, 08 Compare, 09 Philosophical Practice, 10 About; 03–07 were taken a few minutes before a last CSS change that does not touch those views). iPad: `ios/AppStore/screenshots-1.0.1/ipad-13/` — the same 9 views, 2064 × 2752 (iPad Pro 13-inch (M5) simulator, taken after the last CSS change; no alpha channel). Both sets were re-encoded without an alpha channel, as the 1.0 set was.
 
 **Version 1.0 (history):**
 

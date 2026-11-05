@@ -63,6 +63,8 @@ input[type='number'] { width: 72px; }
 .controlbar { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; padding: 7px 16px; border-bottom: 1px solid var(--line); min-height: 40px; }
 .controlbar .group { display: flex; gap: 6px; align-items: center; }
 .controlbar .right { margin-left: auto; }
+/* the scenario menu is as wide as its longest option (a refused world's label is long): cap it so Save, Load and Export stay on screen */
+.controlbar .right select:first-child { max-width: 34em; min-width: 0; text-overflow: ellipsis; }
 .controlbar .stats { gap: 12px; color: var(--dim); font-size: 11.5px; }
 .error { padding: 6px 16px; color: var(--warn); border-bottom: 1px solid var(--line); }
 .notice { padding: 4px 16px; color: var(--dim); border-bottom: 1px solid var(--line); }
