@@ -1,0 +1,1126 @@
+{
+ "axes": {
+  "x": "sensory feedback delay added, s (do)",
+  "y": "external disturbance, push force N (do)"
+ },
+ "blocks": {
+  "control": [
+   "neural"
+  ],
+  "internal": [
+   "internal"
+  ],
+  "sensors": [
+   "sensors"
+  ],
+  "structure": [
+   "foot",
+   "joints",
+   "lines",
+   "links"
+  ],
+  "time step": [
+   "task.dt"
+  ]
+ },
+ "body": {
+  "body": "XB-TRO",
+  "files": 17,
+  "model_version": "xb-tro/1.0",
+  "source_sha256": "4864c28938d197570333a71091a3a0f6164c1a90f44c6b0e986ce06fe3caa05a"
+ },
+ "conditions": {
+  "human-like planar body": {
+   "base": "human-like-planar",
+   "block": null,
+   "donor": null,
+   "fell_share_grid": [
+    [
+     0.0,
+     0.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     0.0,
+     0.0,
+     0.6666666666666666,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ]
+   ],
+   "mean_fell_share": 0.7466666666666666,
+   "relations": {
+    "baseline_fall": {
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "mean": 0.0,
+     "n": 6,
+     "status": "IDENTIFIED",
+     "t": 2.571
+    },
+    "effect_x": {
+     "ci95": [
+      0.6,
+      0.6
+     ],
+     "mean": 0.6,
+     "n": 6,
+     "status": "IDENTIFIED",
+     "t": 2.571
+    },
+    "effect_y": {
+     "ci95": [
+      0.3999999999999999,
+      0.4
+     ],
+     "mean": 0.39999999999999997,
+     "n": 6,
+     "status": "IDENTIFIED",
+     "t": 2.571
+    }
+   }
+  },
+  "human-like planar body with the control of the machine-like one": {
+   "base": "human-like-planar",
+   "block": "control",
+   "change_against_base": {
+    "effect_x": {
+     "base_inside_swap_ci95": true,
+     "change": -0.033333333333333326,
+     "swap_ci95": [
+      0.48096666666666665,
+      0.6523666666666667
+     ]
+    },
+    "effect_y": {
+     "base_inside_swap_ci95": true,
+     "change": 0.0,
+     "swap_ci95": [
+      0.3999999999999999,
+      0.4
+     ]
+    }
+   },
+   "donor": "machine-like-planar",
+   "fell_share_grid": [
+    [
+     0.0,
+     0.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     0.0,
+     0.0,
+     0.16666666666666666,
+     1.0,
+     0.8333333333333334
+    ],
+    [
+     0.0,
+     0.8333333333333334,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ]
+   ],
+   "mean_fell_share": 0.7533333333333334,
+   "relations": {
+    "baseline_fall": {
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "mean": 0.0,
+     "n": 6,
+     "status": "IDENTIFIED",
+     "t": 2.571
+    },
+    "effect_x": {
+     "ci95": [
+      0.48096666666666665,
+      0.6523666666666667
+     ],
+     "mean": 0.5666666666666667,
+     "n": 6,
+     "status": "IDENTIFIED",
+     "t": 2.571
+    },
+    "effect_y": {
+     "ci95": [
+      0.3999999999999999,
+      0.4
+     ],
+     "mean": 0.39999999999999997,
+     "n": 6,
+     "status": "IDENTIFIED",
+     "t": 2.571
+    }
+   }
+  },
+  "human-like planar body with the internal of the machine-like one": {
+   "base": "human-like-planar",
+   "block": "internal",
+   "change_against_base": {
+    "effect_x": {
+     "base_inside_swap_ci95": true,
+     "change": 0.0,
+     "swap_ci95": [
+      0.6,
+      0.6
+     ]
+    },
+    "effect_y": {
+     "base_inside_swap_ci95": true,
+     "change": 0.0,
+     "swap_ci95": [
+      0.3999999999999999,
+      0.4
+     ]
+    }
+   },
+   "donor": "machine-like-planar",
+   "fell_share_grid": [
+    [
+     0.0,
+     0.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0,
+     0.6666666666666666,
+     1.0
+    ],
+    [
+     0.0,
+     0.0,
+     0.8333333333333334,
+     0.8333333333333334,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ]
+   ],
+   "mean_fell_share": 0.7333333333333334,
+   "relations": {
+    "baseline_fall": {
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "mean": 0.0,
+     "n": 6,
+     "status": "IDENTIFIED",
+     "t": 2.571
+    },
+    "effect_x": {
+     "ci95": [
+      0.6,
+      0.6
+     ],
+     "mean": 0.6,
+     "n": 6,
+     "status": "IDENTIFIED",
+     "t": 2.571
+    },
+    "effect_y": {
+     "ci95": [
+      0.3999999999999999,
+      0.4
+     ],
+     "mean": 0.39999999999999997,
+     "n": 6,
+     "status": "IDENTIFIED",
+     "t": 2.571
+    }
+   }
+  },
+  "human-like planar body with the sensors of the machine-like one": {
+   "base": "human-like-planar",
+   "block": "sensors",
+   "change_against_base": {
+    "effect_x": {
+     "base_inside_swap_ci95": true,
+     "change": 0.0,
+     "swap_ci95": [
+      0.6,
+      0.6
+     ]
+    },
+    "effect_y": {
+     "base_inside_swap_ci95": true,
+     "change": 0.0,
+     "swap_ci95": [
+      0.3999999999999999,
+      0.4
+     ]
+    }
+   },
+   "donor": "machine-like-planar",
+   "fell_share_grid": [
+    [
+     0.0,
+     0.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0,
+     0.8333333333333334,
+     1.0
+    ],
+    [
+     0.0,
+     0.0,
+     0.3333333333333333,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ]
+   ],
+   "mean_fell_share": 0.7266666666666666,
+   "relations": {
+    "baseline_fall": {
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "mean": 0.0,
+     "n": 6,
+     "status": "IDENTIFIED",
+     "t": 2.571
+    },
+    "effect_x": {
+     "ci95": [
+      0.6,
+      0.6
+     ],
+     "mean": 0.6,
+     "n": 6,
+     "status": "IDENTIFIED",
+     "t": 2.571
+    },
+    "effect_y": {
+     "ci95": [
+      0.3999999999999999,
+      0.4
+     ],
+     "mean": 0.39999999999999997,
+     "n": 6,
+     "status": "IDENTIFIED",
+     "t": 2.571
+    }
+   }
+  },
+  "human-like planar body with the structure of the machine-like one": {
+   "base": "human-like-planar",
+   "block": "structure",
+   "change_against_base": {
+    "effect_x": {
+     "base_inside_swap_ci95": false,
+     "change": -0.6,
+     "swap_ci95": [
+      0.0,
+      0.0
+     ]
+    },
+    "effect_y": {
+     "base_inside_swap_ci95": false,
+     "change": -0.39999999999999997,
+     "swap_ci95": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "donor": "machine-like-planar",
+   "fell_share_grid": [
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ]
+   ],
+   "mean_fell_share": 1.0,
+   "relations": {
+    "baseline_fall": {
+     "ci95": [
+      1.0,
+      1.0
+     ],
+     "mean": 1.0,
+     "n": 6,
+     "status": "IDENTIFIED",
+     "t": 2.571
+    },
+    "effect_x": {
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "mean": 0.0,
+     "n": 6,
+     "status": "IDENTIFIED",
+     "t": 2.571
+    },
+    "effect_y": {
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "mean": 0.0,
+     "n": 6,
+     "status": "IDENTIFIED",
+     "t": 2.571
+    }
+   }
+  },
+  "human-like planar body with the time step of the machine-like one": {
+   "base": "human-like-planar",
+   "block": "time step",
+   "change_against_base": {
+    "effect_x": {
+     "base_inside_swap_ci95": true,
+     "change": 0.0,
+     "swap_ci95": [
+      0.6,
+      0.6
+     ]
+    },
+    "effect_y": {
+     "base_inside_swap_ci95": true,
+     "change": 0.033333333333333326,
+     "swap_ci95": [
+      0.3476333333333333,
+      0.5190333333333332
+     ]
+    }
+   },
+   "donor": "machine-like-planar",
+   "fell_share_grid": [
+    [
+     0.0,
+     0.0,
+     0.8333333333333334,
+     1.0,
+     1.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ]
+   ],
+   "mean_fell_share": 0.7533333333333334,
+   "relations": {
+    "baseline_fall": {
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "mean": 0.0,
+     "n": 6,
+     "status": "IDENTIFIED",
+     "t": 2.571
+    },
+    "effect_x": {
+     "ci95": [
+      0.6,
+      0.6
+     ],
+     "mean": 0.6,
+     "n": 6,
+     "status": "IDENTIFIED",
+     "t": 2.571
+    },
+    "effect_y": {
+     "ci95": [
+      0.3476333333333333,
+      0.5190333333333332
+     ],
+     "mean": 0.4333333333333333,
+     "n": 6,
+     "status": "IDENTIFIED",
+     "t": 2.571
+    }
+   }
+  },
+  "machine-like planar body": {
+   "base": "machine-like-planar",
+   "block": null,
+   "donor": null,
+   "fell_share_grid": [
+    [
+     0.0,
+     0.8333333333333334,
+     1.0,
+     0.0,
+     0.3333333333333333
+    ],
+    [
+     0.0,
+     1.0,
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ]
+   ],
+   "mean_fell_share": 0.7266666666666666,
+   "relations": {
+    "baseline_fall": {
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "mean": 0.0,
+     "n": 6,
+     "status": "IDENTIFIED",
+     "t": 2.571
+    },
+    "effect_x": {
+     "ci95": [
+      0.15826378847609462,
+      0.3750695448572387
+     ],
+     "mean": 0.26666666666666666,
+     "n": 6,
+     "status": "IDENTIFIED",
+     "t": 2.571
+    },
+    "effect_y": {
+     "ci95": [
+      0.48096666666666676,
+      0.6523666666666668
+     ],
+     "mean": 0.5666666666666668,
+     "n": 6,
+     "status": "IDENTIFIED",
+     "t": 2.571
+    }
+   }
+  },
+  "machine-like planar body with the control of the human-like one": {
+   "base": "machine-like-planar",
+   "block": "control",
+   "change_against_base": {
+    "effect_x": {
+     "base_inside_swap_ci95": false,
+     "change": -0.26666666666666666,
+     "swap_ci95": [
+      0.0,
+      0.0
+     ]
+    },
+    "effect_y": {
+     "base_inside_swap_ci95": false,
+     "change": -0.5666666666666668,
+     "swap_ci95": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "donor": "human-like-planar",
+   "fell_share_grid": [
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ]
+   ],
+   "mean_fell_share": 1.0,
+   "relations": {
+    "baseline_fall": {
+     "ci95": [
+      1.0,
+      1.0
+     ],
+     "mean": 1.0,
+     "n": 6,
+     "status": "IDENTIFIED",
+     "t": 2.571
+    },
+    "effect_x": {
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "mean": 0.0,
+     "n": 6,
+     "status": "IDENTIFIED",
+     "t": 2.571
+    },
+    "effect_y": {
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "mean": 0.0,
+     "n": 6,
+     "status": "IDENTIFIED",
+     "t": 2.571
+    }
+   }
+  },
+  "machine-like planar body with the internal of the human-like one": {
+   "base": "machine-like-planar",
+   "block": "internal",
+   "change_against_base": {
+    "effect_x": {
+     "base_inside_swap_ci95": true,
+     "change": 0.0,
+     "swap_ci95": [
+      0.15826378847609462,
+      0.3750695448572387
+     ]
+    },
+    "effect_y": {
+     "base_inside_swap_ci95": true,
+     "change": 0.0,
+     "swap_ci95": [
+      0.48096666666666676,
+      0.6523666666666668
+     ]
+    }
+   },
+   "donor": "human-like-planar",
+   "fell_share_grid": [
+    [
+     0.0,
+     0.8333333333333334,
+     1.0,
+     0.0,
+     0.3333333333333333
+    ],
+    [
+     0.0,
+     1.0,
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ]
+   ],
+   "mean_fell_share": 0.7266666666666666,
+   "relations": {
+    "baseline_fall": {
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "mean": 0.0,
+     "n": 6,
+     "status": "IDENTIFIED",
+     "t": 2.571
+    },
+    "effect_x": {
+     "ci95": [
+      0.15826378847609462,
+      0.3750695448572387
+     ],
+     "mean": 0.26666666666666666,
+     "n": 6,
+     "status": "IDENTIFIED",
+     "t": 2.571
+    },
+    "effect_y": {
+     "ci95": [
+      0.48096666666666676,
+      0.6523666666666668
+     ],
+     "mean": 0.5666666666666668,
+     "n": 6,
+     "status": "IDENTIFIED",
+     "t": 2.571
+    }
+   }
+  },
+  "machine-like planar body with the sensors of the human-like one": {
+   "base": "machine-like-planar",
+   "block": "sensors",
+   "change_against_base": {
+    "effect_x": {
+     "base_inside_swap_ci95": true,
+     "change": 0.09999999999999998,
+     "swap_ci95": [
+      0.20864367466866654,
+      0.5246896586646668
+     ]
+    },
+    "effect_y": {
+     "base_inside_swap_ci95": true,
+     "change": -0.10000000000000003,
+     "swap_ci95": [
+      0.3582637884760947,
+      0.5750695448572387
+     ]
+    }
+   },
+   "donor": "human-like-planar",
+   "fell_share_grid": [
+    [
+     0.0,
+     1.0,
+     1.0,
+     0.0,
+     0.6666666666666666
+    ],
+    [
+     0.0,
+     1.0,
+     1.0,
+     0.0,
+     0.16666666666666666
+    ],
+    [
+     0.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ]
+   ],
+   "mean_fell_share": 0.7533333333333333,
+   "relations": {
+    "baseline_fall": {
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "mean": 0.0,
+     "n": 6,
+     "status": "IDENTIFIED",
+     "t": 2.571
+    },
+    "effect_x": {
+     "ci95": [
+      0.20864367466866654,
+      0.5246896586646668
+     ],
+     "mean": 0.36666666666666664,
+     "n": 6,
+     "status": "IDENTIFIED",
+     "t": 2.571
+    },
+    "effect_y": {
+     "ci95": [
+      0.3582637884760947,
+      0.5750695448572387
+     ],
+     "mean": 0.46666666666666673,
+     "n": 6,
+     "status": "IDENTIFIED",
+     "t": 2.571
+    }
+   }
+  },
+  "machine-like planar body with the structure of the human-like one": {
+   "base": "machine-like-planar",
+   "block": "structure",
+   "change_against_base": {
+    "effect_x": {
+     "base_inside_swap_ci95": false,
+     "change": 0.3333333333333333,
+     "swap_ci95": [
+      0.6,
+      0.6
+     ]
+    },
+    "effect_y": {
+     "base_inside_swap_ci95": false,
+     "change": -0.1666666666666668,
+     "swap_ci95": [
+      0.3999999999999999,
+      0.4
+     ]
+    }
+   },
+   "donor": "human-like-planar",
+   "fell_share_grid": [
+    [
+     0.0,
+     0.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     0.0,
+     0.0,
+     0.0,
+     1.0,
+     1.0
+    ],
+    [
+     0.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ]
+   ],
+   "mean_fell_share": 0.76,
+   "relations": {
+    "baseline_fall": {
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "mean": 0.0,
+     "n": 6,
+     "status": "IDENTIFIED",
+     "t": 2.571
+    },
+    "effect_x": {
+     "ci95": [
+      0.6,
+      0.6
+     ],
+     "mean": 0.6,
+     "n": 6,
+     "status": "IDENTIFIED",
+     "t": 2.571
+    },
+    "effect_y": {
+     "ci95": [
+      0.3999999999999999,
+      0.4
+     ],
+     "mean": 0.39999999999999997,
+     "n": 6,
+     "status": "IDENTIFIED",
+     "t": 2.571
+    }
+   }
+  },
+  "machine-like planar body with the time step of the human-like one": {
+   "base": "machine-like-planar",
+   "block": "time step",
+   "change_against_base": {
+    "effect_x": {
+     "base_inside_swap_ci95": false,
+     "change": 0.1333333333333333,
+     "swap_ci95": [
+      0.3999999999999999,
+      0.4
+     ]
+    },
+    "effect_y": {
+     "base_inside_swap_ci95": false,
+     "change": -0.3000000000000001,
+     "swap_ci95": [
+      0.15826378847609462,
+      0.3750695448572387
+     ]
+    }
+   },
+   "donor": "human-like-planar",
+   "fell_share_grid": [
+    [
+     0.0,
+     1.0,
+     1.0,
+     0.6666666666666666,
+     1.0
+    ],
+    [
+     0.0,
+     1.0,
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ]
+   ],
+   "mean_fell_share": 0.7866666666666666,
+   "relations": {
+    "baseline_fall": {
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "mean": 0.0,
+     "n": 6,
+     "status": "IDENTIFIED",
+     "t": 2.571
+    },
+    "effect_x": {
+     "ci95": [
+      0.3999999999999999,
+      0.4
+     ],
+     "mean": 0.39999999999999997,
+     "n": 6,
+     "status": "IDENTIFIED",
+     "t": 2.571
+    },
+    "effect_y": {
+     "ci95": [
+      0.15826378847609462,
+      0.3750695448572387
+     ],
+     "mean": 0.26666666666666666,
+     "n": 6,
+     "status": "IDENTIFIED",
+     "t": 2.571
+    }
+   }
+  }
+ },
+ "digest": "c34ec79e32f2d41e91d1c13647cffe90d11c0b94d9585ced362191217efa5ff1",
+ "model_version": "gaisho-lab/1",
+ "result_digest": "27e89f646c25f79574034b2730cb96b02c00832dc1384d9e61f87c24d47c4201",
+ "seeds": [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6
+ ],
+ "uncovered_differences": []
+}

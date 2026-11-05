@@ -6,6 +6,8 @@ by running the specification), and for the knowledge domain the sensitivity of w
     XZR_XBTRO_PATH=<...>/backend/xzr/xbtro PYTHONPATH=. python scripts/gaisho_experiments.py body     # domain 004, all five body conditions (needs the XB-TRO package): docs/gaisho/experiments_body.json
     XZR_XBTRO_PATH=... XZR_XENOSNN_URL=http://127.0.0.1:<port> PYTHONPATH=. python scripts/gaisho_experiments.py body-snn   # B2, the open-loop replay through a running XenoSNN server: docs/gaisho/experiments_body_snn.json
 
+    XZR_XBTRO_PATH=... PYTHONPATH=. python scripts/gaisho_experiments.py body-matched   # the two XB-TRO presets compared one block of the configuration at a time (Dictionary 060): docs/gaisho/experiments_body_matched.json
+
 SYNTHETIC computational experiments; the domain 004 (body) runs only where the XB-TRO link is configured, and is otherwise specified and not executed."""
 
 from __future__ import annotations
@@ -61,6 +63,19 @@ def sensitivity() -> dict:
 
 
 SNN_OUT = OUT.with_name("experiments_body_snn.json")
+MATCHED_OUT = OUT.with_name("experiments_body_matched.json")
+
+if __name__ == "__main__" and sys.argv[1:] == ["body-matched"]:
+    from xzr.gaisho.bodymatched import run_matched
+    from xzr.gaisho.domains import domain_registry
+
+    if domain_registry()["004-body"] is None:
+        raise SystemExit("the body domain is not executed: set XZR_XBTRO_PATH to the xbtro package")
+    _m = run_matched(SEEDS[:6])
+    MATCHED_OUT.write_text(json.dumps(_m, indent=1, sort_keys=True))
+    print("body-matched", _m["digest"][:12], "uncovered:", _m["uncovered_differences"], "written", MATCHED_OUT)
+    raise SystemExit(0)
+
 
 if __name__ == "__main__" and sys.argv[1:] == ["body-snn"]:
     from xzr.gaisho.bodysnn import replay_cell

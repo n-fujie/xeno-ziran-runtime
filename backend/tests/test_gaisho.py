@@ -774,9 +774,41 @@ def test_the_claims_do_not_register_an_r37_proposition_as_proved_and_do_not_reus
     ids = [c["id"] for c in CLAIMS]
     assert not {"H1", "H2", "H3", "H4"} & set(ids) and {"U1", "U2", "U3", "U4", "R37-H1..H3"} <= set(ids)  # R37's H1-H3 are formation histories, not the laboratory's claims
     claims = {c["id"]: c for c in CLAIMS}
-    assert claims["U3"]["status"] == UNTESTED_HYPOTHESIS and "UNVERIFIED" in claims["U3"]["rests_on"] and "necessary and sufficient" in claims["U3"]["claim"] and "Not to be read as an R37-proved proposition" in claims["U3"]["rests_on"]
+    assert claims["U3"]["status"] == UNTESTED_HYPOTHESIS and "UNVERIFIED" in claims["U3"]["rests_on"] and "necessary and sufficient" in claims["U3"]["claim"] and "Not to be read as an R37-proved or Dictionary-proved proposition" in claims["U3"]["rests_on"]
+    assert "71-entry" in claims["U3"]["rests_on"] and "not supported" in claims["U3"]["rests_on"] and "no Gaisho entry" in claims["U3"]["rests_on"]  # checked against the file that exists, not against the edition R37 cites
     assert claims["R37-H1..H3"]["status"] == UNTESTED_HYPOTHESIS and "formation histories" in claims["R37-H1..H3"]["claim"]
     assert all("R37 proves" not in c["claim"] and "proved by R37" not in c["claim"] for c in CLAIMS) and all(c["status"] != SUPPORTED_IN_MODEL or "R37" not in c["claim"] for c in CLAIMS)
+
+
+def test_the_dictionary_block_cites_only_entries_that_were_read_in_full_and_states_which_edition_it_is():
+    from xzr.gaisho import dictionary as D
+
+    assert set(D.READ_IN_FULL).isdisjoint(D.HEADINGS_ONLY) and set(D.READ_IN_FULL) | set(D.HEADINGS_ONLY) | {2} == set(range(1, 72))  # every entry is read in full, read in part (002) or headings only
+    ids = [c["id"] for c in D.CONSTRAINTS]
+    assert ids == [f"D{i}" for i in range(1, 10)] and {c["status"] for c in D.CONSTRAINTS} <= {"IMPLEMENTED", "PARTIAL", "NOT_IMPLEMENTED"}
+    for c in D.CONSTRAINTS:
+        assert c["constraint"] and c["how"] and c["entries"]
+        assert set(c["entries"]) <= set(D.READ_IN_FULL), c["id"]  # a constraint is never stated from an entry of which only the heading was seen
+        assert set(c["entries"]) <= set(D.HEADWORDS), c["id"]
+    assert {c["id"]: c["status"] for c in D.CONSTRAINTS}["D7"] == "NOT_IMPLEMENTED" and {c["id"]: c["status"] for c in D.CONSTRAINTS}["D8"] == "PARTIAL"  # B2 has none of XenoSNN's controls; only single-block swaps of the two bodies were matched
+    ref = D.DICTIONARY_REF
+    assert ref["entries_in_file"] == 71 and ref["gaisho_in_file"] is False and "112 entries" in ref["edition_cited_by_r37"] and len(ref["sha256"]) == 64
+    assert "not the 112-entry" in D.EDITION_STATUS and "Gaisho" in D.EDITION_STATUS and "072-112" in D.EDITION_STATUS
+    assert D.HEADWORDS[22] == "Non-Accidental Success" and D.HEADWORDS[58] == "XenoSNN" and D.HEADWORDS[60] == "XenoBody"
+
+
+def test_the_dictionary_block_is_served_by_the_spec_and_is_not_in_any_record():
+    from fastapi.testclient import TestClient
+
+    from xzr.service import app as app_mod
+
+    c = TestClient(app_mod.app, headers={"origin": "http://testserver"})
+    spec = c.get("/api/gaisho/spec").json()
+    d = spec["dictionary"]
+    assert d["reference"]["entries_in_file"] == 71 and [x["id"] for x in d["constraints"]] == [f"D{i}" for i in range(1, 10)] and all(isinstance(x["entries"], list) for x in d["constraints"])
+    assert "71-entry" in spec["source_status"] and "not the 112-entry" in spec["source_status"]
+    out = run_experiment({"domain": "001-knowledge", "seeds": [1, 2, 3], "conditions": [RESPONSIVE]})
+    assert "dictionary" not in out and "Dictionary" not in str(out["r37"].get("reference", ""))  # the record (and so its digest) does not depend on the file read afterwards
 
 
 def test_the_research_objects_label_ignition_maintenance_expiry_and_reignition_as_operational_analogues():
