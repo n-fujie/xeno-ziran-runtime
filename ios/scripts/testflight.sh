@@ -11,7 +11,7 @@
 #   ASC_KEY_ID / ASC_ISSUER_ID (required environment variables)
 #   key file: ~/.appstoreconnect/private_keys/AuthKey_<ASC_KEY_ID>.p8
 #
-# Usage: sh ios/scripts/testflight.sh [build-number]   (version: MARKETING_VERSION in project.yml, now 1.0)
+# Usage: sh ios/scripts/testflight.sh [build-number]   (version: MARKETING_VERSION in project.yml, now 1.0.1)
 set -e
 cd "$(dirname "$0")/.."
 BUILD="${1:?give the build number: 1–3 are uploaded — pass 4, 5, … (never reuse one)}"

@@ -17,7 +17,7 @@ struct SimulatorWebView: UIViewRepresentable {
 
 @MainActor
 final class WebHost: NSObject, ObservableObject, WKNavigationDelegate, WKScriptMessageHandlerWithReply, WKUIDelegate {
-    static let resultsSite = URL(string: "https://ziran-xeno-simulator.vercel.app")!
+    static let resultsSite = URL(string: "https://xeno-ziran.platodesignlab.com")!
     /// Stream delivery rate: the desktop service pushes at the same order of magnitude.
     static let pollInterval: TimeInterval = 1.0 / 30.0
 

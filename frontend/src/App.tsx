@@ -34,6 +34,7 @@ import ScalePenetrationView from './views/resolution/ScalePenetrationView';
 import OverviewView from './views/OverviewView';
 import ShapePanel from './views/ShapePanel';
 import TimelineView from './views/TimelineView';
+import AboutView from './views/AboutView';
 
 // The WebGL projections (deck.gl, world atlas) load only when a graph or comparison view opens.
 const GraphView = lazy(() => import('./views/GraphView'));
@@ -68,6 +69,7 @@ const VIEWS: { id: View; label: () => string }[] = [
   { id: 'ecosystem', label: () => t('view_ecosystem') },
   { id: 'body', label: () => t('view_body') },
   { id: 'study', label: () => t('view_study') },
+  { id: 'about', label: () => t('view_about') },
 ];
 
 // Static read-only mirror (VITE_STATIC=1): no backend session; only the research views, read from exported result
@@ -79,9 +81,9 @@ const RESEARCH = staticViews as View[];
 // bare URL. Every other view is addressed as ?view=<id>.
 // The iOS app (VITE_NATIVE=1) runs the simulator in-process and shows its interactive views; the research results
 // stay on the public research-results site, opened from the app in the system browser.
-const RESULTS_SITE = 'https://ziran-xeno-simulator.vercel.app';
+const RESULTS_SITE = 'https://xeno-ziran.platodesignlab.com';
 const AVAILABLE: View[] = STATIC ? RESEARCH
-  : VIEWS.map((v) => v.id).filter((v) => v !== 'overview' && !(NATIVE && RESEARCH.includes(v)) && !(v === 'study' && (NATIVE || WEBRT)) && !(v === 'ecosystem' && (NATIVE || WEBRT)) && !(v === 'body' && (NATIVE || WEBRT)));
+  : VIEWS.map((v) => v.id).filter((v) => v !== 'overview' && !(NATIVE && RESEARCH.includes(v)) && !(v === 'about' && (!NATIVE || WEBRT)) && !(v === 'study' && (NATIVE || WEBRT)) && !(v === 'ecosystem' && (NATIVE || WEBRT)) && !(v === 'body' && (NATIVE || WEBRT)));
 const DEFAULT_VIEW: View = STATIC ? 'overview' : 'network';
 const labelOf = (v: View) => VIEWS.find((x) => x.id === v)?.label() ?? v;
 
@@ -194,7 +196,7 @@ export default function App() {
             experiment result files. No simulation runs on this page. The interactive simulator runs in your browser at{' '}
             <a href="/app/">/app/</a> (smaller workloads), or on a local server for full-size runs.</div>
         )
-      ) : view !== 'laboratory' && view !== 'ecosystem' && view !== 'body' && view !== 'study' && <ControlBar />}
+      ) : view !== 'laboratory' && view !== 'ecosystem' && view !== 'body' && view !== 'study' && view !== 'about' && <ControlBar />}
       {WEBRT && (
         <div className="static-note small">This simulator runs in your browser tab: the engine is downloaded from this site once and
           nothing you enter is sent anywhere. Workloads are smaller than in the desktop runtime, and floating-point results can
@@ -262,6 +264,7 @@ export default function App() {
             {view === 'ecosystem' && EcosystemView && <EcosystemView />}
             {view === 'body' && BodyView && <BodyView />}
             {view === 'study' && StudyView && <StudyView />}
+            {view === 'about' && <AboutView />}
             {view === 'overview' && (
               <div className="entry">
                 <Orientation views={AVAILABLE.filter((v) => v !== 'overview').map((v) => ({ id: v, label: labelOf(v) }))}

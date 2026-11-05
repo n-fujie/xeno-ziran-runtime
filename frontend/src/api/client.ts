@@ -67,7 +67,8 @@ async function j<T>(path: string, init?: RequestInit): Promise<T> {
 const post = <T>(path: string, body: unknown) => j<T>(path, { method: 'POST', body: JSON.stringify(body) });
 
 export const api = {
-  health: () => j<{ ok: boolean; public?: boolean; max_nodes?: number }>('/api/health'),
+  health: () => j<{ ok: boolean; public?: boolean; max_nodes?: number; native?: boolean; version?: string;
+    limits?: { max_nodes: number; max_edges: number; max_sessions: number; max_checkpoints: number; max_compare_horizon: number; max_export_bytes: number } }>('/api/health'),
   scenarios: () => j<{ id: string; name: string; description: string; configurations: number }[]>('/api/scenarios'),
   createSession: (sample: string, flags?: string) => post<SessionInfo>('/api/sessions', { sample, flags }),
   loadSession: (saved: { scenario: unknown; applied?: unknown }) =>

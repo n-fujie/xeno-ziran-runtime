@@ -1,9 +1,9 @@
 # XENO ZIRAN SIMULATOR — App Store / TestFlight metadata (final draft)
 
-Status (2026-10-06, 20:20 JST): app record **6819625252** exists (primary language English (U.K.)); build
-**1.0 (1)** uploaded, Apple processing state **VALID**, internal TestFlight state **READY_FOR_BETA_TESTING**.
-Nothing has been submitted for App Review or Beta App Review. The texts below are ready to paste into the version
-page; the privacy policy still needs a public URL before App Store submission.
+Status (2026-11-06): the app is **public on the App Store (Japan)** — https://apps.apple.com/jp/app/xeno-ziran-simulator/id6819625252
+(page read on 2026-11-06; it shows no version or build number, and none is claimed here). The texts below are the
+**proposal for the next version**; where they differ from the live page, the differences are listed under "Description
+against the code" and need to be entered in App Store Connect by the owner. Nothing here was submitted.
 
 ## App record
 
@@ -14,13 +14,13 @@ page; the privacy policy still needs a public URL before App Store submission.
 | SKU | `xeno-ziran-simulator-ios` |
 | Platform | iOS (iPhone + iPad), iOS 17.0 or later |
 | Primary language | English (U.K.) — as created in App Store Connect |
-| Version / build | 1.0 (1) uploaded — the next upload must use build 2 or higher |
+| Version / build | live: version 1.0, "ready for distribution" (owner's App Store Connect screen, 2026-11-06; the build number is not shown on the screen); this branch: **1.0.1, build 4** (`project.yml`). The build number is the per-upload counter inside a version and must not be reused |
 | Primary / secondary category | Education / Reference |
 | Price | Free (owner's decision) |
 | Copyright | © 2026 NAOTO FUJIE |
-| Support URL | https://ziran-xeno-simulator.vercel.app |
-| Marketing URL | https://ziran-xeno-simulator.vercel.app |
-| Privacy policy URL | **to be published** — text below; smallest path in "Privacy policy" |
+| Support URL | https://xeno-ziran.platodesignlab.com — this file used `ziran-xeno-simulator.vercel.app`, which answers `DEPLOYMENT_NOT_FOUND` (2026-11-06): check what App Store Connect holds (not accessible from here) |
+| Marketing URL | https://xeno-ziran.platodesignlab.com (same check) |
+| Privacy policy URL | https://xeno-ziran.platodesignlab.com/privacy/ — reachable on 2026-11-06 and byte-identical to `ios/AppStore/privacy-policy.html`; `https://ziran-xeno-simulator.vercel.app/privacy/` is not reachable |
 
 ## Subtitle (≤ 30)
 
@@ -49,9 +49,7 @@ The interactive simulator runs locally on your device and does not transmit simu
 • Save and Load sessions as files compatible with the desktop runtime; export configurations, connections,
   events and metrics as CSV or JSON through the share sheet
 
-On phone and tablet the simulator handles bundled worlds of up to 3,000 configurations. Larger worlds, long
-experiment runs and the published research results belong to the desktop runtime and the research-results site
-(ziran-xeno-simulator.vercel.app), which the app links to.
+On phone and tablet the simulator handles bundled worlds of up to 3,000 configurations (three are included: 600, 1,500 and 3,000 configurations). Larger worlds, long experiment runs and the published research results belong to the desktop runtime and the research-results site (xeno-ziran.platodesignlab.com), which the app links to. An About screen in the app lists what runs on the device, its limits and how the other editions differ.
 
 The simulator is an experimental and analytical environment. Its outputs are not real-world forecasts or
 predictive claims.
@@ -59,6 +57,32 @@ predictive claims.
 ## Keywords (≤ 100)
 
 simulation,complex systems,networks,graph,emergence,philosophy,research,dynamics,intervention,offline
+
+## Version notes (version 1.0.1 — proposed)
+
+• New app icon (the P/A mark).
+• Phone layout: run controls on one row; the scenario menu, Save, Load and Export are behind a Session button, so the picture gets more of the screen.
+• New About screen: what runs on the device, its limits (read from the running runtime), and how this app differs from the Browser Edition, the read-only research results and the local full runtime.
+• The Research Results button opens https://xeno-ziran.platodesignlab.com.
+
+## Description against the code (checked 2026-11-06; what was checked is the source, the simulator runs of the UI tests where stated)
+
+| Statement of the live page | Check | Result |
+|---|---|---|
+| runs locally; does not transmit simulation state, imported files or usage data; network only when the user opens external research resources in Safari | `SimulatorWebView.swift`: the only external actions are `UIApplication.open` of the results host (button and links on that host); every other navigation is cancelled; `WebHostTests.testBundledInterfaceIsTheNativeBuildAndLoadsNothingRemote`; no `URLSession` in the app | holds in code |
+| Network, Shape Space, Address Space, World Map, 3D Globe | `App.tsx` native view list; UI test `testLaunchRunAndOpenEveryView` opens each (the Globe and Map use the bundled land outline) | holds (simulator, not a device) |
+| scale navigation from regions down to single configurations | `ScaleNav`: Macro → Global → Regional → Local → Configuration → Relation | holds |
+| run, pause, step and rewind to checkpoints | `ControlBar.tsx` (Run / Pause, Step, +10, Reset, speed, rewind select); checkpoints kept ≤ 12 | holds |
+| Timeline of descriptors and detected events | `TimelineView.tsx`: metric series and event markers | holds |
+| Philosophical Practice: concepts, claims, interventions; dependencies and consequences; apply | `PracticeView.tsx`; the three bundled worlds all carry a practice layer | holds |
+| Compare: branch, baseline and intervention side by side | `CompareView`; horizon ≤ 300 steps in this app | holds |
+| Save / Load compatible with the desktop runtime | `testDesktopSaveFileLoadsToTheIdenticalState` (a desktop Save file gives the byte-identical state; app Save loads on the desktop, `backend/tests/test_bridge.py`) | holds for the session file format |
+| export configurations, connections, events, metrics as CSV or JSON | the Export menu: configurations CSV, connections CSV, event log CSV / JSON, metrics CSV / JSON, scenario + interventions JSON; ≤ 25 MB | holds |
+| bundled worlds of up to 3,000 configurations | `SimulatorRuntime.swift` environment: 3,000 configurations, 48,000 connections | holds (the app also refuses larger ones with a message) |
+| "the research-results site (ziran-xeno-simulator.vercel.app), which the app links to" | the host answers `DEPLOYMENT_NOT_FOUND`; the working host is xeno-ziran.platodesignlab.com | **outdated — corrected above**; the shipped build's button opens the dead address |
+| "The interactive simulator ... runs locally" with no mention of which worlds are bundled | the app offers three worlds (600, 1,500, 3,000); the two 10,000-configuration worlds are listed but refused | added to the text above |
+
+Not checked: behaviour on a physical device (simulators only), other storefronts, the current App Store Connect field values.
 
 ## Version notes (1.0)
 
@@ -159,11 +183,13 @@ age assurance: not applicable. Expected rating: **4+**.
 >
 > Contact: llcterraio@gmail.com
 
-Smallest publication path: add this text as a static page to the existing research-results site (e.g.
-`/privacy`, a `site/privacy/index.html` in the static mirror, deployed with the existing Vercel workflow) — this
-needs the owner's go-ahead because it changes the production site; it was not deployed.
+The policy is published at https://xeno-ziran.platodesignlab.com/privacy/ (reachable and identical to `ios/AppStore/privacy-policy.html` on 2026-11-06).
 
 ## Screenshots
+
+**For version 1.0.1:** `ios/AppStore/screenshots-1.0.1/iphone-6.9/` — 9 images, 1320 × 2868 (iPhone 17 Pro Max simulator, taken 2026-11-06 from the 1.0.1 build 4 interface; 01 Network running, 03 Shape Space, 04 Address Space, 05 World Map, 06 3D Globe, 07 Timeline, 08 Compare, 09 Philosophical Practice, 10 About; 03–07 were taken a few minutes before a last CSS change that does not touch those views). **No new iPad set was made**: App Store Connect keeps the 1.0 screenshots of a version unless they are replaced, and the 1.0 iPad images below show the old layout.
+
+**Version 1.0 (history):**
 
 `ios/AppStore/screenshots/iphone-6.9/` (1320 × 2868, iPhone 17 Pro Max simulator) and
 `ios/AppStore/screenshots/ipad-13/` (2064 × 2752, iPad Pro 13-inch M5 simulator): 8 each — running, Network,

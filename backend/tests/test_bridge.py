@@ -170,3 +170,12 @@ def test_save_load_round_trip_through_the_bridge_and_with_a_desktop_save():
     # and a bridge save loads in the desktop service
     r = http.post("/api/sessions", json={"scenario": saved["scenario"], "applied": saved["applied"]})
     assert r.status_code == 200
+
+
+def test_health_reports_the_limits_the_runtime_enforces_for_the_about_screen(limits):
+    want = {"max_nodes": 123, "max_edges": 4567, "max_sessions": 2, "max_checkpoints": 12, "max_compare_horizon": 300,
+            "max_export_bytes": 25_000_000}
+    limits(**want)
+    status, h = call("GET", "/api/health")
+    assert status == 200 and h["native"] is True and h["max_nodes"] == 123
+    assert h["limits"] == want

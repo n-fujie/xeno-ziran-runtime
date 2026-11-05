@@ -1,7 +1,7 @@
 # XENO ZIRAN SIMULATOR for iOS — on-device runtime
 
 The iOS app runs the simulator **locally on the device**. It is not a client of a remote runtime: no server, socket,
-proxy or account is involved. The public research-results site (ziran-xeno-simulator.vercel.app) stays the
+proxy or account is involved. The public research-results site (xeno-ziran.platodesignlab.com) stays the
 place for published results; heavy experiments stay on the desktop runtime.
 
 ```
@@ -19,19 +19,30 @@ place for published results; heavy experiments stay on the desktop runtime.
 └───────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## Release status (2026-10-06, 20:55 JST)
+## Release status
 
-| item | state |
+**Public on the App Store (Japan): https://apps.apple.com/jp/app/xeno-ziran-simulator/id6819625252** — the page was read on
+2026-11-06: free, Education, age 4+, English, iPhone and iPad, iOS 17.0 or later, 64.7 MB, "no data collected", © 2026 NAOTO FUJIE.
+The store page shows no version; the owner's App Store Connect screen (2026-11-06) shows **version 1.0, "ready for distribution"**, and a new version 1.0.1 was then created there. The build number of the live 1.0 is not on that screen. Other storefronts were not checked.
+
+Facts recorded in this repository before the release (they are history, not the current state of the store):
+
+| item | state when recorded |
 |---|---|
 | App Store Connect app | XENO ZIRAN SIMULATOR, app ID 6819625252, bundle ID `io.platodesign.xenoziransimulator`, SKU `xeno-ziran-simulator-ios`, primary language English (U.K.) |
-| Builds | 1.0 (1): VALID, INTERNAL_ONLY (exported with `testFlightInternalTestingOnly`, cannot be submitted). 1.0 (2): VALID, APP_STORE_ELIGIBLE. **1.0 (3)** (owner's Z logo as app icon): VALID, APP_STORE_ELIGIBLE, attached to version 1.0 |
-| Version 1.0 metadata (set via API) | description, keywords, promotional text, support/marketing URL, copyright, subtitle, privacy-policy URL, categories Education/Reference, content rights, age rating (all none), review contact + notes, free price, all 175 territories, 8 iPhone 6.9" + 8 iPad 13" screenshots |
-| Privacy policy | https://ziran-xeno-simulator.vercel.app/privacy/ (source `ios/AppStore/privacy-policy.html`, kept by `export_static.py`) |
-| Still to do in App Store Connect (no API) | App Privacy questionnaire → "No, we do not collect data" → Publish; then "Add for Review" / "Submit to App Review" |
-| Review | **not submitted** |
-| Signing | Apple Distribution: NAOTO FUJIE (4YPXSK4SM2), App Store profile; get-task-allow = false; all 57 frameworks distribution-signed |
+| Builds (2026-10-06) | 1.0 (1): INTERNAL_ONLY. 1.0 (2): APP_STORE_ELIGIBLE. 1.0 (3) (owner's Z logo as app icon): APP_STORE_ELIGIBLE, attached to version 1.0; `project.yml` still says `MARKETING_VERSION 1.0`, `CURRENT_PROJECT_VERSION 3` |
+| Submission | "submitted 2026-10-09, waiting for review" (the owner's report); no later state is recorded here |
+| Signing | Apple Distribution: NAOTO FUJIE (4YPXSK4SM2), App Store profile; get-task-allow = false |
 | Device coverage | simulators only; no physical device was available |
-| Further uploads | `sh ios/scripts/testflight.sh <next build number>` (4, 5, …) |
+
+**Changes since that build, not yet in any submitted build** (`feat/ios-refresh`): the app icon is the P/A mark (opaque 1024 px,
+white on black); a compact phone layout of the control bar (run controls on one row, speed and rewind on the next, the scenario
+menu, Save, Load and Export behind a "Session" button, the render / update rates hidden on a phone); a short header subtitle;
+an **About** screen (what runs on the device, the limits read from the running runtime, the other editions); and the
+**Research Results** button and the app's single allowed external host now point to https://xeno-ziran.platodesignlab.com —
+the address used by the shipped build, `ziran-xeno-simulator.vercel.app`, answered `DEPLOYMENT_NOT_FOUND` on 2026-11-06, so
+**the Research Results button of an already installed build opens a page that does not exist** until a new build is released.
+This branch is **1.0.1, build 4** (`project.yml`); upload with `sh ios/scripts/testflight.sh 4` (needs the owner's App Store Connect API key; never reuse a build number).
 
 Apple validation found two packaging defects, both fixed in `ios/scripts/install_runtime.sh`: the extension
 frameworks generated from BeeWare's template declared `CFBundlePackageType = APPL` (now `FMWK`), and numpy's

@@ -129,12 +129,25 @@ runtime** (configuration, intervention, execution, comparison, replay), the **re
 (`backend/experiments/`), and the **Philosophical Runtime** (philosophical analysis: claims and commitments as
 structured interventions). The Philosophical Runtime is one region of the simulator, not its enclosing category.
 
-The public deployment (https://ziran-xeno-simulator.vercel.app, built by `backend/scripts/export_static.py`) exposes
+The public deployment (https://xeno-ziran.platodesignlab.com, built by `backend/scripts/export_static.py`) exposes
 the read-only research-result layer at `/`, and the interactive simulator at `/app/`, which runs entirely in the
 visitor's browser tab (Pyodide in a Web Worker, no simulation server — [docs/WEB_RUNTIME.md](docs/WEB_RUNTIME.md); smaller
 workloads, results not bit-identical to the desktop). Full-size runs use the local server, or the device itself in the
-iOS app — [docs/IOS_APP.md](docs/IOS_APP.md)). The published result views are experimental and analytical
-outputs and should not be interpreted as real-world forecasts or predictive claims.
+iOS app — [docs/IOS_APP.md](docs/IOS_APP.md). The published result views are experimental and analytical
+outputs and should not be interpreted as real-world forecasts or predictive claims. (The earlier address
+`ziran-xeno-simulator.vercel.app` answered `DEPLOYMENT_NOT_FOUND` when checked on 2026-11-06.)
+
+### Editions: where each one runs (do not assume they are equivalent)
+
+| Edition | Runs | What it does | Limits and formats (from the code) |
+|---|---|---|---|
+| **iOS app** — [App Store (Japan)](https://apps.apple.com/jp/app/xeno-ziran-simulator/id6819625252), iPhone / iPad, iOS 17+ | on the device: embedded CPython + numpy running this engine; no server | the eight interactive views (Network, Shape Space, Address Space, World Map, 3D Globe, Timeline, Compare, Philosophical Practice), run / pause / step / rewind to checkpoints, Save / Load of session files, CSV / JSON export through the share sheet, an About screen | worlds of at most 3,000 configurations and 48,000 connections, 2 sessions, 12 checkpoints, comparisons of at most 300 steps, exports of at most 25 MB (`ios/XenoZiran/Runtime/SimulatorRuntime.swift`); no research-result views, no 3D Laboratory; the "Research Results" button opens the results site in the system browser |
+| **Browser Edition** (`/app/`) | in a browser tab: Pyodide (WebAssembly) in a Web Worker | the same interactive UI as the iOS app | smaller workloads than the desktop (`manifest.json` records the browser limits); results can differ from the desktop in the last digits; Save / Load / export are file downloads and uploads |
+| **Research results (read-only)** (`/`) | nowhere: static files | shows the published machine-readable experiment results | **runs no simulation**; formats are the exported result files |
+| **Local full runtime** | a local FastAPI backend and the web UI | every view of this repository, including the research layers, and full-size runs | limited by the machine; session files are the format the other editions load and save |
+
+The session file written by Save is the desktop runtime's format and is loaded by the iOS app (checked by
+`testDesktopSaveFileLoadsToTheIdenticalState`); that is a statement about this file format, not about the editions' features.
 
 It does not start from domains (people, markets, institutions, states…). It simulates domain-neutral operations —
 difference, connection, ignition, transition, retention, transformation, cut, penetration, return,

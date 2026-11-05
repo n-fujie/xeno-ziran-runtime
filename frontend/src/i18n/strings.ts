@@ -3,12 +3,12 @@
 const en = {
   title: 'XENO ZIRAN SIMULATOR',
   subtitle: 'Operational-shape simulation · interactive runtime (local server)',
-  subtitle_native: 'Operational-shape simulation · interactive runtime (on this device)',
+  subtitle_native: 'On-device simulation',
   footer: 'Explore possible transitions under intervention.',
   research_results: 'Research Results',
   footer_static: 'This public deployment presents experimental results; it does not make real-world predictive claims.',
   run: 'Run', pause: 'Pause', step: 'Step', reset: 'Reset', speed: 'speed', rewind: 'rewind', checkpoint: 'checkpoint',
-  save: 'Save', load: 'Load', export: 'Export', scenario: 'scenario',
+  save: 'Save', load: 'Load', export: 'Export', scenario: 'scenario', session: 'Session',
   run_pause: 'Run or pause the simulation', reset_hint: 'Rebuild the scenario from its seed',
   step_counter: 'current step', sim_rate: 'simulation steps per second', render_rate: 'rendering frames per second',
   ws_rate: 'WebSocket delta frames per second and bandwidth', connections: 'live connections',
@@ -24,6 +24,7 @@ const en = {
   view_ecosystem: 'XENO ECOSYSTEM',
   view_body: 'BODY / TOTAL OBSERVATION',
   view_study: 'Experiments',
+  view_about: 'About',
 };
 
 type Key = keyof typeof en;

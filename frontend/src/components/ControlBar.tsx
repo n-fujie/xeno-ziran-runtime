@@ -8,6 +8,22 @@ import { t } from '../i18n/strings';
 // glyph there too): the app's button is labelled by its word only
 const PAUSE = NATIVE ? '' : '❚❚ ';
 
+// On a phone the scenario menu, Save, Load and Export are behind one "Session" button, so that the picture is not pushed
+// off the screen by seven rows of controls (everything stays available; the wide layout shows them all inline).
+function useNarrow(): boolean {
+  const q = '(max-width: 700px)';
+  const [narrow, setNarrow] = useState(() => typeof matchMedia === 'function' && matchMedia(q).matches);
+  useEffect(() => {
+    if (typeof matchMedia !== 'function') return;
+    const m = matchMedia(q);
+    const on = () => setNarrow(m.matches);
+    on();
+    m.addEventListener('change', on);
+    return () => m.removeEventListener('change', on);
+  }, []);
+  return narrow;
+}
+
 export default function ControlBar() {
   const info = useSim((s) => s.info);
   const status = useSim((s) => s.status);
@@ -20,6 +36,8 @@ export default function ControlBar() {
   const openSaved = useSim((s) => s.openSaved);
   const [samples, setSamples] = useState<{ id: string; name: string; configurations: number }[]>([]);
   const [speed, setSpeed] = useState(20);
+  const narrow = useNarrow();
+  const [sessionOpen, setSessionOpen] = useState(false);
 
   useEffect(() => { void api.scenarios().then(setSamples); }, []);
   const [maxNodes, setMaxNodes] = useState<number | null>(null);
@@ -58,12 +76,14 @@ export default function ControlBar() {
       <div className="group stats mono">
         <span title={t('step_counter')}>t {status.t.toLocaleString()}</span>
         <span title={t('sim_rate')}>{status.steps_per_second.toFixed(0)} steps/s</span>
-        <span title={t('render_rate')}>{fps} fps</span>
-        <span title={t('ws_rate')}>{stream.framesPerSec.toFixed(0)} upd/s · {(stream.bytesPerSec / 1024).toFixed(0)} KiB/s</span>
+        <span className="dev" title={t('render_rate')}>{fps} fps</span>
+        <span className="dev" title={t('ws_rate')}>{stream.framesPerSec.toFixed(0)} upd/s · {(stream.bytesPerSec / 1024).toFixed(0)} KiB/s</span>
         <span title={t('connections')}>{status.connections.toLocaleString()} conn</span>
         <span className={connected ? 'ok' : 'warn'}>{connected ? '●' : '○'}</span>
       </div>
-      <div className="group right">
+      {narrow && <button className={`session-toggle${sessionOpen ? ' on' : ''}`} aria-expanded={sessionOpen} onClick={() => setSessionOpen((v) => !v)}>
+        {t('session')} {sessionOpen ? '▴' : '▾'}</button>}
+      {(!narrow || sessionOpen) && <div className="group right session">
         <select value="" onChange={(e) => { if (e.target.value) void open(e.target.value); }}>
           <option value="">{t('scenario')}: {info.scenario.name}</option>
           {samples.map((s) => {
@@ -90,7 +110,7 @@ export default function ControlBar() {
           }} />
         </label>
         <ExportMenu sid={info.id} />
-      </div>
+      </div>}
     </div>
   );
 }

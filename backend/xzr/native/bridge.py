@@ -78,7 +78,9 @@ def _q(query: dict, key: str, default: Any, cast: type = str) -> Any:
 # ------------------------------------------------------------------------------------------------ handlers
 def _health(_q: dict, _b: Any) -> dict:
     return {"ok": True, "version": __version__, "sessions": len(SESSIONS), "public": False, "native": True,
-            "max_nodes": LIMITS.max_nodes}
+            "max_nodes": LIMITS.max_nodes,
+            "limits": {k: getattr(LIMITS, k) for k in ("max_nodes", "max_edges", "max_sessions", "max_checkpoints",
+                                                        "max_compare_horizon", "max_export_bytes")}}
 
 
 def _scenarios(_q: dict, _b: Any) -> list[dict]:

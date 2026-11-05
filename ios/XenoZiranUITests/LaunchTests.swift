@@ -3,7 +3,7 @@ import XCTest
 /// The interface end to end: launch, the runtime builds a session, every interactive view opens and renders.
 final class LaunchTests: XCTestCase {
     static let views = ["Network", "Shape Space", "Address Space", "World Map", "3D Globe", "Timeline", "Compare",
-                         "Philosophical Practice"]
+                         "Philosophical Practice", "About"]
 
     override func setUp() {
         continueAfterFailure = true
@@ -46,6 +46,23 @@ final class LaunchTests: XCTestCase {
             shot(app, String(format: "%02d-%@", i + 2, v.lowercased().replacingOccurrences(of: " ", with: "-")))
         }
         XCTAssertTrue(web.buttons.matching(NSPredicate(format: "label CONTAINS 'Research Results'")).firstMatch.exists)
+    }
+
+    /// On a phone the scenario menu, Save, Load and Export sit behind one "Session" button; on a wide screen they are inline.
+    @MainActor
+    func testSessionControlsAreReachable() throws {
+        let app = XCUIApplication()
+        app.launch()
+        let web = app.webViews.firstMatch
+        XCTAssertTrue(web.buttons.matching(NSPredicate(format: "label CONTAINS 'Run'")).firstMatch.waitForExistence(timeout: 240))
+        let toggle = web.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Session'")).firstMatch
+        if toggle.exists {
+            XCTAssertFalse(web.buttons["Save"].exists, "Save is behind the Session button on a phone")
+            toggle.tap()
+            shot(app, "session-open")
+        }
+        XCTAssertTrue(web.buttons["Save"].waitForExistence(timeout: 10))
+        XCTAssertTrue(web.buttons["Load"].exists || web.staticTexts["Load"].exists)
     }
 
     @MainActor

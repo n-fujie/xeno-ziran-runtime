@@ -2,6 +2,9 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { api, type CommandReport, type ConfigView, type PracticeView as PV } from '../api/client';
 import { useSim } from '../store/sim';
 
+// a touch screen opens its keyboard only when the field is tapped: focusing it on arrival covers half of a phone's screen
+const COARSE = typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches;
+
 export default function PracticeView() {
   const info = useSim((s) => s.info);
   const log = useSim((s) => s.consoleLog);
@@ -53,7 +56,7 @@ export default function PracticeView() {
         </div>
         <form className="console-input" onSubmit={(ev) => { ev.preventDefault(); submit(text); }}>
           <span className="mono">›</span>
-          <input className="mono" value={text} placeholder="remove concept human" autoFocus spellCheck={false}
+          <input className="mono" value={text} placeholder="remove concept human" autoFocus={!COARSE} spellCheck={false}
             onChange={(e) => setText(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === 'ArrowUp' && hist.length) { const k = Math.min(hist.length - 1, hi + 1); setHi(k); setText(hist[k]); e.preventDefault(); }

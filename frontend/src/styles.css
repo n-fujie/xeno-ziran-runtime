@@ -142,7 +142,7 @@ svg.cgraph { background: #030305; border: 1px solid var(--line); }
 .foot { display: flex; justify-content: space-between; gap: 12px; padding: 6px 16px; border-top: 1px solid var(--line); color: var(--dim); font-size: 11.5px; flex-wrap: wrap; }
 
 @media (max-width: 900px) {
-  main.with-side, .compare, .practice { grid-template-columns: 1fr; grid-template-rows: 1fr auto; }
+  main.with-side, .compare, .practice { grid-template-columns: minmax(0, 1fr); grid-template-rows: 1fr auto; }  /* minmax(0, …): a wide log line or diagram must not widen the page */
   .inspector, .shapepanel, .practice-side, .compare-side { border-left: none; border-top: 1px solid var(--line); max-height: 40vh; }
   .grid2, .cards { grid-template-columns: 1fr; }
   .controlbar .right { margin-left: 0; }
@@ -232,6 +232,19 @@ table.matrix td.clickable-cell:hover { background: #111116; }
      past its edge */
   .controlbar .group { flex-wrap: wrap; min-width: 0; max-width: 100%; }
   .controlbar select { max-width: 100%; min-width: 0; text-overflow: ellipsis; }
+  /* run controls on one row, speed and rewind on the next, the counters on one short line; the runtime
+     diagnostics (render and update rates) and the session menu stay on the wide layout / behind "Session" */
+  .controlbar { gap: 6px 10px; padding: 6px 10px; }
+  .controlbar > .group:nth-child(1) { flex: 1 1 100%; }
+  .controlbar > .group:nth-child(1) button { flex: 1 1 0; }
+  .controlbar > .group:nth-child(2) { flex: 1 1 55%; }
+  .controlbar > .group:nth-child(2) input[type=range] { flex: 1 1 auto; min-width: 0; }
+  .controlbar > .group:nth-child(3) { flex: 0 0 auto; }
+  .controlbar .stats { flex: 1 1 100%; gap: 10px; }
+  .controlbar .stats .dev { display: none; }
+  .controlbar .session-toggle { margin-left: auto; }
+  .controlbar .session { flex: 1 1 100%; margin-left: 0; }
+  .controlbar .session select { flex: 1 1 100%; }
   .stage { height: 62vh; min-height: 0; }
 }
 /* the iOS app draws to the bottom edge: keep the footer clear of the home indicator */
