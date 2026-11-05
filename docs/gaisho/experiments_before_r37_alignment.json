@@ -1,0 +1,6045 @@
+{
+ "domains": {
+  "001-knowledge": {
+   "attribution_tests": [
+    {
+     "attribution": "UNRESOLVED",
+     "condition": "accidental correct: base-rate guess",
+     "criterion": {
+      "effect_E_min": 0.5,
+      "effect_S_max": 0.2,
+      "stability_min": 0.7
+     },
+     "operational_test": "CRITERION_NEGATIVE",
+     "why": "the effect of the evidence is below 0.5; the correctness under do(W) is below 0.7"
+    },
+    {
+     "attribution": "UNRESOLVED",
+     "condition": "accidental correct: coincidental cue",
+     "criterion": {
+      "effect_E_min": 0.5,
+      "effect_S_max": 0.2,
+      "stability_min": 0.7
+     },
+     "operational_test": "CRITERION_NEGATIVE",
+     "why": "the effect of the evidence is below 0.5; the effect of the coincidental cue is above 0.2; the correctness under do(W) is below 0.7"
+    },
+    {
+     "attribution": "UNRESOLVED",
+     "condition": "ground-responsive judgement",
+     "criterion": {
+      "effect_E_min": 0.5,
+      "effect_S_max": 0.2,
+      "stability_min": 0.7
+     },
+     "operational_test": "NOT_NEGATED",
+     "why": "the operational criterion was not negated; this is not an attribution"
+    },
+    {
+     "attribution": "UNRESOLVED",
+     "condition": "misjudgement: miscalibrated reading",
+     "criterion": {
+      "effect_E_min": 0.5,
+      "effect_S_max": 0.2,
+      "stability_min": 0.7
+     },
+     "operational_test": "NOT_NEGATED",
+     "why": "the operational criterion was not negated; this is not an attribution"
+    },
+    {
+     "attribution": "UNRESOLVED",
+     "condition": "correction and reconfiguration (feedback on)",
+     "criterion": {
+      "effect_E_min": 0.5,
+      "effect_S_max": 0.2,
+      "stability_min": 0.7
+     },
+     "operational_test": "NOT_NEGATED",
+     "why": "the operational criterion was not negated; this is not an attribution"
+    },
+    {
+     "attribution": "UNRESOLVED",
+     "condition": "no correction (feedback off)",
+     "criterion": {
+      "effect_E_min": 0.5,
+      "effect_S_max": 0.2,
+      "stability_min": 0.7
+     },
+     "operational_test": "CRITERION_NEGATIVE",
+     "why": "the effect of the evidence is below 0.5; the effect of the coincidental cue is above 0.2; the correctness under do(W) is below 0.7"
+    }
+   ],
+   "axes": {
+    "x": "evidence E (do)",
+    "y": "coincidental cue S (do)"
+   },
+   "digest": "dae10f63af66751de7d2c1e5b6c89bb3330cb1411f9ae0a04bc9e598a5c1ed71",
+   "executed": true,
+   "figure_kind": "EXECUTED_COMPUTATIONAL_EXPERIMENT",
+   "levels": {
+    "accidental correct: base-rate guess": {
+     "conceptual_operational_shape": {
+      "evidence": [],
+      "level": "conceptual_operational_shape",
+      "note": "",
+      "state": "NOT_MODELLED"
+     },
+     "gaisho_attribution": {
+      "evidence": [],
+      "level": "gaisho_attribution",
+      "note": "no independent evidence (operational differences are not evidence of a Gaisho)",
+      "state": "UNRESOLVED"
+     },
+     "gaisho_operational_shape": {
+      "evidence": [],
+      "level": "gaisho_operational_shape",
+      "note": "no bearer and no historical interval: a synthetic operation has neither, so it is not a candidate",
+      "state": "NOT_ESTABLISHED"
+     },
+     "operational_shape": {
+      "evidence": [],
+      "level": "operational_shape",
+      "note": "",
+      "state": "RECONSTRUCTED"
+     },
+     "real_operation": {
+      "evidence": [],
+      "level": "real_operation",
+      "note": "",
+      "state": "EXECUTED_IN_MODEL"
+     }
+    },
+    "accidental correct: coincidental cue": {
+     "conceptual_operational_shape": {
+      "evidence": [],
+      "level": "conceptual_operational_shape",
+      "note": "",
+      "state": "NOT_MODELLED"
+     },
+     "gaisho_attribution": {
+      "evidence": [],
+      "level": "gaisho_attribution",
+      "note": "no independent evidence (operational differences are not evidence of a Gaisho)",
+      "state": "UNRESOLVED"
+     },
+     "gaisho_operational_shape": {
+      "evidence": [],
+      "level": "gaisho_operational_shape",
+      "note": "no bearer and no historical interval: a synthetic operation has neither, so it is not a candidate",
+      "state": "NOT_ESTABLISHED"
+     },
+     "operational_shape": {
+      "evidence": [],
+      "level": "operational_shape",
+      "note": "",
+      "state": "RECONSTRUCTED"
+     },
+     "real_operation": {
+      "evidence": [],
+      "level": "real_operation",
+      "note": "",
+      "state": "EXECUTED_IN_MODEL"
+     }
+    },
+    "correction and reconfiguration (feedback on)": {
+     "conceptual_operational_shape": {
+      "evidence": [],
+      "level": "conceptual_operational_shape",
+      "note": "",
+      "state": "NOT_MODELLED"
+     },
+     "gaisho_attribution": {
+      "evidence": [],
+      "level": "gaisho_attribution",
+      "note": "no independent evidence (operational differences are not evidence of a Gaisho)",
+      "state": "UNRESOLVED"
+     },
+     "gaisho_operational_shape": {
+      "evidence": [],
+      "level": "gaisho_operational_shape",
+      "note": "no bearer and no historical interval: a synthetic operation has neither, so it is not a candidate",
+      "state": "NOT_ESTABLISHED"
+     },
+     "operational_shape": {
+      "evidence": [],
+      "level": "operational_shape",
+      "note": "",
+      "state": "RECONSTRUCTED"
+     },
+     "real_operation": {
+      "evidence": [],
+      "level": "real_operation",
+      "note": "",
+      "state": "EXECUTED_IN_MODEL"
+     }
+    },
+    "ground-responsive judgement": {
+     "conceptual_operational_shape": {
+      "evidence": [],
+      "level": "conceptual_operational_shape",
+      "note": "",
+      "state": "NOT_MODELLED"
+     },
+     "gaisho_attribution": {
+      "evidence": [],
+      "level": "gaisho_attribution",
+      "note": "no independent evidence (operational differences are not evidence of a Gaisho)",
+      "state": "UNRESOLVED"
+     },
+     "gaisho_operational_shape": {
+      "evidence": [],
+      "level": "gaisho_operational_shape",
+      "note": "no bearer and no historical interval: a synthetic operation has neither, so it is not a candidate",
+      "state": "NOT_ESTABLISHED"
+     },
+     "operational_shape": {
+      "evidence": [],
+      "level": "operational_shape",
+      "note": "",
+      "state": "RECONSTRUCTED"
+     },
+     "real_operation": {
+      "evidence": [],
+      "level": "real_operation",
+      "note": "",
+      "state": "EXECUTED_IN_MODEL"
+     }
+    },
+    "misjudgement: miscalibrated reading": {
+     "conceptual_operational_shape": {
+      "evidence": [],
+      "level": "conceptual_operational_shape",
+      "note": "",
+      "state": "NOT_MODELLED"
+     },
+     "gaisho_attribution": {
+      "evidence": [],
+      "level": "gaisho_attribution",
+      "note": "no independent evidence (operational differences are not evidence of a Gaisho)",
+      "state": "UNRESOLVED"
+     },
+     "gaisho_operational_shape": {
+      "evidence": [],
+      "level": "gaisho_operational_shape",
+      "note": "no bearer and no historical interval: a synthetic operation has neither, so it is not a candidate",
+      "state": "NOT_ESTABLISHED"
+     },
+     "operational_shape": {
+      "evidence": [],
+      "level": "operational_shape",
+      "note": "",
+      "state": "RECONSTRUCTED"
+     },
+     "real_operation": {
+      "evidence": [],
+      "level": "real_operation",
+      "note": "",
+      "state": "EXECUTED_IN_MODEL"
+     }
+    },
+    "no correction (feedback off)": {
+     "conceptual_operational_shape": {
+      "evidence": [],
+      "level": "conceptual_operational_shape",
+      "note": "",
+      "state": "NOT_MODELLED"
+     },
+     "gaisho_attribution": {
+      "evidence": [],
+      "level": "gaisho_attribution",
+      "note": "no independent evidence (operational differences are not evidence of a Gaisho)",
+      "state": "UNRESOLVED"
+     },
+     "gaisho_operational_shape": {
+      "evidence": [],
+      "level": "gaisho_operational_shape",
+      "note": "no bearer and no historical interval: a synthetic operation has neither, so it is not a candidate",
+      "state": "NOT_ESTABLISHED"
+     },
+     "operational_shape": {
+      "evidence": [],
+      "level": "operational_shape",
+      "note": "",
+      "state": "RECONSTRUCTED"
+     },
+     "real_operation": {
+      "evidence": [],
+      "level": "real_operation",
+      "note": "",
+      "state": "EXECUTED_IN_MODEL"
+     }
+    }
+   },
+   "limits": "Synthetic computational experiments with declared constants. A shape drawn from them is a projection of identified relations, not the complete acquisition of any real operation; nothing here shows anything about human neural activity, the formation of a real Gaisho, or a universal philosophical law.",
+   "model_version": "gaisho-lab/1",
+   "models": {
+    "digest": "54dbdd1fe325c8c6f8d82c0b020cb2e8f13b18ae7ab66d8a2ef5155f80c3982d",
+    "rows": [
+     {
+      "condition": "accidental correct: base-rate guess",
+      "verdicts": [
+       {
+        "competitor": "M0 (reliability only)",
+        "error_difference": {
+         "ci95": [
+          -0.0020723480166741325,
+          -0.00018435254938914392
+         ],
+         "detected": true,
+         "mean": -0.0011283502830316382,
+         "n": 20,
+         "sd": 0.0020170502656764048,
+         "se": 0.0004510261508086452
+        },
+        "errors": {
+         "CAND": 0.043261537485270826,
+         "M0": 0.0421331872022392,
+         "M1": 0.047546056620149615
+        },
+        "margin": 0.03,
+        "verdict": "REDUNDANT"
+       },
+       {
+        "competitor": "M1 (static causal model)",
+        "error_difference": {
+         "ci95": [
+          0.0011769512445782343,
+          0.00739208702517933
+         ],
+         "detected": true,
+         "mean": 0.004284519134878782,
+         "n": 20,
+         "sd": 0.006639974245014463,
+         "se": 0.0014847433780700182
+        },
+        "errors": {
+         "CAND": 0.043261537485270826,
+         "M0": 0.0421331872022392,
+         "M1": 0.047546056620149615
+        },
+        "margin": 0.03,
+        "verdict": "REDUNDANT"
+       }
+      ]
+     },
+     {
+      "condition": "accidental correct: coincidental cue",
+      "verdicts": [
+       {
+        "competitor": "M0 (reliability only)",
+        "error_difference": {
+         "ci95": [
+          -0.13814261614668827,
+          -0.12949820883275986
+         ],
+         "detected": true,
+         "mean": -0.13382041248972407,
+         "n": 20,
+         "sd": 0.009235299751142052,
+         "se": 0.002065075803614052
+        },
+        "errors": {
+         "CAND": 0.5425716369075425,
+         "M0": 0.4087512244178185,
+         "M1": 0.04964424339261678
+        },
+        "margin": 0.03,
+        "verdict": "HARMFUL"
+       },
+       {
+        "competitor": "M1 (static causal model)",
+        "error_difference": {
+         "ci95": [
+          -0.4990735974329627,
+          -0.48678118959688904
+         ],
+         "detected": true,
+         "mean": -0.49292739351492587,
+         "n": 20,
+         "sd": 0.013132661026570399,
+         "se": 0.002936552278087358
+        },
+        "errors": {
+         "CAND": 0.5425716369075425,
+         "M0": 0.4087512244178185,
+         "M1": 0.04964424339261678
+        },
+        "margin": 0.03,
+        "verdict": "HARMFUL"
+       }
+      ]
+     },
+     {
+      "condition": "ground-responsive judgement",
+      "verdicts": [
+       {
+        "competitor": "M0 (reliability only)",
+        "error_difference": {
+         "ci95": [
+          0.36019852511946227,
+          0.3644835023331522
+         ],
+         "detected": true,
+         "mean": 0.3623410137263072,
+         "n": 20,
+         "sd": 0.004577878801647495,
+         "se": 0.0010236448193239075
+        },
+        "errors": {
+         "CAND": 0.06722059107207014,
+         "M0": 0.42956160479837735,
+         "M1": 0.07190825832683609
+        },
+        "margin": 0.03,
+        "verdict": "NON_REDUNDANT"
+       },
+       {
+        "competitor": "M1 (static causal model)",
+        "error_difference": {
+         "ci95": [
+          0.0017941548011957014,
+          0.007581179708336178
+         ],
+         "detected": true,
+         "mean": 0.00468766725476594,
+         "n": 20,
+         "sd": 0.006182599655924756,
+         "se": 0.0013824713108314564
+        },
+        "errors": {
+         "CAND": 0.06722059107207014,
+         "M0": 0.42956160479837735,
+         "M1": 0.07190825832683609
+        },
+        "margin": 0.03,
+        "verdict": "REDUNDANT"
+       }
+      ]
+     },
+     {
+      "condition": "misjudgement: miscalibrated reading",
+      "verdicts": [
+       {
+        "competitor": "M0 (reliability only)",
+        "error_difference": {
+         "ci95": [
+          0.3049272961226156,
+          0.31180952973718734
+         ],
+         "detected": true,
+         "mean": 0.30836841292990147,
+         "n": 20,
+         "sd": 0.007352671858201888,
+         "se": 0.0016441074091189116
+        },
+        "errors": {
+         "CAND": 0.10226520778017296,
+         "M0": 0.4106336207100744,
+         "M1": 0.104581366467877
+        },
+        "margin": 0.03,
+        "verdict": "NON_REDUNDANT"
+       },
+       {
+        "competitor": "M1 (static causal model)",
+        "error_difference": {
+         "ci95": [
+          0.0009102629503043884,
+          0.0037220544251036812
+         ],
+         "detected": true,
+         "mean": 0.002316158687704035,
+         "n": 20,
+         "sd": 0.0030039927741068355,
+         "se": 0.0006717132046821054
+        },
+        "errors": {
+         "CAND": 0.10226520778017296,
+         "M0": 0.4106336207100744,
+         "M1": 0.104581366467877
+        },
+        "margin": 0.03,
+        "verdict": "REDUNDANT"
+       }
+      ]
+     },
+     {
+      "condition": "correction and reconfiguration (feedback on)",
+      "verdicts": [
+       {
+        "competitor": "M0 (reliability only)",
+        "error_difference": {
+         "ci95": [
+          0.25944286599958766,
+          0.28848453215526393
+         ],
+         "detected": true,
+         "mean": 0.2739636990774258,
+         "n": 20,
+         "sd": 0.031026822601025857,
+         "se": 0.006937808446172065
+        },
+        "errors": {
+         "CAND": 0.12743489640189656,
+         "M0": 0.4013985954793224,
+         "M1": 0.10491702034639061
+        },
+        "margin": 0.03,
+        "verdict": "NON_REDUNDANT"
+       },
+       {
+        "competitor": "M1 (static causal model)",
+        "error_difference": {
+         "ci95": [
+          -0.02820624316538896,
+          -0.01682950894562299
+         ],
+         "detected": true,
+         "mean": -0.022517876055505974,
+         "n": 20,
+         "sd": 0.012154396119132698,
+         "se": 0.0027178055947840343
+        },
+        "errors": {
+         "CAND": 0.12743489640189656,
+         "M0": 0.4013985954793224,
+         "M1": 0.10491702034639061
+        },
+        "margin": 0.03,
+        "verdict": "REDUNDANT"
+       }
+      ]
+     },
+     {
+      "condition": "no correction (feedback off)",
+      "verdicts": [
+       {
+        "competitor": "M0 (reliability only)",
+        "error_difference": {
+         "ci95": [
+          -0.14606444229614213,
+          -0.1395117853005955
+         ],
+         "detected": true,
+         "mean": -0.1427881137983688,
+         "n": 20,
+         "sd": 0.007000566877822179,
+         "se": 0.0015653743419843857
+        },
+        "errors": {
+         "CAND": 0.5396833033950312,
+         "M0": 0.39689518959666237,
+         "M1": 0.06410568861774149
+        },
+        "margin": 0.03,
+        "verdict": "HARMFUL"
+       },
+       {
+        "competitor": "M1 (static causal model)",
+        "error_difference": {
+         "ci95": [
+          -0.4831833143724366,
+          -0.46797191518214293
+         ],
+         "detected": true,
+         "mean": -0.47557761477728977,
+         "n": 20,
+         "sd": 0.016251181377153347,
+         "se": 0.003633874627399353
+        },
+        "errors": {
+         "CAND": 0.5396833033950312,
+         "M0": 0.39689518959666237,
+         "M1": 0.06410568861774149
+        },
+        "margin": 0.03,
+        "verdict": "HARMFUL"
+       }
+      ]
+     }
+    ],
+    "rule": "NON_REDUNDANT if the candidate's held-out error is lower than the competitor's by more than the margin (95% CI); REDUNDANT if the CI lies inside +/- margin; HARMFUL if the candidate is worse by more than the margin; otherwise UNRESOLVED",
+    "seeds": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20
+    ],
+    "unit": "one run per seed; paired over seeds"
+   },
+   "negative_results": [
+    {
+     "ci95": [
+      -0.015298114233586946,
+      0.007798114233586957
+     ],
+     "condition": "accidental correct: base-rate guess",
+     "kind": "NOT_DETECTED",
+     "mean": -0.003749999999999995,
+     "note": "no difference was detected: this is not shown to be zero",
+     "relation": "effect_E"
+    },
+    {
+     "ci95": [
+      -0.00748894375375864,
+      0.009412020676835563
+     ],
+     "condition": "accidental correct: base-rate guess",
+     "kind": "NOT_DETECTED",
+     "mean": 0.0009615384615384616,
+     "note": "no difference was detected: this is not shown to be zero",
+     "relation": "effect_S"
+    },
+    {
+     "ci95": [
+      -0.019256721596115852,
+      0.03925672159611583
+     ],
+     "condition": "accidental correct: base-rate guess",
+     "kind": "NOT_DETECTED",
+     "mean": 0.009999999999999992,
+     "note": "no difference was detected: this is not shown to be zero",
+     "relation": "shift_drop"
+    },
+    {
+     "ci95": [
+      -0.014870934476920235,
+      0.0177280773340631
+     ],
+     "condition": "accidental correct: base-rate guess",
+     "kind": "NOT_DETECTED",
+     "mean": 0.0014285714285714323,
+     "note": "no difference was detected: this is not shown to be zero",
+     "relation": "revision_E"
+    },
+    {
+     "ci95": [
+      -0.00491423135070337,
+      0.015875769812241827
+     ],
+     "condition": "accidental correct: base-rate guess",
+     "kind": "NOT_DETECTED",
+     "mean": 0.005480769230769229,
+     "note": "no difference was detected: this is not shown to be zero",
+     "relation": "revision_S"
+    },
+    {
+     "ci95": [
+      -0.0058459804803916065,
+      0.007769057403468568
+     ],
+     "condition": "accidental correct: coincidental cue",
+     "kind": "NOT_DETECTED",
+     "mean": 0.0009615384615384803,
+     "note": "no difference was detected: this is not shown to be zero",
+     "relation": "revision_S"
+    },
+    {
+     "ci95": [
+      -0.005448924794292497,
+      0.008525847871215575
+     ],
+     "condition": "ground-responsive judgement",
+     "kind": "NOT_DETECTED",
+     "mean": 0.0015384615384615385,
+     "note": "no difference was detected: this is not shown to be zero",
+     "relation": "effect_S"
+    },
+    {
+     "ci95": [
+      -0.036931487347142945,
+      0.04193148734714295
+     ],
+     "condition": "ground-responsive judgement",
+     "kind": "NOT_DETECTED",
+     "mean": 0.0025000000000000022,
+     "note": "no difference was detected: this is not shown to be zero",
+     "relation": "shift_drop"
+    },
+    {
+     "ci95": [
+      -0.0012126051229524792,
+      0.001212605122952457
+     ],
+     "condition": "ground-responsive judgement",
+     "kind": "NOT_DETECTED",
+     "mean": -1.1102230246251566e-17,
+     "note": "no difference was detected: this is not shown to be zero",
+     "relation": "revision_E"
+    },
+    {
+     "ci95": [
+      -0.008751716606313815,
+      0.010674793529390735
+     ],
+     "condition": "ground-responsive judgement",
+     "kind": "NOT_DETECTED",
+     "mean": 0.0009615384615384602,
+     "note": "no difference was detected: this is not shown to be zero",
+     "relation": "revision_S"
+    },
+    {
+     "ci95": [
+      -0.006834273135874085,
+      0.006641965443566393
+     ],
+     "condition": "misjudgement: miscalibrated reading",
+     "kind": "NOT_DETECTED",
+     "mean": -9.615384615384546e-05,
+     "note": "no difference was detected: this is not shown to be zero",
+     "relation": "effect_S"
+    },
+    {
+     "ci95": [
+      -0.03365729726211912,
+      0.0911572972621191
+     ],
+     "condition": "misjudgement: miscalibrated reading",
+     "kind": "NOT_DETECTED",
+     "mean": 0.02874999999999999,
+     "note": "no difference was detected: this is not shown to be zero",
+     "relation": "shift_drop"
+    },
+    {
+     "ci95": [
+      -0.0031851785714286014,
+      0.0035423214285714238
+     ],
+     "condition": "misjudgement: miscalibrated reading",
+     "kind": "NOT_DETECTED",
+     "mean": 0.00017857142857141128,
+     "note": "no difference was detected: this is not shown to be zero",
+     "relation": "revision_E"
+    },
+    {
+     "ci95": [
+      -0.011989530166602768,
+      0.004681837858910465
+     ],
+     "condition": "misjudgement: miscalibrated reading",
+     "kind": "NOT_DETECTED",
+     "mean": -0.003653846153846152,
+     "note": "no difference was detected: this is not shown to be zero",
+     "relation": "revision_S"
+    },
+    {
+     "ci95": [
+      -0.034579306024928584,
+      0.004222163167785724
+     ],
+     "condition": "no correction (feedback off)",
+     "kind": "NOT_DETECTED",
+     "mean": -0.01517857142857143,
+     "note": "no difference was detected: this is not shown to be zero",
+     "relation": "revision_E"
+    },
+    {
+     "ci95": [
+      -0.005478908741510895,
+      0.006632754895357077
+     ],
+     "condition": "no correction (feedback off)",
+     "kind": "NOT_DETECTED",
+     "mean": 0.0005769230769230915,
+     "note": "no difference was detected: this is not shown to be zero",
+     "relation": "revision_S"
+    },
+    {
+     "condition": "accidental correct: base-rate guess",
+     "kind": "CRITERION_NEGATIVE",
+     "why": "the effect of the evidence is below 0.5; the correctness under do(W) is below 0.7"
+    },
+    {
+     "condition": "accidental correct: coincidental cue",
+     "kind": "CRITERION_NEGATIVE",
+     "why": "the effect of the evidence is below 0.5; the effect of the coincidental cue is above 0.2; the correctness under do(W) is below 0.7"
+    },
+    {
+     "condition": "no correction (feedback off)",
+     "kind": "CRITERION_NEGATIVE",
+     "why": "the effect of the evidence is below 0.5; the effect of the coincidental cue is above 0.2; the correctness under do(W) is below 0.7"
+    },
+    {
+     "competitor": "M0 (reliability only)",
+     "condition": "accidental correct: base-rate guess",
+     "kind": "REDUNDANT",
+     "why": "the candidate construction (the response to the evidence alone) did not predict held-out interventions better than the competitor"
+    },
+    {
+     "competitor": "M1 (static causal model)",
+     "condition": "accidental correct: base-rate guess",
+     "kind": "REDUNDANT",
+     "why": "the candidate construction (the response to the evidence alone) did not predict held-out interventions better than the competitor"
+    },
+    {
+     "competitor": "M0 (reliability only)",
+     "condition": "accidental correct: coincidental cue",
+     "kind": "HARMFUL",
+     "why": "the candidate construction (the response to the evidence alone) did not predict held-out interventions better than the competitor"
+    },
+    {
+     "competitor": "M1 (static causal model)",
+     "condition": "accidental correct: coincidental cue",
+     "kind": "HARMFUL",
+     "why": "the candidate construction (the response to the evidence alone) did not predict held-out interventions better than the competitor"
+    },
+    {
+     "competitor": "M1 (static causal model)",
+     "condition": "ground-responsive judgement",
+     "kind": "REDUNDANT",
+     "why": "the candidate construction (the response to the evidence alone) did not predict held-out interventions better than the competitor"
+    },
+    {
+     "competitor": "M1 (static causal model)",
+     "condition": "misjudgement: miscalibrated reading",
+     "kind": "REDUNDANT",
+     "why": "the candidate construction (the response to the evidence alone) did not predict held-out interventions better than the competitor"
+    },
+    {
+     "competitor": "M1 (static causal model)",
+     "condition": "correction and reconfiguration (feedback on)",
+     "kind": "REDUNDANT",
+     "why": "the candidate construction (the response to the evidence alone) did not predict held-out interventions better than the competitor"
+    },
+    {
+     "competitor": "M0 (reliability only)",
+     "condition": "no correction (feedback off)",
+     "kind": "HARMFUL",
+     "why": "the candidate construction (the response to the evidence alone) did not predict held-out interventions better than the competitor"
+    },
+    {
+     "competitor": "M1 (static causal model)",
+     "condition": "no correction (feedback off)",
+     "kind": "HARMFUL",
+     "why": "the candidate construction (the response to the evidence alone) did not predict held-out interventions better than the competitor"
+    },
+    {
+     "domains_not_executed": [
+      "004-body"
+     ],
+     "kind": "NOT_DONE",
+     "what": "competing explanations beyond a reliability statistic and a static causal model (attention, memory, predictive processing, sensorimotor, cognitive appraisal, concept learning, SNN, dynamical systems, operational-shape analysis) were not run"
+    }
+   ],
+   "prohibited_inferences": [
+    {
+     "conclusion": "gaisho_fired",
+     "premise": "spike_fired",
+     "reason": "a spike firing is a firing of a neuron model; it is not the firing of a Gaisho"
+    },
+    {
+     "conclusion": "gaisho_established",
+     "premise": "concept_classification_succeeded",
+     "reason": "a successful conceptual classification does not establish a Gaisho"
+    },
+    {
+     "conclusion": "thought_established",
+     "premise": "ai_internal_state_changed",
+     "reason": "a change of the internal state of an AI does not establish thinking"
+    },
+    {
+     "conclusion": "gaisho_exists",
+     "premise": "shape_3d_complex",
+     "reason": "the complexity of a drawn shape is not evidence of a Gaisho"
+    },
+    {
+     "conclusion": "knowledge_established",
+     "premise": "accuracy_improved",
+     "reason": "an improved accuracy does not establish knowledge"
+    },
+    {
+     "conclusion": "judgement_about_object_true",
+     "premise": "gaisho_attribution_succeeded",
+     "reason": "the success of an attribution does not make the judgement about the object true"
+    },
+    {
+     "conclusion": "individual_gaisho_changed",
+     "premise": "institution_evaluation_changed",
+     "reason": "a change of an institution's evaluation is not a change of an individual's Gaisho"
+    },
+    {
+     "conclusion": "gaisho_attributed",
+     "premise": "operational_difference_found",
+     "reason": "an operational difference is not an attribution: the attribution needs independent evidence"
+    }
+   ],
+   "research_objects": {
+    "accidental correct: base-rate guess": {
+     "candidate": "the non-accidentality of a judgement (a candidate characteristic: it is not assumed to be a core, necessary or invariant)",
+     "candidate_core": [
+      "no candidate core is read from this condition"
+     ],
+     "characteristic_configuration": [
+      {
+       "relation": "effect_E",
+       "status": "IDENTIFIED",
+       "value": -0.004
+      },
+      {
+       "relation": "effect_S",
+       "status": "IDENTIFIED",
+       "value": 0.001
+      },
+      {
+       "relation": "stability_do_W",
+       "status": "IDENTIFIED",
+       "value": 0.506
+      },
+      {
+       "relation": "shift_drop",
+       "status": "IDENTIFIED",
+       "value": 0.01
+      },
+      {
+       "relation": "revision_E",
+       "status": "IDENTIFIED",
+       "value": 0.001
+      },
+      {
+       "relation": "revision_S",
+       "status": "IDENTIFIED",
+       "value": 0.005
+      }
+     ],
+     "competing_explanations": [
+      {
+       "condition": "accidental correct: base-rate guess",
+       "verdicts": [
+        {
+         "competitor": "M0 (reliability only)",
+         "error_difference": {
+          "ci95": [
+           -0.0020723480166741325,
+           -0.00018435254938914392
+          ],
+          "detected": true,
+          "mean": -0.0011283502830316382,
+          "n": 20,
+          "sd": 0.0020170502656764048,
+          "se": 0.0004510261508086452
+         },
+         "errors": {
+          "CAND": 0.043261537485270826,
+          "M0": 0.0421331872022392,
+          "M1": 0.047546056620149615
+         },
+         "margin": 0.03,
+         "verdict": "REDUNDANT"
+        },
+        {
+         "competitor": "M1 (static causal model)",
+         "error_difference": {
+          "ci95": [
+           0.0011769512445782343,
+           0.00739208702517933
+          ],
+          "detected": true,
+          "mean": 0.004284519134878782,
+          "n": 20,
+          "sd": 0.006639974245014463,
+          "se": 0.0014847433780700182
+         },
+         "errors": {
+          "CAND": 0.043261537485270826,
+          "M0": 0.0421331872022392,
+          "M1": 0.047546056620149615
+         },
+         "margin": 0.03,
+         "verdict": "REDUNDANT"
+        }
+       ]
+      }
+     ],
+     "history_and_reignition": [
+      {
+       "relation": "revision_E",
+       "value": 0.001
+      },
+      {
+       "relation": "revision_S",
+       "value": 0.005
+      }
+     ],
+     "id": "001/accidental correct: base-rate guess",
+     "ignition_conditions": [
+      "the evidence channel informative about the state and read by the agent (effect of E above 0.5)"
+     ],
+     "intervention_differences": [
+      {
+       "intervention": "do(E)",
+       "relation": "effect_E",
+       "value": -0.004
+      },
+      {
+       "intervention": "do(S)",
+       "relation": "effect_S",
+       "value": 0.001
+      },
+      {
+       "intervention": "do(W), cue decoupled",
+       "relation": "stability_do_W",
+       "value": 0.506
+      }
+     ],
+     "maintenance_conditions": [
+      "for the reconfiguring agent: the feedback on the true state; without it the cue dependence is kept"
+     ],
+     "relation_to_object": "the judgement is about a hidden state of the synthetic world; the agent reaches it only through an evidence channel (and, in some conditions, a coincidental cue)",
+     "structural_similarity": [
+      {
+       "a": "accidental correct: base-rate guess",
+       "b": "accidental correct: coincidental cue",
+       "relations_compared": 6,
+       "similarity": 0.7789688644688645
+      },
+      {
+       "a": "accidental correct: base-rate guess",
+       "b": "ground-responsive judgement",
+       "relations_compared": 6,
+       "similarity": 0.7754988553113554
+      },
+      {
+       "a": "accidental correct: base-rate guess",
+       "b": "misjudgement: miscalibrated reading",
+       "relations_compared": 6,
+       "similarity": 0.7882090201465202
+      },
+      {
+       "a": "accidental correct: base-rate guess",
+       "b": "correction and reconfiguration (feedback on)",
+       "relations_compared": 6,
+       "similarity": 0.4870224358974359
+      },
+      {
+       "a": "accidental correct: base-rate guess",
+       "b": "no correction (feedback off)",
+       "relations_compared": 6,
+       "similarity": 0.7512337454212453
+      }
+     ],
+     "transformation_expiry_conditions": [
+      {
+       "meaning": "the loss of correctness when the cue decouples from the state",
+       "relation": "shift_drop",
+       "value": 0.01
+      }
+     ],
+     "unresolved_attribution": "UNRESOLVED"
+    },
+    "accidental correct: coincidental cue": {
+     "candidate": "the non-accidentality of a judgement (a candidate characteristic: it is not assumed to be a core, necessary or invariant)",
+     "candidate_core": [
+      "no candidate core is read from this condition"
+     ],
+     "characteristic_configuration": [
+      {
+       "relation": "effect_E",
+       "status": "IDENTIFIED",
+       "value": -0.017
+      },
+      {
+       "relation": "effect_S",
+       "status": "IDENTIFIED",
+       "value": 0.955
+      },
+      {
+       "relation": "stability_do_W",
+       "status": "IDENTIFIED",
+       "value": 0.498
+      },
+      {
+       "relation": "shift_drop",
+       "status": "IDENTIFIED",
+       "value": 0.328
+      },
+      {
+       "relation": "revision_E",
+       "status": "IDENTIFIED",
+       "value": -0.028
+      },
+      {
+       "relation": "revision_S",
+       "status": "IDENTIFIED",
+       "value": 0.001
+      }
+     ],
+     "competing_explanations": [
+      {
+       "condition": "accidental correct: coincidental cue",
+       "verdicts": [
+        {
+         "competitor": "M0 (reliability only)",
+         "error_difference": {
+          "ci95": [
+           -0.13814261614668827,
+           -0.12949820883275986
+          ],
+          "detected": true,
+          "mean": -0.13382041248972407,
+          "n": 20,
+          "sd": 0.009235299751142052,
+          "se": 0.002065075803614052
+         },
+         "errors": {
+          "CAND": 0.5425716369075425,
+          "M0": 0.4087512244178185,
+          "M1": 0.04964424339261678
+         },
+         "margin": 0.03,
+         "verdict": "HARMFUL"
+        },
+        {
+         "competitor": "M1 (static causal model)",
+         "error_difference": {
+          "ci95": [
+           -0.4990735974329627,
+           -0.48678118959688904
+          ],
+          "detected": true,
+          "mean": -0.49292739351492587,
+          "n": 20,
+          "sd": 0.013132661026570399,
+          "se": 0.002936552278087358
+         },
+         "errors": {
+          "CAND": 0.5425716369075425,
+          "M0": 0.4087512244178185,
+          "M1": 0.04964424339261678
+         },
+         "margin": 0.03,
+         "verdict": "HARMFUL"
+        }
+       ]
+      }
+     ],
+     "history_and_reignition": [
+      {
+       "relation": "revision_E",
+       "value": -0.028
+      },
+      {
+       "relation": "revision_S",
+       "value": 0.001
+      }
+     ],
+     "id": "001/accidental correct: coincidental cue",
+     "ignition_conditions": [
+      "the evidence channel informative about the state and read by the agent (effect of E above 0.5)"
+     ],
+     "intervention_differences": [
+      {
+       "intervention": "do(E)",
+       "relation": "effect_E",
+       "value": -0.017
+      },
+      {
+       "intervention": "do(S)",
+       "relation": "effect_S",
+       "value": 0.955
+      },
+      {
+       "intervention": "do(W), cue decoupled",
+       "relation": "stability_do_W",
+       "value": 0.498
+      }
+     ],
+     "maintenance_conditions": [
+      "for the reconfiguring agent: the feedback on the true state; without it the cue dependence is kept"
+     ],
+     "relation_to_object": "the judgement is about a hidden state of the synthetic world; the agent reaches it only through an evidence channel (and, in some conditions, a coincidental cue)",
+     "structural_similarity": [
+      {
+       "a": "accidental correct: base-rate guess",
+       "b": "accidental correct: coincidental cue",
+       "relations_compared": 6,
+       "similarity": 0.7789688644688645
+      },
+      {
+       "a": "accidental correct: coincidental cue",
+       "b": "ground-responsive judgement",
+       "relations_compared": 6,
+       "similarity": 0.5566426282051282
+      },
+      {
+       "a": "accidental correct: coincidental cue",
+       "b": "misjudgement: miscalibrated reading",
+       "relations_compared": 6,
+       "similarity": 0.5753509615384615
+      },
+      {
+       "a": "accidental correct: coincidental cue",
+       "b": "correction and reconfiguration (feedback on)",
+       "relations_compared": 6,
+       "similarity": 0.35144001831501825
+      },
+      {
+       "a": "accidental correct: coincidental cue",
+       "b": "no correction (feedback off)",
+       "relations_compared": 6,
+       "similarity": 0.9571485805860807
+      }
+     ],
+     "transformation_expiry_conditions": [
+      {
+       "meaning": "the loss of correctness when the cue decouples from the state",
+       "relation": "shift_drop",
+       "value": 0.328
+      }
+     ],
+     "unresolved_attribution": "UNRESOLVED"
+    },
+    "correction and reconfiguration (feedback on)": {
+     "candidate": "the non-accidentality of a judgement (a candidate characteristic: it is not assumed to be a core, necessary or invariant)",
+     "candidate_core": [
+      "the relations that differ from the accidental conditions: a large effect of the evidence, a small effect of the coincidental cue, correctness that holds under do(W) (an operational reading; whether a core exists is not decided)"
+     ],
+     "characteristic_configuration": [
+      {
+       "relation": "effect_E",
+       "status": "IDENTIFIED",
+       "value": 0.989
+      },
+      {
+       "relation": "effect_S",
+       "status": "IDENTIFIED",
+       "value": 0.155
+      },
+      {
+       "relation": "stability_do_W",
+       "status": "IDENTIFIED",
+       "value": 0.763
+      },
+      {
+       "relation": "shift_drop",
+       "status": "IDENTIFIED",
+       "value": 0.107
+      },
+      {
+       "relation": "revision_E",
+       "status": "IDENTIFIED",
+       "value": 0.78
+      },
+      {
+       "relation": "revision_S",
+       "status": "IDENTIFIED",
+       "value": -0.792
+      }
+     ],
+     "competing_explanations": [
+      {
+       "condition": "correction and reconfiguration (feedback on)",
+       "verdicts": [
+        {
+         "competitor": "M0 (reliability only)",
+         "error_difference": {
+          "ci95": [
+           0.25944286599958766,
+           0.28848453215526393
+          ],
+          "detected": true,
+          "mean": 0.2739636990774258,
+          "n": 20,
+          "sd": 0.031026822601025857,
+          "se": 0.006937808446172065
+         },
+         "errors": {
+          "CAND": 0.12743489640189656,
+          "M0": 0.4013985954793224,
+          "M1": 0.10491702034639061
+         },
+         "margin": 0.03,
+         "verdict": "NON_REDUNDANT"
+        },
+        {
+         "competitor": "M1 (static causal model)",
+         "error_difference": {
+          "ci95": [
+           -0.02820624316538896,
+           -0.01682950894562299
+          ],
+          "detected": true,
+          "mean": -0.022517876055505974,
+          "n": 20,
+          "sd": 0.012154396119132698,
+          "se": 0.0027178055947840343
+         },
+         "errors": {
+          "CAND": 0.12743489640189656,
+          "M0": 0.4013985954793224,
+          "M1": 0.10491702034639061
+         },
+         "margin": 0.03,
+         "verdict": "REDUNDANT"
+        }
+       ]
+      }
+     ],
+     "history_and_reignition": [
+      {
+       "relation": "revision_E",
+       "value": 0.78
+      },
+      {
+       "relation": "revision_S",
+       "value": -0.792
+      }
+     ],
+     "id": "001/correction and reconfiguration (feedback on)",
+     "ignition_conditions": [
+      "the evidence channel informative about the state and read by the agent (effect of E above 0.5)"
+     ],
+     "intervention_differences": [
+      {
+       "intervention": "do(E)",
+       "relation": "effect_E",
+       "value": 0.989
+      },
+      {
+       "intervention": "do(S)",
+       "relation": "effect_S",
+       "value": 0.155
+      },
+      {
+       "intervention": "do(W), cue decoupled",
+       "relation": "stability_do_W",
+       "value": 0.763
+      }
+     ],
+     "maintenance_conditions": [
+      "for the reconfiguring agent: the feedback on the true state; without it the cue dependence is kept"
+     ],
+     "relation_to_object": "the judgement is about a hidden state of the synthetic world; the agent reaches it only through an evidence channel (and, in some conditions, a coincidental cue)",
+     "structural_similarity": [
+      {
+       "a": "accidental correct: base-rate guess",
+       "b": "correction and reconfiguration (feedback on)",
+       "relations_compared": 6,
+       "similarity": 0.4870224358974359
+      },
+      {
+       "a": "accidental correct: coincidental cue",
+       "b": "correction and reconfiguration (feedback on)",
+       "relations_compared": 6,
+       "similarity": 0.35144001831501825
+      },
+      {
+       "a": "ground-responsive judgement",
+       "b": "correction and reconfiguration (feedback on)",
+       "relations_compared": 6,
+       "similarity": 0.680779532967033
+      },
+      {
+       "a": "misjudgement: miscalibrated reading",
+       "b": "correction and reconfiguration (feedback on)",
+       "relations_compared": 6,
+       "similarity": 0.6959608516483515
+      },
+      {
+       "a": "correction and reconfiguration (feedback on)",
+       "b": "no correction (feedback off)",
+       "relations_compared": 6,
+       "similarity": 0.3942914377289376
+      }
+     ],
+     "transformation_expiry_conditions": [
+      {
+       "meaning": "the loss of correctness when the cue decouples from the state",
+       "relation": "shift_drop",
+       "value": 0.107
+      }
+     ],
+     "unresolved_attribution": "UNRESOLVED"
+    },
+    "ground-responsive judgement": {
+     "candidate": "the non-accidentality of a judgement (a candidate characteristic: it is not assumed to be a core, necessary or invariant)",
+     "candidate_core": [
+      "the relations that differ from the accidental conditions: a large effect of the evidence, a small effect of the coincidental cue, correctness that holds under do(W) (an operational reading; whether a core exists is not decided)"
+     ],
+     "characteristic_configuration": [
+      {
+       "relation": "effect_E",
+       "status": "IDENTIFIED",
+       "value": 0.999
+      },
+      {
+       "relation": "effect_S",
+       "status": "IDENTIFIED",
+       "value": 0.002
+      },
+      {
+       "relation": "stability_do_W",
+       "status": "IDENTIFIED",
+       "value": 0.836
+      },
+      {
+       "relation": "shift_drop",
+       "status": "IDENTIFIED",
+       "value": 0.003
+      },
+      {
+       "relation": "revision_E",
+       "status": "IDENTIFIED",
+       "value": -0.0
+      },
+      {
+       "relation": "revision_S",
+       "status": "IDENTIFIED",
+       "value": 0.001
+      }
+     ],
+     "competing_explanations": [
+      {
+       "condition": "ground-responsive judgement",
+       "verdicts": [
+        {
+         "competitor": "M0 (reliability only)",
+         "error_difference": {
+          "ci95": [
+           0.36019852511946227,
+           0.3644835023331522
+          ],
+          "detected": true,
+          "mean": 0.3623410137263072,
+          "n": 20,
+          "sd": 0.004577878801647495,
+          "se": 0.0010236448193239075
+         },
+         "errors": {
+          "CAND": 0.06722059107207014,
+          "M0": 0.42956160479837735,
+          "M1": 0.07190825832683609
+         },
+         "margin": 0.03,
+         "verdict": "NON_REDUNDANT"
+        },
+        {
+         "competitor": "M1 (static causal model)",
+         "error_difference": {
+          "ci95": [
+           0.0017941548011957014,
+           0.007581179708336178
+          ],
+          "detected": true,
+          "mean": 0.00468766725476594,
+          "n": 20,
+          "sd": 0.006182599655924756,
+          "se": 0.0013824713108314564
+         },
+         "errors": {
+          "CAND": 0.06722059107207014,
+          "M0": 0.42956160479837735,
+          "M1": 0.07190825832683609
+         },
+         "margin": 0.03,
+         "verdict": "REDUNDANT"
+        }
+       ]
+      }
+     ],
+     "history_and_reignition": [
+      {
+       "relation": "revision_E",
+       "value": -0.0
+      },
+      {
+       "relation": "revision_S",
+       "value": 0.001
+      }
+     ],
+     "id": "001/ground-responsive judgement",
+     "ignition_conditions": [
+      "the evidence channel informative about the state and read by the agent (effect of E above 0.5)"
+     ],
+     "intervention_differences": [
+      {
+       "intervention": "do(E)",
+       "relation": "effect_E",
+       "value": 0.999
+      },
+      {
+       "intervention": "do(S)",
+       "relation": "effect_S",
+       "value": 0.002
+      },
+      {
+       "intervention": "do(W), cue decoupled",
+       "relation": "stability_do_W",
+       "value": 0.836
+      }
+     ],
+     "maintenance_conditions": [
+      "for the reconfiguring agent: the feedback on the true state; without it the cue dependence is kept"
+     ],
+     "relation_to_object": "the judgement is about a hidden state of the synthetic world; the agent reaches it only through an evidence channel (and, in some conditions, a coincidental cue)",
+     "structural_similarity": [
+      {
+       "a": "accidental correct: base-rate guess",
+       "b": "ground-responsive judgement",
+       "relations_compared": 6,
+       "similarity": 0.7754988553113554
+      },
+      {
+       "a": "accidental correct: coincidental cue",
+       "b": "ground-responsive judgement",
+       "relations_compared": 6,
+       "similarity": 0.5566426282051282
+      },
+      {
+       "a": "ground-responsive judgement",
+       "b": "misjudgement: miscalibrated reading",
+       "relations_compared": 6,
+       "similarity": 0.9791488095238096
+      },
+      {
+       "a": "ground-responsive judgement",
+       "b": "correction and reconfiguration (feedback on)",
+       "relations_compared": 6,
+       "similarity": 0.680779532967033
+      },
+      {
+       "a": "ground-responsive judgement",
+       "b": "no correction (feedback off)",
+       "relations_compared": 6,
+       "similarity": 0.5993658424908426
+      }
+     ],
+     "transformation_expiry_conditions": [
+      {
+       "meaning": "the loss of correctness when the cue decouples from the state",
+       "relation": "shift_drop",
+       "value": 0.003
+      }
+     ],
+     "unresolved_attribution": "UNRESOLVED"
+    },
+    "misjudgement: miscalibrated reading": {
+     "candidate": "the non-accidentality of a judgement (a candidate characteristic: it is not assumed to be a core, necessary or invariant)",
+     "candidate_core": [
+      "the relations that differ from the accidental conditions: a large effect of the evidence, a small effect of the coincidental cue, correctness that holds under do(W) (an operational reading; whether a core exists is not decided)"
+     ],
+     "characteristic_configuration": [
+      {
+       "relation": "effect_E",
+       "status": "IDENTIFIED",
+       "value": 0.995
+      },
+      {
+       "relation": "effect_S",
+       "status": "IDENTIFIED",
+       "value": -0.0
+      },
+      {
+       "relation": "stability_do_W",
+       "status": "IDENTIFIED",
+       "value": 0.748
+      },
+      {
+       "relation": "shift_drop",
+       "status": "IDENTIFIED",
+       "value": 0.029
+      },
+      {
+       "relation": "revision_E",
+       "status": "IDENTIFIED",
+       "value": 0.0
+      },
+      {
+       "relation": "revision_S",
+       "status": "IDENTIFIED",
+       "value": -0.004
+      }
+     ],
+     "competing_explanations": [
+      {
+       "condition": "misjudgement: miscalibrated reading",
+       "verdicts": [
+        {
+         "competitor": "M0 (reliability only)",
+         "error_difference": {
+          "ci95": [
+           0.3049272961226156,
+           0.31180952973718734
+          ],
+          "detected": true,
+          "mean": 0.30836841292990147,
+          "n": 20,
+          "sd": 0.007352671858201888,
+          "se": 0.0016441074091189116
+         },
+         "errors": {
+          "CAND": 0.10226520778017296,
+          "M0": 0.4106336207100744,
+          "M1": 0.104581366467877
+         },
+         "margin": 0.03,
+         "verdict": "NON_REDUNDANT"
+        },
+        {
+         "competitor": "M1 (static causal model)",
+         "error_difference": {
+          "ci95": [
+           0.0009102629503043884,
+           0.0037220544251036812
+          ],
+          "detected": true,
+          "mean": 0.002316158687704035,
+          "n": 20,
+          "sd": 0.0030039927741068355,
+          "se": 0.0006717132046821054
+         },
+         "errors": {
+          "CAND": 0.10226520778017296,
+          "M0": 0.4106336207100744,
+          "M1": 0.104581366467877
+         },
+         "margin": 0.03,
+         "verdict": "REDUNDANT"
+        }
+       ]
+      }
+     ],
+     "history_and_reignition": [
+      {
+       "relation": "revision_E",
+       "value": 0.0
+      },
+      {
+       "relation": "revision_S",
+       "value": -0.004
+      }
+     ],
+     "id": "001/misjudgement: miscalibrated reading",
+     "ignition_conditions": [
+      "the evidence channel informative about the state and read by the agent (effect of E above 0.5)"
+     ],
+     "intervention_differences": [
+      {
+       "intervention": "do(E)",
+       "relation": "effect_E",
+       "value": 0.995
+      },
+      {
+       "intervention": "do(S)",
+       "relation": "effect_S",
+       "value": -0.0
+      },
+      {
+       "intervention": "do(W), cue decoupled",
+       "relation": "stability_do_W",
+       "value": 0.748
+      }
+     ],
+     "maintenance_conditions": [
+      "for the reconfiguring agent: the feedback on the true state; without it the cue dependence is kept"
+     ],
+     "relation_to_object": "the judgement is about a hidden state of the synthetic world; the agent reaches it only through an evidence channel (and, in some conditions, a coincidental cue)",
+     "structural_similarity": [
+      {
+       "a": "accidental correct: base-rate guess",
+       "b": "misjudgement: miscalibrated reading",
+       "relations_compared": 6,
+       "similarity": 0.7882090201465202
+      },
+      {
+       "a": "accidental correct: coincidental cue",
+       "b": "misjudgement: miscalibrated reading",
+       "relations_compared": 6,
+       "similarity": 0.5753509615384615
+      },
+      {
+       "a": "ground-responsive judgement",
+       "b": "misjudgement: miscalibrated reading",
+       "relations_compared": 6,
+       "similarity": 0.9791488095238096
+      },
+      {
+       "a": "misjudgement: miscalibrated reading",
+       "b": "correction and reconfiguration (feedback on)",
+       "relations_compared": 6,
+       "similarity": 0.6959608516483515
+      },
+      {
+       "a": "misjudgement: miscalibrated reading",
+       "b": "no correction (feedback off)",
+       "relations_compared": 6,
+       "similarity": 0.6182023809523809
+      }
+     ],
+     "transformation_expiry_conditions": [
+      {
+       "meaning": "the loss of correctness when the cue decouples from the state",
+       "relation": "shift_drop",
+       "value": 0.029
+      }
+     ],
+     "unresolved_attribution": "UNRESOLVED"
+    },
+    "no correction (feedback off)": {
+     "candidate": "the non-accidentality of a judgement (a candidate characteristic: it is not assumed to be a core, necessary or invariant)",
+     "candidate_core": [
+      "no candidate core is read from this condition"
+     ],
+     "characteristic_configuration": [
+      {
+       "relation": "effect_E",
+       "status": "IDENTIFIED",
+       "value": 0.194
+      },
+      {
+       "relation": "effect_S",
+       "status": "IDENTIFIED",
+       "value": 0.948
+      },
+      {
+       "relation": "stability_do_W",
+       "status": "IDENTIFIED",
+       "value": 0.52
+      },
+      {
+       "relation": "shift_drop",
+       "status": "IDENTIFIED",
+       "value": 0.323
+      },
+      {
+       "relation": "revision_E",
+       "status": "IDENTIFIED",
+       "value": -0.015
+      },
+      {
+       "relation": "revision_S",
+       "status": "IDENTIFIED",
+       "value": 0.001
+      }
+     ],
+     "competing_explanations": [
+      {
+       "condition": "no correction (feedback off)",
+       "verdicts": [
+        {
+         "competitor": "M0 (reliability only)",
+         "error_difference": {
+          "ci95": [
+           -0.14606444229614213,
+           -0.1395117853005955
+          ],
+          "detected": true,
+          "mean": -0.1427881137983688,
+          "n": 20,
+          "sd": 0.007000566877822179,
+          "se": 0.0015653743419843857
+         },
+         "errors": {
+          "CAND": 0.5396833033950312,
+          "M0": 0.39689518959666237,
+          "M1": 0.06410568861774149
+         },
+         "margin": 0.03,
+         "verdict": "HARMFUL"
+        },
+        {
+         "competitor": "M1 (static causal model)",
+         "error_difference": {
+          "ci95": [
+           -0.4831833143724366,
+           -0.46797191518214293
+          ],
+          "detected": true,
+          "mean": -0.47557761477728977,
+          "n": 20,
+          "sd": 0.016251181377153347,
+          "se": 0.003633874627399353
+         },
+         "errors": {
+          "CAND": 0.5396833033950312,
+          "M0": 0.39689518959666237,
+          "M1": 0.06410568861774149
+         },
+         "margin": 0.03,
+         "verdict": "HARMFUL"
+        }
+       ]
+      }
+     ],
+     "history_and_reignition": [
+      {
+       "relation": "revision_E",
+       "value": -0.015
+      },
+      {
+       "relation": "revision_S",
+       "value": 0.001
+      }
+     ],
+     "id": "001/no correction (feedback off)",
+     "ignition_conditions": [
+      "the evidence channel informative about the state and read by the agent (effect of E above 0.5)"
+     ],
+     "intervention_differences": [
+      {
+       "intervention": "do(E)",
+       "relation": "effect_E",
+       "value": 0.194
+      },
+      {
+       "intervention": "do(S)",
+       "relation": "effect_S",
+       "value": 0.948
+      },
+      {
+       "intervention": "do(W), cue decoupled",
+       "relation": "stability_do_W",
+       "value": 0.52
+      }
+     ],
+     "maintenance_conditions": [
+      "for the reconfiguring agent: the feedback on the true state; without it the cue dependence is kept"
+     ],
+     "relation_to_object": "the judgement is about a hidden state of the synthetic world; the agent reaches it only through an evidence channel (and, in some conditions, a coincidental cue)",
+     "structural_similarity": [
+      {
+       "a": "accidental correct: base-rate guess",
+       "b": "no correction (feedback off)",
+       "relations_compared": 6,
+       "similarity": 0.7512337454212453
+      },
+      {
+       "a": "accidental correct: coincidental cue",
+       "b": "no correction (feedback off)",
+       "relations_compared": 6,
+       "similarity": 0.9571485805860807
+      },
+      {
+       "a": "ground-responsive judgement",
+       "b": "no correction (feedback off)",
+       "relations_compared": 6,
+       "similarity": 0.5993658424908426
+      },
+      {
+       "a": "misjudgement: miscalibrated reading",
+       "b": "no correction (feedback off)",
+       "relations_compared": 6,
+       "similarity": 0.6182023809523809
+      },
+      {
+       "a": "correction and reconfiguration (feedback on)",
+       "b": "no correction (feedback off)",
+       "relations_compared": 6,
+       "similarity": 0.3942914377289376
+      }
+     ],
+     "transformation_expiry_conditions": [
+      {
+       "meaning": "the loss of correctness when the cue decouples from the state",
+       "relation": "shift_drop",
+       "value": 0.323
+      }
+     ],
+     "unresolved_attribution": "UNRESOLVED"
+    }
+   },
+   "result": {
+    "conditions": {
+     "accidental correct: base-rate guess": {
+      "accuracy": {
+       "mean": 0.8397500000000001,
+       "n": 20,
+       "sd": 0.021335354893252948,
+       "se": 0.004770730386539636
+      },
+      "accuracy_pre_shift": {
+       "mean": 0.8435,
+       "n": 20,
+       "sd": 0.028195744359743372,
+       "se": 0.006304760106459246
+      },
+      "operation_digest": "037ff6a3a0e746911078557ed1941d0a40cfbaa3a69023da0c5ccbec3082b840",
+      "relations": {
+       "effect_E": {
+        "ci95": [
+         -0.015298114233586946,
+         0.007798114233586957
+        ],
+        "n": 20,
+        "sd": 0.024674981785220557,
+        "se": 0.0055174936615322275,
+        "status": "IDENTIFIED",
+        "value": -0.003749999999999995
+       },
+       "effect_S": {
+        "ci95": [
+         -0.00748894375375864,
+         0.009412020676835563
+        ],
+        "n": 20,
+        "sd": 0.018056237626428412,
+        "se": 0.004037497475058338,
+        "status": "IDENTIFIED",
+        "value": 0.0009615384615384616
+       },
+       "revision_E": {
+        "ci95": [
+         -0.014870934476920235,
+         0.0177280773340631
+        ],
+        "n": 20,
+        "sd": 0.03482733225450419,
+        "se": 0.007787628239604237,
+        "status": "IDENTIFIED",
+        "value": 0.0014285714285714323
+       },
+       "revision_S": {
+        "ci95": [
+         -0.00491423135070337,
+         0.015875769812241827
+        ],
+        "n": 20,
+        "sd": 0.022211111253055495,
+        "se": 0.0049665554617642615,
+        "status": "IDENTIFIED",
+        "value": 0.005480769230769229
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.019256721596115852,
+         0.03925672159611583
+        ],
+        "n": 20,
+        "sd": 0.06251315650998679,
+        "se": 0.013978366744441396,
+        "status": "IDENTIFIED",
+        "value": 0.009999999999999992
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.49002340996054944,
+         0.5227265900394504
+        ],
+        "n": 20,
+        "sd": 0.0349386209922788,
+        "se": 0.007812513157883654,
+        "status": "IDENTIFIED",
+        "value": 0.5063749999999999
+       }
+      }
+     },
+     "accidental correct: coincidental cue": {
+      "accuracy": {
+       "mean": 0.6695,
+       "n": 20,
+       "sd": 0.017744532145216776,
+       "se": 0.003967798010563488
+      },
+      "accuracy_pre_shift": {
+       "mean": 0.84175,
+       "n": 20,
+       "sd": 0.021659749233130694,
+       "se": 0.004843267166087917
+      },
+      "operation_digest": "95de60c7845b7733ef22c26120b33f59b534faf534625be2b0c675952786b8e3",
+      "relations": {
+       "effect_E": {
+        "ci95": [
+         -0.031211611157141245,
+         -0.002002674557144467
+        ],
+        "n": 20,
+        "sd": 0.03120552689348991,
+        "se": 0.0069777679407541275,
+        "status": "IDENTIFIED",
+        "value": -0.016607142857142855
+       },
+       "effect_S": {
+        "ci95": [
+         0.9496622834893481,
+         0.9599531011260366
+        ],
+        "n": 20,
+        "sd": 0.010994251208642721,
+        "se": 0.002458389306423435,
+        "status": "IDENTIFIED",
+        "value": 0.9548076923076924
+       },
+       "revision_E": {
+        "ci95": [
+         -0.04585956595712934,
+         -0.010211862614299228
+        ],
+        "n": 20,
+        "sd": 0.038084418498000296,
+        "se": 0.008515934864507909,
+        "status": "IDENTIFIED",
+        "value": -0.028035714285714282
+       },
+       "revision_S": {
+        "ci95": [
+         -0.0058459804803916065,
+         0.007769057403468568
+        ],
+        "n": 20,
+        "sd": 0.014545700059506086,
+        "se": 0.0032525174113378344,
+        "status": "IDENTIFIED",
+        "value": 0.0009615384615384803
+       },
+       "shift_drop": {
+        "ci95": [
+         0.2780200643701489,
+         0.3769799356298511
+        ],
+        "n": 20,
+        "sd": 0.10572431876795126,
+        "se": 0.02364067636399958,
+        "status": "IDENTIFIED",
+        "value": 0.3275
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.4872993971034438,
+         0.5094506028965562
+        ],
+        "n": 20,
+        "sd": 0.02366536165168966,
+        "se": 0.005291735736529478,
+        "status": "IDENTIFIED",
+        "value": 0.49837499999999996
+       }
+      }
+     },
+     "correction and reconfiguration (feedback on)": {
+      "accuracy": {
+       "mean": 0.8831249999999999,
+       "n": 20,
+       "sd": 0.016381050509337716,
+       "se": 0.0036629142481736684
+      },
+      "accuracy_pre_shift": {
+       "mean": 0.9032500000000001,
+       "n": 20,
+       "sd": 0.015327563750522005,
+       "se": 0.003427347447562883
+      },
+      "operation_digest": "af1368107d0e9d2baa9615fbe1455afafac1966d2cb45c029f0803d0119bb1aa",
+      "relations": {
+       "effect_E": {
+        "ci95": [
+         0.98426673946006,
+         0.993590403397082
+        ],
+        "n": 20,
+        "sd": 0.009960987273074413,
+        "se": 0.0022273444665604648,
+        "status": "IDENTIFIED",
+        "value": 0.988928571428571
+       },
+       "effect_S": {
+        "ci95": [
+         0.1359744757009675,
+         0.1746024473759556
+        ],
+        "n": 20,
+        "sd": 0.04126840444252739,
+        "se": 0.009227895765644556,
+        "status": "IDENTIFIED",
+        "value": 0.15528846153846154
+       },
+       "revision_E": {
+        "ci95": [
+         0.7694649804848681,
+         0.7905350195151319
+        ],
+        "n": 20,
+        "sd": 0.02251029123757464,
+        "se": 0.0050334541400534755,
+        "status": "IDENTIFIED",
+        "value": 0.78
+       },
+       "revision_S": {
+        "ci95": [
+         -0.8115777566119304,
+         -0.7730376280034541
+        ],
+        "n": 20,
+        "sd": 0.04117455682280815,
+        "se": 0.009206910799922677,
+        "status": "IDENTIFIED",
+        "value": -0.7923076923076923
+       },
+       "shift_drop": {
+        "ci95": [
+         0.07373858205323244,
+         0.1412614179467675
+        ],
+        "n": 20,
+        "sd": 0.0721383903925022,
+        "se": 0.016130634470505265,
+        "status": "IDENTIFIED",
+        "value": 0.10749999999999997
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.7508464386307634,
+         0.7759035613692369
+        ],
+        "n": 20,
+        "sd": 0.026769913886183577,
+        "se": 0.005985934720132205,
+        "status": "IDENTIFIED",
+        "value": 0.7633750000000001
+       }
+      }
+     },
+     "ground-responsive judgement": {
+      "accuracy": {
+       "mean": 0.83475,
+       "n": 20,
+       "sd": 0.017824067112223643,
+       "se": 0.003985582569845043
+      },
+      "accuracy_pre_shift": {
+       "mean": 0.8327500000000001,
+       "n": 20,
+       "sd": 0.023366361336443955,
+       "se": 0.0052248772335111516
+      },
+      "operation_digest": "f192b80bd62842d39c0cf12c9d8075f02081f005de8c54527b21604e4fa9e231",
+      "relations": {
+       "effect_E": {
+        "ci95": [
+         0.9983645769044631,
+         0.9998497088098224
+        ],
+        "n": 20,
+        "sd": 0.0015866487797118983,
+        "se": 0.0003547854527852894,
+        "status": "IDENTIFIED",
+        "value": 0.9991071428571427
+       },
+       "effect_S": {
+        "ci95": [
+         -0.005448924794292497,
+         0.008525847871215575
+        ],
+        "n": 20,
+        "sd": 0.014930024677583364,
+        "se": 0.003338455008482578,
+        "status": "IDENTIFIED",
+        "value": 0.0015384615384615385
+       },
+       "revision_E": {
+        "ci95": [
+         -0.0012126051229524792,
+         0.001212605122952457
+        ],
+        "n": 20,
+        "sd": 0.002590986607535795,
+        "se": 0.0005793622183241607,
+        "status": "IDENTIFIED",
+        "value": -1.1102230246251566e-17
+       },
+       "revision_S": {
+        "ci95": [
+         -0.008751716606313815,
+         0.010674793529390735
+        ],
+        "n": 20,
+        "sd": 0.02075441816962448,
+        "se": 0.00464082898607371,
+        "status": "IDENTIFIED",
+        "value": 0.0009615384615384602
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.036931487347142945,
+         0.04193148734714295
+        ],
+        "n": 20,
+        "sd": 0.08425368959592403,
+        "se": 0.01883969772916529,
+        "status": "IDENTIFIED",
+        "value": 0.0025000000000000022
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.829273524559685,
+         0.8437264754403146
+        ],
+        "n": 20,
+        "sd": 0.015440888984497586,
+        "se": 0.0034526877402364297,
+        "status": "IDENTIFIED",
+        "value": 0.8364999999999998
+       }
+      }
+     },
+     "misjudgement: miscalibrated reading": {
+      "accuracy": {
+       "mean": 0.5821249999999998,
+       "n": 20,
+       "sd": 0.028252561597881795,
+       "se": 0.006317464827136377
+      },
+      "accuracy_pre_shift": {
+       "mean": 0.5887500000000002,
+       "n": 20,
+       "sd": 0.039298955389893524,
+       "se": 0.008787513569653366
+      },
+      "operation_digest": "9198aab585f5545aa2cfb928e71055dc449348520398b7f679a6861eab7dbeda",
+      "relations": {
+       "effect_E": {
+        "ci95": [
+         0.9936185937012085,
+         0.9967385491559344
+        ],
+        "n": 20,
+        "sd": 0.0033332214445954828,
+        "se": 0.0007453309734175548,
+        "status": "IDENTIFIED",
+        "value": 0.9951785714285715
+       },
+       "effect_S": {
+        "ci95": [
+         -0.006834273135874085,
+         0.006641965443566393
+        ],
+        "n": 20,
+        "sd": 0.014397413064803683,
+        "se": 0.003219359431304462,
+        "status": "IDENTIFIED",
+        "value": -9.615384615384546e-05
+       },
+       "revision_E": {
+        "ci95": [
+         -0.0031851785714286014,
+         0.0035423214285714238
+        ],
+        "n": 20,
+        "sd": 0.007187361356249352,
+        "se": 0.0016071428571428632,
+        "status": "IDENTIFIED",
+        "value": 0.00017857142857141128
+       },
+       "revision_S": {
+        "ci95": [
+         -0.011989530166602768,
+         0.004681837858910465
+        ],
+        "n": 20,
+        "sd": 0.017810947053494525,
+        "se": 0.003982648835526334,
+        "status": "IDENTIFIED",
+        "value": -0.003653846153846152
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.03365729726211912,
+         0.0911572972621191
+        ],
+        "n": 20,
+        "sd": 0.13334635353094587,
+        "se": 0.029817151104691405,
+        "status": "IDENTIFIED",
+        "value": 0.02874999999999999
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.7366969330498194,
+         0.7593030669501803
+        ],
+        "n": 20,
+        "sd": 0.02415138657891531,
+        "se": 0.005400414214133072,
+        "status": "IDENTIFIED",
+        "value": 0.7479999999999999
+       }
+      }
+     },
+     "no correction (feedback off)": {
+      "accuracy": {
+       "mean": 0.687,
+       "n": 20,
+       "sd": 0.01663461830989186,
+       "se": 0.003719613732068086
+      },
+      "accuracy_pre_shift": {
+       "mean": 0.85975,
+       "n": 20,
+       "sd": 0.01852984789894119,
+       "se": 0.004143399951476416
+      },
+      "operation_digest": "a419a00ba01882ab15ca16ebb72e800c16164202ad416c1065baded56bfd26b3",
+      "relations": {
+       "effect_E": {
+        "ci95": [
+         0.17911937772541967,
+         0.2083806222745804
+        ],
+        "n": 20,
+        "sd": 0.03126141037657364,
+        "se": 0.006990263867453595,
+        "status": "IDENTIFIED",
+        "value": 0.19375000000000003
+       },
+       "effect_S": {
+        "ci95": [
+         0.9435058030248098,
+         0.9528403508213443
+        ],
+        "n": 20,
+        "sd": 0.009972615103809023,
+        "se": 0.0022299445285558096,
+        "status": "IDENTIFIED",
+        "value": 0.9481730769230771
+       },
+       "revision_E": {
+        "ci95": [
+         -0.034579306024928584,
+         0.004222163167785724
+        ],
+        "n": 20,
+        "sd": 0.04145376146286339,
+        "se": 0.009269342855402367,
+        "status": "IDENTIFIED",
+        "value": -0.01517857142857143
+       },
+       "revision_S": {
+        "ci95": [
+         -0.005478908741510895,
+         0.006632754895357077
+        ],
+        "n": 20,
+        "sd": 0.012939561974509848,
+        "se": 0.002893374017407542,
+        "status": "IDENTIFIED",
+        "value": 0.0005769230769230915
+       },
+       "shift_drop": {
+        "ci95": [
+         0.2718685446903182,
+         0.37313145530968195
+        ],
+        "n": 20,
+        "sd": 0.10818478344213225,
+        "se": 0.02419085299077014,
+        "status": "IDENTIFIED",
+        "value": 0.32250000000000006
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.5092551949376738,
+         0.5312448050623262
+        ],
+        "n": 20,
+        "sd": 0.023492720036999593,
+        "se": 0.0052531318979102464,
+        "status": "IDENTIFIED",
+        "value": 0.52025
+       }
+      }
+     }
+    },
+    "digest": "06f97484aa4dc708f3a6797d6c3b4c0f4563245cbdd642180840827698e89701",
+    "domain": "001-knowledge",
+    "observation": {
+     "boundary": [],
+     "coupling": "intervened",
+     "environment": "default",
+     "memory": true,
+     "probe": 0.0,
+     "resources": 10000,
+     "scale": 1,
+     "sensor_channels": [
+      "x",
+      "y",
+      "memory"
+     ],
+     "sensor_noise": 0.0,
+     "speed": 1,
+     "temporal_window": 40
+    },
+    "seeds": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20
+    ],
+    "title": "KNOWLEDGE ATTRIBUTION \u2014 OPERATIONAL DIFFERENCE"
+   },
+   "spec": {
+    "conditions": null,
+    "domain": "001-knowledge",
+    "observation": {
+     "boundary": [],
+     "coupling": "intervened",
+     "environment": "default",
+     "memory": true,
+     "probe": 0.0,
+     "resources": 10000,
+     "scale": 1,
+     "sensor_channels": [
+      "x",
+      "y",
+      "memory"
+     ],
+     "sensor_noise": 0.0,
+     "speed": 1,
+     "temporal_window": 40
+    },
+    "seeds": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20
+    ]
+   },
+   "status": {
+    "completion": "INITIAL_EXPERIMENT_EXECUTED",
+    "criteria": "the four comparison conditions run with interventions, relations and shapes generated from them, competing explanations compared, the attribution kept apart: executed for a synthetic judging agent; nothing about knowledge as such is shown",
+    "executed": true
+   },
+   "structural_similarity": [
+    {
+     "a": "accidental correct: base-rate guess",
+     "b": "accidental correct: coincidental cue",
+     "relations_compared": 6,
+     "similarity": 0.7789688644688645
+    },
+    {
+     "a": "accidental correct: base-rate guess",
+     "b": "ground-responsive judgement",
+     "relations_compared": 6,
+     "similarity": 0.7754988553113554
+    },
+    {
+     "a": "accidental correct: base-rate guess",
+     "b": "misjudgement: miscalibrated reading",
+     "relations_compared": 6,
+     "similarity": 0.7882090201465202
+    },
+    {
+     "a": "accidental correct: base-rate guess",
+     "b": "correction and reconfiguration (feedback on)",
+     "relations_compared": 6,
+     "similarity": 0.4870224358974359
+    },
+    {
+     "a": "accidental correct: base-rate guess",
+     "b": "no correction (feedback off)",
+     "relations_compared": 6,
+     "similarity": 0.7512337454212453
+    },
+    {
+     "a": "accidental correct: coincidental cue",
+     "b": "ground-responsive judgement",
+     "relations_compared": 6,
+     "similarity": 0.5566426282051282
+    },
+    {
+     "a": "accidental correct: coincidental cue",
+     "b": "misjudgement: miscalibrated reading",
+     "relations_compared": 6,
+     "similarity": 0.5753509615384615
+    },
+    {
+     "a": "accidental correct: coincidental cue",
+     "b": "correction and reconfiguration (feedback on)",
+     "relations_compared": 6,
+     "similarity": 0.35144001831501825
+    },
+    {
+     "a": "accidental correct: coincidental cue",
+     "b": "no correction (feedback off)",
+     "relations_compared": 6,
+     "similarity": 0.9571485805860807
+    },
+    {
+     "a": "ground-responsive judgement",
+     "b": "misjudgement: miscalibrated reading",
+     "relations_compared": 6,
+     "similarity": 0.9791488095238096
+    },
+    {
+     "a": "ground-responsive judgement",
+     "b": "correction and reconfiguration (feedback on)",
+     "relations_compared": 6,
+     "similarity": 0.680779532967033
+    },
+    {
+     "a": "ground-responsive judgement",
+     "b": "no correction (feedback off)",
+     "relations_compared": 6,
+     "similarity": 0.5993658424908426
+    },
+    {
+     "a": "misjudgement: miscalibrated reading",
+     "b": "correction and reconfiguration (feedback on)",
+     "relations_compared": 6,
+     "similarity": 0.6959608516483515
+    },
+    {
+     "a": "misjudgement: miscalibrated reading",
+     "b": "no correction (feedback off)",
+     "relations_compared": 6,
+     "similarity": 0.6182023809523809
+    },
+    {
+     "a": "correction and reconfiguration (feedback on)",
+     "b": "no correction (feedback off)",
+     "relations_compared": 6,
+     "similarity": 0.3942914377289376
+    }
+   ]
+  },
+  "002-bias": {
+   "axes": {
+    "x": "base rate of the world (do)",
+    "y": "noise of the evidence (do)"
+   },
+   "digest": "c4e63a4a43cb27fe1dfb4e029606f4abeb0b0bceac74334108f61e56b1ee9325",
+   "executed": true,
+   "figure_kind": "EXECUTED_COMPUTATIONAL_EXPERIMENT",
+   "levels": {
+    "history prior, then retraining at base rate 0.3": {
+     "conceptual_operational_shape": {
+      "evidence": [],
+      "level": "conceptual_operational_shape",
+      "note": "",
+      "state": "NOT_MODELLED"
+     },
+     "gaisho_attribution": {
+      "evidence": [],
+      "level": "gaisho_attribution",
+      "note": "no independent evidence (operational differences are not evidence of a Gaisho)",
+      "state": "UNRESOLVED"
+     },
+     "gaisho_operational_shape": {
+      "evidence": [],
+      "level": "gaisho_operational_shape",
+      "note": "no bearer and no historical interval: a synthetic operation has neither, so it is not a candidate",
+      "state": "NOT_ESTABLISHED"
+     },
+     "operational_shape": {
+      "evidence": [],
+      "level": "operational_shape",
+      "note": "",
+      "state": "RECONSTRUCTED"
+     },
+     "real_operation": {
+      "evidence": [],
+      "level": "real_operation",
+      "note": "",
+      "state": "EXECUTED_IN_MODEL"
+     }
+    },
+    "no bias (evidence only)": {
+     "conceptual_operational_shape": {
+      "evidence": [],
+      "level": "conceptual_operational_shape",
+      "note": "",
+      "state": "NOT_MODELLED"
+     },
+     "gaisho_attribution": {
+      "evidence": [],
+      "level": "gaisho_attribution",
+      "note": "no independent evidence (operational differences are not evidence of a Gaisho)",
+      "state": "UNRESOLVED"
+     },
+     "gaisho_operational_shape": {
+      "evidence": [],
+      "level": "gaisho_operational_shape",
+      "note": "no bearer and no historical interval: a synthetic operation has neither, so it is not a candidate",
+      "state": "NOT_ESTABLISHED"
+     },
+     "operational_shape": {
+      "evidence": [],
+      "level": "operational_shape",
+      "note": "",
+      "state": "RECONSTRUCTED"
+     },
+     "real_operation": {
+      "evidence": [],
+      "level": "real_operation",
+      "note": "",
+      "state": "EXECUTED_IN_MODEL"
+     }
+    },
+    "perception-derived selectivity (attends only to strong evidence)": {
+     "conceptual_operational_shape": {
+      "evidence": [],
+      "level": "conceptual_operational_shape",
+      "note": "",
+      "state": "NOT_MODELLED"
+     },
+     "gaisho_attribution": {
+      "evidence": [],
+      "level": "gaisho_attribution",
+      "note": "no independent evidence (operational differences are not evidence of a Gaisho)",
+      "state": "UNRESOLVED"
+     },
+     "gaisho_operational_shape": {
+      "evidence": [],
+      "level": "gaisho_operational_shape",
+      "note": "no bearer and no historical interval: a synthetic operation has neither, so it is not a candidate",
+      "state": "NOT_ESTABLISHED"
+     },
+     "operational_shape": {
+      "evidence": [],
+      "level": "operational_shape",
+      "note": "",
+      "state": "RECONSTRUCTED"
+     },
+     "real_operation": {
+      "evidence": [],
+      "level": "real_operation",
+      "note": "",
+      "state": "EXECUTED_IN_MODEL"
+     }
+    },
+    "sensor/body offset (calibration +0.6)": {
+     "conceptual_operational_shape": {
+      "evidence": [],
+      "level": "conceptual_operational_shape",
+      "note": "",
+      "state": "NOT_MODELLED"
+     },
+     "gaisho_attribution": {
+      "evidence": [],
+      "level": "gaisho_attribution",
+      "note": "no independent evidence (operational differences are not evidence of a Gaisho)",
+      "state": "UNRESOLVED"
+     },
+     "gaisho_operational_shape": {
+      "evidence": [],
+      "level": "gaisho_operational_shape",
+      "note": "no bearer and no historical interval: a synthetic operation has neither, so it is not a candidate",
+      "state": "NOT_ESTABLISHED"
+     },
+     "operational_shape": {
+      "evidence": [],
+      "level": "operational_shape",
+      "note": "",
+      "state": "RECONSTRUCTED"
+     },
+     "real_operation": {
+      "evidence": [],
+      "level": "real_operation",
+      "note": "",
+      "state": "EXECUTED_IN_MODEL"
+     }
+    },
+    "training-history prior (trained at base rate 0.8)": {
+     "conceptual_operational_shape": {
+      "evidence": [],
+      "level": "conceptual_operational_shape",
+      "note": "",
+      "state": "NOT_MODELLED"
+     },
+     "gaisho_attribution": {
+      "evidence": [],
+      "level": "gaisho_attribution",
+      "note": "no independent evidence (operational differences are not evidence of a Gaisho)",
+      "state": "UNRESOLVED"
+     },
+     "gaisho_operational_shape": {
+      "evidence": [],
+      "level": "gaisho_operational_shape",
+      "note": "no bearer and no historical interval: a synthetic operation has neither, so it is not a candidate",
+      "state": "NOT_ESTABLISHED"
+     },
+     "operational_shape": {
+      "evidence": [],
+      "level": "operational_shape",
+      "note": "",
+      "state": "RECONSTRUCTED"
+     },
+     "real_operation": {
+      "evidence": [],
+      "level": "real_operation",
+      "note": "",
+      "state": "EXECUTED_IN_MODEL"
+     }
+    }
+   },
+   "limits": "Synthetic computational experiments with declared constants. A shape drawn from them is a projection of identified relations, not the complete acquisition of any real operation; nothing here shows anything about human neural activity, the formation of a real Gaisho, or a universal philosophical law.",
+   "model_version": "gaisho-lab/1",
+   "negative_results": [
+    {
+     "ci95": [
+      -0.021908198625363938,
+      0.016908198625363954
+     ],
+     "condition": "no bias (evidence only)",
+     "kind": "NOT_DETECTED",
+     "mean": -0.002499999999999993,
+     "note": "no difference was detected: this is not shown to be zero",
+     "relation": "effect_x"
+    },
+    {
+     "ci95": [
+      -0.008483816523665772,
+      0.016733816523665786
+     ],
+     "condition": "no bias (evidence only)",
+     "kind": "NOT_DETECTED",
+     "mean": 0.004125000000000006,
+     "note": "no difference was detected: this is not shown to be zero",
+     "relation": "matched_advantage"
+    },
+    {
+     "class": "TEMPORAL_MISFIT",
+     "condition": "no bias (evidence only)",
+     "kind": "UNOBSERVED",
+     "relation": "retention"
+    },
+    {
+     "ci95": [
+      -0.025412467818390093,
+      0.014412467818390099
+     ],
+     "condition": "perception-derived selectivity (attends only to strong evidence)",
+     "kind": "NOT_DETECTED",
+     "mean": -0.005499999999999996,
+     "note": "no difference was detected: this is not shown to be zero",
+     "relation": "effect_x"
+    },
+    {
+     "ci95": [
+      -0.005074891718592203,
+      0.022324891718592213
+     ],
+     "condition": "perception-derived selectivity (attends only to strong evidence)",
+     "kind": "NOT_DETECTED",
+     "mean": 0.008625000000000004,
+     "note": "no difference was detected: this is not shown to be zero",
+     "relation": "matched_advantage"
+    },
+    {
+     "class": "TEMPORAL_MISFIT",
+     "condition": "perception-derived selectivity (attends only to strong evidence)",
+     "kind": "UNOBSERVED",
+     "relation": "retention"
+    },
+    {
+     "class": "TEMPORAL_MISFIT",
+     "condition": "sensor/body offset (calibration +0.6)",
+     "kind": "UNOBSERVED",
+     "relation": "retention"
+    },
+    {
+     "domains_not_executed": [
+      "004-body"
+     ],
+     "kind": "NOT_DONE",
+     "what": "competing explanations beyond a reliability statistic and a static causal model (attention, memory, predictive processing, sensorimotor, cognitive appraisal, concept learning, SNN, dynamical systems, operational-shape analysis) were not run"
+    }
+   ],
+   "prohibited_inferences": [
+    {
+     "conclusion": "gaisho_fired",
+     "premise": "spike_fired",
+     "reason": "a spike firing is a firing of a neuron model; it is not the firing of a Gaisho"
+    },
+    {
+     "conclusion": "gaisho_established",
+     "premise": "concept_classification_succeeded",
+     "reason": "a successful conceptual classification does not establish a Gaisho"
+    },
+    {
+     "conclusion": "thought_established",
+     "premise": "ai_internal_state_changed",
+     "reason": "a change of the internal state of an AI does not establish thinking"
+    },
+    {
+     "conclusion": "gaisho_exists",
+     "premise": "shape_3d_complex",
+     "reason": "the complexity of a drawn shape is not evidence of a Gaisho"
+    },
+    {
+     "conclusion": "knowledge_established",
+     "premise": "accuracy_improved",
+     "reason": "an improved accuracy does not establish knowledge"
+    },
+    {
+     "conclusion": "judgement_about_object_true",
+     "premise": "gaisho_attribution_succeeded",
+     "reason": "the success of an attribution does not make the judgement about the object true"
+    },
+    {
+     "conclusion": "individual_gaisho_changed",
+     "premise": "institution_evaluation_changed",
+     "reason": "a change of an institution's evaluation is not a change of an individual's Gaisho"
+    },
+    {
+     "conclusion": "gaisho_attributed",
+     "premise": "operational_difference_found",
+     "reason": "an operational difference is not an attribution: the attribution needs independent evidence"
+    }
+   ],
+   "result": {
+    "conditions": {
+     "history prior, then retraining at base rate 0.3": {
+      "accuracy": {
+       "mean": 0.792375,
+       "n": 20,
+       "sd": 0.01671107023565673,
+       "se": 0.003736708902370188
+      },
+      "accuracy_pre_shift": {
+       "mean": null,
+       "n": 0,
+       "sd": null,
+       "se": null
+      },
+      "operation_digest": "97f56213ddc1e3da9a31f2b00ff8b171bed157a73d4b3b8d516f4cce667e85c0",
+      "relations": {
+       "effect_x": {
+        "ci95": [
+         -0.04789074590964616,
+         -0.008109254090353846
+        ],
+        "n": 20,
+        "sd": 0.042500773986760346,
+        "se": 0.009503461973075087,
+        "status": "IDENTIFIED",
+        "value": -0.028000000000000004
+       },
+       "effect_y": {
+        "ci95": [
+         -0.20222322301868512,
+         -0.16888788809242594
+        ],
+        "n": 20,
+        "sd": 0.035613987074934746,
+        "se": 0.007963529604935298,
+        "status": "IDENTIFIED",
+        "value": -0.18555555555555553
+       },
+       "matched_advantage": {
+        "ci95": [
+         -0.02894422478439656,
+         -0.002555775215603436
+        ],
+        "n": 20,
+        "sd": 0.0281922441742219,
+        "se": 0.006303977441183259,
+        "status": "IDENTIFIED",
+        "value": -0.015749999999999997
+       },
+       "retention": {
+        "ci95": [
+         -0.16666666666666682,
+         -0.16666666666666682
+        ],
+        "n": 20,
+        "sd": 2.8476619731297836e-17,
+        "se": 6.367565748859375e-18,
+        "status": "IDENTIFIED",
+        "value": -0.16666666666666682
+       }
+      }
+     },
+     "no bias (evidence only)": {
+      "accuracy": {
+       "mean": 0.786,
+       "n": 20,
+       "sd": 0.01709878419808355,
+       "se": 0.003823404379951404
+      },
+      "accuracy_pre_shift": {
+       "mean": null,
+       "n": 0,
+       "sd": null,
+       "se": null
+      },
+      "operation_digest": "c08154e6ed683755c7a1ff7e34d099b75c03fa36a44f48a05adb684241dd4056",
+      "relations": {
+       "effect_x": {
+        "ci95": [
+         -0.021908198625363938,
+         0.016908198625363954
+        ],
+        "n": 20,
+        "sd": 0.041469709935147404,
+        "se": 0.009272909042218799,
+        "status": "IDENTIFIED",
+        "value": -0.002499999999999993
+       },
+       "effect_y": {
+        "ci95": [
+         -0.20395414748142185,
+         -0.1727125191852448
+        ],
+        "n": 20,
+        "sd": 0.03337716416532864,
+        "se": 0.007463360796984487,
+        "status": "IDENTIFIED",
+        "value": -0.18833333333333332
+       },
+       "matched_advantage": {
+        "ci95": [
+         -0.008483816523665772,
+         0.016733816523665786
+        ],
+        "n": 20,
+        "sd": 0.02694139595101698,
+        "se": 0.006024279275521156,
+        "status": "IDENTIFIED",
+        "value": 0.004125000000000006
+       },
+       "retention": {
+        "n": 0,
+        "status": "TEMPORAL_MISFIT",
+        "value": null
+       }
+      }
+     },
+     "perception-derived selectivity (attends only to strong evidence)": {
+      "accuracy": {
+       "mean": 0.758,
+       "n": 20,
+       "sd": 0.016455682109356946,
+       "se": 0.003679602381264926
+      },
+      "accuracy_pre_shift": {
+       "mean": null,
+       "n": 0,
+       "sd": null,
+       "se": null
+      },
+      "operation_digest": "90bbf49cf0353fff25397171b8ee29a729cd9aa023958670c08b3be0b686afd8",
+      "relations": {
+       "effect_x": {
+        "ci95": [
+         -0.025412467818390093,
+         0.014412467818390099
+        ],
+        "n": 20,
+        "sd": 0.042547187426370946,
+        "se": 0.009513840333678976,
+        "status": "IDENTIFIED",
+        "value": -0.005499999999999996
+       },
+       "effect_y": {
+        "ci95": [
+         -0.15479534598255446,
+         -0.1254824317952234
+        ],
+        "n": 20,
+        "sd": 0.03131661191662218,
+        "se": 0.007002607307054717,
+        "status": "IDENTIFIED",
+        "value": -0.14013888888888892
+       },
+       "matched_advantage": {
+        "ci95": [
+         -0.005074891718592203,
+         0.022324891718592213
+        ],
+        "n": 20,
+        "sd": 0.02927270823426526,
+        "se": 0.006545576549733496,
+        "status": "IDENTIFIED",
+        "value": 0.008625000000000004
+       },
+       "retention": {
+        "n": 0,
+        "status": "TEMPORAL_MISFIT",
+        "value": null
+       }
+      }
+     },
+     "sensor/body offset (calibration +0.6)": {
+      "accuracy": {
+       "mean": 0.7135,
+       "n": 20,
+       "sd": 0.01788854381999833,
+       "se": 0.004000000000000003
+      },
+      "accuracy_pre_shift": {
+       "mean": null,
+       "n": 0,
+       "sd": null,
+       "se": null
+      },
+      "operation_digest": "804a134d9e944b0a5b129509c3d9213e55cf2ca86b323115559b30b25f24d69d",
+      "relations": {
+       "effect_x": {
+        "ci95": [
+         0.17779393877532032,
+         0.2132060612246797
+        ],
+        "n": 20,
+        "sd": 0.03783273436422068,
+        "se": 0.008459656581308973,
+        "status": "IDENTIFIED",
+        "value": 0.1955
+       },
+       "effect_y": {
+        "ci95": [
+         -0.15327516055419932,
+         -0.12061372833468958
+        ],
+        "n": 20,
+        "sd": 0.03489401943876045,
+        "se": 0.007802539947326742,
+        "status": "IDENTIFIED",
+        "value": -0.13694444444444445
+       },
+       "matched_advantage": {
+        "ci95": [
+         0.1522452215313136,
+         0.17625477846868642
+        ],
+        "n": 20,
+        "sd": 0.025650741243008732,
+        "se": 0.005735680109262497,
+        "status": "IDENTIFIED",
+        "value": 0.16425
+       },
+       "retention": {
+        "n": 0,
+        "status": "TEMPORAL_MISFIT",
+        "value": null
+       }
+      }
+     },
+     "training-history prior (trained at base rate 0.8)": {
+      "accuracy": {
+       "mean": 0.719875,
+       "n": 20,
+       "sd": 0.016413148612268794,
+       "se": 0.003670091602183936
+      },
+      "accuracy_pre_shift": {
+       "mean": null,
+       "n": 0,
+       "sd": null,
+       "se": null
+      },
+      "operation_digest": "070e54d824d38b22db76036ae47c77b10c298c324d78308a3f10ed95801260ee",
+      "relations": {
+       "effect_x": {
+        "ci95": [
+         0.16094694966676318,
+         0.1965530503332368
+        ],
+        "n": 20,
+        "sd": 0.038039972051569795,
+        "se": 0.00850599633695022,
+        "status": "IDENTIFIED",
+        "value": 0.17875
+       },
+       "effect_y": {
+        "ci95": [
+         -0.15935778869174688,
+         -0.1273088779749198
+        ],
+        "n": 20,
+        "sd": 0.03423962874708401,
+        "se": 0.007656213740283579,
+        "status": "IDENTIFIED",
+        "value": -0.14333333333333334
+       },
+       "matched_advantage": {
+        "ci95": [
+         0.13894621081719433,
+         0.16530378918280564
+        ],
+        "n": 20,
+        "sd": 0.028159262755749998,
+        "se": 0.006296602571813505,
+        "status": "IDENTIFIED",
+        "value": 0.15212499999999998
+       },
+       "retention": {
+        "ci95": [
+         1.0,
+         1.0
+        ],
+        "n": 20,
+        "sd": 0.0,
+        "se": 0.0,
+        "status": "IDENTIFIED",
+        "value": 1.0
+       }
+      }
+     }
+    },
+    "digest": "1645ac0fcc2e719ef9d79f4b4bb66a1e56e17d91534beb17a79b6b25f2caff99",
+    "domain": "002-bias",
+    "observation": {
+     "boundary": [],
+     "coupling": "intervened",
+     "environment": "default",
+     "memory": true,
+     "probe": 0.0,
+     "resources": 10000,
+     "scale": 1,
+     "sensor_channels": [
+      "x",
+      "y",
+      "memory"
+     ],
+     "sensor_noise": 0.0,
+     "speed": 1,
+     "temporal_window": 40
+    },
+    "seeds": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20
+    ],
+    "title": "BIAS \u2014 SELECTIVITY, HISTORY AND THE BODY"
+   },
+   "spec": {
+    "conditions": null,
+    "domain": "002-bias",
+    "observation": {
+     "boundary": [],
+     "coupling": "intervened",
+     "environment": "default",
+     "memory": true,
+     "probe": 0.0,
+     "resources": 10000,
+     "scale": 1,
+     "sensor_channels": [
+      "x",
+      "y",
+      "memory"
+     ],
+     "sensor_noise": 0.0,
+     "speed": 1,
+     "temporal_window": 40
+    },
+    "seeds": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20
+    ]
+   },
+   "status": {
+    "completion": "INITIAL_CONDITIONS_EXECUTED",
+    "criteria": "the four sources of bias and the intervention are compared by intervention on a declared synthetic rule set; adaptive and inappropriate bias are told apart by the matched environment; competing models, ablations and a body-derived condition beyond a calibration offset are NOT done",
+    "executed": true
+   },
+   "structural_similarity": [
+    {
+     "a": "no bias (evidence only)",
+     "b": "perception-derived selectivity (attends only to strong evidence)",
+     "relations_compared": 3,
+     "similarity": 0.9814351851851852
+    },
+    {
+     "a": "no bias (evidence only)",
+     "b": "training-history prior (trained at base rate 0.8)",
+     "relations_compared": 3,
+     "similarity": 0.87525
+    },
+    {
+     "a": "no bias (evidence only)",
+     "b": "sensor/body offset (calibration +0.6)",
+     "relations_compared": 3,
+     "similarity": 0.8634953703703704
+    },
+    {
+     "a": "no bias (evidence only)",
+     "b": "history prior, then retraining at base rate 0.3",
+     "relations_compared": 3,
+     "similarity": 0.9839490740740741
+    },
+    {
+     "a": "perception-derived selectivity (attends only to strong evidence)",
+     "b": "training-history prior (trained at base rate 0.8)",
+     "relations_compared": 3,
+     "similarity": 0.8896851851851852
+    },
+    {
+     "a": "perception-derived selectivity (attends only to strong evidence)",
+     "b": "sensor/body offset (calibration +0.6)",
+     "relations_compared": 3,
+     "similarity": 0.8800601851851851
+    },
+    {
+     "a": "perception-derived selectivity (attends only to strong evidence)",
+     "b": "history prior, then retraining at base rate 0.3",
+     "relations_compared": 3,
+     "similarity": 0.9692361111111112
+    },
+    {
+     "a": "training-history prior (trained at base rate 0.8)",
+     "b": "sensor/body offset (calibration +0.6)",
+     "relations_compared": 3,
+     "similarity": 0.9882453703703704
+    },
+    {
+     "a": "training-history prior (trained at base rate 0.8)",
+     "b": "history prior, then retraining at base rate 0.3",
+     "relations_compared": 4,
+     "similarity": 0.6041215277777778
+    },
+    {
+     "a": "sensor/body offset (calibration +0.6)",
+     "b": "history prior, then retraining at base rate 0.3",
+     "relations_compared": 3,
+     "similarity": 0.8492962962962963
+    }
+   ]
+  },
+  "003-freedom": {
+   "axes": {
+    "x": "material/bodily constraint (do)",
+    "y": "self-interpretation as free (do)"
+   },
+   "digest": "f79ae20cd834e64b9d5b15cd358f89169af556952720e33f8d81eb259d07d9d4",
+   "executed": true,
+   "figure_kind": "EXECUTED_COMPUTATIONAL_EXPERIMENT",
+   "levels": {
+    "constraint also lowers the belief (embodied coupling)": {
+     "conceptual_operational_shape": {
+      "evidence": [],
+      "level": "conceptual_operational_shape",
+      "note": "",
+      "state": "NOT_MODELLED"
+     },
+     "gaisho_attribution": {
+      "evidence": [],
+      "level": "gaisho_attribution",
+      "note": "no independent evidence (operational differences are not evidence of a Gaisho)",
+      "state": "UNRESOLVED"
+     },
+     "gaisho_operational_shape": {
+      "evidence": [],
+      "level": "gaisho_operational_shape",
+      "note": "no bearer and no historical interval: a synthetic operation has neither, so it is not a candidate",
+      "state": "NOT_ESTABLISHED"
+     },
+     "operational_shape": {
+      "evidence": [],
+      "level": "operational_shape",
+      "note": "",
+      "state": "RECONSTRUCTED"
+     },
+     "real_operation": {
+      "evidence": [],
+      "level": "real_operation",
+      "note": "",
+      "state": "EXECUTED_IN_MODEL"
+     }
+    },
+    "effective possibility only (reach is set by the constraint)": {
+     "conceptual_operational_shape": {
+      "evidence": [],
+      "level": "conceptual_operational_shape",
+      "note": "",
+      "state": "NOT_MODELLED"
+     },
+     "gaisho_attribution": {
+      "evidence": [],
+      "level": "gaisho_attribution",
+      "note": "no independent evidence (operational differences are not evidence of a Gaisho)",
+      "state": "UNRESOLVED"
+     },
+     "gaisho_operational_shape": {
+      "evidence": [],
+      "level": "gaisho_operational_shape",
+      "note": "no bearer and no historical interval: a synthetic operation has neither, so it is not a candidate",
+      "state": "NOT_ESTABLISHED"
+     },
+     "operational_shape": {
+      "evidence": [],
+      "level": "operational_shape",
+      "note": "",
+      "state": "RECONSTRUCTED"
+     },
+     "real_operation": {
+      "evidence": [],
+      "level": "real_operation",
+      "note": "",
+      "state": "EXECUTED_IN_MODEL"
+     }
+    },
+    "institutional free-classification (the label is adopted as a belief)": {
+     "conceptual_operational_shape": {
+      "evidence": [],
+      "level": "conceptual_operational_shape",
+      "note": "",
+      "state": "NOT_MODELLED"
+     },
+     "gaisho_attribution": {
+      "evidence": [],
+      "level": "gaisho_attribution",
+      "note": "no independent evidence (operational differences are not evidence of a Gaisho)",
+      "state": "UNRESOLVED"
+     },
+     "gaisho_operational_shape": {
+      "evidence": [],
+      "level": "gaisho_operational_shape",
+      "note": "no bearer and no historical interval: a synthetic operation has neither, so it is not a candidate",
+      "state": "NOT_ESTABLISHED"
+     },
+     "operational_shape": {
+      "evidence": [],
+      "level": "operational_shape",
+      "note": "",
+      "state": "RECONSTRUCTED"
+     },
+     "real_operation": {
+      "evidence": [],
+      "level": "real_operation",
+      "note": "",
+      "state": "EXECUTED_IN_MODEL"
+     }
+    },
+    "institutional label adopted as a belief that drives effort": {
+     "conceptual_operational_shape": {
+      "evidence": [],
+      "level": "conceptual_operational_shape",
+      "note": "",
+      "state": "NOT_MODELLED"
+     },
+     "gaisho_attribution": {
+      "evidence": [],
+      "level": "gaisho_attribution",
+      "note": "no independent evidence (operational differences are not evidence of a Gaisho)",
+      "state": "UNRESOLVED"
+     },
+     "gaisho_operational_shape": {
+      "evidence": [],
+      "level": "gaisho_operational_shape",
+      "note": "no bearer and no historical interval: a synthetic operation has neither, so it is not a candidate",
+      "state": "NOT_ESTABLISHED"
+     },
+     "operational_shape": {
+      "evidence": [],
+      "level": "operational_shape",
+      "note": "",
+      "state": "RECONSTRUCTED"
+     },
+     "real_operation": {
+      "evidence": [],
+      "level": "real_operation",
+      "note": "",
+      "state": "EXECUTED_IN_MODEL"
+     }
+    },
+    "self-interpretation drives effort (belief changes the reach where the constraint allows)": {
+     "conceptual_operational_shape": {
+      "evidence": [],
+      "level": "conceptual_operational_shape",
+      "note": "",
+      "state": "NOT_MODELLED"
+     },
+     "gaisho_attribution": {
+      "evidence": [],
+      "level": "gaisho_attribution",
+      "note": "no independent evidence (operational differences are not evidence of a Gaisho)",
+      "state": "UNRESOLVED"
+     },
+     "gaisho_operational_shape": {
+      "evidence": [],
+      "level": "gaisho_operational_shape",
+      "note": "no bearer and no historical interval: a synthetic operation has neither, so it is not a candidate",
+      "state": "NOT_ESTABLISHED"
+     },
+     "operational_shape": {
+      "evidence": [],
+      "level": "operational_shape",
+      "note": "",
+      "state": "RECONSTRUCTED"
+     },
+     "real_operation": {
+      "evidence": [],
+      "level": "real_operation",
+      "note": "",
+      "state": "EXECUTED_IN_MODEL"
+     }
+    }
+   },
+   "limits": "Synthetic computational experiments with declared constants. A shape drawn from them is a projection of identified relations, not the complete acquisition of any real operation; nothing here shows anything about human neural activity, the formation of a real Gaisho, or a universal philosophical law.",
+   "model_version": "gaisho-lab/1",
+   "negative_results": [
+    {
+     "ci95": [
+      -0.017788381917258782,
+      0.015566159695036559
+     ],
+     "condition": "effective possibility only (reach is set by the constraint)",
+     "kind": "NOT_DETECTED",
+     "mean": -0.001111111111111112,
+     "note": "no difference was detected: this is not shown to be zero",
+     "relation": "effect_y"
+    },
+    {
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "condition": "effective possibility only (reach is set by the constraint)",
+     "kind": "NOT_DETECTED",
+     "mean": 0.0,
+     "note": "no difference was detected: this is not shown to be zero",
+     "relation": "label_to_belief"
+    },
+    {
+     "ci95": [
+      -0.010246748969305964,
+      0.009496748969305973
+     ],
+     "condition": "effective possibility only (reach is set by the constraint)",
+     "kind": "NOT_DETECTED",
+     "mean": -0.0003749999999999948,
+     "note": "no difference was detected: this is not shown to be zero",
+     "relation": "label_to_reach"
+    },
+    {
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "condition": "self-interpretation drives effort (belief changes the reach where the constraint allows)",
+     "kind": "NOT_DETECTED",
+     "mean": 0.0,
+     "note": "no difference was detected: this is not shown to be zero",
+     "relation": "label_to_belief"
+    },
+    {
+     "ci95": [
+      -0.0065923542392285275,
+      0.024092354239228526
+     ],
+     "condition": "self-interpretation drives effort (belief changes the reach where the constraint allows)",
+     "kind": "NOT_DETECTED",
+     "mean": 0.008749999999999999,
+     "note": "no difference was detected: this is not shown to be zero",
+     "relation": "label_to_reach"
+    },
+    {
+     "ci95": [
+      -0.017788381917258782,
+      0.015566159695036559
+     ],
+     "condition": "institutional free-classification (the label is adopted as a belief)",
+     "kind": "NOT_DETECTED",
+     "mean": -0.001111111111111112,
+     "note": "no difference was detected: this is not shown to be zero",
+     "relation": "effect_y"
+    },
+    {
+     "ci95": [
+      -0.010246748969305964,
+      0.009496748969305973
+     ],
+     "condition": "institutional free-classification (the label is adopted as a belief)",
+     "kind": "NOT_DETECTED",
+     "mean": -0.0003749999999999948,
+     "note": "no difference was detected: this is not shown to be zero",
+     "relation": "label_to_reach"
+    },
+    {
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "condition": "constraint also lowers the belief (embodied coupling)",
+     "kind": "NOT_DETECTED",
+     "mean": 0.0,
+     "note": "no difference was detected: this is not shown to be zero",
+     "relation": "label_to_belief"
+    },
+    {
+     "ci95": [
+      -0.003321040090387104,
+      0.01857104009038711
+     ],
+     "condition": "constraint also lowers the belief (embodied coupling)",
+     "kind": "NOT_DETECTED",
+     "mean": 0.007625000000000004,
+     "note": "no difference was detected: this is not shown to be zero",
+     "relation": "label_to_reach"
+    },
+    {
+     "domains_not_executed": [
+      "004-body"
+     ],
+     "kind": "NOT_DONE",
+     "what": "competing explanations beyond a reliability statistic and a static causal model (attention, memory, predictive processing, sensorimotor, cognitive appraisal, concept learning, SNN, dynamical systems, operational-shape analysis) were not run"
+    }
+   ],
+   "prohibited_inferences": [
+    {
+     "conclusion": "gaisho_fired",
+     "premise": "spike_fired",
+     "reason": "a spike firing is a firing of a neuron model; it is not the firing of a Gaisho"
+    },
+    {
+     "conclusion": "gaisho_established",
+     "premise": "concept_classification_succeeded",
+     "reason": "a successful conceptual classification does not establish a Gaisho"
+    },
+    {
+     "conclusion": "thought_established",
+     "premise": "ai_internal_state_changed",
+     "reason": "a change of the internal state of an AI does not establish thinking"
+    },
+    {
+     "conclusion": "gaisho_exists",
+     "premise": "shape_3d_complex",
+     "reason": "the complexity of a drawn shape is not evidence of a Gaisho"
+    },
+    {
+     "conclusion": "knowledge_established",
+     "premise": "accuracy_improved",
+     "reason": "an improved accuracy does not establish knowledge"
+    },
+    {
+     "conclusion": "judgement_about_object_true",
+     "premise": "gaisho_attribution_succeeded",
+     "reason": "the success of an attribution does not make the judgement about the object true"
+    },
+    {
+     "conclusion": "individual_gaisho_changed",
+     "premise": "institution_evaluation_changed",
+     "reason": "a change of an institution's evaluation is not a change of an individual's Gaisho"
+    },
+    {
+     "conclusion": "gaisho_attributed",
+     "premise": "operational_difference_found",
+     "reason": "an operational difference is not an attribution: the attribution needs independent evidence"
+    }
+   ],
+   "result": {
+    "conditions": {
+     "constraint also lowers the belief (embodied coupling)": {
+      "accuracy": {
+       "mean": 0.24794444444444444,
+       "n": 20,
+       "sd": 0.008804607748720933,
+       "se": 0.001968770144136139
+      },
+      "accuracy_pre_shift": {
+       "mean": null,
+       "n": 0,
+       "sd": null,
+       "se": null
+      },
+      "operation_digest": "b8f3a03b1540ea57d495bc40602bdb7d5dabfce0e98a5412b1e2a576c3c1cf7f",
+      "relations": {
+       "effect_x": {
+        "ci95": [
+         -0.6168634316818303,
+         -0.5946365683181697
+        ],
+        "n": 20,
+        "sd": 0.02374619083026514,
+        "se": 0.005309809690315502,
+        "status": "IDENTIFIED",
+        "value": -0.60575
+       },
+       "effect_y": {
+        "ci95": [
+         0.28156123511622905,
+         0.3012165426615488
+        ],
+        "n": 20,
+        "sd": 0.02099885513139014,
+        "se": 0.004695486752345862,
+        "status": "IDENTIFIED",
+        "value": 0.2913888888888889
+       },
+       "label_to_belief": {
+        "ci95": [
+         0.0,
+         0.0
+        ],
+        "n": 20,
+        "sd": 0.0,
+        "se": 0.0,
+        "status": "IDENTIFIED",
+        "value": 0.0
+       },
+       "label_to_reach": {
+        "ci95": [
+         -0.003321040090387104,
+         0.01857104009038711
+        ],
+        "n": 20,
+        "sd": 0.023388523388957017,
+        "se": 0.005229832819105164,
+        "status": "IDENTIFIED",
+        "value": 0.007625000000000004
+       }
+      }
+     },
+     "effective possibility only (reach is set by the constraint)": {
+      "accuracy": {
+       "mean": 0.4993888888888889,
+       "n": 20,
+       "sd": 0.007431515350374989,
+       "se": 0.0016617373499271642
+      },
+      "accuracy_pre_shift": {
+       "mean": null,
+       "n": 0,
+       "sd": null,
+       "se": null
+      },
+      "operation_digest": "a5786b97dba94973bcd066980519556ba469c26d9b021edef0e189bfaaf13405",
+      "relations": {
+       "effect_x": {
+        "ci95": [
+         -1.0,
+         -1.0
+        ],
+        "n": 20,
+        "sd": 0.0,
+        "se": 0.0,
+        "status": "IDENTIFIED",
+        "value": -1.0
+       },
+       "effect_y": {
+        "ci95": [
+         -0.017788381917258782,
+         0.015566159695036559
+        ],
+        "n": 20,
+        "sd": 0.03563450664282743,
+        "se": 0.007968117919802996,
+        "status": "IDENTIFIED",
+        "value": -0.001111111111111112
+       },
+       "label_to_belief": {
+        "ci95": [
+         0.0,
+         0.0
+        ],
+        "n": 20,
+        "sd": 0.0,
+        "se": 0.0,
+        "status": "IDENTIFIED",
+        "value": 0.0
+       },
+       "label_to_reach": {
+        "ci95": [
+         -0.010246748969305964,
+         0.009496748969305973
+        ],
+        "n": 20,
+        "sd": 0.021093073819571557,
+        "se": 0.004716554691498313,
+        "status": "IDENTIFIED",
+        "value": -0.0003749999999999948
+       }
+      }
+     },
+     "institutional free-classification (the label is adopted as a belief)": {
+      "accuracy": {
+       "mean": 0.4993888888888889,
+       "n": 20,
+       "sd": 0.007431515350374989,
+       "se": 0.0016617373499271642
+      },
+      "accuracy_pre_shift": {
+       "mean": null,
+       "n": 0,
+       "sd": null,
+       "se": null
+      },
+      "operation_digest": "8afbefa386c39f541ffbbcd5d1ec3af539b97b5d2285478e20c0b8d1c0d3b842",
+      "relations": {
+       "effect_x": {
+        "ci95": [
+         -1.0,
+         -1.0
+        ],
+        "n": 20,
+        "sd": 0.0,
+        "se": 0.0,
+        "status": "IDENTIFIED",
+        "value": -1.0
+       },
+       "effect_y": {
+        "ci95": [
+         -0.017788381917258782,
+         0.015566159695036559
+        ],
+        "n": 20,
+        "sd": 0.03563450664282743,
+        "se": 0.007968117919802996,
+        "status": "IDENTIFIED",
+        "value": -0.001111111111111112
+       },
+       "label_to_belief": {
+        "ci95": [
+         0.8999999999999998,
+         0.8999999999999998
+        ],
+        "n": 20,
+        "sd": 1.1390647892519134e-16,
+        "se": 2.54702629954375e-17,
+        "status": "IDENTIFIED",
+        "value": 0.8999999999999998
+       },
+       "label_to_reach": {
+        "ci95": [
+         -0.010246748969305964,
+         0.009496748969305973
+        ],
+        "n": 20,
+        "sd": 0.021093073819571557,
+        "se": 0.004716554691498313,
+        "status": "IDENTIFIED",
+        "value": -0.0003749999999999948
+       }
+      }
+     },
+     "institutional label adopted as a belief that drives effort": {
+      "accuracy": {
+       "mean": 0.2971944444444445,
+       "n": 20,
+       "sd": 0.008832928748688174,
+       "se": 0.0019751029122478912
+      },
+      "accuracy_pre_shift": {
+       "mean": null,
+       "n": 0,
+       "sd": null,
+       "se": null
+      },
+      "operation_digest": "a79d21ccf4c988d7e30942986bde32d2e978c1ff8650528001e415864e32fba5",
+      "relations": {
+       "effect_x": {
+        "ci95": [
+         -0.6168634316818303,
+         -0.5946365683181697
+        ],
+        "n": 20,
+        "sd": 0.02374619083026514,
+        "se": 0.005309809690315502,
+        "status": "IDENTIFIED",
+        "value": -0.60575
+       },
+       "effect_y": {
+        "ci95": [
+         0.38545154571110607,
+         0.413159565400005
+        ],
+        "n": 20,
+        "sd": 0.029602014116713107,
+        "se": 0.00661921158358789,
+        "status": "IDENTIFIED",
+        "value": 0.3993055555555555
+       },
+       "label_to_belief": {
+        "ci95": [
+         0.8999999999999998,
+         0.8999999999999998
+        ],
+        "n": 20,
+        "sd": 1.1390647892519134e-16,
+        "se": 2.54702629954375e-17,
+        "status": "IDENTIFIED",
+        "value": 0.8999999999999998
+       },
+       "label_to_reach": {
+        "ci95": [
+         0.3511890009547573,
+         0.37706099904524265
+        ],
+        "n": 20,
+        "sd": 0.027640490417615876,
+        "se": 0.0061806015505220645,
+        "status": "IDENTIFIED",
+        "value": 0.364125
+       }
+      }
+     },
+     "self-interpretation drives effort (belief changes the reach where the constraint allows)": {
+      "accuracy": {
+       "mean": 0.2971944444444445,
+       "n": 20,
+       "sd": 0.008832928748688174,
+       "se": 0.0019751029122478912
+      },
+      "accuracy_pre_shift": {
+       "mean": null,
+       "n": 0,
+       "sd": null,
+       "se": null
+      },
+      "operation_digest": "eee49b3dfb5376f3c6cabadbc5407927238ed32ec3a2c4b7232dfaedbd97453f",
+      "relations": {
+       "effect_x": {
+        "ci95": [
+         -0.6168634316818303,
+         -0.5946365683181697
+        ],
+        "n": 20,
+        "sd": 0.02374619083026514,
+        "se": 0.005309809690315502,
+        "status": "IDENTIFIED",
+        "value": -0.60575
+       },
+       "effect_y": {
+        "ci95": [
+         0.38545154571110607,
+         0.413159565400005
+        ],
+        "n": 20,
+        "sd": 0.029602014116713107,
+        "se": 0.00661921158358789,
+        "status": "IDENTIFIED",
+        "value": 0.3993055555555555
+       },
+       "label_to_belief": {
+        "ci95": [
+         0.0,
+         0.0
+        ],
+        "n": 20,
+        "sd": 0.0,
+        "se": 0.0,
+        "status": "IDENTIFIED",
+        "value": 0.0
+       },
+       "label_to_reach": {
+        "ci95": [
+         -0.0065923542392285275,
+         0.024092354239228526
+        ],
+        "n": 20,
+        "sd": 0.032782175837359824,
+        "se": 0.007330317362268766,
+        "status": "IDENTIFIED",
+        "value": 0.008749999999999999
+       }
+      }
+     }
+    },
+    "digest": "c9045bce4eca446b4e76ada3ca4123445e7356c69ff8df3635a288fbdcbbec3d",
+    "domain": "003-freedom",
+    "observation": {
+     "boundary": [],
+     "coupling": "intervened",
+     "environment": "default",
+     "memory": true,
+     "probe": 0.0,
+     "resources": 10000,
+     "scale": 1,
+     "sensor_channels": [
+      "x",
+      "y",
+      "memory"
+     ],
+     "sensor_noise": 0.0,
+     "speed": 1,
+     "temporal_window": 40
+    },
+    "seeds": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20
+    ],
+    "title": "FREEDOM \u2014 SELF-INTERPRETATION, EFFECTIVE POSSIBILITY, INSTITUTIONAL CLASSIFICATION, CONSTRAINT"
+   },
+   "spec": {
+    "conditions": null,
+    "domain": "003-freedom",
+    "observation": {
+     "boundary": [],
+     "coupling": "intervened",
+     "environment": "default",
+     "memory": true,
+     "probe": 0.0,
+     "resources": 10000,
+     "scale": 1,
+     "sensor_channels": [
+      "x",
+      "y",
+      "memory"
+     ],
+     "sensor_noise": 0.0,
+     "speed": 1,
+     "temporal_window": 40
+    },
+    "seeds": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20
+    ]
+   },
+   "status": {
+    "completion": "INITIAL_CONDITIONS_EXECUTED",
+    "criteria": "the four conditions of the brief are separated by intervention on declared coupling rules (what they exhibit follows from the rules); an effective action space with real alternatives, competing explanations and ablations are NOT done",
+    "executed": true
+   },
+   "structural_similarity": [
+    {
+     "a": "effective possibility only (reach is set by the constraint)",
+     "b": "self-interpretation drives effort (belief changes the reach where the constraint allows)",
+     "relations_compared": 4,
+     "similarity": 0.7990520833333333
+    },
+    {
+     "a": "effective possibility only (reach is set by the constraint)",
+     "b": "institutional free-classification (the label is adopted as a belief)",
+     "relations_compared": 4,
+     "similarity": 0.775
+    },
+    {
+     "a": "effective possibility only (reach is set by the constraint)",
+     "b": "constraint also lowers the belief (embodied coupling)",
+     "relations_compared": 4,
+     "similarity": 0.8263125
+    },
+    {
+     "a": "effective possibility only (reach is set by the constraint)",
+     "b": "institutional label adopted as a belief that drives effort",
+     "relations_compared": 4,
+     "similarity": 0.48520833333333335
+    },
+    {
+     "a": "self-interpretation drives effort (belief changes the reach where the constraint allows)",
+     "b": "institutional free-classification (the label is adopted as a belief)",
+     "relations_compared": 4,
+     "similarity": 0.5740520833333334
+    },
+    {
+     "a": "self-interpretation drives effort (belief changes the reach where the constraint allows)",
+     "b": "constraint also lowers the belief (embodied coupling)",
+     "relations_compared": 4,
+     "similarity": 0.9727395833333333
+    },
+    {
+     "a": "self-interpretation drives effort (belief changes the reach where the constraint allows)",
+     "b": "institutional label adopted as a belief that drives effort",
+     "relations_compared": 4,
+     "similarity": 0.68615625
+    },
+    {
+     "a": "institutional free-classification (the label is adopted as a belief)",
+     "b": "constraint also lowers the belief (embodied coupling)",
+     "relations_compared": 4,
+     "similarity": 0.6013125
+    },
+    {
+     "a": "institutional free-classification (the label is adopted as a belief)",
+     "b": "institutional label adopted as a belief that drives effort",
+     "relations_compared": 4,
+     "similarity": 0.7102083333333333
+    },
+    {
+     "a": "constraint also lowers the belief (embodied coupling)",
+     "b": "institutional label adopted as a belief that drives effort",
+     "relations_compared": 4,
+     "similarity": 0.6588958333333335
+    }
+   ]
+  },
+  "004-body": {
+   "executed": false,
+   "figure_kind": "CONCEPTUAL_RECONSTRUCTION",
+   "model_version": "gaisho-lab/1",
+   "note": "this domain is specified and not executed; no substitute computation is made",
+   "spec": {
+    "domain": "004-body",
+    "seeds": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20
+    ]
+   },
+   "status": {
+    "completion": "NOT_EXECUTED",
+    "criteria": "needs the existing XenoSNN (the snnTorch server of the P/A repository) connected to this runtime: sensor input and time, spike firing and time, internal state, weights, plasticity, memory, bodily output and the return from the environment as separate records; no substitute computation is made",
+    "executed": false
+   }
+  },
+  "005-credit": {
+   "axes": {
+    "x": "score threshold (do)",
+    "y": "feedback of resources to the state beta (do)"
+   },
+   "digest": "b13cd5842df6391d3ec4b1fc98bf654c3cbe4751ea517c861f30d72effaad791",
+   "executed": true,
+   "figure_kind": "EXECUTED_COMPUTATIONAL_EXPERIMENT",
+   "levels": {
+    "access constraint with a resource floor (a hypothetical guarantee)": {
+     "conceptual_operational_shape": {
+      "evidence": [],
+      "level": "conceptual_operational_shape",
+      "note": "",
+      "state": "NOT_MODELLED"
+     },
+     "gaisho_attribution": {
+      "evidence": [],
+      "level": "gaisho_attribution",
+      "note": "no independent evidence (operational differences are not evidence of a Gaisho)",
+      "state": "UNRESOLVED"
+     },
+     "gaisho_operational_shape": {
+      "evidence": [],
+      "level": "gaisho_operational_shape",
+      "note": "no bearer and no historical interval: a synthetic operation has neither, so it is not a candidate",
+      "state": "NOT_ESTABLISHED"
+     },
+     "operational_shape": {
+      "evidence": [],
+      "level": "operational_shape",
+      "note": "",
+      "state": "RECONSTRUCTED"
+     },
+     "real_operation": {
+      "evidence": [],
+      "level": "real_operation",
+      "note": "",
+      "state": "EXECUTED_IN_MODEL"
+     }
+    },
+    "after a correction (audit, approval, release)": {
+     "conceptual_operational_shape": {
+      "evidence": [],
+      "level": "conceptual_operational_shape",
+      "note": "",
+      "state": "NOT_MODELLED"
+     },
+     "gaisho_attribution": {
+      "evidence": [],
+      "level": "gaisho_attribution",
+      "note": "no independent evidence (operational differences are not evidence of a Gaisho)",
+      "state": "UNRESOLVED"
+     },
+     "gaisho_operational_shape": {
+      "evidence": [],
+      "level": "gaisho_operational_shape",
+      "note": "no bearer and no historical interval: a synthetic operation has neither, so it is not a candidate",
+      "state": "NOT_ESTABLISHED"
+     },
+     "operational_shape": {
+      "evidence": [],
+      "level": "operational_shape",
+      "note": "",
+      "state": "RECONSTRUCTED"
+     },
+     "real_operation": {
+      "evidence": [],
+      "level": "real_operation",
+      "note": "",
+      "state": "EXECUTED_IN_MODEL"
+     }
+    },
+    "institutional classification with an access constraint": {
+     "conceptual_operational_shape": {
+      "evidence": [],
+      "level": "conceptual_operational_shape",
+      "note": "",
+      "state": "NOT_MODELLED"
+     },
+     "gaisho_attribution": {
+      "evidence": [],
+      "level": "gaisho_attribution",
+      "note": "no independent evidence (operational differences are not evidence of a Gaisho)",
+      "state": "UNRESOLVED"
+     },
+     "gaisho_operational_shape": {
+      "evidence": [],
+      "level": "gaisho_operational_shape",
+      "note": "no bearer and no historical interval: a synthetic operation has neither, so it is not a candidate",
+      "state": "NOT_ESTABLISHED"
+     },
+     "operational_shape": {
+      "evidence": [],
+      "level": "operational_shape",
+      "note": "",
+      "state": "RECONSTRUCTED"
+     },
+     "real_operation": {
+      "evidence": [],
+      "level": "real_operation",
+      "note": "",
+      "state": "EXECUTED_IN_MODEL"
+     }
+    },
+    "score computed, allocation inert (the score changes, the resources do not)": {
+     "conceptual_operational_shape": {
+      "evidence": [],
+      "level": "conceptual_operational_shape",
+      "note": "",
+      "state": "NOT_MODELLED"
+     },
+     "gaisho_attribution": {
+      "evidence": [],
+      "level": "gaisho_attribution",
+      "note": "no independent evidence (operational differences are not evidence of a Gaisho)",
+      "state": "UNRESOLVED"
+     },
+     "gaisho_operational_shape": {
+      "evidence": [],
+      "level": "gaisho_operational_shape",
+      "note": "no bearer and no historical interval: a synthetic operation has neither, so it is not a candidate",
+      "state": "NOT_ESTABLISHED"
+     },
+     "operational_shape": {
+      "evidence": [],
+      "level": "operational_shape",
+      "note": "",
+      "state": "RECONSTRUCTED"
+     },
+     "real_operation": {
+      "evidence": [],
+      "level": "real_operation",
+      "note": "",
+      "state": "EXECUTED_IN_MODEL"
+     }
+    }
+   },
+   "limits": "Synthetic computational experiments with declared constants. A shape drawn from them is a projection of identified relations, not the complete acquisition of any real operation; nothing here shows anything about human neural activity, the formation of a real Gaisho, or a universal philosophical law.",
+   "model_version": "gaisho-lab/1",
+   "negative_results": [
+    {
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "condition": "score computed, allocation inert (the score changes, the resources do not)",
+     "kind": "NOT_DETECTED",
+     "mean": 0.0,
+     "note": "no difference was detected: this is not shown to be zero",
+     "relation": "effect_y"
+    },
+    {
+     "ci95": [
+      -0.008272389283898054,
+      0.014031683116099375
+     ],
+     "condition": "score computed, allocation inert (the score changes, the resources do not)",
+     "kind": "NOT_DETECTED",
+     "mean": 0.0028796469161006606,
+     "note": "no difference was detected: this is not shown to be zero",
+     "relation": "unfav_state_change"
+    },
+    {
+     "ci95": [
+      -0.04551190492275975,
+      0.003845238256093085
+     ],
+     "condition": "institutional classification with an access constraint",
+     "kind": "NOT_DETECTED",
+     "mean": -0.020833333333333332,
+     "note": "no difference was detected: this is not shown to be zero",
+     "relation": "effect_y"
+    },
+    {
+     "ci95": [
+      -0.014641133017737,
+      0.026307799684403665
+     ],
+     "condition": "access constraint with a resource floor (a hypothetical guarantee)",
+     "kind": "NOT_DETECTED",
+     "mean": 0.005833333333333333,
+     "note": "no difference was detected: this is not shown to be zero",
+     "relation": "effect_y"
+    },
+    {
+     "domains_not_executed": [
+      "004-body"
+     ],
+     "kind": "NOT_DONE",
+     "what": "competing explanations beyond a reliability statistic and a static causal model (attention, memory, predictive processing, sensorimotor, cognitive appraisal, concept learning, SNN, dynamical systems, operational-shape analysis) were not run"
+    }
+   ],
+   "prohibited_inferences": [
+    {
+     "conclusion": "gaisho_fired",
+     "premise": "spike_fired",
+     "reason": "a spike firing is a firing of a neuron model; it is not the firing of a Gaisho"
+    },
+    {
+     "conclusion": "gaisho_established",
+     "premise": "concept_classification_succeeded",
+     "reason": "a successful conceptual classification does not establish a Gaisho"
+    },
+    {
+     "conclusion": "thought_established",
+     "premise": "ai_internal_state_changed",
+     "reason": "a change of the internal state of an AI does not establish thinking"
+    },
+    {
+     "conclusion": "gaisho_exists",
+     "premise": "shape_3d_complex",
+     "reason": "the complexity of a drawn shape is not evidence of a Gaisho"
+    },
+    {
+     "conclusion": "knowledge_established",
+     "premise": "accuracy_improved",
+     "reason": "an improved accuracy does not establish knowledge"
+    },
+    {
+     "conclusion": "judgement_about_object_true",
+     "premise": "gaisho_attribution_succeeded",
+     "reason": "the success of an attribution does not make the judgement about the object true"
+    },
+    {
+     "conclusion": "individual_gaisho_changed",
+     "premise": "institution_evaluation_changed",
+     "reason": "a change of an institution's evaluation is not a change of an individual's Gaisho"
+    },
+    {
+     "conclusion": "gaisho_attributed",
+     "premise": "operational_difference_found",
+     "reason": "an operational difference is not an attribution: the attribution needs independent evidence"
+    }
+   ],
+   "result": {
+    "conditions": {
+     "access constraint with a resource floor (a hypothetical guarantee)": {
+      "accuracy": {
+       "mean": 0.48365277777777776,
+       "n": 6,
+       "sd": 0.05569675874936695,
+       "se": 0.022738106543807264
+      },
+      "accuracy_pre_shift": {
+       "mean": null,
+       "n": 0,
+       "sd": null,
+       "se": null
+      },
+      "operation_digest": "27cd798981cc89ed6a7f56e97fcc10f7a1c4cbd9949b5b224fa6657c546bc089",
+      "relations": {
+       "effect_x": {
+        "ci95": [
+         -0.17097848599112384,
+         -0.14068818067554287
+        ],
+        "n": 6,
+        "sd": 0.01772474729486056,
+        "se": 0.007236097782030804,
+        "status": "IDENTIFIED",
+        "value": -0.15583333333333335
+       },
+       "effect_y": {
+        "ci95": [
+         -0.014641133017737,
+         0.026307799684403665
+        ],
+        "n": 6,
+        "sd": 0.023961775115100864,
+        "se": 0.009782353727219462,
+        "status": "IDENTIFIED",
+        "value": 0.005833333333333333
+       },
+       "state_transformation": {
+        "ci95": [
+         5.311233214527918,
+         5.979387618805419
+        ],
+        "n": 6,
+        "sd": 0.3909788246233027,
+        "se": 0.15961643676003384,
+        "status": "IDENTIFIED",
+        "value": 5.6453104166666686
+       },
+       "unfav_state_change": {
+        "ci95": [
+         -0.47386403563374346,
+         -0.36379730429560664
+        ],
+        "n": 6,
+        "sd": 0.06440691099723789,
+        "se": 0.02629401130868055,
+        "status": "IDENTIFIED",
+        "value": -0.41883066996467505
+       }
+      }
+     },
+     "after a correction (audit, approval, release)": {
+      "accuracy": {
+       "mean": 0.44854166666666667,
+       "n": 6,
+       "sd": 0.05361153353316596,
+       "se": 0.02188681691406107
+      },
+      "accuracy_pre_shift": {
+       "mean": null,
+       "n": 0,
+       "sd": null,
+       "se": null
+      },
+      "operation_digest": "1a64292e4563e06599aa52a45ce5b83beb4a105584b54ab53b8de18147eeb09c",
+      "relations": {
+       "effect_x": {
+        "ci95": [
+         -0.14974874134296956,
+         -0.11525125865703045
+        ],
+        "n": 6,
+        "sd": 0.020186629238186364,
+        "se": 0.008241156876717417,
+        "status": "IDENTIFIED",
+        "value": -0.1325
+       },
+       "effect_y": {
+        "ci95": [
+         0.015477972809265366,
+         0.051188693857401296
+        ],
+        "n": 6,
+        "sd": 0.020896570691543312,
+        "se": 0.008530989261379822,
+        "status": "IDENTIFIED",
+        "value": 0.03333333333333333
+       },
+       "state_transformation": {
+        "ci95": [
+         7.9096997808691,
+         8.359765496908679
+        ],
+        "n": 6,
+        "sd": 0.2633615277155558,
+        "se": 0.10751689346382695,
+        "status": "IDENTIFIED",
+        "value": 8.13473263888889
+       },
+       "unfav_state_change": {
+        "ci95": [
+         -1.1999473526901923,
+         -1.0381399272887408
+        ],
+        "n": 6,
+        "sd": 0.09468361892666254,
+        "se": 0.03865442556174185,
+        "status": "IDENTIFIED",
+        "value": -1.1190436399894665
+       }
+      }
+     },
+     "institutional classification with an access constraint": {
+      "accuracy": {
+       "mean": 0.4642361111111111,
+       "n": 6,
+       "sd": 0.053623440579933256,
+       "se": 0.021891677945548294
+      },
+      "accuracy_pre_shift": {
+       "mean": null,
+       "n": 0,
+       "sd": null,
+       "se": null
+      },
+      "operation_digest": "73d39fc944832569422826085f66b543ab1a09c191f14cbfad86a1392268a1f4",
+      "relations": {
+       "effect_x": {
+        "ci95": [
+         -0.18144686795315343,
+         -0.13855313204684658
+        ],
+        "n": 6,
+        "sd": 0.025099800796022254,
+        "se": 0.010246950765959594,
+        "status": "IDENTIFIED",
+        "value": -0.16
+       },
+       "effect_y": {
+        "ci95": [
+         -0.04551190492275975,
+         0.003845238256093085
+        ],
+        "n": 6,
+        "sd": 0.028881943609574946,
+        "se": 0.011791004103882665,
+        "status": "IDENTIFIED",
+        "value": -0.020833333333333332
+       },
+       "state_transformation": {
+        "ci95": [
+         7.924036493340026,
+         8.434931562215535
+        ],
+        "n": 6,
+        "sd": 0.2989565768870195,
+        "se": 0.12204851143705414,
+        "status": "IDENTIFIED",
+        "value": 8.17948402777778
+       },
+       "unfav_state_change": {
+        "ci95": [
+         -1.2023385144597436,
+         -1.0493329530332762
+        ],
+        "n": 6,
+        "sd": 0.08953309921235394,
+        "se": 0.03655173469337494,
+        "status": "IDENTIFIED",
+        "value": -1.12583573374651
+       }
+      }
+     },
+     "score computed, allocation inert (the score changes, the resources do not)": {
+      "accuracy": {
+       "mean": 0.47833333333333344,
+       "n": 6,
+       "sd": 0.0659903191553293,
+       "se": 0.026940434982327902
+      },
+      "accuracy_pre_shift": {
+       "mean": null,
+       "n": 0,
+       "sd": null,
+       "se": null
+      },
+      "operation_digest": "2e67682e3bcf8bfa1196720b8807896b20a1d01d39f52157e195fd7f641fceea",
+      "relations": {
+       "effect_x": {
+        "ci95": [
+         -0.1734004513845353,
+         -0.12659954861546469
+        ],
+        "n": 6,
+        "sd": 0.02738612787525831,
+        "se": 0.011180339887498952,
+        "status": "IDENTIFIED",
+        "value": -0.15
+       },
+       "effect_y": {
+        "ci95": [
+         0.0,
+         0.0
+        ],
+        "n": 6,
+        "sd": 0.0,
+        "se": 0.0,
+        "status": "IDENTIFIED",
+        "value": 0.0
+       },
+       "state_transformation": {
+        "ci95": [
+         -3.820430061600955e-31,
+         -6.803711105187637e-32
+        ],
+        "n": 6,
+        "sd": 1.8374443842356266e-31,
+        "se": 7.5013352868662e-32,
+        "status": "IDENTIFIED",
+        "value": -2.2504005860598595e-31
+       },
+       "unfav_state_change": {
+        "ci95": [
+         -0.008272389283898054,
+         0.014031683116099375
+        ],
+        "n": 6,
+        "sd": 0.013051504196389651,
+        "se": 0.00532825427615801,
+        "status": "IDENTIFIED",
+        "value": 0.0028796469161006606
+       }
+      }
+     }
+    },
+    "digest": "5c3b06a080e73e707eeb5d80efcee6ce2eebf9e8742caa61b0715030275db141",
+    "domain": "005-credit",
+    "observation": {
+     "boundary": [],
+     "coupling": "intervened",
+     "environment": "default",
+     "memory": true,
+     "probe": 0.0,
+     "resources": 10000,
+     "scale": 1,
+     "sensor_channels": [
+      "x",
+      "y",
+      "memory"
+     ],
+     "sensor_noise": 0.0,
+     "speed": 1,
+     "temporal_window": 40
+    },
+    "seeds": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "title": "CREDIT \u2014 INSTITUTIONAL SCORE OPERATION AND THE ACCESS IT SETS (SYNTHETIC)"
+   },
+   "spec": {
+    "conditions": null,
+    "domain": "005-credit",
+    "observation": {
+     "boundary": [],
+     "coupling": "intervened",
+     "environment": "default",
+     "memory": true,
+     "probe": 0.0,
+     "resources": 10000,
+     "scale": 1,
+     "sensor_channels": [
+      "x",
+      "y",
+      "memory"
+     ],
+     "sensor_noise": 0.0,
+     "speed": 1,
+     "temporal_window": 40
+    },
+    "seeds": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ]
+   },
+   "status": {
+    "completion": "INITIAL_CONDITIONS_EXECUTED",
+    "criteria": "the institution's scoring, classification, access constraint and a correction are intervened on through the existing TRUTH-ERROR engine; the institution's operation is not an individual's Gaisho and an individual's orientation to their own evaluation is NOT modelled",
+    "executed": true
+   },
+   "structural_similarity": [
+    {
+     "a": "score computed, allocation inert (the score changes, the resources do not)",
+     "b": "institutional classification with an access constraint",
+     "relations_compared": 4,
+     "similarity": -1.3347581854434312
+    },
+    {
+     "a": "score computed, allocation inert (the score changes, the resources do not)",
+     "b": "access constraint with a resource floor (a hypothetical guarantee)",
+     "relations_compared": 4,
+     "similarity": -0.5196718500535278
+    },
+    {
+     "a": "score computed, allocation inert (the score changes, the resources do not)",
+     "b": "after a correction (audit, approval, release)",
+     "relations_compared": 4,
+     "similarity": -1.3268723147819474
+    },
+    {
+     "a": "institutional classification with an access constraint",
+     "b": "access constraint with a resource floor (a hypothetical guarantee)",
+     "relations_compared": 4,
+     "similarity": 0.18199699794342994
+    },
+    {
+     "a": "institutional classification with an access constraint",
+     "b": "after a correction (audit, approval, release)",
+     "relations_compared": 4,
+     "similarity": 0.9666974626718499
+    },
+    {
+     "a": "access constraint with a resource floor (a hypothetical guarantee)",
+     "b": "after a correction (audit, approval, release)",
+     "relations_compared": 4,
+     "similarity": 0.18988286860491344
+    }
+   ]
+  }
+ },
+ "knowledge_observation_sensitivity": {
+  "environment: cue decoupled from the start": {
+   "conditions": {
+    "accidental correct: base-rate guess": {
+     "accuracy": 0.8397500000000001,
+     "operation_digest": "037ff6a3a0e74691",
+     "relations": {
+      "effect_E": -0.004,
+      "effect_S": 0.001,
+      "revision_E": 0.001,
+      "revision_S": 0.005,
+      "shift_drop": 0.01,
+      "stability_do_W": 0.506
+     }
+    },
+    "accidental correct: coincidental cue": {
+     "accuracy": 0.50025,
+     "operation_digest": "15da2474814b4fe3",
+     "relations": {
+      "effect_E": -0.017,
+      "effect_S": 0.955,
+      "revision_E": -0.028,
+      "revision_S": 0.001,
+      "shift_drop": -0.015,
+      "stability_do_W": 0.498
+     }
+    },
+    "correction and reconfiguration (feedback on)": {
+     "accuracy": 0.858375,
+     "operation_digest": "9e47b7c9f53a669c",
+     "relations": {
+      "effect_E": 0.993,
+      "effect_S": 0.06,
+      "revision_E": 0.784,
+      "revision_S": -0.887,
+      "shift_drop": -0.012,
+      "stability_do_W": 0.773
+     }
+    },
+    "ground-responsive judgement": {
+     "accuracy": 0.83475,
+     "operation_digest": "f192b80bd62842d3",
+     "relations": {
+      "effect_E": 0.999,
+      "effect_S": 0.002,
+      "revision_E": -0.0,
+      "revision_S": 0.001,
+      "shift_drop": 0.003,
+      "stability_do_W": 0.836
+     }
+    },
+    "misjudgement: miscalibrated reading": {
+     "accuracy": 0.5821249999999998,
+     "operation_digest": "9198aab585f5545a",
+     "relations": {
+      "effect_E": 0.995,
+      "effect_S": -0.0,
+      "revision_E": 0.0,
+      "revision_S": -0.004,
+      "shift_drop": 0.029,
+      "stability_do_W": 0.748
+     }
+    },
+    "no correction (feedback off)": {
+     "accuracy": 0.518625,
+     "operation_digest": "502bedbb2d1a6fae",
+     "relations": {
+      "effect_E": 0.194,
+      "effect_S": 0.948,
+      "revision_E": -0.015,
+      "revision_S": 0.001,
+      "shift_drop": -0.019,
+      "stability_do_W": 0.52
+     }
+    }
+   },
+   "digest": "784b6b1a3633c2a8c65ec19ecf73fa5de2c82f420c8b5b94443c87252d16d751",
+   "observation": {
+    "boundary": [],
+    "coupling": "intervened",
+    "environment": "cue decoupled from the start",
+    "memory": true,
+    "probe": 0.0,
+    "resources": 10000,
+    "scale": 1,
+    "sensor_channels": [
+     "x",
+     "y",
+     "memory"
+    ],
+    "sensor_noise": 0.0,
+    "speed": 1,
+    "temporal_window": 40
+   }
+  },
+  "environment: harder evidence": {
+   "conditions": {
+    "accidental correct: base-rate guess": {
+     "accuracy": 0.8397500000000001,
+     "operation_digest": "037ff6a3a0e74691",
+     "relations": {
+      "effect_E": -0.004,
+      "effect_S": 0.001,
+      "revision_E": 0.001,
+      "revision_S": 0.005,
+      "shift_drop": 0.01,
+      "stability_do_W": 0.506
+     }
+    },
+    "accidental correct: coincidental cue": {
+     "accuracy": 0.6695,
+     "operation_digest": "95de60c7845b7733",
+     "relations": {
+      "effect_E": -0.017,
+      "effect_S": 0.955,
+      "revision_E": -0.028,
+      "revision_S": 0.001,
+      "shift_drop": 0.328,
+      "stability_do_W": 0.498
+     }
+    },
+    "correction and reconfiguration (feedback on)": {
+     "accuracy": 0.8574999999999999,
+     "operation_digest": "fcad325b94028a79",
+     "relations": {
+      "effect_E": 0.851,
+      "effect_S": 0.185,
+      "revision_E": 0.642,
+      "revision_S": -0.763,
+      "shift_drop": 0.136,
+      "stability_do_W": 0.66
+     }
+    },
+    "ground-responsive judgement": {
+     "accuracy": 0.765875,
+     "operation_digest": "b7d94b64158dba1e",
+     "relations": {
+      "effect_E": 0.999,
+      "effect_S": 0.002,
+      "revision_E": -0.0,
+      "revision_S": 0.001,
+      "shift_drop": 0.005,
+      "stability_do_W": 0.773
+     }
+    },
+    "misjudgement: miscalibrated reading": {
+     "accuracy": 0.56775,
+     "operation_digest": "ee34ef7ea361bee1",
+     "relations": {
+      "effect_E": 0.995,
+      "effect_S": -0.0,
+      "revision_E": 0.0,
+      "revision_S": -0.004,
+      "shift_drop": 0.028,
+      "stability_do_W": 0.722
+     }
+    },
+    "no correction (feedback off)": {
+     "accuracy": 0.6867500000000001,
+     "operation_digest": "7d7288d58a21b0b1",
+     "relations": {
+      "effect_E": 0.194,
+      "effect_S": 0.948,
+      "revision_E": -0.015,
+      "revision_S": 0.001,
+      "shift_drop": 0.323,
+      "stability_do_W": 0.523
+     }
+    }
+   },
+   "digest": "8204fbddff2daf98fabb84be08690ee3c17ac69407414c488d641d85df279142",
+   "observation": {
+    "boundary": [],
+    "coupling": "intervened",
+    "environment": "harder evidence (sigma 1.2)",
+    "memory": true,
+    "probe": 0.0,
+    "resources": 10000,
+    "scale": 1,
+    "sensor_channels": [
+     "x",
+     "y",
+     "memory"
+    ],
+    "sensor_noise": 0.0,
+    "speed": 1,
+    "temporal_window": 40
+   }
+  },
+  "full observation": {
+   "conditions": {
+    "accidental correct: base-rate guess": {
+     "accuracy": 0.8397500000000001,
+     "operation_digest": "037ff6a3a0e74691",
+     "relations": {
+      "effect_E": -0.004,
+      "effect_S": 0.001,
+      "revision_E": 0.001,
+      "revision_S": 0.005,
+      "shift_drop": 0.01,
+      "stability_do_W": 0.506
+     }
+    },
+    "accidental correct: coincidental cue": {
+     "accuracy": 0.6695,
+     "operation_digest": "95de60c7845b7733",
+     "relations": {
+      "effect_E": -0.017,
+      "effect_S": 0.955,
+      "revision_E": -0.028,
+      "revision_S": 0.001,
+      "shift_drop": 0.328,
+      "stability_do_W": 0.498
+     }
+    },
+    "correction and reconfiguration (feedback on)": {
+     "accuracy": 0.8831249999999999,
+     "operation_digest": "af1368107d0e9d2b",
+     "relations": {
+      "effect_E": 0.989,
+      "effect_S": 0.155,
+      "revision_E": 0.78,
+      "revision_S": -0.792,
+      "shift_drop": 0.107,
+      "stability_do_W": 0.763
+     }
+    },
+    "ground-responsive judgement": {
+     "accuracy": 0.83475,
+     "operation_digest": "f192b80bd62842d3",
+     "relations": {
+      "effect_E": 0.999,
+      "effect_S": 0.002,
+      "revision_E": -0.0,
+      "revision_S": 0.001,
+      "shift_drop": 0.003,
+      "stability_do_W": 0.836
+     }
+    },
+    "misjudgement: miscalibrated reading": {
+     "accuracy": 0.5821249999999998,
+     "operation_digest": "9198aab585f5545a",
+     "relations": {
+      "effect_E": 0.995,
+      "effect_S": -0.0,
+      "revision_E": 0.0,
+      "revision_S": -0.004,
+      "shift_drop": 0.029,
+      "stability_do_W": 0.748
+     }
+    },
+    "no correction (feedback off)": {
+     "accuracy": 0.687,
+     "operation_digest": "a419a00ba01882ab",
+     "relations": {
+      "effect_E": 0.194,
+      "effect_S": 0.948,
+      "revision_E": -0.015,
+      "revision_S": 0.001,
+      "shift_drop": 0.323,
+      "stability_do_W": 0.52
+     }
+    }
+   },
+   "digest": "06f97484aa4dc708f3a6797d6c3b4c0f4563245cbdd642180840827698e89701",
+   "observation": {
+    "boundary": [],
+    "coupling": "intervened",
+    "environment": "default",
+    "memory": true,
+    "probe": 0.0,
+    "resources": 10000,
+    "scale": 1,
+    "sensor_channels": [
+     "x",
+     "y",
+     "memory"
+    ],
+    "sensor_noise": 0.0,
+    "speed": 1,
+    "temporal_window": 40
+   }
+  },
+  "instrument noise 0.3 (a recorded outcome flips with probability 0.3)": {
+   "conditions": {
+    "accidental correct: base-rate guess": {
+     "accuracy": 0.8397500000000001,
+     "operation_digest": "037ff6a3a0e74691",
+     "relations": {
+      "effect_E": "INSTRUMENT_MISFIT",
+      "effect_S": "INSTRUMENT_MISFIT",
+      "revision_E": "INSTRUMENT_MISFIT",
+      "revision_S": "INSTRUMENT_MISFIT",
+      "shift_drop": 0.01,
+      "stability_do_W": 0.506
+     }
+    },
+    "accidental correct: coincidental cue": {
+     "accuracy": 0.6695,
+     "operation_digest": "95de60c7845b7733",
+     "relations": {
+      "effect_E": "INSTRUMENT_MISFIT",
+      "effect_S": 0.383,
+      "revision_E": "INSTRUMENT_MISFIT",
+      "revision_S": "INSTRUMENT_MISFIT",
+      "shift_drop": 0.328,
+      "stability_do_W": 0.498
+     }
+    },
+    "correction and reconfiguration (feedback on)": {
+     "accuracy": 0.8831249999999999,
+     "operation_digest": "af1368107d0e9d2b",
+     "relations": {
+      "effect_E": 0.41,
+      "effect_S": "INSTRUMENT_MISFIT",
+      "revision_E": 0.324,
+      "revision_S": -0.318,
+      "shift_drop": 0.107,
+      "stability_do_W": 0.763
+     }
+    },
+    "ground-responsive judgement": {
+     "accuracy": 0.83475,
+     "operation_digest": "f192b80bd62842d3",
+     "relations": {
+      "effect_E": 0.402,
+      "effect_S": "INSTRUMENT_MISFIT",
+      "revision_E": "INSTRUMENT_MISFIT",
+      "revision_S": "INSTRUMENT_MISFIT",
+      "shift_drop": 0.003,
+      "stability_do_W": 0.836
+     }
+    },
+    "misjudgement: miscalibrated reading": {
+     "accuracy": 0.5821249999999998,
+     "operation_digest": "9198aab585f5545a",
+     "relations": {
+      "effect_E": 0.405,
+      "effect_S": "INSTRUMENT_MISFIT",
+      "revision_E": "INSTRUMENT_MISFIT",
+      "revision_S": "INSTRUMENT_MISFIT",
+      "shift_drop": 0.029,
+      "stability_do_W": 0.748
+     }
+    },
+    "no correction (feedback off)": {
+     "accuracy": 0.687,
+     "operation_digest": "a419a00ba01882ab",
+     "relations": {
+      "effect_E": "INSTRUMENT_MISFIT",
+      "effect_S": 0.38,
+      "revision_E": "INSTRUMENT_MISFIT",
+      "revision_S": "INSTRUMENT_MISFIT",
+      "shift_drop": 0.323,
+      "stability_do_W": 0.52
+     }
+    }
+   },
+   "digest": "43678803eb3724c7dd138b8b2acc81a9bf5386392f5c68818f2e7e5c2b524860",
+   "observation": {
+    "boundary": [],
+    "coupling": "intervened",
+    "environment": "default",
+    "memory": true,
+    "probe": 0.0,
+    "resources": 10000,
+    "scale": 1,
+    "sensor_channels": [
+     "x",
+     "y",
+     "memory"
+    ],
+    "sensor_noise": 0.3,
+    "speed": 1,
+    "temporal_window": 40
+   }
+  },
+  "no memory record": {
+   "conditions": {
+    "accidental correct: base-rate guess": {
+     "accuracy": 0.8397500000000001,
+     "operation_digest": "037ff6a3a0e74691",
+     "relations": {
+      "effect_E": -0.004,
+      "effect_S": 0.001,
+      "revision_E": "UNMEASURED",
+      "revision_S": "UNMEASURED",
+      "shift_drop": 0.01,
+      "stability_do_W": 0.506
+     }
+    },
+    "accidental correct: coincidental cue": {
+     "accuracy": 0.6695,
+     "operation_digest": "95de60c7845b7733",
+     "relations": {
+      "effect_E": -0.017,
+      "effect_S": 0.955,
+      "revision_E": "UNMEASURED",
+      "revision_S": "UNMEASURED",
+      "shift_drop": 0.328,
+      "stability_do_W": 0.498
+     }
+    },
+    "correction and reconfiguration (feedback on)": {
+     "accuracy": 0.8831249999999999,
+     "operation_digest": "af1368107d0e9d2b",
+     "relations": {
+      "effect_E": 0.989,
+      "effect_S": 0.155,
+      "revision_E": "UNMEASURED",
+      "revision_S": "UNMEASURED",
+      "shift_drop": 0.107,
+      "stability_do_W": 0.763
+     }
+    },
+    "ground-responsive judgement": {
+     "accuracy": 0.83475,
+     "operation_digest": "f192b80bd62842d3",
+     "relations": {
+      "effect_E": 0.999,
+      "effect_S": 0.002,
+      "revision_E": "UNMEASURED",
+      "revision_S": "UNMEASURED",
+      "shift_drop": 0.003,
+      "stability_do_W": 0.836
+     }
+    },
+    "misjudgement: miscalibrated reading": {
+     "accuracy": 0.5821249999999998,
+     "operation_digest": "9198aab585f5545a",
+     "relations": {
+      "effect_E": 0.995,
+      "effect_S": -0.0,
+      "revision_E": "UNMEASURED",
+      "revision_S": "UNMEASURED",
+      "shift_drop": 0.029,
+      "stability_do_W": 0.748
+     }
+    },
+    "no correction (feedback off)": {
+     "accuracy": 0.687,
+     "operation_digest": "a419a00ba01882ab",
+     "relations": {
+      "effect_E": 0.194,
+      "effect_S": 0.948,
+      "revision_E": "UNMEASURED",
+      "revision_S": "UNMEASURED",
+      "shift_drop": 0.323,
+      "stability_do_W": 0.52
+     }
+    }
+   },
+   "digest": "9de86a4da37c47631eeb99f6347845b268ff5f36c418264d0493f4a57bb3ebbf",
+   "observation": {
+    "boundary": [],
+    "coupling": "intervened",
+    "environment": "default",
+    "memory": false,
+    "probe": 0.0,
+    "resources": 10000,
+    "scale": 1,
+    "sensor_channels": [
+     "x",
+     "y",
+     "memory"
+    ],
+    "sensor_noise": 0.0,
+    "speed": 1,
+    "temporal_window": 40
+   }
+  },
+  "observer probe 1.0 (the observation perturbs the operation)": {
+   "conditions": {
+    "accidental correct: base-rate guess": {
+     "accuracy": 0.8104999999999999,
+     "operation_digest": "b3e12bd58d11b857",
+     "relations": {
+      "effect_E": -0.008,
+      "effect_S": -0.042,
+      "revision_E": -0.003,
+      "revision_S": -0.037,
+      "shift_drop": -0.001,
+      "stability_do_W": 0.504
+     }
+    },
+    "accidental correct: coincidental cue": {
+     "accuracy": 0.6728749999999999,
+     "operation_digest": "6e76b804fdc4bc05",
+     "relations": {
+      "effect_E": 0.028,
+      "effect_S": 0.752,
+      "revision_E": 0.016,
+      "revision_S": -0.201,
+      "shift_drop": 0.282,
+      "stability_do_W": 0.496
+     }
+    },
+    "correction and reconfiguration (feedback on)": {
+     "accuracy": 0.852375,
+     "operation_digest": "7ebc8e992e6ed795",
+     "relations": {
+      "effect_E": 0.8,
+      "effect_S": 0.165,
+      "revision_E": 0.591,
+      "revision_S": -0.782,
+      "shift_drop": 0.13,
+      "stability_do_W": 0.653
+     }
+    },
+    "ground-responsive judgement": {
+     "accuracy": 0.7600000000000001,
+     "operation_digest": "225f3e78987bb66b",
+     "relations": {
+      "effect_E": "SCALE_MISFIT",
+      "effect_S": -0.025,
+      "revision_E": "SCALE_MISFIT",
+      "revision_S": -0.025,
+      "shift_drop": 0.02,
+      "stability_do_W": 0.726
+     }
+    },
+    "misjudgement: miscalibrated reading": {
+     "accuracy": 0.5843749999999999,
+     "operation_digest": "84dc63801cd568ba",
+     "relations": {
+      "effect_E": "SCALE_MISFIT",
+      "effect_S": -0.015,
+      "revision_E": "SCALE_MISFIT",
+      "revision_S": -0.019,
+      "shift_drop": 0.051,
+      "stability_do_W": 0.701
+     }
+    },
+    "no correction (feedback off)": {
+     "accuracy": 0.6928749999999999,
+     "operation_digest": "66f99031db64ffce",
+     "relations": {
+      "effect_E": 0.176,
+      "effect_S": 0.741,
+      "revision_E": -0.033,
+      "revision_S": -0.207,
+      "shift_drop": 0.281,
+      "stability_do_W": 0.522
+     }
+    }
+   },
+   "digest": "c47591fd2cafadea74a7aadcc3fb091b4206f0c481ed6a58c16f0551a668a61e",
+   "observation": {
+    "boundary": [],
+    "coupling": "intervened",
+    "environment": "default",
+    "memory": true,
+    "probe": 1.0,
+    "resources": 10000,
+    "scale": 1,
+    "sensor_channels": [
+     "x",
+     "y",
+     "memory"
+    ],
+    "sensor_noise": 0.0,
+    "speed": 1,
+    "temporal_window": 40
+   }
+  },
+  "passive coupling (the operation is only watched along its natural coupling)": {
+   "conditions": {
+    "accidental correct: base-rate guess": {
+     "accuracy": 0.8397500000000001,
+     "operation_digest": "037ff6a3a0e74691",
+     "relations": {
+      "effect_E": "IDENTIFICATION_UNRESOLVED",
+      "effect_S": "IDENTIFICATION_UNRESOLVED",
+      "revision_E": "IDENTIFICATION_UNRESOLVED",
+      "revision_S": "IDENTIFICATION_UNRESOLVED",
+      "shift_drop": 0.01,
+      "stability_do_W": 0.506
+     }
+    },
+    "accidental correct: coincidental cue": {
+     "accuracy": 0.6695,
+     "operation_digest": "95de60c7845b7733",
+     "relations": {
+      "effect_E": "IDENTIFICATION_UNRESOLVED",
+      "effect_S": "IDENTIFICATION_UNRESOLVED",
+      "revision_E": "IDENTIFICATION_UNRESOLVED",
+      "revision_S": "IDENTIFICATION_UNRESOLVED",
+      "shift_drop": 0.328,
+      "stability_do_W": 0.498
+     }
+    },
+    "correction and reconfiguration (feedback on)": {
+     "accuracy": 0.8831249999999999,
+     "operation_digest": "af1368107d0e9d2b",
+     "relations": {
+      "effect_E": "IDENTIFICATION_UNRESOLVED",
+      "effect_S": "IDENTIFICATION_UNRESOLVED",
+      "revision_E": "IDENTIFICATION_UNRESOLVED",
+      "revision_S": "IDENTIFICATION_UNRESOLVED",
+      "shift_drop": 0.107,
+      "stability_do_W": 0.763
+     }
+    },
+    "ground-responsive judgement": {
+     "accuracy": 0.83475,
+     "operation_digest": "f192b80bd62842d3",
+     "relations": {
+      "effect_E": "IDENTIFICATION_UNRESOLVED",
+      "effect_S": "IDENTIFICATION_UNRESOLVED",
+      "revision_E": "IDENTIFICATION_UNRESOLVED",
+      "revision_S": "IDENTIFICATION_UNRESOLVED",
+      "shift_drop": 0.003,
+      "stability_do_W": 0.836
+     }
+    },
+    "misjudgement: miscalibrated reading": {
+     "accuracy": 0.5821249999999998,
+     "operation_digest": "9198aab585f5545a",
+     "relations": {
+      "effect_E": "IDENTIFICATION_UNRESOLVED",
+      "effect_S": "IDENTIFICATION_UNRESOLVED",
+      "revision_E": "IDENTIFICATION_UNRESOLVED",
+      "revision_S": "IDENTIFICATION_UNRESOLVED",
+      "shift_drop": 0.029,
+      "stability_do_W": 0.748
+     }
+    },
+    "no correction (feedback off)": {
+     "accuracy": 0.687,
+     "operation_digest": "a419a00ba01882ab",
+     "relations": {
+      "effect_E": "IDENTIFICATION_UNRESOLVED",
+      "effect_S": "IDENTIFICATION_UNRESOLVED",
+      "revision_E": "IDENTIFICATION_UNRESOLVED",
+      "revision_S": "IDENTIFICATION_UNRESOLVED",
+      "shift_drop": 0.323,
+      "stability_do_W": 0.52
+     }
+    }
+   },
+   "digest": "c002e35fd75214cf52df68ee1e86b20cd1f206ce55f7c3c2243f881f76d2f69b",
+   "observation": {
+    "boundary": [],
+    "coupling": "passive",
+    "environment": "default",
+    "memory": true,
+    "probe": 0.0,
+    "resources": 10000,
+    "scale": 1,
+    "sensor_channels": [
+     "x",
+     "y",
+     "memory"
+    ],
+    "sensor_noise": 0.0,
+    "speed": 1,
+    "temporal_window": 40
+   }
+  },
+  "resources: 30 cells": {
+   "conditions": {
+    "accidental correct: base-rate guess": {
+     "accuracy": 0.8397500000000001,
+     "operation_digest": "037ff6a3a0e74691",
+     "relations": {
+      "effect_E": 0.001,
+      "effect_S": "TEMPORAL_MISFIT",
+      "revision_E": 0.009,
+      "revision_S": "TEMPORAL_MISFIT",
+      "shift_drop": 0.01,
+      "stability_do_W": 0.506
+     }
+    },
+    "accidental correct: coincidental cue": {
+     "accuracy": 0.6695,
+     "operation_digest": "95de60c7845b7733",
+     "relations": {
+      "effect_E": -0.003,
+      "effect_S": "TEMPORAL_MISFIT",
+      "revision_E": -0.01,
+      "revision_S": "TEMPORAL_MISFIT",
+      "shift_drop": 0.328,
+      "stability_do_W": 0.498
+     }
+    },
+    "correction and reconfiguration (feedback on)": {
+     "accuracy": 0.8831249999999999,
+     "operation_digest": "af1368107d0e9d2b",
+     "relations": {
+      "effect_E": 0.995,
+      "effect_S": "TEMPORAL_MISFIT",
+      "revision_E": 0.899,
+      "revision_S": "TEMPORAL_MISFIT",
+      "shift_drop": 0.107,
+      "stability_do_W": 0.763
+     }
+    },
+    "ground-responsive judgement": {
+     "accuracy": 0.83475,
+     "operation_digest": "f192b80bd62842d3",
+     "relations": {
+      "effect_E": 0.998,
+      "effect_S": "TEMPORAL_MISFIT",
+      "revision_E": -0.001,
+      "revision_S": "TEMPORAL_MISFIT",
+      "shift_drop": 0.003,
+      "stability_do_W": 0.836
+     }
+    },
+    "misjudgement: miscalibrated reading": {
+     "accuracy": 0.5821249999999998,
+     "operation_digest": "9198aab585f5545a",
+     "relations": {
+      "effect_E": 0.995,
+      "effect_S": "TEMPORAL_MISFIT",
+      "revision_E": -0.0,
+      "revision_S": "TEMPORAL_MISFIT",
+      "shift_drop": 0.029,
+      "stability_do_W": 0.748
+     }
+    },
+    "no correction (feedback off)": {
+     "accuracy": 0.687,
+     "operation_digest": "a419a00ba01882ab",
+     "relations": {
+      "effect_E": 0.092,
+      "effect_S": "TEMPORAL_MISFIT",
+      "revision_E": -0.004,
+      "revision_S": "TEMPORAL_MISFIT",
+      "shift_drop": 0.323,
+      "stability_do_W": 0.52
+     }
+    }
+   },
+   "digest": "f10cde9089e71925c635f2e9d261258a3b7fb9c2214e40293e0ea58da3b86083",
+   "observation": {
+    "boundary": [],
+    "coupling": "intervened",
+    "environment": "default",
+    "memory": true,
+    "probe": 0.0,
+    "resources": 30,
+    "scale": 1,
+    "sensor_channels": [
+     "x",
+     "y",
+     "memory"
+    ],
+    "sensor_noise": 0.0,
+    "speed": 1,
+    "temporal_window": 40
+   }
+  },
+  "scale 2 (every second grid point)": {
+   "conditions": {
+    "accidental correct: base-rate guess": {
+     "accuracy": 0.8397500000000001,
+     "operation_digest": "037ff6a3a0e74691",
+     "relations": {
+      "effect_E": -0.009,
+      "effect_S": -0.002,
+      "revision_E": -0.008,
+      "revision_S": 0.005,
+      "shift_drop": 0.01,
+      "stability_do_W": 0.506
+     }
+    },
+    "accidental correct: coincidental cue": {
+     "accuracy": 0.6695,
+     "operation_digest": "95de60c7845b7733",
+     "relations": {
+      "effect_E": -0.012,
+      "effect_S": 0.953,
+      "revision_E": -0.015,
+      "revision_S": -0.003,
+      "shift_drop": 0.328,
+      "stability_do_W": 0.498
+     }
+    },
+    "correction and reconfiguration (feedback on)": {
+     "accuracy": 0.8831249999999999,
+     "operation_digest": "af1368107d0e9d2b",
+     "relations": {
+      "effect_E": 0.99,
+      "effect_S": 0.142,
+      "revision_E": 0.81,
+      "revision_S": -0.808,
+      "shift_drop": 0.107,
+      "stability_do_W": 0.763
+     }
+    },
+    "ground-responsive judgement": {
+     "accuracy": 0.83475,
+     "operation_digest": "f192b80bd62842d3",
+     "relations": {
+      "effect_E": "SCALE_MISFIT",
+      "effect_S": -0.0,
+      "revision_E": "SCALE_MISFIT",
+      "revision_S": -0.004,
+      "shift_drop": 0.003,
+      "stability_do_W": 0.836
+     }
+    },
+    "misjudgement: miscalibrated reading": {
+     "accuracy": 0.5821249999999998,
+     "operation_digest": "9198aab585f5545a",
+     "relations": {
+      "effect_E": "SCALE_MISFIT",
+      "effect_S": -0.001,
+      "revision_E": "SCALE_MISFIT",
+      "revision_S": -0.002,
+      "shift_drop": 0.029,
+      "stability_do_W": 0.748
+     }
+    },
+    "no correction (feedback off)": {
+     "accuracy": 0.687,
+     "operation_digest": "a419a00ba01882ab",
+     "relations": {
+      "effect_E": 0.164,
+      "effect_S": 0.947,
+      "revision_E": -0.015,
+      "revision_S": -0.004,
+      "shift_drop": 0.323,
+      "stability_do_W": 0.52
+     }
+    }
+   },
+   "digest": "706f1a6d9b7019117239d67051f09e117d645785c725485fe42b89bce00e0c3b",
+   "observation": {
+    "boundary": [],
+    "coupling": "intervened",
+    "environment": "default",
+    "memory": true,
+    "probe": 0.0,
+    "resources": 10000,
+    "scale": 2,
+    "sensor_channels": [
+     "x",
+     "y",
+     "memory"
+    ],
+    "sensor_noise": 0.0,
+    "speed": 1,
+    "temporal_window": 40
+   }
+  },
+  "scale 4 (every fourth grid point)": {
+   "conditions": {
+    "accidental correct: base-rate guess": {
+     "accuracy": 0.8397500000000001,
+     "operation_digest": "037ff6a3a0e74691",
+     "relations": {
+      "effect_E": -0.01,
+      "effect_S": -0.006,
+      "revision_E": -0.012,
+      "revision_S": "TEMPORAL_MISFIT",
+      "shift_drop": 0.01,
+      "stability_do_W": 0.506
+     }
+    },
+    "accidental correct: coincidental cue": {
+     "accuracy": 0.6695,
+     "operation_digest": "95de60c7845b7733",
+     "relations": {
+      "effect_E": -0.014,
+      "effect_S": 0.742,
+      "revision_E": -0.007,
+      "revision_S": "TEMPORAL_MISFIT",
+      "shift_drop": 0.328,
+      "stability_do_W": 0.498
+     }
+    },
+    "correction and reconfiguration (feedback on)": {
+     "accuracy": 0.8831249999999999,
+     "operation_digest": "af1368107d0e9d2b",
+     "relations": {
+      "effect_E": "SCALE_MISFIT",
+      "effect_S": 0.075,
+      "revision_E": "SCALE_MISFIT",
+      "revision_S": "TEMPORAL_MISFIT",
+      "shift_drop": 0.107,
+      "stability_do_W": 0.763
+     }
+    },
+    "ground-responsive judgement": {
+     "accuracy": 0.83475,
+     "operation_digest": "f192b80bd62842d3",
+     "relations": {
+      "effect_E": "SCALE_MISFIT",
+      "effect_S": -0.002,
+      "revision_E": "SCALE_MISFIT",
+      "revision_S": "TEMPORAL_MISFIT",
+      "shift_drop": 0.003,
+      "stability_do_W": 0.836
+     }
+    },
+    "misjudgement: miscalibrated reading": {
+     "accuracy": 0.5821249999999998,
+     "operation_digest": "9198aab585f5545a",
+     "relations": {
+      "effect_E": "SCALE_MISFIT",
+      "effect_S": -0.006,
+      "revision_E": "SCALE_MISFIT",
+      "revision_S": "TEMPORAL_MISFIT",
+      "shift_drop": 0.029,
+      "stability_do_W": 0.748
+     }
+    },
+    "no correction (feedback off)": {
+     "accuracy": 0.687,
+     "operation_digest": "a419a00ba01882ab",
+     "relations": {
+      "effect_E": 0.166,
+      "effect_S": 0.72,
+      "revision_E": -0.001,
+      "revision_S": "TEMPORAL_MISFIT",
+      "shift_drop": 0.323,
+      "stability_do_W": 0.52
+     }
+    }
+   },
+   "digest": "63d2173dc89fca8142d33e45f7455ec2f87bc12a9a204ae4981169b017d66a59",
+   "observation": {
+    "boundary": [],
+    "coupling": "intervened",
+    "environment": "default",
+    "memory": true,
+    "probe": 0.0,
+    "resources": 10000,
+    "scale": 4,
+    "sensor_channels": [
+     "x",
+     "y",
+     "memory"
+    ],
+    "sensor_noise": 0.0,
+    "speed": 1,
+    "temporal_window": 40
+   }
+  },
+  "speed 3 (one snapshot in three)": {
+   "conditions": {
+    "accidental correct: base-rate guess": {
+     "accuracy": 0.8397500000000001,
+     "operation_digest": "037ff6a3a0e74691",
+     "relations": {
+      "effect_E": "TEMPORAL_MISFIT",
+      "effect_S": "TEMPORAL_MISFIT",
+      "revision_E": "TEMPORAL_MISFIT",
+      "revision_S": "TEMPORAL_MISFIT",
+      "shift_drop": 0.01,
+      "stability_do_W": "TEMPORAL_MISFIT"
+     }
+    },
+    "accidental correct: coincidental cue": {
+     "accuracy": 0.6695,
+     "operation_digest": "95de60c7845b7733",
+     "relations": {
+      "effect_E": "TEMPORAL_MISFIT",
+      "effect_S": "TEMPORAL_MISFIT",
+      "revision_E": "TEMPORAL_MISFIT",
+      "revision_S": "TEMPORAL_MISFIT",
+      "shift_drop": 0.328,
+      "stability_do_W": "TEMPORAL_MISFIT"
+     }
+    },
+    "correction and reconfiguration (feedback on)": {
+     "accuracy": 0.8831249999999999,
+     "operation_digest": "af1368107d0e9d2b",
+     "relations": {
+      "effect_E": "TEMPORAL_MISFIT",
+      "effect_S": "TEMPORAL_MISFIT",
+      "revision_E": "TEMPORAL_MISFIT",
+      "revision_S": "TEMPORAL_MISFIT",
+      "shift_drop": 0.107,
+      "stability_do_W": "TEMPORAL_MISFIT"
+     }
+    },
+    "ground-responsive judgement": {
+     "accuracy": 0.83475,
+     "operation_digest": "f192b80bd62842d3",
+     "relations": {
+      "effect_E": "TEMPORAL_MISFIT",
+      "effect_S": "TEMPORAL_MISFIT",
+      "revision_E": "TEMPORAL_MISFIT",
+      "revision_S": "TEMPORAL_MISFIT",
+      "shift_drop": 0.003,
+      "stability_do_W": "TEMPORAL_MISFIT"
+     }
+    },
+    "misjudgement: miscalibrated reading": {
+     "accuracy": 0.5821249999999998,
+     "operation_digest": "9198aab585f5545a",
+     "relations": {
+      "effect_E": "TEMPORAL_MISFIT",
+      "effect_S": "TEMPORAL_MISFIT",
+      "revision_E": "TEMPORAL_MISFIT",
+      "revision_S": "TEMPORAL_MISFIT",
+      "shift_drop": 0.029,
+      "stability_do_W": "TEMPORAL_MISFIT"
+     }
+    },
+    "no correction (feedback off)": {
+     "accuracy": 0.687,
+     "operation_digest": "a419a00ba01882ab",
+     "relations": {
+      "effect_E": "TEMPORAL_MISFIT",
+      "effect_S": "TEMPORAL_MISFIT",
+      "revision_E": "TEMPORAL_MISFIT",
+      "revision_S": "TEMPORAL_MISFIT",
+      "shift_drop": 0.323,
+      "stability_do_W": "TEMPORAL_MISFIT"
+     }
+    }
+   },
+   "digest": "6a2f4fe3b8ddee3e63bfb15bcf9cc6bbfbf235957f0bc542b11c54f8e3f16cb7",
+   "observation": {
+    "boundary": [],
+    "coupling": "intervened",
+    "environment": "default",
+    "memory": true,
+    "probe": 0.0,
+    "resources": 10000,
+    "scale": 1,
+    "sensor_channels": [
+     "x",
+     "y",
+     "memory"
+    ],
+    "sensor_noise": 0.0,
+    "speed": 3,
+    "temporal_window": 40
+   }
+  },
+  "temporal window 10 trials per cell": {
+   "conditions": {
+    "accidental correct: base-rate guess": {
+     "accuracy": 0.8397500000000001,
+     "operation_digest": "037ff6a3a0e74691",
+     "relations": {
+      "effect_E": "TEMPORAL_MISFIT",
+      "effect_S": "TEMPORAL_MISFIT",
+      "revision_E": "TEMPORAL_MISFIT",
+      "revision_S": "TEMPORAL_MISFIT",
+      "shift_drop": "TEMPORAL_MISFIT",
+      "stability_do_W": "TEMPORAL_MISFIT"
+     }
+    },
+    "accidental correct: coincidental cue": {
+     "accuracy": 0.6695,
+     "operation_digest": "95de60c7845b7733",
+     "relations": {
+      "effect_E": "TEMPORAL_MISFIT",
+      "effect_S": "TEMPORAL_MISFIT",
+      "revision_E": "TEMPORAL_MISFIT",
+      "revision_S": "TEMPORAL_MISFIT",
+      "shift_drop": "TEMPORAL_MISFIT",
+      "stability_do_W": "TEMPORAL_MISFIT"
+     }
+    },
+    "correction and reconfiguration (feedback on)": {
+     "accuracy": 0.8831249999999999,
+     "operation_digest": "af1368107d0e9d2b",
+     "relations": {
+      "effect_E": "TEMPORAL_MISFIT",
+      "effect_S": "TEMPORAL_MISFIT",
+      "revision_E": "TEMPORAL_MISFIT",
+      "revision_S": "TEMPORAL_MISFIT",
+      "shift_drop": "TEMPORAL_MISFIT",
+      "stability_do_W": "TEMPORAL_MISFIT"
+     }
+    },
+    "ground-responsive judgement": {
+     "accuracy": 0.83475,
+     "operation_digest": "f192b80bd62842d3",
+     "relations": {
+      "effect_E": "TEMPORAL_MISFIT",
+      "effect_S": "TEMPORAL_MISFIT",
+      "revision_E": "TEMPORAL_MISFIT",
+      "revision_S": "TEMPORAL_MISFIT",
+      "shift_drop": "TEMPORAL_MISFIT",
+      "stability_do_W": "TEMPORAL_MISFIT"
+     }
+    },
+    "misjudgement: miscalibrated reading": {
+     "accuracy": 0.5821249999999998,
+     "operation_digest": "9198aab585f5545a",
+     "relations": {
+      "effect_E": "TEMPORAL_MISFIT",
+      "effect_S": "TEMPORAL_MISFIT",
+      "revision_E": "TEMPORAL_MISFIT",
+      "revision_S": "TEMPORAL_MISFIT",
+      "shift_drop": "TEMPORAL_MISFIT",
+      "stability_do_W": "TEMPORAL_MISFIT"
+     }
+    },
+    "no correction (feedback off)": {
+     "accuracy": 0.687,
+     "operation_digest": "a419a00ba01882ab",
+     "relations": {
+      "effect_E": "TEMPORAL_MISFIT",
+      "effect_S": "TEMPORAL_MISFIT",
+      "revision_E": "TEMPORAL_MISFIT",
+      "revision_S": "TEMPORAL_MISFIT",
+      "shift_drop": "TEMPORAL_MISFIT",
+      "stability_do_W": "TEMPORAL_MISFIT"
+     }
+    }
+   },
+   "digest": "6620f1ec9cfa17e80b3dee95aea9a181baf9c646f12bd04bed0637c11abc25a6",
+   "observation": {
+    "boundary": [],
+    "coupling": "intervened",
+    "environment": "default",
+    "memory": true,
+    "probe": 0.0,
+    "resources": 10000,
+    "scale": 1,
+    "sensor_channels": [
+     "x",
+     "y",
+     "memory"
+    ],
+    "sensor_noise": 0.0,
+    "speed": 1,
+    "temporal_window": 10
+   }
+  },
+  "temporal window 100 trials per cell": {
+   "conditions": {
+    "accidental correct: base-rate guess": {
+     "accuracy": 0.8397500000000001,
+     "operation_digest": "037ff6a3a0e74691",
+     "relations": {
+      "effect_E": -0.002,
+      "effect_S": 0.001,
+      "revision_E": 0.001,
+      "revision_S": 0.004,
+      "shift_drop": 0.004,
+      "stability_do_W": 0.499
+     }
+    },
+    "accidental correct: coincidental cue": {
+     "accuracy": 0.6695,
+     "operation_digest": "95de60c7845b7733",
+     "relations": {
+      "effect_E": 0.0,
+      "effect_S": 0.953,
+      "revision_E": -0.001,
+      "revision_S": -0.001,
+      "shift_drop": 0.354,
+      "stability_do_W": 0.503
+     }
+    },
+    "correction and reconfiguration (feedback on)": {
+     "accuracy": 0.8831249999999999,
+     "operation_digest": "af1368107d0e9d2b",
+     "relations": {
+      "effect_E": 0.988,
+      "effect_S": 0.155,
+      "revision_E": 0.785,
+      "revision_S": -0.792,
+      "shift_drop": 0.079,
+      "stability_do_W": 0.753
+     }
+    },
+    "ground-responsive judgement": {
+     "accuracy": 0.83475,
+     "operation_digest": "f192b80bd62842d3",
+     "relations": {
+      "effect_E": 0.999,
+      "effect_S": -0.002,
+      "revision_E": 0.0,
+      "revision_S": -0.004,
+      "shift_drop": -0.011,
+      "stability_do_W": 0.831
+     }
+    },
+    "misjudgement: miscalibrated reading": {
+     "accuracy": 0.5821249999999998,
+     "operation_digest": "9198aab585f5545a",
+     "relations": {
+      "effect_E": 0.995,
+      "effect_S": -0.001,
+      "revision_E": -0.0,
+      "revision_S": -0.001,
+      "shift_drop": 0.022,
+      "stability_do_W": 0.749
+     }
+    },
+    "no correction (feedback off)": {
+     "accuracy": 0.687,
+     "operation_digest": "a419a00ba01882ab",
+     "relations": {
+      "effect_E": 0.193,
+      "effect_S": 0.948,
+      "revision_E": -0.01,
+      "revision_S": 0.001,
+      "shift_drop": 0.353,
+      "stability_do_W": 0.524
+     }
+    }
+   },
+   "digest": "b605f03cf2d0d0bf348419c0f7bada28b97df767f8c8c61956dacedf9cbd8d2e",
+   "observation": {
+    "boundary": [],
+    "coupling": "intervened",
+    "environment": "default",
+    "memory": true,
+    "probe": 0.0,
+    "resources": 10000,
+    "scale": 1,
+    "sensor_channels": [
+     "x",
+     "y",
+     "memory"
+    ],
+    "sensor_noise": 0.0,
+    "speed": 1,
+    "temporal_window": 100
+   }
+  },
+  "the cue axis outside the boundary": {
+   "conditions": {
+    "accidental correct: base-rate guess": {
+     "accuracy": 0.8397500000000001,
+     "operation_digest": "037ff6a3a0e74691",
+     "relations": {
+      "effect_E": 0.023,
+      "effect_S": "BOUNDARY_INVISIBLE",
+      "revision_E": 0.044,
+      "revision_S": "BOUNDARY_INVISIBLE",
+      "shift_drop": 0.01,
+      "stability_do_W": 0.506
+     }
+    },
+    "accidental correct: coincidental cue": {
+     "accuracy": 0.6695,
+     "operation_digest": "95de60c7845b7733",
+     "relations": {
+      "effect_E": -0.043,
+      "effect_S": "BOUNDARY_INVISIBLE",
+      "revision_E": -0.077,
+      "revision_S": "BOUNDARY_INVISIBLE",
+      "shift_drop": 0.328,
+      "stability_do_W": 0.498
+     }
+    },
+    "correction and reconfiguration (feedback on)": {
+     "accuracy": 0.8831249999999999,
+     "operation_digest": "af1368107d0e9d2b",
+     "relations": {
+      "effect_E": 0.984,
+      "effect_S": "BOUNDARY_INVISIBLE",
+      "revision_E": 0.561,
+      "revision_S": "BOUNDARY_INVISIBLE",
+      "shift_drop": 0.107,
+      "stability_do_W": 0.763
+     }
+    },
+    "ground-responsive judgement": {
+     "accuracy": 0.83475,
+     "operation_digest": "f192b80bd62842d3",
+     "relations": {
+      "effect_E": 1.0,
+      "effect_S": "BOUNDARY_INVISIBLE",
+      "revision_E": 0.001,
+      "revision_S": "BOUNDARY_INVISIBLE",
+      "shift_drop": 0.003,
+      "stability_do_W": 0.836
+     }
+    },
+    "misjudgement: miscalibrated reading": {
+     "accuracy": 0.5821249999999998,
+     "operation_digest": "9198aab585f5545a",
+     "relations": {
+      "effect_E": 0.999,
+      "effect_S": "BOUNDARY_INVISIBLE",
+      "revision_E": 0.008,
+      "revision_S": "BOUNDARY_INVISIBLE",
+      "shift_drop": 0.029,
+      "stability_do_W": 0.748
+     }
+    },
+    "no correction (feedback off)": {
+     "accuracy": 0.687,
+     "operation_digest": "a419a00ba01882ab",
+     "relations": {
+      "effect_E": 0.436,
+      "effect_S": "BOUNDARY_INVISIBLE",
+      "revision_E": 0.014,
+      "revision_S": "BOUNDARY_INVISIBLE",
+      "shift_drop": 0.323,
+      "stability_do_W": 0.52
+     }
+    }
+   },
+   "digest": "0b154fc5ae5fc1942bda261a90b0aa6130f9222d7f304658dc25789f5cfa0725",
+   "observation": {
+    "boundary": [
+     "y"
+    ],
+    "coupling": "intervened",
+    "environment": "default",
+    "memory": true,
+    "probe": 0.0,
+    "resources": 10000,
+    "scale": 1,
+    "sensor_channels": [
+     "x",
+     "y",
+     "memory"
+    ],
+    "sensor_noise": 0.0,
+    "speed": 1,
+    "temporal_window": 40
+   }
+  }
+ },
+ "model_version": "gaisho-lab/1",
+ "seeds": [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  20
+ ],
+ "status": {
+  "001-knowledge": {
+   "completion": "INITIAL_EXPERIMENT_EXECUTED",
+   "criteria": "the four comparison conditions run with interventions, relations and shapes generated from them, competing explanations compared, the attribution kept apart: executed for a synthetic judging agent; nothing about knowledge as such is shown",
+   "executed": true
+  },
+  "002-bias": {
+   "completion": "INITIAL_CONDITIONS_EXECUTED",
+   "criteria": "the four sources of bias and the intervention are compared by intervention on a declared synthetic rule set; adaptive and inappropriate bias are told apart by the matched environment; competing models, ablations and a body-derived condition beyond a calibration offset are NOT done",
+   "executed": true
+  },
+  "003-freedom": {
+   "completion": "INITIAL_CONDITIONS_EXECUTED",
+   "criteria": "the four conditions of the brief are separated by intervention on declared coupling rules (what they exhibit follows from the rules); an effective action space with real alternatives, competing explanations and ablations are NOT done",
+   "executed": true
+  },
+  "004-body": {
+   "completion": "NOT_EXECUTED",
+   "criteria": "needs the existing XenoSNN (the snnTorch server of the P/A repository) connected to this runtime: sensor input and time, spike firing and time, internal state, weights, plasticity, memory, bodily output and the return from the environment as separate records; no substitute computation is made",
+   "executed": false
+  },
+  "005-credit": {
+   "completion": "INITIAL_CONDITIONS_EXECUTED",
+   "criteria": "the institution's scoring, classification, access constraint and a correction are intervened on through the existing TRUTH-ERROR engine; the institution's operation is not an individual's Gaisho and an individual's orientation to their own evaluation is NOT modelled",
+   "executed": true
+  }
+ }
+}

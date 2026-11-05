@@ -11,6 +11,7 @@ import dataclasses
 
 import numpy as np
 
+from . import bodylink
 from .knowledge import KnowledgeDomain, sigmoid
 from .lab import Domain, Observation, classify_unobserved, record_surface, surface_effects
 from .model import digest
@@ -181,6 +182,64 @@ class CreditDomain(Domain):
         return {"accuracy": float(raw.mean()), "snapshots": snaps, "relations": rel, "operation_digest": digest({"cond": cond, "seed": seed, "raw": raw.tolist()})}
 
 
+# ------------------------------------------------------------------------------------------------ 004 Body (the XB-TRO planar body, through the optional link of bodylink.py)
+class BodyDomain(Domain):
+    """A planar N-link body with delayed, noisy sensing, operation lines and feedback (XB-TRO), under two interventions of XB-TRO's own registry. R37 X, fourth family: whether sensing, feedback and the world's disturbance determine
+    different continuation classes of a bodily configuration, without inferring a thinking subject from a controller. The outcome is a continuation class of the body (it falls or it does not), per replication seed; it is a
+    prereflective bodily operation (R37's P register) and nothing in it is an episode, a spike or a Gaisho."""
+
+    id = "004-body"
+    title = "BODY — SENSORIMOTOR CONTINUATION OF A PLANAR BODY UNDER INTERVENTION (XB-TRO)"
+    x_name, y_name = "sensory feedback delay added, s (do)", "external disturbance, push force N (do)"
+    outcome_meaning = "the continuation class of the body: 1 if the body falls within the horizon, 0 if it stays up, for one replication seed (one body per cell and seed); the cell value is the share of seeds that fall, with the delay and the push set by XB-TRO's interventions"
+    x_values = np.linspace(0.0, 0.2, 5)
+    y_values = np.linspace(0.0, 200.0, 5)
+    snapshots = ("end",)
+    relation_names = ("effect_x", "effect_y", "baseline_fall")
+    conditions = {"human-like planar body": {"preset": "human-like-planar"}, "machine-like planar body": {"preset": "machine-like-planar"}}
+    seed_count = 6
+    max_seeds = 8  # about 0.9 s per cell for a batch of 8 seeds: 25 cells and 2 conditions are about 45 s
+
+    def __init__(self) -> None:
+        link = bodylink.load()
+        if link is None:
+            raise RuntimeError("the XB-TRO body is not linked (set XZR_XBTRO_PATH to the directory of the xbtro package)")
+        self.link = link
+        self._cache: dict[tuple, np.ndarray] = {}
+
+    def provenance(self) -> dict:
+        return {"body": "XB-TRO", "model_version": self.link.model_version, "source_sha256": self.link.source_sha256, "files": self.link.n_files}
+
+    def prepare(self, cond: str, seeds: tuple[int, ...], obs: Observation) -> None:
+        key = (cond, tuple(seeds))
+        if key in self._cache:
+            return
+        cfg0 = self.link.config.build(self.conditions[cond]["preset"])
+        fell = np.zeros((len(self.y_values), len(self.x_values), len(seeds)))
+        for j, push in enumerate(self.y_values):
+            for i, delay in enumerate(self.x_values):
+                cfg = cfg0
+                if delay > 0:
+                    cfg = self.link.config.apply_intervention(cfg, "sensory_delay", float(delay))
+                cfg = self.link.config.apply_intervention(cfg, "perturbation", float(push))
+                run = self.link.engine.simulate(cfg, seeds=list(seeds))
+                fell[j, i, :] = np.asarray(run.fell, dtype=float)
+        self._cache[key] = fell
+
+    def simulate(self, cond: str, seed: int, obs: Observation) -> dict:
+        key = next((k for k in self._cache if k[0] == cond and seed in k[1]), None)
+        if key is None:
+            raise RuntimeError("the body batch of this request was not prepared")
+        raw = self._cache[key][:, :, key[1].index(seed)]
+        rg = _streams(seed, ("recording",))
+        obs_one = dataclasses.replace(obs, temporal_window=1)  # one body per cell and seed: the 'trials' of a cell are the seeds, not a window
+        obs_rel = dataclasses.replace(obs, temporal_window=max(20, obs.temporal_window))  # the window axis is not applicable to a trajectory; it must not gate the relations
+        snaps = {"end": {"surface": record_surface(self, raw, obs_one, rg["recording"]), "weights": None, "stability": float(raw.mean())}}
+        step = float((self.x_values[1] - self.x_values[0]) * obs.scale)
+        rel = _simple_relations(self, snaps, obs_rel, step, {"baseline_fall": (float(raw[0, 0]), {"axes": (), "min_window": 1})})
+        return {"accuracy": float(1.0 - raw.mean()), "snapshots": snaps, "relations": rel, "operation_digest": digest({"cond": cond, "seed": seed, "fell": raw.tolist(), "body": self.link.source_sha256})}
+
+
 # ------------------------------------------------------------------------------------------------ the registry, with the completion judgement of each domain
 STATUS = {
     "001-knowledge": {"executed": True, "completion": "INITIAL_EXPERIMENT_EXECUTED", "criteria": "the four comparison conditions run with interventions, relations and shapes generated from them, competing explanations compared, the attribution kept apart: executed for a synthetic judging agent; nothing about knowledge as such is shown"},
@@ -191,5 +250,13 @@ STATUS = {
 }
 
 
+BODY_STATUS = {"executed": True, "completion": "INITIAL_CONDITIONS_EXECUTED", "criteria": "B1 only: a real planar body (XB-TRO, through the optional link) under two interventions, the continuation class (falls or not) as the outcome, two body configurations. Morphology, memory and resource axes are not crossed; no spiking component exists (XenoSNN is not connected and cannot be closed-loop); the body is a prereflective operation (R37 P), not a thinker, and no attribution is made"}
+
+
+def status_of(dom_id: str) -> dict:
+    """The completion judgement of a domain; the body domain is executed only where the XB-TRO link is configured."""
+    return BODY_STATUS if dom_id == "004-body" and bodylink.load() is not None else STATUS[dom_id]
+
+
 def domain_registry() -> dict[str, Domain | None]:
-    return {"001-knowledge": KnowledgeDomain(), "002-bias": BiasDomain(), "003-freedom": FreedomDomain(), "004-body": None, "005-credit": CreditDomain()}
+    return {"001-knowledge": KnowledgeDomain(), "002-bias": BiasDomain(), "003-freedom": FreedomDomain(), "004-body": BodyDomain() if bodylink.load() is not None else None, "005-credit": CreditDomain()}

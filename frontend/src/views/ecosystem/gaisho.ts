@@ -24,9 +24,12 @@ export interface Stat { mean: number | null; sd: number | null; se: number | nul
 export interface CondResult { accuracy: Stat; accuracy_pre_shift: Stat; relations: Record<string, Relation>; seeds: number; operation_digest: string }
 export interface Verdict { competitor: string; verdict: string; errors?: Record<string, number>; why?: string }
 export interface AttributionTest { condition: string; operational_test: string; attribution: string; why: string; criterion?: Record<string, number> }
-export interface LevelRecord { level: LevelId; state: string; evidence: string[]; note: string }
-export interface NegativeResult { kind: string; condition?: string; relation?: string; class?: string; competitor?: string; why?: string; what?: string; mean?: number; ci95?: [number, number]; note?: string; domains_not_executed?: string[] }
+export interface LevelRecord { level: LevelId; state: string; evidence: string[]; note: string; r37_term?: string; applicability_gate?: string }
+export interface NegativeResult { registry?: string; registry_meaning?: string; kind: string; condition?: string; relation?: string; class?: string; competitor?: string; why?: string; what?: string; mean?: number; ci95?: [number, number]; note?: string; domains_not_executed?: string[] }
 export interface DomainStatus { completion: string; criteria: string; executed: boolean }
+export interface R37Register { r37: string; lab: string; note: string; applicability_gate?: string }
+export interface R37Block { reference: string; registers: Record<string, R37Register>; applicability_gate: { passed: boolean; reason: string; consequence: string }; arms: Record<string, { r37: string; lab: string; note: string }>; failure_registries: Record<string, string> }
+export interface R37Constraint { id: string; where: string; constraint: string; status: 'IMPLEMENTED' | 'PARTIAL' | 'NOT_IMPLEMENTED'; how: string }
 export interface GaishoRecord {
   model_version: string; executed: boolean; digest: string; figure_kind: string; note?: string; status: DomainStatus;
   spec: { domain: string; observation: GaishoObservation; seeds: number[]; conditions: string[] | null };
@@ -40,6 +43,7 @@ export interface GaishoRecord {
   research_objects?: Record<string, Record<string, unknown>>;
   negative_results?: NegativeResult[];
   limits?: string;
+  r37?: R37Block;
   prohibited_inferences?: Array<{ premise: string; conclusion: string; reason: string }>;
 }
 export interface ChangeKinds { real_operation: string; recorded_observation: string; reconstructed_relation: { unobserved_in_one: string[]; unobserved_in_both: string[] }; display: string }
@@ -62,6 +66,7 @@ export interface GaishoDomainInfo { title: string | null; conditions: string[]; 
 export interface GaishoSpecInfo {
   model_version: string; scope: string; source_status: string; domains: Record<string, GaishoDomainInfo>; observation_axes: string[]; observation_defaults: GaishoObservation; environments: string[];
   levels: Record<string, string>; level_states: string[]; provenance_classes: string[]; unobserved_classes: Unobserved[]; verdicts: string[]; figure_kinds: string[]; prohibited_inferences: Array<{ premise: string; conclusion: string; reason: string }>; limits: string; claims: Claim[];
+  r37: { reference: string; constraints: R37Constraint[]; arms: R37Block['arms']; failure_registries: Record<string, string>; level_terms: Record<string, { r37_term: string; in_r37: boolean }> };
 }
 
 export const UNOBSERVED_TEXT: Record<Unobserved, string> = {
@@ -200,3 +205,9 @@ export function claimGroups(claims: Claim[]): Array<{ status: Claim['status']; t
   const titles: Record<Claim['status'], string> = { SUPPORTED_IN_MODEL: 'Supported by the executed experiments (this synthetic model only)', LIMITED_OR_NEGATIVE: 'Limits and negative results', UNTESTED_PHILOSOPHICAL_HYPOTHESIS: 'Philosophical hypotheses NOT tested here' };
   return (Object.keys(titles) as Claim['status'][]).map((status) => ({ status, title: titles[status], items: claims.filter((c) => c.status === status) }));
 }
+
+/** The constraints of R37 grouped by how far the laboratory implements them (nothing is counted as implemented that the code does not do). */
+export const constraintGroups = (cs: R37Constraint[]): Array<{ status: R37Constraint['status']; items: R37Constraint[] }> => (['IMPLEMENTED', 'PARTIAL', 'NOT_IMPLEMENTED'] as const).map((status) => ({ status, items: cs.filter((c) => c.status === status) }));
+
+/** The registers of the record in R37's order, with what the laboratory can and cannot record for each. */
+export const registerRows = (rec: GaishoRecord): Array<{ id: string; r37: string; lab: string; note: string; gate?: string }> => Object.entries(rec.r37?.registers ?? {}).map(([id, r]) => ({ id, r37: r.r37, lab: r.lab, note: r.note, gate: r.applicability_gate }));

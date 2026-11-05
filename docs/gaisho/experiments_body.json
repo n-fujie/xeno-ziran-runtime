@@ -1,0 +1,490 @@
+{
+ "domain": {
+  "axes": {
+   "x": "sensory feedback delay added, s (do)",
+   "y": "external disturbance, push force N (do)"
+  },
+  "body": {
+   "body": "XB-TRO",
+   "files": 17,
+   "model_version": "xb-tro/1.0",
+   "source_sha256": "4864c28938d197570333a71091a3a0f6164c1a90f44c6b0e986ce06fe3caa05a"
+  },
+  "digest": "eb3dff228a1b550dc55ddf14f9705e3c0d4f249d7bf938b0d0c52bd6ec1c9bff",
+  "executed": true,
+  "figure_kind": "EXECUTED_COMPUTATIONAL_EXPERIMENT",
+  "levels": {
+   "human-like planar body": {
+    "conceptual_operational_shape": {
+     "applicability_gate": "",
+     "evidence": [],
+     "level": "conceptual_operational_shape",
+     "note": "",
+     "r37_term": "C: a warranted conceptual-operational-shape judgment under reidentification and revision conditions (R37 II 5, G-C-N)",
+     "state": "NOT_MODELLED"
+    },
+    "gaisho_attribution": {
+     "applicability_gate": "NOT_PASSED: no eligible bearer b, no bounded episode interval, no directed relation w and no independent evidential route is specified: a synthetic operation is not a target of an episode attribution, so the gate fails before any A_G value can be assigned",
+     "evidence": [],
+     "level": "gaisho_attribution",
+     "note": "no independent evidence (operational differences are not evidence of a Gaisho)",
+     "r37_term": "A_G(b,t,w;e,K) in {supported, defeated-for-K, unresolved} (R37 II 4); the laboratory also records ASSERTED_BY_RESEARCHER, which R37 does not have",
+     "state": "UNRESOLVED"
+    },
+    "gaisho_operational_shape": {
+     "applicability_gate": "",
+     "evidence": [],
+     "level": "gaisho_operational_shape",
+     "note": "no bearer and no historical interval: a synthetic operation has neither, so it is not a candidate",
+     "r37_term": "NO R37 TERM. R37 has Occ_G(b,t,w) (occurrence), Det_D(K,t) (detectability) and M_G (a candidate causal mediator); the brief's 'Gaisho operational shape' is the laboratory's own level",
+     "state": "NOT_ESTABLISHED"
+    },
+    "operational_shape": {
+     "applicability_gate": "",
+     "evidence": [],
+     "level": "operational_shape",
+     "note": "",
+     "r37_term": "Operational Shape (a P/A term, R37 Appendix C 003)",
+     "state": "RECONSTRUCTED"
+    },
+    "real_operation": {
+     "applicability_gate": "",
+     "evidence": [],
+     "level": "real_operation",
+     "note": "",
+     "r37_term": "Real Operation (a P/A term, R37 I and Appendix C 002)",
+     "state": "EXECUTED_IN_MODEL"
+    }
+   },
+   "machine-like planar body": {
+    "conceptual_operational_shape": {
+     "applicability_gate": "",
+     "evidence": [],
+     "level": "conceptual_operational_shape",
+     "note": "",
+     "r37_term": "C: a warranted conceptual-operational-shape judgment under reidentification and revision conditions (R37 II 5, G-C-N)",
+     "state": "NOT_MODELLED"
+    },
+    "gaisho_attribution": {
+     "applicability_gate": "NOT_PASSED: no eligible bearer b, no bounded episode interval, no directed relation w and no independent evidential route is specified: a synthetic operation is not a target of an episode attribution, so the gate fails before any A_G value can be assigned",
+     "evidence": [],
+     "level": "gaisho_attribution",
+     "note": "no independent evidence (operational differences are not evidence of a Gaisho)",
+     "r37_term": "A_G(b,t,w;e,K) in {supported, defeated-for-K, unresolved} (R37 II 4); the laboratory also records ASSERTED_BY_RESEARCHER, which R37 does not have",
+     "state": "UNRESOLVED"
+    },
+    "gaisho_operational_shape": {
+     "applicability_gate": "",
+     "evidence": [],
+     "level": "gaisho_operational_shape",
+     "note": "no bearer and no historical interval: a synthetic operation has neither, so it is not a candidate",
+     "r37_term": "NO R37 TERM. R37 has Occ_G(b,t,w) (occurrence), Det_D(K,t) (detectability) and M_G (a candidate causal mediator); the brief's 'Gaisho operational shape' is the laboratory's own level",
+     "state": "NOT_ESTABLISHED"
+    },
+    "operational_shape": {
+     "applicability_gate": "",
+     "evidence": [],
+     "level": "operational_shape",
+     "note": "",
+     "r37_term": "Operational Shape (a P/A term, R37 Appendix C 003)",
+     "state": "RECONSTRUCTED"
+    },
+    "real_operation": {
+     "applicability_gate": "",
+     "evidence": [],
+     "level": "real_operation",
+     "note": "",
+     "r37_term": "Real Operation (a P/A term, R37 I and Appendix C 002)",
+     "state": "EXECUTED_IN_MODEL"
+    }
+   }
+  },
+  "limits": "Synthetic computational experiments with declared constants. A shape drawn from them is a projection of identified relations, not the complete acquisition of any real operation; nothing here shows anything about human neural activity, the formation of a real Gaisho, or a universal philosophical law.",
+  "model_version": "gaisho-lab/1",
+  "negative_results": [
+   {
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "condition": "human-like planar body",
+    "kind": "NOT_DETECTED",
+    "mean": 0.0,
+    "note": "no difference was detected: this is not shown to be zero",
+    "registry": "F1",
+    "registry_meaning": "no difference was detected (95 % interval includes 0): within this sensor, scale, window and horizon; not shown to be zero",
+    "relation": "baseline_fall"
+   },
+   {
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "condition": "machine-like planar body",
+    "kind": "NOT_DETECTED",
+    "mean": 0.0,
+    "note": "no difference was detected: this is not shown to be zero",
+    "registry": "F1",
+    "registry_meaning": "no difference was detected (95 % interval includes 0): within this sensor, scale, window and horizon; not shown to be zero",
+    "relation": "baseline_fall"
+   },
+   {
+    "domains_not_executed": [
+     "004-body"
+    ],
+    "kind": "NOT_DONE",
+    "note_on_domains": "004-body is executed only where the XB-TRO link is configured (XZR_XBTRO_PATH); the record does not depend on the environment, so it lists the domains that are not executed without a link",
+    "registry": "NOT_RUN",
+    "registry_meaning": "comparisons and arms that were not run: missing cells, not filled by numbers",
+    "what": "competing explanations beyond a reliability statistic and a static causal model (attention, memory, predictive processing, sensorimotor, cognitive appraisal, concept learning, SNN, dynamical systems, operational-shape analysis) were not run"
+   }
+  ],
+  "prohibited_inferences": [
+   {
+    "conclusion": "gaisho_fired",
+    "premise": "spike_fired",
+    "reason": "a spike firing is a firing of a neuron model; it is not the firing of a Gaisho"
+   },
+   {
+    "conclusion": "gaisho_established",
+    "premise": "concept_classification_succeeded",
+    "reason": "a successful conceptual classification does not establish a Gaisho"
+   },
+   {
+    "conclusion": "thought_established",
+    "premise": "ai_internal_state_changed",
+    "reason": "a change of the internal state of an AI does not establish thinking"
+   },
+   {
+    "conclusion": "gaisho_exists",
+    "premise": "shape_3d_complex",
+    "reason": "the complexity of a drawn shape is not evidence of a Gaisho"
+   },
+   {
+    "conclusion": "knowledge_established",
+    "premise": "accuracy_improved",
+    "reason": "an improved accuracy does not establish knowledge"
+   },
+   {
+    "conclusion": "judgement_about_object_true",
+    "premise": "gaisho_attribution_succeeded",
+    "reason": "the success of an attribution does not make the judgement about the object true"
+   },
+   {
+    "conclusion": "individual_gaisho_changed",
+    "premise": "institution_evaluation_changed",
+    "reason": "a change of an institution's evaluation is not a change of an individual's Gaisho"
+   },
+   {
+    "conclusion": "gaisho_attributed",
+    "premise": "operational_difference_found",
+    "reason": "an operational difference is not an attribution: the attribution needs independent evidence"
+   }
+  ],
+  "r37": {
+   "applicability_gate": {
+    "consequence": "the attribution is recorded as UNRESOLVED (R37: unresolved, not defeated-for-K and not a metaphysical zero); it is not an assertion that no thought-related episode occurs, and an operational difference is not evidence of one",
+    "passed": false,
+    "reason": "no eligible bearer b, no bounded episode interval, no directed relation w and no independent evidential route is specified: a synthetic operation is not a target of an episode attribution, so the gate fails before any A_G value can be assigned"
+   },
+   "arms": {
+    "A": {
+     "lab": "PARTIAL",
+     "note": "only the static causal, reliability-only and single-factor comparators of the knowledge domain, on a synthetic decision rule; no model of attention, appraisal, recall or control",
+     "r37": "an established non-Gaisho model of attention, appraisal, recall or control"
+    },
+    "B": {
+     "lab": "NOT_EXECUTED",
+     "note": "the laboratory has no episodic-orientation state",
+     "r37": "A plus an explicit episodic-orientation state, no special synchronization"
+    },
+    "C": {
+     "lab": "NOT_EXECUTED",
+     "note": "",
+     "r37": "a candidate state-dependent coupling with controlled latencies"
+    },
+    "D": {
+     "lab": "NOT_EXECUTED",
+     "note": "",
+     "r37": "a phase-coupling manipulation on independently verified periodic components"
+    },
+    "E": {
+     "lab": "NOT_EXECUTED",
+     "note": "no Gaisho channel is specified",
+     "r37": "a perturbation of the purported Gaisho channel with all other task information preserved"
+    },
+    "F": {
+     "lab": "NOT_EXECUTED",
+     "note": "",
+     "r37": "a change of reporting and social attribution without a change of the candidate mediator"
+    },
+    "G": {
+     "lab": "PARTIAL",
+     "note": "domain 005 intervenes on the synthetic institution's score threshold and resource feedback; the subject episode is not modelled (so it is neither fixed nor assessed)",
+     "r37": "a change of the institutional gate with the subject episode fixed or unresolved"
+    }
+   },
+   "failure_registries": {
+    "F1": "absence of a predicted empirical contrast within a calibrated sensor, scale and horizon",
+    "F2": "a fully competent rival's explanatory equivalence",
+    "F3": "a blocked or unauthorized intervention",
+    "F4": "unresolved bearer- or episode-attribution",
+    "F5": "normative disagreement under shared material facts"
+   },
+   "level_terms": {
+    "conceptual_operational_shape": {
+     "in_r37": true,
+     "r37_term": "C: a warranted conceptual-operational-shape judgment under reidentification and revision conditions (R37 II 5, G-C-N)"
+    },
+    "gaisho_attribution": {
+     "in_r37": true,
+     "r37_term": "A_G(b,t,w;e,K) in {supported, defeated-for-K, unresolved} (R37 II 4); the laboratory also records ASSERTED_BY_RESEARCHER, which R37 does not have"
+    },
+    "gaisho_operational_shape": {
+     "in_r37": false,
+     "r37_term": "NO R37 TERM. R37 has Occ_G(b,t,w) (occurrence), Det_D(K,t) (detectability) and M_G (a candidate causal mediator); the brief's 'Gaisho operational shape' is the laboratory's own level"
+    },
+    "operational_shape": {
+     "in_r37": true,
+     "r37_term": "Operational Shape (a P/A term, R37 Appendix C 003)"
+    },
+    "real_operation": {
+     "in_r37": true,
+     "r37_term": "Real Operation (a P/A term, R37 I and Appendix C 002)"
+    }
+   },
+   "reference": "GAISHO R37 (Fujie, 3 November 2026), as read on 2026-11-05 (parts read: see the module docstring)",
+   "registers": {
+    "A_G": {
+     "applicability_gate": "NOT_PASSED",
+     "lab": "UNRESOLVED",
+     "note": "no eligible bearer b, no bounded episode interval, no directed relation w and no independent evidential route is specified: a synthetic operation is not a target of an episode attribution, so the gate fails before any A_G value can be assigned",
+     "r37": "attribution of a situated thought-related episode: supported / defeated-for-K / unresolved"
+    },
+    "C": {
+     "lab": "NOT_MODELLED",
+     "note": "no concept formation, reidentification or reuse is modelled",
+     "r37": "conceptual operational shape: reidentification, comparison, transformation, reuse"
+    },
+    "Det_D": {
+     "lab": "RECORDED_PER_OBSERVATION",
+     "note": "the observation condition and what it could and could not identify (the unobserved classes); a detector output is not an occurrence",
+     "r37": "what a frozen detector registers under K"
+    },
+    "E": {
+     "lab": "NOT_MODELLED",
+     "note": "no expressive acts",
+     "r37": "expressive act or stance"
+    },
+    "I": {
+     "lab": "NOT_MODELLED",
+     "note": "no institution",
+     "r37": "institutional execution"
+    },
+    "N": {
+     "lab": "NOT_MODELLED",
+     "note": "no normative practice is modelled; no entitlement is computed",
+     "r37": "normative standing: commitment, entitlement, challenge, justification"
+    },
+    "Occ_G": {
+     "lab": "NOT_ASSESSED",
+     "note": "the laboratory has no episode, bearer or interval; it cannot assess occurrence",
+     "r37": "occurrence of a Gaisho episode: true or false independently of examination"
+    },
+    "P": {
+     "lab": "EXECUTED_IN_MODEL",
+     "note": "the planar body's sensorimotor operation (delayed, noisy sensing; operation lines; feedback); it is a bodily operation, and is not a thinker or an episode",
+     "r37": "prereflective bodily or practical orientation"
+    },
+    "S": {
+     "lab": "EXECUTED_IN_MODEL",
+     "note": "what the laboratory runs (a decision rule, a declared rule set, the TRUTH-ERROR institution, a planar body)",
+     "r37": "occurrence of the target operation"
+    }
+   }
+  },
+  "result": {
+   "conditions": {
+    "human-like planar body": {
+     "accuracy": {
+      "mean": 0.25333333333333335,
+      "n": 6,
+      "sd": 0.020655911179772907,
+      "se": 0.008432740427115686
+     },
+     "accuracy_pre_shift": {
+      "mean": null,
+      "n": 0,
+      "sd": null,
+      "se": null
+     },
+     "operation_digest": "43524d26f82e7f9d292946b73d95fb5877214d09e270dedb3febac0c2ae95fdf",
+     "relations": {
+      "baseline_fall": {
+       "ci95": [
+        0.0,
+        0.0
+       ],
+       "n": 6,
+       "sd": 0.0,
+       "se": 0.0,
+       "status": "IDENTIFIED",
+       "value": 0.0
+      },
+      "effect_x": {
+       "ci95": [
+        0.6,
+        0.6
+       ],
+       "n": 6,
+       "sd": 0.0,
+       "se": 0.0,
+       "status": "IDENTIFIED",
+       "value": 0.6
+      },
+      "effect_y": {
+       "ci95": [
+        0.3999999999999999,
+        0.4
+       ],
+       "n": 6,
+       "sd": 6.080941944488117e-17,
+       "se": 2.482534153247273e-17,
+       "status": "IDENTIFIED",
+       "value": 0.39999999999999997
+      }
+     }
+    },
+    "machine-like planar body": {
+     "accuracy": {
+      "mean": 0.2733333333333334,
+      "n": 6,
+      "sd": 0.016329931618554533,
+      "se": 0.006666666666666672
+     },
+     "accuracy_pre_shift": {
+      "mean": null,
+      "n": 0,
+      "sd": null,
+      "se": null
+     },
+     "operation_digest": "6053c2eb6fb704e3f4835e5bc60536ca03c32da6fbf94cc70bc51ba01adba89f",
+     "relations": {
+      "baseline_fall": {
+       "ci95": [
+        0.0,
+        0.0
+       ],
+       "n": 6,
+       "sd": 0.0,
+       "se": 0.0,
+       "status": "IDENTIFIED",
+       "value": 0.0
+      },
+      "effect_x": {
+       "ci95": [
+        0.1784180380969011,
+        0.3549152952364322
+       ],
+       "n": 6,
+       "sd": 0.10327955589886445,
+       "se": 0.04216370213557839,
+       "status": "IDENTIFIED",
+       "value": 0.26666666666666666
+      },
+      "effect_y": {
+       "ci95": [
+        0.4969000000000001,
+        0.6364333333333334
+       ],
+       "n": 6,
+       "sd": 0.0816496580927726,
+       "se": 0.03333333333333333,
+       "status": "IDENTIFIED",
+       "value": 0.5666666666666668
+      }
+     }
+    }
+   },
+   "digest": "7df32b04f8c8465cb94632610f312d656ca5e2249dc6d3971e93f139097b01f7",
+   "domain": "004-body",
+   "observation": {
+    "boundary": [],
+    "coupling": "intervened",
+    "environment": "default",
+    "memory": true,
+    "probe": 0.0,
+    "resources": 10000,
+    "scale": 1,
+    "sensor_channels": [
+     "x",
+     "y",
+     "memory"
+    ],
+    "sensor_noise": 0.0,
+    "speed": 1,
+    "temporal_window": 40
+   },
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "title": "BODY \u2014 SENSORIMOTOR CONTINUATION OF A PLANAR BODY UNDER INTERVENTION (XB-TRO)"
+  },
+  "spec": {
+   "conditions": null,
+   "domain": "004-body",
+   "observation": {
+    "boundary": [],
+    "coupling": "intervened",
+    "environment": "default",
+    "memory": true,
+    "probe": 0.0,
+    "resources": 10000,
+    "scale": 1,
+    "sensor_channels": [
+     "x",
+     "y",
+     "memory"
+    ],
+    "sensor_noise": 0.0,
+    "speed": 1,
+    "temporal_window": 40
+   },
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ]
+  },
+  "status": {
+   "completion": "INITIAL_CONDITIONS_EXECUTED",
+   "criteria": "B1 only: a real planar body (XB-TRO, through the optional link) under two interventions, the continuation class (falls or not) as the outcome, two body configurations. Morphology, memory and resource axes are not crossed; no spiking component exists (XenoSNN is not connected and cannot be closed-loop); the body is a prereflective operation (R37 P), not a thinker, and no attribution is made",
+   "executed": true
+  },
+  "structural_similarity": [
+   {
+    "a": "human-like planar body",
+    "b": "machine-like planar body",
+    "relations_compared": 3,
+    "similarity": 0.8333333333333333
+   }
+  ]
+ },
+ "model_version": "gaisho-lab/1",
+ "seeds": [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6
+ ]
+}

@@ -18,7 +18,7 @@ from ..gaisho import MODEL_VERSION
 from ..gaisho.claims import CLAIMS
 from ..gaisho.compare import compare_models, compare_observations
 from ..gaisho.construction import change_kinds_of_observations, explain_shape, reading_of_difference
-from ..gaisho.domains import STATUS, domain_registry
+from ..gaisho.domains import domain_registry, status_of
 from ..gaisho.export import MAX_SEEDS, observation_from, restore, run_experiment
 from ..gaisho.figure import figure_svg
 from ..gaisho.knowledge import ENVIRONMENTS
@@ -34,6 +34,7 @@ from ..gaisho.model import (
     UNOBSERVED,
     VERDICTS,
 )
+from ..gaisho.r37 import ARMS, CONSTRAINTS, FAILURE_REGISTRIES, LEVEL_TERMS, R37_REF
 from ..gaisho.shape import compare_shapes
 from .studies import local_only
 
@@ -97,8 +98,8 @@ def spec(request: Request) -> dict:
     return {
         "model_version": MODEL_VERSION,
         "scope": "SYNTHETIC computational experiments only: no human neural activity, no real institution, no real person. The laboratory executes operations and records differences; it never computes a Gaisho attribution.",
-        "source_status": "the manuscript GAISHO R37 was not found on this machine; the five levels, the twelve questions and the verdicts are those of the development brief, and nothing is taken from R37",
-        "domains": {k: {"title": d.title if d else None, "conditions": list(d.conditions) if d else [], "x": d.x_name if d else None, "y": d.y_name if d else None, "snapshots": list(d.snapshots) if d else [], "relations": list(d.relation_names) if d else [], "max_seeds": getattr(d, "max_seeds", 0) if d else 0, "status": STATUS[k]} for k, d in reg.items()},
+        "source_status": "the manuscript GAISHO R37 was read on 2026-11-05 (the parts read are listed in r37.py; Part I, the rest of Part II, Parts IV-IX and XI and Appendices A and B were not read in full); the P/A Dictionary v40 itself was not available. The five levels (one of them, the Gaisho operational shape, is a term of the development brief that R37 does not use), the twelve questions and the verdict classes come from the brief; the correspondence with R37 is in r37.CONSTRAINTS",
+        "domains": {k: {"title": d.title if d else None, "conditions": list(d.conditions) if d else [], "x": d.x_name if d else None, "y": d.y_name if d else None, "snapshots": list(d.snapshots) if d else [], "relations": list(d.relation_names) if d else [], "max_seeds": getattr(d, "max_seeds", 0) if d else 0, "status": status_of(k)} for k, d in reg.items()},
         "observation_axes": list(OBSERVATION_AXES),
         "observation_defaults": FULL.asdict(),
         "environments": list(ENVIRONMENTS),
@@ -111,6 +112,7 @@ def spec(request: Request) -> dict:
         "prohibited_inferences": [{"premise": p, "conclusion": c, "reason": w} for p, c, w in PROHIBITED_INFERENCES],
         "limits": LIMITS,
         "claims": list(CLAIMS),
+        "r37": {"reference": R37_REF, "constraints": list(CONSTRAINTS), "arms": ARMS, "failure_registries": FAILURE_REGISTRIES, "level_terms": LEVEL_TERMS},
     }
 
 

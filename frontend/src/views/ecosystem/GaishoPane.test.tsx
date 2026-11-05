@@ -18,9 +18,9 @@ const section = (h: string, id: string) => { const i = h.indexOf(`data-testid="$
 const run = (rec: GaishoRecord, cond = RESP) => ({ rec, cond, domain: rec.spec.domain, snap: 'end' });
 
 describe('the GAISHO pane before a run', () => {
-  it('states that it is synthetic, that the manuscript was not found, and that the laboratory never computes an attribution', () => {
+  it('states that it is synthetic, what was read of the manuscript, and that the laboratory never computes an attribution', () => {
     const t = text(section(html(), 'gs-scope'));
-    for (const s of ['SYNTHETIC', 'never computes a Gaisho attribution', 'R37 was not found']) expect(t).toContain(s);
+    for (const s of ['SYNTHETIC', 'never computes a Gaisho attribution', 'GAISHO R37 was read on 2026-11-05', 'not read in full']) expect(t).toContain(s);
   });
   it('lists the five domains each with its own completion status, and shows no result', () => {
     const h = html(), t = text(section(h, 'gs-domains'));
@@ -101,7 +101,7 @@ describe('errors', () => {
 describe('the claims, the construction and the reading of a difference', () => {
   it('lists what is supported, what is limited and what is only a philosophical hypothesis, apart', () => {
     const t = text(section(html(), 'gs-claims'));
-    for (const s of ['Supported by the executed experiments', 'Limits and negative results', 'Philosophical hypotheses NOT tested', 'K1', 'N1', 'H1', 'UNVERIFIED']) expect(t).toContain(s);
+    for (const s of ['Supported by the executed experiments', 'Limits and negative results', 'Philosophical hypotheses NOT tested', 'K1', 'N1', 'U1', 'UNVERIFIED']) expect(t).toContain(s);
   });
   it('has a button that traces the construction of the shape in view, and no trace before it is asked for', () => {
     const h = html(run(fx.base));
@@ -110,5 +110,18 @@ describe('the claims, the construction and the reading of a difference', () => {
   it('would show the reading of a difference (the weights, the sampling noise and that display changes no record)', () => {
     // the reading is held in the pane's own state from the engine's answer; its wording is what is checked here
     expect(fx.reading_same.summary).toContain('sampling noise'); expect(fx.reading_changed.summary).toContain('the operation (the decision rule) differs');
+  });
+});
+
+describe('the R37 sections', () => {
+  it('shows what was read of R37, what is implemented and what is not, and the registers of the record with the gate', () => {
+    const h = html(run(fx.base)), c = text(section(h, 'gs-r37'));
+    for (const s of ['read on 2026-11-05', 'not read in full', 'IMPLEMENTED', 'PARTIAL', 'NOT_IMPLEMENTED', 'R6', 'R8']) expect(c).toContain(s);
+    const r = text(section(h, 'gs-registers'));
+    for (const s of ['Occ_G', 'NOT_ASSESSED', 'A_G', 'UNRESOLVED', 'NOT_PASSED', 'Failure registries', 'Arms A-G', 'B NOT_EXECUTED']) expect(r).toContain(s);
+    expect(text(section(h, 'gs-levels'))).toContain('NO R37 TERM'); expect(h).toContain('data-testid="gs-gate"');
+  });
+  it('shows no registers before a run, and none for a domain that was not executed', () => {
+    expect(html()).not.toContain('data-testid="gs-registers"'); expect(html({ domain: '004-body', rec: fx.body })).not.toContain('data-testid="gs-registers"');
   });
 });

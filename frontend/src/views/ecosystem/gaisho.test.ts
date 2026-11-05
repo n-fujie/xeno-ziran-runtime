@@ -5,7 +5,7 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { FULL_OBSERVATION, LEVELS, OBS_PRESETS, cellTrace, claimGroups, constructionOf, domainStatusRows, exportRecord, figureTable, frameOf, initialGaishoUi, levelRows, negativeCounts, observationDiff, operationPart, parseRecord, relationRows, relationSupport, shapeOf, snapshotsOf, type ComparatorsOut, type ConstructionOut, type GaishoRecord, type GaishoSpecInfo, type ShapeReading } from './gaisho';
+import { FULL_OBSERVATION, LEVELS, OBS_PRESETS, cellTrace, claimGroups, constraintGroups, constructionOf, domainStatusRows, exportRecord, figureTable, frameOf, registerRows, initialGaishoUi, levelRows, negativeCounts, observationDiff, operationPart, parseRecord, relationRows, relationSupport, shapeOf, snapshotsOf, type ComparatorsOut, type ConstructionOut, type GaishoRecord, type GaishoSpecInfo, type ShapeReading } from './gaisho';
 
 const fx = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '__fixtures__', 'gaisho-records.json'), 'utf8')) as Record<'base' | 'passive' | 'scale4' | 'body', GaishoRecord> & { info: GaishoSpecInfo; construction: ConstructionOut; construction_scale: ConstructionOut; reading_same: ShapeReading; reading_changed: ShapeReading; obs_cmp: { change_kinds: { real_operation: string; recorded_observation: string; display: string } }; comparators: ComparatorsOut };
 const { base, passive, scale4, body, info } = fx;
@@ -154,8 +154,8 @@ describe('claims', () => {
     const g = claimGroups(fx.info.claims);
     expect(g.map((x) => x.status)).toEqual(['SUPPORTED_IN_MODEL', 'LIMITED_OR_NEGATIVE', 'UNTESTED_PHILOSOPHICAL_HYPOTHESIS']);
     expect(g.every((x) => x.items.length > 0)).toBe(true);
-    const h = g[2].items.map((c) => c.id); expect(h).toContain('H1'); expect(g[0].items.some((c) => h.includes(c.id))).toBe(false);
-    expect(g[2].items.find((c) => c.id === 'H3')!.rests_on).toContain('UNVERIFIED');
+    const h = g[2].items.map((c) => c.id); expect(h).toContain('U1'); expect(h).toContain('R37-H1..H3'); expect(g[0].items.some((c) => h.includes(c.id))).toBe(false);
+    expect(g[2].items.find((c) => c.id === 'U3')!.rests_on).toContain('UNVERIFIED');
   });
 });
 
@@ -175,5 +175,30 @@ describe('which layer each element is, and the comparators', () => {
     expect(c.not_run).toContain('attention'); expect(c.reading).toContain('nested model cannot beat');
     const by = Object.fromEntries(c.rows.map((r) => [r.condition, Object.fromEntries(r.verdicts.map((v) => [v.competitor.split(' ')[0], v.verdict]))]));
     expect(by['accidental correct: coincidental cue'].M4).toBe('HARMFUL'); expect(by['ground-responsive judgement'].M4).toBe('NON_REDUNDANT'); expect(by['ground-responsive judgement'].M1).toBe('REDUNDANT');
+  });
+});
+
+describe('the correspondence with GAISHO R37', () => {
+  it('shows the applicability gate with the unresolved attribution, and the R37 term of every level (one level has none)', () => {
+    for (const c of Object.keys(base.levels!)) {
+      const rows = levelRows(base, c), a = rows.find((r) => r.level === 'gaisho_attribution')!;
+      expect(a.state).toBe('UNRESOLVED'); expect(a.applicability_gate).toMatch(/^NOT_PASSED/); expect(a.r37_term).toContain('defeated-for-K');
+      expect(rows.find((r) => r.level === 'gaisho_operational_shape')!.r37_term).toContain('NO R37 TERM');
+    }
+  });
+  it('lists the registers apart: occurrence is not assessed, the attribution is unresolved, C, E and N are not modelled', () => {
+    const r = Object.fromEntries(registerRows(base).map((x) => [x.id, x]));
+    expect(Object.keys(r)).toEqual(['S', 'Occ_G', 'Det_D', 'A_G', 'C', 'P', 'E', 'N', 'I']);
+    expect(r.Occ_G.lab).toBe('NOT_ASSESSED'); expect(r.A_G.lab).toBe('UNRESOLVED'); expect(r.A_G.gate).toBe('NOT_PASSED'); expect(r.C.lab).toBe('NOT_MODELLED'); expect(r.N.lab).toBe('NOT_MODELLED');
+  });
+  it('groups the R37 constraints by how far they are implemented, and does not count the comparative claims or the ignition constraint as implemented', () => {
+    const g = constraintGroups(info.r37.constraints), ids = (s: string) => g.find((x) => x.status === s)!.items.map((c) => c.id);
+    expect(g.map((x) => x.status)).toEqual(['IMPLEMENTED', 'PARTIAL', 'NOT_IMPLEMENTED']);
+    expect(ids('NOT_IMPLEMENTED')).toEqual(expect.arrayContaining(['R6', 'R8', 'R15'])); expect(ids('IMPLEMENTED')).toEqual(expect.arrayContaining(['R2', 'R5', 'R14']));
+    expect(info.source_status).toContain('read on 2026-11-05'); expect(info.source_status).toContain('not read in full');
+  });
+  it('keeps every negative result in one failure registry', () => {
+    expect(base.negative_results!.every((n) => typeof n.registry === 'string' && n.registry !== '')).toBe(true);
+    expect(base.r37!.arms.B.lab).toBe('NOT_EXECUTED'); expect(Object.keys(base.r37!.failure_registries)).toEqual(['F1', 'F2', 'F3', 'F4', 'F5']);
   });
 });
