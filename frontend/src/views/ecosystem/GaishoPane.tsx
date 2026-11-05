@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { FIGURE_KIND_TEXT, LEVELS, OBS_PRESETS, cellTrace, claimGroups, constraintGroups, registerRows, UNOBSERVED_TEXT, constructionOf, domainStatusRows, exportRecord, figureTable, frameOf, levelRows, negativeCounts, num, observationDiff, operationPart, parseRecord, relationRows, relationSupport, snapshotsOf, type ComparatorsOut, type ConstructionOut, type GaishoObservation, type GaishoRecord, type GaishoSpecInfo, type GaishoUi, type ShapeReading } from './gaisho';
-import { gaishoCompareObservations, gaishoComparators, gaishoCompareShapes, gaishoConstruction, gaishoFigure, gaishoRestore, gaishoRun, type GaishoObsComparison, type GaishoShapeComparison } from './gaishoApi';
+import { FIGURE_KIND_TEXT, LEVELS, OBS_PRESETS, cellTrace, claimGroups, constraintGroups, countermodelRows, registerRows, snnSeedRows, UNOBSERVED_TEXT, constructionOf, domainStatusRows, exportRecord, figureTable, frameOf, levelRows, negativeCounts, num, observationDiff, operationPart, parseRecord, relationRows, relationSupport, snapshotsOf, type BodySnnRecord, type ComparatorsOut, type ConstructionOut, type CountermodelsOut, type GaishoObservation, type GaishoRecord, type GaishoSpecInfo, type GaishoUi, type ShapeReading } from './gaisho';
+import { gaishoBodySnn, gaishoCompareObservations, gaishoComparators, gaishoCountermodels, gaishoCompareShapes, gaishoConstruction, gaishoFigure, gaishoRestore, gaishoRun, type GaishoObsComparison, type GaishoShapeComparison } from './gaishoApi';
 
 // GAISHO - Operational Shape Laboratory: a research tab of the XENO ECOSYSTEM view. It runs SYNTHETIC computational experiments in the engine (backend/xzr/gaisho) and reads the record: nothing here simulates, scores or
 // attributes. The operation, the operational shape, the conceptual operational shape, the Gaisho operational shape and the Gaisho attribution are five SEPARATE records; the attribution is never computed, and an operational
@@ -18,7 +18,7 @@ export default function GaishoPane(c: GaishoCtx) {
   const rec = ui.rec;
   const [obsCmp, setObsCmp] = useState<GaishoObsComparison | null>(null), [shapeCmp, setShapeCmp] = useState<GaishoShapeComparison | null>(null);
   const [svg, setSvg] = useState<{ svg: string; kind: string; digest: string } | null>(null), [note, setNote] = useState<string | null>(null);
-  const [showNeg, setShowNeg] = useState(false), [reading, setReading] = useState<ShapeReading | null>(null), [trace, setTrace] = useState<ConstructionOut | null>(null), [cmpOut, setCmpOut] = useState<ComparatorsOut | null>(null);
+  const [showNeg, setShowNeg] = useState(false), [reading, setReading] = useState<ShapeReading | null>(null), [trace, setTrace] = useState<ConstructionOut | null>(null), [cmpOut, setCmpOut] = useState<ComparatorsOut | null>(null), [cm, setCm] = useState<CountermodelsOut | null>(null), [snn, setSnn] = useState<BodySnnRecord | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const dom = info?.domains[ui.domain] ?? null;
   const executed = !!dom?.status.executed;
@@ -68,6 +68,12 @@ export default function GaishoPane(c: GaishoCtx) {
   const download = (name: string, text: string, type: string) => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type })); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); };
   const traceShape = () => guard(async () => { if (!rec?.executed) return; setTrace(await gaishoConstruction({ domain: rec.spec.domain, observation: rec.spec.observation, seeds: rec.spec.seeds, conditions: rec.spec.conditions ?? undefined, condition: ui.cond, snapshot: ui.snap })); });
   const compare = () => guard(async () => { if (!rec?.executed) return; setCmpOut(await gaishoComparators({ domain: rec.spec.domain, observation: rec.spec.observation, seeds: rec.spec.seeds.slice(0, 10) })); });
+  const runCountermodels = () => guard(async () => { setCm(await gaishoCountermodels()); });
+  const replaySnn = () => guard(async () => {
+    const cell = shape && ui.selected ? shape.vertices.find((v) => v.id === ui.selected)?.cell : undefined;
+    if (!rec?.executed || !cell) throw new Error('select a recorded cell of the body shape in the 3D scene first');
+    setSnn(await gaishoBodySnn({ condition: ui.cond, i: cell[0], j: cell[1], seeds: rec.spec.seeds.slice(0, 4) }));
+  });
   const figure = () => guard(async () => { if (!rec?.executed) return; const f = await gaishoFigure({ domain: rec.spec.domain, observation: rec.spec.observation, seeds: rec.spec.seeds, conditions: rec.spec.conditions ?? undefined, snapshot: ui.snap }); setSvg({ svg: f.svg, kind: f.figure_kind, digest: f.digest }); });
 
   useEffect(() => { setTrace(null); }, [rec?.digest, ui.cond, ui.snap]);
@@ -241,6 +247,24 @@ export default function GaishoPane(c: GaishoCtx) {
       <Section title="Correspondence with GAISHO R37 (what is implemented, partly, or not)" testid="gs-r37">
         <div className="eco-note">{info?.source_status}</div>
         {constraintGroups(info?.r37.constraints ?? []).map((g) => <div key={g.status}><div className="eco-note"><b>{g.status}</b> ({g.items.length})</div><ul className="gs-list">{g.items.map((c) => <li key={c.id}>{c.id} [{c.where}]: {c.constraint} - {c.how}</li>)}</ul></div>)}
+      </Section>
+
+      {rec?.executed && rec.spec.domain === '004-body' && <Section title="B2: the body's sensed signal through the XenoSNN neuron (open loop)" testid="gs-snn">
+        <div className="eco-note">The signal a body sensed at the selected cell (its vestibular tilt estimate, encoded by a stipulated gain of {info?.links?.snn_encoding.gain ?? 1}) is sent through the existing XenoSNN neuron (one LIF neuron). The sensor input, the spikes, the membrane, the weights (none), the plasticity (none), the body's output and the environment's return are separate records; nothing the neuron does reaches the body. A spike is a threshold crossing, not a Gaisho.</div>
+        {info?.links && !info.links.xenosnn && <div className="eco-note" data-testid="gs-snn-off">XenoSNN is not reachable: start its server (torch and snnTorch needed) and set XZR_XENOSNN_URL to its loopback address. Nothing is substituted.</div>}
+        <div className="eco-row"><button onClick={replaySnn} disabled={c.busy || !info?.links?.xenosnn} data-testid="gs-snn-run">replay the selected cell</button></div>
+        {snn && <div data-testid="gs-snn-out">
+          <div className="eco-note">{snn.condition}, cell {snn.cell.join(',')} ({Object.entries(snn.interventions).map(([k, v]) => `${k} = ${v}`).join('; ')}) - record digest {snn.digest.slice(0, 12)}</div>
+          <table className="eco-table"><thead><tr><th>seed</th><th>input peak</th><th>spikes</th><th>first spike s</th><th>membrane max</th><th>body fell</th><th>fall s</th></tr></thead><tbody>{snnSeedRows(snn).map((r) => <tr key={r.seed}><td>{r.seed}</td><td>{r.input_peak.toFixed(3)}</td><td>{r.spikes}</td><td>{r.first_spike_s ?? '-'}</td><td>{r.membrane_max.toFixed(2)}</td><td>{String(r.fell)}</td><td>{r.fall_time_s === null ? '-' : r.fall_time_s.toFixed(2)}</td></tr>)}</tbody></table>
+          <div className="eco-note">weights: {snn.weights}. plasticity: {snn.plasticity}. memory: {snn.memory}. coupling: {snn.coupling}.</div>
+          <div className="eco-note">{snn.operational_summary.reading}. Attribution: {chip(snn.attribution)} ({snn.applicability_gate})</div>
+        </div>}
+      </Section>}
+
+      <Section title="R37's finite countermodels (exact; none supports a Gaisho)" testid="gs-countermodels">
+        <div className="eco-note">Logical and methodological constructions stipulated in R37 Appendices A and B, executed here: they do not simulate Gaisho, thought, a person or an institution.</div>
+        <div className="eco-row"><button onClick={runCountermodels} disabled={c.busy} data-testid="gs-cm-run">run the countermodels</button></div>
+        {cm && <div data-testid="gs-cm-out"><table className="eco-table"><tbody>{countermodelRows(cm).map((r) => <tr key={r.id}><td>{r.id}</td><td>{r.shows}<div className="eco-note">limit: {r.limit}</div></td></tr>)}</tbody></table><div className="eco-note">{cm.scope}. Attribution: {chip(cm.attribution)}.</div></div>}
       </Section>
 
       <Section title="Claims: supported, limited, and hypotheses not tested" testid="gs-claims">

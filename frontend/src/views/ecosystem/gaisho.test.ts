@@ -5,9 +5,9 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { FULL_OBSERVATION, LEVELS, OBS_PRESETS, cellTrace, claimGroups, constraintGroups, constructionOf, domainStatusRows, exportRecord, figureTable, frameOf, registerRows, initialGaishoUi, levelRows, negativeCounts, observationDiff, operationPart, parseRecord, relationRows, relationSupport, shapeOf, snapshotsOf, type ComparatorsOut, type ConstructionOut, type GaishoRecord, type GaishoSpecInfo, type ShapeReading } from './gaisho';
+import { FULL_OBSERVATION, LEVELS, OBS_PRESETS, cellTrace, claimGroups, constraintGroups, constructionOf, countermodelRows, snnSeedRows, domainStatusRows, exportRecord, figureTable, frameOf, registerRows, initialGaishoUi, levelRows, negativeCounts, observationDiff, operationPart, parseRecord, relationRows, relationSupport, shapeOf, snapshotsOf, type BodySnnRecord, type ComparatorsOut, type ConstructionOut, type CountermodelsOut, type GaishoRecord, type GaishoSpecInfo, type ShapeReading } from './gaisho';
 
-const fx = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '__fixtures__', 'gaisho-records.json'), 'utf8')) as Record<'base' | 'passive' | 'scale4' | 'body', GaishoRecord> & { info: GaishoSpecInfo; construction: ConstructionOut; construction_scale: ConstructionOut; reading_same: ShapeReading; reading_changed: ShapeReading; obs_cmp: { change_kinds: { real_operation: string; recorded_observation: string; display: string } }; comparators: ComparatorsOut };
+const fx = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '__fixtures__', 'gaisho-records.json'), 'utf8')) as Record<'base' | 'passive' | 'scale4' | 'body', GaishoRecord> & { info: GaishoSpecInfo; construction: ConstructionOut; construction_scale: ConstructionOut; reading_same: ShapeReading; reading_changed: ShapeReading; obs_cmp: { change_kinds: { real_operation: string; recorded_observation: string; display: string } }; comparators: ComparatorsOut; countermodels: CountermodelsOut };
 const { base, passive, scale4, body, info } = fx;
 const CUE = 'accidental correct: coincidental cue', RESP = 'ground-responsive judgement', FB = 'correction and reconfiguration (feedback on)';
 
@@ -194,11 +194,47 @@ describe('the correspondence with GAISHO R37', () => {
   it('groups the R37 constraints by how far they are implemented, and does not count the comparative claims or the ignition constraint as implemented', () => {
     const g = constraintGroups(info.r37.constraints), ids = (s: string) => g.find((x) => x.status === s)!.items.map((c) => c.id);
     expect(g.map((x) => x.status)).toEqual(['IMPLEMENTED', 'PARTIAL', 'NOT_IMPLEMENTED']);
-    expect(ids('NOT_IMPLEMENTED')).toEqual(expect.arrayContaining(['R6', 'R8', 'R15'])); expect(ids('IMPLEMENTED')).toEqual(expect.arrayContaining(['R2', 'R5', 'R14']));
-    expect(info.source_status).toContain('read on 2026-11-05'); expect(info.source_status).toContain('not read in full');
+    expect(ids('NOT_IMPLEMENTED')).toEqual(expect.arrayContaining(['R6', 'R8', 'R20'])); expect(ids('PARTIAL')).toContain('R15'); expect(ids('IMPLEMENTED')).toEqual(expect.arrayContaining(['R2', 'R5', 'R14']));
+    expect(info.source_status).toContain('read on 2026-11-05'); expect(info.source_status).toContain('NOT a full-text verification');
   });
   it('keeps every negative result in one failure registry', () => {
     expect(base.negative_results!.every((n) => typeof n.registry === 'string' && n.registry !== '')).toBe(true);
     expect(base.r37!.arms.B.lab).toBe('NOT_EXECUTED'); expect(Object.keys(base.r37!.failure_registries)).toEqual(['F1', 'F2', 'F3', 'F4', 'F5']);
+  });
+});
+
+describe('R37\'s finite countermodels', () => {
+  const c = fx.countermodels;
+  it('show equal records with different histories, and never support an attribution', () => {
+    const q = c.questioning.models;
+    expect(q.report.same_recorded_joint).toBe(true); expect(q.report.P_E0_equals_1).toEqual({ H_R: '1/2', H_F: '0' }); expect(q.report.P_E0_identified_by_the_record).toBe(false);
+    expect(q.common_endpoint.effect_identified).toBe(true); expect(Object.values(q.common_endpoint.effect_of_the_question_on_Y!)).toEqual(['1/2', '1/2']);
+    expect(c.report_indeterminacy.rules_that_decide_P_on_every_history).toBe(0); expect(c.z_equivalence.Z_equivalent_on_Z).toBe(true); expect(c.z_equivalence.Z_equivalent_with_probe).toBe(false);
+    expect(c.supports_a_gaisho_attribution).toBe(false); expect(c.attribution).toBe('UNRESOLVED'); expect(c.scope).toContain('do not simulate Gaisho');
+  });
+  it('re-execute the R12 study with intervals that agree with the ones R37 reports', () => {
+    expect(c.scm.worlds).toBe(524288); expect(c.scm.observational_records_identical_in_every_seed).toBe(true); expect(c.scm.effect_of_do_M_in_B.mean).toBe(0);
+    expect(c.scm.compared_with_r37!.association_interval_overlaps).toBe(true); expect(c.scm.compared_with_r37!.effect_A_interval_overlaps).toBe(true); expect(c.scm.reading).toContain('Gaisho attribution unresolved');
+  });
+  it('are listed with what each shows and its limit', () => {
+    const rows = countermodelRows(c);
+    expect(rows).toHaveLength(6); expect(rows.every((r) => r.shows && r.limit)).toBe(true); expect(rows[0].limit).toContain('not modelled');
+    expect(rows.find((r) => r.id.startsWith('renaming'))!.shows).toContain('renaming changes 0');
+  });
+});
+
+describe('B2, the open-loop replay (the saved record of a real run)', () => {
+  const saved = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..', 'docs', 'gaisho', 'experiments_body_snn.json'), 'utf8')) as { records: BodySnnRecord[] };
+  it('keeps sensor input, spikes, membrane, weights, plasticity, memory, bodily output and environment return as separate records, with the attribution unresolved', () => {
+    for (const r of saved.records) {
+      expect(r.kind).toBe('B2_OPEN_LOOP_REPLAY'); expect(r.weights).toMatch(/^NONE/); expect(r.plasticity).toMatch(/^NONE/); expect(r.memory).toMatch(/^NONE/); expect(r.coupling).toMatch(/^OPEN LOOP/);
+      expect(r.attribution).toBe('UNRESOLVED'); expect(r.applicability_gate).toContain('not Occ_G'); expect(r.encoding.status).toMatch(/^STIPULATED/);
+      for (const x of snnSeedRows(r)) expect(Object.keys(x)).toEqual(['seed', 'input_peak', 'spikes', 'first_spike_s', 'membrane_max', 'fell', 'fall_time_s', 'push_peak_N']);
+    }
+  });
+  it('lists the two groups of spike counts without turning them into a finding', () => {
+    const [human, machine] = saved.records;
+    expect(human.operational_summary.spike_counts_of_seeds_that_fell.length + human.operational_summary.spike_counts_of_seeds_that_stayed_up.length).toBe(4);
+    expect(machine.operational_summary.spike_counts_of_seeds_that_stayed_up).toEqual([]); expect(human.operational_summary.reading).toContain('not a Gaisho');
   });
 });

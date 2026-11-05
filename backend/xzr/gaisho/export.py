@@ -42,7 +42,7 @@ def run_experiment(spec: dict) -> dict:
     conds = spec.get("conditions")
     if conds is not None and (len(conds) != len(set(conds)) or set(conds) - set(dom.conditions)):
         raise ValueError("conditions must be distinct names of the domain's conditions")
-    conds = conds or None
+    conds = conds or (list(dom.default_conditions) if hasattr(dom, "default_conditions") else None)
     res = run_domain(dom, obs, seeds, conds)
     axes = {"x": dom.x_name, "y": dom.y_name}
     shapes = {c: {s: build_shape(res, c, s, axes) for s in dom.snapshots} for c in res["conditions"]}

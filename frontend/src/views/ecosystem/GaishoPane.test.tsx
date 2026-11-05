@@ -20,7 +20,7 @@ const run = (rec: GaishoRecord, cond = RESP) => ({ rec, cond, domain: rec.spec.d
 describe('the GAISHO pane before a run', () => {
   it('states that it is synthetic, what was read of the manuscript, and that the laboratory never computes an attribution', () => {
     const t = text(section(html(), 'gs-scope'));
-    for (const s of ['SYNTHETIC', 'never computes a Gaisho attribution', 'GAISHO R37 was read on 2026-11-05', 'not read in full']) expect(t).toContain(s);
+    for (const s of ['SYNTHETIC', 'never computes a Gaisho attribution', 'GAISHO R37 was read on 2026-11-05', 'NOT a full-text verification']) expect(t).toContain(s);
   });
   it('lists the five domains each with its own completion status, and shows no result', () => {
     const h = html(), t = text(section(h, 'gs-domains'));
@@ -116,12 +116,28 @@ describe('the claims, the construction and the reading of a difference', () => {
 describe('the R37 sections', () => {
   it('shows what was read of R37, what is implemented and what is not, and the registers of the record with the gate', () => {
     const h = html(run(fx.base)), c = text(section(h, 'gs-r37'));
-    for (const s of ['read on 2026-11-05', 'not read in full', 'IMPLEMENTED', 'PARTIAL', 'NOT_IMPLEMENTED', 'R6', 'R8']) expect(c).toContain(s);
+    for (const s of ['read on 2026-11-05', 'NOT a full-text verification', 'IMPLEMENTED', 'PARTIAL', 'NOT_IMPLEMENTED', 'R6', 'R8']) expect(c).toContain(s);
     const r = text(section(h, 'gs-registers'));
     for (const s of ['Occ_G', 'NOT_ASSESSED', 'A_G', 'UNRESOLVED', 'NOT_PASSED', 'Failure registries', 'Arms A-G', 'B NOT_EXECUTED']) expect(r).toContain(s);
     expect(text(section(h, 'gs-levels'))).toContain('NO R37 TERM'); expect(h).toContain('data-testid="gs-gate"');
   });
   it('shows no registers before a run, and none for a domain that was not executed', () => {
     expect(html()).not.toContain('data-testid="gs-registers"'); expect(html({ domain: '004-body', rec: fx.body })).not.toContain('data-testid="gs-registers"');
+  });
+});
+
+describe('the countermodel and B2 sections', () => {
+  it('offers the countermodels, stating that they simulate neither Gaisho nor thought, and shows nothing before they are run', () => {
+    const h = html(), t = text(section(h, 'gs-countermodels'));
+    expect(t).toContain('do not simulate Gaisho, thought, a person or an institution'); expect(h).toContain('data-testid="gs-cm-run"'); expect(h).not.toContain('data-testid="gs-cm-out"');
+  });
+  it('shows the B2 section only for an executed body record, says nothing is substituted when XenoSNN is not reachable, and keeps the records apart', () => {
+    expect(html(run(fx.base))).not.toContain('data-testid="gs-snn"');
+    const body = { ...fx.base, spec: { ...fx.base.spec, domain: '004-body' } } as GaishoRecord;
+    const off = html(run(body), { info: { ...fx.info, links: { xbtro: true, xenosnn: false, snn_encoding: { signal: 's', transform: 't', gain: 1, status: 'STIPULATED' } } } });
+    const t = text(section(off, 'gs-snn'));
+    for (const s of ['nothing the neuron does reaches the body', 'weights (none)', 'plasticity (none)', 'A spike is a threshold crossing, not a Gaisho']) expect(t).toContain(s);
+    expect(text(off)).toContain('Nothing is substituted');
+    expect(off).toContain('data-testid="gs-snn-off"');
   });
 });

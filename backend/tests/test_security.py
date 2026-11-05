@@ -333,7 +333,8 @@ def test_no_route_runs_experiments_or_touches_the_filesystem():
         # (test_gaisho.py::test_the_api_is_local_only_stateless_and_validated)
         ("POST", "/api/gaisho/run"), ("POST", "/api/gaisho/compare-observations"), ("POST", "/api/gaisho/compare-shapes"),
         ("POST", "/api/gaisho/figure"), ("POST", "/api/gaisho/restore"), ("POST", "/api/gaisho/construction"),
-        ("POST", "/api/gaisho/comparators")])
+        ("POST", "/api/gaisho/comparators"), ("POST", "/api/gaisho/countermodels"),
+        ("POST", "/api/gaisho/body-snn")])
     meos_src = Path(app_mod.__file__).with_name("meos.py").read_text()
     assert meos_src.count("local_only(request)") >= len([1 for r in routes if "/api/meos" in getattr(r, "path", "")])
     te_src = Path(app_mod.__file__).with_name("truth_error.py").read_text()

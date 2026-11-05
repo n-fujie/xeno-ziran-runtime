@@ -66,6 +66,7 @@ export interface GaishoDomainInfo { title: string | null; conditions: string[]; 
 export interface GaishoSpecInfo {
   model_version: string; scope: string; source_status: string; domains: Record<string, GaishoDomainInfo>; observation_axes: string[]; observation_defaults: GaishoObservation; environments: string[];
   levels: Record<string, string>; level_states: string[]; provenance_classes: string[]; unobserved_classes: Unobserved[]; verdicts: string[]; figure_kinds: string[]; prohibited_inferences: Array<{ premise: string; conclusion: string; reason: string }>; limits: string; claims: Claim[];
+  links?: { xbtro: boolean; xenosnn: boolean; snn_encoding: { signal: string; transform: string; gain: number; status: string } };
   r37: { reference: string; constraints: R37Constraint[]; arms: R37Block['arms']; failure_registries: Record<string, string>; level_terms: Record<string, { r37_term: string; in_r37: boolean }> };
 }
 
@@ -211,3 +212,36 @@ export const constraintGroups = (cs: R37Constraint[]): Array<{ status: R37Constr
 
 /** The registers of the record in R37's order, with what the laboratory can and cannot record for each. */
 export const registerRows = (rec: GaishoRecord): Array<{ id: string; r37: string; lab: string; note: string; gate?: string }> => Object.entries(rec.r37?.registers ?? {}).map(([id, r]) => ({ id, r37: r.r37, lab: r.lab, note: r.note, gate: r.applicability_gate }));
+
+export interface CountermodelsOut {
+  scope: string; attribution: string; supports_a_gaisho_attribution: boolean; digest: string;
+  questioning: { where: string; reading: string; limits: string; models: Record<'report' | 'common_endpoint', { models: string[]; same_recorded_joint: boolean; joint: Record<string, string>; P_E0_equals_1: Record<string, string>; P_E0_identified_by_the_record: boolean; effect_of_the_question_on_Y?: Record<string, string>; effect_identified?: boolean }> };
+  report_indeterminacy: { histories: number; report_only_rules_checked: number; rules_that_decide_P_on_every_history: number; reading: string };
+  z_equivalence: { frozen_Z: string[]; Z_equivalent_on_Z: boolean; with_probe: string[]; Z_equivalent_with_probe: boolean; reading: string };
+  scm: { where: string; seeds: number; units_per_seed: number; worlds: number; observational_records_identical_in_every_seed: boolean; masked_records_identical_in_every_seed: boolean; association: { mean: number; interval95: [number, number] }; effect_of_do_M_in_A: { mean: number; interval95: [number, number] }; effect_of_do_M_in_B: { mean: number; interval95: [number, number] }; executed_sham_relabel_effect_is_zero: boolean; compared_with_r37?: { reported: Record<string, number | number[]>; association_interval_overlaps: boolean; effect_A_interval_overlaps: boolean; effect_B_equal: boolean; note: string }; reading: string };
+  label_control: { gates: Record<string, { renaming_changes_outcomes: number; executed_update_changes_outcomes: number; units: number }>; reading: string };
+}
+
+/** The finite countermodels as rows of what each one shows and does not show (nothing here is a result about a Gaisho). */
+export function countermodelRows(c: CountermodelsOut): Array<{ id: string; shows: string; limit: string }> {
+  const q = c.questioning.models, r = q.report, e = q.common_endpoint, s = c.scm;
+  const f = (x: number) => x.toFixed(4);
+  return [
+    { id: 'questioning (R37 A.3)', shows: `H_R and H_F give the same recorded (X_ask, R): ${r.same_recorded_joint}; P(E0=1) is ${r.P_E0_equals_1.H_R} against ${r.P_E0_equals_1.H_F}, so the record does not identify it`, limit: c.questioning.limits },
+    { id: 'common endpoint (R37 A.3)', shows: `the same recorded (X_ask, Y): ${e.same_recorded_joint}; the question's effect is identified (${Object.values(e.effect_of_the_question_on_Y ?? {})[0]}); P(E0=1) is ${e.P_E0_equals_1['H_R*']} against ${e.P_E0_equals_1['H_F*']}`, limit: 'stipulated binary states; no verified episode' },
+    { id: 'report indeterminacy (R37 A.3)', shows: `${c.report_indeterminacy.rules_that_decide_P_on_every_history} of ${c.report_indeterminacy.report_only_rules_checked} report-only rules decide the prior orientation on all ${c.report_indeterminacy.histories} histories`, limit: 'conditional on the admissible pair; not a general impossibility' },
+    { id: 'Z-equivalence (R37 A.3)', shows: `equivalent on ${c.z_equivalence.frozen_Z.join(', ')}: ${c.z_equivalence.Z_equivalent_on_Z}; with a pre-question probe: ${c.z_equivalence.Z_equivalent_with_probe}`, limit: 'the probe\'s validity is stipulated, not established' },
+    { id: 'equal records, unequal effects (R37 B.2b, re-executed)', shows: `${s.worlds} matched worlds; records identical: ${s.observational_records_identical_in_every_seed}; association ${f(s.association.mean)}; do(M) in A ${f(s.effect_of_do_M_in_A.mean)} [${f(s.effect_of_do_M_in_A.interval95[0])}, ${f(s.effect_of_do_M_in_A.interval95[1])}], in B ${f(s.effect_of_do_M_in_B.mean)}; intervals agree with R37's: ${s.compared_with_r37 ? s.compared_with_r37.association_interval_overlaps && s.compared_with_r37.effect_A_interval_overlaps : 'n/a'}`, limit: 'engineered to share the observational distribution; says nothing about thought' },
+    { id: 'renaming vs executed update (R37 A.5)', shows: Object.entries(c.label_control.gates).map(([k, g]) => `${k}: renaming changes ${g.renaming_changes_outcomes}, an executed update changes ${g.executed_update_changes_outcomes} of ${g.units}`).join('; '), limit: 'nothing about the justice of the gate or about a Gaisho' },
+  ];
+}
+
+export interface BodySnnRecord {
+  kind: string; condition: string; cell: [number, number]; interventions: Record<string, number>; seeds: number[]; digest: string; weights: string; plasticity: string; memory: string; coupling: string; attribution: string; applicability_gate: string;
+  encoding: { signal: string; transform: string; gain: number; status: string };
+  records: Array<{ seed: number; spikes: { count: number; times_s: number[] }; internal_state: { max: number }; bodily_output: { fell: boolean; fall_time_s: number | null }; environment_return: { push_force_peak_N: number }; sensor_input: { current: number[] } }>;
+  operational_summary: { spike_counts_of_seeds_that_fell: number[]; spike_counts_of_seeds_that_stayed_up: number[]; reading: string };
+}
+
+/** The separate records of one replayed seed, as rows: each is its own record, none is merged into another or into an attribution. */
+export const snnSeedRows = (r: BodySnnRecord) => r.records.map((x) => ({ seed: x.seed, input_peak: Math.max(...x.sensor_input.current), spikes: x.spikes.count, first_spike_s: x.spikes.times_s[0] ?? null, membrane_max: x.internal_state.max, fell: x.bodily_output.fell, fall_time_s: x.bodily_output.fall_time_s, push_peak_N: x.environment_return.push_force_peak_N }));
