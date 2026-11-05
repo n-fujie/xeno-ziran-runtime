@@ -196,7 +196,7 @@ class BodyDomain(Domain):
     y_values = np.linspace(0.0, 200.0, 5)
     snapshots = ("end",)
     relation_names = ("effect_x", "effect_y", "baseline_fall")
-    # R37 X (fourth family): sensor, memory and resource conditions of the bodily configuration, besides its morphology (the two presets). 'edits' are applied in order to the configuration before the two axes are set.
+    # R37 X (fourth family): sensor, memory and resource conditions of the bodily configuration, besides the two presets (whole XB-TRO configurations that differ in far more than morphology: dictionary.py D8). 'edits' are applied in order to the configuration before the two axes are set.
     conditions = {
         "human-like planar body": {"preset": "human-like-planar", "edits": []},
         "machine-like planar body": {"preset": "machine-like-planar", "edits": []},
@@ -204,7 +204,7 @@ class BodyDomain(Domain):
         "human-like planar body, slow gain adaptation off (memory)": {"preset": "human-like-planar", "edits": [("set", ("adaptation", "enabled"), False)]},
         "human-like planar body, resource-constrained (resources)": {"preset": "human-like-planar", "edits": [("intervention", "resource_constraint", 0.4)]},
     }
-    default_conditions = ("human-like planar body", "machine-like planar body")  # a run without a named condition runs the two morphologies (the others are chosen by name: about 20 s each for 6 seeds)
+    default_conditions = ("human-like planar body", "machine-like planar body")  # a run without a named condition runs the two presets (the others are chosen by name: about 20 s each for 6 seeds)
     seed_count = 6
     max_seeds = 8  # about 0.9 s per cell for a batch of 8 seeds: 25 cells and one condition are about 25 s
 

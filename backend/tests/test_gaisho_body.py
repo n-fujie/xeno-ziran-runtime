@@ -29,6 +29,94 @@ def linked(monkeypatch):
     bodylink._CACHE.clear()
 
 
+@needs_body
+def test_the_two_bodies_are_two_presets_that_differ_in_control_sensing_and_time_step_not_in_morphology_alone(linked):
+    """Dictionary 060 asks for matched morphology, control and environment. The statement in docs/GAISHO.md and dictionary.D8 (33 of 73 entries differ) is held here: if XB-TRO's presets change, this fails and the statement must be re-made."""
+    link = bodylink.load()
+    a, b = link.config.build("human-like-planar"), link.config.build("machine-like-planar")
+
+    def flat(d, p=""):
+        out = {}
+        for k, v in d.items():
+            out.update(flat(v, p + k + ".") if isinstance(v, dict) else {p + k: v})
+        return out
+
+    fa, fb = flat(a), flat(b)
+    differ = sorted(k for k in set(fa) | set(fb) if fa.get(k) != fb.get(k))
+    assert (len(set(fa) | set(fb)), len(differ)) == (73, 33)
+    for k in ("neural.strategy", "neural.visual_weight", "neural.vestibular_weight", "sensors.visual.gain", "internal.fatigue_rate", "task.dt", "links", "joints"):
+        assert k in differ, k  # control, sensing, the internal model, the integration step and the links all differ
+    assert fa["task.dt"] == 0.01 and fb["task.dt"] == 0.005
+
+
+def test_the_matched_comparison_uses_the_t_value_of_its_own_number_of_seeds_and_is_not_registered():
+    from xzr.gaisho.bodymatched import T975, condition_name, t_interval
+
+    iv = t_interval([0.0, 0.2, 0.4, 0.6, 0.8, 1.0])  # 6 seeds: 5 degrees of freedom
+    assert iv["t"] == T975[5] == 2.571 and iv["ci95"][0] < 0.5 < iv["ci95"][1] and t_interval([0.5])["ci95"] is None
+    import statistics
+
+
+    assert abs((iv["ci95"][1] - iv["ci95"][0]) / 2 - 2.571 * statistics.stdev([0.0, 0.2, 0.4, 0.6, 0.8, 1.0]) / 6**0.5) < 1e-12  # not the 2.093 of 20 seeds
+    assert condition_name("human", "control") == "human-like planar body with the control of the machine-like one"
+    assert set(STATUS) == {"001-knowledge", "002-bias", "003-freedom", "004-body", "005-credit"}  # the matched domain is not a domain of the laboratory
+
+
+@needs_body
+def test_each_swap_changes_only_the_named_block_and_the_blocks_cover_every_difference_between_the_presets(linked):
+    from xzr.gaisho.bodymatched import (
+        BLOCKS,
+        HUMAN,
+        MACHINE,
+        PRESETS,
+        MatchedBodyDomain,
+        covered_keys,
+        flat,
+        uncovered_differences,
+    )
+
+    dom = MatchedBodyDomain()
+    assert uncovered_differences(dom) == []  # nothing that differs between the presets is left out of the five blocks (name and family are labels)
+    plain = {HUMAN: flat(dom.link.config.build(PRESETS["human"])), MACHINE: flat(dom.link.config.build(PRESETS["machine"]))}
+    assert flat(dom.base_config(HUMAN)) == plain[HUMAN] and flat(dom.base_config(MACHINE)) == plain[MACHINE]  # the controls are the presets themselves
+    for cond, spec in dom.conditions.items():
+        if spec["donor"] is None:
+            continue
+        base = plain[HUMAN if spec["preset"] == PRESETS["human"] else MACHINE]
+        got = flat(dom.base_config(cond))
+        changed = {k for k in set(got) | set(base) if got.get(k) != base.get(k)}
+        cov = covered_keys(spec["block"])
+        assert changed and all(any(k == c or k.startswith(c + ".") for c in cov) for k in changed), cond  # only entries of the swapped block moved
+    assert len(dom.conditions) == 2 + 2 * len(BLOCKS)
+
+
+def test_the_saved_matched_comparison_keeps_the_controls_equal_to_the_saved_body_record_and_states_what_it_cannot_say():
+    root = Path(__file__).resolve().parents[2] / "docs" / "gaisho"
+    m = json.loads((root / "experiments_body_matched.json").read_text())
+    body = json.loads((root / "experiments_body.json").read_text())["domain"]["result"]["conditions"]
+    assert m["seeds"] == [1, 2, 3, 4, 5, 6] and m["uncovered_differences"] == [] and set(m["blocks"]) == {"structure", "control", "sensors", "internal", "time step"}
+    for cond in (HUMAN, MACHINE):  # the same seeds, grid and definitions: the plain presets reproduce the earlier record
+        for n in ("effect_x", "effect_y", "baseline_fall"):
+            assert abs(m["conditions"][cond]["relations"][n]["mean"] - body[cond]["relations"][n]["value"]) < 1e-9, (cond, n)
+    for cond, o in m["conditions"].items():
+        for n, r in o["relations"].items():
+            assert r["status"] != "IDENTIFIED" or r["n"] == 6 and (r["ci95"] is None or r["t"] == 2.571), (cond, n)  # the interval of 6 seeds uses t(5)
+
+
+@needs_body
+def test_a_saved_swap_is_reproduced_by_running_it_again(linked):
+    from xzr.gaisho.bodymatched import MatchedBodyDomain, condition_name
+    from xzr.gaisho.lab import run_domain
+
+    root = Path(__file__).resolve().parents[2] / "docs" / "gaisho"
+    m = json.loads((root / "experiments_body_matched.json").read_text())
+    cond = condition_name("human", "time step")
+    res = run_domain(MatchedBodyDomain(), FULL, tuple(m["seeds"]), [cond])
+    cells = res["conditions"][cond]["snapshots"]["end"]["cells"]
+    grid = [[next(c["p"] for c in cells if c["i"] == i and c["j"] == j) for i in range(5)] for j in range(5)]
+    assert grid == m["conditions"][cond]["fell_share_grid"]  # the saved cell values are what the specification gives
+
+
 def test_without_the_link_the_body_domain_is_not_executed_and_nothing_is_substituted(monkeypatch):
     monkeypatch.delenv(bodylink.ENV, raising=False)
     bodylink._CACHE.clear()

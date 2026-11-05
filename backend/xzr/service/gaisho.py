@@ -21,6 +21,7 @@ from ..gaisho.claims import CLAIMS
 from ..gaisho.compare import compare_models, compare_observations
 from ..gaisho.construction import change_kinds_of_observations, explain_shape, reading_of_difference
 from ..gaisho.countermodels import run_all as run_countermodels
+from ..gaisho.dictionary import spec_block as dictionary_block
 from ..gaisho.domains import BodyDomain, domain_registry, status_of
 from ..gaisho.export import MAX_SEEDS, observation_from, restore, run_experiment
 from ..gaisho.figure import figure_svg
@@ -101,7 +102,7 @@ def spec(request: Request) -> dict:
     return {
         "model_version": MODEL_VERSION,
         "scope": "SYNTHETIC computational experiments only: no human neural activity, no real institution, no real person. The laboratory executes operations and records differences; it never computes a Gaisho attribution.",
-        "source_status": "the manuscript GAISHO R37 was read on 2026-11-05: in full or nearly so for Part II sections 4-5 and its individuation / comparison / levels-of-claim passages, Part III, Part X (programme, registries, withdrawal), most of Part XII, Appendix A and B.2b; in part for Parts I, V and VIII; headings only for the rest of Part II, Parts IV, VI, VII, IX, XI and the rest of Appendices B and C (so it is NOT a full-text verification). The P/A Dictionary v40 itself was not available. The five levels (one of them, the Gaisho operational shape, is a term of the development brief that R37 does not use), the twelve questions and the verdict classes come from the brief; the correspondence with R37 is in r37.CONSTRAINTS",
+        "source_status": "the manuscript GAISHO R37 was read on 2026-11-05: in full or nearly so for Part II sections 4-5 and its individuation / comparison / levels-of-claim passages, Part III, Part X (programme, registries, withdrawal), most of Part XII, Appendix A and B.2b; in part for Parts I, V and VIII; headings only for the rest of Part II, Parts IV, VI, VII, IX, XI and the rest of Appendices B and C (so it is NOT a full-text verification). The P/A Dictionary file provided on 2026-11-05 is the 71-entry October 2026 edition, not the 112-entry cumulative edition of 3 November 2026 that R37 cites: entries 001-071 were checked (most in full, see dictionary.read_in_full), entries 072-112 (Gaisho among them) were not available. The five levels (one of them, the Gaisho operational shape, is a term of the development brief that R37 does not use), the twelve questions and the verdict classes come from the brief; the correspondence with R37 is in r37.CONSTRAINTS",
         "domains": {k: {"title": d.title if d else None, "conditions": list(d.conditions) if d else [], "x": d.x_name if d else None, "y": d.y_name if d else None, "snapshots": list(d.snapshots) if d else [], "relations": list(d.relation_names) if d else [], "max_seeds": getattr(d, "max_seeds", 0) if d else 0, "status": status_of(k)} for k, d in reg.items()},
         "observation_axes": list(OBSERVATION_AXES),
         "observation_defaults": FULL.asdict(),
@@ -117,6 +118,7 @@ def spec(request: Request) -> dict:
         "claims": list(CLAIMS),
         "links": {"xbtro": domain_registry().get("004-body") is not None, "xenosnn": snnlink.base_url() is not None and snnlink.health() is not None, "snn_encoding": SNN_ENCODING},
         "r37": {"reference": R37_REF, "constraints": list(CONSTRAINTS), "arms": ARMS, "failure_registries": FAILURE_REGISTRIES, "level_terms": LEVEL_TERMS},
+        "dictionary": dictionary_block(),
     }
 
 
