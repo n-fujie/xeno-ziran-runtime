@@ -50,7 +50,8 @@ def test_the_two_bodies_are_two_presets_that_differ_in_control_sensing_and_time_
 
 
 def test_the_matched_comparison_uses_the_t_value_of_its_own_number_of_seeds_and_is_not_registered():
-    from xzr.gaisho.bodymatched import T975, condition_name, t_interval
+    from xzr.gaisho.bodymatched import condition_name, t_interval
+    from xzr.gaisho.lab import T975
 
     iv = t_interval([0.0, 0.2, 0.4, 0.6, 0.8, 1.0])  # 6 seeds: 5 degrees of freedom
     assert iv["t"] == T975[5] == 2.571 and iv["ci95"][0] < 0.5 < iv["ci95"][1] and t_interval([0.5])["ci95"] is None
@@ -324,3 +325,34 @@ def test_the_body_snn_route_refuses_without_the_links_and_computes_nothing(monke
     r = c.post("/api/gaisho/body-snn", json={"condition": HUMAN, "i": 0, "j": 0})
     assert r.status_code == 422 and "not linked" in r.json()["detail"]
     assert c.get("/api/gaisho/spec").json()["links"]["xenosnn"] is False
+
+
+def test_the_saved_extended_comparison_keeps_the_refusal_apart_from_the_falls_and_its_controls_are_the_presets():
+    root = Path(__file__).resolve().parents[2] / "docs" / "gaisho"
+    m = json.loads((root / "experiments_body_matched_extended.json").read_text())
+    assert m["seeds"] == list(range(1, 9)) and m["uncovered_differences"] == []
+    refused = m["refused_by_xbtro"]
+    assert list(refused) == ["human-like planar body at the integration step 0.02 s"] and refused[next(iter(refused))]["largest_step_amplification"] > 1
+    assert not set(refused) & set(m["conditions"])  # a refused configuration is not run and is not counted as a fall
+    assert len(m["conditions"]) == 15 and {HUMAN, MACHINE} <= set(m["conditions"])
+    mean = lambda c, n: m["conditions"][c]["relations"][n]["mean"]  # noqa: E731
+    assert mean(HUMAN, "effect_x") == 0.6 and all(mean(f"human-like planar body at the integration step {dt} s", "effect_x") == 0.6 for dt in ("0.0025", "0.005"))  # the human-like preset does not move with the step
+    mach = [mean(f"machine-like planar body at the integration step {dt} s", "effect_x") for dt in ("0.0025", "0.01", "0.02")]
+    assert mach == [0.2, 0.4, -0.375] and mean(MACHINE, "effect_x") == 0.25  # the machine-like preset does
+
+
+@needs_body
+def test_a_saved_extended_condition_is_reproduced_and_an_unstable_step_is_refused_not_run(linked):
+    from xzr.gaisho.bodymatched import ExtendedMatchedDomain
+    from xzr.gaisho.lab import run_domain
+
+    root = Path(__file__).resolve().parents[2] / "docs" / "gaisho"
+    m = json.loads((root / "experiments_body_matched_extended.json").read_text())
+    dom = ExtendedMatchedDomain()
+    cond = "machine-like planar body at the integration step 0.0025 s"
+    res = run_domain(dom, FULL, tuple(m["seeds"]), [cond])
+    cells = res["conditions"][cond]["snapshots"]["end"]["cells"]
+    grid = [[next(c["p"] for c in cells if c["i"] == i and c["j"] == j) for i in range(5)] for j in range(5)]
+    assert grid == m["conditions"][cond]["fell_share_grid"]
+    refused = "human-like planar body at the integration step 0.02 s"
+    assert dom.link.engine.Params(dom.base_config(refused)).numeric_stability()["stable"] is False

@@ -1,0 +1,6767 @@
+{
+ "digest": "c3f3502bf18b856e2e201be253c05ecba2b109ba9fb7a4af1536496fc1673d4f",
+ "domain": "001-knowledge",
+ "meaning": "what the observation identifies at each value of ONE axis, the other axes at the full observation. No composite score, no causal pathway to an epistemic claim (035), no Gaisho; attribution UNRESOLVED.",
+ "model_version": "gaisho-lab/1",
+ "seeds": [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  20
+ ],
+ "sweeps": {
+  "Scale": {
+   "field": "scale",
+   "reading": {
+    "accidental correct: base-rate guess / effect_E": {
+     "identified_at": [
+      1,
+      2,
+      3,
+      4,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    "accidental correct: base-rate guess / effect_S": {
+     "identified_at": [
+      1,
+      2,
+      3,
+      4,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    "accidental correct: base-rate guess / revision_E": {
+     "identified_at": [
+      1,
+      2,
+      3,
+      4,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    "accidental correct: base-rate guess / revision_S": {
+     "identified_at": [
+      1,
+      2,
+      3,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": true,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      false
+     ]
+    },
+    "accidental correct: base-rate guess / shift_drop": {
+     "identified_at": [
+      1,
+      2,
+      3,
+      4,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    "accidental correct: base-rate guess / stability_do_W": {
+     "identified_at": [
+      1,
+      2,
+      3,
+      4,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    "accidental correct: coincidental cue / effect_E": {
+     "identified_at": [
+      1,
+      2,
+      3,
+      4,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    "accidental correct: coincidental cue / effect_S": {
+     "identified_at": [
+      1,
+      2,
+      3,
+      4,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      true,
+      false
+     ]
+    },
+    "accidental correct: coincidental cue / revision_E": {
+     "identified_at": [
+      1,
+      2,
+      3,
+      4,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    "accidental correct: coincidental cue / revision_S": {
+     "identified_at": [
+      1,
+      2,
+      3,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": true,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      false
+     ]
+    },
+    "accidental correct: coincidental cue / shift_drop": {
+     "identified_at": [
+      1,
+      2,
+      3,
+      4,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    "accidental correct: coincidental cue / stability_do_W": {
+     "identified_at": [
+      1,
+      2,
+      3,
+      4,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    "correction and reconfiguration (feedback on) / effect_E": {
+     "identified_at": [
+      1,
+      2
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      null,
+      null,
+      null
+     ]
+    },
+    "correction and reconfiguration (feedback on) / effect_S": {
+     "identified_at": [
+      1,
+      2,
+      3,
+      4,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      true,
+      true
+     ]
+    },
+    "correction and reconfiguration (feedback on) / revision_E": {
+     "identified_at": [
+      1,
+      2
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      true,
+      null,
+      null,
+      null
+     ]
+    },
+    "correction and reconfiguration (feedback on) / revision_S": {
+     "identified_at": [
+      1,
+      2,
+      3,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": true,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      true
+     ]
+    },
+    "correction and reconfiguration (feedback on) / shift_drop": {
+     "identified_at": [
+      1,
+      2,
+      3,
+      4,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    "correction and reconfiguration (feedback on) / stability_do_W": {
+     "identified_at": [
+      1,
+      2,
+      3,
+      4,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    "ground-responsive judgement / effect_E": {
+     "identified_at": [
+      1
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "ground-responsive judgement / effect_S": {
+     "identified_at": [
+      1,
+      2,
+      3,
+      4,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    "ground-responsive judgement / revision_E": {
+     "identified_at": [
+      1
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "ground-responsive judgement / revision_S": {
+     "identified_at": [
+      1,
+      2,
+      3,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": true,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      false
+     ]
+    },
+    "ground-responsive judgement / shift_drop": {
+     "identified_at": [
+      1,
+      2,
+      3,
+      4,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    "ground-responsive judgement / stability_do_W": {
+     "identified_at": [
+      1,
+      2,
+      3,
+      4,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    "misjudgement: miscalibrated reading / effect_E": {
+     "identified_at": [
+      1
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "misjudgement: miscalibrated reading / effect_S": {
+     "identified_at": [
+      1,
+      2,
+      3,
+      4,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    "misjudgement: miscalibrated reading / revision_E": {
+     "identified_at": [
+      1
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "misjudgement: miscalibrated reading / revision_S": {
+     "identified_at": [
+      1,
+      2,
+      3,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": true,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      false
+     ]
+    },
+    "misjudgement: miscalibrated reading / shift_drop": {
+     "identified_at": [
+      1,
+      2,
+      3,
+      4,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    "misjudgement: miscalibrated reading / stability_do_W": {
+     "identified_at": [
+      1,
+      2,
+      3,
+      4,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    "no correction (feedback off) / effect_E": {
+     "identified_at": [
+      1,
+      2,
+      3,
+      4,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      true
+     ]
+    },
+    "no correction (feedback off) / effect_S": {
+     "identified_at": [
+      1,
+      2,
+      3,
+      4,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      true,
+      false
+     ]
+    },
+    "no correction (feedback off) / revision_E": {
+     "identified_at": [
+      1,
+      2,
+      3,
+      4,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    "no correction (feedback off) / revision_S": {
+     "identified_at": [
+      1,
+      2,
+      3,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": true,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      false
+     ]
+    },
+    "no correction (feedback off) / shift_drop": {
+     "identified_at": [
+      1,
+      2,
+      3,
+      4,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    "no correction (feedback off) / stability_do_W": {
+     "identified_at": [
+      1,
+      2,
+      3,
+      4,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    }
+   },
+   "relations_regained_after_loss": [
+    "accidental correct: base-rate guess / revision_S",
+    "accidental correct: coincidental cue / revision_S",
+    "correction and reconfiguration (feedback on) / revision_S",
+    "ground-responsive judgement / revision_S",
+    "misjudgement: miscalibrated reading / revision_S",
+    "no correction (feedback off) / revision_S"
+   ],
+   "rows": [
+    {
+     "conditions": {
+      "accidental correct: base-rate guess": {
+       "effect_E": {
+        "ci95": [
+         -0.015298114233586946,
+         0.007798114233586957
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.003749999999999995
+       },
+       "effect_S": {
+        "ci95": [
+         -0.00748894375375864,
+         0.009412020676835563
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0009615384615384616
+       },
+       "revision_E": {
+        "ci95": [
+         -0.014870934476920235,
+         0.0177280773340631
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0014285714285714323
+       },
+       "revision_S": {
+        "ci95": [
+         -0.00491423135070337,
+         0.015875769812241827
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.005480769230769229
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.019256721596115852,
+         0.03925672159611583
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.009999999999999992
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.49002340996054944,
+         0.5227265900394504
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.5063749999999999
+       }
+      },
+      "accidental correct: coincidental cue": {
+       "effect_E": {
+        "ci95": [
+         -0.031211611157141245,
+         -0.002002674557144467
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.016607142857142855
+       },
+       "effect_S": {
+        "ci95": [
+         0.9496622834893481,
+         0.9599531011260366
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9548076923076924
+       },
+       "revision_E": {
+        "ci95": [
+         -0.04585956595712934,
+         -0.010211862614299228
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.028035714285714282
+       },
+       "revision_S": {
+        "ci95": [
+         -0.0058459804803916065,
+         0.007769057403468568
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0009615384615384803
+       },
+       "shift_drop": {
+        "ci95": [
+         0.2780200643701489,
+         0.3769799356298511
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.3275
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.4872993971034438,
+         0.5094506028965562
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.49837499999999996
+       }
+      },
+      "correction and reconfiguration (feedback on)": {
+       "effect_E": {
+        "ci95": [
+         0.98426673946006,
+         0.993590403397082
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.988928571428571
+       },
+       "effect_S": {
+        "ci95": [
+         0.1359744757009675,
+         0.1746024473759556
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.15528846153846154
+       },
+       "revision_E": {
+        "ci95": [
+         0.7694649804848681,
+         0.7905350195151319
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.78
+       },
+       "revision_S": {
+        "ci95": [
+         -0.8115777566119304,
+         -0.7730376280034541
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.7923076923076923
+       },
+       "shift_drop": {
+        "ci95": [
+         0.07373858205323244,
+         0.1412614179467675
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.10749999999999997
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.7508464386307634,
+         0.7759035613692369
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.7633750000000001
+       }
+      },
+      "ground-responsive judgement": {
+       "effect_E": {
+        "ci95": [
+         0.9983645769044631,
+         0.9998497088098224
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9991071428571427
+       },
+       "effect_S": {
+        "ci95": [
+         -0.005448924794292497,
+         0.008525847871215575
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0015384615384615385
+       },
+       "revision_E": {
+        "ci95": [
+         -0.0012126051229524792,
+         0.001212605122952457
+        ],
+        "status": "IDENTIFIED",
+        "value": -1.1102230246251566e-17
+       },
+       "revision_S": {
+        "ci95": [
+         -0.008751716606313815,
+         0.010674793529390735
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0009615384615384602
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.036931487347142945,
+         0.04193148734714295
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0025000000000000022
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.829273524559685,
+         0.8437264754403146
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.8364999999999998
+       }
+      },
+      "misjudgement: miscalibrated reading": {
+       "effect_E": {
+        "ci95": [
+         0.9936185937012085,
+         0.9967385491559344
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9951785714285715
+       },
+       "effect_S": {
+        "ci95": [
+         -0.006834273135874085,
+         0.006641965443566393
+        ],
+        "status": "IDENTIFIED",
+        "value": -9.615384615384546e-05
+       },
+       "revision_E": {
+        "ci95": [
+         -0.0031851785714286014,
+         0.0035423214285714238
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.00017857142857141128
+       },
+       "revision_S": {
+        "ci95": [
+         -0.011989530166602768,
+         0.004681837858910465
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.003653846153846152
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.03365729726211912,
+         0.0911572972621191
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.02874999999999999
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.7366969330498194,
+         0.7593030669501803
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.7479999999999999
+       }
+      },
+      "no correction (feedback off)": {
+       "effect_E": {
+        "ci95": [
+         0.17911937772541967,
+         0.2083806222745804
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.19375000000000003
+       },
+       "effect_S": {
+        "ci95": [
+         0.9435058030248098,
+         0.9528403508213443
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9481730769230771
+       },
+       "revision_E": {
+        "ci95": [
+         -0.034579306024928584,
+         0.004222163167785724
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.01517857142857143
+       },
+       "revision_S": {
+        "ci95": [
+         -0.005478908741510895,
+         0.006632754895357077
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0005769230769230915
+       },
+       "shift_drop": {
+        "ci95": [
+         0.2718685446903182,
+         0.37313145530968195
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.32250000000000006
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.5092551949376738,
+         0.5312448050623262
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.52025
+       }
+      }
+     },
+     "result_digest": "d3476a5ac31e26b563870a82eff794dbbfbfe2df10686c015126ec11ab2d5791",
+     "value": 1
+    },
+    {
+     "conditions": {
+      "accidental correct: base-rate guess": {
+       "effect_E": {
+        "ci95": [
+         -0.022870863453161375,
+         0.005370863453161389
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.008749999999999994
+       },
+       "effect_S": {
+        "ci95": [
+         -0.013332457324187277,
+         0.00868960018133013
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.0023214285714285737
+       },
+       "revision_E": {
+        "ci95": [
+         -0.0265510136356115,
+         0.010926013635611508
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.007812499999999995
+       },
+       "revision_S": {
+        "ci95": [
+         -0.010077861260776536,
+         0.02043500411791939
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0051785714285714265
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.019256721596115852,
+         0.03925672159611583
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.009999999999999992
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.49002340996054944,
+         0.5227265900394504
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.5063749999999999
+       }
+      },
+      "accidental correct: coincidental cue": {
+       "effect_E": {
+        "ci95": [
+         -0.028744496518710007,
+         0.003744496518710007
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.012499999999999999
+       },
+       "effect_S": {
+        "ci95": [
+         0.9455087549980777,
+         0.9609198164304932
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9532142857142855
+       },
+       "revision_E": {
+        "ci95": [
+         -0.03898067310170289,
+         0.009605673101702896
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.014687499999999997
+       },
+       "revision_S": {
+        "ci95": [
+         -0.01357336908221378,
+         0.007144797653642374
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.003214285714285703
+       },
+       "shift_drop": {
+        "ci95": [
+         0.2780200643701489,
+         0.3769799356298511
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.3275
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.4872993971034438,
+         0.5094506028965562
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.49837499999999996
+       }
+      },
+      "correction and reconfiguration (feedback on)": {
+       "effect_E": {
+        "ci95": [
+         0.9852171219962917,
+         0.994782878003708
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9899999999999999
+       },
+       "effect_S": {
+        "ci95": [
+         0.12220271432944527,
+         0.16279728567055465
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.14249999999999996
+       },
+       "revision_E": {
+        "ci95": [
+         0.7961002487055173,
+         0.8245247512944827
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.8103125
+       },
+       "revision_S": {
+        "ci95": [
+         -0.8292814073380255,
+         -0.7867900212334029
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.8080357142857142
+       },
+       "shift_drop": {
+        "ci95": [
+         0.07373858205323244,
+         0.1412614179467675
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.10749999999999997
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.7508464386307634,
+         0.7759035613692369
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.7633750000000001
+       }
+      },
+      "ground-responsive judgement": {
+       "effect_E": {
+        "status": "SCALE_MISFIT"
+       },
+       "effect_S": {
+        "ci95": [
+         -0.00904907743149032,
+         0.008334791717204604
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.0003571428571428581
+       },
+       "revision_E": {
+        "status": "SCALE_MISFIT"
+       },
+       "revision_S": {
+        "ci95": [
+         -0.01813646533053764,
+         0.009922179616251924
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.004107142857142858
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.036931487347142945,
+         0.04193148734714295
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0025000000000000022
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.829273524559685,
+         0.8437264754403146
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.8364999999999998
+       }
+      },
+      "misjudgement: miscalibrated reading": {
+       "effect_E": {
+        "status": "SCALE_MISFIT"
+       },
+       "effect_S": {
+        "ci95": [
+         -0.008875557686839203,
+         0.006732700543982062
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.00107142857142857
+       },
+       "revision_E": {
+        "status": "SCALE_MISFIT"
+       },
+       "revision_S": {
+        "ci95": [
+         -0.013523581551982303,
+         0.009952152980553734
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.001785714285714284
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.03365729726211912,
+         0.0911572972621191
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.02874999999999999
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.7366969330498194,
+         0.7593030669501803
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.7479999999999999
+       }
+      },
+      "no correction (feedback off)": {
+       "effect_E": {
+        "ci95": [
+         0.14818325901483237,
+         0.18056674098516762
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.164375
+       },
+       "effect_S": {
+        "ci95": [
+         0.9400146419390556,
+         0.9535567866323726
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9467857142857141
+       },
+       "revision_E": {
+        "ci95": [
+         -0.03940464580243422,
+         0.008779645802434208
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.015312500000000003
+       },
+       "revision_S": {
+        "ci95": [
+         -0.01286432278625097,
+         0.005364322786250953
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.003750000000000009
+       },
+       "shift_drop": {
+        "ci95": [
+         0.2718685446903182,
+         0.37313145530968195
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.32250000000000006
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.5092551949376738,
+         0.5312448050623262
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.52025
+       }
+      }
+     },
+     "result_digest": "0feaf15075db8963024c1bc70cd1b9bdc9cf30111ed81e3f8cf6311cfeff9c83",
+     "value": 2
+    },
+    {
+     "conditions": {
+      "accidental correct: base-rate guess": {
+       "effect_E": {
+        "ci95": [
+         -0.019926775236977726,
+         0.01992677523697774
+        ],
+        "status": "IDENTIFIED",
+        "value": 8.500145032286355e-18
+       },
+       "effect_S": {
+        "ci95": [
+         -0.010970749999999991,
+         0.021470749999999993
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.00525
+       },
+       "revision_E": {
+        "ci95": [
+         -0.02289684237952672,
+         0.030396842379526733
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.003750000000000008
+       },
+       "revision_S": {
+        "ci95": [
+         0.0015896592276134387,
+         0.030910340772386562
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.01625
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.019256721596115852,
+         0.03925672159611583
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.009999999999999992
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.49002340996054944,
+         0.5227265900394504
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.5063749999999999
+       }
+      },
+      "accidental correct: coincidental cue": {
+       "effect_E": {
+        "ci95": [
+         -0.039754803572502315,
+         0.0030881369058356513
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.01833333333333333
+       },
+       "effect_S": {
+        "ci95": [
+         0.9467796081906087,
+         0.9637203918093916
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9552500000000002
+       },
+       "revision_E": {
+        "ci95": [
+         -0.0486805795979393,
+         -0.007152753735394032
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.027916666666666663
+       },
+       "revision_S": {
+        "ci95": [
+         -0.01057973826817789,
+         0.011079738268177935
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.00025000000000002245
+       },
+       "shift_drop": {
+        "ci95": [
+         0.2780200643701489,
+         0.3769799356298511
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.3275
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.4872993971034438,
+         0.5094506028965562
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.49837499999999996
+       }
+      },
+      "correction and reconfiguration (feedback on)": {
+       "effect_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "effect_S": {
+        "ci95": [
+         0.1133877281517454,
+         0.14611227184825454
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.12974999999999998
+       },
+       "revision_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_S": {
+        "ci95": [
+         -0.8338484635523912,
+         -0.7976515364476086
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.8157499999999999
+       },
+       "shift_drop": {
+        "ci95": [
+         0.07373858205323244,
+         0.1412614179467675
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.10749999999999997
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.7508464386307634,
+         0.7759035613692369
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.7633750000000001
+       }
+      },
+      "ground-responsive judgement": {
+       "effect_E": {
+        "status": "SCALE_MISFIT"
+       },
+       "effect_S": {
+        "ci95": [
+         -0.011800864215076357,
+         0.01130086421507636
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.00024999999999999865
+       },
+       "revision_E": {
+        "status": "SCALE_MISFIT"
+       },
+       "revision_S": {
+        "ci95": [
+         -0.025876475195297233,
+         0.008376475195297236
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.008749999999999999
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.036931487347142945,
+         0.04193148734714295
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0025000000000000022
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.829273524559685,
+         0.8437264754403146
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.8364999999999998
+       }
+      },
+      "misjudgement: miscalibrated reading": {
+       "effect_E": {
+        "status": "SCALE_MISFIT"
+       },
+       "effect_S": {
+        "ci95": [
+         -0.00840181000798392,
+         0.011401810007983916
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0014999999999999976
+       },
+       "revision_E": {
+        "status": "SCALE_MISFIT"
+       },
+       "revision_S": {
+        "ci95": [
+         -0.020572247429468633,
+         0.008072247429468635
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.0062499999999999995
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.03365729726211912,
+         0.0911572972621191
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.02874999999999999
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.7366969330498194,
+         0.7593030669501803
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.7479999999999999
+       }
+      },
+      "no correction (feedback off)": {
+       "effect_E": {
+        "ci95": [
+         0.15922428633441488,
+         0.18494238033225185
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.17208333333333337
+       },
+       "effect_S": {
+        "ci95": [
+         0.9405285114317442,
+         0.9549714885682555
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9477499999999999
+       },
+       "revision_E": {
+        "ci95": [
+         -0.020862284653525343,
+         0.032528951320192
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.005833333333333328
+       },
+       "revision_S": {
+        "ci95": [
+         -0.008526382908416712,
+         0.013026382908416737
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0022500000000000133
+       },
+       "shift_drop": {
+        "ci95": [
+         0.2718685446903182,
+         0.37313145530968195
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.32250000000000006
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.5092551949376738,
+         0.5312448050623262
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.52025
+       }
+      }
+     },
+     "result_digest": "9ff053002a0dc68a103fb4d43cf070c9677a4e3bc3fd055ec774ab4405939ba2",
+     "value": 3
+    },
+    {
+     "conditions": {
+      "accidental correct: base-rate guess": {
+       "effect_E": {
+        "ci95": [
+         -0.027865669753932492,
+         0.007865669753932523
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.009999999999999985
+       },
+       "effect_S": {
+        "ci95": [
+         -0.02262532812243808,
+         0.011375328122438076
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.005625000000000003
+       },
+       "revision_E": {
+        "ci95": [
+         -0.03320503273980936,
+         0.008205032739809399
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.012499999999999983
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.019256721596115852,
+         0.03925672159611583
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.009999999999999992
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.49002340996054944,
+         0.5227265900394504
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.5063749999999999
+       }
+      },
+      "accidental correct: coincidental cue": {
+       "effect_E": {
+        "ci95": [
+         -0.035465621539164764,
+         0.00796562153916476
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.013750000000000002
+       },
+       "effect_S": {
+        "ci95": [
+         0.7251405718953627,
+         0.7598594281046371
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.7424999999999999
+       },
+       "revision_E": {
+        "ci95": [
+         -0.040232028674546214,
+         0.025232028674546214
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.0075
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "ci95": [
+         0.2780200643701489,
+         0.3769799356298511
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.3275
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.4872993971034438,
+         0.5094506028965562
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.49837499999999996
+       }
+      },
+      "correction and reconfiguration (feedback on)": {
+       "effect_E": {
+        "status": "SCALE_MISFIT"
+       },
+       "effect_S": {
+        "ci95": [
+         0.059221890819539644,
+         0.09140310918046031
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.07531249999999998
+       },
+       "revision_E": {
+        "status": "SCALE_MISFIT"
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "ci95": [
+         0.07373858205323244,
+         0.1412614179467675
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.10749999999999997
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.7508464386307634,
+         0.7759035613692369
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.7633750000000001
+       }
+      },
+      "ground-responsive judgement": {
+       "effect_E": {
+        "status": "SCALE_MISFIT"
+       },
+       "effect_S": {
+        "ci95": [
+         -0.011450718833920013,
+         0.007075718833920009
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.002187500000000002
+       },
+       "revision_E": {
+        "status": "SCALE_MISFIT"
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.036931487347142945,
+         0.04193148734714295
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0025000000000000022
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.829273524559685,
+         0.8437264754403146
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.8364999999999998
+       }
+      },
+      "misjudgement: miscalibrated reading": {
+       "effect_E": {
+        "status": "SCALE_MISFIT"
+       },
+       "effect_S": {
+        "ci95": [
+         -0.01647118949233199,
+         0.003971189492331992
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.006249999999999998
+       },
+       "revision_E": {
+        "status": "SCALE_MISFIT"
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.03365729726211912,
+         0.0911572972621191
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.02874999999999999
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.7366969330498194,
+         0.7593030669501803
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.7479999999999999
+       }
+      },
+      "no correction (feedback off)": {
+       "effect_E": {
+        "ci95": [
+         0.14624403658190427,
+         0.18625596341809575
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.16625
+       },
+       "effect_S": {
+        "ci95": [
+         0.7038779371975874,
+         0.7361220628024125
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.72
+       },
+       "revision_E": {
+        "ci95": [
+         -0.03241199833869262,
+         0.0311619983386926
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.0006250000000000103
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "ci95": [
+         0.2718685446903182,
+         0.37313145530968195
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.32250000000000006
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.5092551949376738,
+         0.5312448050623262
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.52025
+       }
+      }
+     },
+     "result_digest": "47491155741b74a4106d869b762585a91920acae6f12207acb89485d44e94820",
+     "value": 4
+    },
+    {
+     "conditions": {
+      "accidental correct: base-rate guess": {
+       "effect_E": {
+        "ci95": [
+         -0.030782166643753113,
+         0.00828216664375312
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.011249999999999996
+       },
+       "effect_S": {
+        "ci95": [
+         -0.0161629370458656,
+         0.022829603712532284
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.003333333333333341
+       },
+       "revision_E": {
+        "ci95": [
+         -0.04408701388480858,
+         0.011587013884808591
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.016249999999999994
+       },
+       "revision_S": {
+        "ci95": [
+         -0.003034958483874046,
+         0.04303495848387405
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.02
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.019256721596115852,
+         0.03925672159611583
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.009999999999999992
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.49002340996054944,
+         0.5227265900394504
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.5063749999999999
+       }
+      },
+      "accidental correct: coincidental cue": {
+       "effect_E": {
+        "ci95": [
+         -0.014631461347859205,
+         0.0021314613478592113
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.006249999999999997
+       },
+       "effect_S": {
+        "ci95": [
+         0.941436337367473,
+         0.9652303292991937
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9533333333333334
+       },
+       "revision_E": {
+        "ci95": [
+         -0.017564359952960216,
+         0.011314359952960219
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.003124999999999998
+       },
+       "revision_S": {
+        "ci95": [
+         -0.019986050793706748,
+         0.008319384127040058
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.005833333333333346
+       },
+       "shift_drop": {
+        "ci95": [
+         0.2780200643701489,
+         0.3769799356298511
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.3275
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.4872993971034438,
+         0.5094506028965562
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.49837499999999996
+       }
+      },
+      "correction and reconfiguration (feedback on)": {
+       "effect_E": {
+        "status": "SCALE_MISFIT"
+       },
+       "effect_S": {
+        "ci95": [
+         0.08748312782375532,
+         0.11335020550957801
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.10041666666666667
+       },
+       "revision_E": {
+        "status": "SCALE_MISFIT"
+       },
+       "revision_S": {
+        "ci95": [
+         -0.8620698713772589,
+         -0.8320967952894075
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.8470833333333332
+       },
+       "shift_drop": {
+        "ci95": [
+         0.07373858205323244,
+         0.1412614179467675
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.10749999999999997
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.7508464386307634,
+         0.7759035613692369
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.7633750000000001
+       }
+      },
+      "ground-responsive judgement": {
+       "effect_E": {
+        "status": "SCALE_MISFIT"
+       },
+       "effect_S": {
+        "ci95": [
+         -0.016043818436560633,
+         0.017710485103227303
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0008333333333333363
+       },
+       "revision_E": {
+        "status": "SCALE_MISFIT"
+       },
+       "revision_S": {
+        "ci95": [
+         -0.03899695576205751,
+         0.013996955762057508
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.012499999999999999
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.036931487347142945,
+         0.04193148734714295
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0025000000000000022
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.829273524559685,
+         0.8437264754403146
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.8364999999999998
+       }
+      },
+      "misjudgement: miscalibrated reading": {
+       "effect_E": {
+        "status": "SCALE_MISFIT"
+       },
+       "effect_S": {
+        "ci95": [
+         -0.008573806314013352,
+         0.011073806314013347
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.001249999999999998
+       },
+       "revision_E": {
+        "status": "SCALE_MISFIT"
+       },
+       "revision_S": {
+        "ci95": [
+         -0.025804956238047225,
+         0.007471622904713891
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.009166666666666667
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.03365729726211912,
+         0.0911572972621191
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.02874999999999999
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.7366969330498194,
+         0.7593030669501803
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.7479999999999999
+       }
+      },
+      "no correction (feedback off)": {
+       "effect_E": {
+        "ci95": [
+         0.030779415708803878,
+         0.04922058429119611
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.039999999999999994
+       },
+       "effect_S": {
+        "ci95": [
+         0.9326263360380187,
+         0.9540403306286476
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9433333333333331
+       },
+       "revision_E": {
+        "ci95": [
+         -0.013808149965004967,
+         0.017558149965004977
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0018750000000000045
+       },
+       "revision_S": {
+        "ci95": [
+         -0.01867688870759015,
+         0.010343555374256755
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.004166666666666696
+       },
+       "shift_drop": {
+        "ci95": [
+         0.2718685446903182,
+         0.37313145530968195
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.32250000000000006
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.5092551949376738,
+         0.5312448050623262
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.52025
+       }
+      }
+     },
+     "result_digest": "aaa23c544e24b203100a44cfa7a0b3a6b214bc2e1bf52991cb0ed3f5d42921ce",
+     "value": 6
+    }
+   ],
+   "values": [
+    1,
+    2,
+    3,
+    4,
+    6
+   ]
+  },
+  "Size (recording capacity, cells)": {
+   "field": "resources",
+   "reading": {
+    "accidental correct: base-rate guess / effect_E": {
+     "identified_at": [
+      91,
+      60,
+      30,
+      15
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      null
+     ]
+    },
+    "accidental correct: base-rate guess / effect_S": {
+     "identified_at": [
+      91
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "accidental correct: base-rate guess / revision_E": {
+     "identified_at": [
+      91,
+      60,
+      30,
+      15
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      null
+     ]
+    },
+    "accidental correct: base-rate guess / revision_S": {
+     "identified_at": [
+      91
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "accidental correct: base-rate guess / shift_drop": {
+     "identified_at": [
+      91,
+      60,
+      30,
+      15,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    "accidental correct: base-rate guess / stability_do_W": {
+     "identified_at": [
+      91,
+      60,
+      30,
+      15,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    "accidental correct: coincidental cue / effect_E": {
+     "identified_at": [
+      91,
+      60,
+      30,
+      15
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      null
+     ]
+    },
+    "accidental correct: coincidental cue / effect_S": {
+     "identified_at": [
+      91
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "accidental correct: coincidental cue / revision_E": {
+     "identified_at": [
+      91,
+      60,
+      30,
+      15
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      null
+     ]
+    },
+    "accidental correct: coincidental cue / revision_S": {
+     "identified_at": [
+      91
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "accidental correct: coincidental cue / shift_drop": {
+     "identified_at": [
+      91,
+      60,
+      30,
+      15,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    "accidental correct: coincidental cue / stability_do_W": {
+     "identified_at": [
+      91,
+      60,
+      30,
+      15,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    "correction and reconfiguration (feedback on) / effect_E": {
+     "identified_at": [
+      91,
+      60,
+      30,
+      15
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      null
+     ]
+    },
+    "correction and reconfiguration (feedback on) / effect_S": {
+     "identified_at": [
+      91
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "correction and reconfiguration (feedback on) / revision_E": {
+     "identified_at": [
+      91,
+      60,
+      30,
+      15
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      true,
+      true,
+      null
+     ]
+    },
+    "correction and reconfiguration (feedback on) / revision_S": {
+     "identified_at": [
+      91
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "correction and reconfiguration (feedback on) / shift_drop": {
+     "identified_at": [
+      91,
+      60,
+      30,
+      15,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    "correction and reconfiguration (feedback on) / stability_do_W": {
+     "identified_at": [
+      91,
+      60,
+      30,
+      15,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    "ground-responsive judgement / effect_E": {
+     "identified_at": [
+      91,
+      60,
+      30,
+      15
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      null
+     ]
+    },
+    "ground-responsive judgement / effect_S": {
+     "identified_at": [
+      91
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "ground-responsive judgement / revision_E": {
+     "identified_at": [
+      91,
+      60,
+      30,
+      15
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      null
+     ]
+    },
+    "ground-responsive judgement / revision_S": {
+     "identified_at": [
+      91
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "ground-responsive judgement / shift_drop": {
+     "identified_at": [
+      91,
+      60,
+      30,
+      15,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    "ground-responsive judgement / stability_do_W": {
+     "identified_at": [
+      91,
+      60,
+      30,
+      15,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    "misjudgement: miscalibrated reading / effect_E": {
+     "identified_at": [
+      91,
+      60,
+      30,
+      15
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      null
+     ]
+    },
+    "misjudgement: miscalibrated reading / effect_S": {
+     "identified_at": [
+      91
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "misjudgement: miscalibrated reading / revision_E": {
+     "identified_at": [
+      91,
+      60,
+      30,
+      15
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      null
+     ]
+    },
+    "misjudgement: miscalibrated reading / revision_S": {
+     "identified_at": [
+      91
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "misjudgement: miscalibrated reading / shift_drop": {
+     "identified_at": [
+      91,
+      60,
+      30,
+      15,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    "misjudgement: miscalibrated reading / stability_do_W": {
+     "identified_at": [
+      91,
+      60,
+      30,
+      15,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    "no correction (feedback off) / effect_E": {
+     "identified_at": [
+      91,
+      60,
+      30,
+      15
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      true,
+      true,
+      true,
+      null
+     ]
+    },
+    "no correction (feedback off) / effect_S": {
+     "identified_at": [
+      91
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "no correction (feedback off) / revision_E": {
+     "identified_at": [
+      91,
+      60,
+      30,
+      15
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      null
+     ]
+    },
+    "no correction (feedback off) / revision_S": {
+     "identified_at": [
+      91
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    "no correction (feedback off) / shift_drop": {
+     "identified_at": [
+      91,
+      60,
+      30,
+      15,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    "no correction (feedback off) / stability_do_W": {
+     "identified_at": [
+      91,
+      60,
+      30,
+      15,
+      6
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    }
+   },
+   "relations_regained_after_loss": [],
+   "rows": [
+    {
+     "conditions": {
+      "accidental correct: base-rate guess": {
+       "effect_E": {
+        "ci95": [
+         -0.015298114233586946,
+         0.007798114233586957
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.003749999999999995
+       },
+       "effect_S": {
+        "ci95": [
+         -0.00748894375375864,
+         0.009412020676835563
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0009615384615384616
+       },
+       "revision_E": {
+        "ci95": [
+         -0.014870934476920235,
+         0.0177280773340631
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0014285714285714323
+       },
+       "revision_S": {
+        "ci95": [
+         -0.00491423135070337,
+         0.015875769812241827
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.005480769230769229
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.019256721596115852,
+         0.03925672159611583
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.009999999999999992
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.49002340996054944,
+         0.5227265900394504
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.5063749999999999
+       }
+      },
+      "accidental correct: coincidental cue": {
+       "effect_E": {
+        "ci95": [
+         -0.031211611157141245,
+         -0.002002674557144467
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.016607142857142855
+       },
+       "effect_S": {
+        "ci95": [
+         0.9496622834893481,
+         0.9599531011260366
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9548076923076924
+       },
+       "revision_E": {
+        "ci95": [
+         -0.04585956595712934,
+         -0.010211862614299228
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.028035714285714282
+       },
+       "revision_S": {
+        "ci95": [
+         -0.0058459804803916065,
+         0.007769057403468568
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0009615384615384803
+       },
+       "shift_drop": {
+        "ci95": [
+         0.2780200643701489,
+         0.3769799356298511
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.3275
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.4872993971034438,
+         0.5094506028965562
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.49837499999999996
+       }
+      },
+      "correction and reconfiguration (feedback on)": {
+       "effect_E": {
+        "ci95": [
+         0.98426673946006,
+         0.993590403397082
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.988928571428571
+       },
+       "effect_S": {
+        "ci95": [
+         0.1359744757009675,
+         0.1746024473759556
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.15528846153846154
+       },
+       "revision_E": {
+        "ci95": [
+         0.7694649804848681,
+         0.7905350195151319
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.78
+       },
+       "revision_S": {
+        "ci95": [
+         -0.8115777566119304,
+         -0.7730376280034541
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.7923076923076923
+       },
+       "shift_drop": {
+        "ci95": [
+         0.07373858205323244,
+         0.1412614179467675
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.10749999999999997
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.7508464386307634,
+         0.7759035613692369
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.7633750000000001
+       }
+      },
+      "ground-responsive judgement": {
+       "effect_E": {
+        "ci95": [
+         0.9983645769044631,
+         0.9998497088098224
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9991071428571427
+       },
+       "effect_S": {
+        "ci95": [
+         -0.005448924794292497,
+         0.008525847871215575
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0015384615384615385
+       },
+       "revision_E": {
+        "ci95": [
+         -0.0012126051229524792,
+         0.001212605122952457
+        ],
+        "status": "IDENTIFIED",
+        "value": -1.1102230246251566e-17
+       },
+       "revision_S": {
+        "ci95": [
+         -0.008751716606313815,
+         0.010674793529390735
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0009615384615384602
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.036931487347142945,
+         0.04193148734714295
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0025000000000000022
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.829273524559685,
+         0.8437264754403146
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.8364999999999998
+       }
+      },
+      "misjudgement: miscalibrated reading": {
+       "effect_E": {
+        "ci95": [
+         0.9936185937012085,
+         0.9967385491559344
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9951785714285715
+       },
+       "effect_S": {
+        "ci95": [
+         -0.006834273135874085,
+         0.006641965443566393
+        ],
+        "status": "IDENTIFIED",
+        "value": -9.615384615384546e-05
+       },
+       "revision_E": {
+        "ci95": [
+         -0.0031851785714286014,
+         0.0035423214285714238
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.00017857142857141128
+       },
+       "revision_S": {
+        "ci95": [
+         -0.011989530166602768,
+         0.004681837858910465
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.003653846153846152
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.03365729726211912,
+         0.0911572972621191
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.02874999999999999
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.7366969330498194,
+         0.7593030669501803
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.7479999999999999
+       }
+      },
+      "no correction (feedback off)": {
+       "effect_E": {
+        "ci95": [
+         0.17911937772541967,
+         0.2083806222745804
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.19375000000000003
+       },
+       "effect_S": {
+        "ci95": [
+         0.9435058030248098,
+         0.9528403508213443
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9481730769230771
+       },
+       "revision_E": {
+        "ci95": [
+         -0.034579306024928584,
+         0.004222163167785724
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.01517857142857143
+       },
+       "revision_S": {
+        "ci95": [
+         -0.005478908741510895,
+         0.006632754895357077
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0005769230769230915
+       },
+       "shift_drop": {
+        "ci95": [
+         0.2718685446903182,
+         0.37313145530968195
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.32250000000000006
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.5092551949376738,
+         0.5312448050623262
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.52025
+       }
+      }
+     },
+     "result_digest": "ec6c1dd8b34c0cb82fc0a049eb04c70704e23b074b8cb62d54f300ff95903553",
+     "value": 91
+    },
+    {
+     "conditions": {
+      "accidental correct: base-rate guess": {
+       "effect_E": {
+        "ci95": [
+         -0.007433024078914727,
+         0.02243302407891474
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.007500000000000005
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "ci95": [
+         0.0009874761948955903,
+         0.03838752380510442
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.019687500000000004
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.019256721596115852,
+         0.03925672159611583
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.009999999999999992
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.49002340996054944,
+         0.5227265900394504
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.5063749999999999
+       }
+      },
+      "accidental correct: coincidental cue": {
+       "effect_E": {
+        "ci95": [
+         -0.036693976475567616,
+         0.007943976475567615
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.014375000000000002
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "ci95": [
+         -0.060804980720966156,
+         -0.0023200192790338477
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.0315625
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "ci95": [
+         0.2780200643701489,
+         0.3769799356298511
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.3275
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.4872993971034438,
+         0.5094506028965562
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.49837499999999996
+       }
+      },
+      "correction and reconfiguration (feedback on)": {
+       "effect_E": {
+        "ci95": [
+         0.9864981866411824,
+         0.9972518133588175
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.991875
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "ci95": [
+         0.7378303142090503,
+         0.7696696857909497
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.75375
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "ci95": [
+         0.07373858205323244,
+         0.1412614179467675
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.10749999999999997
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.7508464386307634,
+         0.7759035613692369
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.7633750000000001
+       }
+      },
+      "ground-responsive judgement": {
+       "effect_E": {
+        "ci95": [
+         0.9975495821725222,
+         0.9999504178274776
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9987499999999999
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "ci95": [
+         -0.0018980272393503113,
+         0.0018980272393503113
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.036931487347142945,
+         0.04193148734714295
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0025000000000000022
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.829273524559685,
+         0.8437264754403146
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.8364999999999998
+       }
+      },
+      "misjudgement: miscalibrated reading": {
+       "effect_E": {
+        "ci95": [
+         0.9943419298017062,
+         0.998783070198294
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9965625000000001
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "ci95": [
+         -0.0007505434465459229,
+         0.00762554344654591
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0034374999999999935
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.03365729726211912,
+         0.0911572972621191
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.02874999999999999
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.7366969330498194,
+         0.7593030669501803
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.7479999999999999
+       }
+      },
+      "no correction (feedback off)": {
+       "effect_E": {
+        "ci95": [
+         0.21045904916661545,
+         0.24766595083338455
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.2290625
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "ci95": [
+         -0.03455327787830488,
+         0.016428277878304864
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.00906250000000001
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "ci95": [
+         0.2718685446903182,
+         0.37313145530968195
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.32250000000000006
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.5092551949376738,
+         0.5312448050623262
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.52025
+       }
+      }
+     },
+     "result_digest": "8e86f45713d7bc0f977fec13a5120862c1aab336eea4091377e0f15ddd7eb7f0",
+     "value": 60
+    },
+    {
+     "conditions": {
+      "accidental correct: base-rate guess": {
+       "effect_E": {
+        "ci95": [
+         -0.01368302407891473,
+         0.016183024078914733
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0012500000000000011
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "ci95": [
+         -0.006716308817792662,
+         0.025466308817792667
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.009375000000000003
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.019256721596115852,
+         0.03925672159611583
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.009999999999999992
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.49002340996054944,
+         0.5227265900394504
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.5063749999999999
+       }
+      },
+      "accidental correct: coincidental cue": {
+       "effect_E": {
+        "ci95": [
+         -0.015456729714758881,
+         0.01045672971475888
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.0025
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "ci95": [
+         -0.022675639238266612,
+         0.002675639238266612
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.01
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "ci95": [
+         0.2780200643701489,
+         0.3769799356298511
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.3275
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.4872993971034438,
+         0.5094506028965562
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.49837499999999996
+       }
+      },
+      "correction and reconfiguration (feedback on)": {
+       "effect_E": {
+        "ci95": [
+         0.9901983286900893,
+         0.9998016713099109
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9950000000000001
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "ci95": [
+         0.8823235638570458,
+         0.9151764361429543
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.89875
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "ci95": [
+         0.07373858205323244,
+         0.1412614179467675
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.10749999999999997
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.7508464386307634,
+         0.7759035613692369
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.7633750000000001
+       }
+      },
+      "ground-responsive judgement": {
+       "effect_E": {
+        "ci95": [
+         0.9959818255001804,
+         1.0002681744998199
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9981250000000002
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "ci95": [
+         -0.002930146072799019,
+         0.001680146072799024
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.0006249999999999977
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.036931487347142945,
+         0.04193148734714295
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0025000000000000022
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.829273524559685,
+         0.8437264754403146
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.8364999999999998
+       }
+      },
+      "misjudgement: miscalibrated reading": {
+       "effect_E": {
+        "ci95": [
+         0.990589383266809,
+         0.9994106167331912
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9950000000000001
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "ci95": [
+         -0.005368431727285573,
+         0.00536843172728555
+        ],
+        "status": "IDENTIFIED",
+        "value": -1.1102230246251566e-17
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.03365729726211912,
+         0.0911572972621191
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.02874999999999999
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.7366969330498194,
+         0.7593030669501803
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.7479999999999999
+       }
+      },
+      "no correction (feedback off)": {
+       "effect_E": {
+        "ci95": [
+         0.0753756284066508,
+         0.1096243715933492
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0925
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "ci95": [
+         -0.016637031900350752,
+         0.009137031900350744
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.0037500000000000046
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "ci95": [
+         0.2718685446903182,
+         0.37313145530968195
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.32250000000000006
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.5092551949376738,
+         0.5312448050623262
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.52025
+       }
+      }
+     },
+     "result_digest": "b30b464f1c57dd12b065a5dd8e3af6a6aadc7c83cbf8bd495af288c4199f3959",
+     "value": 30
+    },
+    {
+     "conditions": {
+      "accidental correct: base-rate guess": {
+       "effect_E": {
+        "ci95": [
+         -0.02555927345850708,
+         0.02055927345850711
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.0024999999999999857
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "ci95": [
+         -0.03974518142091514,
+         0.01974518142091518
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.009999999999999981
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.019256721596115852,
+         0.03925672159611583
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.009999999999999992
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.49002340996054944,
+         0.5227265900394504
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.5063749999999999
+       }
+      },
+      "accidental correct: coincidental cue": {
+       "effect_E": {
+        "ci95": [
+         -0.015184217914802543,
+         0.015184217914802546
+        ],
+        "status": "IDENTIFIED",
+        "value": 1.0408340855860842e-18
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "ci95": [
+         -0.011789075361224975,
+         0.029289075361224978
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.008750000000000003
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "ci95": [
+         0.2780200643701489,
+         0.3769799356298511
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.3275
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.4872993971034438,
+         0.5094506028965562
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.49837499999999996
+       }
+      },
+      "correction and reconfiguration (feedback on)": {
+       "effect_E": {
+        "ci95": [
+         0.987313476472883,
+         1.0001865235271172
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9937500000000001
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "ci95": [
+         0.9511041590139161,
+         0.9788958409860836
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9649999999999999
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "ci95": [
+         0.07373858205323244,
+         0.1412614179467675
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.10749999999999997
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.7508464386307634,
+         0.7759035613692369
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.7633750000000001
+       }
+      },
+      "ground-responsive judgement": {
+       "effect_E": {
+        "ci95": [
+         0.99613375,
+         1.00136625
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.99875
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "ci95": [
+         -0.003796054478700639,
+         0.003796054478700639
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.036931487347142945,
+         0.04193148734714295
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0025000000000000022
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.829273524559685,
+         0.8437264754403146
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.8364999999999998
+       }
+      },
+      "misjudgement: miscalibrated reading": {
+       "effect_E": {
+        "ci95": [
+         0.9888790460732264,
+         1.0011209539267734
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9949999999999999
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "ci95": [
+         -0.010619705012388594,
+         0.003119705012388588
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.0037500000000000033
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.03365729726211912,
+         0.0911572972621191
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.02874999999999999
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.7366969330498194,
+         0.7593030669501803
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.7479999999999999
+       }
+      },
+      "no correction (feedback off)": {
+       "effect_E": {
+        "ci95": [
+         0.03389470481814329,
+         0.0661052951818567
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.049999999999999996
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "ci95": [
+         0.0037407630134270696,
+         0.03875923698657294
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.02125
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "ci95": [
+         0.2718685446903182,
+         0.37313145530968195
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.32250000000000006
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.5092551949376738,
+         0.5312448050623262
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.52025
+       }
+      }
+     },
+     "result_digest": "cfe5988c3329f29704ee9fd6cea6a3720666c482cab07f08c969fa163e2fc144",
+     "value": 15
+    },
+    {
+     "conditions": {
+      "accidental correct: base-rate guess": {
+       "effect_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.019256721596115852,
+         0.03925672159611583
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.009999999999999992
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.49002340996054944,
+         0.5227265900394504
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.5063749999999999
+       }
+      },
+      "accidental correct: coincidental cue": {
+       "effect_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "ci95": [
+         0.2780200643701489,
+         0.3769799356298511
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.3275
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.4872993971034438,
+         0.5094506028965562
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.49837499999999996
+       }
+      },
+      "correction and reconfiguration (feedback on)": {
+       "effect_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "ci95": [
+         0.07373858205323244,
+         0.1412614179467675
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.10749999999999997
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.7508464386307634,
+         0.7759035613692369
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.7633750000000001
+       }
+      },
+      "ground-responsive judgement": {
+       "effect_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.036931487347142945,
+         0.04193148734714295
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0025000000000000022
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.829273524559685,
+         0.8437264754403146
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.8364999999999998
+       }
+      },
+      "misjudgement: miscalibrated reading": {
+       "effect_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.03365729726211912,
+         0.0911572972621191
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.02874999999999999
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.7366969330498194,
+         0.7593030669501803
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.7479999999999999
+       }
+      },
+      "no correction (feedback off)": {
+       "effect_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "ci95": [
+         0.2718685446903182,
+         0.37313145530968195
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.32250000000000006
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.5092551949376738,
+         0.5312448050623262
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.52025
+       }
+      }
+     },
+     "result_digest": "b91816c06ca788c2c24a1e10534037bc0a06ab127a87a884b00afe7224174c33",
+     "value": 6
+    }
+   ],
+   "values": [
+    91,
+    60,
+    30,
+    15,
+    6
+   ]
+  },
+  "Speed (snapshot rate)": {
+   "field": "speed",
+   "reading": {
+    "accidental correct: base-rate guess / effect_E": {
+     "identified_at": [
+      1,
+      2
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      null
+     ]
+    },
+    "accidental correct: base-rate guess / effect_S": {
+     "identified_at": [
+      1,
+      2
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      null
+     ]
+    },
+    "accidental correct: base-rate guess / revision_E": {
+     "identified_at": [
+      1,
+      2
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      null
+     ]
+    },
+    "accidental correct: base-rate guess / revision_S": {
+     "identified_at": [
+      1,
+      2
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      null
+     ]
+    },
+    "accidental correct: base-rate guess / shift_drop": {
+     "identified_at": [
+      1,
+      2,
+      3
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false
+     ]
+    },
+    "accidental correct: base-rate guess / stability_do_W": {
+     "identified_at": [
+      1,
+      2
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      null
+     ]
+    },
+    "accidental correct: coincidental cue / effect_E": {
+     "identified_at": [
+      1,
+      2
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      null
+     ]
+    },
+    "accidental correct: coincidental cue / effect_S": {
+     "identified_at": [
+      1,
+      2
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      null
+     ]
+    },
+    "accidental correct: coincidental cue / revision_E": {
+     "identified_at": [
+      1,
+      2
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      null
+     ]
+    },
+    "accidental correct: coincidental cue / revision_S": {
+     "identified_at": [
+      1,
+      2
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      null
+     ]
+    },
+    "accidental correct: coincidental cue / shift_drop": {
+     "identified_at": [
+      1,
+      2,
+      3
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false
+     ]
+    },
+    "accidental correct: coincidental cue / stability_do_W": {
+     "identified_at": [
+      1,
+      2
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      null
+     ]
+    },
+    "correction and reconfiguration (feedback on) / effect_E": {
+     "identified_at": [
+      1,
+      2
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      null
+     ]
+    },
+    "correction and reconfiguration (feedback on) / effect_S": {
+     "identified_at": [
+      1,
+      2
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      null
+     ]
+    },
+    "correction and reconfiguration (feedback on) / revision_E": {
+     "identified_at": [
+      1,
+      2
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      null
+     ]
+    },
+    "correction and reconfiguration (feedback on) / revision_S": {
+     "identified_at": [
+      1,
+      2
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      null
+     ]
+    },
+    "correction and reconfiguration (feedback on) / shift_drop": {
+     "identified_at": [
+      1,
+      2,
+      3
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false
+     ]
+    },
+    "correction and reconfiguration (feedback on) / stability_do_W": {
+     "identified_at": [
+      1,
+      2
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      null
+     ]
+    },
+    "ground-responsive judgement / effect_E": {
+     "identified_at": [
+      1,
+      2
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      null
+     ]
+    },
+    "ground-responsive judgement / effect_S": {
+     "identified_at": [
+      1,
+      2
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      null
+     ]
+    },
+    "ground-responsive judgement / revision_E": {
+     "identified_at": [
+      1,
+      2
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      null
+     ]
+    },
+    "ground-responsive judgement / revision_S": {
+     "identified_at": [
+      1,
+      2
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      null
+     ]
+    },
+    "ground-responsive judgement / shift_drop": {
+     "identified_at": [
+      1,
+      2,
+      3
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false
+     ]
+    },
+    "ground-responsive judgement / stability_do_W": {
+     "identified_at": [
+      1,
+      2
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      null
+     ]
+    },
+    "misjudgement: miscalibrated reading / effect_E": {
+     "identified_at": [
+      1,
+      2
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      null
+     ]
+    },
+    "misjudgement: miscalibrated reading / effect_S": {
+     "identified_at": [
+      1,
+      2
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      null
+     ]
+    },
+    "misjudgement: miscalibrated reading / revision_E": {
+     "identified_at": [
+      1,
+      2
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      null
+     ]
+    },
+    "misjudgement: miscalibrated reading / revision_S": {
+     "identified_at": [
+      1,
+      2
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      null
+     ]
+    },
+    "misjudgement: miscalibrated reading / shift_drop": {
+     "identified_at": [
+      1,
+      2,
+      3
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false
+     ]
+    },
+    "misjudgement: miscalibrated reading / stability_do_W": {
+     "identified_at": [
+      1,
+      2
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      null
+     ]
+    },
+    "no correction (feedback off) / effect_E": {
+     "identified_at": [
+      1,
+      2
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      null
+     ]
+    },
+    "no correction (feedback off) / effect_S": {
+     "identified_at": [
+      1,
+      2
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      null
+     ]
+    },
+    "no correction (feedback off) / revision_E": {
+     "identified_at": [
+      1,
+      2
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      null
+     ]
+    },
+    "no correction (feedback off) / revision_S": {
+     "identified_at": [
+      1,
+      2
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      null
+     ]
+    },
+    "no correction (feedback off) / shift_drop": {
+     "identified_at": [
+      1,
+      2,
+      3
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false
+     ]
+    },
+    "no correction (feedback off) / stability_do_W": {
+     "identified_at": [
+      1,
+      2
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      null
+     ]
+    }
+   },
+   "relations_regained_after_loss": [],
+   "rows": [
+    {
+     "conditions": {
+      "accidental correct: base-rate guess": {
+       "effect_E": {
+        "ci95": [
+         -0.015298114233586946,
+         0.007798114233586957
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.003749999999999995
+       },
+       "effect_S": {
+        "ci95": [
+         -0.00748894375375864,
+         0.009412020676835563
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0009615384615384616
+       },
+       "revision_E": {
+        "ci95": [
+         -0.014870934476920235,
+         0.0177280773340631
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0014285714285714323
+       },
+       "revision_S": {
+        "ci95": [
+         -0.00491423135070337,
+         0.015875769812241827
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.005480769230769229
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.019256721596115852,
+         0.03925672159611583
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.009999999999999992
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.49002340996054944,
+         0.5227265900394504
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.5063749999999999
+       }
+      },
+      "accidental correct: coincidental cue": {
+       "effect_E": {
+        "ci95": [
+         -0.031211611157141245,
+         -0.002002674557144467
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.016607142857142855
+       },
+       "effect_S": {
+        "ci95": [
+         0.9496622834893481,
+         0.9599531011260366
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9548076923076924
+       },
+       "revision_E": {
+        "ci95": [
+         -0.04585956595712934,
+         -0.010211862614299228
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.028035714285714282
+       },
+       "revision_S": {
+        "ci95": [
+         -0.0058459804803916065,
+         0.007769057403468568
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0009615384615384803
+       },
+       "shift_drop": {
+        "ci95": [
+         0.2780200643701489,
+         0.3769799356298511
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.3275
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.4872993971034438,
+         0.5094506028965562
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.49837499999999996
+       }
+      },
+      "correction and reconfiguration (feedback on)": {
+       "effect_E": {
+        "ci95": [
+         0.98426673946006,
+         0.993590403397082
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.988928571428571
+       },
+       "effect_S": {
+        "ci95": [
+         0.1359744757009675,
+         0.1746024473759556
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.15528846153846154
+       },
+       "revision_E": {
+        "ci95": [
+         0.7694649804848681,
+         0.7905350195151319
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.78
+       },
+       "revision_S": {
+        "ci95": [
+         -0.8115777566119304,
+         -0.7730376280034541
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.7923076923076923
+       },
+       "shift_drop": {
+        "ci95": [
+         0.07373858205323244,
+         0.1412614179467675
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.10749999999999997
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.7508464386307634,
+         0.7759035613692369
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.7633750000000001
+       }
+      },
+      "ground-responsive judgement": {
+       "effect_E": {
+        "ci95": [
+         0.9983645769044631,
+         0.9998497088098224
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9991071428571427
+       },
+       "effect_S": {
+        "ci95": [
+         -0.005448924794292497,
+         0.008525847871215575
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0015384615384615385
+       },
+       "revision_E": {
+        "ci95": [
+         -0.0012126051229524792,
+         0.001212605122952457
+        ],
+        "status": "IDENTIFIED",
+        "value": -1.1102230246251566e-17
+       },
+       "revision_S": {
+        "ci95": [
+         -0.008751716606313815,
+         0.010674793529390735
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0009615384615384602
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.036931487347142945,
+         0.04193148734714295
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0025000000000000022
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.829273524559685,
+         0.8437264754403146
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.8364999999999998
+       }
+      },
+      "misjudgement: miscalibrated reading": {
+       "effect_E": {
+        "ci95": [
+         0.9936185937012085,
+         0.9967385491559344
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9951785714285715
+       },
+       "effect_S": {
+        "ci95": [
+         -0.006834273135874085,
+         0.006641965443566393
+        ],
+        "status": "IDENTIFIED",
+        "value": -9.615384615384546e-05
+       },
+       "revision_E": {
+        "ci95": [
+         -0.0031851785714286014,
+         0.0035423214285714238
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.00017857142857141128
+       },
+       "revision_S": {
+        "ci95": [
+         -0.011989530166602768,
+         0.004681837858910465
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.003653846153846152
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.03365729726211912,
+         0.0911572972621191
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.02874999999999999
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.7366969330498194,
+         0.7593030669501803
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.7479999999999999
+       }
+      },
+      "no correction (feedback off)": {
+       "effect_E": {
+        "ci95": [
+         0.17911937772541967,
+         0.2083806222745804
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.19375000000000003
+       },
+       "effect_S": {
+        "ci95": [
+         0.9435058030248098,
+         0.9528403508213443
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9481730769230771
+       },
+       "revision_E": {
+        "ci95": [
+         -0.034579306024928584,
+         0.004222163167785724
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.01517857142857143
+       },
+       "revision_S": {
+        "ci95": [
+         -0.005478908741510895,
+         0.006632754895357077
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0005769230769230915
+       },
+       "shift_drop": {
+        "ci95": [
+         0.2718685446903182,
+         0.37313145530968195
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.32250000000000006
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.5092551949376738,
+         0.5312448050623262
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.52025
+       }
+      }
+     },
+     "result_digest": "d3476a5ac31e26b563870a82eff794dbbfbfe2df10686c015126ec11ab2d5791",
+     "value": 1
+    },
+    {
+     "conditions": {
+      "accidental correct: base-rate guess": {
+       "effect_E": {
+        "ci95": [
+         -0.015298114233586946,
+         0.007798114233586957
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.003749999999999995
+       },
+       "effect_S": {
+        "ci95": [
+         -0.00748894375375864,
+         0.009412020676835563
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0009615384615384616
+       },
+       "revision_E": {
+        "ci95": [
+         -0.014870934476920235,
+         0.0177280773340631
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0014285714285714323
+       },
+       "revision_S": {
+        "ci95": [
+         -0.00491423135070337,
+         0.015875769812241827
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.005480769230769229
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.019256721596115852,
+         0.03925672159611583
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.009999999999999992
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.49002340996054944,
+         0.5227265900394504
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.5063749999999999
+       }
+      },
+      "accidental correct: coincidental cue": {
+       "effect_E": {
+        "ci95": [
+         -0.031211611157141245,
+         -0.002002674557144467
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.016607142857142855
+       },
+       "effect_S": {
+        "ci95": [
+         0.9496622834893481,
+         0.9599531011260366
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9548076923076924
+       },
+       "revision_E": {
+        "ci95": [
+         -0.04585956595712934,
+         -0.010211862614299228
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.028035714285714282
+       },
+       "revision_S": {
+        "ci95": [
+         -0.0058459804803916065,
+         0.007769057403468568
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0009615384615384803
+       },
+       "shift_drop": {
+        "ci95": [
+         0.2780200643701489,
+         0.3769799356298511
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.3275
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.4872993971034438,
+         0.5094506028965562
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.49837499999999996
+       }
+      },
+      "correction and reconfiguration (feedback on)": {
+       "effect_E": {
+        "ci95": [
+         0.98426673946006,
+         0.993590403397082
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.988928571428571
+       },
+       "effect_S": {
+        "ci95": [
+         0.1359744757009675,
+         0.1746024473759556
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.15528846153846154
+       },
+       "revision_E": {
+        "ci95": [
+         0.7694649804848681,
+         0.7905350195151319
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.78
+       },
+       "revision_S": {
+        "ci95": [
+         -0.8115777566119304,
+         -0.7730376280034541
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.7923076923076923
+       },
+       "shift_drop": {
+        "ci95": [
+         0.07373858205323244,
+         0.1412614179467675
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.10749999999999997
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.7508464386307634,
+         0.7759035613692369
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.7633750000000001
+       }
+      },
+      "ground-responsive judgement": {
+       "effect_E": {
+        "ci95": [
+         0.9983645769044631,
+         0.9998497088098224
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9991071428571427
+       },
+       "effect_S": {
+        "ci95": [
+         -0.005448924794292497,
+         0.008525847871215575
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0015384615384615385
+       },
+       "revision_E": {
+        "ci95": [
+         -0.0012126051229524792,
+         0.001212605122952457
+        ],
+        "status": "IDENTIFIED",
+        "value": -1.1102230246251566e-17
+       },
+       "revision_S": {
+        "ci95": [
+         -0.008751716606313815,
+         0.010674793529390735
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0009615384615384602
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.036931487347142945,
+         0.04193148734714295
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0025000000000000022
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.829273524559685,
+         0.8437264754403146
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.8364999999999998
+       }
+      },
+      "misjudgement: miscalibrated reading": {
+       "effect_E": {
+        "ci95": [
+         0.9936185937012085,
+         0.9967385491559344
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9951785714285715
+       },
+       "effect_S": {
+        "ci95": [
+         -0.006834273135874085,
+         0.006641965443566393
+        ],
+        "status": "IDENTIFIED",
+        "value": -9.615384615384546e-05
+       },
+       "revision_E": {
+        "ci95": [
+         -0.0031851785714286014,
+         0.0035423214285714238
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.00017857142857141128
+       },
+       "revision_S": {
+        "ci95": [
+         -0.011989530166602768,
+         0.004681837858910465
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.003653846153846152
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.03365729726211912,
+         0.0911572972621191
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.02874999999999999
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.7366969330498194,
+         0.7593030669501803
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.7479999999999999
+       }
+      },
+      "no correction (feedback off)": {
+       "effect_E": {
+        "ci95": [
+         0.17911937772541967,
+         0.2083806222745804
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.19375000000000003
+       },
+       "effect_S": {
+        "ci95": [
+         0.9435058030248098,
+         0.9528403508213443
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9481730769230771
+       },
+       "revision_E": {
+        "ci95": [
+         -0.034579306024928584,
+         0.004222163167785724
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.01517857142857143
+       },
+       "revision_S": {
+        "ci95": [
+         -0.005478908741510895,
+         0.006632754895357077
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0005769230769230915
+       },
+       "shift_drop": {
+        "ci95": [
+         0.2718685446903182,
+         0.37313145530968195
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.32250000000000006
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.5092551949376738,
+         0.5312448050623262
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.52025
+       }
+      }
+     },
+     "result_digest": "7cde987001a2df672aee553080842675567b5999e531c574cd776ad23664a153",
+     "value": 2
+    },
+    {
+     "conditions": {
+      "accidental correct: base-rate guess": {
+       "effect_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.019256721596115852,
+         0.03925672159611583
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.009999999999999992
+       },
+       "stability_do_W": {
+        "status": "TEMPORAL_MISFIT"
+       }
+      },
+      "accidental correct: coincidental cue": {
+       "effect_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "ci95": [
+         0.2780200643701489,
+         0.3769799356298511
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.3275
+       },
+       "stability_do_W": {
+        "status": "TEMPORAL_MISFIT"
+       }
+      },
+      "correction and reconfiguration (feedback on)": {
+       "effect_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "ci95": [
+         0.07373858205323244,
+         0.1412614179467675
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.10749999999999997
+       },
+       "stability_do_W": {
+        "status": "TEMPORAL_MISFIT"
+       }
+      },
+      "ground-responsive judgement": {
+       "effect_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.036931487347142945,
+         0.04193148734714295
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0025000000000000022
+       },
+       "stability_do_W": {
+        "status": "TEMPORAL_MISFIT"
+       }
+      },
+      "misjudgement: miscalibrated reading": {
+       "effect_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.03365729726211912,
+         0.0911572972621191
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.02874999999999999
+       },
+       "stability_do_W": {
+        "status": "TEMPORAL_MISFIT"
+       }
+      },
+      "no correction (feedback off)": {
+       "effect_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "ci95": [
+         0.2718685446903182,
+         0.37313145530968195
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.32250000000000006
+       },
+       "stability_do_W": {
+        "status": "TEMPORAL_MISFIT"
+       }
+      }
+     },
+     "result_digest": "0f553f5e0148edf9a928c4bfee3f491279d17e822565a2b963eeae36953d514f",
+     "value": 3
+    }
+   ],
+   "values": [
+    1,
+    2,
+    3
+   ]
+  },
+  "Temporal window (not SSS)": {
+   "field": "temporal_window",
+   "reading": {
+    "accidental correct: base-rate guess / effect_E": {
+     "identified_at": [
+      100,
+      40,
+      20
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      null
+     ]
+    },
+    "accidental correct: base-rate guess / effect_S": {
+     "identified_at": [
+      100,
+      40,
+      20
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      null
+     ]
+    },
+    "accidental correct: base-rate guess / revision_E": {
+     "identified_at": [
+      100,
+      40,
+      20
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      null
+     ]
+    },
+    "accidental correct: base-rate guess / revision_S": {
+     "identified_at": [
+      100,
+      40,
+      20
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      null
+     ]
+    },
+    "accidental correct: base-rate guess / shift_drop": {
+     "identified_at": [
+      100,
+      40,
+      20
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      null
+     ]
+    },
+    "accidental correct: base-rate guess / stability_do_W": {
+     "identified_at": [
+      100,
+      40,
+      20
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      null
+     ]
+    },
+    "accidental correct: coincidental cue / effect_E": {
+     "identified_at": [
+      100,
+      40,
+      20
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      null
+     ]
+    },
+    "accidental correct: coincidental cue / effect_S": {
+     "identified_at": [
+      100,
+      40,
+      20
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      null
+     ]
+    },
+    "accidental correct: coincidental cue / revision_E": {
+     "identified_at": [
+      100,
+      40,
+      20
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      true,
+      null,
+      null
+     ]
+    },
+    "accidental correct: coincidental cue / revision_S": {
+     "identified_at": [
+      100,
+      40,
+      20
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      null
+     ]
+    },
+    "accidental correct: coincidental cue / shift_drop": {
+     "identified_at": [
+      100,
+      40,
+      20
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      null
+     ]
+    },
+    "accidental correct: coincidental cue / stability_do_W": {
+     "identified_at": [
+      100,
+      40,
+      20
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      null
+     ]
+    },
+    "correction and reconfiguration (feedback on) / effect_E": {
+     "identified_at": [
+      100,
+      40,
+      20
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      null
+     ]
+    },
+    "correction and reconfiguration (feedback on) / effect_S": {
+     "identified_at": [
+      100,
+      40,
+      20
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      null
+     ]
+    },
+    "correction and reconfiguration (feedback on) / revision_E": {
+     "identified_at": [
+      100,
+      40,
+      20
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      null
+     ]
+    },
+    "correction and reconfiguration (feedback on) / revision_S": {
+     "identified_at": [
+      100,
+      40,
+      20
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      null
+     ]
+    },
+    "correction and reconfiguration (feedback on) / shift_drop": {
+     "identified_at": [
+      100,
+      40,
+      20
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      null
+     ]
+    },
+    "correction and reconfiguration (feedback on) / stability_do_W": {
+     "identified_at": [
+      100,
+      40,
+      20
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      null
+     ]
+    },
+    "ground-responsive judgement / effect_E": {
+     "identified_at": [
+      100,
+      40,
+      20
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      null
+     ]
+    },
+    "ground-responsive judgement / effect_S": {
+     "identified_at": [
+      100,
+      40,
+      20
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      null
+     ]
+    },
+    "ground-responsive judgement / revision_E": {
+     "identified_at": [
+      100,
+      40,
+      20
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      null
+     ]
+    },
+    "ground-responsive judgement / revision_S": {
+     "identified_at": [
+      100,
+      40,
+      20
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      null
+     ]
+    },
+    "ground-responsive judgement / shift_drop": {
+     "identified_at": [
+      100,
+      40,
+      20
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      null
+     ]
+    },
+    "ground-responsive judgement / stability_do_W": {
+     "identified_at": [
+      100,
+      40,
+      20
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      null
+     ]
+    },
+    "misjudgement: miscalibrated reading / effect_E": {
+     "identified_at": [
+      100,
+      40,
+      20
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      null
+     ]
+    },
+    "misjudgement: miscalibrated reading / effect_S": {
+     "identified_at": [
+      100,
+      40,
+      20
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      null
+     ]
+    },
+    "misjudgement: miscalibrated reading / revision_E": {
+     "identified_at": [
+      100,
+      40,
+      20
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      null
+     ]
+    },
+    "misjudgement: miscalibrated reading / revision_S": {
+     "identified_at": [
+      100,
+      40,
+      20
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      null
+     ]
+    },
+    "misjudgement: miscalibrated reading / shift_drop": {
+     "identified_at": [
+      100,
+      40,
+      20
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      null
+     ]
+    },
+    "misjudgement: miscalibrated reading / stability_do_W": {
+     "identified_at": [
+      100,
+      40,
+      20
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      null
+     ]
+    },
+    "no correction (feedback off) / effect_E": {
+     "identified_at": [
+      100,
+      40,
+      20
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      null
+     ]
+    },
+    "no correction (feedback off) / effect_S": {
+     "identified_at": [
+      100,
+      40,
+      20
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      null
+     ]
+    },
+    "no correction (feedback off) / revision_E": {
+     "identified_at": [
+      100,
+      40,
+      20
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      null
+     ]
+    },
+    "no correction (feedback off) / revision_S": {
+     "identified_at": [
+      100,
+      40,
+      20
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      null
+     ]
+    },
+    "no correction (feedback off) / shift_drop": {
+     "identified_at": [
+      100,
+      40,
+      20
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      null
+     ]
+    },
+    "no correction (feedback off) / stability_do_W": {
+     "identified_at": [
+      100,
+      40,
+      20
+     ],
+     "identified_lost_and_regained_along_the_axis": false,
+     "interval_differs_from_first_value": [
+      false,
+      false,
+      false,
+      null,
+      null
+     ]
+    }
+   },
+   "relations_regained_after_loss": [],
+   "rows": [
+    {
+     "conditions": {
+      "accidental correct: base-rate guess": {
+       "effect_E": {
+        "ci95": [
+         -0.009993050611951427,
+         0.0051359077548085745
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.0024285714285714266
+       },
+       "effect_S": {
+        "ci95": [
+         -0.0037590440879616705,
+         0.006297505626423207
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0012692307692307684
+       },
+       "revision_E": {
+        "ci95": [
+         -0.009479487649772213,
+         0.011050916221200777
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0007857142857142816
+       },
+       "revision_S": {
+        "ci95": [
+         -0.002249254453754312,
+         0.010633869838369683
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.004192307692307686
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.022341084928607785,
+         0.031341084928607786
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.004499999999999999
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.49162742071828086,
+         0.5065725792817193
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.49910000000000004
+       }
+      },
+      "accidental correct: coincidental cue": {
+       "effect_E": {
+        "ci95": [
+         -0.010481946293630886,
+         0.011196232007916595
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.00035714285714285465
+       },
+       "effect_S": {
+        "ci95": [
+         0.9508251333679631,
+         0.9554056358628062
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9531153846153847
+       },
+       "revision_E": {
+        "ci95": [
+         -0.01386314639264431,
+         0.011434574964072883
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.0012142857142857129
+       },
+       "revision_S": {
+        "ci95": [
+         -0.004507451678001936,
+         0.003122836293386607
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.0006923076923076643
+       },
+       "shift_drop": {
+        "ci95": [
+         0.32858330448247286,
+         0.3784166955175272
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.35350000000000004
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.4950537136227443,
+         0.510646286377256
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.5028500000000001
+       }
+      },
+      "correction and reconfiguration (feedback on)": {
+       "effect_E": {
+        "ci95": [
+         0.982081947870168,
+         0.9929180521298323
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9875000000000002
+       },
+       "effect_S": {
+        "ci95": [
+         0.13687166286244984,
+         0.1728975679067809
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.15488461538461537
+       },
+       "revision_E": {
+        "ci95": [
+         0.7742130431748184,
+         0.7950726711108957
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.7846428571428571
+       },
+       "revision_S": {
+        "ci95": [
+         -0.8091266469573001,
+         -0.7748733530426998
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.7919999999999999
+       },
+       "shift_drop": {
+        "ci95": [
+         0.05846478375160318,
+         0.09953521624839681
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.079
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.7407044468342601,
+         0.76449555316574
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.7526
+       }
+      },
+      "ground-responsive judgement": {
+       "effect_E": {
+        "ci95": [
+         0.9987428812225293,
+         0.9995428330631849
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9991428571428571
+       },
+       "effect_S": {
+        "ci95": [
+         -0.006660296246868257,
+         0.0022756808622528693
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.002192307692307694
+       },
+       "revision_E": {
+        "ci95": [
+         -0.0005396575186395213,
+         0.000825371804353766
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.00014285714285712238
+       },
+       "revision_S": {
+        "ci95": [
+         -0.010610074769238162,
+         0.0028408440000073872
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.003884615384615387
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.03331098524682876,
+         0.011310985246828753
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.011000000000000005
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.8262632303413271,
+         0.8364367696586728
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.8313499999999999
+       }
+      },
+      "misjudgement: miscalibrated reading": {
+       "effect_E": {
+        "ci95": [
+         0.9933991238250637,
+         0.9958865904606506
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9946428571428572
+       },
+       "effect_S": {
+        "ci95": [
+         -0.00593898981192644,
+         0.003708220581157206
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.0011153846153846166
+       },
+       "revision_E": {
+        "ci95": [
+         -0.0024875734990696,
+         0.001630430641926766
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.00042857142857141706
+       },
+       "revision_S": {
+        "ci95": [
+         -0.007910036230466566,
+         0.006294651615081947
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.0008076923076923093
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.011183683073399009,
+         0.05518368307339905
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.02200000000000002
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.7429165221397926,
+         0.7541834778602075
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.74855
+       }
+      },
+      "no correction (feedback off)": {
+       "effect_E": {
+        "ci95": [
+         0.18561602819279135,
+         0.1999554003786372
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.19278571428571428
+       },
+       "effect_S": {
+        "ci95": [
+         0.9443618039144992,
+         0.9506381960855008
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9475
+       },
+       "revision_E": {
+        "ci95": [
+         -0.019763716918764045,
+         -0.00037914022409312603
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.010071428571428585
+       },
+       "revision_S": {
+        "ci95": [
+         -0.0039047044382326717,
+         0.005135473669002063
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0006153846153846953
+       },
+       "shift_drop": {
+        "ci95": [
+         0.3287005067315127,
+         0.3772994932684874
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.35300000000000004
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.5154830850198986,
+         0.5316169149801013
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.52355
+       }
+      }
+     },
+     "result_digest": "ef2be513e89645db218598f0aa59f61ecb3c66adffb4716effab6097169e3bd8",
+     "value": 100
+    },
+    {
+     "conditions": {
+      "accidental correct: base-rate guess": {
+       "effect_E": {
+        "ci95": [
+         -0.015298114233586946,
+         0.007798114233586957
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.003749999999999995
+       },
+       "effect_S": {
+        "ci95": [
+         -0.00748894375375864,
+         0.009412020676835563
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0009615384615384616
+       },
+       "revision_E": {
+        "ci95": [
+         -0.014870934476920235,
+         0.0177280773340631
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0014285714285714323
+       },
+       "revision_S": {
+        "ci95": [
+         -0.00491423135070337,
+         0.015875769812241827
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.005480769230769229
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.019256721596115852,
+         0.03925672159611583
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.009999999999999992
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.49002340996054944,
+         0.5227265900394504
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.5063749999999999
+       }
+      },
+      "accidental correct: coincidental cue": {
+       "effect_E": {
+        "ci95": [
+         -0.031211611157141245,
+         -0.002002674557144467
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.016607142857142855
+       },
+       "effect_S": {
+        "ci95": [
+         0.9496622834893481,
+         0.9599531011260366
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9548076923076924
+       },
+       "revision_E": {
+        "ci95": [
+         -0.04585956595712934,
+         -0.010211862614299228
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.028035714285714282
+       },
+       "revision_S": {
+        "ci95": [
+         -0.0058459804803916065,
+         0.007769057403468568
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0009615384615384803
+       },
+       "shift_drop": {
+        "ci95": [
+         0.2780200643701489,
+         0.3769799356298511
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.3275
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.4872993971034438,
+         0.5094506028965562
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.49837499999999996
+       }
+      },
+      "correction and reconfiguration (feedback on)": {
+       "effect_E": {
+        "ci95": [
+         0.98426673946006,
+         0.993590403397082
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.988928571428571
+       },
+       "effect_S": {
+        "ci95": [
+         0.1359744757009675,
+         0.1746024473759556
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.15528846153846154
+       },
+       "revision_E": {
+        "ci95": [
+         0.7694649804848681,
+         0.7905350195151319
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.78
+       },
+       "revision_S": {
+        "ci95": [
+         -0.8115777566119304,
+         -0.7730376280034541
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.7923076923076923
+       },
+       "shift_drop": {
+        "ci95": [
+         0.07373858205323244,
+         0.1412614179467675
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.10749999999999997
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.7508464386307634,
+         0.7759035613692369
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.7633750000000001
+       }
+      },
+      "ground-responsive judgement": {
+       "effect_E": {
+        "ci95": [
+         0.9983645769044631,
+         0.9998497088098224
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9991071428571427
+       },
+       "effect_S": {
+        "ci95": [
+         -0.005448924794292497,
+         0.008525847871215575
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0015384615384615385
+       },
+       "revision_E": {
+        "ci95": [
+         -0.0012126051229524792,
+         0.001212605122952457
+        ],
+        "status": "IDENTIFIED",
+        "value": -1.1102230246251566e-17
+       },
+       "revision_S": {
+        "ci95": [
+         -0.008751716606313815,
+         0.010674793529390735
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0009615384615384602
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.036931487347142945,
+         0.04193148734714295
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0025000000000000022
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.829273524559685,
+         0.8437264754403146
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.8364999999999998
+       }
+      },
+      "misjudgement: miscalibrated reading": {
+       "effect_E": {
+        "ci95": [
+         0.9936185937012085,
+         0.9967385491559344
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9951785714285715
+       },
+       "effect_S": {
+        "ci95": [
+         -0.006834273135874085,
+         0.006641965443566393
+        ],
+        "status": "IDENTIFIED",
+        "value": -9.615384615384546e-05
+       },
+       "revision_E": {
+        "ci95": [
+         -0.0031851785714286014,
+         0.0035423214285714238
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.00017857142857141128
+       },
+       "revision_S": {
+        "ci95": [
+         -0.011989530166602768,
+         0.004681837858910465
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.003653846153846152
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.03365729726211912,
+         0.0911572972621191
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.02874999999999999
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.7366969330498194,
+         0.7593030669501803
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.7479999999999999
+       }
+      },
+      "no correction (feedback off)": {
+       "effect_E": {
+        "ci95": [
+         0.17911937772541967,
+         0.2083806222745804
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.19375000000000003
+       },
+       "effect_S": {
+        "ci95": [
+         0.9435058030248098,
+         0.9528403508213443
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9481730769230771
+       },
+       "revision_E": {
+        "ci95": [
+         -0.034579306024928584,
+         0.004222163167785724
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.01517857142857143
+       },
+       "revision_S": {
+        "ci95": [
+         -0.005478908741510895,
+         0.006632754895357077
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0005769230769230915
+       },
+       "shift_drop": {
+        "ci95": [
+         0.2718685446903182,
+         0.37313145530968195
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.32250000000000006
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.5092551949376738,
+         0.5312448050623262
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.52025
+       }
+      }
+     },
+     "result_digest": "d3476a5ac31e26b563870a82eff794dbbfbfe2df10686c015126ec11ab2d5791",
+     "value": 40
+    },
+    {
+     "conditions": {
+      "accidental correct: base-rate guess": {
+       "effect_E": {
+        "ci95": [
+         -0.02001783462997544,
+         0.011446406058546865
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.0042857142857142885
+       },
+       "effect_S": {
+        "ci95": [
+         -0.011752941960923744,
+         0.011752941960923741
+        ],
+        "status": "IDENTIFIED",
+        "value": -2.125036258071589e-18
+       },
+       "revision_E": {
+        "ci95": [
+         -0.02535348868630658,
+         0.022496345829163725
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.001428571428571428
+       },
+       "revision_S": {
+        "ci95": [
+         -0.008610152238602266,
+         0.02322553685398688
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.007307692307692307
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.03757770509926452,
+         0.09257770509926452
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.027500000000000004
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.4840253749020266,
+         0.5174746250979735
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.50075
+       }
+      },
+      "accidental correct: coincidental cue": {
+       "effect_E": {
+        "ci95": [
+         -0.0438360883397621,
+         -0.0033067688030950365
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.02357142857142857
+       },
+       "effect_S": {
+        "ci95": [
+         0.9484670984921091,
+         0.9611482861232752
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9548076923076921
+       },
+       "revision_E": {
+        "ci95": [
+         -0.06385794690192005,
+         -0.015427767383794228
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.03964285714285714
+       },
+       "revision_S": {
+        "ci95": [
+         -0.0070211802534391275,
+         0.009713487945746743
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0013461538461538082
+       },
+       "shift_drop": {
+        "ci95": [
+         0.2817742305577194,
+         0.39322576944228055
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.33749999999999997
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.48125918909151083,
+         0.5112408109084893
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.49625
+       }
+      },
+      "correction and reconfiguration (feedback on)": {
+       "effect_E": {
+        "ci95": [
+         0.9821183638160708,
+         0.9950244933267866
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9885714285714287
+       },
+       "effect_S": {
+        "ci95": [
+         0.1337494890971706,
+         0.1770197416720602
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.1553846153846154
+       },
+       "revision_E": {
+        "ci95": [
+         0.7551711981937739,
+         0.7898288018062265
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.7725000000000002
+       },
+       "revision_S": {
+        "ci95": [
+         -0.8111955093582628,
+         -0.7676506444878908
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.7894230769230768
+       },
+       "shift_drop": {
+        "ci95": [
+         0.08492042821770207,
+         0.18007957178229794
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.1325
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.7354307417643882,
+         0.7750692582356118
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.75525
+       }
+      },
+      "ground-responsive judgement": {
+       "effect_E": {
+        "ci95": [
+         0.9977039002858175,
+         1.0001532425713258
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9989285714285716
+       },
+       "effect_S": {
+        "ci95": [
+         -0.008684187721624463,
+         0.01176111079854754
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0015384615384615385
+       },
+       "revision_E": {
+        "ci95": [
+         -0.0018785597786882477,
+         0.0018785597786882477
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.0
+       },
+       "revision_S": {
+        "ci95": [
+         -0.014228201159452157,
+         0.013458970390221392
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.0003846153846153829
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.03894517291782959,
+         0.07394517291782958
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.017499999999999995
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.8184469496667632,
+         0.8540530503332369
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.83625
+       }
+      },
+      "misjudgement: miscalibrated reading": {
+       "effect_E": {
+        "ci95": [
+         0.9914993598479891,
+         0.9970720687234398
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9942857142857144
+       },
+       "effect_S": {
+        "ci95": [
+         -0.011849151576339343,
+         0.0068491515763393395
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.0025000000000000014
+       },
+       "revision_E": {
+        "ci95": [
+         -0.006230242738482266,
+         0.0033730998813394303
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.001428571428571418
+       },
+       "revision_S": {
+        "ci95": [
+         -0.019484009778980828,
+         0.005637855932826979
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.006923076923076925
+       },
+       "shift_drop": {
+        "ci95": [
+         -0.06450472181993638,
+         0.08950472181993638
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.012500000000000002
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.7312162975160386,
+         0.7742837024839613
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.7527499999999999
+       }
+      },
+      "no correction (feedback off)": {
+       "effect_E": {
+        "ci95": [
+         0.16940256846802804,
+         0.2113117172462577
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.19035714285714286
+       },
+       "effect_S": {
+        "ci95": [
+         0.941447196926077,
+         0.9558604953816153
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.9486538461538462
+       },
+       "revision_E": {
+        "ci95": [
+         -0.055837701025302486,
+         0.004409129596731055
+        ],
+        "status": "IDENTIFIED",
+        "value": -0.025714285714285717
+       },
+       "revision_S": {
+        "ci95": [
+         -0.0056248705246087684,
+         0.013317178216916444
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.003846153846153838
+       },
+       "shift_drop": {
+        "ci95": [
+         0.26646478383206823,
+         0.3785352161679318
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.3225
+       },
+       "stability_do_W": {
+        "ci95": [
+         0.49828244326711846,
+         0.5322175567328815
+        ],
+        "status": "IDENTIFIED",
+        "value": 0.51525
+       }
+      }
+     },
+     "result_digest": "1221540bb4b452a2158a1c7e7a497df4bfa87044e41ee73d8598994b956f21b9",
+     "value": 20
+    },
+    {
+     "conditions": {
+      "accidental correct: base-rate guess": {
+       "effect_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "stability_do_W": {
+        "status": "TEMPORAL_MISFIT"
+       }
+      },
+      "accidental correct: coincidental cue": {
+       "effect_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "stability_do_W": {
+        "status": "TEMPORAL_MISFIT"
+       }
+      },
+      "correction and reconfiguration (feedback on)": {
+       "effect_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "stability_do_W": {
+        "status": "TEMPORAL_MISFIT"
+       }
+      },
+      "ground-responsive judgement": {
+       "effect_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "stability_do_W": {
+        "status": "TEMPORAL_MISFIT"
+       }
+      },
+      "misjudgement: miscalibrated reading": {
+       "effect_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "stability_do_W": {
+        "status": "TEMPORAL_MISFIT"
+       }
+      },
+      "no correction (feedback off)": {
+       "effect_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "stability_do_W": {
+        "status": "TEMPORAL_MISFIT"
+       }
+      }
+     },
+     "result_digest": "05de03accb6f4cea91256a50842d847e5232a10aca4e6985f42cec605aa916dd",
+     "value": 10
+    },
+    {
+     "conditions": {
+      "accidental correct: base-rate guess": {
+       "effect_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "stability_do_W": {
+        "status": "TEMPORAL_MISFIT"
+       }
+      },
+      "accidental correct: coincidental cue": {
+       "effect_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "stability_do_W": {
+        "status": "TEMPORAL_MISFIT"
+       }
+      },
+      "correction and reconfiguration (feedback on)": {
+       "effect_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "stability_do_W": {
+        "status": "TEMPORAL_MISFIT"
+       }
+      },
+      "ground-responsive judgement": {
+       "effect_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "stability_do_W": {
+        "status": "TEMPORAL_MISFIT"
+       }
+      },
+      "misjudgement: miscalibrated reading": {
+       "effect_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "stability_do_W": {
+        "status": "TEMPORAL_MISFIT"
+       }
+      },
+      "no correction (feedback off)": {
+       "effect_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "effect_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_E": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "revision_S": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "shift_drop": {
+        "status": "TEMPORAL_MISFIT"
+       },
+       "stability_do_W": {
+        "status": "TEMPORAL_MISFIT"
+       }
+      }
+     },
+     "result_digest": "1be795bad4b42d4e28f200d7997bf41165fc972467fb8d76a25965402601c5fc",
+     "value": 5
+    }
+   ],
+   "values": [
+    100,
+    40,
+    20,
+    10,
+    5
+   ]
+  }
+ }
+}
