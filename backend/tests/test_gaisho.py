@@ -601,7 +601,7 @@ def test_the_gaisho_code_touches_no_file_no_network_and_starts_no_process():
     import re
 
     root = Path(__file__).resolve().parents[1] / "xzr"
-    sources = {p.name: p.read_text() for p in [*(root / "gaisho").glob("*.py"), root / "service" / "gaisho.py"]}
+    sources = {p.name: p.read_text() for p in [*(root / "gaisho").glob("*.py"), root / "service" / "gaisho.py"] if p.name != "bodylink.py"}  # bodylink.py is the one reviewed exception (tests/test_gaisho_body.py)
     forbidden = r"\b(open|exec|eval|compile|__import__)\(|\b(subprocess|socket|urllib|requests|httpx|shutil|tempfile|pathlib|os\.system|os\.popen|importlib)\b|\.(write_text|write_bytes|read_text|read_bytes|unlink|mkdir)\("
     for name, src in sources.items():
         code = "\n".join(line for line in src.splitlines() if not line.lstrip().startswith("#"))
@@ -692,8 +692,8 @@ def test_correcting_the_cell_label_changed_digests_and_nothing_else():
     now = json.loads(SAVED.read_text())
 
     def strip(o):
-        if isinstance(o, dict):
-            return {k: strip(v) for k, v in o.items() if "digest" not in k}
+        if isinstance(o, dict):  # the title (retitled after R37) and the failure-registry labels (added after R37) are the only new text
+            return {k: strip(v) for k, v in o.items() if "digest" not in k and k not in ("title", "registry", "registry_meaning", "note_on_domains")}
         return [strip(x) for x in o] if isinstance(o, list) else o
     for k in ("001-knowledge", "002-bias", "003-freedom", "005-credit"):
         assert strip(first["domains"][k]["result"]) == strip(now["domains"][k]["result"]), k
@@ -712,3 +712,119 @@ def test_the_credit_domain_names_the_engine_outputs_it_depends_on(monkeypatch):
     monkeypatch.setattr(I, "run", lambda cfg: {**real(cfg), "process": {k: v for k, v in real(cfg)["process"].items() if k != "labels"}})
     with pytest.raises(RuntimeError, match="1af5700"):
         d.simulate(next(iter(d.conditions)), 1, FULL)
+
+
+# ------------------------------------------------------------------------------------------------ correspondence with the manuscript GAISHO R37 (read 2026-11-05; see r37.py for what was and was not read)
+def test_the_attribution_carries_r37s_applicability_gate_and_stays_unresolved():
+    from xzr.gaisho.r37 import LEVEL_TERMS
+
+    out = run_experiment({"domain": "001-knowledge", "seeds": list(SEEDS[:3]), "conditions": [RESPONSIVE, CUE]})
+    for lv in out["levels"].values():
+        a = lv["gaisho_attribution"]
+        assert a["state"] == "UNRESOLVED" and a["applicability_gate"].startswith("NOT_PASSED") and "A_G(b,t,w;e,K)" in a["r37_term"]  # unresolved, not defeated-for-K: the gate fails before any A_G value
+        assert "NO R37 TERM" in lv["gaisho_operational_shape"]["r37_term"] and lv["gaisho_operational_shape"]["state"] == "NOT_ESTABLISHED"
+    assert [k for k, v in LEVEL_TERMS.items() if not v["in_r37"]] == ["gaisho_operational_shape"]
+    ok = attribute({"real_operation": "EXECUTED_IN_MODEL"}, bearer="b", historical_interval="i", independent_evidence=["e"])
+    assert ok["gaisho_attribution"]["applicability_gate"] == "PASSED_BY_RESEARCHER_ASSERTION" and ok["gaisho_attribution"]["state"] == "ASSERTED_BY_RESEARCHER"
+
+
+def test_the_six_registers_are_kept_apart_per_domain():
+    from xzr.gaisho.r37 import registers
+
+    r = registers("001-knowledge")
+    assert set(r) == {"S", "Occ_G", "Det_D", "A_G", "C", "P", "E", "N", "I"}
+    assert r["Occ_G"]["lab"] == "NOT_ASSESSED" and r["A_G"]["lab"] == "UNRESOLVED" and r["A_G"]["applicability_gate"] == "NOT_PASSED" and r["N"]["lab"] == "NOT_MODELLED" and "entitlement" in r["N"]["note"]
+    assert registers("005-credit")["I"]["lab"] == "EXECUTED_IN_MODEL" and r["I"]["lab"] == "NOT_MODELLED"  # execution exists only where the TRUTH-ERROR institution is run, and is not a standing
+    assert registers("004-body")["P"]["lab"] == "EXECUTED_IN_MODEL" and "not a thinker" in registers("004-body")["P"]["note"] and r["P"]["lab"] == "NOT_MODELLED"
+    assert all(registers(d)["A_G"]["lab"] == "UNRESOLVED" and registers(d)["Occ_G"]["lab"] == "NOT_ASSESSED" for d in ("001-knowledge", "002-bias", "003-freedom", "004-body", "005-credit"))
+
+
+def test_every_kept_negative_result_belongs_to_one_r37_failure_registry():
+    from xzr.gaisho.r37 import FAILURE_REGISTRIES, NEGATIVE_KIND_TO_REGISTRY
+
+    out = run_experiment({"domain": "001-knowledge", "seeds": list(SEEDS[:3])})
+    for n in out["negative_results"]:
+        assert n["registry"] == NEGATIVE_KIND_TO_REGISTRY[n["kind"]][0] and (n["registry"] in FAILURE_REGISTRIES or n["registry"] in ("F4-access", "NOT_RUN")), n
+    kinds = {n["kind"]: n["registry"] for n in out["negative_results"]}
+    assert kinds["NOT_DETECTED"] == "F1" and kinds["CRITERION_NEGATIVE"] == "F1" and kinds["NOT_DONE"] == "NOT_RUN" and kinds.get("UNOBSERVED", "F4-access") == "F4-access"
+    assert set(NEGATIVE_KIND_TO_REGISTRY) >= {"REDUNDANT", "HARMFUL", "UNRESOLVED"} and NEGATIVE_KIND_TO_REGISTRY["REDUNDANT"][0] == "F2"  # rival equivalence is its own registry and is not moved into the others
+
+
+def test_the_comparators_state_their_inquiry_q_and_never_claim_r37s_third_outcome(dom):
+    ext = compare_models(dom, SEEDS, extended=True)
+    assert {"target_discrimination", "boundaries", "observation_channels", "time_horizon", "admissible_interventions", "history", "resources", "endpoints"} <= set(ext["Q"])
+    assert "not about a Gaisho" in ext["Q"]["target_discrimination"] and ext["Q"]["history"].startswith("none")
+    assert ext["r37_outcome_classes"]["iii"].startswith("a distinct, independently validated difference") and "NOT ASSESSED" in ext["r37_outcome_classes"]["iii"]
+    assert "Q" not in compare_models(dom, SEEDS)  # the record's own comparison is exactly as before
+
+
+def test_the_r37_constraints_are_stated_with_their_status_and_the_arms_with_missing_cells_marked():
+    from xzr.gaisho.r37 import ARMS, CONSTRAINTS
+
+    assert len({c["id"] for c in CONSTRAINTS}) == len(CONSTRAINTS) and {c["status"] for c in CONSTRAINTS} <= {"IMPLEMENTED", "PARTIAL", "NOT_IMPLEMENTED"}
+    assert all(c["where"] and c["constraint"] and c["how"] for c in CONSTRAINTS)
+    by = {c["id"]: c["status"] for c in CONSTRAINTS}
+    assert by["R6"] == "NOT_IMPLEMENTED" and by["R8"] == "NOT_IMPLEMENTED" and by["R15"] == "NOT_IMPLEMENTED"  # R37's comparative claims, Gaisho ignition and the H1-H3 formation histories are not done
+    assert set(ARMS) == set("ABCDEFG") and {k for k, v in ARMS.items() if v["lab"] == "NOT_EXECUTED"} == set("BCDEF") and {k for k, v in ARMS.items() if v["lab"] == "PARTIAL"} == {"A", "G"}
+
+
+def test_the_claims_do_not_register_an_r37_proposition_as_proved_and_do_not_reuse_r37s_h_identifiers():
+    from xzr.gaisho.claims import CLAIMS, SUPPORTED_IN_MODEL, UNTESTED_HYPOTHESIS
+
+    ids = [c["id"] for c in CLAIMS]
+    assert not {"H1", "H2", "H3", "H4"} & set(ids) and {"U1", "U2", "U3", "U4", "R37-H1..H3"} <= set(ids)  # R37's H1-H3 are formation histories, not the laboratory's claims
+    claims = {c["id"]: c for c in CLAIMS}
+    assert claims["U3"]["status"] == UNTESTED_HYPOTHESIS and "UNVERIFIED" in claims["U3"]["rests_on"] and "necessary and sufficient" in claims["U3"]["claim"] and "Not to be read as an R37-proved proposition" in claims["U3"]["rests_on"]
+    assert claims["R37-H1..H3"]["status"] == UNTESTED_HYPOTHESIS and "formation histories" in claims["R37-H1..H3"]["claim"]
+    assert all("R37 proves" not in c["claim"] and "proved by R37" not in c["claim"] for c in CLAIMS) and all(c["status"] != SUPPORTED_IN_MODEL or "R37" not in c["claim"] for c in CLAIMS)
+
+
+def test_the_research_objects_label_ignition_maintenance_expiry_and_reignition_as_operational_analogues():
+    out = run_experiment({"domain": "001-knowledge", "seeds": list(SEEDS[:3]), "conditions": [RESPONSIVE]})
+    ro = out["research_objects"][RESPONSIVE]
+    assert ro["candidate"].startswith("OPERATIONAL REPORT, NOT A GAISHO CANDIDATE")
+    for f in ("ignition_conditions", "maintenance_conditions"):
+        assert all("OPERATIONAL ANALOGUE ONLY" in x for x in ro[f])
+    assert all("OPERATIONAL ANALOGUE ONLY" in x["meaning"] for x in ro["transformation_expiry_conditions"] + ro["history_and_reignition"])
+    assert out["result"]["title"] == "KNOWLEDGE — NON-ACCIDENTAL SUCCESS AS AN OPERATIONAL DIFFERENCE"
+
+
+def test_the_first_runs_are_kept_and_the_r37_alignment_changed_text_and_digests_only():
+    saved = json.loads(SAVED.read_text())
+    before = json.loads(SAVED.with_name("experiments_before_r37_alignment.json").read_text())
+
+    def strip(o):
+        if isinstance(o, dict):
+            return {k: strip(v) for k, v in o.items() if "digest" not in k and k not in ("title", "registry", "registry_meaning", "r37_term", "applicability_gate", "r37", "note_on_domains")}
+        return [strip(x) for x in o] if isinstance(o, list) else o
+    for k in ("001-knowledge", "002-bias", "003-freedom", "005-credit"):
+        assert strip(before["domains"][k]["result"]) == strip(saved["domains"][k]["result"]), k
+        assert strip(before["domains"][k]["negative_results"]) == strip(saved["domains"][k]["negative_results"]), k
+        assert before["domains"][k]["digest"] != saved["domains"][k]["digest"], k
+    assert strip(before["knowledge_observation_sensitivity"]) == strip(saved["knowledge_observation_sensitivity"])
+
+
+def test_the_api_exposes_the_r37_correspondence_and_says_what_was_read():
+    from fastapi.testclient import TestClient
+
+    from xzr.service import app as app_mod
+
+    sp = TestClient(app_mod.app, headers={"origin": "http://testserver"}).get("/api/gaisho/spec").json()
+    assert "read on 2026-11-05" in sp["source_status"] and "were not read in full" in sp["source_status"] and "R37 was not found" not in sp["source_status"]
+    assert {c["id"] for c in sp["r37"]["constraints"]} >= {"R1", "R2", "R16"} and set(sp["r37"]["arms"]) == set("ABCDEFG") and set(sp["r37"]["failure_registries"]) == {"F1", "F2", "F3", "F4", "F5"}
+
+
+def test_a_record_does_not_depend_on_whether_the_body_link_is_configured(monkeypatch):
+    """Found on the real screen with the XB-TRO link set: the knowledge record's digest differed from the saved one because its 'domains not executed' list read the environment. A record is a function of its specification only."""
+    from xzr.gaisho import bodylink
+
+    spec = {"domain": "001-knowledge", "seeds": [1, 2, 3], "conditions": [RESPONSIVE]}
+    monkeypatch.delenv(bodylink.ENV, raising=False)
+    bodylink._CACHE.clear()
+    a = run_experiment(spec)["digest"]
+    xb = Path("/Users/user/Desktop/BIM/xeno-ziran-runtime-xb-tro/backend/xzr/xbtro")
+    if (xb / "engine.py").is_file():
+        monkeypatch.setenv(bodylink.ENV, str(xb))
+        bodylink._CACHE.clear()
+        assert run_experiment(spec)["digest"] == a
+    bodylink._CACHE.clear()

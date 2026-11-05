@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { FIGURE_KIND_TEXT, LEVELS, OBS_PRESETS, cellTrace, claimGroups, UNOBSERVED_TEXT, constructionOf, domainStatusRows, exportRecord, figureTable, frameOf, levelRows, negativeCounts, num, observationDiff, operationPart, parseRecord, relationRows, relationSupport, snapshotsOf, type ComparatorsOut, type ConstructionOut, type GaishoObservation, type GaishoRecord, type GaishoSpecInfo, type GaishoUi, type ShapeReading } from './gaisho';
+import { FIGURE_KIND_TEXT, LEVELS, OBS_PRESETS, cellTrace, claimGroups, constraintGroups, registerRows, UNOBSERVED_TEXT, constructionOf, domainStatusRows, exportRecord, figureTable, frameOf, levelRows, negativeCounts, num, observationDiff, operationPart, parseRecord, relationRows, relationSupport, snapshotsOf, type ComparatorsOut, type ConstructionOut, type GaishoObservation, type GaishoRecord, type GaishoSpecInfo, type GaishoUi, type ShapeReading } from './gaisho';
 import { gaishoCompareObservations, gaishoComparators, gaishoCompareShapes, gaishoConstruction, gaishoFigure, gaishoRestore, gaishoRun, type GaishoObsComparison, type GaishoShapeComparison } from './gaishoApi';
 
 // GAISHO - Operational Shape Laboratory: a research tab of the XENO ECOSYSTEM view. It runs SYNTHETIC computational experiments in the engine (backend/xzr/gaisho) and reads the record: nothing here simulates, scores or
@@ -185,7 +185,7 @@ export default function GaishoPane(c: GaishoCtx) {
 
         <Section title="Five levels (separate records)" testid="gs-levels">
           <table className="eco-table"><tbody>
-            {lv.map((l) => <tr key={l.level}><td>{info?.levels[l.level] ?? l.level}</td><td>{chip(l.state)}</td><td>{l.note}</td></tr>)}
+            {lv.map((l) => <tr key={l.level}><td>{info?.levels[l.level] ?? l.level}</td><td>{chip(l.state)}</td><td>{l.note}{l.r37_term ? <div className="eco-note">R37: {l.r37_term}</div> : null}{l.applicability_gate ? <div className="eco-note" data-testid="gs-gate">applicability gate: {l.applicability_gate}</div> : null}</td></tr>)}
           </tbody></table>
           <div className="eco-note" data-testid="gs-attribution">Gaisho attribution (independent evidence): {chip(lv.find((l) => l.level === 'gaisho_attribution')?.state ?? 'UNRESOLVED')} - the laboratory never computes it. {test && <>Operational test on this condition: {chip(test.operational_test)} - {test.why}</>}</div>
           {LEVELS.length === 5 && ro && <details><summary>The twelve questions of this candidate</summary><table className="eco-table"><tbody>{Object.entries(ro).filter(([k]) => k !== 'id').map(([k, v]) => <tr key={k}><td>{k}</td><td>{typeof v === 'string' ? v : JSON.stringify(v).slice(0, 360)}</td></tr>)}</tbody></table></details>}
@@ -229,6 +229,18 @@ export default function GaishoPane(c: GaishoCtx) {
           <input ref={fileRef} type="file" accept="application/json,.json" style={{ display: 'none' }} data-testid="gs-import" onChange={(e) => { const f = e.target.files?.[0]; if (f) void importFile(f); e.target.value = ''; }} />
         </div>
         <div className="eco-note">The record holds the specification, the seeds, the model version, the digests and the negative results; importing it runs the specification again and loads it only if its digest is reproduced.</div>
+      </Section>
+
+      {rec?.executed && rec.r37 && <Section title="R37 registers of this record" testid="gs-registers">
+        <div className="eco-note">{rec.r37.reference}. {rec.r37.applicability_gate.consequence}.</div>
+        <table className="eco-table"><tbody>{registerRows(rec).map((r) => <tr key={r.id}><td>{r.id}</td><td>{chip(r.lab)}{r.gate ? <div className="eco-note">gate: {r.gate}</div> : null}</td><td>{r.r37}<div className="eco-note">{r.note}</div></td></tr>)}</tbody></table>
+        <div className="eco-note"><b>Failure registries</b> (non-exchangeable): {Object.entries(rec.r37.failure_registries).map(([k, v]) => `${k}: ${v}`).join('; ')}.</div>
+        <div className="eco-note"><b>Arms A-G</b> (missing cells are marked, not filled): {Object.entries(rec.r37.arms).map(([k, v]) => `${k} ${v.lab}`).join(', ')}.</div>
+      </Section>}
+
+      <Section title="Correspondence with GAISHO R37 (what is implemented, partly, or not)" testid="gs-r37">
+        <div className="eco-note">{info?.source_status}</div>
+        {constraintGroups(info?.r37.constraints ?? []).map((g) => <div key={g.status}><div className="eco-note"><b>{g.status}</b> ({g.items.length})</div><ul className="gs-list">{g.items.map((c) => <li key={c.id}>{c.id} [{c.where}]: {c.constraint} - {c.how}</li>)}</ul></div>)}
       </Section>
 
       <Section title="Claims: supported, limited, and hypotheses not tested" testid="gs-claims">

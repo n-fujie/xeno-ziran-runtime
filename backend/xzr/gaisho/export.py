@@ -5,9 +5,10 @@ from __future__ import annotations
 
 from . import MODEL_VERSION
 from .compare import attribution_tests, compare_models
-from .domains import STATUS, domain_registry
+from .domains import STATUS, domain_registry, status_of
 from .lab import FULL, SEEDS, Observation, run_domain
 from .model import FIGURE_KINDS, LIMITS, PROHIBITED_INFERENCES, ResearchObject, attribute, digest
+from .r37 import NEGATIVE_KIND_TO_REGISTRY, record_block
 from .shape import build_shape, structural_similarity
 
 MAX_SEEDS = 20
@@ -50,14 +51,16 @@ def run_experiment(spec: dict) -> dict:
         "model_version": MODEL_VERSION,
         "spec": {"domain": dom_id, "observation": obs.asdict(), "seeds": list(seeds), "conditions": conds},
         "executed": True,
-        "status": STATUS[dom_id],
+        "status": status_of(dom_id),
         "figure_kind": "EXECUTED_COMPUTATIONAL_EXPERIMENT",
         "axes": axes,
         "result": res,
         "shapes": shapes,
         "structural_similarity": similarity,
         "levels": {c: _levels(v) for c, v in res["conditions"].items()},
+        **({"body": dom.provenance()} if hasattr(dom, "provenance") else {}),
         "limits": LIMITS,
+        "r37": record_block(dom_id),
         "prohibited_inferences": [{"premise": p, "conclusion": c, "reason": w} for p, c, w in PROHIBITED_INFERENCES],
     }
     if dom_id == "001-knowledge":
@@ -84,14 +87,14 @@ def asdict_ro(o: ResearchObject) -> dict:
 def _knowledge_object(cond: str, v: dict, out: dict) -> ResearchObject:
     r = v["relations"]
     val = lambda n: None if r[n]["status"] != "IDENTIFIED" else round(r[n]["value"], 3)  # noqa: E731
-    o = ResearchObject(id=f"001/{cond}", candidate="the non-accidentality of a judgement (a candidate characteristic: it is not assumed to be a core, necessary or invariant)")
+    o = ResearchObject(id=f"001/{cond}", candidate="OPERATIONAL REPORT, NOT A GAISHO CANDIDATE: the non-accidental success of a synthetic judgement (an operational reading of the epistemic family of the P/A Dictionary, entry 022). R37 keeps knowledge, epistemic entitlement and Gaisho apart; this object is not a candidate Gaisho episode, and the non-accidentality is not assumed to be a core, a necessary or a sufficient condition of anything")
     o.relation_to_object = "the judgement is about a hidden state of the synthetic world; the agent reaches it only through an evidence channel (and, in some conditions, a coincidental cue)"
     o.characteristic_configuration = [{"relation": n, "value": val(n), "status": r[n]["status"]} for n in r]
     o.candidate_core = ["the relations that differ from the accidental conditions: a large effect of the evidence, a small effect of the coincidental cue, correctness that holds under do(W) (an operational reading; whether a core exists is not decided)"] if r["effect_E"]["status"] == "IDENTIFIED" and (val("effect_E") or 0) > 0.5 else ["no candidate core is read from this condition"]
-    o.ignition_conditions = ["the evidence channel informative about the state and read by the agent (effect of E above 0.5)"]
-    o.maintenance_conditions = ["for the reconfiguring agent: the feedback on the true state; without it the cue dependence is kept"]
-    o.transformation_expiry_conditions = [{"relation": "shift_drop", "value": val("shift_drop"), "meaning": "the loss of correctness when the cue decouples from the state"}]
-    o.history_and_reignition = [{"relation": n, "value": val(n)} for n in ("revision_E", "revision_S")]
+    o.ignition_conditions = ["OPERATIONAL ANALOGUE ONLY (R37 III: ignition is a transition to an episode meeting attribution criteria; there is no episode here): the evidence channel informative about the state and read by the agent (effect of E above 0.5)"]
+    o.maintenance_conditions = ["OPERATIONAL ANALOGUE ONLY (not R37 persistence): for the reconfiguring agent, the feedback on the true state; without it the cue dependence is kept"]
+    o.transformation_expiry_conditions = [{"relation": "shift_drop", "value": val("shift_drop"), "meaning": "OPERATIONAL ANALOGUE ONLY (not R37 expiry): the loss of correctness when the cue decouples from the state"}]
+    o.history_and_reignition = [{"relation": n, "value": val(n), "meaning": "OPERATIONAL ANALOGUE ONLY (R37 III: re-ignition needs a justified relation to a prior episode, not a repeated label; none is modelled)"} for n in ("revision_E", "revision_S")]
     o.structural_similarity = [s for s in out["structural_similarity"] if cond in (s["a"], s["b"])]
     o.competing_explanations = [next((row for row in out["models"]["rows"] if row["condition"] == cond), None)] if out.get("models") else []
     o.intervention_differences = [{"intervention": "do(E)", "relation": "effect_E", "value": val("effect_E")}, {"intervention": "do(S)", "relation": "effect_S", "value": val("effect_S")}, {"intervention": "do(W), cue decoupled", "relation": "stability_do_W", "value": val("stability_do_W")}]
@@ -115,7 +118,11 @@ def negative_results(out: dict) -> list[dict]:
         for vd in row["verdicts"]:
             if vd["verdict"] in ("REDUNDANT", "HARMFUL", "UNRESOLVED"):
                 neg.append({"kind": vd["verdict"], "condition": row["condition"], "competitor": vd["competitor"], "why": "the candidate construction (the response to the evidence alone) did not predict held-out interventions better than the competitor" if vd["verdict"] != "UNRESOLVED" else vd.get("why", "")})
-    neg.append({"kind": "NOT_DONE", "what": "competing explanations beyond a reliability statistic and a static causal model (attention, memory, predictive processing, sensorimotor, cognitive appraisal, concept learning, SNN, dynamical systems, operational-shape analysis) were not run", "domains_not_executed": [k for k, s in STATUS.items() if not s["executed"]]})
+    neg.append({"kind": "NOT_DONE", "what": "competing explanations beyond a reliability statistic and a static causal model (attention, memory, predictive processing, sensorimotor, cognitive appraisal, concept learning, SNN, dynamical systems, operational-shape analysis) were not run", "domains_not_executed": [k for k, s in STATUS.items() if not s["executed"]], "note_on_domains": "004-body is executed only where the XB-TRO link is configured (XZR_XBTRO_PATH); the record does not depend on the environment, so it lists the domains that are not executed without a link"})
+    for n in neg:  # each kept result belongs to one of R37's non-exchangeable failure registries (r37.py); none is moved to another
+        reg, meaning = NEGATIVE_KIND_TO_REGISTRY[n["kind"]]
+        n["registry"] = reg
+        n["registry_meaning"] = meaning
     return neg
 
 

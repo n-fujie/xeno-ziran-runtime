@@ -6,6 +6,8 @@ import hashlib
 import json
 from dataclasses import asdict, dataclass, field
 
+from .r37 import APPLICABILITY_GATE, LEVEL_TERMS
+
 # the five levels, each its own record with its own evidence state
 LEVELS = ("real_operation", "operational_shape", "conceptual_operational_shape", "gaisho_operational_shape", "gaisho_attribution")
 LEVEL_LABELS = {
@@ -74,6 +76,8 @@ class LevelRecord:
     state: str
     evidence: list[str] = field(default_factory=list)
     note: str = ""
+    r37_term: str = ""  # the term of the manuscript GAISHO R37 this level corresponds to (or that it has none): see r37.LEVEL_TERMS
+    applicability_gate: str = ""  # only for the attribution: R37 requires a failed applicability check to precede, and not to be coded as, a defeated-for-K judgment
 
     def __post_init__(self) -> None:
         assert self.level in LEVELS and self.state in LEVEL_STATES
@@ -95,6 +99,11 @@ def attribute(operational: dict[str, str], bearer: str | None = None, historical
         rec["gaisho_attribution"] = LevelRecord("gaisho_attribution", "ASSERTED_BY_RESEARCHER", ind, "independent evidence supplied by the researcher; not computed and not checked by the laboratory")
     else:
         rec["gaisho_attribution"] = LevelRecord("gaisho_attribution", "UNRESOLVED", [], "no independent evidence (operational differences are not evidence of a Gaisho)")
+    for lv, r in rec.items():
+        r.r37_term = str(LEVEL_TERMS[lv]["r37_term"])
+    # R37 II: an ineligible or ill-formed target fails a prior applicability gate and is not assigned a metaphysical zero. A bearer, an interval AND independent evidence are what a researcher would have to supply for the gate to be passed
+    # (and then the laboratory still computes nothing: it records the assertion).
+    rec["gaisho_attribution"].applicability_gate = "PASSED_BY_RESEARCHER_ASSERTION" if (ind and bearer and historical_interval) else "NOT_PASSED: " + str(APPLICABILITY_GATE["reason"])
     return {lv: asdict(r) for lv, r in rec.items()}
 
 

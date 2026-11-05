@@ -3,11 +3,14 @@ by running the specification), and for the knowledge domain the sensitivity of w
 
     PYTHONPATH=. python scripts/gaisho_experiments.py
 
-SYNTHETIC computational experiments; the domain 004 (body) is specified and not executed."""
+    XZR_XBTRO_PATH=<...>/backend/xzr/xbtro PYTHONPATH=. python scripts/gaisho_experiments.py body     # domain 004 (needs the XB-TRO package): writes docs/gaisho/experiments_body.json
+
+SYNTHETIC computational experiments; the domain 004 (body) runs only where the XB-TRO link is configured, and is otherwise specified and not executed."""
 
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 
 from xzr.gaisho.domains import STATUS
@@ -17,6 +20,7 @@ from xzr.gaisho.lab import FULL, Observation, run_domain
 
 OUT = Path(__file__).resolve().parents[2] / "docs" / "gaisho" / "experiments.json"
 SEEDS = list(range(1, 21))
+BODY_OUT = OUT.with_name("experiments_body.json")
 
 SENSITIVITY = {
     "full observation": {},
@@ -55,7 +59,13 @@ def sensitivity() -> dict:
     return rows
 
 
-if __name__ == "__main__":
+if __name__ == "__main__" and sys.argv[1:] == ["body"]:
+    rec = run_experiment({"domain": "004-body", "seeds": SEEDS[:6]})
+    if not rec.get("executed"):
+        raise SystemExit("the body domain is not executed: set XZR_XBTRO_PATH to the xbtro package")
+    BODY_OUT.write_text(json.dumps({"model_version": "gaisho-lab/1", "seeds": SEEDS[:6], "domain": slim(rec)}, indent=1, sort_keys=True))
+    print("body", rec["digest"][:12], "negative results:", len(rec["negative_results"]), "written", BODY_OUT)
+elif __name__ == "__main__":
     out: dict = {"model_version": "gaisho-lab/1", "seeds": SEEDS, "domains": {}, "status": STATUS}
     for dom in ("001-knowledge", "002-bias", "003-freedom", "005-credit", "004-body"):
         seeds = SEEDS[:6] if dom == "005-credit" else SEEDS

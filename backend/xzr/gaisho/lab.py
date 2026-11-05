@@ -159,6 +159,9 @@ def run_domain(dom: Domain, obs: Observation = FULL, seeds: tuple[int, ...] = SE
     names = conditions or list(dom.conditions)
     out: dict[str, Any] = {}
     for cond in names:
+        prepare = getattr(dom, "prepare", None)
+        if prepare is not None:  # a domain whose cost is in a batch over the seeds (the body) computes the batch once for the seeds of this request
+            prepare(cond, seeds, obs)
         runs = [dom.simulate(cond, s, obs) for s in seeds]
         out[cond] = aggregate(dom, cond, runs, obs)
     res: dict[str, Any] = {"model_version": MODEL_VERSION, "domain": dom.id, "title": dom.title, "observation": obs.asdict(), "seeds": list(seeds), "conditions": out}

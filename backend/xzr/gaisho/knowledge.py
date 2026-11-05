@@ -35,7 +35,7 @@ def sigmoid(z):
 
 class KnowledgeDomain(Domain):
     id = "001-knowledge"
-    title = "KNOWLEDGE ATTRIBUTION — OPERATIONAL DIFFERENCE"
+    title = "KNOWLEDGE — NON-ACCIDENTAL SUCCESS AS AN OPERATIONAL DIFFERENCE"
     x_name, y_name = "evidence E (do)", "coincidental cue S (do)"
     outcome_meaning = "the agent judges +1: P(J = +1 | do(E = x), do(S = y)) = sigmoid(a x + b y + c) with the agent's weights (a, b, c) at the moment of the snapshot, estimated by the share of n trials per cell. It is the response of the agent's decision rule to the two interventions, not the correctness of its judgement."
     x_values = np.linspace(-3.0, 3.0, 13)

@@ -52,6 +52,23 @@ COMPARATORS = {
     "CAND": {"label": "the candidate construction (response to the evidence alone)", "fits": "logistic response to E and an offset; the cue is no part of the 'core'", "parameters": 2, "information": "end-snapshot training cells", "history": False, "nested_in": "M1 (cue weight 0)"},
     "M4": {"label": "single-factor cue account", "fits": "logistic response to S and an offset; the evidence is no part of the account", "parameters": 2, "information": "end-snapshot training cells", "history": False, "nested_in": "M1 (evidence weight 0)"},
 }
+# R37 (II, equivalence and reduction): two descriptions are Q-equivalent only under a FROZEN inquiry specification Q. The Q of this comparison, as far as the laboratory fixes it (cost accounting is the coarse parameter count only).
+Q_SPEC = {
+    "target_discrimination": "whether the response of a synthetic judging agent to interventions on the evidence and on a coincidental cue is predicted at held-out intervention cells by a response to the evidence alone, as well as by the competitors (a question about a construction of a decision rule, not about a Gaisho)",
+    "boundaries": "the agent's decision rule at the end of the run; the world, the cue and the feedback are outside the compared models",
+    "observation_channels": "the recorded surface of the 'end' snapshot under the stated observation condition",
+    "time_horizon": "one moment (the end of 400 trials); no history",
+    "admissible_interventions": "do(E) and do(S) on a 13 x 7 grid; training on the natural manifold and the neutral-cue row, test on the other cells",
+    "history": "none is given to any model",
+    "resources": "the same recorded cells for every model; 1 to 3 fitted parameters (the parameter count is the whole of the cost accounting)",
+    "endpoints": "root-mean-square error on the held-out cells, paired over seeds; verdicts by a margin of 0.03",
+}
+# R37 II distinguishes three results of a comparison; the laboratory's verdicts correspond only to the first two kinds of statement and never to the third.
+R37_OUTCOME_CLASSES = {
+    "i": "an attributed episode with no additional model distinction under Q: not applicable (there is no episode)",
+    "ii": "a difference in self-avowal or interpretation that matters to another question: not applicable (no avowal)",
+    "iii": "a distinct, independently validated difference that survives an equal-information, equal-cost adversarial comparator (support for a non-redundant mechanism in the declared experiment): NOT ASSESSED; no verdict here is evidence for or against it",
+}
 NOT_RUN = ("attention", "memory / history-informed prediction", "predictive processing", "sensorimotor", "cognitive appraisal", "concept learning", "SNN", "dynamical systems", "the existing operational-shape analysis")
 
 
@@ -111,7 +128,7 @@ def compare_models(dom: Domain, seeds: tuple[int, ...], obs: Observation = FULL,
                 v = "UNRESOLVED"
             verdicts.append({"competitor": f"{comp} ({label})", "verdict": v, "error_difference": diff, "margin": margin, "errors": {k: float(np.mean(x)) for k, x in d.items()}})
         rows.append({"condition": cond, "verdicts": verdicts})
-    out_extra = {"comparators": {k: v for k, v in COMPARATORS.items() if extended or k != "M4"}, "not_run": list(NOT_RUN), "held_out": "every cell off the natural manifold (the evidence and the cue set independently) except the neutral-cue row",
+    out_extra = {"comparators": {k: v for k, v in COMPARATORS.items() if extended or k != "M4"}, "Q": Q_SPEC, "r37_outcome_classes": R37_OUTCOME_CLASSES, "not_run": list(NOT_RUN), "held_out": "every cell off the natural manifold (the evidence and the cue set independently) except the neutral-cue row",
                  "reading": "the verdicts compare the construction 'response to the evidence alone' with the explanations above, on the same cells; they say nothing about whether a Gaisho or non-accidentality exists, and a nested model cannot beat the model that contains the generating process"} if extended else {}
     return {**out_extra, "rule": "NON_REDUNDANT if the candidate's held-out error is lower than the competitor's by more than the margin (95% CI); REDUNDANT if the CI lies inside +/- margin; HARMFUL if the candidate is worse by more than the margin; otherwise UNRESOLVED", "unit": "one run per seed; paired over seeds", "seeds": list(seeds), "rows": rows, "digest": digest(rows)}
 
