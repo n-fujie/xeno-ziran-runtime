@@ -8,6 +8,10 @@ by running the specification), and for the knowledge domain the sensitivity of w
 
     XZR_XBTRO_PATH=... PYTHONPATH=. python scripts/gaisho_experiments.py body-matched   # the two XB-TRO presets compared one block of the configuration at a time (Dictionary 060): docs/gaisho/experiments_body_matched.json
 
+    XZR_XBTRO_PATH=... PYTHONPATH=. python scripts/gaisho_experiments.py body-matched-extended   # combinations of swaps, other integration steps, 8 seeds: docs/gaisho/experiments_body_matched_extended.json
+    PYTHONPATH=. python scripts/gaisho_experiments.py perturbation   # the verdict "stable" under eight declared neighbourhoods (Dictionary 022): docs/gaisho/experiments_perturbation.json
+    PYTHONPATH=. python scripts/gaisho_experiments.py sss            # Scale, Size, Speed (and the temporal window) of the observation varied one axis at a time (Dictionary 035-038): docs/gaisho/experiments_sss.json
+
 SYNTHETIC computational experiments; the domain 004 (body) runs only where the XB-TRO link is configured, and is otherwise specified and not executed."""
 
 from __future__ import annotations
@@ -64,6 +68,37 @@ def sensitivity() -> dict:
 
 SNN_OUT = OUT.with_name("experiments_body_snn.json")
 MATCHED_OUT = OUT.with_name("experiments_body_matched.json")
+
+EXTENDED_OUT = OUT.with_name("experiments_body_matched_extended.json")
+PERTURBATION_OUT = OUT.with_name("experiments_perturbation.json")
+SSS_OUT = OUT.with_name("experiments_sss.json")
+
+if __name__ == "__main__" and sys.argv[1:] == ["perturbation"]:
+    from xzr.gaisho.perturbation import run_perturbation
+
+    _p = run_perturbation()
+    PERTURBATION_OUT.write_text(json.dumps(_p, indent=1, sort_keys=True))
+    print("perturbation", _p["digest"][:12], "same stable set in every world:", _p["same_stable_set_in_every_world"], "written", PERTURBATION_OUT)
+    raise SystemExit(0)
+
+if __name__ == "__main__" and sys.argv[1:] == ["sss"]:
+    from xzr.gaisho.sss import run_sss
+
+    _s = run_sss()
+    SSS_OUT.write_text(json.dumps(_s, indent=1, sort_keys=True))
+    print("sss", _s["digest"][:12], "written", SSS_OUT)
+    raise SystemExit(0)
+
+if __name__ == "__main__" and sys.argv[1:] == ["body-matched-extended"]:
+    from xzr.gaisho.bodymatched import run_extended
+    from xzr.gaisho.domains import domain_registry
+
+    if domain_registry()["004-body"] is None:
+        raise SystemExit("the body domain is not executed: set XZR_XBTRO_PATH to the xbtro package")
+    _e = run_extended(SEEDS[:8])
+    EXTENDED_OUT.write_text(json.dumps(_e, indent=1, sort_keys=True))
+    print("body-matched-extended", _e["digest"][:12], "written", EXTENDED_OUT)
+    raise SystemExit(0)
 
 if __name__ == "__main__" and sys.argv[1:] == ["body-matched"]:
     from xzr.gaisho.bodymatched import run_matched

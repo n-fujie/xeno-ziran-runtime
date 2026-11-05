@@ -1,0 +1,712 @@
+{
+ "digest": "871ee00fb8c3055858b22105cb2ac47b62725338ffe15df022ce7f10f30e114e",
+ "meaning": "the share correct of a fixed agent in a declared world; STABLE is a statement about that neighbourhood only. Nothing here is knowledge, accuracy of a reading, or a Gaisho; attribution stays UNRESOLVED.",
+ "protocol": {
+  "domain": "001-knowledge",
+  "draws": 4000,
+  "model_version": "gaisho-lab/1",
+  "predictions": [
+   "P1: the cue-driven agent keeps its share correct in the worlds that leave the cue coupled (prior reversed excepted) and loses it where the cue is decoupled or reversed.",
+   "P2: the ground-responsive agent keeps its share correct where the cue is decoupled or reversed and loses it where the evidence is nearly absent.",
+   "P3: the miscalibrated agent (right responsiveness, shifted threshold) is not told apart from the ground-responsive one by any world that changes the cue only; a change of the prior can tell them apart.",
+   "P4: the set of agents called stable is not the same in every world, i.e. the verdict depends on the neighbourhood chosen (the worry of entry 022). If it were the same in all eight, this study would show no such dependence."
+  ],
+  "seeds": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19,
+   20
+  ],
+  "tolerance": 0.1,
+  "verdict": "STABLE if the upper end of the 95 % t-interval of the drop (share correct at home minus in the world, over the seeds) is at most the tolerance; NOT_STABLE if its lower end is above the tolerance; otherwise UNRESOLVED",
+  "worlds": {
+   "balanced world, cue decoupled (the laboratory's do(W))": {
+    "pi": 0.5,
+    "q": 0.5,
+    "sigma": 0.78,
+    "weight_noise": 0.0
+   },
+   "cue decoupled (right with probability 0.5)": {
+    "pi": 0.9,
+    "q": 0.5,
+    "sigma": 0.78,
+    "weight_noise": 0.0
+   },
+   "cue reversed (right with probability 0.1)": {
+    "pi": 0.9,
+    "q": 0.1,
+    "sigma": 0.78,
+    "weight_noise": 0.0
+   },
+   "evidence nearly absent (sigma 5)": {
+    "pi": 0.9,
+    "q": 0.9,
+    "sigma": 5.0,
+    "weight_noise": 0.0
+   },
+   "evidence twice as noisy (sigma 1.56)": {
+    "pi": 0.9,
+    "q": 0.9,
+    "sigma": 1.56,
+    "weight_noise": 0.0
+   },
+   "home: the world the agent ran in (prior 0.9, cue right with probability 0.9)": {
+    "pi": 0.9,
+    "q": 0.9,
+    "sigma": 0.78,
+    "weight_noise": 0.0
+   },
+   "prior reversed (state +1 with probability 0.1)": {
+    "pi": 0.1,
+    "q": 0.9,
+    "sigma": 0.78,
+    "weight_noise": 0.0
+   },
+   "the agent's weights jittered (sd 0.5 each judgement)": {
+    "pi": 0.9,
+    "q": 0.9,
+    "sigma": 0.78,
+    "weight_noise": 0.5
+   }
+  }
+ },
+ "protocol_digest": "17ddcca272200fc0cfafb257c7a0cec173a474dfbb84fc87a96a0c8571ffc849",
+ "rows": {
+  "accidental correct: base-rate guess": {
+   "balanced world, cue decoupled (the laboratory's do(W))": {
+    "ci95": [
+     0.3375758979179619,
+     0.34737410208203817
+    ],
+    "mean_drop": 0.34247500000000003,
+    "share_correct": 0.4987749999999999,
+    "verdict": "NOT_STABLE"
+   },
+   "cue decoupled (right with probability 0.5)": {
+    "ci95": [
+     -0.0003777597944363731,
+     0.005927759794436372
+    ],
+    "mean_drop": 0.0027749999999999997,
+    "share_correct": 0.8384750000000001,
+    "verdict": "STABLE"
+   },
+   "cue reversed (right with probability 0.1)": {
+    "ci95": [
+     -0.0013762748127359357,
+     0.006401274812735948
+    ],
+    "mean_drop": 0.0025125000000000065,
+    "share_correct": 0.8387375,
+    "verdict": "STABLE"
+   },
+   "evidence nearly absent (sigma 5)": {
+    "ci95": [
+     -0.0025661526950890405,
+     0.0044161526950890805
+    ],
+    "mean_drop": 0.0009250000000000202,
+    "share_correct": 0.840325,
+    "verdict": "STABLE"
+   },
+   "evidence twice as noisy (sigma 1.56)": {
+    "ci95": [
+     -0.0008709467486880552,
+     0.006195946748688046
+    ],
+    "mean_drop": 0.0026624999999999956,
+    "share_correct": 0.8385875,
+    "verdict": "STABLE"
+   },
+   "home: the world the agent ran in (prior 0.9, cue right with probability 0.9)": {
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "mean_drop": 0.0,
+    "share_correct": 0.8412499999999999,
+    "verdict": "STABLE"
+   },
+   "prior reversed (state +1 with probability 0.1)": {
+    "ci95": [
+     0.6756305361488224,
+     0.6837444638511776
+    ],
+    "mean_drop": 0.6796875,
+    "share_correct": 0.1615625,
+    "verdict": "NOT_STABLE"
+   },
+   "the agent's weights jittered (sd 0.5 each judgement)": {
+    "ci95": [
+     0.020221690508917176,
+     0.02672830949108287
+    ],
+    "mean_drop": 0.023475000000000024,
+    "share_correct": 0.8177749999999999,
+    "verdict": "STABLE"
+   }
+  },
+  "accidental correct: coincidental cue": {
+   "balanced world, cue decoupled (the laboratory's do(W))": {
+    "ci95": [
+     0.33257245301758365,
+     0.3414775469824164
+    ],
+    "mean_drop": 0.337025,
+    "share_correct": 0.5015375,
+    "verdict": "NOT_STABLE"
+   },
+   "cue decoupled (right with probability 0.5)": {
+    "ci95": [
+     0.33395099518199145,
+     0.3438990048180086
+    ],
+    "mean_drop": 0.33892500000000003,
+    "share_correct": 0.49963749999999996,
+    "verdict": "NOT_STABLE"
+   },
+   "cue reversed (right with probability 0.1)": {
+    "ci95": [
+     0.6712270922437277,
+     0.6793479077562722
+    ],
+    "mean_drop": 0.6752874999999999,
+    "share_correct": 0.163275,
+    "verdict": "NOT_STABLE"
+   },
+   "evidence nearly absent (sigma 5)": {
+    "ci95": [
+     -0.006849543364308637,
+     0.0010995433643086147
+    ],
+    "mean_drop": -0.002875000000000011,
+    "share_correct": 0.8414375,
+    "verdict": "STABLE"
+   },
+   "evidence twice as noisy (sigma 1.56)": {
+    "ci95": [
+     -0.0011569648887192053,
+     0.005281964888719206
+    ],
+    "mean_drop": 0.0020625000000000005,
+    "share_correct": 0.8365,
+    "verdict": "STABLE"
+   },
+   "home: the world the agent ran in (prior 0.9, cue right with probability 0.9)": {
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "mean_drop": 0.0,
+    "share_correct": 0.8385625000000001,
+    "verdict": "STABLE"
+   },
+   "prior reversed (state +1 with probability 0.1)": {
+    "ci95": [
+     -0.0024521572195470858,
+     0.003502157219547081
+    ],
+    "mean_drop": 0.0005249999999999977,
+    "share_correct": 0.8380375000000001,
+    "verdict": "STABLE"
+   },
+   "the agent's weights jittered (sd 0.5 each judgement)": {
+    "ci95": [
+     0.01902236630829405,
+     0.025102633691705976
+    ],
+    "mean_drop": 0.022062500000000013,
+    "share_correct": 0.8165000000000001,
+    "verdict": "STABLE"
+   }
+  },
+  "correction and reconfiguration (feedback on)": {
+   "balanced world, cue decoupled (the laboratory's do(W))": {
+    "ci95": [
+     0.16676833013247808,
+     0.19103166986752193
+    ],
+    "mean_drop": 0.1789,
+    "share_correct": 0.753275,
+    "verdict": "NOT_STABLE"
+   },
+   "cue decoupled (right with probability 0.5)": {
+    "ci95": [
+     0.029347127187981874,
+     0.035952872812018095
+    ],
+    "mean_drop": 0.032649999999999985,
+    "share_correct": 0.899525,
+    "verdict": "STABLE"
+   },
+   "cue reversed (right with probability 0.1)": {
+    "ci95": [
+     0.06031526089432904,
+     0.07140973910567097
+    ],
+    "mean_drop": 0.0658625,
+    "share_correct": 0.8663125,
+    "verdict": "STABLE"
+   },
+   "evidence nearly absent (sigma 5)": {
+    "ci95": [
+     0.28042950465325356,
+     0.2925204953467464
+    ],
+    "mean_drop": 0.286475,
+    "share_correct": 0.6456999999999999,
+    "verdict": "NOT_STABLE"
+   },
+   "evidence twice as noisy (sigma 1.56)": {
+    "ci95": [
+     0.0773836473933349,
+     0.08899135260666509
+    ],
+    "mean_drop": 0.0831875,
+    "share_correct": 0.8489875,
+    "verdict": "STABLE"
+   },
+   "home: the world the agent ran in (prior 0.9, cue right with probability 0.9)": {
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "mean_drop": 0.0,
+    "share_correct": 0.932175,
+    "verdict": "STABLE"
+   },
+   "prior reversed (state +1 with probability 0.1)": {
+    "ci95": [
+     0.221379660411322,
+     0.255220339588678
+    ],
+    "mean_drop": 0.2383,
+    "share_correct": 0.693875,
+    "verdict": "NOT_STABLE"
+   },
+   "the agent's weights jittered (sd 0.5 each judgement)": {
+    "ci95": [
+     0.004730924510299299,
+     0.009269075489700723
+    ],
+    "mean_drop": 0.007000000000000011,
+    "share_correct": 0.9251750000000001,
+    "verdict": "STABLE"
+   }
+  },
+  "ground-responsive judgement": {
+   "balanced world, cue decoupled (the laboratory's do(W))": {
+    "ci95": [
+     -0.002783810380228925,
+     0.004308810380228924
+    ],
+    "mean_drop": 0.0007624999999999993,
+    "share_correct": 0.8305,
+    "verdict": "STABLE"
+   },
+   "cue decoupled (right with probability 0.5)": {
+    "ci95": [
+     -0.0044279929429935656,
+     0.004527992942993544
+    ],
+    "mean_drop": 4.9999999999988944e-05,
+    "share_correct": 0.8312125,
+    "verdict": "STABLE"
+   },
+   "cue reversed (right with probability 0.1)": {
+    "ci95": [
+     -0.0026032413613211935,
+     0.0043032413613211945
+    ],
+    "mean_drop": 0.0008500000000000007,
+    "share_correct": 0.8304125000000001,
+    "verdict": "STABLE"
+   },
+   "evidence nearly absent (sigma 5)": {
+    "ci95": [
+     0.25056877648060005,
+     0.25963122351939993
+    ],
+    "mean_drop": 0.2551,
+    "share_correct": 0.5761625,
+    "verdict": "NOT_STABLE"
+   },
+   "evidence twice as noisy (sigma 1.56)": {
+    "ci95": [
+     0.10768122477105767,
+     0.11646877522894232
+    ],
+    "mean_drop": 0.112075,
+    "share_correct": 0.7191875000000001,
+    "verdict": "NOT_STABLE"
+   },
+   "home: the world the agent ran in (prior 0.9, cue right with probability 0.9)": {
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "mean_drop": 0.0,
+    "share_correct": 0.8312624999999999,
+    "verdict": "STABLE"
+   },
+   "prior reversed (state +1 with probability 0.1)": {
+    "ci95": [
+     -0.00618286460938348,
+     0.0015828646093834645
+    ],
+    "mean_drop": -0.0023000000000000078,
+    "share_correct": 0.8335625,
+    "verdict": "STABLE"
+   },
+   "the agent's weights jittered (sd 0.5 each judgement)": {
+    "ci95": [
+     0.011004293165635193,
+     0.019120706834364808
+    ],
+    "mean_drop": 0.015062500000000001,
+    "share_correct": 0.8161999999999999,
+    "verdict": "STABLE"
+   }
+  },
+  "misjudgement: miscalibrated reading": {
+   "balanced world, cue decoupled (the laboratory's do(W))": {
+    "ci95": [
+     -0.1774371245879274,
+     -0.16696287541207264
+    ],
+    "mean_drop": -0.17220000000000002,
+    "share_correct": 0.7529250000000001,
+    "verdict": "STABLE"
+   },
+   "cue decoupled (right with probability 0.5)": {
+    "ci95": [
+     -0.004756704156709321,
+     0.004831704156709313
+    ],
+    "mean_drop": 3.749999999999587e-05,
+    "share_correct": 0.5806875,
+    "verdict": "STABLE"
+   },
+   "cue reversed (right with probability 0.1)": {
+    "ci95": [
+     -0.006252730990297904,
+     0.00590273099029791
+    ],
+    "mean_drop": -0.00017499999999999737,
+    "share_correct": 0.5809,
+    "verdict": "STABLE"
+   },
+   "evidence nearly absent (sigma 5)": {
+    "ci95": [
+     0.05449639044720449,
+     0.06620360955279551
+    ],
+    "mean_drop": 0.06035,
+    "share_correct": 0.5203749999999999,
+    "verdict": "STABLE"
+   },
+   "evidence twice as noisy (sigma 1.56)": {
+    "ci95": [
+     0.020356087825116508,
+     0.030318912174883462
+    ],
+    "mean_drop": 0.025337499999999985,
+    "share_correct": 0.5553875,
+    "verdict": "STABLE"
+   },
+   "home: the world the agent ran in (prior 0.9, cue right with probability 0.9)": {
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "mean_drop": 0.0,
+    "share_correct": 0.580725,
+    "verdict": "STABLE"
+   },
+   "prior reversed (state +1 with probability 0.1)": {
+    "ci95": [
+     -0.34373145340167477,
+     -0.3347935465983253
+    ],
+    "mean_drop": -0.3392625,
+    "share_correct": 0.9199875000000001,
+    "verdict": "STABLE"
+   },
+   "the agent's weights jittered (sd 0.5 each judgement)": {
+    "ci95": [
+     0.004555050882633788,
+     0.016894949117366227
+    ],
+    "mean_drop": 0.010725000000000007,
+    "share_correct": 0.5700000000000001,
+    "verdict": "STABLE"
+   }
+  },
+  "no correction (feedback off)": {
+   "balanced world, cue decoupled (the laboratory's do(W))": {
+    "ci95": [
+     0.3286269948233598,
+     0.3382980051766402
+    ],
+    "mean_drop": 0.3334625,
+    "share_correct": 0.5232,
+    "verdict": "NOT_STABLE"
+   },
+   "cue decoupled (right with probability 0.5)": {
+    "ci95": [
+     0.33061117970619774,
+     0.3408138202938023
+    ],
+    "mean_drop": 0.3357125,
+    "share_correct": 0.5209499999999999,
+    "verdict": "NOT_STABLE"
+   },
+   "cue reversed (right with probability 0.1)": {
+    "ci95": [
+     0.6638611857080131,
+     0.6729888142919868
+    ],
+    "mean_drop": 0.6684249999999999,
+    "share_correct": 0.1882375,
+    "verdict": "NOT_STABLE"
+   },
+   "evidence nearly absent (sigma 5)": {
+    "ci95": [
+     0.03403978114612617,
+     0.042660218853873846
+    ],
+    "mean_drop": 0.03835000000000001,
+    "share_correct": 0.8183125,
+    "verdict": "STABLE"
+   },
+   "evidence twice as noisy (sigma 1.56)": {
+    "ci95": [
+     0.0017345061150455662,
+     0.008240493884954455
+    ],
+    "mean_drop": 0.004987500000000011,
+    "share_correct": 0.8516750000000002,
+    "verdict": "STABLE"
+   },
+   "home: the world the agent ran in (prior 0.9, cue right with probability 0.9)": {
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "mean_drop": 0.0,
+    "share_correct": 0.8566625,
+    "verdict": "STABLE"
+   },
+   "prior reversed (state +1 with probability 0.1)": {
+    "ci95": [
+     -0.003928013711722873,
+     0.0031780137117228885
+    ],
+    "mean_drop": -0.000374999999999992,
+    "share_correct": 0.8570375,
+    "verdict": "STABLE"
+   },
+   "the agent's weights jittered (sd 0.5 each judgement)": {
+    "ci95": [
+     0.01428756504244643,
+     0.020637434957553567
+    ],
+    "mean_drop": 0.0174625,
+    "share_correct": 0.8392,
+    "verdict": "STABLE"
+   }
+  }
+ },
+ "same_stable_set_in_every_world": false,
+ "stable_by_world": {
+  "balanced world, cue decoupled (the laboratory's do(W))": [
+   "ground-responsive judgement",
+   "misjudgement: miscalibrated reading"
+  ],
+  "cue decoupled (right with probability 0.5)": [
+   "accidental correct: base-rate guess",
+   "correction and reconfiguration (feedback on)",
+   "ground-responsive judgement",
+   "misjudgement: miscalibrated reading"
+  ],
+  "cue reversed (right with probability 0.1)": [
+   "accidental correct: base-rate guess",
+   "correction and reconfiguration (feedback on)",
+   "ground-responsive judgement",
+   "misjudgement: miscalibrated reading"
+  ],
+  "evidence nearly absent (sigma 5)": [
+   "accidental correct: base-rate guess",
+   "accidental correct: coincidental cue",
+   "misjudgement: miscalibrated reading",
+   "no correction (feedback off)"
+  ],
+  "evidence twice as noisy (sigma 1.56)": [
+   "accidental correct: base-rate guess",
+   "accidental correct: coincidental cue",
+   "correction and reconfiguration (feedback on)",
+   "misjudgement: miscalibrated reading",
+   "no correction (feedback off)"
+  ],
+  "home: the world the agent ran in (prior 0.9, cue right with probability 0.9)": [
+   "accidental correct: base-rate guess",
+   "accidental correct: coincidental cue",
+   "correction and reconfiguration (feedback on)",
+   "ground-responsive judgement",
+   "misjudgement: miscalibrated reading",
+   "no correction (feedback off)"
+  ],
+  "prior reversed (state +1 with probability 0.1)": [
+   "accidental correct: coincidental cue",
+   "ground-responsive judgement",
+   "misjudgement: miscalibrated reading",
+   "no correction (feedback off)"
+  ],
+  "the agent's weights jittered (sd 0.5 each judgement)": [
+   "accidental correct: base-rate guess",
+   "accidental correct: coincidental cue",
+   "correction and reconfiguration (feedback on)",
+   "ground-responsive judgement",
+   "misjudgement: miscalibrated reading",
+   "no correction (feedback off)"
+  ]
+ },
+ "verdicts_by_condition": {
+  "accidental correct: base-rate guess": {
+   "NOT_STABLE": [
+    "balanced world, cue decoupled (the laboratory's do(W))",
+    "prior reversed (state +1 with probability 0.1)"
+   ],
+   "STABLE": [
+    "cue decoupled (right with probability 0.5)",
+    "cue reversed (right with probability 0.1)",
+    "evidence nearly absent (sigma 5)",
+    "evidence twice as noisy (sigma 1.56)",
+    "home: the world the agent ran in (prior 0.9, cue right with probability 0.9)",
+    "the agent's weights jittered (sd 0.5 each judgement)"
+   ],
+   "UNRESOLVED": []
+  },
+  "accidental correct: coincidental cue": {
+   "NOT_STABLE": [
+    "balanced world, cue decoupled (the laboratory's do(W))",
+    "cue decoupled (right with probability 0.5)",
+    "cue reversed (right with probability 0.1)"
+   ],
+   "STABLE": [
+    "evidence nearly absent (sigma 5)",
+    "evidence twice as noisy (sigma 1.56)",
+    "home: the world the agent ran in (prior 0.9, cue right with probability 0.9)",
+    "prior reversed (state +1 with probability 0.1)",
+    "the agent's weights jittered (sd 0.5 each judgement)"
+   ],
+   "UNRESOLVED": []
+  },
+  "correction and reconfiguration (feedback on)": {
+   "NOT_STABLE": [
+    "balanced world, cue decoupled (the laboratory's do(W))",
+    "evidence nearly absent (sigma 5)",
+    "prior reversed (state +1 with probability 0.1)"
+   ],
+   "STABLE": [
+    "cue decoupled (right with probability 0.5)",
+    "cue reversed (right with probability 0.1)",
+    "evidence twice as noisy (sigma 1.56)",
+    "home: the world the agent ran in (prior 0.9, cue right with probability 0.9)",
+    "the agent's weights jittered (sd 0.5 each judgement)"
+   ],
+   "UNRESOLVED": []
+  },
+  "ground-responsive judgement": {
+   "NOT_STABLE": [
+    "evidence nearly absent (sigma 5)",
+    "evidence twice as noisy (sigma 1.56)"
+   ],
+   "STABLE": [
+    "balanced world, cue decoupled (the laboratory's do(W))",
+    "cue decoupled (right with probability 0.5)",
+    "cue reversed (right with probability 0.1)",
+    "home: the world the agent ran in (prior 0.9, cue right with probability 0.9)",
+    "prior reversed (state +1 with probability 0.1)",
+    "the agent's weights jittered (sd 0.5 each judgement)"
+   ],
+   "UNRESOLVED": []
+  },
+  "misjudgement: miscalibrated reading": {
+   "NOT_STABLE": [],
+   "STABLE": [
+    "balanced world, cue decoupled (the laboratory's do(W))",
+    "cue decoupled (right with probability 0.5)",
+    "cue reversed (right with probability 0.1)",
+    "evidence nearly absent (sigma 5)",
+    "evidence twice as noisy (sigma 1.56)",
+    "home: the world the agent ran in (prior 0.9, cue right with probability 0.9)",
+    "prior reversed (state +1 with probability 0.1)",
+    "the agent's weights jittered (sd 0.5 each judgement)"
+   ],
+   "UNRESOLVED": []
+  },
+  "no correction (feedback off)": {
+   "NOT_STABLE": [
+    "balanced world, cue decoupled (the laboratory's do(W))",
+    "cue decoupled (right with probability 0.5)",
+    "cue reversed (right with probability 0.1)"
+   ],
+   "STABLE": [
+    "evidence nearly absent (sigma 5)",
+    "evidence twice as noisy (sigma 1.56)",
+    "home: the world the agent ran in (prior 0.9, cue right with probability 0.9)",
+    "prior reversed (state +1 with probability 0.1)",
+    "the agent's weights jittered (sd 0.5 each judgement)"
+   ],
+   "UNRESOLVED": []
+  }
+ },
+ "worlds_that_tell_apart_from_ground_responsive": {
+  "accidental correct: base-rate guess": [
+   "balanced world, cue decoupled (the laboratory's do(W))",
+   "evidence nearly absent (sigma 5)",
+   "evidence twice as noisy (sigma 1.56)",
+   "prior reversed (state +1 with probability 0.1)"
+  ],
+  "accidental correct: coincidental cue": [
+   "balanced world, cue decoupled (the laboratory's do(W))",
+   "cue decoupled (right with probability 0.5)",
+   "cue reversed (right with probability 0.1)",
+   "evidence nearly absent (sigma 5)",
+   "evidence twice as noisy (sigma 1.56)"
+  ],
+  "correction and reconfiguration (feedback on)": [
+   "balanced world, cue decoupled (the laboratory's do(W))",
+   "evidence twice as noisy (sigma 1.56)",
+   "prior reversed (state +1 with probability 0.1)"
+  ],
+  "misjudgement: miscalibrated reading": [
+   "evidence nearly absent (sigma 5)",
+   "evidence twice as noisy (sigma 1.56)"
+  ],
+  "no correction (feedback off)": [
+   "balanced world, cue decoupled (the laboratory's do(W))",
+   "cue decoupled (right with probability 0.5)",
+   "cue reversed (right with probability 0.1)",
+   "evidence nearly absent (sigma 5)",
+   "evidence twice as noisy (sigma 1.56)"
+  ]
+ }
+}

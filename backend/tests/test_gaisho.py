@@ -62,7 +62,9 @@ def test_the_replication_unit_is_the_seed_and_intervals_are_t_based(full):
     r = rel(full, RESPONSIVE, "effect_E")
     assert r["n"] == len(SEEDS) and len(r["per_seed"]) == len(SEEDS)
     half = (r["ci95"][1] - r["ci95"][0]) / 2
-    assert half == pytest.approx(2.093 * r["se"])  # the t value of the laboratory (20 seeds); the statement is in LIMITS/docs
+    from xzr.gaisho.lab import t975
+
+    assert half == pytest.approx(t975(len(SEEDS)) * r["se"]) and t975(len(SEEDS)) == 2.571  # the t value of the number of seeds (6 here); until 2026-11-05 the laboratory used the 20-seed value 2.093 for every n
 
 
 def test_paired_difference_uses_the_same_seeds_and_detects_only_when_the_interval_excludes_zero():
@@ -167,7 +169,9 @@ def test_a_probe_changes_the_operation_and_is_recorded_as_doing_so(dom):
     c = compare_observations(dom, CUE, FULL, Observation(probe=1.0), SEEDS)
     assert c["same_realized_operation"] is False and c["observation_changed_the_operation"] is True
     assert c["operation_part_first"]["probe"] == 0.0 and c["operation_part_second"]["probe"] == 1.0
-    assert any(r["kind"] == "OPERATION_DIFFERENCE" for r in c["relations"])
+    assert not any(r["kind"] == "OPERATION_DIFFERENCE" for r in c["relations"])  # with 6 seeds and the correct t(5) = 2.571 the probe's effect on the relations is NOT detected (it was, with the 20-seed value 2.093 used for 6 seeds)
+    c = compare_observations(dom, CUE, FULL, Observation(probe=1.0), tuple(range(1, 13)))
+    assert any(r["kind"] == "OPERATION_DIFFERENCE" for r in c["relations"])  # with 12 seeds it is
 
 
 def test_an_environment_change_is_a_change_of_the_operation(dom):
@@ -693,7 +697,7 @@ def test_correcting_the_cell_label_changed_digests_and_nothing_else():
 
     def strip(o):
         if isinstance(o, dict):  # the title (retitled after R37) and the failure-registry labels (added after R37) are the only new text
-            return {k: strip(v) for k, v in o.items() if "digest" not in k and k not in ("title", "registry", "registry_meaning", "note_on_domains")}
+            return {k: strip(v) for k, v in o.items() if "digest" not in k and k not in ("title", "registry", "registry_meaning", "note_on_domains", "ci95")}  # ci95: the 6-seed intervals were made with t = 2.093 before the t correction
         return [strip(x) for x in o] if isinstance(o, list) else o
     for k in ("001-knowledge", "002-bias", "003-freedom", "005-credit"):
         assert strip(first["domains"][k]["result"]) == strip(now["domains"][k]["result"]), k
@@ -827,7 +831,7 @@ def test_the_first_runs_are_kept_and_the_r37_alignment_changed_text_and_digests_
 
     def strip(o):
         if isinstance(o, dict):
-            return {k: strip(v) for k, v in o.items() if "digest" not in k and k not in ("title", "registry", "registry_meaning", "r37_term", "applicability_gate", "r37", "note_on_domains")}
+            return {k: strip(v) for k, v in o.items() if "digest" not in k and k not in ("title", "registry", "registry_meaning", "r37_term", "applicability_gate", "r37", "note_on_domains", "ci95")}  # ci95: see the t correction
         return [strip(x) for x in o] if isinstance(o, list) else o
     for k in ("001-knowledge", "002-bias", "003-freedom", "005-credit"):
         assert strip(before["domains"][k]["result"]) == strip(saved["domains"][k]["result"]), k
@@ -929,3 +933,76 @@ def test_the_new_r37_constraints_are_stated_with_their_status():
     by = {c["id"]: c["status"] for c in CONSTRAINTS}
     assert by["R15"] == "PARTIAL" and by["R17"] == "IMPLEMENTED" and by["R18"] == "IMPLEMENTED" and by["R19"] == "IMPLEMENTED" and by["R20"] == "NOT_IMPLEMENTED"
     assert by["R6"] == "NOT_IMPLEMENTED" and by["R8"] == "NOT_IMPLEMENTED"  # the comparative claims and Gaisho ignition remain undone
+
+
+# ---------------------------------------------------------------------------------------------------- t value by number of seeds, perturbation sets, Scale / Size / Speed
+def test_the_interval_uses_the_t_value_of_its_number_of_seeds_and_the_20_seed_value_is_unchanged():
+    from xzr.gaisho.lab import aggregate, paired, t975
+
+    assert t975(20) == 2.093 and t975(6) == 2.571 and t975(2) == 12.706 and t975(1) == 12.706 and t975(500) == 1.980
+    assert all(t975(n) >= t975(n + 1) for n in range(2, 200))  # more values never widen the interval
+    d = paired([0.1, 0.5, 0.2, 0.6, 0.3, 0.7], [0.0] * 6)
+    assert abs((d["ci95"][1] - d["ci95"][0]) / 2 - 2.571 * d["se"]) < 1e-12  # 6 values: t(5), not the 2.093 of 20
+    assert aggregate  # the relation intervals are made by the same function (checked on a saved record below)
+
+
+def test_the_t_correction_changed_the_interval_widths_of_the_non_20_seed_records_and_nothing_else():
+    """The records made with the old fixed value 2.093 are kept as *_before_t_correction.json; the new ones differ in their intervals and digests only: every mean, status, verdict and count is the same, and the 20-seed domains have the same digests."""
+    root = Path(__file__).resolve().parents[2] / "docs" / "gaisho"
+
+    def strip(o):
+        if isinstance(o, dict):
+            return {k: strip(v) for k, v in o.items() if "digest" not in k and k != "ci95"}
+        return [strip(v) for v in o] if isinstance(o, list) else o
+
+    for name in ("experiments", "experiments_body"):
+        old = json.loads((root / f"{name}_before_t_correction.json").read_text())
+        new = json.loads((root / f"{name}.json").read_text())
+        assert strip(old) == strip(new), name
+    old = json.loads((root / "experiments_before_t_correction.json").read_text())["domains"]
+    new = json.loads((root / "experiments.json").read_text())["domains"]
+    for k in ("001-knowledge", "002-bias", "003-freedom"):
+        assert old[k]["digest"] == new[k]["digest"], k  # 20 seeds: t(19) = 2.093 = the value used before
+    assert old["005-credit"]["digest"] != new["005-credit"]["digest"]  # 6 seeds: the intervals are wider
+    ci_old, ci_new = old["005-credit"]["negative_results"][1]["ci95"], new["005-credit"]["negative_results"][1]["ci95"]
+    assert (ci_new[1] - ci_new[0]) / (ci_old[1] - ci_old[0]) == pytest.approx(2.571 / 2.093, rel=1e-6)
+
+
+def test_the_perturbation_study_is_reproduced_and_shows_the_verdict_depends_on_the_chosen_neighbourhood():
+    from xzr.gaisho.model import digest
+    from xzr.gaisho.perturbation import HOME, PROTOCOL, WORLDS, run_perturbation
+
+    saved = json.loads((SAVED.with_name("experiments_perturbation.json")).read_text())
+    assert saved["protocol_digest"] == digest(PROTOCOL) and len(WORLDS) == 8 and len(PROTOCOL["predictions"]) == 4  # the protocol of the record is the protocol in the code
+    assert run_perturbation()["digest"] == saved["digest"]
+    rows = saved["rows"]
+    assert all(r[HOME]["verdict"] == "STABLE" for r in rows.values())
+    cue, gr, mis = rows["accidental correct: coincidental cue"], rows["ground-responsive judgement"], rows["misjudgement: miscalibrated reading"]
+    decoupled, reversed_, absent = "cue decoupled (right with probability 0.5)", "cue reversed (right with probability 0.1)", "evidence nearly absent (sigma 5)"
+    assert cue[decoupled]["verdict"] == cue[reversed_]["verdict"] == "NOT_STABLE" and gr[decoupled]["verdict"] == gr[reversed_]["verdict"] == "STABLE" and gr[absent]["verdict"] == "NOT_STABLE"
+    assert all(v["verdict"] == "STABLE" for v in mis.values())  # a stable share, a LOW one: the criterion reads change, not correctness (claim N1)
+    assert mis[HOME]["share_correct"] < gr[HOME]["share_correct"] - 0.2
+    assert saved["same_stable_set_in_every_world"] is False  # the set of agents called stable differs between worlds
+    assert "UNRESOLVED" in saved["meaning"] and "knowledge" in saved["meaning"] and "Gaisho" in saved["meaning"]
+
+
+def test_the_scale_size_speed_sweeps_vary_one_axis_at_a_time_and_compute_no_score():
+    from xzr.gaisho.sss import SWEEPS, run_sss
+
+    saved = json.loads((SAVED.with_name("experiments_sss.json")).read_text())
+    assert run_sss()["digest"] == saved["digest"]
+    assert [v[0] for v in SWEEPS.values()] == ["scale", "resources", "speed", "temporal_window"] and set(saved["sweeps"]) == set(SWEEPS)
+    for name, sw in saved["sweeps"].items():
+        assert [r["value"] for r in sw["rows"]] == sw["values"] and sw["values"][0] in (1, 91, 100), name  # listed from the fullest value to the most degraded; the other axes stay at the full observation (sss._obs)
+    assert "score" not in json.dumps(saved["sweeps"]).lower().replace("scores", "")  # no composite is computed
+    assert saved["sweeps"]["Scale"]["relations_regained_after_loss"], "scale is non-monotonic: a relation lost at a coarser scale is identified again at a still coarser one"
+    assert saved["sweeps"]["Speed (snapshot rate)"]["relations_regained_after_loss"] == [] and "UNRESOLVED" in saved["meaning"]
+
+
+def test_the_dictionary_statuses_after_the_perturbation_and_sweep_studies():
+    from xzr.gaisho import dictionary as D
+
+    by = {c["id"]: c for c in D.CONSTRAINTS}
+    assert by["D2"]["status"] == "PARTIAL" and "perturbation.py" in by["D2"]["how"] and "eight" in by["D2"]["how"]
+    assert by["D6"]["status"] == "PARTIAL" and "sss.py" in by["D6"]["how"]
+    assert by["D4"]["status"] == "PARTIAL" and "protocol" in by["D4"]["how"].lower()

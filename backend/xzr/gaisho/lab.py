@@ -20,6 +20,16 @@ from .model import digest
 
 SEEDS = tuple(range(1, 21))
 
+# Student t, 0.975 (two-sided 95 %), by degrees of freedom; above 30 the next listed value at or below the degrees of freedom is used (it is the larger t, so the interval is not made narrower than it is)
+T975 = {1: 12.706, 2: 4.303, 3: 3.182, 4: 2.776, 5: 2.571, 6: 2.447, 7: 2.365, 8: 2.306, 9: 2.262, 10: 2.228, 11: 2.201, 12: 2.179, 13: 2.160, 14: 2.145, 15: 2.131, 16: 2.120, 17: 2.110, 18: 2.101, 19: 2.093, 20: 2.086,
+        21: 2.080, 22: 2.074, 23: 2.069, 24: 2.064, 25: 2.060, 26: 2.056, 27: 2.052, 28: 2.048, 29: 2.045, 30: 2.042, 40: 2.021, 60: 2.000, 120: 1.980}
+
+
+def t975(n: int) -> float:
+    """The t value of a 95 % interval of the mean of ``n`` values (n - 1 degrees of freedom). Until this was added every interval of the laboratory used 2.093, the value for 20 values, whatever n was: the same for n = 20 (so the 20-seed records are unchanged), too narrow for fewer."""
+    df = max(1, n - 1)
+    return T975[df] if df in T975 else T975[max(k for k in T975 if k <= df)]
+
 
 @dataclass(frozen=True)
 class Observation:
@@ -192,7 +202,7 @@ def aggregate(dom: Domain, cond: str, runs: list[dict], obs: Observation) -> dic
             continue
         m, sd = float(np.mean(vals)), float(np.std(vals, ddof=1))
         se = sd / np.sqrt(len(vals))
-        rels[rn] = {"status": "IDENTIFIED", "value": m, "sd": sd, "se": se, "ci95": [m - 2.093 * se, m + 2.093 * se], "n": len(vals), "per_seed": [float(v) for v in vals]}
+        rels[rn] = {"status": "IDENTIFIED", "value": m, "sd": sd, "se": se, "ci95": [m - t975(len(vals)) * se, m + t975(len(vals)) * se], "n": len(vals), "per_seed": [float(v) for v in vals]}
     return {"accuracy": _stat([r["accuracy"] for r in runs]), "accuracy_pre_shift": _stat([r.get("accuracy_pre_shift") for r in runs]), "relations": rels, "snapshots": snaps, "seeds": n, "operation_digest": digest([r["operation_digest"] for r in runs])}
 
 
@@ -216,5 +226,6 @@ def paired(a: list[float | None], b: list[float | None]) -> dict:
     sd = float(d.std(ddof=1))
     se = sd / float(np.sqrt(d.size))
     m = float(d.mean())
-    lo, hi = m - 2.093 * se, m + 2.093 * se
+    t = t975(int(d.size))
+    lo, hi = m - t * se, m + t * se
     return {"n": int(d.size), "mean": m, "sd": sd, "se": se, "ci95": [lo, hi], "detected": bool(lo > 0 or hi < 0)}

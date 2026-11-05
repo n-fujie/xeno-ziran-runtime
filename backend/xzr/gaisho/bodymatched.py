@@ -26,7 +26,7 @@ import numpy as np
 
 from . import MODEL_VERSION
 from .domains import BodyDomain
-from .lab import FULL, run_domain
+from .lab import FULL, run_domain, t975
 from .model import digest
 
 BLOCKS: dict[str, dict[str, Any]] = {
@@ -39,8 +39,6 @@ BLOCKS: dict[str, dict[str, Any]] = {
 LABELS = ("name", "family")  # entries of the presets that are names, not parameters
 PRESETS = {"human": "human-like-planar", "machine": "machine-like-planar"}
 HUMAN, MACHINE = "human-like planar body", "machine-like planar body"
-# Student t, 0.975, by degrees of freedom (the number of seeds minus one)
-T975 = {1: 12.706, 2: 4.303, 3: 3.182, 4: 2.776, 5: 2.571, 6: 2.447, 7: 2.365, 8: 2.306, 9: 2.262, 10: 2.228, 15: 2.131, 19: 2.093}
 
 
 def condition_name(base: str, block: str) -> str:
@@ -62,8 +60,7 @@ def t_interval(values: list[float]) -> dict[str, Any]:
     if n < 2:
         return {"mean": m, "n": n, "ci95": None}
     se = float(np.std(values, ddof=1)) / np.sqrt(n)
-    df = n - 1
-    t = T975[df] if df in T975 else T975[min(k for k in T975 if k >= df)]
+    t = t975(n)
     return {"mean": m, "n": n, "ci95": [m - t * se, m + t * se], "t": t}
 
 
@@ -108,20 +105,18 @@ def uncovered_differences(dom: MatchedBodyDomain) -> list[str]:
     return [k for k in keys if not any(k == c or k.startswith(c + ".") for c in cov)]
 
 
-def run_matched(seeds: list[int]) -> dict[str, Any]:
-    dom = MatchedBodyDomain()
-    res = run_domain(dom, FULL, tuple(seeds), list(dom.conditions))
+def _summarize(dom: MatchedBodyDomain, res: dict[str, Any], seeds: list[int], describe: Any, controls: dict[str, str], extra: dict[str, Any] | None = None) -> dict[str, Any]:
+    """``controls`` maps the preset name of each plain-preset control condition to that condition's name; every other condition is read against the control of its base preset."""
     out: dict[str, Any] = {}
     for cond, v in res["conditions"].items():
         rel = {n: ({"status": r["status"], **t_interval(r["per_seed"])} if r["status"] == "IDENTIFIED" else {"status": r["status"]}) for n, r in v["relations"].items()}
         cells = v["snapshots"]["end"]["cells"]
         grid = [[next(c["p"] for c in cells if c["i"] == i and c["j"] == j) for i in range(len(dom.x_values))] for j in range(len(dom.y_values))]
-        spec = dom.conditions[cond]
-        out[cond] = {"base": spec["preset"], "donor": spec["donor"], "block": spec["block"], "relations": rel, "fell_share_grid": grid, "mean_fell_share": float(np.mean(grid))}
-    for o in out.values():  # the change of each effect against its own base preset, and whether the base value lies inside the interval of the swap
-        if o["donor"] is None:
+        out[cond] = {**describe(dom.conditions[cond]), "relations": rel, "fell_share_grid": grid, "mean_fell_share": float(np.mean(grid))}
+    for cond, o in out.items():  # the change of each effect against its own base preset, and whether the base value lies inside the interval of the swap
+        if cond in controls.values():
             continue
-        base = out[HUMAN if o["base"] == PRESETS["human"] else MACHINE]
+        base = out[controls[o["base"]]]
         d: dict[str, Any] = {}
         for n in ("effect_x", "effect_y"):
             if o["relations"][n]["status"] == "IDENTIFIED" and base["relations"][n]["status"] == "IDENTIFIED":
@@ -129,5 +124,75 @@ def run_matched(seeds: list[int]) -> dict[str, Any]:
                 diff = o["relations"][n]["mean"] - base["relations"][n]["mean"]
                 d[n] = {"change": diff, "swap_ci95": ci, "base_inside_swap_ci95": bool(ci is not None and ci[0] <= base["relations"][n]["mean"] <= ci[1])}
         o["change_against_base"] = d
-    body = {"model_version": MODEL_VERSION, "seeds": list(seeds), "axes": {"x": dom.x_name, "y": dom.y_name}, "body": dom.provenance(), "blocks": {k: list(covered_keys(k)) for k in BLOCKS}, "uncovered_differences": uncovered_differences(dom), "result_digest": res["digest"], "conditions": out}
+    body = {"model_version": MODEL_VERSION, "seeds": list(seeds), "axes": {"x": dom.x_name, "y": dom.y_name}, "body": dom.provenance(), "blocks": {k: list(covered_keys(k)) for k in BLOCKS}, "uncovered_differences": uncovered_differences(dom), "result_digest": res["digest"], "conditions": out, **(extra or {})}
     return {**body, "digest": digest(body)}
+
+
+def run_matched(seeds: list[int]) -> dict[str, Any]:
+    dom = MatchedBodyDomain()
+    res = run_domain(dom, FULL, tuple(seeds), list(dom.conditions))
+    return _summarize(dom, res, seeds, lambda spec: {"base": spec["preset"], "donor": spec["donor"], "block": spec["block"]}, {PRESETS["human"]: HUMAN, PRESETS["machine"]: MACHINE})
+
+
+# ---------------------------------------------------------------------------------------------------------- the extension: combinations of swaps, other integration steps, 8 seeds
+DTS = (0.0025, 0.005, 0.01, 0.02)  # the two presets use 0.01 (human-like) and 0.005 s (machine-like)
+COMBINATIONS: dict[str, tuple[str, ...]] = {
+    "structure and control": ("structure", "control"),
+    "structure and sensors": ("structure", "sensors"),
+    "structure and internal model": ("structure", "internal"),
+    "everything but the time step": ("structure", "control", "sensors", "internal"),
+}
+
+
+def _dt_name(base: str, dt: float) -> str:
+    return f"{base}-like planar body at the integration step {dt} s"
+
+
+def _combo_name(base: str, label: str) -> str:
+    return f"{base}-like planar body with the {label} of the {'machine' if base == 'human' else 'human'}-like one"
+
+
+def _extended_conditions() -> dict[str, dict[str, Any]]:
+    conds: dict[str, dict[str, Any]] = {HUMAN: {"preset": PRESETS["human"], "donor": None, "blocks": (), "dt": None}, MACHINE: {"preset": PRESETS["machine"], "donor": None, "blocks": (), "dt": None}}
+    own = {"human": 0.01, "machine": 0.005}
+    for base, other in (("human", "machine"), ("machine", "human")):
+        for dt in DTS:
+            if dt != own[base]:
+                conds[_dt_name(base, dt)] = {"preset": PRESETS[base], "donor": None, "blocks": (), "dt": dt}
+        for label, blocks in COMBINATIONS.items():
+            conds[_combo_name(base, label)] = {"preset": PRESETS[base], "donor": PRESETS[other], "blocks": blocks, "dt": None}
+    return conds
+
+
+class ExtendedMatchedDomain(MatchedBodyDomain):
+    """BodyDomain whose conditions are combinations of block swaps and other integration steps (not registered)."""
+
+    conditions = _extended_conditions()  # type: ignore[assignment]
+
+    def base_config(self, cond: str) -> dict:
+        spec = self.conditions[cond]
+        cfg = copy.deepcopy(self.link.config.build(spec["preset"]))
+        if spec["donor"] is not None:
+            donor = self.link.config.build(spec["donor"])
+            for blk in spec["blocks"]:
+                for top in BLOCKS[blk]["top"]:
+                    cfg[top] = copy.deepcopy(donor[top])
+        if spec["dt"] is not None:
+            cfg["task"]["dt"] = spec["dt"]
+        return cfg
+
+
+def run_extended(seeds: list[int]) -> dict[str, Any]:
+    """Combinations of block swaps, other integration steps and 8 seeds, with the two plain presets as controls (same grid and effect definitions as ``run_matched``).
+
+    XB-TRO REFUSES to run a configuration whose explicit integration step is numerically unstable for its passive joint dynamics ("must not be read as a falling body"). Such a condition is not run and is not counted as a fall: it is listed under ``refused_by_xbtro`` with the amplification the check found."""
+    dom = ExtendedMatchedDomain()
+    refused, runnable = {}, []
+    for cond in dom.conditions:
+        ns = dom.link.engine.Params(dom.base_config(cond)).numeric_stability()
+        if ns["stable"]:
+            runnable.append(cond)
+        else:
+            refused[cond] = {"largest_step_amplification": float(ns["margin"]), "fastest_mode_hz": float(ns["fastest_mode_hz"]), "meaning": "not run; XB-TRO's stability check refuses it. This is neither a fall nor a result about the body"}
+    res = run_domain(dom, FULL, tuple(seeds), runnable)
+    return _summarize(dom, res, seeds, lambda spec: {"base": spec["preset"], "donor": spec["donor"], "blocks": list(spec["blocks"]), "dt": spec["dt"]}, {PRESETS["human"]: HUMAN, PRESETS["machine"]: MACHINE}, {"refused_by_xbtro": refused})
