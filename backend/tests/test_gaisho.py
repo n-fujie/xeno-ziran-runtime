@@ -1006,3 +1006,65 @@ def test_the_dictionary_statuses_after_the_perturbation_and_sweep_studies():
     assert by["D2"]["status"] == "PARTIAL" and "perturbation.py" in by["D2"]["how"] and "eight" in by["D2"]["how"]
     assert by["D6"]["status"] == "PARTIAL" and "sss.py" in by["D6"]["how"]
     assert by["D4"]["status"] == "PARTIAL" and "protocol" in by["D4"]["how"].lower()
+
+
+# ------------------------------------------------------------------------------------------------ nested surface models (surfacemodels.py)
+class _StubSurface:
+    """A synthetic domain whose recorded surface is a known function of the two interventions, to check what the comparison can tell apart."""
+
+    id = "stub"
+    x_values = np.linspace(0.0, 1.0, 9)
+    y_values = np.linspace(0.0, 1.0, 5)
+    conditions = {"additive": 0, "interaction": 1}
+
+    def simulate(self, cond, seed, obs):
+        rng = np.random.default_rng(seed)
+        cells = []
+        for j, y in enumerate(self.y_values):
+            for i, x in enumerate(self.x_values):
+                z = 3 * x - 2 * y + (0.0 if cond == "additive" else 8 * (x - 0.5) * (y - 0.5))
+                p = float(np.clip(1 / (1 + np.exp(-z)) + 0.01 * rng.normal(), 0, 1))
+                cells.append({"i": i, "j": j, "x": float(x), "y": float(y), "p": p})
+        return {"snapshots": {"end": {"surface": {"cells": cells}}}}
+
+
+def test_the_surface_comparison_tells_an_additive_surface_from_one_with_an_interaction_and_says_nothing_else():
+    from xzr.gaisho.surfacemodels import compare_surface_models
+
+    out = compare_surface_models(_StubSurface(), tuple(range(1, 9)))
+    rows = {r["condition"]: r for r in out["rows"]}
+    v = lambda cond, split, pair: next(x["verdict"] for x in rows[cond][split]["verdicts"] if (x["simpler"], x["richer"]) == pair)  # noqa: E731
+    assert v("additive", "interpolation", ("M1", "M2")) == "SIMPLER_SUFFICES"
+    assert v("interaction", "interpolation", ("M1", "M2")) == "RICHER_NEEDED"
+    assert v("additive", "interpolation", ("M0", "M1")) == "RICHER_NEEDED"
+    assert out["domain"] == "stub" and set(rows["additive"]) >= {"interpolation", "extrapolation"}
+
+
+def test_the_saved_surface_models_keep_their_stated_limits_and_the_findings_quoted_in_the_documentation():
+    root = Path(__file__).resolve().parents[2] / "docs" / "gaisho"
+    m = json.loads((root / "experiments_surface_models.json").read_text())
+    assert set(m["domains"]) == {"002-bias", "003-freedom", "004-body", "005-credit"} and m["not_executed"] == {}
+    assert "no mechanism-level rival" in m["reading"] and m["margin"] == 0.03
+    verdict = lambda dom, i, split, pair: next(x["verdict"] for x in m["domains"][dom]["rows"][i][split]["verdicts"] if (x["simpler"], x["richer"]) == pair)  # noqa: E731
+    # the interaction term is not needed anywhere in the synthetic rule sets on the interpolation split
+    for dom in ("002-bias", "003-freedom", "005-credit"):
+        assert all(verdict(dom, i, "interpolation", ("M1", "M2")) == "SIMPLER_SUFFICES" for i in range(len(m["domains"][dom]["rows"])))
+    # in 003 the conditions whose belief does not drive the reach have the same recorded surface (their difference is in the label relations, not in the surface)
+    rows = m["domains"]["003-freedom"]["rows"]
+    assert rows[0]["interpolation"]["errors"] == rows[2]["interpolation"]["errors"] and rows[1]["interpolation"]["errors"] == rows[4]["interpolation"]["errors"]
+    # the body: an interaction is needed for the human-like preset, and the additive fit extrapolates WORSE than the marginal rate for the machine-like one
+    body = m["domains"]["004-body"]["rows"]
+    assert verdict("004-body", 0, "interpolation", ("M1", "M2")) == "RICHER_NEEDED"
+    assert verdict("004-body", 1, "extrapolation", ("M0", "M1")) == "RICHER_WORSE"
+
+
+def test_a_saved_surface_row_is_reproduced_by_running_it_again():
+    from xzr.gaisho.domains import FreedomDomain
+    from xzr.gaisho.surfacemodels import compare_surface_models
+
+    root = Path(__file__).resolve().parents[2] / "docs" / "gaisho"
+    m = json.loads((root / "experiments_surface_models.json").read_text())
+    saved = m["domains"]["003-freedom"]
+    cond = saved["rows"][0]["condition"]
+    got = compare_surface_models(FreedomDomain(), tuple(saved["seeds"]), [cond])
+    assert got["rows"][0] == saved["rows"][0]
