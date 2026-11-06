@@ -82,7 +82,7 @@ simulation,complex systems,networks,graph,emergence,philosophy,research,dynamics
 | "the research-results site (ziran-xeno-simulator.vercel.app), which the app links to" | the host answers `DEPLOYMENT_NOT_FOUND`; the working host is xeno-ziran.platodesignlab.com | **outdated — corrected above**; the shipped build's button opens the dead address |
 | "The interactive simulator ... runs locally" with no mention of which worlds are bundled | the app offers three worlds (600, 1,500, 3,000); the two 10,000-configuration worlds are listed but refused | added to the text above |
 
-Not checked: behaviour on a physical device (simulators only), other storefronts, the current App Store Connect field values.
+Not checked: behaviour on a physical device (simulators only), other storefronts, the current App Store Connect field values, and the XCTest suites (they cannot run on the machine used: see docs/IOS_APP.md, "Verification of 1.0.1").
 
 ## Version notes (1.0)
 

@@ -50,6 +50,12 @@ build-time static libraries (`libnpymath.a`, `libnpyrandom.a`) were bundled (now
 Automatic signing of the archive step needs a registered device for a development profile; the archive is
 therefore built unsigned and signed for distribution by the export step.
 
+## Verification of 1.0.1 (2026-11-06, simulators only)
+
+**XCTest could not be run on this machine.** Every `xcodebuild test` run (the unit bundle, the UI bundle, and a throw-away empty app with one empty test, `xctest-probe`) ended after 7–9 minutes with "The test runner hung before establishing connection" (Xcode 26.2 on a macOS 27 host). So `LaunchTests`, `RuntimeTests` (including the desktop-golden conformance) and `WebHostTests` were **not run for this change**; their last recorded results are those of the 1.0 work above. The new UI test `testSessionControlsAreReachable` and the new `About` entry in `LaunchTests.views` were written but never executed.
+
+What was checked instead, by hand on the iPhone 17, iPhone 17 Pro Max and iPad Pro 13-inch (M5) simulators (Debug build of this branch): the compact phone layout and the Session button; the About screen with the limits read from the runtime; the P/A icon on the home screen; the Practice screen without a keyboard and without a sideways shift; Network, Shape Space, Address Space, World Map, 3D Globe, Timeline and Compare render; on the iPad, Save / Load / Export fit on screen, the Export menu lists its 7 entries, choosing "metrics · JSON" opens the share sheet with `xzr-metrics.json` (Copy, Save to Files), Load opens the system file picker (no file was loaded), and "Research Results" opens Safari at xeno-ziran.platodesignlab.com, which loaded the research-results page. Also run: `npm run build:native`, `tsc`, the frontend tests (329 passed), `backend/tests/test_bridge.py` (7 passed), ruff, mypy, and an **unsigned Release build for iOS devices** (`generic/platform=iOS`, code signing off: BUILD SUCCEEDED). **Not done:** a signed archive, an upload, a physical device, loading a saved session file in the app, the background / foreground pause.
+
 ## Strategy
 
 Four strategies were weighed (see the delivery report): A — thin WKWebView client of a remote runtime (rejected:
