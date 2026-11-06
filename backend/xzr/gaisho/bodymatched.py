@@ -196,3 +196,50 @@ def run_extended(seeds: list[int]) -> dict[str, Any]:
             refused[cond] = {"largest_step_amplification": float(ns["margin"]), "fastest_mode_hz": float(ns["fastest_mode_hz"]), "meaning": "not run; XB-TRO's stability check refuses it. This is neither a fall nor a result about the body"}
     res = run_domain(dom, FULL, tuple(seeds), runnable)
     return _summarize(dom, res, seeds, lambda spec: {"base": spec["preset"], "donor": spec["donor"], "blocks": list(spec["blocks"]), "dt": spec["dt"]}, {PRESETS["human"]: HUMAN, PRESETS["machine"]: MACHINE}, {"refused_by_xbtro": refused})
+
+
+# ---------------------------------------------------------------------------------------------------------- convergence in the integration step
+CONVERGENCE_DTS = (0.01, 0.005, 0.0025, 0.00125, 0.000625)
+
+
+def _convergence_name(base: str, dt: float) -> str:
+    return _dt_name(base, dt)
+
+
+class ConvergenceDomain(MatchedBodyDomain):
+    """Each plain preset at a ladder of integration steps, from the coarse step of the human-like preset down to 1/16 of it (not registered).
+
+    The extended comparison showed that the effects of the machine-like preset move with the step (0.25 at 0.005 s, 0.20 at 0.0025 s, 0.40 at 0.01 s). A result that still moves when the step is halved is a result about the integrator as much as about the body. This ladder asks whether the grid effects settle."""
+
+    conditions = {  # type: ignore[assignment]
+        _convergence_name(base, dt): {"preset": PRESETS[base], "donor": None, "blocks": (), "dt": dt}
+        for base in ("human", "machine")
+        for dt in CONVERGENCE_DTS
+    }
+
+    def base_config(self, cond: str) -> dict:
+        spec = self.conditions[cond]
+        cfg = copy.deepcopy(self.link.config.build(spec["preset"]))
+        cfg["task"]["dt"] = spec["dt"]
+        return cfg
+
+
+def run_convergence(seeds: list[int]) -> dict[str, Any]:
+    """The two presets at the steps of ``CONVERGENCE_DTS``. A step that XB-TRO's stability check refuses is listed, not run, and not counted as a fall. Every condition is read against its own preset at its own step, so ``change_against_base`` is not computed (there is no control condition here): the per-step effects are the result."""
+    dom = ConvergenceDomain()
+    refused, runnable = {}, []
+    for cond in dom.conditions:
+        ns = dom.link.engine.Params(dom.base_config(cond)).numeric_stability()
+        if ns["stable"]:
+            runnable.append(cond)
+        else:
+            refused[cond] = {"largest_step_amplification": float(ns["margin"]), "fastest_mode_hz": float(ns["fastest_mode_hz"]), "meaning": "not run; XB-TRO's stability check refuses it. This is neither a fall nor a result about the body"}
+    res = run_domain(dom, FULL, tuple(seeds), runnable)
+    out: dict[str, Any] = {}
+    for cond, v in res["conditions"].items():
+        rel = {n: ({"status": r["status"], **t_interval(r["per_seed"])} if r["status"] == "IDENTIFIED" else {"status": r["status"]}) for n, r in v["relations"].items()}
+        cells = v["snapshots"]["end"]["cells"]
+        grid = [[next(c["p"] for c in cells if c["i"] == i and c["j"] == j) for i in range(len(dom.x_values))] for j in range(len(dom.y_values))]
+        out[cond] = {"base": dom.conditions[cond]["preset"], "dt": dom.conditions[cond]["dt"], "relations": rel, "fell_share_grid": grid, "mean_fell_share": float(np.mean(grid))}
+    body = {"model_version": MODEL_VERSION, "seeds": list(seeds), "dts": list(CONVERGENCE_DTS), "axes": {"x": dom.x_name, "y": dom.y_name}, "body": dom.provenance(), "conditions": out, "refused_by_xbtro": refused}
+    return {**body, "digest": digest(body)}
