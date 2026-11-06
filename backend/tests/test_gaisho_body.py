@@ -356,3 +356,35 @@ def test_a_saved_extended_condition_is_reproduced_and_an_unstable_step_is_refuse
     assert grid == m["conditions"][cond]["fell_share_grid"]
     refused = "human-like planar body at the integration step 0.02 s"
     assert dom.link.engine.Params(dom.base_config(refused)).numeric_stability()["stable"] is False
+
+
+def test_the_saved_step_convergence_shows_which_effects_settle_and_agrees_with_the_extended_comparison_where_they_overlap():
+    root = Path(__file__).resolve().parents[2] / "docs" / "gaisho"
+    c = json.loads((root / "experiments_body_convergence.json").read_text())
+    ext = json.loads((root / "experiments_body_matched_extended.json").read_text())
+    assert c["seeds"] == list(range(1, 9)) and c["dts"] == [0.01, 0.005, 0.0025, 0.00125, 0.000625] and c["refused_by_xbtro"] == {}
+    assert len(c["conditions"]) == 10
+    eff = lambda base, dt, n: next(v for v in c["conditions"].values() if v["base"].startswith(base) and v["dt"] == dt)["relations"][n]["mean"]  # noqa: E731
+    # the human-like preset's effects do not move with the step (the 0.43 at 0.005 s is a small sampling excursion of one cell row, inside [0.37, 0.48])
+    assert [eff("human", dt, "effect_x") for dt in c["dts"]] == [0.6] * 5
+    # the machine-like preset settles at 0.0025 s and below: x = 0.2, y = 0.6 (0.62 at 0.00125 s lies inside its own interval); at its own 0.005 s and at 0.01 s it does not
+    assert [eff("machine", dt, "effect_x") for dt in (0.0025, 0.00125, 0.000625)] == [0.2] * 3
+    assert eff("machine", 0.005, "effect_x") == 0.25 and eff("machine", 0.01, "effect_x") == 0.4
+    # the conditions that both records contain agree
+    for name, v in ext["conditions"].items():
+        if name in c["conditions"] and "integration step" in name:
+            assert v["fell_share_grid"] == c["conditions"][name]["fell_share_grid"], name
+
+
+@needs_body
+def test_a_saved_convergence_condition_is_reproduced_by_running_it_again(linked):
+    from xzr.gaisho.bodymatched import ConvergenceDomain
+    from xzr.gaisho.lab import run_domain
+
+    root = Path(__file__).resolve().parents[2] / "docs" / "gaisho"
+    c = json.loads((root / "experiments_body_convergence.json").read_text())
+    cond = "machine-like planar body at the integration step 0.00125 s"
+    res = run_domain(ConvergenceDomain(), FULL, tuple(c["seeds"]), [cond])
+    cells = res["conditions"][cond]["snapshots"]["end"]["cells"]
+    grid = [[next(x["p"] for x in cells if x["i"] == i and x["j"] == j) for i in range(5)] for j in range(5)]
+    assert grid == c["conditions"][cond]["fell_share_grid"]
