@@ -1,4 +1,4 @@
-"""XENO ZIRAN SIMULATOR runtime — Operational Shape Simulation Platform.
+"""P/A SYSTEM (formerly XENO ZIRAN SIMULATOR) runtime — Operational Shape Simulation Platform.
 
 Explore possible transitions under intervention. The Philosophical Runtime (practice, reasonlab) is one operational
 region of the simulator, beside the experimental runtime and the research results.

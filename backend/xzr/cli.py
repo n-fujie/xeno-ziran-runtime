@@ -1,4 +1,4 @@
-"""``xzr`` — command-line interface to the XENO ZIRAN SIMULATOR research runtime.
+"""``xzr`` — command-line interface to the P/A SYSTEM (formerly XENO ZIRAN SIMULATOR) research runtime.
 
     xzr presets                         list the bundled experiment presets
     xzr validate CONFIG                 check a preset name or configuration file; print the effective configuration
@@ -43,7 +43,7 @@ STUDIES = {
 
 
 def _parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(prog="xzr", description="XENO ZIRAN SIMULATOR research runtime: run, compare and "
+    p = argparse.ArgumentParser(prog="xzr", description="P/A SYSTEM research runtime: run, compare and "
                                 "export operational experiments. Experimental instruments, not an ontology.")
     p.add_argument("--version", action="version", version=f"xzr {__version__}")
     sub = p.add_subparsers(dest="command", required=True, metavar="COMMAND")

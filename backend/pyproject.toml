@@ -1,7 +1,7 @@
 [project]
 name = "xzr"
 version = "0.2.0"
-description = "XENO ZIRAN SIMULATOR runtime: operational-shape simulation and experimental instruments for comparing configurations"
+description = "P/A SYSTEM (formerly XENO ZIRAN SIMULATOR) runtime: operational-shape simulation and experimental instruments for comparing configurations"
 requires-python = ">=3.11"
 license = { text = "MIT" }
 dependencies = [

@@ -1,4 +1,6 @@
-# XENO ZIRAN SIMULATOR — runtime repository (`xeno-ziran-runtime`)
+# P/A SYSTEM — runtime repository (`xeno-ziran-runtime`)
+
+**P/A SYSTEM** is the public name of this application since November 2026; it was published as **XENO ZIRAN SIMULATOR**, which remains the name of the earlier releases, the research archive and the App Store listing until that listing is renamed. P/A SYSTEM is a scientific research system (P/A Institute), not a public-address system. The repository, the `xzr` package, the command line and the API keep their names.
 
 > **Operational-Shape tools are not an implementation of a final ontology. They are experimental instruments for
 > varying configurations, testing operational distinctions, comparing transformations, and measuring changes in
@@ -124,7 +126,7 @@ effective configuration. Cite with [CITATION.cff](CITATION.cff). License: MIT ([
 ## The interactive simulator
 
 Operational-Shape Dynamics (theory) › Xenoscience (scientific regime) › Ziran System (architecture family) ›
-XENO ZIRAN SIMULATOR (this application). The simulator's operations fall into distinct regions: the **experimental
+P/A SYSTEM (this application; formerly XENO ZIRAN SIMULATOR). The simulator's operations fall into distinct regions: the **experimental
 runtime** (configuration, intervention, execution, comparison, replay), the **research results** produced on it
 (`backend/experiments/`), and the **Philosophical Runtime** (philosophical analysis: claims and commitments as
 structured interventions). The Philosophical Runtime is one region of the simulator, not its enclosing category.

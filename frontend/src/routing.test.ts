@@ -36,6 +36,6 @@ describe('view routing', () => {
   });
 
   it('titles a view with the application name', () => {
-    expect(pageTitle('Resolution Matrix')).toBe('Resolution Matrix — XENO ZIRAN SIMULATOR');
+    expect(pageTitle('Resolution Matrix')).toBe('Resolution Matrix — P/A SYSTEM');
   });
 });

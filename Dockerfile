@@ -1,4 +1,4 @@
-# XENO ZIRAN SIMULATOR runtime — single-service container (API + simulation workers + static UI).
+# P/A SYSTEM runtime (formerly XENO ZIRAN SIMULATOR) — single-service container (API + simulation workers + static UI).
 # Public demo: run with XZR_PUBLIC=1 (limits in backend/xzr/service/limits.py, plan in docs/PUBLIC_RUNTIME_DEPLOYMENT.md).
 # Cloud Run compatible: listens on $PORT (default 8080).
 

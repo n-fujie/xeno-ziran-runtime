@@ -1,4 +1,4 @@
-# XENO ZIRAN SIMULATOR runtime (xeno-ziran-runtime) — developer entry points. Requires python3.11+ and node 20+.
+# P/A SYSTEM runtime (formerly XENO ZIRAN SIMULATOR) (xeno-ziran-runtime) — developer entry points. Requires python3.11+ and node 20+.
 PY ?= python3
 VENV := .venv
 BIN := $(VENV)/bin
