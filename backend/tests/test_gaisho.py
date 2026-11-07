@@ -1068,3 +1068,49 @@ def test_a_saved_surface_row_is_reproduced_by_running_it_again():
     cond = saved["rows"][0]["condition"]
     got = compare_surface_models(FreedomDomain(), tuple(saved["seeds"]), [cond])
     assert got["rows"][0] == saved["rows"][0]
+
+
+class _StubOneAxis(_StubSurface):
+    """The recorded surface depends on x alone: the y intervention carries nothing."""
+
+    conditions = {"x only": 0}
+
+    def simulate(self, cond, seed, obs):
+        rng = np.random.default_rng(seed)
+        cells = [{"i": i, "j": j, "x": float(x), "y": float(y), "p": float(np.clip(1 / (1 + np.exp(-(4 * x - 2))) + 0.01 * rng.normal(), 0, 1))} for j, y in enumerate(self.y_values) for i, x in enumerate(self.x_values)]
+        return {"snapshots": {"end": {"surface": {"cells": cells}}}}
+
+
+def test_the_axis_ablation_finds_the_axis_that_carries_the_surface_and_the_one_that_does_not():
+    from xzr.gaisho.surfacemodels import compare_axis_ablation
+
+    one = compare_axis_ablation(_StubOneAxis(), tuple(range(1, 9)))["rows"][0]
+    v = lambda row, split, simpler: next(x["verdict"] for x in row[split]["verdicts"] if x["simpler"] == simpler)  # noqa: E731
+    assert v(one, "interpolation", "Mx") == "SIMPLER_SUFFICES" and v(one, "interpolation", "My") == "RICHER_NEEDED"  # y adds nothing; x is needed
+    both = next(r for r in compare_axis_ablation(_StubSurface(), tuple(range(1, 9)))["rows"] if r["condition"] == "additive")
+    assert v(both, "interpolation", "Mx") == "RICHER_NEEDED" and v(both, "interpolation", "My") == "RICHER_NEEDED"
+
+
+def test_the_saved_axis_ablation_recovers_the_declared_structure_of_003_and_shows_what_005_does_not_show():
+    root = Path(__file__).resolve().parents[2] / "docs" / "gaisho"
+    m = json.loads((root / "experiments_axis_ablation.json").read_text())
+    assert set(m["domains"]) == {"002-bias", "003-freedom", "004-body", "005-credit"} and m["not_executed"] == {} and "no attribution" in m["reading"]
+    v = lambda dom, i, split, simpler: next(x["verdict"] for x in m["domains"][dom]["rows"][i][split]["verdicts"] if x["simpler"] == simpler)  # noqa: E731
+    # 003: where the belief does not drive the reach (conditions 1 and 3) the belief axis adds nothing; where it does (2, 4, 5) it adds on interpolation: the instrument recovers the declared rule
+    for i in (0, 2):
+        assert v("003-freedom", i, "interpolation", "Mx") == "SIMPLER_SUFFICES"
+    for i in (1, 3, 4):
+        assert v("003-freedom", i, "interpolation", "Mx") == "RICHER_NEEDED"
+    # 005: the threshold alone reproduces the held-out access shares in every condition and split; the feedback axis adds nothing measurable to the access share on this grid
+    assert all(v("005-credit", i, sp, "Mx") == "SIMPLER_SUFFICES" for i in range(4) for sp in ("interpolation", "extrapolation"))
+    assert m["domains"]["005-credit"]["rows"][0]["range_of_mean_surface"]["y"] == 0.0  # the allocation-inert condition: no change along the feedback axis at all
+
+
+def test_a_saved_axis_ablation_row_is_reproduced_by_running_it_again():
+    from xzr.gaisho.domains import FreedomDomain
+    from xzr.gaisho.surfacemodels import compare_axis_ablation
+
+    root = Path(__file__).resolve().parents[2] / "docs" / "gaisho"
+    saved = json.loads((root / "experiments_axis_ablation.json").read_text())["domains"]["003-freedom"]
+    got = compare_axis_ablation(FreedomDomain(), tuple(saved["seeds"]), [saved["rows"][1]["condition"]])
+    assert got["rows"][0] == saved["rows"][1]

@@ -8,6 +8,7 @@ by running the specification), and for the knowledge domain the sensitivity of w
 
     XZR_XBTRO_PATH=... PYTHONPATH=. python scripts/gaisho_experiments.py body-matched   # the two XB-TRO presets compared one block of the configuration at a time (Dictionary 060): docs/gaisho/experiments_body_matched.json
 
+    XZR_XBTRO_PATH=... PYTHONPATH=. python scripts/gaisho_experiments.py axis-ablation   # one-intervention accounts against both, 002 003 005 and (if linked) 004: docs/gaisho/experiments_axis_ablation.json
     XZR_XBTRO_PATH=... PYTHONPATH=. python scripts/gaisho_experiments.py surface-models   # nested surface models M0/M1/M2 on held-out cells for domains 002, 003, 005 and (if linked) 004: docs/gaisho/experiments_surface_models.json
     XZR_XBTRO_PATH=... PYTHONPATH=. python scripts/gaisho_experiments.py body-convergence   # each preset at integration steps 0.01 ... 0.000625 s, 8 seeds: docs/gaisho/experiments_body_convergence.json
     XZR_XBTRO_PATH=... PYTHONPATH=. python scripts/gaisho_experiments.py body-matched-extended   # combinations of swaps, other integration steps, 8 seeds: docs/gaisho/experiments_body_matched_extended.json
@@ -74,6 +75,7 @@ MATCHED_OUT = OUT.with_name("experiments_body_matched.json")
 EXTENDED_OUT = OUT.with_name("experiments_body_matched_extended.json")
 CONVERGENCE_OUT = OUT.with_name("experiments_body_convergence.json")
 SURFACE_OUT = OUT.with_name("experiments_surface_models.json")
+ABLATION_OUT = OUT.with_name("experiments_axis_ablation.json")
 PERTURBATION_OUT = OUT.with_name("experiments_perturbation.json")
 SSS_OUT = OUT.with_name("experiments_sss.json")
 
@@ -102,6 +104,15 @@ if __name__ == "__main__" and sys.argv[1:] == ["body-matched-extended"]:
     _e = run_extended(SEEDS[:8])
     EXTENDED_OUT.write_text(json.dumps(_e, indent=1, sort_keys=True))
     print("body-matched-extended", _e["digest"][:12], "written", EXTENDED_OUT)
+    raise SystemExit(0)
+
+if __name__ == "__main__" and sys.argv[1:] == ["axis-ablation"]:
+    from xzr.gaisho.domains import domain_registry
+    from xzr.gaisho.surfacemodels import run_axis_ablation
+
+    _ab = run_axis_ablation({"002-bias": tuple(SEEDS), "003-freedom": tuple(SEEDS), "005-credit": tuple(SEEDS[:10]), "004-body": tuple(SEEDS[:8])}, domain_registry())
+    ABLATION_OUT.write_text(json.dumps(_ab, indent=1, sort_keys=True))
+    print("axis-ablation", _ab["digest"][:12], "domains", list(_ab["domains"]), "not executed", list(_ab["not_executed"]), "written", ABLATION_OUT)
     raise SystemExit(0)
 
 if __name__ == "__main__" and sys.argv[1:] == ["surface-models"]:
