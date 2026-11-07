@@ -56,5 +56,7 @@ export default defineConfig({
     : WEBRT
       ? { chunkSizeWarningLimit: 2500, sourcemap: false, outDir: '../web-app-build', emptyOutDir: true }
       : { chunkSizeWarningLimit: 2500, sourcemap: false },
-  test: { environment: 'node' },
+  // The 3D-laboratory geometry tests build every published record (CPU-bound, 5-12 s on a loaded machine); the default 5 s made them
+  // fail by timing only. 60 s is the limit assemblies.test.ts already sets on its own heaviest cases.
+  test: { environment: 'node', testTimeout: 60_000 },
 });

@@ -113,7 +113,10 @@ def test_bridge_tick_runs_sessions_streams_and_comparisons(cooperative):
     assert st == 200
     assert call("POST", f"/api/sessions/{sid}/control", {"action": "step", "steps": 30})[0] == 200
     items = 0
-    for _ in range(400):
+    # tick() advances for a slice of WALL time, so how many ticks the work needs depends on the speed of the machine:
+    # wait for the work against a wall-clock deadline, not for a fixed number of ticks (which fails on a loaded machine).
+    deadline = time.monotonic() + 60
+    while time.monotonic() < deadline:
         items += sum(len(b["items"]) for b in json.loads(bridge.tick(20)))
         if bridge.SESSIONS[sid].pending_steps == 0 and items:
             break
@@ -123,7 +126,8 @@ def test_bridge_tick_runs_sessions_streams_and_comparisons(cooperative):
     assert st == 200
     jobs = [j for j in session_mod.JOBS.values() if j["session"] == sid]
     assert jobs, "the command queued a comparison"
-    for _ in range(100):
+    deadline = time.monotonic() + 60
+    while time.monotonic() < deadline:
         bridge.tick(20)
         if all(j["status"] in session_mod.FINISHED for j in jobs):
             break
