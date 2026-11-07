@@ -100,3 +100,25 @@ def test_the_saved_records_state_their_provenance_and_keep_every_dissolution_out
             d = b["dissolution"]
             assert set(d) >= {"physical", "organizational", "functional_transmission", "attributional", "agentic", "observational"}
             assert d["agentic"].startswith("NOT_APPLICABLE")
+
+
+def test_the_sbs_routes_serve_the_saved_records_unchanged_and_refuse_a_public_runtime(monkeypatch):
+    from fastapi.testclient import TestClient
+
+    from xzr.service import studies
+    from xzr.service.app import app
+
+    c = TestClient(app)
+    r = c.get("/api/sbs/summary")
+    f = DOCS / "sbs_records.json"
+    if not f.exists():  # pragma: no cover
+        return
+    assert r.status_code == 200
+    saved = json.loads(f.read_text())
+    assert r.json()["protocol_digest"] == saved["protocol_digest"] and len(r.json()["worlds"]) == len(saved["worlds"])
+    fr = c.get("/api/sbs/frames").json()
+    assert fr["classification"] == "NEW EXECUTION" and "not interpolated" in fr["note"]
+    import dataclasses
+
+    monkeypatch.setattr(studies, "LIMITS", dataclasses.replace(studies.LIMITS, public=True))
+    assert c.get("/api/sbs/summary").status_code == 403 and c.get("/api/sbs/frames").status_code == 403

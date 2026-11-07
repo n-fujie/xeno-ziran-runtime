@@ -23,6 +23,7 @@ const en = {
   view_laboratory: '3D Laboratory',
   view_ecosystem: 'XENO ECOSYSTEM',
   view_body: 'BODY / TOTAL OBSERVATION',
+  view_sbs: 'SBS — Simondonian Body Simulation',
   view_study: 'Experiments',
 };
 
