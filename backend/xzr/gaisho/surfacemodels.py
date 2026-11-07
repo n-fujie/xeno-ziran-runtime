@@ -139,3 +139,89 @@ def run_surface_models(seeds_by_domain: dict[str, tuple[int, ...]], domains: dic
         "not_executed": not_run,
     }
     return {**body, "digest": digest(body)}
+
+
+# ---------------------------------------------------------------------------------------------------------- axis ablation
+ABLATION_MODELS = {
+    "Mx": {"label": "response to the x intervention alone (the y intervention is no part of the account)", "parameters": 2},
+    "My": {"label": "response to the y intervention alone (the x intervention is no part of the account)", "parameters": 2},
+    "M1": MODELS["M1"],
+}
+ABLATION_PAIRS = (("Mx", "M1", "does the y intervention add anything to x alone?"), ("My", "M1", "does the x intervention add anything to y alone?"))
+
+
+def _fit_predict_axis(kind: str, train: tuple[np.ndarray, np.ndarray, np.ndarray], test: tuple[np.ndarray, np.ndarray]) -> np.ndarray:
+    tx, ty, tp = train
+    if kind == "M1":
+        return _fit_predict("M1", train, test)
+    a, b = (tx, test[0]) if kind == "Mx" else (ty, test[1])
+    w = np.linalg.lstsq(np.stack([a, np.ones_like(a)], axis=1), _logit(tp), rcond=None)[0]
+    return 1.0 / (1.0 + np.exp(-(w[0] * b + w[1])))
+
+
+def compare_axis_ablation(dom: Domain, seeds: tuple[int, ...], conditions: list[str] | None = None, obs: Observation = FULL) -> dict[str, Any]:
+    """Ablation of an intervention axis: M1 (both interventions) against a response to one intervention alone, on the held-out cells, two splits, paired over seeds. ``RICHER_NEEDED`` here reads: the intervention that the one-axis account leaves out carries part of the recorded surface; ``SIMPLER_SUFFICES``: it carries none that this grid and these seeds can show."""
+    names = conditions or list(dom.conditions)
+    nx = len(dom.x_values)
+    x0, xs = float(dom.x_values.min()), float(np.ptp(dom.x_values)) or 1.0
+    y0, ys = float(dom.y_values.min()), float(np.ptp(dom.y_values)) or 1.0
+    rows = []
+    for cond in names:
+        prepare = getattr(dom, "prepare", None)
+        if prepare is not None:
+            prepare(cond, seeds, obs)
+        errs: dict[str, dict[str, list[float]]] = {s: {m: [] for m in ABLATION_MODELS} for s in SPLITS}
+        spread = {"x": [], "y": []}  # the range of the mean surface along each axis, for the reader (not a test)
+        for seed in seeds:
+            end = dom.simulate(cond, seed, obs)["snapshots"].get("end")
+            if not end:
+                continue
+            cells = [c for c in end["surface"]["cells"] if c["p"] is not None]
+            for split in SPLITS:
+                tr, te = _split(cells, nx, split)
+                if len(tr) < 6 or not te:
+                    continue
+                train = _arrays(tr, x0, xs, y0, ys)
+                tex, tey, tep = _arrays(te, x0, xs, y0, ys)
+                for m in ABLATION_MODELS:
+                    errs[split][m].append(float(np.sqrt(np.mean((_fit_predict_axis(m, train, (tex, tey)) - tep) ** 2))))
+            grid: dict[tuple[int, int], float] = {(c["i"], c["j"]): c["p"] for c in cells}
+            ny = len(dom.y_values)
+            if len(grid) == nx * ny:
+                a = np.array([[grid[(i, j)] for i in range(nx)] for j in range(ny)])
+                spread["x"].append(float(a.mean(axis=0).max() - a.mean(axis=0).min()))
+                spread["y"].append(float(a.mean(axis=1).max() - a.mean(axis=1).min()))
+        per_split = {}
+        for split in SPLITS:
+            e = errs[split]
+            if min(len(v) for v in e.values()) < 2:
+                per_split[split] = {"verdicts": [{"simpler": a, "richer": b, "question": q, "verdict": "UNRESOLVED", "why": "fewer than two seeds with held-out cells"} for a, b, q in ABLATION_PAIRS]}
+                continue
+            verdicts = []
+            for a, b, q in ABLATION_PAIRS:
+                d = paired(list(e[a]), list(e[b]))
+                verdicts.append({"simpler": a, "richer": b, "question": q, "verdict": _verdict(d), "error_difference": d, "margin": MARGIN})
+            per_split[split] = {"errors": {m: float(np.mean(v)) for m, v in e.items()}, "n_seeds": len(e["M1"]), "verdicts": verdicts}
+        rows.append({"condition": cond, "range_of_mean_surface": {k: (float(np.mean(v)) if v else None) for k, v in spread.items()}, **per_split})
+    return {"domain": dom.id, "seeds": list(seeds), "rows": rows}
+
+
+def run_axis_ablation(seeds_by_domain: dict[str, tuple[int, ...]], domains: dict[str, Domain | None]) -> dict[str, Any]:
+    out: dict[str, Any] = {}
+    not_run: dict[str, str] = {}
+    for dom_id, seeds in seeds_by_domain.items():
+        dom = domains.get(dom_id)
+        if dom is None:
+            not_run[dom_id] = "the domain is not executed here (the XB-TRO link is not configured); nothing was computed or substituted"
+            continue
+        out[dom_id] = compare_axis_ablation(dom, seeds, list(getattr(dom, "default_conditions", None) or dom.conditions))
+    body = {
+        "model_version": MODEL_VERSION,
+        "models": ABLATION_MODELS,
+        "margin": MARGIN,
+        "rule": "as in the nested surface models: RICHER_NEEDED if M1's held-out error is lower than the one-axis account's by more than the margin (95 % interval); SIMPLER_SUFFICES if the interval lies inside +/- the margin; RICHER_WORSE if M1 is worse by more than the margin; otherwise UNRESOLVED",
+        "reading": "which intervention carries the recorded surface of a domain, at one grid; an ablation of an axis of the recorded response, not of a mechanism of the institution, the rule set or the body; no attribution",
+        "domains": out,
+        "not_executed": not_run,
+    }
+    return {**body, "digest": digest(body)}
