@@ -24,11 +24,10 @@ def test_a_sensitivity_variant_changes_the_protocol_only_inside_the_context_and_
         assert P.PROTOCOL["model"]["n"] == 40 and org.R_BOND == 1.2
         assert P.PROTOCOL["formation_steps"] == 2 * before["formation_steps"]
         assert P._cfg().n == 40
-    assert P.PROTOCOL == before and org.R_BOND == r0
-    with pytest.raises(RuntimeError):
-        with sens.applied({"model.density": 0.15}):
-            raise RuntimeError("boom")
-    assert P.PROTOCOL == before and org.R_BOND == r0
+    assert before == P.PROTOCOL and r0 == org.R_BOND
+    with pytest.raises(RuntimeError), sens.applied({"model.density": 0.15}):
+        raise RuntimeError("boom")
+    assert before == P.PROTOCOL and r0 == org.R_BOND
 
 
 def test_the_default_contact_cutoff_is_bit_identical_to_the_explicit_one_and_a_variant_cutoff_changes_the_graph():
@@ -44,7 +43,7 @@ def test_every_variant_changes_exactly_one_convention_and_the_frozen_digest_is_u
     for name, (kind, change) in sens.VARIANTS.items():
         assert kind in ("world", "hold")
         assert len({k.split(".")[0] for k in change if k != "scale_steps"}) <= 1, name  # one section of the protocol (the hold variants move the hold and its measuring window together)
-    assert P.PROTOCOL_DIGEST == digest
+    assert digest == P.PROTOCOL_DIGEST
 
 
 def test_bond_retention_and_shape_without_membership_on_a_constructed_configuration():
@@ -110,7 +109,7 @@ def test_fragility_transfer_needs_the_mechanism_evidence_and_an_association_alon
 
 
 def test_pareto_keeps_incomparable_designs_and_marks_only_dominated_ones():
-    rows = {e: {0: {"performance_overlap": p, "repair": {"single_group": bool(s)}, "load_retention": l}} for e, (p, s, l) in zip(of.DESIGNS, [(0.4, 1, 0.9), (0.5, 1, 0.9), (0.9, 0, 0.9), (0.4, 1, 0.5)])}
+    rows = {e: {0: {"performance_overlap": p, "repair": {"single_group": bool(s)}, "load_retention": ld}} for e, (p, s, ld) in zip(of.DESIGNS, [(0.4, 1, 0.9), (0.5, 1, 0.9), (0.9, 0, 0.9), (0.4, 1, 0.5)])}
     out = of.pareto(rows)
     assert 1.5 in out["retained_non_dominated"] and 2.0 in out["retained_non_dominated"]  # incomparable: better performance vs better repair
     assert out["dominated_by"]["1.0"] == [1.5] and out["dominated_by"]["2.5"] == [1.0, 1.5]

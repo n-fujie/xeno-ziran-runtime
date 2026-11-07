@@ -81,7 +81,7 @@ def run_branch(formed: Sim, reference: np.ndarray, kind: str | None, level: floa
     spec = PROTOCOL["interventions"].get(kind) if kind else None
     steps = spec["duration_steps"] if spec else PROTOCOL["interventions"]["decoupling"]["duration_steps"]
     se = PROTOCOL["sample_every"]
-    over = {} if not spec else {spec["variable"]: level}
+    over: dict[str, Any] = {} if not spec else {spec["variable"]: level}
     frames, transitions, prev_cohesive = [], 0, True
     def sample(phase: str) -> None:
         nonlocal transitions, prev_cohesive
@@ -113,7 +113,7 @@ def run_branch(formed: Sim, reference: np.ndarray, kind: str | None, level: floa
         ari = org.adjusted_rand(true_part, org.partition(fr, sim.box))
         final_obs[name] = {"ari_vs_true_partition": ari, "outcome_as_read_by_observer": classify(org.physical(fr, sim.box), org.organizational(fr, sim.box, reference), sim.cfg.n, None)}
     outcome_true = classify(r_phys, r_org, sim.cfg.n, None)
-    rec = {
+    rec: dict[str, Any] = {
         "kind": kind or "control",
         "level": level,
         "dissolution": {"physical": d_phys, "organizational": d_org, "functional_transmission": d_fun, "attributional": "decided by the model comparison (comparison.py)", "agentic": "NOT_APPLICABLE (the substrate has no agent)", "observational": "read from the observed frames of the comparison and from reconfiguration.final_observation"},

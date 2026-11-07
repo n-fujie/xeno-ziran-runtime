@@ -35,9 +35,9 @@ OBS = ("fine", "coarse")
 def descriptor(kind: str | None, level: float | None) -> list[float]:
     """The intervention as every model is told it: two indicators and a severity in [0, 1]."""
     if kind == "decoupling":
-        return [1.0, 0.0, (1.5 - float(level)) / 1.5]
+        return [1.0, 0.0, (1.5 - float(level or 0.0)) / 1.5]
     if kind == "heating":
-        return [0.0, 1.0, (float(level) - 0.3) / 1.7]
+        return [0.0, 1.0, (float(level or 0.0) - 0.3) / 1.7]
     return [0.0, 0.0, 0.0]
 
 
@@ -57,7 +57,7 @@ def features(model: str, frame: np.ndarray, box: float, desc: list[float]) -> np
         return np.column_stack([*cols, dd])
     lab = org.partition(frame, box)
     sizes = {k: int((lab == k).sum()) for k in set(int(v) for v in lab if v >= 0)}
-    big = max(sizes, key=sizes.get) if sizes else -1
+    big = max(sizes, key=lambda k: sizes[k]) if sizes else -1
     if model == "A":
         in_big = (lab == big).astype(float) if big >= 0 else np.zeros(n)
         gsize = np.array([sizes.get(int(v), 0) for v in lab], dtype=float) / n

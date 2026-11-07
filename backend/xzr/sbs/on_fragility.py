@@ -55,7 +55,8 @@ def form_design(seed: int, eps: float) -> Sim:
 def cohesive_energy(sim: Sim) -> float:
     """Mean pair-attraction energy per particle, from the tail term -eps cos^2(arg) of the substrate."""
     from scipy.spatial import cKDTree
-    from .engine import RM, WC, R_CUT
+
+    from .engine import R_CUT, RM, WC
     pairs = cKDTree(sim.x, boxsize=sim.box).query_pairs(R_CUT, output_type="ndarray")
     if pairs.size == 0:
         return 0.0
@@ -129,14 +130,14 @@ def _paired(rows: dict[float, dict[int, dict]], eps: float, key) -> dict[str, An
 
 def verdicts(rows: dict[float, dict[int, dict]]) -> dict[str, Any]:
     res: dict[str, Any] = {}
+    recovery_len = P.PROTOCOL["recovery_steps"]
     for eps in DESIGNS:
         if eps == BASELINE:
             continue
         perf = _paired(rows, eps, lambda r: r["performance_overlap"])
         single = _paired(rows, eps, lambda r: float(r["repair"]["single_group"]))
         # time to half: unrepaired worlds are right-censored at the length of the recovery window, a stated convention
-        T = P.PROTOCOL["recovery_steps"]
-        t_half = _paired(rows, eps, lambda r: float(r["repair"]["steps_to_half"] if r["repair"]["steps_to_half"] is not None else T))
+        t_half = _paired(rows, eps, lambda r: float(r["repair"]["steps_to_half"] if r["repair"]["steps_to_half"] is not None else recovery_len))
         load = _paired(rows, eps, lambda r: r["load_retention"])
         mob = {"baseline_minus_design": paired_t([rows[BASELINE][s]["mobility_msd_500"] - rows[eps][s]["mobility_msd_500"] for s in sorted(set(rows[eps]) & set(rows[BASELINE]))])}
         an = [r["anneal"] for r in rows[eps].values() if "anneal" in r]

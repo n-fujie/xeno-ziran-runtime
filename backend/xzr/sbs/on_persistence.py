@@ -58,7 +58,7 @@ def run_branch(formed: Sim, reference: np.ndarray, pairs0: set, kind: str | None
     spec = P.PROTOCOL["interventions"].get(kind) if kind else None
     steps = spec["duration_steps"] if spec else P.PROTOCOL["interventions"]["decoupling"]["duration_steps"]
     se = P.PROTOCOL["sample_every"]
-    over = {} if not spec else {spec["variable"]: level}
+    over: dict[str, Any] = {} if not spec else {spec["variable"]: level}
     series: list[dict[str, Any]] = []
     def sample(phase: str, t: int) -> None:
         o = org.organizational(sim.x, sim.box, reference)
