@@ -190,7 +190,7 @@ export default function App() {
       </header>
       {STATIC ? (
         view === 'overview' && !missing ? null : (
-          <div className="static-note small">Read-only research-result layer of XENO ZIRAN SIMULATOR, read from its
+          <div className="static-note small">Read-only research-result layer of P/A SYSTEM, read from its
             experiment result files. No simulation runs on this page. The interactive simulator runs in your browser at{' '}
             <a href="/app/">/app/</a> (smaller workloads), or on a local server for full-size runs.</div>
         )
@@ -213,7 +213,7 @@ export default function App() {
           <div className="panel-view not-found" role="alert">
             <h2>Not found</h2>
             {!VIEWS.some((v) => `?view=${v.id}` === missing)
-              ? <p><span className="mono">{missing}</span> is not a view of XENO ZIRAN SIMULATOR.</p>
+              ? <p><span className="mono">{missing}</span> is not a view of P/A SYSTEM.</p>
               : NATIVE
                 ? <p><span className="mono">{missing}</span> is a research-result view. Research results are published
                   on the research-results site ({RESULTS_SITE}), not inside the app.</p>

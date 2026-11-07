@@ -1,4 +1,4 @@
-// Guards the user-facing wording that states what XENO ZIRAN SIMULATOR is and what its public deployment shows:
+// Guards the user-facing wording that states what P/A SYSTEM is and what its public deployment shows:
 // prediction is scoped to the published result views (never denied for the simulator as a whole), the Philosophical
 // Runtime is one operational region (not the end of the hierarchy), and a null measurement is not read as absence.
 import { readFileSync } from 'node:fs';
@@ -80,9 +80,9 @@ describe('a null measurement is not read as absence', () => {
 });
 
 describe('identity', () => {
-  it('the application is XENO ZIRAN SIMULATOR and the public site is described as part of it', () => {
-    expect(read('frontend/src/i18n/strings.ts')).toMatch(/title: 'XENO ZIRAN SIMULATOR'/);
-    expect(shell).toMatch(/<title>XENO ZIRAN SIMULATOR<\/title>/);
+  it('the application is P/A SYSTEM (formerly XENO ZIRAN SIMULATOR) and the public site is described as part of it', () => {
+    expect(read('frontend/src/i18n/strings.ts')).toMatch(/title: 'P\/A SYSTEM'/);
+    expect(shell).toMatch(/<title>P\/A SYSTEM<\/title>/);
     // the public site states what each part is: result views read-only, the simulator in the browser at /app/
     const text = orientation.replace(/\s+/g, ' ');
     expect(text).toContain('The research-result views on this page are read-only: no simulation runs here');

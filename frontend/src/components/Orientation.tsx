@@ -9,7 +9,7 @@ export default function Orientation({ views, onOpen }: {
 }) {
   return (
     <section className="orientation" aria-labelledby="orientation-h">
-      <h2 id="orientation-h">XENO ZIRAN SIMULATOR</h2>
+      <h2 id="orientation-h">P/A SYSTEM</h2>
       <p>
         An environment for exploring how differences propagate across configurations under changes in scale,
         topology, memory, coupling, observation, history, boundary and intervention. It does not fix the variables,
@@ -18,7 +18,7 @@ export default function Orientation({ views, onOpen }: {
       <div className="small dim layers">
         <p>
           Operational-Shape Dynamics (theory) › Xenoscience (scientific regime) › Ziran System (architecture family) ›
-          <b> XENO ZIRAN SIMULATOR</b> (this application), whose operations fall into distinct regions:
+          <b> P/A SYSTEM</b> (this application; formerly XENO ZIRAN SIMULATOR), whose operations fall into distinct regions:
         </p>
         <ul className="regions">
           <li><b>Experimental runtime</b> — configuration, intervention, execution, branch comparison, replay</li>

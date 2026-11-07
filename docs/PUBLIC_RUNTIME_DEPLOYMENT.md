@@ -18,7 +18,7 @@ configured for this project, so nothing has been verified on real staging (publi
 semantics, its instance model, its logs). A local rehearsal is not staging.
 
 The public site (https://ziran-xeno-simulator.vercel.app) remains the static, read-only research-result layer of
-XENO ZIRAN SIMULATOR. The interactive runtime — sessions, run / step / rewind, graph projections, branch comparison,
+P/A SYSTEM (formerly XENO ZIRAN SIMULATOR). The interactive runtime — sessions, run / step / rewind, graph projections, branch comparison,
 practice console, save / load, CSV / JSON export — runs on the local server and, once deployed, in the container
 described here.
 

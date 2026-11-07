@@ -105,7 +105,7 @@ async def lifespan(_: FastAPI):
         s.close()
 
 
-app = FastAPI(title="XENO ZIRAN SIMULATOR runtime", version=__version__, lifespan=lifespan)
+app = FastAPI(title="P/A SYSTEM runtime", version=__version__, lifespan=lifespan)
 
 
 def get(sid: str) -> Session:

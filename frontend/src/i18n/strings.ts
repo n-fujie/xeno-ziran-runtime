@@ -1,7 +1,7 @@
 // UI strings. English is primary; `ja` is a partial table ready for localization (falls back to English).
 
 const en = {
-  title: 'XENO ZIRAN SIMULATOR',
+  title: 'P/A SYSTEM',
   subtitle: 'Operational-shape simulation · interactive runtime (local server)',
   subtitle_native: 'Operational-shape simulation · interactive runtime (on this device)',
   footer: 'Explore possible transitions under intervention.',

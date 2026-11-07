@@ -1,4 +1,4 @@
-# Architecture — XENO ZIRAN SIMULATOR runtime (`xeno-ziran-runtime`)
+# Architecture — P/A SYSTEM runtime (formerly XENO ZIRAN SIMULATOR) (`xeno-ziran-runtime`)
 
 *Operational Shape Simulation Platform.* Explore possible transitions under intervention. The Philosophical Runtime
 (practice layer, reason lab) is one operational region of the simulator, beside the experimental runtime and the

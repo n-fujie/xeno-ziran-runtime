@@ -29,5 +29,5 @@ export function unknownRoute(pathname: string, search: string, allowed: readonly
   return v !== null && !find(v, allowed) ? `?view=${v}` : null;
 }
 
-export const APP_NAME = 'XENO ZIRAN SIMULATOR';
+export const APP_NAME = 'P/A SYSTEM';
 export const pageTitle = (viewName: string) => `${viewName} — ${APP_NAME}`;
