@@ -27,7 +27,8 @@ TRANSMIT_WINDOW = 400  # steps of the force-transmission probe
 PULL = 1.5  # force applied to the leading fifth during the probe
 
 
-def contact_graph(x: np.ndarray, box: float, r_bond: float = R_BOND) -> np.ndarray:
+def contact_graph(x: np.ndarray, box: float, r_bond: float | None = None) -> np.ndarray:
+    r_bond = R_BOND if r_bond is None else r_bond  # read at call time so that a sensitivity run can change the cut-off
     d = x[:, None, :] - x[None, :, :]
     d -= box * np.round(d / box)
     r = np.sqrt((d**2).sum(-1))
@@ -35,7 +36,7 @@ def contact_graph(x: np.ndarray, box: float, r_bond: float = R_BOND) -> np.ndarr
     return r < r_bond
 
 
-def partition(x: np.ndarray, box: float, r_bond: float = R_BOND) -> np.ndarray:
+def partition(x: np.ndarray, box: float, r_bond: float | None = None) -> np.ndarray:
     """Labels of the connected components of the contact graph (label -1 for components smaller than ``MIN_GROUP``)."""
     adj = contact_graph(x, box, r_bond)
     _, lab = connected_components(csr_matrix(adj))

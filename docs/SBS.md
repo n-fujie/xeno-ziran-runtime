@@ -62,13 +62,94 @@ Verdicts (rule in the record): **no comparison detected an advantage of the body
 
 **Reading.** In this task and with these models, the body-inclusive description did not show a nonredundant predictive advantage over a body-free neighbourhood description with the same information; in one condition it was worse. This is a statement about this prediction task, this feature construction and 16 test worlds, **not** evidence that no body-level organization exists, and not a defeat of Simondon's philosophy, which these models do not instantiate. "Equivalent within the margin" means the 95% interval lies inside ±0.01 Brier, not that the models are the same. Many comparisons are `UNRESOLVED`: 16 worlds do not resolve differences of this size.
 
+## Follow-ups (all NEW EXECUTION; the frozen protocol and its digest `144ee2531333…` are unchanged)
+
+Code: `xzr/sbs/sensitivity.py`, `on_persistence.py`, `on_fragility.py`; runners `scripts/sbs_replication.py`, `sbs_sensitivity.py`, `sbs_on02.py`, `sbs_on03.py`; records `docs/sbs/sbs_replication.json`, `sbs_sensitivity.json`, `sbs_on02.json`, `sbs_on03.json`; tests `tests/test_sbs_followups.py`. The only edit to code that the first run used: `organisation.contact_graph` / `partition` now read the contact cut-off `R_BOND` at call time (so that a sensitivity run can change it); with the default it is bit-identical (a test checks this, and the 9 original tests pass).
+
+### Replication on new worlds (answers "16 test worlds are too few")
+
+The same protocol, features and verdict rule on worlds 33–96 (train 33–64, test 65–96; none of them used before): 32 test worlds instead of 16 and 32 training worlds instead of 16. Formation: mean largest-group share 0.74 (first run 0.77). Outcomes over 64 worlds: control persistence 43, partial recovery 21; heating 2.0: persistence 8, partial 33, different organization 12, multiple organizations 11; decoupling 0.0: persistence 24, partial 32, different 5, multiple 3. The direction agrees with the first run; the proportions differ (control persistence 67% against 81%), which is the size of the world-to-world noise here.
+
+Mean Brier (lower is better), 32 test worlds:
+
+| observation | protocol | A | B | C | N |
+|---|---|---|---|---|---|
+| fine | held-out worlds | 0.1128 | **0.1066** | 0.1222 | 0.1259 |
+| fine | harsher interventions | 0.1913 | **0.1614** | 0.1945 | 0.1781 |
+| coarse | held-out worlds | 0.1204 | **0.1079** | 0.1249 | 0.1259 |
+| coarse | harsher interventions | 0.1845 | **0.1659** | 0.1855 | 0.1781 |
+
+* **A (body-inclusive) was again not shown better than anything**: no comparison has A better. B (body-free) is better than A in the two harsher-intervention conditions (Brier difference 0.030 fine, 0.019 coarse; Holm-significant) and unresolved against A in the held-out conditions. A against C is equivalent within the margin in three conditions and unresolved in one.
+* **This changes one statement of the first run.** The first run found B and C not demonstrably better than the null. In the replication **B is better than the null in three of four conditions** (fine held-out, fine harsher, coarse held-out; differences 0.017–0.019, Holm-significant) and unresolved in the fourth; C is equivalent to the null or worse. So a body-free neighbourhood description does carry predictive information about which particles stay in the largest group beyond the intervention descriptor alone. Because the replication also doubled the training worlds, the gain may come from more training data rather than from different worlds; the two runs were not separated on that point.
+* The reading stays what it was: in this task, with these features and 32 test worlds, a body-inclusive description showed no nonredundant advantage over a body-free one. It is not evidence about body-level organization in general.
+
+### Dependence on the model's conventions (answers "not tested")
+
+Eleven variants (nine run the whole protocol, two only the hysteresis sweep) and the baseline, each changing one convention of the frozen protocol (eight worlds per world-variant, seeds 201–208; three hysteresis sweeps per variant; the model comparison was NOT repeated per variant, it needs dozens of worlds each). Four findings, fixed before the run in `sensitivity.py`: F1 the coupled run holds a larger largest-group share than the never-coupled control; F2 the share at the end of the intervention falls monotonically with the severity of decoupling and of heating; F3 persistence is less frequent after the harshest heating than in the control; F4 finite-time hysteresis area is positive.
+
+| variant | worlds | formation share (coupled / uncoupled) | share at decoupling 1.0 → 0.0 · heating 0.5 → 2.0 | persistence: control · heating 2.0 | hysteresis area | F1 F2 F3 F4 |
+|---|---|---|---|---|---|---|
+| baseline | 8 | 0.83 / 0.08 | 0.80 → 0.12 · 0.80 → 0.17 | 8/8 · 2/8 | 0.48 | yes yes yes yes |
+| n = 40 | 8 | 0.96 / 0.10 | 0.95 → 0.18 · 0.95 → 0.21 | 8/8 · 5/8 | 0.26 | yes yes yes yes |
+| n = 100 | 8 | 0.50 / 0.06 | 0.47 → 0.08 · 0.44 → 0.08 | 4/8 · 0/8 | 0.29 | yes yes yes yes |
+| density 0.15 | 8 | 0.30 / 0.05 | 0.32 → 0.08 · 0.30 → 0.09 | 7/8 · 0/8 | 0.23 | yes yes yes yes |
+| density 0.35 | 8 | 0.99 / 0.24 | 0.96 → 0.22 · 0.93 → 0.21 | 8/8 · 7/8 | 0.15 | yes yes yes yes |
+| cut-off 1.2 | 8 | 0.68 / 0.05 | 0.40 → 0.07 · 0.38 → 0.07 | 3/8 · 0/8 | 0.21 | yes yes yes yes |
+| cut-off 1.5 | 8 | 0.83 / 0.15 | 0.83 → 0.28 · 0.85 → 0.31 | 8/8 · 3/8 | 0.46 | yes **NO** yes yes |
+| recovery 1500 steps | 8 | 0.83 / 0.08 | as baseline | 8/8 · 1/8 | 0.48 | yes yes yes yes |
+| recovery 6000 steps | 8 | 0.83 / 0.08 | as baseline | 8/8 · 3/8 | 0.48 | yes yes yes yes |
+| dt 0.001, same physical time | 8 | 0.77 / 0.09 | 0.76 → 0.17 · 0.75 → 0.12 | 6/8 · 3/8 | 0.44 | yes yes yes yes |
+| sweep hold 750 / 3000 steps | — | — | — | — | 0.57 / 0.33 | hysteresis yes / yes |
+
+* **The qualitative findings held in every variant except one cell**: F2 at cut-off 1.5, where the mean share at heating 0.5 (0.848) is below that at heating 0.8 (0.854), a 0.006 plateau that the strict monotone rule counts as a failure; with eight worlds that is within noise, but the rule was fixed in advance and the failure stays in the record.
+* **The numbers are not robust, only the direction is.** The formation share runs from 0.30 to 0.99, the control's persistence from 3/8 to 8/8 and the persistence after the harshest heating from 0/8 to 7/8 across the variants. At density 0.35 even heating 2.0 leaves the reference group intact in 7 of 8 worlds, so F3 holds there only trivially. The hysteresis area is positive everywhere and shrinks with longer holds (0.57 at 750 steps, 0.33 at 3000), as finite-time hysteresis should; it was not shown to vanish or to persist in the long-hold limit, so nothing here separates a true metastable region from slow nucleation. The outcome tables in SBS-04 are therefore statements about this parameter point, not about condensation in general.
+* Eight worlds per variant detect only large changes.
+
+### ON-02 non-guaranteed persistence, on this substrate (NEW condition; not an ON Lab reproduction)
+
+The same 32 worlds and five branches (control, decoupling 0.3 and 0.0, heating 1.2 and 2.0), same noise seeds as SBS-04 (a test checks that the end values agree with `sbs_records.json`). One run is read by several persistence criteria, kept apart; conventions fixed in the code: membership overlap ≥ 0.8, retention of the reference's initial contact pairs ≥ 0.8, cohesion (largest share ≥ 0.5), function (transmission ratio after recovery ≥ half the same world's control ratio). Task performance, resource access and technical lineage are **not applicable** and not computed; "historically identified continuity" is represented only by the tracked particle membership, which is thin (particles have no other history).
+
+At the end of the recovery (cells = 32 worlds × branch; control · decoupling 0.3 · 0.0 · heating 1.2 · 2.0):
+
+| criterion | persists |
+|---|---|
+| physical cohesion | 32 · 31 · 30 · 31 · 25 |
+| membership (Jaccard ≥ 0.8) | 26 · 21 · 14 · 11 · 2 |
+| function (transmission ≥ half of control) | 32 · 26 · 26 · 24 · 22 |
+| local configuration (≥ 0.8 of reference contact pairs) | 0 · 0 · 0 · 0 · 0 |
+| cohesion never lost during the run | 28 · 0 · 0 · 0 · 0 |
+
+* **The criteria disagree, and not in one direction.** Cohesion is present while membership is lost in 75 of 160 cells; function is present while membership is lost in 61 of 160 (the reverse in 5); in 51 cells membership persists although cohesion was lost during the run (an intervention took it below 0.5 and it came back), and in 5 cohesion was never lost yet membership fell below the convention. A finite survival summary ("cohesion never lost") is 28/32 in the control and, by construction, 0/32 in every intervention branch (each intervention takes cohesion below 0.5), so it cannot say what persisted afterwards: that is the specification's point that finite survival time is not a complete measure, shown on data.
+* **Repair capacity** (steps from the end of the intervention until the largest group again holds half of the particles): median 250 (control cases that lost cohesion, 3), 250 (decoupling 0.3), 500 (decoupling 0.0), 500 (heating 1.2), 1000 (heating 2.0); not repaired within the 3000-step recovery in 1 world after decoupling 0.0 and 5 after heating 2.0.
+* **Shape without membership**: after heating 2.0, in 2 of 32 worlds no group continues the reference membership (overlap < 0.5) although a group of about its size exists; none in the other branches. A description that reads shape only would call that group the continuation.
+* **The local-configuration criterion is never met, in any branch, even in the control**: the median retention of the reference's contact pairs at the end is 0.48 in the control (0.35, 0.29, 0.17, 0.10 in the interventions, falling with severity). The group is a liquid droplet; individual contacts turn over. The 0.8 convention was fixed before the run and is not informative as a yes/no here; the continuous values grade with severity and are in the record. Counts that involve this criterion (for example "149 of 160 cells where cohesion is present and the configuration is not") are consequences of that convention, not independent findings.
+* No quantity here is a probability of failure and none is offered as a measure of existential non-guarantee.
+
+### ON-03 fragility transfer, on this substrate (NEW condition; not an ON Lab reproduction)
+
+Designs: the formation coupling `eps` ∈ {1.0, 1.5 (baseline), 2.0, 2.5}; 24 worlds each (seeds 301–324), compared with the baseline world by world. Fixed in `on_fragility.py` before the run: the improvement under test (membership persistence after heating 1.2: paired 95% interval of the difference above 0.05), the measures kept apart (performance; repair: single-group share and steps to half after complete decoupling; load failure: group integrity under a 400-step pull; stored cohesive energy, recorded and not ranked), the transfer mechanism (kinetic arrest: stronger coupling lowers mobility and traps poorly merged arrangements), the two required forms of mechanism evidence (lower mobility; an anneal merges more failed repairs than a same-noise control) and the verdict rule. Communication, maintenance, resource dependence, dependence on external systems and external latency are **not applicable** and not computed.
+
+| design eps | formation share | performance (overlap after heating 1.2) | single group after decoupling 0.0 (of 24) | median steps to half (unrepaired = ∞) | load retention | mobility (MSD over 500 steps) | energy per particle |
+|---|---|---|---|---|---|---|---|
+| 1.0 | 0.68 | 0.505 | 10 | 1250 | 0.89 | 0.41 | −1.93 |
+| 1.5 (baseline) | 0.73 | 0.692 | 18 | 500 | 0.99 | 0.28 | −3.24 |
+| 2.0 | 0.73 | 0.749 | 16 | 250 | 1.00 | 0.22 | −4.59 |
+| 2.5 | 0.70 | 0.741 | 19 | 375 | 1.00 | 0.22 | −5.79 |
+
+* **Verdict against the baseline: `NOT_AN_IMPROVEMENT` for all three designs.** Eps 2.0 and 2.5 raise performance by 0.057 and 0.049, but the 95% intervals ([−0.025, 0.139] and [−0.028, 0.127]) include zero and do not exceed the 0.05 margin, so no improvement was established and the question of transfer does not arise by the rule. Eps 1.0 is worse than the baseline on every measure (performance −0.186, interval [−0.283, −0.089]; load −0.10).
+* **No transfer of vulnerability was found.** Repair is not worse in the stronger designs (single-group share difference −0.083 [−0.386, 0.22] at 2.0 and +0.042 at 2.5; steps to half −83 and +31, intervals include zero). **The proposed mechanism's first marker is present** (mobility is lower than at the baseline: baseline minus design 0.017 to 0.098 at 2.0, 0.019 to 0.109 at 2.5), **but its predicted consequence is not**: lower mobility did not produce measurably worse repair. The anneal test is small and inconclusive (merged after anneal / after control: 5 / 3 of 8 failed repairs at 2.0; 2 / 1 of 5 at 2.5; 5 / 4 of 14 at 1.0).
+* **Pareto**: on means, 1.0 is dominated; 1.5 is dominated by 2.5; **2.0 and 2.5 are incomparable** (2.0 has the higher performance mean, 2.5 the higher single-group share) and both are retained. Dominance on means ignores the uncertainty above, under which none of 1.5, 2.0, 2.5 is separated from the others on performance.
+* **Unplanned observation, not a result**: going from 1.0 to 1.5 improves performance, repair and load together; so over this range stronger coupling improved everything measured, which is the opposite of a transfer. This comparison was not the pre-specified one.
+* Not tested: other perturbation types than heating, decoupling and a pull; other kinds of improvement than coupling strength; other transfer mechanisms than kinetic arrest. Absence of a detected transfer here does not show that Fragility Transfer cannot occur.
+
 ## What is not done (stated precisely)
 
-* **Stage 2 (historical ON Lab reproduction) and Stage 5 (Operational Nihilism integration): not done.** `on_lab_r2.zip` is not on this machine, and no ON Lab or RODENIAN-X1–X4 source was found in the repositories or in the archives `xeno-ziran-eaeca92.zip`, `xeno-ziran-63cc4b9.zip` or `BIM_share_lean_2026-10-21.zip`. Nothing was reproduced and no ON module was written.
-* **The XenoBody body-category ablation framework was not found** in the XB-TRO branch (only a per-principle ablation in `fragility.py`). The A/B/C comparison above follows the specification of the directive and was written new; it is not a reuse of an existing framework.
-* **Gate F (visualization): done for these records** (see below). It shows recorded states of two worlds only (the frames were kept for worlds 1 and 17).
-* No other engine was compared (no cross-engine comparison); no conventional morphology–controller, MPC or RL competitor applies to this substrate and none was built.
-* Not tested: dependence of the results on the number of particles, the box density, the contact cut-off, the hold times or the integration step; the contact cut-off already changes the fine-observation partition for 35 of 288 readings.
+* **Stage 2 (historical ON Lab reproduction) and Stage 5 (integration with the historical Operational Nihilism programme): not done and cannot be done here.** `on_lab_r2.zip` is not on this machine, and no ON Lab or RODENIAN-X1–X4 source was found in the repositories or in the archives `xeno-ziran-eaeca92.zip`, `xeno-ziran-63cc4b9.zip` or `BIM_share_lean_2026-10-21.zip`. Nothing was reproduced. The ON-02 and ON-03 sections above are new conditions on the SBS substrate, written from the specification text, and make no claim to reproduce or extend ON Lab results.
+* ON-01, ON-04, ON-05, ON-06 and ON-07 are not built (ON-01 needs the ON Lab / XenoBody instruction-withdrawal structures; the others need agents, norms or lineage that this substrate does not have).
+* **The XenoBody body-category ablation framework was not found** in the XB-TRO branch (only a per-principle ablation in `fragility.py`). The A/B/C comparison follows the specification of the directive and was written new; it is not a reuse of an existing framework.
+* **Gate F (visualization)**: shows recorded states of two worlds only; the replication, sensitivity, ON-02 and ON-03 records have no view.
+* No other engine was compared (no cross-engine comparison); no conventional morphology–controller, MPC or RL competitor applies to this substrate (it has no controller) and none was built.
+* The model comparison was not repeated across the sensitivity variants.
 * Not claimed: validation against any physical material or body; Simondonian individuation; metastability in Simondon's sense; posthuman anything.
 
 ## Regression verification (backend)
@@ -82,8 +163,10 @@ Verdicts (rule in the record): **no comparison detected an advantage of the body
 
 The one failing test is a timing/order-dependent test of the cooperative bridge ('running' != 'done'); it fails alone on an untouched `origin/main`, so it is **pre-existing and not caused by this work**; it failed in the baseline full run and passed in this branch's full run, which also shows it is not deterministic in a full run. 1089 + 1 + 8 = 1098: no previously passing test failed. The two environment warnings (another scipy hierarchy; three published records that do not replay bit for bit here) are the known ones. Historical result files were not touched.
 
-Frontend (whole suite, this branch): 331 passed, 5 failed, 1 skipped; the failures are `Test timed out` (60 s or 5 s) in three heavy 3D-laboratory geometry files (`views/lab/hifi/assemblies.test.ts`, `views/lab/hifi/model.test.ts`, `views/lab/labScene.test.ts`) that this work does not touch. A different subset of those tests fails on each run (3 failures on the baseline checkout, 5 here, a different 3 when the three files are rerun alone, and all 30 passing in another isolated run), so they are load-dependent timeouts of the existing suite, not deterministic failures; they were not investigated or fixed here. All 7 new SBS view tests and the existing routing and wording tests pass; `tsc --noEmit` is clean.
+Follow-up verification: `tests/test_sbs.py`, `tests/test_sbs_followups.py`, `tests/test_stage_engine.py` and `tests/test_cooperative.py` together: 31 passed. The **whole backend suite was not rerun** after the follow-ups; the only change to code the earlier whole-suite run exercised is `organisation.contact_graph`/`partition` reading the default cut-off at call time (bit-identical, tested) and a test-only timing fix in `test_cooperative.py` (the earlier failing test now waits against a wall-clock deadline and passed; `test_running_session_is_paced_and_pausable` is a wall-clock pacing test that failed once under a machine load average of about 25 and passed in the later run, so it is load dependent and was not changed).
+
+Frontend (whole suite after the follow-ups): 336 passed, 1 skipped, 0 failed (earlier: 331 passed, 5 failed). The earlier failures were `Test timed out` in three heavy 3D-laboratory geometry files; the tests take 5–12 s on a loaded machine against vitest's default 5 s, so `vite.config.ts` now sets `testTimeout: 60_000` (the limit `assemblies.test.ts` already used for its heaviest cases). That makes them pass; it does not make them faster. `tsc --noEmit` was clean for the SBS work.
 
 ## The SBS view (Gate F)
 
-`?view=sbs` in the local app (not in the public site, the browser edition or the iOS app): `frontend/src/views/sbs/`, fed by the read-only local routes `/api/sbs/summary` and `/api/sbs/frames` (`backend/xzr/service/sbs.py`, excluded from the engine bundle). It plays, pauses and steps through the measured particle positions (18 frames per branch, every 250 steps, never interpolated), shows the six dissolution records of the selected world and branch, the outcome table over the 32 worlds, the hysteresis curves, the model comparison and the evidence boundary. The largest-group share and the number of groups computed in the viewer from the measured positions equal the saved records in all 18 recorded branches (a test checks this); the contact count can differ by one pair because the saved positions are rounded to three decimals. Checked in a real browser against the running local backend (playback, stepping, console without errors); the phone layout was not verified at a true 375 px width (the pane reported 603 px), only that wide tables scroll inside their own box. Measured frame rates were not taken and none is claimed.
+`?view=sbs` in the local app (not in the public site, the browser edition or the iOS app): `frontend/src/views/sbs/`, fed by the read-only local routes `/api/sbs/summary` and `/api/sbs/frames` (`backend/xzr/service/sbs.py`, excluded from the engine bundle). It plays, pauses and steps through the measured particle positions (18 frames per branch, every 250 steps, never interpolated), shows the six dissolution records of the selected world and branch, the outcome table over the 32 worlds, the hysteresis curves, the model comparison and the evidence boundary. The largest-group share and the number of groups computed in the viewer from the measured positions equal the saved records in all 18 recorded branches (a test checks this); the contact count can differ by one pair because the saved positions are rounded to three decimals. Checked in a real browser against the running local backend (playback, stepping, console without errors); the phone layout was later checked at a true 375 px width (emulated Android phone, built frontend served by the local backend): no horizontal overflow of the page and no element outside a scrolling box; the page was looked at on its first screen only (selectors, the particle canvas, playback controls), not scrolled through in full. Measured frame rates were not taken and none is claimed.
