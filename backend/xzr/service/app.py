@@ -850,6 +850,11 @@ from . import teoo as _teoo  # noqa: E402
 
 app.include_router(_teoo.router)
 
+# SBS: the recorded Simondonian Body Simulation experiments (read-only; local runtime only)
+from . import sbs as _sbs  # noqa: E402
+
+app.include_router(_sbs.router)
+
 # ---------------------------------------------------------------------------------------------- static frontend
 if STATIC_DIR.is_dir():
     app.mount("/assets", StaticFiles(directory=STATIC_DIR / "assets"), name="assets")

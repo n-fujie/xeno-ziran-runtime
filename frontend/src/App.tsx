@@ -25,6 +25,7 @@ const LOCAL_ONLY_BUILD = import.meta.env.VITE_STATIC === '1' || import.meta.env.
 const StudyView = LOCAL_ONLY_BUILD ? null : lazy(() => import('./views/study/StudyView'));
 const EcosystemView = LOCAL_ONLY_BUILD ? null : lazy(() => import('./views/ecosystem/EcosystemView'));
 const BodyView = LOCAL_ONLY_BUILD ? null : lazy(() => import('./views/body/Workspace'));
+const SbsView = LOCAL_ONLY_BUILD ? null : lazy(() => import('./views/sbs/SbsView'));
 import CompressionView from './views/resolution/CompressionView';
 import DisconnectionView from './views/resolution/DisconnectionView';
 import HiddenDifferenceView from './views/resolution/HiddenDifferenceView';
@@ -67,6 +68,7 @@ const VIEWS: { id: View; label: () => string }[] = [
   { id: 'laboratory', label: () => t('view_laboratory') },
   { id: 'ecosystem', label: () => t('view_ecosystem') },
   { id: 'body', label: () => t('view_body') },
+  { id: 'sbs', label: () => t('view_sbs') },
   { id: 'study', label: () => t('view_study') },
 ];
 
@@ -81,7 +83,7 @@ const RESEARCH = staticViews as View[];
 // stay on the public research-results site, opened from the app in the system browser.
 const RESULTS_SITE = 'https://ziran-xeno-simulator.vercel.app';
 const AVAILABLE: View[] = STATIC ? RESEARCH
-  : VIEWS.map((v) => v.id).filter((v) => v !== 'overview' && !(NATIVE && RESEARCH.includes(v)) && !(v === 'study' && (NATIVE || WEBRT)) && !(v === 'ecosystem' && (NATIVE || WEBRT)) && !(v === 'body' && (NATIVE || WEBRT)));
+  : VIEWS.map((v) => v.id).filter((v) => v !== 'overview' && !(NATIVE && RESEARCH.includes(v)) && !(v === 'study' && (NATIVE || WEBRT)) && !(v === 'ecosystem' && (NATIVE || WEBRT)) && !(v === 'body' && (NATIVE || WEBRT)) && !(v === 'sbs' && (NATIVE || WEBRT)));
 const DEFAULT_VIEW: View = STATIC ? 'overview' : 'network';
 const labelOf = (v: View) => VIEWS.find((x) => x.id === v)?.label() ?? v;
 
@@ -194,7 +196,7 @@ export default function App() {
             experiment result files. No simulation runs on this page. The interactive simulator runs in your browser at{' '}
             <a href="/app/">/app/</a> (smaller workloads), or on a local server for full-size runs.</div>
         )
-      ) : view !== 'laboratory' && view !== 'ecosystem' && view !== 'body' && view !== 'study' && <ControlBar />}
+      ) : view !== 'laboratory' && view !== 'ecosystem' && view !== 'body' && view !== 'sbs' && view !== 'study' && <ControlBar />}
       {WEBRT && (
         <div className="static-note small">This simulator runs in your browser tab: the engine is downloaded from this site once and
           nothing you enter is sent anywhere. Workloads are smaller than in the desktop runtime, and floating-point results can
@@ -261,6 +263,7 @@ export default function App() {
             {view === 'laboratory' && <LabView />}
             {view === 'ecosystem' && EcosystemView && <EcosystemView />}
             {view === 'body' && BodyView && <BodyView />}
+            {view === 'sbs' && SbsView && <SbsView />}
             {view === 'study' && StudyView && <StudyView />}
             {view === 'overview' && (
               <div className="entry">

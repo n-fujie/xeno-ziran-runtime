@@ -8,8 +8,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-LOCAL_ONLY_DIRS = ("teoo", "meos", "study", "totalobs", "hpo", "lab", "experiments", "reasonlab")
-LOCAL_ONLY_FILES = ("service/app.py", "service/meos.py", "service/studies.py", "service/teoo.py", "lineage.py")
+LOCAL_ONLY_DIRS = ("teoo", "meos", "study", "totalobs", "hpo", "lab", "experiments", "reasonlab", "sbs")
+LOCAL_ONLY_FILES = ("service/app.py", "service/meos.py", "service/studies.py", "service/teoo.py", "service/sbs.py", "lineage.py")
 
 
 def _stage(dest: Path) -> list[str]:

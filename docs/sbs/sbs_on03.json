@@ -1,0 +1,1896 @@
+{
+ "baseline": 1.5,
+ "classification": "NEW EXECUTION",
+ "condition": "ON-03 fragility transfer on the SBS substrate; not an ON Lab reproduction",
+ "designs_eps": [
+  1.0,
+  1.5,
+  2.0,
+  2.5
+ ],
+ "not_applicable_on_this_substrate": [
+  "communication",
+  "maintenance",
+  "resource dependence",
+  "dependence on external systems",
+  "latency of an external signal"
+ ],
+ "pareto": {
+  "axes": [
+   "performance_overlap",
+   "single_group_share_after_decoupling",
+   "load_retention"
+  ],
+  "dominated_by": {
+   "1.0": [
+    1.5,
+    2.0,
+    2.5
+   ],
+   "1.5": [
+    2.5
+   ],
+   "2.0": [],
+   "2.5": []
+  },
+  "means": {
+   "1.0": [
+    0.5054791221885947,
+    0.4166666666666667,
+    0.8919164758925907
+   ],
+   "1.5": [
+    0.6916682716065017,
+    0.75,
+    0.9926132318216704
+   ],
+   "2.0": [
+    0.7489957295629197,
+    0.6666666666666666,
+    0.9990530303030303
+   ],
+   "2.5": [
+    0.7410735324450027,
+    0.7916666666666666,
+    0.9992559523809524
+   ]
+  },
+  "note": "dominance on means; the uncertainty is not part of this comparison",
+  "retained_non_dominated": [
+   2.0,
+   2.5
+  ]
+ },
+ "per_design": {
+  "1.0": {
+   "energy_per_particle_mean": -1.9271786428834796,
+   "formation_largest_share_mean": 0.6840277777777777,
+   "load_retention_mean": 0.8919164758925907,
+   "mobility_msd_500_mean": 0.41176479616588874,
+   "performance_overlap_mean": 0.5054791221885947,
+   "single_group_after_decoupling": 10,
+   "steps_to_half_median_all_worlds_unrepaired_as_inf": 1250.0
+  },
+  "1.5": {
+   "energy_per_particle_mean": -3.2433445258852855,
+   "formation_largest_share_mean": 0.7256944444444445,
+   "load_retention_mean": 0.9926132318216704,
+   "mobility_msd_500_mean": 0.2789681383185911,
+   "performance_overlap_mean": 0.6916682716065017,
+   "single_group_after_decoupling": 18,
+   "steps_to_half_median_all_worlds_unrepaired_as_inf": 500.0
+  },
+  "2.0": {
+   "energy_per_particle_mean": -4.584710078974525,
+   "formation_largest_share_mean": 0.7270833333333334,
+   "load_retention_mean": 0.9990530303030303,
+   "mobility_msd_500_mean": 0.2214451799426541,
+   "performance_overlap_mean": 0.7489957295629197,
+   "single_group_after_decoupling": 16,
+   "steps_to_half_median_all_worlds_unrepaired_as_inf": 250.0
+  },
+  "2.5": {
+   "energy_per_particle_mean": -5.788284786136104,
+   "formation_largest_share_mean": 0.6979166666666666,
+   "load_retention_mean": 0.9992559523809524,
+   "mobility_msd_500_mean": 0.21522713143024377,
+   "performance_overlap_mean": 0.7410735324450027,
+   "single_group_after_decoupling": 19,
+   "steps_to_half_median_all_worlds_unrepaired_as_inf": 375.0
+  }
+ },
+ "reproduce": "PYTHONPATH=. python scripts/sbs_on03.py --worlds 24",
+ "rows": [
+  {
+   "energy_per_particle": -1.9096353651534086,
+   "eps": 1.0,
+   "formation_largest_share": 0.8,
+   "load_retention": 0.875,
+   "mobility_msd_500": 0.4567775034152845,
+   "performance_overlap": 0.4074074074074074,
+   "reference_size": 48,
+   "repair": {
+    "largest_share_after_recovery": 0.75,
+    "single_group": true,
+    "steps_to_half": 1500
+   },
+   "seed": 301
+  },
+  {
+   "energy_per_particle": -1.8823596616890692,
+   "eps": 1.0,
+   "formation_largest_share": 0.5666666666666667,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.3660849575254565,
+   "performance_overlap": 0.4489795918367347,
+   "reference_size": 34,
+   "repair": {
+    "largest_share_after_recovery": 0.8166666666666667,
+    "single_group": true,
+    "steps_to_half": 1000
+   },
+   "seed": 302
+  },
+  {
+   "energy_per_particle": -1.9014230186020538,
+   "eps": 1.0,
+   "formation_largest_share": 0.6,
+   "load_retention": 0.9722222222222222,
+   "mobility_msd_500": 0.4531347884228165,
+   "performance_overlap": 0.49056603773584906,
+   "reference_size": 36,
+   "repair": {
+    "largest_share_after_recovery": 0.7833333333333333,
+    "single_group": true,
+    "steps_to_half": 1000
+   },
+   "seed": 303
+  },
+  {
+   "anneal": {
+    "single_group_after_anneal": true,
+    "single_group_after_control": true
+   },
+   "energy_per_particle": -2.1314510283334953,
+   "eps": 1.0,
+   "formation_largest_share": 1.0,
+   "load_retention": 0.9833333333333333,
+   "mobility_msd_500": 0.3458581492517048,
+   "performance_overlap": 0.7166666666666667,
+   "reference_size": 60,
+   "repair": {
+    "largest_share_after_recovery": 0.2833333333333333,
+    "single_group": false,
+    "steps_to_half": 500
+   },
+   "seed": 304
+  },
+  {
+   "energy_per_particle": -2.0372666881763797,
+   "eps": 1.0,
+   "formation_largest_share": 0.5166666666666667,
+   "load_retention": 0.967741935483871,
+   "mobility_msd_500": 0.5309006366695707,
+   "performance_overlap": 0.47368421052631576,
+   "reference_size": 31,
+   "repair": {
+    "largest_share_after_recovery": 0.9166666666666666,
+    "single_group": true,
+    "steps_to_half": 1250
+   },
+   "seed": 305
+  },
+  {
+   "anneal": {
+    "single_group_after_anneal": false,
+    "single_group_after_control": false
+   },
+   "energy_per_particle": -1.7945584325758677,
+   "eps": 1.0,
+   "formation_largest_share": 0.8166666666666667,
+   "load_retention": 0.7551020408163265,
+   "mobility_msd_500": 0.2932349006694522,
+   "performance_overlap": 0.34615384615384615,
+   "reference_size": 49,
+   "repair": {
+    "largest_share_after_recovery": 0.3333333333333333,
+    "single_group": false,
+    "steps_to_half": 1250
+   },
+   "seed": 306
+  },
+  {
+   "anneal": {
+    "single_group_after_anneal": false,
+    "single_group_after_control": false
+   },
+   "energy_per_particle": -1.9336325111898018,
+   "eps": 1.0,
+   "formation_largest_share": 0.8166666666666667,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.3903962716486989,
+   "performance_overlap": 0.6037735849056604,
+   "reference_size": 49,
+   "repair": {
+    "largest_share_after_recovery": 0.5833333333333334,
+    "single_group": false,
+    "steps_to_half": 500
+   },
+   "seed": 307
+  },
+  {
+   "energy_per_particle": -1.8622818099416372,
+   "eps": 1.0,
+   "formation_largest_share": 0.6166666666666667,
+   "load_retention": 0.972972972972973,
+   "mobility_msd_500": 0.4116703651175293,
+   "performance_overlap": 0.5714285714285714,
+   "reference_size": 37,
+   "repair": {
+    "largest_share_after_recovery": 0.7666666666666667,
+    "single_group": true,
+    "steps_to_half": 1250
+   },
+   "seed": 308
+  },
+  {
+   "anneal": {
+    "single_group_after_anneal": false,
+    "single_group_after_control": false
+   },
+   "energy_per_particle": -2.0024168884972315,
+   "eps": 1.0,
+   "formation_largest_share": 0.9666666666666667,
+   "load_retention": 0.9827586206896551,
+   "mobility_msd_500": 0.3246359784458248,
+   "performance_overlap": 0.3103448275862069,
+   "reference_size": 58,
+   "repair": {
+    "largest_share_after_recovery": 0.43333333333333335,
+    "single_group": false,
+    "steps_to_half": 2250
+   },
+   "seed": 309
+  },
+  {
+   "anneal": {
+    "single_group_after_anneal": true,
+    "single_group_after_control": true
+   },
+   "energy_per_particle": -1.9215090375208703,
+   "eps": 1.0,
+   "formation_largest_share": 0.5666666666666667,
+   "load_retention": 0.9117647058823529,
+   "mobility_msd_500": 0.30551179068335615,
+   "performance_overlap": 0.54,
+   "reference_size": 34,
+   "repair": {
+    "largest_share_after_recovery": 0.4666666666666667,
+    "single_group": false,
+    "steps_to_half": 1000
+   },
+   "seed": 310
+  },
+  {
+   "anneal": {
+    "single_group_after_anneal": false,
+    "single_group_after_control": false
+   },
+   "energy_per_particle": -1.8974878768073153,
+   "eps": 1.0,
+   "formation_largest_share": 0.9666666666666667,
+   "load_retention": 0.9655172413793104,
+   "mobility_msd_500": 0.49016240096299446,
+   "performance_overlap": 0.4745762711864407,
+   "reference_size": 58,
+   "repair": {
+    "largest_share_after_recovery": 0.65,
+    "single_group": false,
+    "steps_to_half": 2250
+   },
+   "seed": 311
+  },
+  {
+   "anneal": {
+    "single_group_after_anneal": false,
+    "single_group_after_control": false
+   },
+   "energy_per_particle": -1.8983698305202035,
+   "eps": 1.0,
+   "formation_largest_share": 0.8,
+   "load_retention": 0.5833333333333334,
+   "mobility_msd_500": 0.4354631611520308,
+   "performance_overlap": 0.39215686274509803,
+   "reference_size": 48,
+   "repair": {
+    "largest_share_after_recovery": 0.4,
+    "single_group": false,
+    "steps_to_half": 2000
+   },
+   "seed": 312
+  },
+  {
+   "energy_per_particle": -1.8543994122526057,
+   "eps": 1.0,
+   "formation_largest_share": 0.5666666666666667,
+   "load_retention": 0.8235294117647058,
+   "mobility_msd_500": 0.4704718149128417,
+   "performance_overlap": 0.5689655172413793,
+   "reference_size": 34,
+   "repair": {
+    "largest_share_after_recovery": 0.7166666666666667,
+    "single_group": true,
+    "steps_to_half": 1250
+   },
+   "seed": 313
+  },
+  {
+   "anneal": {
+    "single_group_after_anneal": false,
+    "single_group_after_control": false
+   },
+   "energy_per_particle": -1.9448846346956377,
+   "eps": 1.0,
+   "formation_largest_share": 0.7666666666666667,
+   "load_retention": 0.8043478260869565,
+   "mobility_msd_500": 0.3888164819786895,
+   "performance_overlap": 0.625,
+   "reference_size": 46,
+   "repair": {
+    "largest_share_after_recovery": 0.35,
+    "single_group": false,
+    "steps_to_half": null
+   },
+   "seed": 314
+  },
+  {
+   "energy_per_particle": -1.9797749629949133,
+   "eps": 1.0,
+   "formation_largest_share": 0.6,
+   "load_retention": 0.9166666666666666,
+   "mobility_msd_500": 0.39082320893419853,
+   "performance_overlap": 0.3469387755102041,
+   "reference_size": 36,
+   "repair": {
+    "largest_share_after_recovery": 0.85,
+    "single_group": true,
+    "steps_to_half": 2000
+   },
+   "seed": 315
+  },
+  {
+   "anneal": {
+    "single_group_after_anneal": false,
+    "single_group_after_control": true
+   },
+   "energy_per_particle": -1.8529132128771968,
+   "eps": 1.0,
+   "formation_largest_share": 0.4666666666666667,
+   "load_retention": 0.8214285714285714,
+   "mobility_msd_500": 0.4251441658130841,
+   "performance_overlap": 0.3333333333333333,
+   "reference_size": 28,
+   "repair": {
+    "largest_share_after_recovery": 0.5833333333333334,
+    "single_group": false,
+    "steps_to_half": 1000
+   },
+   "seed": 316
+  },
+  {
+   "energy_per_particle": -2.1048274266752522,
+   "eps": 1.0,
+   "formation_largest_share": 0.7,
+   "load_retention": 0.9761904761904762,
+   "mobility_msd_500": 0.41719062216629427,
+   "performance_overlap": 0.6153846153846154,
+   "reference_size": 42,
+   "repair": {
+    "largest_share_after_recovery": 0.7333333333333333,
+    "single_group": true,
+    "steps_to_half": 750
+   },
+   "seed": 317
+  },
+  {
+   "energy_per_particle": -1.9867235976232689,
+   "eps": 1.0,
+   "formation_largest_share": 0.8,
+   "load_retention": 0.9375,
+   "mobility_msd_500": 0.334698238652561,
+   "performance_overlap": 0.8333333333333334,
+   "reference_size": 48,
+   "repair": {
+    "largest_share_after_recovery": 0.8833333333333333,
+    "single_group": true,
+    "steps_to_half": 750
+   },
+   "seed": 318
+  },
+  {
+   "anneal": {
+    "single_group_after_anneal": false,
+    "single_group_after_control": false
+   },
+   "energy_per_particle": -2.009240309967459,
+   "eps": 1.0,
+   "formation_largest_share": 0.9666666666666667,
+   "load_retention": 0.5689655172413793,
+   "mobility_msd_500": 0.38729573805506123,
+   "performance_overlap": 0.8,
+   "reference_size": 58,
+   "repair": {
+    "largest_share_after_recovery": 0.48333333333333334,
+    "single_group": false,
+    "steps_to_half": 2000
+   },
+   "seed": 319
+  },
+  {
+   "anneal": {
+    "single_group_after_anneal": true,
+    "single_group_after_control": false
+   },
+   "energy_per_particle": -1.857173443564245,
+   "eps": 1.0,
+   "formation_largest_share": 0.4666666666666667,
+   "load_retention": 0.8571428571428571,
+   "mobility_msd_500": 0.5249761237949172,
+   "performance_overlap": 0.30434782608695654,
+   "reference_size": 28,
+   "repair": {
+    "largest_share_after_recovery": 0.4666666666666667,
+    "single_group": false,
+    "steps_to_half": 2250
+   },
+   "seed": 320
+  },
+  {
+   "energy_per_particle": -1.8942986752899245,
+   "eps": 1.0,
+   "formation_largest_share": 0.5333333333333333,
+   "load_retention": 0.84375,
+   "mobility_msd_500": 0.30189639678792946,
+   "performance_overlap": 0.30303030303030304,
+   "reference_size": 32,
+   "repair": {
+    "largest_share_after_recovery": 0.7166666666666667,
+    "single_group": true,
+    "steps_to_half": 1000
+   },
+   "seed": 321
+  },
+  {
+   "anneal": {
+    "single_group_after_anneal": true,
+    "single_group_after_control": true
+   },
+   "energy_per_particle": -1.9086489258987607,
+   "eps": 1.0,
+   "formation_largest_share": 0.6333333333333333,
+   "load_retention": 0.9736842105263158,
+   "mobility_msd_500": 0.5019500753072114,
+   "performance_overlap": 0.7115384615384616,
+   "reference_size": 38,
+   "repair": {
+    "largest_share_after_recovery": 0.38333333333333336,
+    "single_group": false,
+    "steps_to_half": 1000
+   },
+   "seed": 322
+  },
+  {
+   "anneal": {
+    "single_group_after_anneal": false,
+    "single_group_after_control": false
+   },
+   "energy_per_particle": -2.0176243089500008,
+   "eps": 1.0,
+   "formation_largest_share": 0.5,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.39834369915428003,
+   "performance_overlap": 0.625,
+   "reference_size": 30,
+   "repair": {
+    "largest_share_after_recovery": 0.4,
+    "single_group": false,
+    "steps_to_half": 1500
+   },
+   "seed": 323
+  },
+  {
+   "anneal": {
+    "single_group_after_anneal": true,
+    "single_group_after_control": false
+   },
+   "energy_per_particle": -1.6693863694069138,
+   "eps": 1.0,
+   "formation_largest_share": 0.38333333333333336,
+   "load_retention": 0.9130434782608695,
+   "mobility_msd_500": 0.5369176384595413,
+   "performance_overlap": 0.28888888888888886,
+   "reference_size": 23,
+   "repair": {
+    "largest_share_after_recovery": 0.45,
+    "single_group": false,
+    "steps_to_half": null
+   },
+   "seed": 324
+  },
+  {
+   "anneal": {
+    "single_group_after_anneal": true,
+    "single_group_after_control": true
+   },
+   "energy_per_particle": -3.3833590700129763,
+   "eps": 1.5,
+   "formation_largest_share": 0.6833333333333333,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.22473692309005677,
+   "performance_overlap": 0.8604651162790697,
+   "reference_size": 41,
+   "repair": {
+    "largest_share_after_recovery": 0.6666666666666666,
+    "single_group": false,
+    "steps_to_half": 750
+   },
+   "seed": 301
+  },
+  {
+   "energy_per_particle": -3.195350665985622,
+   "eps": 1.5,
+   "formation_largest_share": 0.5166666666666667,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.3160158708207476,
+   "performance_overlap": 0.5084745762711864,
+   "reference_size": 31,
+   "repair": {
+    "largest_share_after_recovery": 0.95,
+    "single_group": true,
+    "steps_to_half": 500
+   },
+   "seed": 302
+  },
+  {
+   "energy_per_particle": -3.2205140839569615,
+   "eps": 1.5,
+   "formation_largest_share": 0.9333333333333333,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.39115285507157377,
+   "performance_overlap": 0.7,
+   "reference_size": 56,
+   "repair": {
+    "largest_share_after_recovery": 0.95,
+    "single_group": true,
+    "steps_to_half": 250
+   },
+   "seed": 303
+  },
+  {
+   "energy_per_particle": -3.467064952980861,
+   "eps": 1.5,
+   "formation_largest_share": 1.0,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.38756942499696106,
+   "performance_overlap": 1.0,
+   "reference_size": 60,
+   "repair": {
+    "largest_share_after_recovery": 0.9833333333333333,
+    "single_group": true,
+    "steps_to_half": 500
+   },
+   "seed": 304
+  },
+  {
+   "energy_per_particle": -3.2221253220954145,
+   "eps": 1.5,
+   "formation_largest_share": 0.45,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.35918411632476793,
+   "performance_overlap": 0.45614035087719296,
+   "reference_size": 27,
+   "repair": {
+    "largest_share_after_recovery": 0.9166666666666666,
+    "single_group": true,
+    "steps_to_half": 750
+   },
+   "seed": 305
+  },
+  {
+   "energy_per_particle": -3.2973096180566643,
+   "eps": 1.5,
+   "formation_largest_share": 0.5,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.13987712907367042,
+   "performance_overlap": 0.6842105263157895,
+   "reference_size": 30,
+   "repair": {
+    "largest_share_after_recovery": 0.9833333333333333,
+    "single_group": true,
+    "steps_to_half": 500
+   },
+   "seed": 306
+  },
+  {
+   "energy_per_particle": -3.247460849126408,
+   "eps": 1.5,
+   "formation_largest_share": 0.9833333333333333,
+   "load_retention": 0.9830508474576272,
+   "mobility_msd_500": 0.3572965082598748,
+   "performance_overlap": 0.9833333333333333,
+   "reference_size": 59,
+   "repair": {
+    "largest_share_after_recovery": 0.9833333333333333,
+    "single_group": true,
+    "steps_to_half": 250
+   },
+   "seed": 307
+  },
+  {
+   "energy_per_particle": -3.1161682902850734,
+   "eps": 1.5,
+   "formation_largest_share": 0.5333333333333333,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.18189342433579472,
+   "performance_overlap": 0.5087719298245614,
+   "reference_size": 32,
+   "repair": {
+    "largest_share_after_recovery": 0.9333333333333333,
+    "single_group": true,
+    "steps_to_half": 750
+   },
+   "seed": 308
+  },
+  {
+   "anneal": {
+    "single_group_after_anneal": true,
+    "single_group_after_control": false
+   },
+   "energy_per_particle": -3.326353290546167,
+   "eps": 1.5,
+   "formation_largest_share": 0.55,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.21734541879888766,
+   "performance_overlap": 0.5,
+   "reference_size": 33,
+   "repair": {
+    "largest_share_after_recovery": 0.65,
+    "single_group": false,
+    "steps_to_half": 500
+   },
+   "seed": 309
+  },
+  {
+   "anneal": {
+    "single_group_after_anneal": false,
+    "single_group_after_control": false
+   },
+   "energy_per_particle": -2.971369717614552,
+   "eps": 1.5,
+   "formation_largest_share": 0.5666666666666667,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.4745630210333299,
+   "performance_overlap": 0.5666666666666667,
+   "reference_size": 34,
+   "repair": {
+    "largest_share_after_recovery": 0.6,
+    "single_group": false,
+    "steps_to_half": 1250
+   },
+   "seed": 310
+  },
+  {
+   "energy_per_particle": -3.0809539182714514,
+   "eps": 1.5,
+   "formation_largest_share": 0.5833333333333334,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.3287244153522307,
+   "performance_overlap": 0.55,
+   "reference_size": 35,
+   "repair": {
+    "largest_share_after_recovery": 0.75,
+    "single_group": true,
+    "steps_to_half": 500
+   },
+   "seed": 311
+  },
+  {
+   "energy_per_particle": -3.2036030627228227,
+   "eps": 1.5,
+   "formation_largest_share": 0.55,
+   "load_retention": 0.9393939393939394,
+   "mobility_msd_500": 0.21252519974683412,
+   "performance_overlap": 0.4406779661016949,
+   "reference_size": 33,
+   "repair": {
+    "largest_share_after_recovery": 0.85,
+    "single_group": true,
+    "steps_to_half": 250
+   },
+   "seed": 312
+  },
+  {
+   "anneal": {
+    "single_group_after_anneal": true,
+    "single_group_after_control": true
+   },
+   "energy_per_particle": -3.215057367423242,
+   "eps": 1.5,
+   "formation_largest_share": 0.9833333333333333,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.2818577408608628,
+   "performance_overlap": 0.6101694915254238,
+   "reference_size": 59,
+   "repair": {
+    "largest_share_after_recovery": 0.6166666666666667,
+    "single_group": false,
+    "steps_to_half": 750
+   },
+   "seed": 313
+  },
+  {
+   "energy_per_particle": -3.325339600981613,
+   "eps": 1.5,
+   "formation_largest_share": 0.7833333333333333,
+   "load_retention": 0.9361702127659575,
+   "mobility_msd_500": 0.3190124306324083,
+   "performance_overlap": 0.7666666666666667,
+   "reference_size": 47,
+   "repair": {
+    "largest_share_after_recovery": 0.7833333333333333,
+    "single_group": true,
+    "steps_to_half": 250
+   },
+   "seed": 314
+  },
+  {
+   "anneal": {
+    "single_group_after_anneal": false,
+    "single_group_after_control": false
+   },
+   "energy_per_particle": -3.0873129644040147,
+   "eps": 1.5,
+   "formation_largest_share": 0.5333333333333333,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.3275169992396078,
+   "performance_overlap": 0.5476190476190477,
+   "reference_size": 32,
+   "repair": {
+    "largest_share_after_recovery": 0.4166666666666667,
+    "single_group": false,
+    "steps_to_half": 250
+   },
+   "seed": 315
+  },
+  {
+   "energy_per_particle": -3.3296901672421475,
+   "eps": 1.5,
+   "formation_largest_share": 0.6166666666666667,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.2784127686177763,
+   "performance_overlap": 0.6166666666666667,
+   "reference_size": 37,
+   "repair": {
+    "largest_share_after_recovery": 1.0,
+    "single_group": true,
+    "steps_to_half": 500
+   },
+   "seed": 316
+  },
+  {
+   "energy_per_particle": -3.5216378655231475,
+   "eps": 1.5,
+   "formation_largest_share": 1.0,
+   "load_retention": 0.9833333333333333,
+   "mobility_msd_500": 0.20520416148755707,
+   "performance_overlap": 0.9666666666666667,
+   "reference_size": 60,
+   "repair": {
+    "largest_share_after_recovery": 0.8833333333333333,
+    "single_group": true,
+    "steps_to_half": 500
+   },
+   "seed": 317
+  },
+  {
+   "energy_per_particle": -3.339255647710835,
+   "eps": 1.5,
+   "formation_largest_share": 0.8666666666666667,
+   "load_retention": 0.9807692307692307,
+   "mobility_msd_500": 0.24204564968801112,
+   "performance_overlap": 0.85,
+   "reference_size": 52,
+   "repair": {
+    "largest_share_after_recovery": 1.0,
+    "single_group": true,
+    "steps_to_half": 250
+   },
+   "seed": 318
+  },
+  {
+   "energy_per_particle": -3.3295548445493486,
+   "eps": 1.5,
+   "formation_largest_share": 0.5,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.1254927974576207,
+   "performance_overlap": 0.45454545454545453,
+   "reference_size": 30,
+   "repair": {
+    "largest_share_after_recovery": 0.9833333333333333,
+    "single_group": true,
+    "steps_to_half": 250
+   },
+   "seed": 319
+  },
+  {
+   "energy_per_particle": -3.307995514524553,
+   "eps": 1.5,
+   "formation_largest_share": 0.9833333333333333,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.287988543707626,
+   "performance_overlap": 0.9833333333333333,
+   "reference_size": 59,
+   "repair": {
+    "largest_share_after_recovery": 0.75,
+    "single_group": true,
+    "steps_to_half": 750
+   },
+   "seed": 320
+  },
+  {
+   "energy_per_particle": -3.2237569593278934,
+   "eps": 1.5,
+   "formation_largest_share": 0.9,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.19271162105233916,
+   "performance_overlap": 0.9090909090909091,
+   "reference_size": 54,
+   "repair": {
+    "largest_share_after_recovery": 0.8333333333333334,
+    "single_group": true,
+    "steps_to_half": 500
+   },
+   "seed": 321
+  },
+  {
+   "energy_per_particle": -3.308387318960889,
+   "eps": 1.5,
+   "formation_largest_share": 0.9833333333333333,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.319209652883853,
+   "performance_overlap": 0.9166666666666666,
+   "reference_size": 59,
+   "repair": {
+    "largest_share_after_recovery": 0.9833333333333333,
+    "single_group": true,
+    "steps_to_half": 500
+   },
+   "seed": 322
+  },
+  {
+   "energy_per_particle": -3.203437772467446,
+   "eps": 1.5,
+   "formation_largest_share": 0.8833333333333333,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.24616944977965172,
+   "performance_overlap": 0.5454545454545454,
+   "reference_size": 53,
+   "repair": {
+    "largest_share_after_recovery": 0.9666666666666667,
+    "single_group": true,
+    "steps_to_half": 1250
+   },
+   "seed": 323
+  },
+  {
+   "anneal": {
+    "single_group_after_anneal": true,
+    "single_group_after_control": true
+   },
+   "energy_per_particle": -2.9172097564767436,
+   "eps": 1.5,
+   "formation_largest_share": 0.5333333333333333,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.27872919733414236,
+   "performance_overlap": 0.6744186046511628,
+   "reference_size": 32,
+   "repair": {
+    "largest_share_after_recovery": 0.65,
+    "single_group": false,
+    "steps_to_half": 1000
+   },
+   "seed": 324
+  },
+  {
+   "energy_per_particle": -4.515775837321081,
+   "eps": 2.0,
+   "formation_largest_share": 0.5833333333333334,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.14101925641963672,
+   "performance_overlap": 0.7906976744186046,
+   "reference_size": 35,
+   "repair": {
+    "largest_share_after_recovery": 0.9,
+    "single_group": true,
+    "steps_to_half": 250
+   },
+   "seed": 301
+  },
+  {
+   "energy_per_particle": -4.74798320319944,
+   "eps": 2.0,
+   "formation_largest_share": 0.6666666666666666,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.21743965855718903,
+   "performance_overlap": 0.6666666666666666,
+   "reference_size": 40,
+   "repair": {
+    "largest_share_after_recovery": 0.9833333333333333,
+    "single_group": true,
+    "steps_to_half": 250
+   },
+   "seed": 302
+  },
+  {
+   "energy_per_particle": -4.405501843339611,
+   "eps": 2.0,
+   "formation_largest_share": 0.65,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.39403664930747206,
+   "performance_overlap": 0.7755102040816326,
+   "reference_size": 39,
+   "repair": {
+    "largest_share_after_recovery": 0.9666666666666667,
+    "single_group": true,
+    "steps_to_half": 500
+   },
+   "seed": 303
+  },
+  {
+   "energy_per_particle": -4.612805243093623,
+   "eps": 2.0,
+   "formation_largest_share": 0.55,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.15664576313001322,
+   "performance_overlap": 0.5423728813559322,
+   "reference_size": 33,
+   "repair": {
+    "largest_share_after_recovery": 0.9666666666666667,
+    "single_group": true,
+    "steps_to_half": 250
+   },
+   "seed": 304
+  },
+  {
+   "energy_per_particle": -4.668925288510967,
+   "eps": 2.0,
+   "formation_largest_share": 0.5333333333333333,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.13057334638217433,
+   "performance_overlap": 0.5333333333333333,
+   "reference_size": 32,
+   "repair": {
+    "largest_share_after_recovery": 1.0,
+    "single_group": true,
+    "steps_to_half": 250
+   },
+   "seed": 305
+  },
+  {
+   "anneal": {
+    "single_group_after_anneal": true,
+    "single_group_after_control": false
+   },
+   "energy_per_particle": -4.574324192841249,
+   "eps": 2.0,
+   "formation_largest_share": 0.5666666666666667,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.18487651328555801,
+   "performance_overlap": 0.5517241379310345,
+   "reference_size": 34,
+   "repair": {
+    "largest_share_after_recovery": 0.5833333333333334,
+    "single_group": false,
+    "steps_to_half": 500
+   },
+   "seed": 306
+  },
+  {
+   "anneal": {
+    "single_group_after_anneal": true,
+    "single_group_after_control": true
+   },
+   "energy_per_particle": -4.649090436253616,
+   "eps": 2.0,
+   "formation_largest_share": 0.7333333333333333,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.2392969351552029,
+   "performance_overlap": 0.711864406779661,
+   "reference_size": 44,
+   "repair": {
+    "largest_share_after_recovery": 0.6666666666666666,
+    "single_group": false,
+    "steps_to_half": 750
+   },
+   "seed": 307
+  },
+  {
+   "energy_per_particle": -4.569867015796474,
+   "eps": 2.0,
+   "formation_largest_share": 0.7666666666666667,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.3002059863349269,
+   "performance_overlap": 0.7735849056603774,
+   "reference_size": 46,
+   "repair": {
+    "largest_share_after_recovery": 0.9166666666666666,
+    "single_group": true,
+    "steps_to_half": 250
+   },
+   "seed": 308
+  },
+  {
+   "energy_per_particle": -4.462402858555013,
+   "eps": 2.0,
+   "formation_largest_share": 0.6333333333333333,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.22719660292084998,
+   "performance_overlap": 0.6333333333333333,
+   "reference_size": 38,
+   "repair": {
+    "largest_share_after_recovery": 0.9833333333333333,
+    "single_group": true,
+    "steps_to_half": 500
+   },
+   "seed": 309
+  },
+  {
+   "anneal": {
+    "single_group_after_anneal": true,
+    "single_group_after_control": true
+   },
+   "energy_per_particle": -4.5071157527753165,
+   "eps": 2.0,
+   "formation_largest_share": 0.5,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.2649158506616858,
+   "performance_overlap": 0.5,
+   "reference_size": 30,
+   "repair": {
+    "largest_share_after_recovery": 0.43333333333333335,
+    "single_group": false,
+    "steps_to_half": null
+   },
+   "seed": 310
+  },
+  {
+   "anneal": {
+    "single_group_after_anneal": false,
+    "single_group_after_control": false
+   },
+   "energy_per_particle": -4.7079155280340235,
+   "eps": 2.0,
+   "formation_largest_share": 0.7333333333333333,
+   "load_retention": 0.9772727272727273,
+   "mobility_msd_500": 0.12725064044764442,
+   "performance_overlap": 0.7166666666666667,
+   "reference_size": 44,
+   "repair": {
+    "largest_share_after_recovery": 0.6833333333333333,
+    "single_group": false,
+    "steps_to_half": 250
+   },
+   "seed": 311
+  },
+  {
+   "anneal": {
+    "single_group_after_anneal": true,
+    "single_group_after_control": false
+   },
+   "energy_per_particle": -4.295375945087809,
+   "eps": 2.0,
+   "formation_largest_share": 0.6,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.1258400846981803,
+   "performance_overlap": 0.66,
+   "reference_size": 36,
+   "repair": {
+    "largest_share_after_recovery": 0.6666666666666666,
+    "single_group": false,
+    "steps_to_half": 250
+   },
+   "seed": 312
+  },
+  {
+   "energy_per_particle": -4.303643633765168,
+   "eps": 2.0,
+   "formation_largest_share": 0.8,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.17971886837855164,
+   "performance_overlap": 0.7833333333333333,
+   "reference_size": 48,
+   "repair": {
+    "largest_share_after_recovery": 0.8,
+    "single_group": true,
+    "steps_to_half": 250
+   },
+   "seed": 313
+  },
+  {
+   "energy_per_particle": -4.610594645037744,
+   "eps": 2.0,
+   "formation_largest_share": 0.95,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.30150141408040443,
+   "performance_overlap": 0.9166666666666666,
+   "reference_size": 57,
+   "repair": {
+    "largest_share_after_recovery": 1.0,
+    "single_group": true,
+    "steps_to_half": 250
+   },
+   "seed": 314
+  },
+  {
+   "energy_per_particle": -4.613420425581042,
+   "eps": 2.0,
+   "formation_largest_share": 0.8333333333333334,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.3407869390829525,
+   "performance_overlap": 0.9411764705882353,
+   "reference_size": 50,
+   "repair": {
+    "largest_share_after_recovery": 0.8333333333333334,
+    "single_group": true,
+    "steps_to_half": 250
+   },
+   "seed": 315
+  },
+  {
+   "anneal": {
+    "single_group_after_anneal": true,
+    "single_group_after_control": true
+   },
+   "energy_per_particle": -4.643201997637053,
+   "eps": 2.0,
+   "formation_largest_share": 0.7166666666666667,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.32459758319470305,
+   "performance_overlap": 0.7166666666666667,
+   "reference_size": 43,
+   "repair": {
+    "largest_share_after_recovery": 0.65,
+    "single_group": false,
+    "steps_to_half": 500
+   },
+   "seed": 316
+  },
+  {
+   "energy_per_particle": -4.968981622425915,
+   "eps": 2.0,
+   "formation_largest_share": 1.0,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.15305852114666132,
+   "performance_overlap": 0.9333333333333333,
+   "reference_size": 60,
+   "repair": {
+    "largest_share_after_recovery": 0.95,
+    "single_group": true,
+    "steps_to_half": 500
+   },
+   "seed": 317
+  },
+  {
+   "energy_per_particle": -4.465764641305932,
+   "eps": 2.0,
+   "formation_largest_share": 0.85,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.15788160082541017,
+   "performance_overlap": 0.8793103448275862,
+   "reference_size": 51,
+   "repair": {
+    "largest_share_after_recovery": 0.9333333333333333,
+    "single_group": true,
+    "steps_to_half": 250
+   },
+   "seed": 318
+  },
+  {
+   "anneal": {
+    "single_group_after_anneal": false,
+    "single_group_after_control": false
+   },
+   "energy_per_particle": -4.655136046714817,
+   "eps": 2.0,
+   "formation_largest_share": 0.6833333333333333,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.21445701147888502,
+   "performance_overlap": 0.7017543859649122,
+   "reference_size": 41,
+   "repair": {
+    "largest_share_after_recovery": 0.6333333333333333,
+    "single_group": false,
+    "steps_to_half": 1000
+   },
+   "seed": 319
+  },
+  {
+   "energy_per_particle": -4.530209353484861,
+   "eps": 2.0,
+   "formation_largest_share": 0.85,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.3194866439703473,
+   "performance_overlap": 0.8333333333333334,
+   "reference_size": 51,
+   "repair": {
+    "largest_share_after_recovery": 1.0,
+    "single_group": true,
+    "steps_to_half": 250
+   },
+   "seed": 320
+  },
+  {
+   "energy_per_particle": -4.684112829699702,
+   "eps": 2.0,
+   "formation_largest_share": 0.8666666666666667,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.1458501580269985,
+   "performance_overlap": 0.8166666666666667,
+   "reference_size": 52,
+   "repair": {
+    "largest_share_after_recovery": 0.95,
+    "single_group": true,
+    "steps_to_half": 250
+   },
+   "seed": 321
+  },
+  {
+   "energy_per_particle": -4.804424397153594,
+   "eps": 2.0,
+   "formation_largest_share": 1.0,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.2971143461730473,
+   "performance_overlap": 1.0,
+   "reference_size": 60,
+   "repair": {
+    "largest_share_after_recovery": 0.85,
+    "single_group": true,
+    "steps_to_half": 250
+   },
+   "seed": 322
+  },
+  {
+   "anneal": {
+    "single_group_after_anneal": false,
+    "single_group_after_control": false
+   },
+   "energy_per_particle": -4.601642342310094,
+   "eps": 2.0,
+   "formation_largest_share": 0.6833333333333333,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.1290625730299691,
+   "performance_overlap": 0.8863636363636364,
+   "reference_size": 41,
+   "repair": {
+    "largest_share_after_recovery": 0.6833333333333333,
+    "single_group": false,
+    "steps_to_half": 500
+   },
+   "seed": 323
+  },
+  {
+   "energy_per_particle": -4.434826815464453,
+   "eps": 2.0,
+   "formation_largest_share": 0.7,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.24187137193523467,
+   "performance_overlap": 0.7115384615384616,
+   "reference_size": 42,
+   "repair": {
+    "largest_share_after_recovery": 0.7833333333333333,
+    "single_group": true,
+    "steps_to_half": 250
+   },
+   "seed": 324
+  },
+  {
+   "energy_per_particle": -5.965481280722385,
+   "eps": 2.5,
+   "formation_largest_share": 0.9333333333333333,
+   "load_retention": 0.9821428571428571,
+   "mobility_msd_500": 0.24452637408455138,
+   "performance_overlap": 0.9333333333333333,
+   "reference_size": 56,
+   "repair": {
+    "largest_share_after_recovery": 1.0,
+    "single_group": true,
+    "steps_to_half": 500
+   },
+   "seed": 301
+  },
+  {
+   "energy_per_particle": -5.703366228950841,
+   "eps": 2.5,
+   "formation_largest_share": 0.7,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.41939297972620726,
+   "performance_overlap": 0.7368421052631579,
+   "reference_size": 42,
+   "repair": {
+    "largest_share_after_recovery": 0.9833333333333333,
+    "single_group": true,
+    "steps_to_half": 250
+   },
+   "seed": 302
+  },
+  {
+   "energy_per_particle": -5.67839493778219,
+   "eps": 2.5,
+   "formation_largest_share": 0.43333333333333335,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.34733563792178346,
+   "performance_overlap": 0.43333333333333335,
+   "reference_size": 26,
+   "repair": {
+    "largest_share_after_recovery": 0.9833333333333333,
+    "single_group": true,
+    "steps_to_half": 500
+   },
+   "seed": 303
+  },
+  {
+   "energy_per_particle": -5.795149997152551,
+   "eps": 2.5,
+   "formation_largest_share": 1.0,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.13490336496145067,
+   "performance_overlap": 0.95,
+   "reference_size": 60,
+   "repair": {
+    "largest_share_after_recovery": 0.8666666666666667,
+    "single_group": true,
+    "steps_to_half": 500
+   },
+   "seed": 304
+  },
+  {
+   "energy_per_particle": -5.908535133778169,
+   "eps": 2.5,
+   "formation_largest_share": 0.5666666666666667,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.11196786513068045,
+   "performance_overlap": 0.5666666666666667,
+   "reference_size": 34,
+   "repair": {
+    "largest_share_after_recovery": 0.9333333333333333,
+    "single_group": true,
+    "steps_to_half": 250
+   },
+   "seed": 305
+  },
+  {
+   "anneal": {
+    "single_group_after_anneal": true,
+    "single_group_after_control": false
+   },
+   "energy_per_particle": -5.9162513995506725,
+   "eps": 2.5,
+   "formation_largest_share": 0.5666666666666667,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.1715575264491409,
+   "performance_overlap": 0.9166666666666666,
+   "reference_size": 34,
+   "repair": {
+    "largest_share_after_recovery": 0.5833333333333334,
+    "single_group": false,
+    "steps_to_half": 500
+   },
+   "seed": 306
+  },
+  {
+   "energy_per_particle": -5.769641592397968,
+   "eps": 2.5,
+   "formation_largest_share": 0.8666666666666667,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.23977760475460136,
+   "performance_overlap": 0.8,
+   "reference_size": 52,
+   "repair": {
+    "largest_share_after_recovery": 0.8166666666666667,
+    "single_group": true,
+    "steps_to_half": 250
+   },
+   "seed": 307
+  },
+  {
+   "energy_per_particle": -5.402920057190297,
+   "eps": 2.5,
+   "formation_largest_share": 0.5833333333333334,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.2529585228756001,
+   "performance_overlap": 0.5172413793103449,
+   "reference_size": 35,
+   "repair": {
+    "largest_share_after_recovery": 0.95,
+    "single_group": true,
+    "steps_to_half": 1500
+   },
+   "seed": 308
+  },
+  {
+   "anneal": {
+    "single_group_after_anneal": false,
+    "single_group_after_control": false
+   },
+   "energy_per_particle": -5.55931558374603,
+   "eps": 2.5,
+   "formation_largest_share": 0.4666666666666667,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.18065670202174475,
+   "performance_overlap": 0.4666666666666667,
+   "reference_size": 28,
+   "repair": {
+    "largest_share_after_recovery": 0.6,
+    "single_group": false,
+    "steps_to_half": 1000
+   },
+   "seed": 309
+  },
+  {
+   "energy_per_particle": -5.6308332494110385,
+   "eps": 2.5,
+   "formation_largest_share": 0.6666666666666666,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.28266088483089574,
+   "performance_overlap": 0.6779661016949152,
+   "reference_size": 40,
+   "repair": {
+    "largest_share_after_recovery": 0.9333333333333333,
+    "single_group": true,
+    "steps_to_half": 250
+   },
+   "seed": 310
+  },
+  {
+   "energy_per_particle": -6.164021638908319,
+   "eps": 2.5,
+   "formation_largest_share": 0.9333333333333333,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.12013606854504323,
+   "performance_overlap": 0.9310344827586207,
+   "reference_size": 56,
+   "repair": {
+    "largest_share_after_recovery": 0.8166666666666667,
+    "single_group": true,
+    "steps_to_half": 250
+   },
+   "seed": 311
+  },
+  {
+   "energy_per_particle": -5.480907928352593,
+   "eps": 2.5,
+   "formation_largest_share": 0.6,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.1901800767738796,
+   "performance_overlap": 0.7209302325581395,
+   "reference_size": 36,
+   "repair": {
+    "largest_share_after_recovery": 0.8,
+    "single_group": true,
+    "steps_to_half": 250
+   },
+   "seed": 312
+  },
+  {
+   "energy_per_particle": -5.80331969121255,
+   "eps": 2.5,
+   "formation_largest_share": 0.6166666666666667,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.305269653410399,
+   "performance_overlap": 0.6101694915254238,
+   "reference_size": 37,
+   "repair": {
+    "largest_share_after_recovery": 0.9333333333333333,
+    "single_group": true,
+    "steps_to_half": 750
+   },
+   "seed": 313
+  },
+  {
+   "anneal": {
+    "single_group_after_anneal": true,
+    "single_group_after_control": true
+   },
+   "energy_per_particle": -5.328184306672974,
+   "eps": 2.5,
+   "formation_largest_share": 0.5,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.19530136326881478,
+   "performance_overlap": 0.5,
+   "reference_size": 30,
+   "repair": {
+    "largest_share_after_recovery": 0.5166666666666667,
+    "single_group": false,
+    "steps_to_half": 1000
+   },
+   "seed": 314
+  },
+  {
+   "energy_per_particle": -5.601761831764869,
+   "eps": 2.5,
+   "formation_largest_share": 0.4666666666666667,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.1476072837609565,
+   "performance_overlap": 0.4745762711864407,
+   "reference_size": 28,
+   "repair": {
+    "largest_share_after_recovery": 1.0,
+    "single_group": true,
+    "steps_to_half": 1250
+   },
+   "seed": 315
+  },
+  {
+   "energy_per_particle": -6.172191912086075,
+   "eps": 2.5,
+   "formation_largest_share": 1.0,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.20918606112322838,
+   "performance_overlap": 0.9666666666666667,
+   "reference_size": 60,
+   "repair": {
+    "largest_share_after_recovery": 0.8833333333333333,
+    "single_group": true,
+    "steps_to_half": 250
+   },
+   "seed": 316
+  },
+  {
+   "energy_per_particle": -6.126681491146286,
+   "eps": 2.5,
+   "formation_largest_share": 0.9166666666666666,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.13941047862503972,
+   "performance_overlap": 0.9818181818181818,
+   "reference_size": 55,
+   "repair": {
+    "largest_share_after_recovery": 0.8833333333333333,
+    "single_group": true,
+    "steps_to_half": 250
+   },
+   "seed": 317
+  },
+  {
+   "energy_per_particle": -5.80321864719489,
+   "eps": 2.5,
+   "formation_largest_share": 0.7833333333333333,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.21573739789057203,
+   "performance_overlap": 0.9387755102040817,
+   "reference_size": 47,
+   "repair": {
+    "largest_share_after_recovery": 0.9,
+    "single_group": true,
+    "steps_to_half": 250
+   },
+   "seed": 318
+  },
+  {
+   "energy_per_particle": -5.966167447338527,
+   "eps": 2.5,
+   "formation_largest_share": 0.6833333333333333,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.1684321554846119,
+   "performance_overlap": 0.6833333333333333,
+   "reference_size": 41,
+   "repair": {
+    "largest_share_after_recovery": 0.9666666666666667,
+    "single_group": true,
+    "steps_to_half": 250
+   },
+   "seed": 319
+  },
+  {
+   "anneal": {
+    "single_group_after_anneal": false,
+    "single_group_after_control": false
+   },
+   "energy_per_particle": -6.01029272950001,
+   "eps": 2.5,
+   "formation_largest_share": 0.5,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.07628559269914927,
+   "performance_overlap": 0.9333333333333333,
+   "reference_size": 30,
+   "repair": {
+    "largest_share_after_recovery": 0.6,
+    "single_group": false,
+    "steps_to_half": 2750
+   },
+   "seed": 320
+  },
+  {
+   "energy_per_particle": -5.668228896215144,
+   "eps": 2.5,
+   "formation_largest_share": 0.8166666666666667,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.28968760012753847,
+   "performance_overlap": 0.8166666666666667,
+   "reference_size": 49,
+   "repair": {
+    "largest_share_after_recovery": 1.0,
+    "single_group": true,
+    "steps_to_half": 500
+   },
+   "seed": 321
+  },
+  {
+   "energy_per_particle": -5.79672460385133,
+   "eps": 2.5,
+   "formation_largest_share": 0.7166666666666667,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.25923633636484394,
+   "performance_overlap": 0.711864406779661,
+   "reference_size": 43,
+   "repair": {
+    "largest_share_after_recovery": 0.9166666666666666,
+    "single_group": true,
+    "steps_to_half": 250
+   },
+   "seed": 322
+  },
+  {
+   "energy_per_particle": -6.046461159373987,
+   "eps": 2.5,
+   "formation_largest_share": 0.7333333333333333,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.19601595935015242,
+   "performance_overlap": 0.7586206896551724,
+   "reference_size": 44,
+   "repair": {
+    "largest_share_after_recovery": 0.7,
+    "single_group": true,
+    "steps_to_half": 500
+   },
+   "seed": 323
+  },
+  {
+   "anneal": {
+    "single_group_after_anneal": false,
+    "single_group_after_control": false
+   },
+   "energy_per_particle": -5.620783122966787,
+   "eps": 2.5,
+   "formation_largest_share": 0.7,
+   "load_retention": 1.0,
+   "mobility_msd_500": 0.2672276641449652,
+   "performance_overlap": 0.7592592592592593,
+   "reference_size": 42,
+   "repair": {
+    "largest_share_after_recovery": 0.6166666666666667,
+    "single_group": false,
+    "steps_to_half": 250
+   },
+   "seed": 324
+  }
+ ],
+ "sbs_protocol_digest": "144ee25313334fe70e8c40b4d545f9df9d031033a6f53719ee0811087540e970",
+ "seeds": [
+  301,
+  302,
+  303,
+  304,
+  305,
+  306,
+  307,
+  308,
+  309,
+  310,
+  311,
+  312,
+  313,
+  314,
+  315,
+  316,
+  317,
+  318,
+  319,
+  320,
+  321,
+  322,
+  323,
+  324
+ ],
+ "source_revision": "9351ed2d5da30f1f2ed07598368b3ca117e79a47",
+ "verdicts_against_baseline": {
+  "1.0": {
+   "load_retention_diff": {
+    "ci95": [
+     -0.1488859149992026,
+     -0.05250759685895673
+    ],
+    "mean": -0.10069675592907966,
+    "n": 24,
+    "p": 0.000251906491897281,
+    "sd": 0.11412120619777373
+   },
+   "load_retention_worse_flag": true,
+   "mechanism_a_present": false,
+   "mechanism_anneal_b": {
+    "merged_after_anneal": 5,
+    "merged_after_control": 4,
+    "worlds_with_failed_repair": 14
+   },
+   "mechanism_b_present": true,
+   "mechanism_mobility_a": {
+    "baseline_minus_design": {
+     "ci95": [
+      -0.17600206532399354,
+      -0.08959125037060171
+     ],
+     "mean": -0.13279665784729763,
+     "n": 24,
+     "p": 1.7315411900869032e-06,
+     "sd": 0.10231872293791144
+    }
+   },
+   "performance_diff": {
+    "ci95": [
+     -0.2833995813294453,
+     -0.08897871750636843
+    ],
+    "mean": -0.18618914941790687,
+    "n": 24,
+    "p": 0.0006179674874561773,
+    "sd": 0.23021301800697766
+   },
+   "single_group_share_diff": {
+    "ci95": [
+     -0.6297467842484439,
+     -0.03691988241822275
+    ],
+    "mean": -0.3333333333333333,
+    "n": 24,
+    "p": 0.02917115235530933,
+    "sd": 0.701964118163034
+   },
+   "steps_to_half_diff_censored_at_recovery_length": {
+    "ci95": [
+     584.5247678458447,
+     1227.9752321541553
+    ],
+    "mean": 906.25,
+    "n": 24,
+    "p": 6.1491831158195215e-06,
+    "sd": 761.9072892362327
+   },
+   "verdict": "NOT_AN_IMPROVEMENT"
+  },
+  "2.0": {
+   "load_retention_diff": {
+    "ci95": [
+     -0.001534949211843147,
+     0.01441454617456308
+    ],
+    "mean": 0.006439798481359967,
+    "n": 24,
+    "p": 0.10837672204569371,
+    "sd": 0.01888573785956567
+   },
+   "load_retention_worse_flag": false,
+   "mechanism_a_present": true,
+   "mechanism_anneal_b": {
+    "merged_after_anneal": 5,
+    "merged_after_control": 3,
+    "worlds_with_failed_repair": 8
+   },
+   "mechanism_b_present": true,
+   "mechanism_mobility_a": {
+    "baseline_minus_design": {
+     "ci95": [
+      0.01674189519630489,
+      0.09830402155556903
+     ],
+     "mean": 0.05752295837593696,
+     "n": 24,
+     "p": 0.007742477576631359,
+     "sd": 0.09657740890051512
+    }
+   },
+   "performance_diff": {
+    "ci95": [
+     -0.024685578309247065,
+     0.1393404942220834
+    ],
+    "mean": 0.05732745795641816,
+    "n": 24,
+    "p": 0.16166728523316506,
+    "sd": 0.19422265926989954
+   },
+   "single_group_share_diff": {
+    "ci95": [
+     -0.38621474833717817,
+     0.21954808167051154
+    ],
+    "mean": -0.08333333333333333,
+    "n": 24,
+    "p": 0.5747639985876496,
+    "sd": 0.7172815023567723
+   },
+   "steps_to_half_diff_censored_at_recovery_length": {
+    "ci95": [
+     -307.09171102670496,
+     140.42504436003827
+    ],
+    "mean": -83.33333333333333,
+    "n": 24,
+    "p": 0.4488920813303993,
+    "sd": 529.9029170039313
+   },
+   "verdict": "NOT_AN_IMPROVEMENT"
+  },
+  "2.5": {
+   "load_retention_diff": {
+    "ci95": [
+     -0.0012039593731193801,
+     0.014489400491683464
+    ],
+    "mean": 0.006642720559282042,
+    "n": 24,
+    "p": 0.09322963295049468,
+    "sd": 0.018582448746002397
+   },
+   "load_retention_worse_flag": false,
+   "mechanism_a_present": true,
+   "mechanism_anneal_b": {
+    "merged_after_anneal": 2,
+    "merged_after_control": 1,
+    "worlds_with_failed_repair": 5
+   },
+   "mechanism_b_present": true,
+   "mechanism_mobility_a": {
+    "baseline_minus_design": {
+     "ci95": [
+      0.01860118791424705,
+      0.10888082586244757
+     ],
+     "mean": 0.06374100688834732,
+     "n": 24,
+     "p": 0.007684950885533894,
+     "sd": 0.10689978178239942
+    }
+   },
+   "performance_diff": {
+    "ci95": [
+     -0.028090831336665997,
+     0.12690135301366828
+    ],
+    "mean": 0.049405260838501136,
+    "n": 24,
+    "p": 0.20021412127855812,
+    "sd": 0.1835256660481369
+   },
+   "single_group_share_diff": {
+    "ci95": [
+     -0.19059187302411895,
+     0.27392520635745227
+    ],
+    "mean": 0.041666666666666664,
+    "n": 24,
+    "p": 0.7139501617893311,
+    "sd": 0.5500329370901874
+   },
+   "steps_to_half_diff_censored_at_recovery_length": {
+    "ci95": [
+     -235.29043221861144,
+     297.79043221861144
+    ],
+    "mean": 31.25,
+    "n": 24,
+    "p": 0.810514888113647,
+    "sd": 631.2190586476298
+   },
+   "verdict": "NOT_AN_IMPROVEMENT"
+  }
+ }
+}
