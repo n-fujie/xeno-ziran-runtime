@@ -30,7 +30,7 @@ jobs:
           xzr compare ci-a/smoke/* ci-b/smoke/* --json | python -c "import json,sys; c=json.load(sys.stdin)['counts']; assert set(c) == {'same'}, c; print(c)"
   conformance-macos:
     # the golden engine-conformance fixture is defined on macOS arm64 (the iOS app's platform); see tests/test_compat.py
-    runs-on: macos-14
+    runs-on: macos-15
     env:
       OMP_NUM_THREADS: "1"
     steps:
