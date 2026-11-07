@@ -132,14 +132,13 @@ def apply(f: Field, change: dict, causes: list[int]) -> int:
         f.couplable = f.couplable | {pair} if op == "add" else f.couplable - {pair}
     elif parts[0] in ("history", "stop"):
         f.s[parts[0]][parts[1]] = v
-    elif parts[0] == "variables":
-        if v not in f.s["variables"]:
-            f.s["variables"].append(v)
-            f.instruments.catalog = tuple(dict.fromkeys((*f.instruments.catalog, v)))
-            for o in f.live():
-                o.mem["_variables"] = list(f.s["variables"])
-                if "picturing" in o.kinds:
-                    o.instrument = o.instrument.with_(channels=tuple(sorted(set(o.instrument.channels) | {v})))
+    elif parts[0] == "variables" and v not in f.s["variables"]:
+        f.s["variables"].append(v)
+        f.instruments.catalog = tuple(dict.fromkeys((*f.instruments.catalog, v)))
+        for o in f.live():
+            o.mem["_variables"] = list(f.s["variables"])
+            if "picturing" in o.kinds:
+                o.instrument = o.instrument.with_(channels=tuple(sorted(set(o.instrument.channels) | {v})))
     after = copy.deepcopy({k: f.s[k] for k in before})
     eid = f.history.add(f.world.t, "config", "ziran", path, causes, before if f.history.keep_states else None,
                         after if f.history.keep_states else None, {"change": change})
