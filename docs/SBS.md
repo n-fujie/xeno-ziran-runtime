@@ -70,3 +70,14 @@ Verdicts (rule in the record): **no comparison detected an advantage of the body
 * No other engine was compared (no cross-engine comparison); no conventional morphology–controller, MPC or RL competitor applies to this substrate and none was built.
 * Not tested: dependence of the results on the number of particles, the box density, the contact cut-off, the hold times or the integration step; the contact cut-off already changes the fine-observation partition for 35 of 288 readings.
 * Not claimed: validation against any physical material or body; Simondonian individuation; metastability in Simondon's sense; posthuman anything.
+
+## Regression verification (backend)
+
+| run | result |
+|---|---|
+| baseline: `main` (3e874c5) + the P/A SYSTEM rename, whole suite | 1089 passed, 1 failed, 5 skipped (1 h 40 min; other heavy jobs were running at the same time) |
+| this branch (adds `xzr/sbs`, 8 tests, one entry in `stage_engine.py`), whole suite | 1098 passed, 0 failed, 5 skipped (1 h 08 min) |
+| `tests/test_cooperative.py` alone, on an untouched `origin/main` | 1 failed (`test_bridge_tick_runs_sessions_streams_and_comparisons`), 9 passed |
+| the same file alone, on this branch | the same 1 failed, 9 passed |
+
+The one failing test is a timing/order-dependent test of the cooperative bridge ('running' != 'done'); it fails alone on an untouched `origin/main`, so it is **pre-existing and not caused by this work**; it failed in the baseline full run and passed in this branch's full run, which also shows it is not deterministic in a full run. 1089 + 1 + 8 = 1098: no previously passing test failed. The two environment warnings (another scipy hierarchy; three published records that do not replay bit for bit here) are the known ones. Frontend tests were not re-run for this branch (no frontend file changed). Historical result files were not touched.
