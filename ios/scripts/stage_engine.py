@@ -15,7 +15,7 @@ import shutil
 import sys
 from pathlib import Path
 
-EXCLUDE_DIRS = {"__pycache__", "experiments", "reasonlab", "hpo", "lab", "teoo", "meos", "study", "totalobs"}
+EXCLUDE_DIRS = {"__pycache__", "experiments", "reasonlab", "hpo", "lab", "teoo", "meos", "study", "totalobs", "sbs"}
 EXCLUDE_FILES = {Path("service") / "app.py", Path("service") / "meos.py", Path("service") / "studies.py", Path("service") / "teoo.py", Path("lineage.py")}
 
 
