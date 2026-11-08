@@ -183,8 +183,7 @@ async def guard(request: Request, call_next):
 # ---------------------------------------------------------------------------------------------- basics
 @app.get("/api/health")
 def health() -> dict:
-    return {"ok": True, "version": __version__, "sessions": len(SESSIONS), "public": LIMITS.public,
-            "max_nodes": LIMITS.max_nodes}
+    return {"ok": True, "version": __version__, "sessions": len(SESSIONS), "public": LIMITS.public, "max_nodes": LIMITS.max_nodes}
 
 
 MEMORY_READY_FRACTION = float(os.environ.get("XZR_READY_MEMORY_FRACTION", "0.9"))
@@ -210,11 +209,16 @@ def ready() -> JSONResponse:
     reaper = _STATE["reaper"]
     limit = _memory_limit()
     rss = rss_bytes()
-    checks = {"cleanup_running": reaper is not None and not reaper.done(), "not_stopping": not _STATE["stopping"],
-              "memory_headroom": limit is None or rss < MEMORY_READY_FRACTION * limit}
+    checks = {
+        "cleanup_running": reaper is not None and not reaper.done(),
+        "not_stopping": not _STATE["stopping"],
+        "memory_headroom": limit is None or rss < MEMORY_READY_FRACTION * limit,
+    }
     ok = all(checks.values())
-    return JSONResponse({"ready": ok, "checks": checks, "accepting_new_sessions": len(SESSIONS) < LIMITS.max_sessions},
-                        status_code=200 if ok else 503)
+    return JSONResponse(
+        {"ready": ok, "checks": checks, "accepting_new_sessions": len(SESSIONS) < LIMITS.max_sessions},
+        status_code=200 if ok else 503,
+    )
 
 
 @app.get("/api/scenarios")
@@ -273,13 +277,20 @@ async def create_session(req: CreateSession, request: Request, response: Respons
         if len(mine) >= LIMITS.max_sessions_per_client:
             replaced = mine[0].id
             close_session(mine[0], "replaced_by_owner")
-        if sum(1 for x in SESSIONS.values() if x.ip == ip and x.owner != owner) + \
-                sum(1 for x in SESSIONS.values() if x.owner == owner) >= LIMITS.max_sessions_per_ip:
-            raise LimitError("max_sessions_per_ip", f"at most {LIMITS.max_sessions_per_ip} live sessions per "
-                             "client address; close one or wait for idle sessions to expire")
+        if (
+            sum(1 for x in SESSIONS.values() if x.ip == ip and x.owner != owner)
+            + sum(1 for x in SESSIONS.values() if x.owner == owner)
+            >= LIMITS.max_sessions_per_ip
+        ):
+            raise LimitError(
+                "max_sessions_per_ip",
+                f"at most {LIMITS.max_sessions_per_ip} live sessions per "
+                "client address; close one or wait for idle sessions to expire",
+            )
         if len(SESSIONS) >= LIMITS.max_sessions:
-            raise LimitError("max_sessions", f"the runtime is at capacity ({LIMITS.max_sessions} live sessions); "
-                             "retry later", 503)
+            raise LimitError(
+                "max_sessions", f"the runtime is at capacity ({LIMITS.max_sessions} live sessions); retry later", 503
+            )
         s = await asyncio.to_thread(Session, sc, req.applied, 10, flags)
         s.owner, s.ip, s.owner_expires = owner, ip, owner_expires
         SESSIONS[s.id] = s
@@ -289,8 +300,15 @@ async def create_session(req: CreateSession, request: Request, response: Respons
 
 
 def _set_owner_cookie(response: Response, token: str) -> None:
-    response.set_cookie(OWNER_COOKIE, token, httponly=True, samesite="strict", secure=LIMITS.cookie_secure,
-                        max_age=int(LIMITS.owner_max_age_s), path="/")
+    response.set_cookie(
+        OWNER_COOKIE,
+        token,
+        httponly=True,
+        samesite="strict",
+        secure=LIMITS.cookie_secure,
+        max_age=int(LIMITS.owner_max_age_s),
+        path="/",
+    )
 
 
 @app.post("/api/owner/reset")
@@ -308,8 +326,11 @@ def owner_reset(request: Request, response: Response) -> dict:
 def sessions(request: Request) -> list[dict]:
     """The caller's own sessions only."""
     owner = owner_of(request.cookies.get(OWNER_COOKIE))
-    return [{"id": s.id, "scenario": s.scenario.name, "t": s.engine.state.t, "running": s.running}
-            for s in SESSIONS.values() if _owns(owner, s)]
+    return [
+        {"id": s.id, "scenario": s.scenario.name, "t": s.engine.state.t, "running": s.running}
+        for s in SESSIONS.values()
+        if _owns(owner, s)
+    ]
 
 
 @app.get("/api/sessions/{sid}")
@@ -365,8 +386,17 @@ def clusters(sid: str, level: int = Query(0, ge=0, le=3)) -> dict:
 
 
 @app.get("/api/sessions/{sid}/tile")
-def tile(sid: str, layout: str = "network", x0: float = 0, y0: float = 0, x1: float = 1000, y1: float = 1000,
-         level: int = Query(4, ge=4, le=5), max_nodes: int = 20000, max_edges: int = 20000) -> Response:
+def tile(
+    sid: str,
+    layout: str = "network",
+    x0: float = 0,
+    y0: float = 0,
+    x1: float = 1000,
+    y1: float = 1000,
+    level: int = Query(4, ge=4, le=5),
+    max_nodes: int = 20000,
+    max_edges: int = 20000,
+) -> Response:
     body, layout_version = ops.tile(get(sid), layout, x0, y0, x1, y1, level, max_nodes, max_edges)
     return Response(body, media_type="application/octet-stream", headers={"X-Layout-Version": str(layout_version)})
 
@@ -452,11 +482,15 @@ def ops_metrics(request: Request) -> dict:
     live = list(SESSIONS.values())
     lat = [x.step_latency for x in live if x.step_latency > 0]
     return {
-        "uptime_s": round(time.time() - METRICS.started), "public": LIMITS.public,
-        "sessions_active": len(live), "websockets_active": sum(len(c) for c in CLIENTS.values()),
+        "uptime_s": round(time.time() - METRICS.started),
+        "public": LIMITS.public,
+        "sessions_active": len(live),
+        "websockets_active": sum(len(c) for c in CLIENTS.values()),
         "jobs": {"active": active_jobs(), "retained": len(JOBS)},
-        "counters": dict(METRICS.counters), "rejected_by_limit": dict(METRICS.rejected),
-        "memory_rss_bytes": rss_bytes(), "process_cpu_s": round(time.process_time(), 2),
+        "counters": dict(METRICS.counters),
+        "rejected_by_limit": dict(METRICS.rejected),
+        "memory_rss_bytes": rss_bytes(),
+        "process_cpu_s": round(time.process_time(), 2),
         "step_latency_ms_mean": round(1000 * sum(lat) / len(lat), 3) if lat else None,
         "steps_per_second_total": round(sum(x.steps_per_second() for x in live), 1),
         "limits": LIMITS.describe(),
@@ -486,14 +520,19 @@ EXP_DIR = Path(__file__).resolve().parents[2] / "experiments" / "results"
 def experiments() -> list[dict]:
     """Result files: experiments/results/*.json, resolution-escalation results (results/resolution/*.json) under the
     name ``resolution-<stem>``, and HPO results (results/hpo/*.json) under ``hpo-<stem>``."""
-    out = [{"name": p.stem, "bytes": p.stat().st_size, "modified": p.stat().st_mtime}
-           for p in sorted(EXP_DIR.glob("*.json"))]
-    out += [{"name": f"resolution-{p.stem}", "bytes": p.stat().st_size, "modified": p.stat().st_mtime}
-            for p in sorted((EXP_DIR / "resolution").glob("*.json"))]
-    out += [{"name": f"hpo-{p.stem}", "bytes": p.stat().st_size, "modified": p.stat().st_mtime}
-            for p in sorted((EXP_DIR / "hpo").glob("*.json"))]
-    out += [{"name": f"lab-{p.stem}", "bytes": p.stat().st_size, "modified": p.stat().st_mtime}
-            for p in sorted((EXP_DIR / "lab").glob("*.json"))]
+    out = [{"name": p.stem, "bytes": p.stat().st_size, "modified": p.stat().st_mtime} for p in sorted(EXP_DIR.glob("*.json"))]
+    out += [
+        {"name": f"resolution-{p.stem}", "bytes": p.stat().st_size, "modified": p.stat().st_mtime}
+        for p in sorted((EXP_DIR / "resolution").glob("*.json"))
+    ]
+    out += [
+        {"name": f"hpo-{p.stem}", "bytes": p.stat().st_size, "modified": p.stat().st_mtime}
+        for p in sorted((EXP_DIR / "hpo").glob("*.json"))
+    ]
+    out += [
+        {"name": f"lab-{p.stem}", "bytes": p.stat().st_size, "modified": p.stat().st_mtime}
+        for p in sorted((EXP_DIR / "lab").glob("*.json"))
+    ]
     return [e for e in out if _NAME.fullmatch(str(e["name"]))]  # only names the endpoint below serves
 
 
@@ -504,11 +543,11 @@ def _experiment_path(name: str) -> Path | None:
     if not re.fullmatch(r"[a-z0-9_\-]+", name):
         return None
     if name.startswith("resolution-"):
-        p = EXP_DIR / "resolution" / f"{name[len('resolution-'):]}.json"
+        p = EXP_DIR / "resolution" / f"{name[len('resolution-') :]}.json"
     elif name.startswith("hpo-"):
-        p = EXP_DIR / "hpo" / f"{name[len('hpo-'):]}.json"
+        p = EXP_DIR / "hpo" / f"{name[len('hpo-') :]}.json"
     elif name.startswith("lab-"):
-        p = EXP_DIR / "lab" / f"{name[len('lab-'):]}.json"
+        p = EXP_DIR / "lab" / f"{name[len('lab-') :]}.json"
     else:
         p = EXP_DIR / f"{name}.json"
     return p if p.is_file() else None
@@ -517,6 +556,7 @@ def _experiment_path(name: str) -> Path | None:
 @app.get("/api/experiments/primitives")
 def experiment_primitives() -> list[dict]:
     from ..experiments.catalog import primitives
+
     return primitives()
 
 
@@ -559,6 +599,7 @@ def lab_live_start(body: LabLiveIn, request: Request) -> dict:
     """Start a live laboratory run (the runtime steps in its own thread; viewers subscribe over /ws/lab/{id})."""
     _lab_local_only(request)
     from ..lab import live
+
     try:
         return live.start(body.preset, body.seed, body.rate).status()
     except ValueError as e:
@@ -570,12 +611,14 @@ def lab_live_start(body: LabLiveIn, request: Request) -> dict:
 @app.get("/api/lab/live")
 def lab_live_list() -> list[dict]:
     from ..lab import live
+
     return [r.status() for r in live.RUNS.values()]
 
 
 @app.get("/api/lab/live/{rid}")
 def lab_live_status(rid: str) -> dict:
     from ..lab import live
+
     r = live.RUNS.get(rid)
     if r is None:
         raise HTTPException(404, "no such live run")
@@ -586,6 +629,7 @@ def lab_live_status(rid: str) -> dict:
 def lab_live_control(rid: str, action: str, request: Request, body: LabControlIn | None = None) -> dict:
     _lab_local_only(request)
     from ..lab import live
+
     r = live.RUNS.get(rid)
     if r is None:
         raise HTTPException(404, "no such live run")
@@ -599,6 +643,7 @@ def lab_live_control(rid: str, action: str, request: Request, body: LabControlIn
 @app.websocket("/ws/lab/{rid}")
 async def lab_live_ws(ws: WebSocket, rid: str) -> None:
     from ..lab import live
+
     allowed = _same_origin({k.lower(): v for k, v in ws.headers.items()})
     r = live.RUNS.get(rid)
     if not allowed or LIMITS.public or r is None:
@@ -617,8 +662,14 @@ async def lab_live_ws(ws: WebSocket, rid: str) -> None:
             await wake.wait()
             wake.clear()
             if sub.overflow:
-                await ws.send_text(json.dumps({"type": "error", "error": "viewer fell too far behind; reconnect "
-                                               "(the run continues and its record is complete)"}))
+                await ws.send_text(
+                    json.dumps(
+                        {
+                            "type": "error",
+                            "error": "viewer fell too far behind; reconnect (the run continues and its record is complete)",
+                        }
+                    )
+                )
                 break
             msg = sub.take()
             if msg is not None:
@@ -668,7 +719,7 @@ async def _broadcast(s: Session) -> None:
         lagging = [c for c in clients if c.need_resync]
         if resync or lagging:
             snap = await asyncio.to_thread(lambda: encode_snapshot_locked(s))
-            for c in (clients if resync else lagging):
+            for c in clients if resync else lagging:
                 c.need_resync = False
                 _send(s, c, snap, {"type": "resync", **s.status()})
         if steps:
@@ -678,8 +729,9 @@ async def _broadcast(s: Session) -> None:
                 if key not in frames:
                     frames[key] = await asyncio.to_thread(encode_deltas, steps, c.node_filter)
                 with s.lock:
-                    agg = encode_aggregates(c.level, s.h.labels[c.level], s.h.n_clusters(c.level), steps,
-                                            s.engine.state.diff, s.engine.state.t)
+                    agg = encode_aggregates(
+                        c.level, s.h.labels[c.level], s.h.n_clusters(c.level), steps, s.engine.state.diff, s.engine.state.t
+                    )
                 _send(s, c, frames[key], None)
                 _send(s, c, agg, None)
         with s.lock:
@@ -710,9 +762,11 @@ def _send(s: Session, c: Client, data: bytes | None, meta: dict | None) -> None:
             d, m = c.queue.get_nowait()
             if m is not None:
                 kept.append((None, m))
-        notice = {"type": "notice", "notice": "stream resynchronised: this connection could not keep up with the "
-                  "update rate; the full state is resent"}
-        for item in kept[-(LIMITS.ws_queue - 2):] + [(None, notice)] + ([(None, meta)] if meta and not data else []):
+        notice = {
+            "type": "notice",
+            "notice": "stream resynchronised: this connection could not keep up with the update rate; the full state is resent",
+        }
+        for item in kept[-(LIMITS.ws_queue - 2) :] + [(None, notice)] + ([(None, meta)] if meta and not data else []):
             c.queue.put_nowait(item)
         c.need_resync = True
         c.resyncs += 1
@@ -746,8 +800,11 @@ async def ws_endpoint(ws: WebSocket, sid: str) -> None:
     origin = headers.get("origin")
     # same-origin only (with SameSite=Strict on the capability cookie this blocks cross-site socket hijacking):
     # the configured origins, or else the request's own Host
-    allowed = (origin is None or origin.rstrip("/").lower() in LIMITS.allowed_origins if LIMITS.allowed_origins
-               else origin is None or origin.split("://", 1)[-1] == headers.get("host", ""))
+    allowed = (
+        origin is None or origin.rstrip("/").lower() in LIMITS.allowed_origins
+        if LIMITS.allowed_origins
+        else origin is None or origin.split("://", 1)[-1] == headers.get("host", "")
+    )
     if not allowed:
         _ws_reject("ws_origin")
         await ws.close(code=4403)
@@ -844,6 +901,12 @@ app.include_router(_studies.router)
 from . import meos as _meos  # noqa: E402
 
 app.include_router(_meos.router)
+from . import truth_error as _truth_error  # noqa: E402
+
+app.include_router(_truth_error.router)
+from . import gaisho as _gaisho  # noqa: E402
+
+app.include_router(_gaisho.router)
 
 # TEOO: the BODY / TOTAL OBSERVATION endpoints (nothing stored; local runtime only)
 from . import teoo as _teoo  # noqa: E402
@@ -854,6 +917,11 @@ app.include_router(_teoo.router)
 from . import sbs as _sbs  # noqa: E402
 
 app.include_router(_sbs.router)
+
+# Verification: the Brassier Machine demonstration ledger (synthetic; local runtime only)
+from . import verification as _verification  # noqa: E402
+
+app.include_router(_verification.router)
 
 # ---------------------------------------------------------------------------------------------- static frontend
 if STATIC_DIR.is_dir():

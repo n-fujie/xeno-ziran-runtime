@@ -95,8 +95,15 @@ export const getSpec = async (): Promise<Spec> => {
 };
 export const runMeos = (config: Record<string, unknown> | undefined, interventions: Intervention[], observation?: Record<string, unknown>, paths = true) =>
   post<RunOut>('/run', { config, interventions, observation, paths });
+/** The engine's answer to a replay. ``identical`` is true only for VERIFIED_AS_RECEIVED (the inputs as received reproduced the digest) and VERIFIED_BY_READING (one reading of whole numbers as floats did, with the same computation). */
+export interface ReplayOut {
+  identical: boolean; expected: string; got: string;
+  verification: 'VERIFIED_AS_RECEIVED' | 'VERIFIED_BY_READING' | 'AMBIGUOUS' | 'COMPUTATION_DIFFERS' | 'NOT_REPRODUCED';
+  interpretation: string; rule: string; input_record_digest: string;
+  candidates: Array<{ reading: string; changed_leaves: number; changed_example?: string[]; digest: string; matches: boolean }>;
+}
 export const replayMeos = (config: unknown, interventions: Intervention[], result_digest: string) =>
-  post<{ identical: boolean; expected: string; got: string }>('/replay', { config, interventions, result_digest });
+  post<ReplayOut>('/replay', { config, interventions, result_digest });
 export const ablation = (config: unknown, subsets?: string[][], seeds?: number[]) => post<{ rows: AblationRow[]; seeds: number[] }>('/ablation', { config, subsets, seeds });
 export const mfs = (config: unknown, exhaustive = false, horizon?: number) => post<MfsOut>('/mfs', { config, exhaustive, horizon });
 export const boundary = (config: unknown, partitions?: unknown) => post<BoundaryOut>('/boundary', { config, partitions });

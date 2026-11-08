@@ -17,8 +17,8 @@
 .eco-strip i.DEGRADED { background: repeating-linear-gradient(45deg, #9a9aa0 0 3px, #000 3px 6px); }
 .eco-strip i.COLLAPSED { background: #1c1c21; }
 .eco-side { border-left: 1px solid var(--line); background: var(--panel); display: grid; grid-template-rows: auto 1fr; min-height: 0; }
-.eco-tabs { display: flex; border-bottom: 1px solid var(--line); }
-.eco-tabs button { flex: 1; background: none; border: 0; border-right: 1px solid var(--line); color: var(--dim); padding: 8px 4px; font: 500 11px 'IBM Plex Mono', Menlo, monospace; letter-spacing: 0.05em; cursor: pointer; }
+.eco-tabs { display: flex; flex-wrap: wrap; border-bottom: 1px solid var(--line); }
+.eco-tabs button { flex: 1 0 auto; background: none; border: 0; border-right: 1px solid var(--line); color: var(--dim); padding: 8px 4px; font: 500 11px 'IBM Plex Mono', Menlo, monospace; letter-spacing: 0.05em; cursor: pointer; }
 .eco-tabs button.on { color: #fff; box-shadow: inset 0 -2px 0 #fff; }
 .eco-pane { overflow: auto; padding: 10px 12px 18px; display: grid; gap: 10px; align-content: start; min-height: 0; }
 .eco-pane h3 { margin: 0; font: 600 11px 'IBM Plex Mono', Menlo, monospace; letter-spacing: 0.08em; color: #fff; text-transform: uppercase; border-bottom: 1px solid var(--line2); padding-bottom: 3px; }
@@ -86,3 +86,53 @@
 .eco-two { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; } .eco-two > div { border: 1px solid #1c1c21; padding: 6px 8px; } .eco-two h4 { margin: 0 0 4px; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; }
 .eco-two .mr h4 { color: #8fb6ff; } .eco-two .vr h4 { color: #c9a227; }
 .eco-map-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-start; } .eco-map-legend { margin: 6px 0; display: grid; grid-template-columns: 130px 1fr; gap: 3px 8px; font-size: 10px; max-width: 360px; } .eco-map-legend dt { font-weight: 700; color: #7a7d83; } .eco-map-legend dt.on { color: #15171a; } .eco-map-legend dd { margin: 0; color: #5a5d63; }
+
+/* XENOSCIENCE pane: epistemic groups and evidence statuses (text carries the meaning; colour only repeats it) */
+.eco-epi { margin: 0 0 8px; }
+.eco-epi h4 { margin: 6px 0 2px; font-weight: 600; }
+.eco-epi small { font-weight: 400; opacity: .7; }
+.eco-epi-reference .eco-table td:first-child { opacity: .8; }
+.eco-unresolved td { font-style: italic; opacity: .75; }
+.eco-chip.epi-OBSERVED, .eco-chip.epi-observed { border-color: currentColor; }
+.eco-chip.epi-inferred { border-style: dashed; }
+.eco-chip.epi-reference { border-style: dotted; }
+.eco-chip.verdict-CHANGED, .eco-chip.iv-DERIVED, .eco-chip.dep-PRESENT_IN_THIS_RUN { font-weight: 600; }
+.eco-chip.verdict-UNRESOLVED, .eco-chip.iv-UNSUPPORTED, .eco-chip.st-UNTESTED, .eco-chip.st-INSUFFICIENT_EVIDENCE, .eco-chip.dep-NOT_REPRESENTED { font-style: italic; }
+.eco-spans { display: flex; flex-wrap: wrap; gap: 2px; }
+.eco-span { padding: 0 4px; font-size: 11px; }
+
+/* XENOSCIENCE: the track of the operational shape (the strips reuse .eco-strip; ACTIVE white, DEGRADED hatched, COLLAPSED dark) */
+.eco-trackrow { margin: 4px 0 2px; }
+.eco-trackrow small { display: block; opacity: .7; margin-bottom: 2px; }
+.eco-track .eco-strip { height: 12px; cursor: pointer; }
+.eco-trackmarks { position: relative; height: 14px; margin-top: 2px; }
+.eco-trackmarks .mark { position: absolute; top: 0; width: 7px; height: 12px; padding: 0; margin-left: -3px; border: 1px solid currentColor; background: none; cursor: pointer; }
+.eco-trackmarks .mark.intervention { border-radius: 50%; }
+.eco-trackmarks .mark.cessation { background: currentColor; }
+.eco-trackmarks .mark.reignition { border-style: dashed; }
+.eco-trackmarks .mark.divergence { transform: rotate(45deg); height: 8px; top: 2px; }
+.eco-trackmarks .head { position: absolute; top: -26px; bottom: 0; width: 1px; background: #fff; opacity: .5; pointer-events: none; }
+.eco-chip.epi-unresolved { border-style: double; }
+.eco-epi-unresolved .eco-table td:first-child { font-style: italic; }
+
+/* TRUTH-ERROR: the kind of every reading (text carries the meaning; the border style only repeats it) */
+.eco-chip.tee-REFERENCE { border-style: dotted; }
+.eco-chip.tee-OBSERVED { border-style: solid; }
+.eco-chip.tee-INFERRED { border-style: dashed; }
+.eco-chip.tee-CLASSIFIED { border-style: double; border-width: 3px; }
+.eco-chip.tee-INSTITUTIONAL { font-weight: 600; }
+.eco-chip.tee-UNRESOLVED { font-style: italic; border-style: dashed; }
+
+/* GAISHO - Operational Shape Laboratory tab */
+.eco-col { display: grid; gap: 2px; font-size: 11px; }
+.gs-sec { display: grid; gap: 6px; }
+.gs-sel td { background: #12141a; }
+.gs-list { margin: 0; padding-left: 16px; font-size: 10.5px; color: var(--dim); line-height: 1.4; }
+.gs-figure { background: #fff; border: 1px solid var(--line2); overflow: auto; max-height: 360px; }
+.gs-figure svg { width: 100%; height: auto; display: block; }
+.eco-chip.gs-UNRESOLVED, .eco-chip.gs-NOT_ESTABLISHED, .eco-chip.gs-NOT_MODELLED { border-style: dashed; }
+.eco-chip.gs-CRITERION_NEGATIVE, .eco-chip.gs-HARMFUL, .eco-chip.gs-REDUNDANT { border-color: #8a8a90; color: #b8b8be; border-style: dotted; }
+.eco-chip.gs-NON_REDUNDANT, .eco-chip.gs-NOT_NEGATED, .eco-chip.gs-EXECUTED_IN_MODEL, .eco-chip.gs-RECONSTRUCTED, .eco-chip.gs-EXECUTED_COMPUTATIONAL_EXPERIMENT { border-color: #4a7cf0; color: #9db8ff; }
+.gs-sec { min-width: 0; }
+.gs-sec .eco-table td, .gs-sec .eco-table th, .gs-sec .eco-note { overflow-wrap: anywhere; }
+.gs-sec .eco-table button { text-align: left; max-width: 100%; white-space: normal; }

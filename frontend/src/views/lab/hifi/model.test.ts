@@ -45,7 +45,7 @@ describe('what a system can experimentally access equals the backend (science.py
         }
       }
       expect(compared).toBeGreaterThan(200);
-    });
+    }, 60_000);  // failed once at the default 5 s with the backend suite running (2026-11-04); alone it takes well under a second
   }
 });
 

@@ -1,0 +1,1694 @@
+{
+ "digest": "694e50fdc815a36b2392b51bfe869d1b1ae14a80df86f974dc6d0e8ce7ef44de",
+ "domains": {
+  "002-bias": {
+   "domain": "002-bias",
+   "rows": [
+    {
+     "condition": "no bias (evidence only)",
+     "extrapolation": {
+      "errors": {
+       "M1": 0.0924057814368933,
+       "Mx": 0.11433437994515297,
+       "My": 0.06786991836980343
+      },
+      "n_seeds": 20,
+      "verdicts": [
+       {
+        "error_difference": {
+         "ci95": [
+          0.015251981692220164,
+          0.028605215324299143
+         ],
+         "detected": true,
+         "mean": 0.021928598508259654,
+         "n": 20,
+         "sd": 0.014266000057699482,
+         "se": 0.003189974589603196
+        },
+        "margin": 0.03,
+        "question": "does the y intervention add anything to x alone?",
+        "richer": "M1",
+        "simpler": "Mx",
+        "verdict": "SIMPLER_SUFFICES"
+       },
+       {
+        "error_difference": {
+         "ci95": [
+          -0.0360895363661092,
+          -0.012982189768070543
+         ],
+         "detected": true,
+         "mean": -0.02453586306708987,
+         "n": 20,
+         "sd": 0.02468685990103342,
+         "se": 0.005520149688972445
+        },
+        "margin": 0.03,
+        "question": "does the x intervention add anything to y alone?",
+        "richer": "M1",
+        "simpler": "My",
+        "verdict": "UNRESOLVED"
+       }
+      ]
+     },
+     "interpolation": {
+      "errors": {
+       "M1": 0.06512585121607181,
+       "Mx": 0.09452797837795217,
+       "My": 0.06473388266144614
+      },
+      "n_seeds": 20,
+      "verdicts": [
+       {
+        "error_difference": {
+         "ci95": [
+          0.02249346701561452,
+          0.036310787308146165
+         ],
+         "detected": true,
+         "mean": 0.029402127161880343,
+         "n": 20,
+         "sd": 0.014761809575245123,
+         "se": 0.003300840968115539
+        },
+        "margin": 0.03,
+        "question": "does the y intervention add anything to x alone?",
+        "richer": "M1",
+        "simpler": "Mx",
+        "verdict": "UNRESOLVED"
+       },
+       {
+        "error_difference": {
+         "ci95": [
+          -0.0017926093885782131,
+          0.0010086722793268737
+         ],
+         "detected": false,
+         "mean": -0.00039196855462566985,
+         "n": 20,
+         "sd": 0.0029927645645292716,
+         "se": 0.0006692025006940007
+        },
+        "margin": 0.03,
+        "question": "does the x intervention add anything to y alone?",
+        "richer": "M1",
+        "simpler": "My",
+        "verdict": "SIMPLER_SUFFICES"
+       }
+      ]
+     },
+     "range_of_mean_surface": {
+      "x": 0.08024999999999996,
+      "y": 0.19180555555555556
+     }
+    },
+    {
+     "condition": "perception-derived selectivity (attends only to strong evidence)",
+     "extrapolation": {
+      "errors": {
+       "M1": 0.09401974579096317,
+       "Mx": 0.1040482607411621,
+       "My": 0.0726115139134125
+      },
+      "n_seeds": 20,
+      "verdicts": [
+       {
+        "error_difference": {
+         "ci95": [
+          0.004890499697952096,
+          0.01516653020244571
+         ],
+         "detected": true,
+         "mean": 0.010028514950198903,
+         "n": 20,
+         "sd": 0.010978453295226556,
+         "se": 0.0024548567855933144
+        },
+        "margin": 0.03,
+        "question": "does the y intervention add anything to x alone?",
+        "richer": "M1",
+        "simpler": "Mx",
+        "verdict": "SIMPLER_SUFFICES"
+       },
+       {
+        "error_difference": {
+         "ci95": [
+          -0.03190408276862875,
+          -0.010912380986472603
+         ],
+         "detected": true,
+         "mean": -0.021408231877550678,
+         "n": 20,
+         "sd": 0.02242659921084789,
+         "se": 0.005014740033959902
+        },
+        "margin": 0.03,
+        "question": "does the x intervention add anything to y alone?",
+        "richer": "M1",
+        "simpler": "My",
+        "verdict": "UNRESOLVED"
+       }
+      ]
+     },
+     "interpolation": {
+      "errors": {
+       "M1": 0.07150979516521094,
+       "Mx": 0.08450147454685317,
+       "My": 0.07047448027075318
+      },
+      "n_seeds": 20,
+      "verdicts": [
+       {
+        "error_difference": {
+         "ci95": [
+          0.007306824071120188,
+          0.018676534692164265
+         ],
+         "detected": true,
+         "mean": 0.012991679381642227,
+         "n": 20,
+         "sd": 0.012146892419090258,
+         "se": 0.0027161277164462682
+        },
+        "margin": 0.03,
+        "question": "does the y intervention add anything to x alone?",
+        "richer": "M1",
+        "simpler": "Mx",
+        "verdict": "SIMPLER_SUFFICES"
+       },
+       {
+        "error_difference": {
+         "ci95": [
+          -0.002254380223465309,
+          0.00018375043454977712
+         ],
+         "detected": false,
+         "mean": -0.001035314894457766,
+         "n": 20,
+         "sd": 0.002604790200357394,
+         "se": 0.000582448795512443
+        },
+        "margin": 0.03,
+        "question": "does the x intervention add anything to y alone?",
+        "richer": "M1",
+        "simpler": "My",
+        "verdict": "SIMPLER_SUFFICES"
+       }
+      ]
+     },
+     "range_of_mean_surface": {
+      "x": 0.092,
+      "y": 0.14319444444444446
+     }
+    },
+    {
+     "condition": "training-history prior (trained at base rate 0.8)",
+     "extrapolation": {
+      "errors": {
+       "M1": 0.08017021108208013,
+       "Mx": 0.09528813977106201,
+       "My": 0.1161231082512805
+      },
+      "n_seeds": 20,
+      "verdicts": [
+       {
+        "error_difference": {
+         "ci95": [
+          0.01195109324594245,
+          0.018284764132021375
+         ],
+         "detected": true,
+         "mean": 0.015117928688981912,
+         "n": 20,
+         "sd": 0.006766611872137506,
+         "se": 0.0015130604123456577
+        },
+        "margin": 0.03,
+        "question": "does the y intervention add anything to x alone?",
+        "richer": "M1",
+        "simpler": "Mx",
+        "verdict": "SIMPLER_SUFFICES"
+       },
+       {
+        "error_difference": {
+         "ci95": [
+          0.025526580180732616,
+          0.04637921415766813
+         ],
+         "detected": true,
+         "mean": 0.035952897169200373,
+         "n": 20,
+         "sd": 0.02227802536184883,
+         "se": 0.004981517911355833
+        },
+        "margin": 0.03,
+        "question": "does the x intervention add anything to y alone?",
+        "richer": "M1",
+        "simpler": "My",
+        "verdict": "UNRESOLVED"
+       }
+      ]
+     },
+     "interpolation": {
+      "errors": {
+       "M1": 0.07018330549640014,
+       "Mx": 0.08449929559874374,
+       "My": 0.09054208541439449
+      },
+      "n_seeds": 20,
+      "verdicts": [
+       {
+        "error_difference": {
+         "ci95": [
+          0.008795007511980963,
+          0.019836972692706248
+         ],
+         "detected": true,
+         "mean": 0.014315990102343606,
+         "n": 20,
+         "sd": 0.011796743788479452,
+         "se": 0.0026378321024188452
+        },
+        "margin": 0.03,
+        "question": "does the y intervention add anything to x alone?",
+        "richer": "M1",
+        "simpler": "Mx",
+        "verdict": "SIMPLER_SUFFICES"
+       },
+       {
+        "error_difference": {
+         "ci95": [
+          0.016105545558221863,
+          0.024612014277766818
+         ],
+         "detected": true,
+         "mean": 0.02035877991799434,
+         "n": 20,
+         "sd": 0.009087932300706219,
+         "se": 0.0020321234399295163
+        },
+        "margin": 0.03,
+        "question": "does the x intervention add anything to y alone?",
+        "richer": "M1",
+        "simpler": "My",
+        "verdict": "SIMPLER_SUFFICES"
+       }
+      ]
+     },
+     "range_of_mean_surface": {
+      "x": 0.19874999999999998,
+      "y": 0.145
+     }
+    },
+    {
+     "condition": "sensor/body offset (calibration +0.6)",
+     "extrapolation": {
+      "errors": {
+       "M1": 0.08179725394568858,
+       "Mx": 0.09558068999734817,
+       "My": 0.12479877086623554
+      },
+      "n_seeds": 20,
+      "verdicts": [
+       {
+        "error_difference": {
+         "ci95": [
+          0.01078591018269086,
+          0.016780961920628355
+         ],
+         "detected": true,
+         "mean": 0.013783436051659608,
+         "n": 20,
+         "sd": 0.006404846256405399,
+         "se": 0.0014321671614757519
+        },
+        "margin": 0.03,
+        "question": "does the y intervention add anything to x alone?",
+        "richer": "M1",
+        "simpler": "Mx",
+        "verdict": "SIMPLER_SUFFICES"
+       },
+       {
+        "error_difference": {
+         "ci95": [
+          0.02980207951197629,
+          0.056200954329117606
+         ],
+         "detected": true,
+         "mean": 0.04300151692054695,
+         "n": 20,
+         "sd": 0.02820338204521515,
+         "se": 0.006306467944849812
+        },
+        "margin": 0.03,
+        "question": "does the x intervention add anything to y alone?",
+        "richer": "M1",
+        "simpler": "My",
+        "verdict": "UNRESOLVED"
+       }
+      ]
+     },
+     "interpolation": {
+      "errors": {
+       "M1": 0.069670145735903,
+       "Mx": 0.08408665401281101,
+       "My": 0.09184239017895643
+      },
+      "n_seeds": 20,
+      "verdicts": [
+       {
+        "error_difference": {
+         "ci95": [
+          0.009114725582264387,
+          0.019718290971551696
+         ],
+         "detected": true,
+         "mean": 0.014416508276908041,
+         "n": 20,
+         "sd": 0.011328376977692524,
+         "se": 0.00253310209968641
+        },
+        "margin": 0.03,
+        "question": "does the y intervention add anything to x alone?",
+        "richer": "M1",
+        "simpler": "Mx",
+        "verdict": "SIMPLER_SUFFICES"
+       },
+       {
+        "error_difference": {
+         "ci95": [
+          0.017405937744648353,
+          0.02693855114145858
+         ],
+         "detected": true,
+         "mean": 0.022172244443053466,
+         "n": 20,
+         "sd": 0.010184219569275127,
+         "se": 0.002277260725468281
+        },
+        "margin": 0.03,
+        "question": "does the x intervention add anything to y alone?",
+        "richer": "M1",
+        "simpler": "My",
+        "verdict": "SIMPLER_SUFFICES"
+       }
+      ]
+     },
+     "range_of_mean_surface": {
+      "x": 0.21150000000000002,
+      "y": 0.13888888888888887
+     }
+    },
+    {
+     "condition": "history prior, then retraining at base rate 0.3",
+     "extrapolation": {
+      "errors": {
+       "M1": 0.0943196291262453,
+       "Mx": 0.11341501398721163,
+       "My": 0.07357133404881204
+      },
+      "n_seeds": 20,
+      "verdicts": [
+       {
+        "error_difference": {
+         "ci95": [
+          0.010809687565659849,
+          0.027381082156272808
+         ],
+         "detected": true,
+         "mean": 0.01909538486096633,
+         "n": 20,
+         "sd": 0.017704139888477247,
+         "se": 0.003958766027380067
+        },
+        "margin": 0.03,
+        "question": "does the y intervention add anything to x alone?",
+        "richer": "M1",
+        "simpler": "Mx",
+        "verdict": "SIMPLER_SUFFICES"
+       },
+       {
+        "error_difference": {
+         "ci95": [
+          -0.033655281696752665,
+          -0.007841308458113816
+         ],
+         "detected": true,
+         "mean": -0.02074829507743324,
+         "n": 20,
+         "sd": 0.027578499250337733,
+         "se": 0.006166739904118215
+        },
+        "margin": 0.03,
+        "question": "does the x intervention add anything to y alone?",
+        "richer": "M1",
+        "simpler": "My",
+        "verdict": "UNRESOLVED"
+       }
+      ]
+     },
+     "interpolation": {
+      "errors": {
+       "M1": 0.06643501033842235,
+       "Mx": 0.09367041830507017,
+       "My": 0.06657019702197131
+      },
+      "n_seeds": 20,
+      "verdicts": [
+       {
+        "error_difference": {
+         "ci95": [
+          0.019866233766310283,
+          0.03460458216698535
+         ],
+         "detected": true,
+         "mean": 0.027235407966647817,
+         "n": 20,
+         "sd": 0.015745794983270306,
+         "se": 0.0035208667942367568
+        },
+        "margin": 0.03,
+        "question": "does the y intervention add anything to x alone?",
+        "richer": "M1",
+        "simpler": "Mx",
+        "verdict": "UNRESOLVED"
+       },
+       {
+        "error_difference": {
+         "ci95": [
+          -0.0017297755815448932,
+          0.0020001489486428203
+         ],
+         "detected": false,
+         "mean": 0.0001351866835489636,
+         "n": 20,
+         "sd": 0.003984885236714617,
+         "se": 0.0008910474271829225
+        },
+        "margin": 0.03,
+        "question": "does the x intervention add anything to y alone?",
+        "richer": "M1",
+        "simpler": "My",
+        "verdict": "SIMPLER_SUFFICES"
+       }
+      ]
+     },
+     "range_of_mean_surface": {
+      "x": 0.089,
+      "y": 0.18944444444444444
+     }
+    }
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
+   ]
+  },
+  "003-freedom": {
+   "domain": "003-freedom",
+   "rows": [
+    {
+     "condition": "effective possibility only (reach is set by the constraint)",
+     "extrapolation": {
+      "errors": {
+       "M1": 0.1265168591715828,
+       "Mx": 0.12675337250233087,
+       "My": 0.6499331411128112
+      },
+      "n_seeds": 20,
+      "verdicts": [
+       {
+        "error_difference": {
+         "ci95": [
+          -0.0002763855418171146,
+          0.0007494122033133147
+         ],
+         "detected": false,
+         "mean": 0.0002365133307481001,
+         "n": 20,
+         "sd": 0.001095916621728449,
+         "se": 0.0002450544063856735
+        },
+        "margin": 0.03,
+        "question": "does the y intervention add anything to x alone?",
+        "richer": "M1",
+        "simpler": "Mx",
+        "verdict": "SIMPLER_SUFFICES"
+       },
+       {
+        "error_difference": {
+         "ci95": [
+          0.5080753736874819,
+          0.5387571901949746
+         ],
+         "detected": true,
+         "mean": 0.5234162819412282,
+         "n": 20,
+         "sd": 0.03277908618439023,
+         "se": 0.007329626494862076
+        },
+        "margin": 0.03,
+        "question": "does the x intervention add anything to y alone?",
+        "richer": "M1",
+        "simpler": "My",
+        "verdict": "RICHER_NEEDED"
+       }
+      ]
+     },
+     "interpolation": {
+      "errors": {
+       "M1": 0.08648103091616162,
+       "Mx": 0.0869641947307872,
+       "My": 0.3196427811852564
+      },
+      "n_seeds": 20,
+      "verdicts": [
+       {
+        "error_difference": {
+         "ci95": [
+          -0.00031202359807822033,
+          0.0012783512273293884
+         ],
+         "detected": false,
+         "mean": 0.000483163814625584,
+         "n": 20,
+         "sd": 0.0016990856279578464,
+         "se": 0.0003799270963706662
+        },
+        "margin": 0.03,
+        "question": "does the y intervention add anything to x alone?",
+        "richer": "M1",
+        "simpler": "Mx",
+        "verdict": "SIMPLER_SUFFICES"
+       },
+       {
+        "error_difference": {
+         "ci95": [
+          0.2243363265677135,
+          0.24198717397047623
+         ],
+         "detected": true,
+         "mean": 0.23316175026909486,
+         "n": 20,
+         "sd": 0.0188573791940053,
+         "se": 0.004216638175528604
+        },
+        "margin": 0.03,
+        "question": "does the x intervention add anything to y alone?",
+        "richer": "M1",
+        "simpler": "My",
+        "verdict": "RICHER_NEEDED"
+       }
+      ]
+     },
+     "range_of_mean_surface": {
+      "x": 1.0,
+      "y": 0.04416666666666663
+     }
+    },
+    {
+     "condition": "self-interpretation drives effort (belief changes the reach where the constraint allows)",
+     "extrapolation": {
+      "errors": {
+       "M1": 0.10079803334160353,
+       "Mx": 0.09400706990283944,
+       "My": 0.40596770940416577
+      },
+      "n_seeds": 20,
+      "verdicts": [
+       {
+        "error_difference": {
+         "ci95": [
+          -0.02109553000173233,
+          0.0075136031242041094
+         ],
+         "detected": false,
+         "mean": -0.006790963438764111,
+         "n": 20,
+         "sd": 0.03056472357713088,
+         "se": 0.006834479963195518
+        },
+        "margin": 0.03,
+        "question": "does the y intervention add anything to x alone?",
+        "richer": "M1",
+        "simpler": "Mx",
+        "verdict": "SIMPLER_SUFFICES"
+       },
+       {
+        "error_difference": {
+         "ci95": [
+          0.29500501276286034,
+          0.3153343393622641
+         ],
+         "detected": true,
+         "mean": 0.30516967606256223,
+         "n": 20,
+         "sd": 0.021718947067874632,
+         "se": 0.004856504204348741
+        },
+        "margin": 0.03,
+        "question": "does the x intervention add anything to y alone?",
+        "richer": "M1",
+        "simpler": "My",
+        "verdict": "RICHER_NEEDED"
+       }
+      ]
+     },
+     "interpolation": {
+      "errors": {
+       "M1": 0.09273214629252599,
+       "Mx": 0.19000632827541747,
+       "My": 0.21564057954525193
+      },
+      "n_seeds": 20,
+      "verdicts": [
+       {
+        "error_difference": {
+         "ci95": [
+          0.08964187748741376,
+          0.10490648647836909
+         ],
+         "detected": true,
+         "mean": 0.09727418198289142,
+         "n": 20,
+         "sd": 0.016308028358208593,
+         "se": 0.0036465859987948705
+        },
+        "margin": 0.03,
+        "question": "does the y intervention add anything to x alone?",
+        "richer": "M1",
+        "simpler": "Mx",
+        "verdict": "RICHER_NEEDED"
+       },
+       {
+        "error_difference": {
+         "ci95": [
+          0.11167580704577676,
+          0.13414105945967517
+         ],
+         "detected": true,
+         "mean": 0.12290843325272596,
+         "n": 20,
+         "sd": 0.02400087507365891,
+         "se": 0.005366758818418159
+        },
+        "margin": 0.03,
+        "question": "does the x intervention add anything to y alone?",
+        "richer": "M1",
+        "simpler": "My",
+        "verdict": "RICHER_NEEDED"
+       }
+      ]
+     },
+     "range_of_mean_surface": {
+      "x": 0.60575,
+      "y": 0.3993055555555555
+     }
+    },
+    {
+     "condition": "institutional free-classification (the label is adopted as a belief)",
+     "extrapolation": {
+      "errors": {
+       "M1": 0.1265168591715828,
+       "Mx": 0.12675337250233087,
+       "My": 0.6499331411128112
+      },
+      "n_seeds": 20,
+      "verdicts": [
+       {
+        "error_difference": {
+         "ci95": [
+          -0.0002763855418171146,
+          0.0007494122033133147
+         ],
+         "detected": false,
+         "mean": 0.0002365133307481001,
+         "n": 20,
+         "sd": 0.001095916621728449,
+         "se": 0.0002450544063856735
+        },
+        "margin": 0.03,
+        "question": "does the y intervention add anything to x alone?",
+        "richer": "M1",
+        "simpler": "Mx",
+        "verdict": "SIMPLER_SUFFICES"
+       },
+       {
+        "error_difference": {
+         "ci95": [
+          0.5080753736874819,
+          0.5387571901949746
+         ],
+         "detected": true,
+         "mean": 0.5234162819412282,
+         "n": 20,
+         "sd": 0.03277908618439023,
+         "se": 0.007329626494862076
+        },
+        "margin": 0.03,
+        "question": "does the x intervention add anything to y alone?",
+        "richer": "M1",
+        "simpler": "My",
+        "verdict": "RICHER_NEEDED"
+       }
+      ]
+     },
+     "interpolation": {
+      "errors": {
+       "M1": 0.08648103091616162,
+       "Mx": 0.0869641947307872,
+       "My": 0.3196427811852564
+      },
+      "n_seeds": 20,
+      "verdicts": [
+       {
+        "error_difference": {
+         "ci95": [
+          -0.00031202359807822033,
+          0.0012783512273293884
+         ],
+         "detected": false,
+         "mean": 0.000483163814625584,
+         "n": 20,
+         "sd": 0.0016990856279578464,
+         "se": 0.0003799270963706662
+        },
+        "margin": 0.03,
+        "question": "does the y intervention add anything to x alone?",
+        "richer": "M1",
+        "simpler": "Mx",
+        "verdict": "SIMPLER_SUFFICES"
+       },
+       {
+        "error_difference": {
+         "ci95": [
+          0.2243363265677135,
+          0.24198717397047623
+         ],
+         "detected": true,
+         "mean": 0.23316175026909486,
+         "n": 20,
+         "sd": 0.0188573791940053,
+         "se": 0.004216638175528604
+        },
+        "margin": 0.03,
+        "question": "does the x intervention add anything to y alone?",
+        "richer": "M1",
+        "simpler": "My",
+        "verdict": "RICHER_NEEDED"
+       }
+      ]
+     },
+     "range_of_mean_surface": {
+      "x": 1.0,
+      "y": 0.04416666666666663
+     }
+    },
+    {
+     "condition": "constraint also lowers the belief (embodied coupling)",
+     "extrapolation": {
+      "errors": {
+       "M1": 0.06037570010279266,
+       "Mx": 0.05109882105521709,
+       "My": 0.3937807480733554
+      },
+      "n_seeds": 20,
+      "verdicts": [
+       {
+        "error_difference": {
+         "ci95": [
+          -0.020828726973426644,
+          0.0022749688782755136
+         ],
+         "detected": false,
+         "mean": -0.009276879047575565,
+         "n": 20,
+         "sd": 0.024682959606252237,
+         "se": 0.005519277556546144
+        },
+        "margin": 0.03,
+        "question": "does the y intervention add anything to x alone?",
+        "richer": "M1",
+        "simpler": "Mx",
+        "verdict": "SIMPLER_SUFFICES"
+       },
+       {
+        "error_difference": {
+         "ci95": [
+          0.32704065725110854,
+          0.33976943869001686
+         ],
+         "detected": true,
+         "mean": 0.3334050479705627,
+         "n": 20,
+         "sd": 0.013598863147700287,
+         "se": 0.0030407982414974604
+        },
+        "margin": 0.03,
+        "question": "does the x intervention add anything to y alone?",
+        "richer": "M1",
+        "simpler": "My",
+        "verdict": "RICHER_NEEDED"
+       }
+      ]
+     },
+     "interpolation": {
+      "errors": {
+       "M1": 0.07927674235974033,
+       "Mx": 0.1513838321086979,
+       "My": 0.22773265401448492
+      },
+      "n_seeds": 20,
+      "verdicts": [
+       {
+        "error_difference": {
+         "ci95": [
+          0.06792640599799585,
+          0.07628777349991925
+         ],
+         "detected": true,
+         "mean": 0.07210708974895755,
+         "n": 20,
+         "sd": 0.008932912622627014,
+         "se": 0.0019974599861259925
+        },
+        "margin": 0.03,
+        "question": "does the y intervention add anything to x alone?",
+        "richer": "M1",
+        "simpler": "Mx",
+        "verdict": "RICHER_NEEDED"
+       },
+       {
+        "error_difference": {
+         "ci95": [
+          0.14118314004878768,
+          0.15572868326070144
+         ],
+         "detected": true,
+         "mean": 0.14845591165474456,
+         "n": 20,
+         "sd": 0.015539810507166657,
+         "se": 0.0034748072651490125
+        },
+        "margin": 0.03,
+        "question": "does the x intervention add anything to y alone?",
+        "richer": "M1",
+        "simpler": "My",
+        "verdict": "RICHER_NEEDED"
+       }
+      ]
+     },
+     "range_of_mean_surface": {
+      "x": 0.60575,
+      "y": 0.2913888888888889
+     }
+    },
+    {
+     "condition": "institutional label adopted as a belief that drives effort",
+     "extrapolation": {
+      "errors": {
+       "M1": 0.10079803334160353,
+       "Mx": 0.09400706990283944,
+       "My": 0.40596770940416577
+      },
+      "n_seeds": 20,
+      "verdicts": [
+       {
+        "error_difference": {
+         "ci95": [
+          -0.02109553000173233,
+          0.0075136031242041094
+         ],
+         "detected": false,
+         "mean": -0.006790963438764111,
+         "n": 20,
+         "sd": 0.03056472357713088,
+         "se": 0.006834479963195518
+        },
+        "margin": 0.03,
+        "question": "does the y intervention add anything to x alone?",
+        "richer": "M1",
+        "simpler": "Mx",
+        "verdict": "SIMPLER_SUFFICES"
+       },
+       {
+        "error_difference": {
+         "ci95": [
+          0.29500501276286034,
+          0.3153343393622641
+         ],
+         "detected": true,
+         "mean": 0.30516967606256223,
+         "n": 20,
+         "sd": 0.021718947067874632,
+         "se": 0.004856504204348741
+        },
+        "margin": 0.03,
+        "question": "does the x intervention add anything to y alone?",
+        "richer": "M1",
+        "simpler": "My",
+        "verdict": "RICHER_NEEDED"
+       }
+      ]
+     },
+     "interpolation": {
+      "errors": {
+       "M1": 0.09273214629252599,
+       "Mx": 0.19000632827541747,
+       "My": 0.21564057954525193
+      },
+      "n_seeds": 20,
+      "verdicts": [
+       {
+        "error_difference": {
+         "ci95": [
+          0.08964187748741376,
+          0.10490648647836909
+         ],
+         "detected": true,
+         "mean": 0.09727418198289142,
+         "n": 20,
+         "sd": 0.016308028358208593,
+         "se": 0.0036465859987948705
+        },
+        "margin": 0.03,
+        "question": "does the y intervention add anything to x alone?",
+        "richer": "M1",
+        "simpler": "Mx",
+        "verdict": "RICHER_NEEDED"
+       },
+       {
+        "error_difference": {
+         "ci95": [
+          0.11167580704577676,
+          0.13414105945967517
+         ],
+         "detected": true,
+         "mean": 0.12290843325272596,
+         "n": 20,
+         "sd": 0.02400087507365891,
+         "se": 0.005366758818418159
+        },
+        "margin": 0.03,
+        "question": "does the x intervention add anything to y alone?",
+        "richer": "M1",
+        "simpler": "My",
+        "verdict": "RICHER_NEEDED"
+       }
+      ]
+     },
+     "range_of_mean_surface": {
+      "x": 0.60575,
+      "y": 0.3993055555555555
+     }
+    }
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
+   ]
+  },
+  "004-body": {
+   "domain": "004-body",
+   "rows": [
+    {
+     "condition": "human-like planar body",
+     "extrapolation": {
+      "errors": {
+       "M1": 0.09490708422607189,
+       "Mx": 0.04725926808728588,
+       "My": 0.5401759755401173
+      },
+      "n_seeds": 8,
+      "verdicts": [
+       {
+        "error_difference": {
+         "ci95": [
+          -0.08999714045362728,
+          -0.005298491823944734
+         ],
+         "detected": true,
+         "mean": -0.047647816138786006,
+         "n": 8,
+         "sd": 0.05064777065825388,
+         "se": 0.01790669104221618
+        },
+        "margin": 0.03,
+        "question": "does the y intervention add anything to x alone?",
+        "richer": "M1",
+        "simpler": "Mx",
+        "verdict": "UNRESOLVED"
+       },
+       {
+        "error_difference": {
+         "ci95": [
+          0.3532135536990396,
+          0.5373242289290511
+         ],
+         "detected": true,
+         "mean": 0.44526889131404535,
+         "n": 8,
+         "sd": 0.11009379022746316,
+         "se": 0.038924032818184226
+        },
+        "margin": 0.03,
+        "question": "does the x intervention add anything to y alone?",
+        "richer": "M1",
+        "simpler": "My",
+        "verdict": "RICHER_NEEDED"
+       }
+      ]
+     },
+     "interpolation": {
+      "errors": {
+       "M1": 0.2688069828853396,
+       "Mx": 0.36049042502230416,
+       "My": 0.4076733537698959
+      },
+      "n_seeds": 8,
+      "verdicts": [
+       {
+        "error_difference": {
+         "ci95": [
+          0.08503029276811348,
+          0.09833659150581557
+         ],
+         "detected": true,
+         "mean": 0.09168344213696453,
+         "n": 8,
+         "sd": 0.007956849107757414,
+         "se": 0.0028131709804866986
+        },
+        "margin": 0.03,
+        "question": "does the y intervention add anything to x alone?",
+        "richer": "M1",
+        "simpler": "Mx",
+        "verdict": "RICHER_NEEDED"
+       },
+       {
+        "error_difference": {
+         "ci95": [
+          0.130321426663593,
+          0.14741131510551944
+         ],
+         "detected": true,
+         "mean": 0.13886637088455622,
+         "n": 8,
+         "sd": 0.010219345460471698,
+         "se": 0.0036130842371937494
+        },
+        "margin": 0.03,
+        "question": "does the x intervention add anything to y alone?",
+        "richer": "M1",
+        "simpler": "My",
+        "verdict": "RICHER_NEEDED"
+       }
+      ]
+     },
+     "range_of_mean_surface": {
+      "x": 0.6,
+      "y": 0.475
+     }
+    },
+    {
+     "condition": "machine-like planar body",
+     "extrapolation": {
+      "errors": {
+       "M1": 0.6097191813013662,
+       "Mx": 0.6109206483560037,
+       "My": 0.46349316438455856
+      },
+      "n_seeds": 8,
+      "verdicts": [
+       {
+        "error_difference": {
+         "ci95": [
+          0.0002013027348888349,
+          0.002201631374386277
+         ],
+         "detected": true,
+         "mean": 0.001201467054637556,
+         "n": 8,
+         "sd": 0.001196148791196873,
+         "se": 0.00042290246078170024
+        },
+        "margin": 0.03,
+        "question": "does the y intervention add anything to x alone?",
+        "richer": "M1",
+        "simpler": "Mx",
+        "verdict": "SIMPLER_SUFFICES"
+       },
+       {
+        "error_difference": {
+         "ci95": [
+          -0.16142248105234888,
+          -0.13102955278126624
+         ],
+         "detected": true,
+         "mean": -0.14622601691680756,
+         "n": 8,
+         "sd": 0.018174245818688255,
+         "se": 0.006425566230672861
+        },
+        "margin": 0.03,
+        "question": "does the x intervention add anything to y alone?",
+        "richer": "M1",
+        "simpler": "My",
+        "verdict": "RICHER_WORSE"
+       }
+      ]
+     },
+     "interpolation": {
+      "errors": {
+       "M1": 0.38232542083864607,
+       "Mx": 0.45609472658586314,
+       "My": 0.36651009270294244
+      },
+      "n_seeds": 8,
+      "verdicts": [
+       {
+        "error_difference": {
+         "ci95": [
+          0.05836443877600073,
+          0.08917417271843356
+         ],
+         "detected": true,
+         "mean": 0.07376930574721714,
+         "n": 8,
+         "sd": 0.01842348566363433,
+         "se": 0.006513685822924488
+        },
+        "margin": 0.03,
+        "question": "does the y intervention add anything to x alone?",
+        "richer": "M1",
+        "simpler": "Mx",
+        "verdict": "RICHER_NEEDED"
+       },
+       {
+        "error_difference": {
+         "ci95": [
+          -0.02519883728528691,
+          -0.006431818986120271
+         ],
+         "detected": true,
+         "mean": -0.01581532813570359,
+         "n": 8,
+         "sd": 0.011222229092594299,
+         "se": 0.003967657145701192
+        },
+        "margin": 0.03,
+        "question": "does the x intervention add anything to y alone?",
+        "richer": "M1",
+        "simpler": "My",
+        "verdict": "SIMPLER_SUFFICES"
+       }
+      ]
+     },
+     "range_of_mean_surface": {
+      "x": 0.6,
+      "y": 0.6
+     }
+    }
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+   ]
+  },
+  "005-credit": {
+   "domain": "005-credit",
+   "rows": [
+    {
+     "condition": "score computed, allocation inert (the score changes, the resources do not)",
+     "extrapolation": {
+      "errors": {
+       "M1": 0.013480420419805201,
+       "Mx": 0.013480420419805184,
+       "My": 0.09119288075630844
+      },
+      "n_seeds": 10,
+      "verdicts": [
+       {
+        "error_difference": {
+         "ci95": [
+          -4.029978470362132e-17,
+          3.523647012913008e-18
+         ],
+         "detected": false,
+         "mean": -1.8388068845354155e-17,
+         "n": 10,
+         "sd": 3.063259485170445e-17,
+         "se": 9.686877037253387e-18
+        },
+        "margin": 0.03,
+        "question": "does the y intervention add anything to x alone?",
+        "richer": "M1",
+        "simpler": "Mx",
+        "verdict": "SIMPLER_SUFFICES"
+       },
+       {
+        "error_difference": {
+         "ci95": [
+          0.060196494810827374,
+          0.09522842586217908
+         ],
+         "detected": true,
+         "mean": 0.07771246033650323,
+         "n": 10,
+         "sd": 0.024487332660532372,
+         "se": 0.007743574502951304
+        },
+        "margin": 0.03,
+        "question": "does the x intervention add anything to y alone?",
+        "richer": "M1",
+        "simpler": "My",
+        "verdict": "RICHER_NEEDED"
+       }
+      ]
+     },
+     "interpolation": {
+      "errors": {
+       "M1": 0.006194152931201562,
+       "Mx": 0.0061941529312015626,
+       "My": 0.049127290731578024
+      },
+      "n_seeds": 10,
+      "verdicts": [
+       {
+        "error_difference": {
+         "ci95": [
+          -1.9467844863016378e-18,
+          4.554290711129276e-18
+         ],
+         "detected": false,
+         "mean": 1.3037531124138191e-18,
+         "n": 10,
+         "sd": 4.544253948698169e-18,
+         "se": 1.4370192744100163e-18
+        },
+        "margin": 0.03,
+        "question": "does the y intervention add anything to x alone?",
+        "richer": "M1",
+        "simpler": "Mx",
+        "verdict": "SIMPLER_SUFFICES"
+       },
+       {
+        "error_difference": {
+         "ci95": [
+          0.03608456207216496,
+          0.04978171352858795
+         ],
+         "detected": true,
+         "mean": 0.042933137800376456,
+         "n": 10,
+         "sd": 0.00957431389447153,
+         "se": 0.0030276638939927035
+        },
+        "margin": 0.03,
+        "question": "does the x intervention add anything to y alone?",
+        "richer": "M1",
+        "simpler": "My",
+        "verdict": "RICHER_NEEDED"
+       }
+      ]
+     },
+     "range_of_mean_surface": {
+      "x": 0.14499999999999996,
+      "y": 0.0
+     }
+    },
+    {
+     "condition": "institutional classification with an access constraint",
+     "extrapolation": {
+      "errors": {
+       "M1": 0.028357511661646417,
+       "Mx": 0.027750468965048923,
+       "My": 0.09634083133781438
+      },
+      "n_seeds": 10,
+      "verdicts": [
+       {
+        "error_difference": {
+         "ci95": [
+          -0.0041797395912006674,
+          0.002965654198005694
+         ],
+         "detected": false,
+         "mean": -0.0006070426965974866,
+         "n": 10,
+         "sd": 0.004994632880794245,
+         "se": 0.0015794415979678077
+        },
+        "margin": 0.03,
+        "question": "does the y intervention add anything to x alone?",
+        "richer": "M1",
+        "simpler": "Mx",
+        "verdict": "SIMPLER_SUFFICES"
+       },
+       {
+        "error_difference": {
+         "ci95": [
+          0.056640591897949455,
+          0.07932604745438643
+         ],
+         "detected": true,
+         "mean": 0.06798331967616794,
+         "n": 10,
+         "sd": 0.01585714175881151,
+         "se": 0.005014468513801275
+        },
+        "margin": 0.03,
+        "question": "does the x intervention add anything to y alone?",
+        "richer": "M1",
+        "simpler": "My",
+        "verdict": "RICHER_NEEDED"
+       }
+      ]
+     },
+     "interpolation": {
+      "errors": {
+       "M1": 0.015952534110778894,
+       "Mx": 0.02037539735615843,
+       "My": 0.054713140704227024
+      },
+      "n_seeds": 10,
+      "verdicts": [
+       {
+        "error_difference": {
+         "ci95": [
+          0.0007298642874928409,
+          0.00811586220326623
+         ],
+         "detected": true,
+         "mean": 0.004422863245379535,
+         "n": 10,
+         "sd": 0.005162815253558886,
+         "se": 0.001632625533990581
+        },
+        "margin": 0.03,
+        "question": "does the y intervention add anything to x alone?",
+        "richer": "M1",
+        "simpler": "Mx",
+        "verdict": "SIMPLER_SUFFICES"
+       },
+       {
+        "error_difference": {
+         "ci95": [
+          0.03237635412274423,
+          0.04514485906415204
+         ],
+         "detected": true,
+         "mean": 0.038760606593448134,
+         "n": 10,
+         "sd": 0.008925189639691312,
+         "se": 0.00282239278103621
+        },
+        "margin": 0.03,
+        "question": "does the x intervention add anything to y alone?",
+        "richer": "M1",
+        "simpler": "My",
+        "verdict": "RICHER_NEEDED"
+       }
+      ]
+     },
+     "range_of_mean_surface": {
+      "x": 0.158,
+      "y": 0.03900000000000004
+     }
+    },
+    {
+     "condition": "access constraint with a resource floor (a hypothetical guarantee)",
+     "extrapolation": {
+      "errors": {
+       "M1": 0.027516237622061086,
+       "Mx": 0.02991429282184655,
+       "My": 0.0952148173602914
+      },
+      "n_seeds": 10,
+      "verdicts": [
+       {
+        "error_difference": {
+         "ci95": [
+          -0.0019720870418289023,
+          0.006768197441399828
+         ],
+         "detected": false,
+         "mean": 0.002398055199785463,
+         "n": 10,
+         "sd": 0.0061094620611915436,
+         "se": 0.0019319815391752276
+        },
+        "margin": 0.03,
+        "question": "does the y intervention add anything to x alone?",
+        "richer": "M1",
+        "simpler": "Mx",
+        "verdict": "SIMPLER_SUFFICES"
+       },
+       {
+        "error_difference": {
+         "ci95": [
+          0.05919382764921312,
+          0.07620333182724749
+         ],
+         "detected": true,
+         "mean": 0.0676985797382303,
+         "n": 10,
+         "sd": 0.011889649662409109,
+         "se": 0.0037598373514664838
+        },
+        "margin": 0.03,
+        "question": "does the x intervention add anything to y alone?",
+        "richer": "M1",
+        "simpler": "My",
+        "verdict": "RICHER_NEEDED"
+       }
+      ]
+     },
+     "interpolation": {
+      "errors": {
+       "M1": 0.01559417253032989,
+       "Mx": 0.022545932359125352,
+       "My": 0.05316305245260618
+      },
+      "n_seeds": 10,
+      "verdicts": [
+       {
+        "error_difference": {
+         "ci95": [
+          0.0018720101148036582,
+          0.012031509542787271
+         ],
+         "detected": true,
+         "mean": 0.006951759828795465,
+         "n": 10,
+         "sd": 0.007101493828383291,
+         "se": 0.00224568952873201
+        },
+        "margin": 0.03,
+        "question": "does the y intervention add anything to x alone?",
+        "richer": "M1",
+        "simpler": "Mx",
+        "verdict": "SIMPLER_SUFFICES"
+       },
+       {
+        "error_difference": {
+         "ci95": [
+          0.03289235245540412,
+          0.04224540738914845
+         ],
+         "detected": true,
+         "mean": 0.03756887992227628,
+         "n": 10,
+         "sd": 0.0065377888309697905,
+         "se": 0.0020674303567074113
+        },
+        "margin": 0.03,
+        "question": "does the x intervention add anything to y alone?",
+        "richer": "M1",
+        "simpler": "My",
+        "verdict": "RICHER_NEEDED"
+       }
+      ]
+     },
+     "range_of_mean_surface": {
+      "x": 0.15549999999999997,
+      "y": 0.040999999999999995
+     }
+    },
+    {
+     "condition": "after a correction (audit, approval, release)",
+     "extrapolation": {
+      "errors": {
+       "M1": 0.038454437106380086,
+       "Mx": 0.035977616661565515,
+       "My": 0.09707290078101243
+      },
+      "n_seeds": 10,
+      "verdicts": [
+       {
+        "error_difference": {
+         "ci95": [
+          -0.012028964185477838,
+          0.007075323295848697
+         ],
+         "detected": false,
+         "mean": -0.002476820444814571,
+         "n": 10,
+         "sd": 0.013353903960131154,
+         "se": 0.00422287521691568
+        },
+        "margin": 0.03,
+        "question": "does the y intervention add anything to x alone?",
+        "richer": "M1",
+        "simpler": "Mx",
+        "verdict": "SIMPLER_SUFFICES"
+       },
+       {
+        "error_difference": {
+         "ci95": [
+          0.04952757667898511,
+          0.06770935067027957
+         ],
+         "detected": true,
+         "mean": 0.05861846367463234,
+         "n": 10,
+         "sd": 0.012709066692064758,
+         "se": 0.004018959768190642
+        },
+        "margin": 0.03,
+        "question": "does the x intervention add anything to y alone?",
+        "richer": "M1",
+        "simpler": "My",
+        "verdict": "RICHER_NEEDED"
+       }
+      ]
+     },
+     "interpolation": {
+      "errors": {
+       "M1": 0.01936915429412885,
+       "Mx": 0.02692084630428989,
+       "My": 0.05230457326954615
+      },
+      "n_seeds": 10,
+      "verdicts": [
+       {
+        "error_difference": {
+         "ci95": [
+          0.0022905616535130327,
+          0.01281282236680906
+         ],
+         "detected": true,
+         "mean": 0.007551692010161046,
+         "n": 10,
+         "sd": 0.007355064099938864,
+         "se": 0.0023258754892343117
+        },
+        "margin": 0.03,
+        "question": "does the y intervention add anything to x alone?",
+        "richer": "M1",
+        "simpler": "Mx",
+        "verdict": "SIMPLER_SUFFICES"
+       },
+       {
+        "error_difference": {
+         "ci95": [
+          0.027800705569649718,
+          0.038070132381184875
+         ],
+         "detected": true,
+         "mean": 0.0329354189754173,
+         "n": 10,
+         "sd": 0.007178333109825776,
+         "se": 0.002269988243044906
+        },
+        "margin": 0.03,
+        "question": "does the x intervention add anything to y alone?",
+        "richer": "M1",
+        "simpler": "My",
+        "verdict": "UNRESOLVED"
+       }
+      ]
+     },
+     "range_of_mean_surface": {
+      "x": 0.145,
+      "y": 0.05349999999999999
+     }
+    }
+   ],
+   "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+   ]
+  }
+ },
+ "margin": 0.03,
+ "model_version": "gaisho-lab/1",
+ "models": {
+  "M1": {
+   "label": "additive logistic response to the two interventions",
+   "parameters": 3
+  },
+  "Mx": {
+   "label": "response to the x intervention alone (the y intervention is no part of the account)",
+   "parameters": 2
+  },
+  "My": {
+   "label": "response to the y intervention alone (the x intervention is no part of the account)",
+   "parameters": 2
+  }
+ },
+ "not_executed": {},
+ "reading": "which intervention carries the recorded surface of a domain, at one grid; an ablation of an axis of the recorded response, not of a mechanism of the institution, the rule set or the body; no attribution",
+ "rule": "as in the nested surface models: RICHER_NEEDED if M1's held-out error is lower than the one-axis account's by more than the margin (95 % interval); SIMPLER_SUFFICES if the interval lies inside +/- the margin; RICHER_WORSE if M1 is worse by more than the margin; otherwise UNRESOLVED"
+}

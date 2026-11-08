@@ -24,6 +24,7 @@ const en = {
   view_ecosystem: 'XENO ECOSYSTEM',
   view_body: 'BODY / TOTAL OBSERVATION',
   view_sbs: 'SBS — Simondonian Body Simulation',
+  view_verification: 'Verification — Brassier',
   view_study: 'Experiments',
 };
 

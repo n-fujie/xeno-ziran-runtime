@@ -1,0 +1,774 @@
+{
+ "axes": {
+  "x": "sensory feedback delay added, s (do)",
+  "y": "external disturbance, push force N (do)"
+ },
+ "body": {
+  "body": "XB-TRO",
+  "files": 17,
+  "model_version": "xb-tro/1.0",
+  "source_sha256": "4864c28938d197570333a71091a3a0f6164c1a90f44c6b0e986ce06fe3caa05a"
+ },
+ "conditions": {
+  "human-like planar body at the integration step 0.000625 s": {
+   "base": "human-like-planar",
+   "dt": 0.000625,
+   "fell_share_grid": [
+    [
+     0.0,
+     0.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ]
+   ],
+   "mean_fell_share": 0.76,
+   "relations": {
+    "baseline_fall": {
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "mean": 0.0,
+     "n": 8,
+     "status": "IDENTIFIED",
+     "t": 2.365
+    },
+    "effect_x": {
+     "ci95": [
+      0.6,
+      0.6
+     ],
+     "mean": 0.6,
+     "n": 8,
+     "status": "IDENTIFIED",
+     "t": 2.365
+    },
+    "effect_y": {
+     "ci95": [
+      0.4,
+      0.4
+     ],
+     "mean": 0.4,
+     "n": 8,
+     "status": "IDENTIFIED",
+     "t": 2.365
+    }
+   }
+  },
+  "human-like planar body at the integration step 0.00125 s": {
+   "base": "human-like-planar",
+   "dt": 0.00125,
+   "fell_share_grid": [
+    [
+     0.0,
+     0.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     0.0,
+     0.0,
+     0.75,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ]
+   ],
+   "mean_fell_share": 0.75,
+   "relations": {
+    "baseline_fall": {
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "mean": 0.0,
+     "n": 8,
+     "status": "IDENTIFIED",
+     "t": 2.365
+    },
+    "effect_x": {
+     "ci95": [
+      0.6,
+      0.6
+     ],
+     "mean": 0.6,
+     "n": 8,
+     "status": "IDENTIFIED",
+     "t": 2.365
+    },
+    "effect_y": {
+     "ci95": [
+      0.4,
+      0.4
+     ],
+     "mean": 0.4,
+     "n": 8,
+     "status": "IDENTIFIED",
+     "t": 2.365
+    }
+   }
+  },
+  "human-like planar body at the integration step 0.0025 s": {
+   "base": "human-like-planar",
+   "dt": 0.0025,
+   "fell_share_grid": [
+    [
+     0.0,
+     0.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0,
+     0.875,
+     1.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ]
+   ],
+   "mean_fell_share": 0.755,
+   "relations": {
+    "baseline_fall": {
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "mean": 0.0,
+     "n": 8,
+     "status": "IDENTIFIED",
+     "t": 2.365
+    },
+    "effect_x": {
+     "ci95": [
+      0.6,
+      0.6
+     ],
+     "mean": 0.6,
+     "n": 8,
+     "status": "IDENTIFIED",
+     "t": 2.365
+    },
+    "effect_y": {
+     "ci95": [
+      0.4,
+      0.4
+     ],
+     "mean": 0.4,
+     "n": 8,
+     "status": "IDENTIFIED",
+     "t": 2.365
+    }
+   }
+  },
+  "human-like planar body at the integration step 0.005 s": {
+   "base": "human-like-planar",
+   "dt": 0.005,
+   "fell_share_grid": [
+    [
+     0.0,
+     0.0,
+     0.875,
+     1.0,
+     1.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ]
+   ],
+   "mean_fell_share": 0.755,
+   "relations": {
+    "baseline_fall": {
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "mean": 0.0,
+     "n": 8,
+     "status": "IDENTIFIED",
+     "t": 2.365
+    },
+    "effect_x": {
+     "ci95": [
+      0.6,
+      0.6
+     ],
+     "mean": 0.6,
+     "n": 8,
+     "status": "IDENTIFIED",
+     "t": 2.365
+    },
+    "effect_y": {
+     "ci95": [
+      0.36587500000000006,
+      0.484125
+     ],
+     "mean": 0.42500000000000004,
+     "n": 8,
+     "status": "IDENTIFIED",
+     "t": 2.365
+    }
+   }
+  },
+  "human-like planar body at the integration step 0.01 s": {
+   "base": "human-like-planar",
+   "dt": 0.01,
+   "fell_share_grid": [
+    [
+     0.0,
+     0.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0,
+     0.875,
+     1.0
+    ],
+    [
+     0.0,
+     0.0,
+     0.75,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ]
+   ],
+   "mean_fell_share": 0.745,
+   "relations": {
+    "baseline_fall": {
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "mean": 0.0,
+     "n": 8,
+     "status": "IDENTIFIED",
+     "t": 2.365
+    },
+    "effect_x": {
+     "ci95": [
+      0.6,
+      0.6
+     ],
+     "mean": 0.6,
+     "n": 8,
+     "status": "IDENTIFIED",
+     "t": 2.365
+    },
+    "effect_y": {
+     "ci95": [
+      0.4,
+      0.4
+     ],
+     "mean": 0.4,
+     "n": 8,
+     "status": "IDENTIFIED",
+     "t": 2.365
+    }
+   }
+  },
+  "machine-like planar body at the integration step 0.000625 s": {
+   "base": "machine-like-planar",
+   "dt": 0.000625,
+   "fell_share_grid": [
+    [
+     0.0,
+     1.0,
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ]
+   ],
+   "mean_fell_share": 0.72,
+   "relations": {
+    "baseline_fall": {
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "mean": 0.0,
+     "n": 8,
+     "status": "IDENTIFIED",
+     "t": 2.365
+    },
+    "effect_x": {
+     "ci95": [
+      0.2,
+      0.2
+     ],
+     "mean": 0.2,
+     "n": 8,
+     "status": "IDENTIFIED",
+     "t": 2.365
+    },
+    "effect_y": {
+     "ci95": [
+      0.6,
+      0.6
+     ],
+     "mean": 0.6,
+     "n": 8,
+     "status": "IDENTIFIED",
+     "t": 2.365
+    }
+   }
+  },
+  "machine-like planar body at the integration step 0.00125 s": {
+   "base": "machine-like-planar",
+   "dt": 0.00125,
+   "fell_share_grid": [
+    [
+     0.0,
+     0.875,
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ]
+   ],
+   "mean_fell_share": 0.715,
+   "relations": {
+    "baseline_fall": {
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "mean": 0.0,
+     "n": 8,
+     "status": "IDENTIFIED",
+     "t": 2.365
+    },
+    "effect_x": {
+     "ci95": [
+      0.2,
+      0.2
+     ],
+     "mean": 0.2,
+     "n": 8,
+     "status": "IDENTIFIED",
+     "t": 2.365
+    },
+    "effect_y": {
+     "ci95": [
+      0.565875,
+      0.684125
+     ],
+     "mean": 0.625,
+     "n": 8,
+     "status": "IDENTIFIED",
+     "t": 2.365
+    }
+   }
+  },
+  "machine-like planar body at the integration step 0.0025 s": {
+   "base": "machine-like-planar",
+   "dt": 0.0025,
+   "fell_share_grid": [
+    [
+     0.0,
+     1.0,
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ]
+   ],
+   "mean_fell_share": 0.72,
+   "relations": {
+    "baseline_fall": {
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "mean": 0.0,
+     "n": 8,
+     "status": "IDENTIFIED",
+     "t": 2.365
+    },
+    "effect_x": {
+     "ci95": [
+      0.2,
+      0.2
+     ],
+     "mean": 0.2,
+     "n": 8,
+     "status": "IDENTIFIED",
+     "t": 2.365
+    },
+    "effect_y": {
+     "ci95": [
+      0.6,
+      0.6
+     ],
+     "mean": 0.6,
+     "n": 8,
+     "status": "IDENTIFIED",
+     "t": 2.365
+    }
+   }
+  },
+  "machine-like planar body at the integration step 0.005 s": {
+   "base": "machine-like-planar",
+   "dt": 0.005,
+   "fell_share_grid": [
+    [
+     0.0,
+     0.875,
+     1.0,
+     0.0,
+     0.25
+    ],
+    [
+     0.0,
+     1.0,
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ]
+   ],
+   "mean_fell_share": 0.725,
+   "relations": {
+    "baseline_fall": {
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "mean": 0.0,
+     "n": 8,
+     "status": "IDENTIFIED",
+     "t": 2.365
+    },
+    "effect_x": {
+     "ci95": [
+      0.1725872034387817,
+      0.3274127965612183
+     ],
+     "mean": 0.25,
+     "n": 8,
+     "status": "IDENTIFIED",
+     "t": 2.365
+    },
+    "effect_y": {
+     "ci95": [
+      0.515875,
+      0.6341249999999999
+     ],
+     "mean": 0.575,
+     "n": 8,
+     "status": "IDENTIFIED",
+     "t": 2.365
+    }
+   }
+  },
+  "machine-like planar body at the integration step 0.01 s": {
+   "base": "machine-like-planar",
+   "dt": 0.01,
+   "fell_share_grid": [
+    [
+     0.0,
+     1.0,
+     1.0,
+     0.5,
+     1.0
+    ],
+    [
+     0.0,
+     1.0,
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ]
+   ],
+   "mean_fell_share": 0.78,
+   "relations": {
+    "baseline_fall": {
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "mean": 0.0,
+     "n": 8,
+     "status": "IDENTIFIED",
+     "t": 2.365
+    },
+    "effect_x": {
+     "ci95": [
+      0.4,
+      0.4
+     ],
+     "mean": 0.4,
+     "n": 8,
+     "status": "IDENTIFIED",
+     "t": 2.365
+    },
+    "effect_y": {
+     "ci95": [
+      0.2106114021333178,
+      0.3893885978666823
+     ],
+     "mean": 0.30000000000000004,
+     "n": 8,
+     "status": "IDENTIFIED",
+     "t": 2.365
+    }
+   }
+  }
+ },
+ "digest": "8f8285f6155b305c0955b93e4be624cada7ddef0ecacb5c34f136436293c812c",
+ "dts": [
+  0.01,
+  0.005,
+  0.0025,
+  0.00125,
+  0.000625
+ ],
+ "model_version": "gaisho-lab/1",
+ "refused_by_xbtro": {},
+ "seeds": [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8
+ ]
+}

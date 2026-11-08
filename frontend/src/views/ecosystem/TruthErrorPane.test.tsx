@@ -1,0 +1,199 @@
+// TRUTH-ERROR pane — rendered to a string from real engine runs (truth-error-runs.json); what is checked is what a researcher is shown: the scope statement, the separate fields, the kind of every reading, the
+// changes listed before the differences, and that an appeal and a missing experiment are not invented. SYNTHETIC only.
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { renderToString } from 'react-dom/server';
+import { describe, expect, it } from 'vitest';
+import type { TEExperiment } from './truthApi';
+import TruthErrorPane, { type TruthCtx } from './TruthErrorPane';
+import type { NodeId, TERun } from './truthError';
+
+const dir = join(dirname(fileURLToPath(import.meta.url)), '__fixtures__');
+const runs = JSON.parse(readFileSync(join(dir, 'truth-error-runs.json'), 'utf8')) as Record<'base' | 'invalid' | 'biased' | 'noscore', TERun>;
+const saved = JSON.parse(readFileSync(join(dir, '..', '..', '..', '..', '..', 'docs', 'truth_error', 'experiments.json'), 'utf8')) as { experiments: Record<string, TEExperiment> };
+const saved2 = JSON.parse(readFileSync(join(dir, '..', '..', '..', '..', '..', 'docs', 'truth_error', 'experiments2.json'), 'utf8')) as { experiments: Record<string, TEExperiment> };
+const runs2 = JSON.parse(readFileSync(join(dir, 'truth-error-runs2.json'), 'utf8')) as Record<'base' | 'process' | 'no_release' | 'appeal' | 'appeal_gated' | 'guarded' | 'feedback' | 'on_request' | 'base5' | 'feedback5', TERun>;
+const none = async () => undefined;
+const ctx = (over: Partial<TruthCtx> = {}): TruthCtx => ({ base: runs.base, branch: null, k: 0, setK: () => undefined, t: 25, setT: () => undefined, selected: null, select: () => undefined, relation: null, setRelation: () => undefined, draft: {}, setDraft: () => undefined, busy: false, err: null,
+  runBase: none, runBranch: none, clearBranch: () => undefined, focus3d: () => undefined, experiments: saved.experiments, expId: 'EXP-TE02', setExpId: () => undefined, experiments2: saved2.experiments, exp2Id: 'EXP-TE07-release', setExp2Id: () => undefined, loadArm: none, ...over });
+const html = (over: Partial<TruthCtx> = {}) => renderToString(<TruthErrorPane {...ctx(over)} />);
+const text = (h: string) => h.replace(/<!-- -->/g, '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').replace(/\s+([,.;:)])/g, '$1').replace(/\(\s+/g, '(').replace(/&quot;/g, '"').replace(/&#x27;/g, "'").replace(/&gt;/g, '>').replace(/&lt;/g, '<').replace(/&amp;/g, '&');
+const section = (h: string, id: string) => { const i = h.indexOf(`data-testid="${id}"`); const next = h.indexOf('data-testid=', i + 10); return h.slice(i, next < 0 ? undefined : next); };
+
+describe('the truth-error pane', () => {
+  it('states first that everything is synthetic, that a head pose is a measurement only, and that the pose rule is invalid by construction', () => {
+    const t = text(section(html(), 'te-scope'));
+    for (const s of ['SYNTHETIC', 'No real person', 'must not be used for that', 'not an indicator of truthfulness', 'invalid by construction', 'REFERENCE']) expect(t).toContain(s);
+  });
+  it('asks for a baseline when there is none, and shows no field', () => {
+    const t = text(html({ base: null }));
+    expect(t).toContain('Run a baseline first'); expect(html({ base: null })).not.toContain('te-f-observation');
+  });
+  it('shows the five fields, the chain, the timeline and the Address-Domain states for a run', () => {
+    const h = html();
+    for (const id of ['te-f-observation', 'te-f-classification', 'te-f-scoring', 'te-f-consequences', 'te-f-reentry', 'te-chain', 'te-timeline', 'te-address', 'te-pose-trace']) expect(h, id).toContain(`data-testid="${id}"`);
+    expect(text(section(h, 'te-chain'))).toContain('institution A: gate');
+    expect(text(section(h, 'te-address'))).toContain('the score is extinguished'); expect(text(section(h, 'te-address'))).toContain('a binding constraint is extinguished');
+  });
+  it('marks every reading with its kind and never calls a reference value observed', () => {
+    const o = text(section(html(), 'te-f-observation'));
+    expect(o).toContain('OBSERVED'); expect(o).not.toContain('REFERENCE');
+    const c = text(section(html(), 'te-f-classification'));
+    expect(c).toContain('CLASSIFIED'); expect(c).toContain('INFERRED'); expect(c).toContain('REFERENCE');   // the agreement with the verification label is the evaluator's
+    expect(text(section(html(), 'te-f-scoring'))).toContain('INSTITUTIONAL');
+  });
+  it('keeps an appeal NOT MODELLED rather than inventing one', () => {
+    const t = text(section(html(), 'te-f-reentry'));
+    expect(t).toContain('appeal'); expect(t).toContain('NOT MODELLED'); expect(t).toContain('UNRESOLVED');
+  });
+  it('shows the selected node of the baseline, and the same node of the branch beside it', () => {
+    const one = text(section(html({ selected: 'classifier' as NodeId }), 'te-node'));
+    expect(one).toContain('classifier: baseline'); expect(one).toContain('signal_rule'); expect(one).not.toContain('the same node in the branch');
+    const two = text(section(html({ selected: 'classifier' as NodeId, branch: runs.invalid }), 'te-node'));
+    expect(two).toContain('the same node in the branch'); expect(two).toContain('pose_rule (invalid by construction)');
+  });
+  it('lists what was changed before the differences, and says whether the real state is the same', () => {
+    const h = html({ branch: runs.invalid });
+    expect(text(section(h, 'te-changed'))).toContain('classifier: "signal_rule" -> "pose_rule"');
+    expect(h.indexOf('data-testid="te-changed"')).toBeLessThan(h.indexOf('data-testid="te-compare"'));
+    expect(text(h)).toContain('real states are identical');
+    expect(text(section(html({ branch: runs.base }), 'te-changed'))).toContain('nothing (the same configuration)');
+  });
+  it('lists the saved experiment with its question, control, seeds, protocol, negative results and failure conditions', () => {
+    const t = text(section(html(), 'te-experiment'));
+    for (const s of ['Question:', 'Control:', 'Seeds: 20', 'observation range', 'Protocol:']) expect(t).toContain(s);
+    expect(t).toContain('invalid rule (head pose)'); expect(text(section(html(), 'te-negatives'))).toContain('Not detected (kept)');
+    const f = text(section(html(), 'te-failures'));
+    expect(f).toContain('Failure conditions'); expect(f).toContain('not met'); expect(f).toContain('Synthetic subjects and institutions');
+  });
+  it('says so when the saved results are not on the server', () => {
+    expect(text(html({ experiments: null }))).toContain('The saved results are not available on this server');
+  });
+  it('offers the settings of the engine and no way to give it an image, a video or a person', () => {
+    const h = html(), t = text(section(h, 'te-controls')) + text(section(h, 'te-sensor-controls'));
+    for (const s of ['classifier', 'threshold', 'score', 'correction at', 'transfer at', 'view angle', 'noise', 'occlusion', 'calibration bias', 'inject a failure at']) expect(t).toContain(s);
+    expect(h).not.toMatch(/type="file"|<video|<img|getUserMedia|capture=/);
+  });
+  it('lists the five kinds of "cannot" apart, with the model\'s definition of each and no claim of a philosophical correspondence', () => {
+    const t = text(section(html({ branch: runs.invalid }), 'te-modalities'));
+    for (const s of ['forbidden by the institution', 'institutionally impossible', 'invisible to measurement', 'excluded by the predictive model', 'reachable after an intervention', 'branch']) expect(t).toContain(s);
+    expect(text(html())).toContain('a correspondence with any philosophical account');
+  });
+
+  // ------------------------------------------------------------------------------------------------ phase 2
+  it('shows the nine times, the four paths, the fixed metrics with their denominators, the recoverability and the appeal for a run that has a process', () => {
+    const h = html({ base: runs2.process, k: 1, t: 30 });
+    for (const id of ['te-process', 'te-paths', 'te-metrics', 'te-recover', 'te-appeal']) expect(h, id).toContain(`data-testid="${id}"`);
+    const proc = text(section(h, 'te-process'));
+    for (const e of ['misclassified', 'adopted', 'denied', 'detected', 'requested', 'approved', 'score updated', 'released', 'restored']) expect(proc, e).toContain(e);
+    expect(proc).toContain('REFERENCE');   // a misclassification is known to the evaluator only
+    const paths = text(section(h, 'te-paths'));
+    for (const p of ['judgement path', 'effect path', 'correction path', 'subsequent path']) expect(paths).toContain(p);
+    const m = text(section(h, 'te-metrics'));
+    for (const s of ['access rate late fav', 'lost opportunities per fav', 'recovery time', 'persistent constraint', 'propagation b denied fav', 'subjects favourable at the start', 'last 10 periods']) expect(m, s).toContain(s);
+  });
+  it('lists the four paths of the same subject in the baseline and in the branch with the difference and its direction', () => {
+    const h = html({ base: runs2.process, branch: runs2.no_release, k: 1, t: 30 });
+    const paths = text(section(h, 'te-paths'));
+    expect(paths).toContain('branch (period)'); expect(paths).toContain('branch − baseline');
+    expect(paths).toContain('the binding constraint is released'); expect(paths).toContain('only in the baseline');   // the release happens in the process run, never in the no-release branch
+    expect(paths).toContain('same');
+  });
+  it('keeps the release a separate time: a branch that never releases still shows the approval', () => {
+    const t = text(section(html({ base: runs2.process, branch: runs2.no_release, k: 1, t: 30 }), 'te-process'));
+    expect(t).toContain('the correction is approved'); expect(t).toContain('not within the periods');
+  });
+  it('says that an appeal that exists is not relief, and shows a gated appeal blocking the filing', () => {
+    const t = text(section(html({ base: runs2.appeal, branch: runs2.appeal_gated }), 'te-appeal'));
+    expect(t).toContain('exists (open)'); expect(t).toContain('exists (gated by the score)'); expect(t).toContain('blocked from filing by the score'); expect(t).toContain('after a favourable re-judgement');
+    expect(t).toContain('three different counts'); expect(text(section(html({ base: runs2.appeal }), 'te-appeal'))).toContain('an association, not an effect of the appeal');
+  });
+  it('does not invent a process for a run saved before phase 2: no process sections, and the appeal stays NOT MODELLED', () => {
+    const h = html();
+    expect(h).not.toContain('data-testid="te-process"'); expect(h).not.toContain('data-testid="te-paths"');
+    expect(text(section(h, 'te-f-reentry'))).toContain('NOT MODELLED');
+  });
+  it('says no appeal procedure exists when the run has none, instead of NOT MODELLED', () => {
+    const t = text(section(html({ base: runs2.process }), 'te-f-reentry'));
+    expect(t).toContain('no appeal procedure in this run'); expect(t).not.toContain('NOT MODELLED');
+  });
+  it('shows a phase-2 experiment with its contrasts, the replication on the other seeds and the not-detected results', () => {
+    const h = html({ exp2Id: 'EXP-TE07-release' });
+    const t = text(section(h, 'te2-experiment'));
+    expect(t).toContain('replicated on 21-40');
+    const c = text(section(h, 'te2-contrasts'));
+    expect(c).toContain('withholding the release'); expect(c).toContain('replicated'); expect(c).toContain('not detected');
+    expect(text(section(h, 'te2-replication'))).toContain('set-dependent means in one only');
+    expect(text(section(h, 'te2-negatives'))).toContain('Not detected (kept)');
+    expect(text(section(html({ exp2Id: 'EXP-TE10' }), 'te2-questions'))).toContain('Does classification error alone create a constraint');
+  });
+  it('says the phase-2 results are unavailable rather than showing none when the server has not saved them', () => {
+    expect(text(html({ experiments2: null }))).toContain('The phase-2 results are not available on this server');
+  });
+  it('offers the correction time and the release time as separate controls, and states that the gated appeal is a hypothetical control', () => {
+    const h = html();
+    const t = text(section(h, 'te-process-controls'));
+    expect(t).toContain('approval delay'); expect(t).toContain('release delay'); expect(t).toContain('audit every'); expect(t).toContain('appeal');
+    expect(text(h)).toContain('hypothetical control for studying institutional design danger');
+    expect(text(h)).toContain('not a procedure for judging any real person');
+  });
+  it('shows the complementary metrics for the subjects who were not favourable at the start, beside the fixed ones, with their denominators', () => {
+    const h = html({ base: runs2.process, k: 1, t: 30 });
+    const m = text(section(h, 'te-metrics')), c = text(section(h, 'te-complement'));
+    expect(m).toContain('access rate late fav');   // the primary metrics are still there
+    for (const s of ['state change unfav', 'state gap change', 'denial rate late unfav', 'subjects not favourable at the start', 'resource feedback beta']) expect(c + text(h), s).toContain(s);
+    expect(c).toContain('first to last period');
+  });
+  it('shows no complementary table for a run saved before it existed', () => {
+    expect(html()).not.toContain('data-testid="te-complement"');
+  });
+  it('offers the seven relations, draws the selected one with the engine\'s check, and compares baseline and branch', () => {
+    const h = html({ base: runs2.process, branch: runs2.guarded, k: 1, t: 12, relation: 'judgement_resources' });
+    const sel = text(section(h, 'te-relation-select'));
+    for (const l of ['sensor and subject', 'classifier and the observation record', 'score and the institutional judgement', 'institutional judgement and the allocation of resources', 'subject\'s state', 'correction and the release of a constraint', 'guarantee and the subsequent possibility']) expect(sel, l).toContain(l);
+    const r = text(section(h, 'te-relation'));
+    expect(r).toContain('baseline'); expect(r).toContain('branch'); expect(r).toContain('resources = clip(clip('); expect(r).toContain('checked against the record'); expect(r).toContain('holds');
+    expect(text(h)).toContain('does not show that one thing causes another');
+  });
+  it('keeps observed, inferred, reference and unresolved states apart in a relation', () => {
+    const t = text(section(html({ base: runs2.process, k: 1, t: 12, relation: 'classifier_record' }), 'te-relation'));
+    for (const e of ['OBSERVED', 'CLASSIFIED', 'INFERRED', 'REFERENCE']) expect(t, e).toContain(e);
+    const t2 = text(section(html({ base: runs2.base, k: 1, t: 12, relation: 'guarantee_subsequent' }), 'te-relation'));
+    expect(t2).toContain('none');   // a run without guarantees says so
+  });
+  it('shows the guarantee controls as hypothetical research conditions and the guarantee node as such', () => {
+    const h = html({ base: runs2.guarded, selected: 'guarantee' as NodeId });
+    const c = text(section(h, 'te-guarantee-controls'));
+    for (const l of ['resource floor', 'cap on a run of denials', 'access kept pending a correction', 'recovery support after a release', 'support capacity', 'classifier accuracy']) expect(c, l).toContain(l);
+    expect(text(h)).toContain('HYPOTHETICAL research conditions'); expect(text(h)).toContain('no number here is theirs');
+    const n = text(section(h, 'te-node'));
+    expect(n).toContain('resource floor 0.2'); expect(n).toContain('denial cap 5'); expect(n).toContain('support to the low score');
+  });
+  it('shows the institution\'s action returning to the target: before and after, a fixed classifier, the changed target, the label shift, the four accuracies, the groups and what is unresolved', () => {
+    const h = html({ base: runs2.base, branch: runs2.feedback, k: 1, t: 20 });
+    for (const id of ['te-endo-badges', 'te-endo-verdict', 'te-endo', 'te-endo-accuracy', 'te-endo-distribution', 'te-endo-unresolved']) expect(h, id).toContain(`data-testid="${id}"`);
+    const b = text(section(h, 'te-endo-badges'));
+    for (const w of ['FIXED CLASSIFIER', 'CHANGED TARGET', 'LABEL SHIFT', 'DISTRIBUTIONAL CONSEQUENCES', 'UNRESOLVED']) expect(b, w).toContain(w);
+    expect(text(section(h, 'te-endo-verdict'))).toContain('ACCURACY CHANGED WITH THE CLASSIFIER FIXED');
+    const e = text(section(h, 'te-endo'));
+    for (const w of ['BEFORE the period', 'AFTER it', 'CHANGED TARGET', 'LABEL SHIFT', 'state minus the counterfactual state']) expect(e, w).toContain(w);
+    const a = text(section(h, 'te-endo-accuracy'));
+    for (const w of ['INITIAL', 'CURRENT', 'NEXT', 'COUNTERFACTUAL']) expect(a, w).toContain(w);
+    expect(text(section(h, 'te-endo-distribution'))).toContain('not favourable at the start');
+    expect(text(section(h, 'te-endo-unresolved'))).toContain('not measured');
+    expect(text(h)).toContain('A rising accuracy is not read as an improvement of the target'); expect(text(h)).toContain('a correct classification is not read as a justified action');
+  });
+  it('does not call the classifier fixed when the branch changed it or the observation, and shows no such section for an older run', () => {
+    const other = structuredClone(runs2.feedback) as TERun; other.config.window = 8;
+    expect(text(section(html({ base: runs2.base, branch: other, k: 1, t: 20 }), 'te-endo-badges'))).toContain('CLASSIFIER OR OBSERVATION CHANGED');
+    expect(html()).not.toContain('data-testid="te-endo"');
+  });
+  it('offers the application-based support and the two evaluator and target relations', () => {
+    const h = html({ base: runs2.on_request, k: 1, t: 12, relation: 'label_generation' });
+    expect(text(section(h, 'te-guarantee-controls'))).toContain('chance of applying'); expect(text(section(h, 'te-guarantee-controls'))).toContain('resources needed to apply');
+    expect(text(section(h, 'te-relation-select'))).toContain('transformed target'); expect(text(section(h, 'te-relation-select'))).toContain('evaluation label');
+    const r = text(section(h, 'te-relation'));
+    expect(r).toContain('INITIAL'); expect(r).toContain('COUNTERFACTUAL'); expect(r).toContain('evaluator'); expect(r).toContain('REFERENCE');
+  });
+});

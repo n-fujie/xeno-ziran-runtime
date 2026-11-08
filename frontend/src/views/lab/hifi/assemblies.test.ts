@@ -143,7 +143,10 @@ describe('system apparatus never interpenetrate (found in screenshots: a remote 
         }
       }
     }
-  });
+  // The default 5 s limit was the only one in this file on a test that loads three published records and builds three labs at the high tier, like the 60 s ones around it.
+  // Measured (2026-11-02, unchanged code): 0.5 s alone, 1.0-1.1 s with every core busy, 2.0-2.7 s beside the whole backend suite, and once 6.2 s in such a run (timed out).
+  // The work does not grow with the code under test; the limit was too close to the loaded cost. 60 s is the file's own convention, not a hidden slowdown.
+  }, 60_000);
 });
 
 describe('a failed gantry is drawn dark without changing any other part (shared-material bug found in review)', () => {
@@ -191,7 +194,7 @@ describe('full reachable envelope of every gantry', () => {
         }
       }
     }
-  });
+  }, 60_000);  // 0.5 s alone but 5.2 s under a loaded machine (found on 2026-11-04 with the backend suite running): the sibling tests have the same limit
   it('no recorded carriage, tool or mast position intersects a sensor, hub, store or chamber instrument', () => {
     for (const name of ['m7-systems-6000', 'm9-separated-resources-7000', 'm9-extinction-relocation-7000']) {
       const rec = load(name);
