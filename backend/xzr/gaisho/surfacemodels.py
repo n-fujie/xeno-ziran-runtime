@@ -103,7 +103,7 @@ def compare_surface_models(dom: Domain, seeds: tuple[int, ...], conditions: list
                 for m in MODELS:
                     pred = _fit_predict(m, train, (tex, tey))
                     errs[split][m].append(float(np.sqrt(np.mean((pred - tep) ** 2))))
-        per_split = {}
+        per_split: dict[str, Any] = {}
         for split in SPLITS:
             e = errs[split]
             if min(len(v) for v in e.values()) < 2:
@@ -171,7 +171,7 @@ def compare_axis_ablation(dom: Domain, seeds: tuple[int, ...], conditions: list[
         if prepare is not None:
             prepare(cond, seeds, obs)
         errs: dict[str, dict[str, list[float]]] = {s: {m: [] for m in ABLATION_MODELS} for s in SPLITS}
-        spread = {"x": [], "y": []}  # the range of the mean surface along each axis, for the reader (not a test)
+        spread: dict[str, list[float]] = {"x": [], "y": []}  # the range of the mean surface along each axis, for the reader (not a test)
         for seed in seeds:
             end = dom.simulate(cond, seed, obs)["snapshots"].get("end")
             if not end:
@@ -188,10 +188,10 @@ def compare_axis_ablation(dom: Domain, seeds: tuple[int, ...], conditions: list[
             grid: dict[tuple[int, int], float] = {(c["i"], c["j"]): c["p"] for c in cells}
             ny = len(dom.y_values)
             if len(grid) == nx * ny:
-                a = np.array([[grid[(i, j)] for i in range(nx)] for j in range(ny)])
-                spread["x"].append(float(a.mean(axis=0).max() - a.mean(axis=0).min()))
-                spread["y"].append(float(a.mean(axis=1).max() - a.mean(axis=1).min()))
-        per_split = {}
+                surf = np.array([[grid[(i, j)] for i in range(nx)] for j in range(ny)])
+                spread["x"].append(float(surf.mean(axis=0).max() - surf.mean(axis=0).min()))
+                spread["y"].append(float(surf.mean(axis=1).max() - surf.mean(axis=1).min()))
+        per_split: dict[str, Any] = {}
         for split in SPLITS:
             e = errs[split]
             if min(len(v) for v in e.values()) < 2:

@@ -1053,7 +1053,6 @@ def test_the_saved_surface_models_keep_their_stated_limits_and_the_findings_quot
     rows = m["domains"]["003-freedom"]["rows"]
     assert rows[0]["interpolation"]["errors"] == rows[2]["interpolation"]["errors"] and rows[1]["interpolation"]["errors"] == rows[4]["interpolation"]["errors"]
     # the body: an interaction is needed for the human-like preset, and the additive fit extrapolates WORSE than the marginal rate for the machine-like one
-    body = m["domains"]["004-body"]["rows"]
     assert verdict("004-body", 0, "interpolation", ("M1", "M2")) == "RICHER_NEEDED"
     assert verdict("004-body", 1, "extrapolation", ("M0", "M1")) == "RICHER_WORSE"
 
