@@ -187,6 +187,9 @@ class Sim:
         enforce_stability: bool = True,
     ):
         self.record = record
+        # optional replacement of the central ankle / hip feedback law (None = the preset's own law, bit-identical to before).
+        # Used by the local-only rival comparison (xzr.gaisho.rival): it gets the same delayed, noisy estimates and acts through the same lines.
+        self.ext_ctrl: Any = None
         self.enforce_stability = (
             enforce_stability  # False only for the study that checks the a-priori criterion against real runs
         )
@@ -510,11 +513,18 @@ class Sim:
         u_ankle += -neural["gravity_comp"] * p.mtot * p.g * xhat / max(p.tau_max[0], 1e-9)
         # feed-forward of the static torque that holds the reference position (what the sensed-position term above cannot supply)
         u_ankle += -neural.get("gravity_ff", 0.0) * p.mtot * p.g * xref_ctrl / max(p.tau_max[0], 1e-9)
+        u_hip_ext = None
+        if self.ext_ctrl is not None:
+            u_ankle, u_hip_ext = self.ext_ctrl(
+                self, i, dict(xref=xref_ctrl, th_hat=th_hat, w_hat=w_hat, x_p=x_p, v_p=v_p, x_v=x_v, x_vis=x_vis[:, 0], vis_ok=vis_ok, kc=kc)
+            )
         j = li("neural.central.ankle")
         if j >= 0:
             contrib[:, j, a_idx] = np.where(active[:, j], u_ankle, 0.0)
         hi = min(2, n - 1)
         u_hip = -(neural["gain_hip_p"] * err + neural["gain_hip_d"] * vhat) * kc
+        if u_hip_ext is not None:
+            u_hip = u_hip_ext
         j = li("neural.central.hip")
         if j >= 0:
             contrib[:, j, hi] = np.where(active[:, j], u_hip, 0.0)
@@ -808,10 +818,12 @@ def simulate(
     slow_state: dict[str, Any] | None = None,
     chunk: int = 0,
     enforce_stability: bool = True,
+    ext_ctrl: Any = None,
 ):
     """Run a batch to the horizon. With ``chunk`` > 0 this is a generator that yields after every ``chunk`` steps (for hosts
     without threads, which advance such generators in time slices); the return value of the generator is the Run."""
     sim = Sim(cfg, seeds, slow_state=slow_state, enforce_stability=enforce_stability)
+    sim.ext_ctrl = ext_ctrl
     if chunk <= 0:
         sim.advance(sim.T)
         return sim.finish()
