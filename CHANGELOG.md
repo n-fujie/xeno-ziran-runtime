@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased — Verification: the Brassier Machine as an evidence ledger
+
+* New local-only layer `backend/xzr/verification` (excluded from the iOS and browser bundles), route `/api/verification/brassier/demo`, view `?view=verification`, `docs/VERIFICATION.md`. SUPPORTED / WITHHELD / WITHDRAWN verdicts with no authority over what is real; equivalence and interventional identification (OPEN when no protocol separates equivalent mechanisms); a digest-sealed record that keeps negative results, seeds, interventions and provenance; the standard AIC/BIC comparison beside it. Existing results are not changed. SYNTHETIC demonstration only; the earlier Brassier Machine documents (R35, R37) are not in the repository.
+
 ## Unreleased — SBS (Simondonian Body Simulation), first vertical slice
 
 * SBS follow-ups (NEW EXECUTION, protocol and digest unchanged): replication on 64 new worlds (32 test worlds; the body-inclusive description again not shown better, the body-free one now also better than the null in 3 of 4 conditions), sensitivity to particle number, density, contact cut-off, recovery length, integration step and sweep hold (qualitative findings held in every variant but one 0.006 plateau; the numbers are not robust), and two NEW conditions on the substrate from the ON specification: ON-02 persistence criteria kept apart (they disagree widely; the local-configuration criterion is never met even in the control) and ON-03 fragility transfer (no transfer detected; no design was an established improvement over the baseline; 2.0 and 2.5 retained as Pareto-incomparable). ON Lab reproduction/integration still NOT done (sources absent). `docs/SBS.md`, `docs/sbs/sbs_{replication,sensitivity,on02,on03}.json`, `backend/tests/test_sbs_followups.py` (10).

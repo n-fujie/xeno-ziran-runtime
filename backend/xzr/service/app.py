@@ -918,6 +918,11 @@ from . import sbs as _sbs  # noqa: E402
 
 app.include_router(_sbs.router)
 
+# Verification: the Brassier Machine demonstration ledger (synthetic; local runtime only)
+from . import verification as _verification  # noqa: E402
+
+app.include_router(_verification.router)
+
 # ---------------------------------------------------------------------------------------------- static frontend
 if STATIC_DIR.is_dir():
     app.mount("/assets", StaticFiles(directory=STATIC_DIR / "assets"), name="assets")
