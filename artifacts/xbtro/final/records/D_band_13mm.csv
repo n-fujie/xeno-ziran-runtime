@@ -1,0 +1,80 @@
+# record,xb-d-320ccb2795e3
+# experiment,D
+# model_version,xb-tro/1.0
+# digest,320ccb2795e31be2dd88bb8c05d9af11f01261cdbea7ce6d3a2d46508ecf4259
+# time_step_s,0.01
+# numerical_method,RK4 on the N-link planar Lagrangian equations with the muscle drive held over each step; batched seeds with common random numbers; first-order activation dynamics; digests over 6 significant digits
+# seeds,5000 5001 5002 5003 5004 5005 5006 5007 5008 5009 5010 5011
+# labels,reference = model reference state (not an observation of a real body); observation = simulated model output
+
+# table: baseline_measures,"The ten velocity measures in the baseline (reference), and the estimate an observation configuration can make"
+measure,label,unit,definition,fraction of seeds defined,reference mean,reference sd,estimated from observations (full set),estimable
+sensory_detection,sensory detection latency,s,time from a cue to the first ignition of the cue-perception line,1.0,0.12,4.34846298858e-17,,no
+neural_response,neural response latency,s,time from a cue to the first ignition of the central movement command line,1.0,0.12,4.34846298858e-17,0.440833333333,yes
+muscle_onset,muscle activation onset latency,s,time from a cue until the ankle net activation deviates from its baseline by more than 0.03,1.0,0.124166666667,0.0830616784338,0.255,yes
+movement_onset,movement onset latency,s,time from a cue until the COM has moved 3 mm towards the target,1.0,0.765833333333,0.0202072594216,,no
+correction,movement correction latency,s,time from a push until the ankle torque deviates by more than 5 Nm against the push,1.0,0.2625,0.0128805702866,0.5525,yes
+settling,settling time,s,time after the direction change until the COM stays within the pre-registered tolerance band of the new target for 0.4 s,1.0,1.35666666667,0.0362650177878,0.0364176172009,yes
+adaptation,adaptation speed,1/trial,rate at which the peak deviation after a push falls over repeated trials (slope of log deviation),1.0,0.012787537416,0.00437180122067,,no
+recovery,recovery time,s,"time after a push (from the largest deviation) until the COM is back within the pre-registered tolerance band of the reference and slow, for 0.4 s, inside the window that ends at the next protocol event",1.0,0.89,0.0147709789175,,no
+reconfiguration,observation reconfiguration speed,rounds / s,rounds and simulated set-up time needed until an unobserved difference becomes identified (Experiment E),0.0,,,,no
+consequence,time to the consequence,s,"time from the stimulus until the consequence is established: the target reached, or a fall",1.0,0.825,0.0124316312102,,no
+
+# table: status_by_condition,Established / varied / lapsed per measure and condition
+condition,measure,label,baseline defined,condition defined,status,reason,paired d
+neural delay +0.03 s,sensory_detection,sensory detection latency,1.0,1.0,established,,0.0
+neural delay +0.03 s,neural_response,neural response latency,1.0,1.0,established,,0.0
+neural delay +0.03 s,muscle_onset,muscle activation onset latency,1.0,1.0,varied,,0.873869723679
+neural delay +0.03 s,movement_onset,movement onset latency,1.0,1.0,varied,,3.42539535431
+neural delay +0.03 s,correction,movement correction latency,1.0,0.25,lapsed,description-inapplicable,
+neural delay +0.03 s,settling,settling time,1.0,1.0,varied,,-1.39938392962
+neural delay +0.03 s,recovery,recovery time,1.0,1.0,established,,0.112992746952
+neural delay +0.03 s,consequence,time to the consequence,1.0,1.0,varied,,3.42539535431
+cue-perception line stopped,sensory_detection,sensory detection latency,1.0,0.0,lapsed,line-stopped,
+cue-perception line stopped,neural_response,neural response latency,1.0,0.0,lapsed,line-stopped,
+cue-perception line stopped,muscle_onset,muscle activation onset latency,1.0,1.0,established,,0.527002040992
+cue-perception line stopped,movement_onset,movement onset latency,1.0,1.0,varied,,1.06019552236
+cue-perception line stopped,correction,movement correction latency,1.0,1.0,varied,,-2.54096866158
+cue-perception line stopped,settling,settling time,1.0,0.0,lapsed,not-achieved-in-window,
+cue-perception line stopped,recovery,recovery time,1.0,0.0,lapsed,not-achieved-in-window,
+cue-perception line stopped,consequence,time to the consequence,1.0,1.0,varied,,109.980639889
+target beyond the base of support (15 cm),sensory_detection,sensory detection latency,1.0,1.0,established,,0.0
+target beyond the base of support (15 cm),neural_response,neural response latency,1.0,1.0,established,,0.0
+target beyond the base of support (15 cm),muscle_onset,muscle activation onset latency,1.0,1.0,established,,0.0
+target beyond the base of support (15 cm),movement_onset,movement onset latency,1.0,1.0,varied,,9.87764493267
+target beyond the base of support (15 cm),correction,movement correction latency,1.0,0.0,lapsed,description-inapplicable,
+target beyond the base of support (15 cm),settling,settling time,1.0,0.0,lapsed,line-stopped,
+target beyond the base of support (15 cm),recovery,recovery time,1.0,0.0,lapsed,description-inapplicable,
+target beyond the base of support (15 cm),consequence,time to the consequence,1.0,1.0,varied,,17.1034411605
+"very strong push (240 N, extra)",sensory_detection,sensory detection latency,1.0,1.0,established,,0.0
+"very strong push (240 N, extra)",neural_response,neural response latency,1.0,1.0,established,,0.0
+"very strong push (240 N, extra)",muscle_onset,muscle activation onset latency,1.0,1.0,established,,0.0
+"very strong push (240 N, extra)",movement_onset,movement onset latency,1.0,1.0,established,,0.0
+"very strong push (240 N, extra)",correction,movement correction latency,1.0,0.0,lapsed,line-stopped,
+"very strong push (240 N, extra)",settling,settling time,1.0,0.0,lapsed,line-stopped,
+"very strong push (240 N, extra)",recovery,recovery time,1.0,0.0,lapsed,line-stopped,
+"very strong push (240 N, extra)",consequence,time to the consequence,1.0,1.0,established,,0.0
+
+# table: adaptation_trials,"Peak COM deviation after the push in repeated trials (retained state carried over), mean over seeds"
+trial,mean peak deviation (m)
+1,0.0276765257458
+2,0.0265513342387
+3,0.0261649232742
+4,0.0261687194759
+5,0.0261723381108
+
+# table: negative_results
+statement,evidence
+movement correction latency lapsed under 'neural delay +0.03 s': description-inapplicable,"{""description-inapplicable"": 9}"
+sensory detection latency lapsed under 'cue-perception line stopped': line-stopped,"{""line-stopped"": 12}"
+neural response latency lapsed under 'cue-perception line stopped': line-stopped,"{""line-stopped"": 12}"
+settling time lapsed under 'cue-perception line stopped': not-achieved-in-window,"{""not-achieved-in-window"": 12}"
+recovery time lapsed under 'cue-perception line stopped': not-achieved-in-window,"{""not-achieved-in-window"": 12}"
+movement correction latency lapsed under 'target beyond the base of support (15 cm)': description-inapplicable,"{""description-inapplicable"": 12}"
+settling time lapsed under 'target beyond the base of support (15 cm)': line-stopped,"{""line-stopped"": 12}"
+recovery time lapsed under 'target beyond the base of support (15 cm)': description-inapplicable,"{""description-inapplicable"": 12}"
+"movement correction latency lapsed under 'very strong push (240 N, extra)': line-stopped","{""line-stopped"": 12}"
+"settling time lapsed under 'very strong push (240 N, extra)': line-stopped","{""line-stopped"": 12}"
+"recovery time lapsed under 'very strong push (240 N, extra)': line-stopped","{""line-stopped"": 12}"
+the quantity 'muscle_onset' exists in the reference but the motion-only observation configuration cannot estimate it (observation-lost),{}
+the quantity 'neural_response' exists in the reference but the motion-only observation configuration cannot estimate it (observation-lost),{}

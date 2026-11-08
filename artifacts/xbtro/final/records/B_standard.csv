@@ -1,0 +1,142 @@
+# record,xb-b-c53f1e3b769f
+# experiment,B
+# model_version,xb-tro/1.0
+# digest,c53f1e3b769f6d5f82c590f37a2abbd97344757d7dab0aebc7812f8ce9e7aeb8
+# time_step_s,0.01
+# numerical_method,RK4 on the N-link planar Lagrangian equations with the muscle drive held over each step; batched seeds with common random numbers; first-order activation dynamics; digests over 6 significant digits
+# seeds,5000 5001 5002 5003 5004 5005 5006 5007 5008 5009 5010 5011
+# labels,reference = model reference state (not an observation of a real body); observation = simulated model output
+
+# table: condition_effects,Reference effects of each condition against the matched control (paired by seed)
+condition,metric,control mean,condition mean,d (paired),p,pairs used,pairs dropped (undefined)
+sensory delay +0.03 s,trunk sway,0.00120308666711,0.00125283558263,0.176883839555,0.5615234375,12,0
+sensory delay +0.03 s,peak deviation after push,0.0174372156189,0.00822535074448,-4.8707335625,0.00048828125,12,0
+sensory delay +0.03 s,"recovery time (restricted mean, censored at the window)",1.5825,1.675,0.128057164947,0.66796875,12,0
+sensory delay +0.03 s,"settling after turn (restricted mean, censored at the window)",1.49,1.21916666667,-0.726885329813,0.029296875,12,0
+sensory delay +0.03 s,fall rate,0.0,0.0,0.0,1.0,12,0
+sensory delay +0.03 s,energy used,0.0998469852716,0.0973662842121,-0.83619499597,0.01904296875,12,0
+sensory delay +0.06 s,trunk sway,0.00120308666711,0.00133291953177,0.552571621544,0.07177734375,12,0
+sensory delay +0.06 s,peak deviation after push,0.0174372156189,0.0172929876101,-0.0370574426435,0.89892578125,12,0
+sensory delay +0.06 s,"recovery time (restricted mean, censored at the window)",1.5825,2.0,0.90523457641,0.015625,12,0
+sensory delay +0.06 s,"settling after turn (restricted mean, censored at the window)",1.49,2.15,21.2611790795,0.00048828125,12,0
+sensory delay +0.06 s,fall rate,0.0,0.0833333333333,0.288675134595,1.0,12,0
+sensory delay +0.06 s,energy used,0.0998469852716,0.117319432964,7.87332243101,0.00048828125,12,0
+visual feedback blocked,trunk sway,0.00120308666711,0.00120201477022,-0.00450588586338,0.9873046875,12,0
+visual feedback blocked,peak deviation after push,0.0174372156189,0.01746133558,0.0793558017234,0.8125,12,0
+visual feedback blocked,"recovery time (restricted mean, censored at the window)",1.5825,1.9325,0.814213738888,0.015625,12,0
+visual feedback blocked,"settling after turn (restricted mean, censored at the window)",1.49,1.51583333333,2.38397427279,0.00048828125,12,0
+visual feedback blocked,fall rate,0.0,0.0,0.0,1.0,12,0
+visual feedback blocked,energy used,0.0998469852716,0.10099895592,1.05623292224,0.0048828125,12,0
+"visual feedback blocked, reconnected at 3.0 s",trunk sway,0.00120308666711,0.00120201477022,-0.00450588586338,0.9873046875,12,0
+"visual feedback blocked, reconnected at 3.0 s",peak deviation after push,0.0174372156189,0.0171255763821,-1.18716135085,0.00341796875,12,0
+"visual feedback blocked, reconnected at 3.0 s","recovery time (restricted mean, censored at the window)",1.5825,1.585,0.552770798393,0.25,12,0
+"visual feedback blocked, reconnected at 3.0 s","settling after turn (restricted mean, censored at the window)",1.49,1.49,0.0,1.0,12,0
+"visual feedback blocked, reconnected at 3.0 s",fall rate,0.0,0.0,0.0,1.0,12,0
+"visual feedback blocked, reconnected at 3.0 s",energy used,0.0998469852716,0.0998718577815,0.0614050019635,0.8330078125,12,0
+neural delay +0.03 s,trunk sway,0.00120308666711,0.00126170817915,0.488838309516,0.11767578125,12,0
+neural delay +0.03 s,peak deviation after push,0.0174372156189,0.00729491735571,-6.62483519848,0.00048828125,12,0
+neural delay +0.03 s,"recovery time (restricted mean, censored at the window)",1.5825,1.23083333333,-0.530367517611,0.09375,12,0
+neural delay +0.03 s,"settling after turn (restricted mean, censored at the window)",1.49,1.50166666667,0.0344827205854,0.919921875,12,0
+neural delay +0.03 s,fall rate,0.0,0.0,0.0,1.0,12,0
+neural delay +0.03 s,energy used,0.0998469852716,0.0978060598635,-0.890048945059,0.0146484375,12,0
+contact condition 0.4,trunk sway,0.00120308666711,0.00120308666711,0.0,1.0,12,0
+contact condition 0.4,peak deviation after push,0.0174372156189,0.0166660690276,-1.97199988786,0.00048828125,12,0
+contact condition 0.4,"recovery time (restricted mean, censored at the window)",1.5825,1.49666666667,-0.262702576226,0.37890625,12,0
+contact condition 0.4,"settling after turn (restricted mean, censored at the window)",1.49,1.485,-0.40219983327,0.3125,12,0
+contact condition 0.4,fall rate,0.0,0.0,0.0,1.0,12,0
+contact condition 0.4,energy used,0.0998469852716,0.098990171083,-1.81626382876,0.00048828125,12,0
+posture: initial lean 0.04,trunk sway,0.00120308666711,0.011555149257,8.69812185815,0.00048828125,12,0
+posture: initial lean 0.04,peak deviation after push,0.0174372156189,0.0242312697879,6.28263769841,0.00048828125,12,0
+posture: initial lean 0.04,"recovery time (restricted mean, censored at the window)",1.5825,1.96666666667,0.812278714208,0.015625,12,0
+posture: initial lean 0.04,"settling after turn (restricted mean, censored at the window)",1.49,1.475,-1.37979931651,0.00390625,12,0
+posture: initial lean 0.04,fall rate,0.0,0.0,0.0,1.0,12,0
+posture: initial lean 0.04,energy used,0.0998469852716,0.112703533115,10.903535128,0.00048828125,12,0
+resource constraint 0.4,trunk sway,0.00120308666711,0.00120302591625,-1.82116133722,0.0009765625,12,0
+resource constraint 0.4,peak deviation after push,0.0174372156189,0.0174422213221,0.0551854432867,1.0,12,0
+resource constraint 0.4,"recovery time (restricted mean, censored at the window)",1.5825,1.58333333333,0.288675134595,1.0,12,0
+resource constraint 0.4,"settling after turn (restricted mean, censored at the window)",1.49,1.49,0.0,1.0,12,0
+resource constraint 0.4,fall rate,0.0,0.0,0.0,1.0,12,0
+resource constraint 0.4,energy used,0.0998469852716,0.0997851614985,-0.616724108414,0.0654296875,12,0
+second disturbance 50 N,trunk sway,0.00120308666711,0.00120308666711,0.0,1.0,12,0
+second disturbance 50 N,peak deviation after push,0.0174372156189,0.0143556869425,-4.41139326937,0.00048828125,12,0
+second disturbance 50 N,"recovery time (restricted mean, censored at the window)",1.5825,1.82583333333,0.771712367174,0.03125,12,0
+second disturbance 50 N,"settling after turn (restricted mean, censored at the window)",1.49,1.475,-1.5,0.0009765625,12,0
+second disturbance 50 N,fall rate,0.0,0.0,0.0,1.0,12,0
+second disturbance 50 N,energy used,0.0998469852716,0.107049140356,12.3945973889,0.00048828125,12,0
+
+# table: coupling_edges,"Reconstructed couplings (association, prediction, interventional evidence)"
+source,target,correlation,lag s,predictive gain,intervention,d,p,class
+mech.passive,adapt.gain,0.528555640881,0.3,0.00461103324741,posture_change,67.0870667937,0.00048828125,interventionally-supported
+neural.reflex,neural.central.ankle,0.672173853431,-0.02,0.0238731102959,neural_delay,1.0066932219,0.0078125,interventionally-supported
+neural.reflex,neural.central.hip,0.597988505808,0.0,0.0335902643363,neural_delay,0.233641143091,0.44189453125,correlational-only
+neural.central.ankle,neural.reflex,0.672173853431,0.02,0.051826535573,neural_delay,0.413097720459,0.17626953125,correlational-only
+neural.central.ankle,neural.central.hip,0.813520374132,0.0,0.0479780264863,neural_delay,0.233641143091,0.44189453125,correlational-only
+neural.central.hip,neural.reflex,0.597988505808,0.0,0.0288437147345,neural_delay,0.413097720459,0.17626953125,correlational-only
+neural.central.hip,neural.central.ankle,0.813520374132,0.0,0.0336028403107,neural_delay,1.0066932219,0.0078125,interventionally-supported
+metabolic.supply,adapt.gain,-0.917022960946,0.0,0.0109344136717,resource_constraint,0.315504276194,0.2431640625,correlational-only
+adapt.gain,mech.passive,0.528555640881,-0.3,0.00737789250077,,,,untested
+adapt.gain,metabolic.supply,-0.917022960946,0.0,0.00231691967127,,,,untested
+
+# table: line_effects,Operation lines most changed by each intervention (paired effect on command magnitude)
+intervention,line,d,p,ignitions/s control,ignitions/s intervention
+sensory_delay,neural.central.ankle,0.632882996605,0.052734375,0.177777777778,0.166666666667
+sensory_delay,neural.central.cue,-0.280665151367,0.35107421875,0.133333333333,0.133333333333
+sensory_delay,neural.central.hip,0.230070401984,0.478515625,0.411111111111,0.511111111111
+sensory_delay,neural.reflex,0.055645754731,0.84619140625,1.23333333333,1.1
+visual_block,neural.central.ankle,2.93226127579,0.00048828125,0.177777777778,0.144444444444
+visual_block,neural.reflex,2.04957246363,0.00048828125,1.23333333333,1.36666666667
+visual_block,neural.central.hip,1.44123070835,0.00048828125,0.411111111111,0.433333333333
+visual_block,neural.central.cue,0.714181784169,0.0341796875,0.133333333333,0.133333333333
+neural_delay,neural.central.ankle,1.0066932219,0.0078125,0.177777777778,0.177777777778
+neural_delay,neural.central.cue,-0.527008016813,0.09716796875,0.133333333333,0.133333333333
+neural_delay,neural.reflex,0.413097720459,0.17626953125,1.23333333333,1.31111111111
+neural_delay,neural.central.hip,0.233641143091,0.44189453125,0.411111111111,0.422222222222
+resource_constraint,neural.central.cue,-0.981360302411,0.005859375,0.133333333333,0.133333333333
+resource_constraint,neural.reflex,-0.621553428971,0.0361328125,1.23333333333,1.2
+resource_constraint,neural.central.hip,-0.559221618869,0.01025390625,0.411111111111,0.411111111111
+resource_constraint,neural.central.ankle,-0.41840810205,0.2001953125,0.177777777778,0.177777777778
+contact_change,neural.central.hip,-5.79081823118,0.00048828125,0.411111111111,0.411111111111
+contact_change,neural.central.ankle,-4.61668139162,0.00048828125,0.177777777778,0.177777777778
+contact_change,neural.central.cue,-2.84866300226,0.00048828125,0.133333333333,0.133333333333
+contact_change,neural.reflex,-2.20888255363,0.00048828125,1.23333333333,0.888888888889
+perturbation,neural.central.hip,24.326373962,0.00048828125,0.411111111111,0.544444444444
+perturbation,neural.central.ankle,10.5342203318,0.00048828125,0.177777777778,0.177777777778
+perturbation,neural.reflex,5.82424568439,0.00048828125,1.23333333333,0.922222222222
+perturbation,mech.passive,0.0,1.0,0.0,0.0
+posture_change,neural.central.cue,143.90577714,0.00048828125,0.133333333333,0.133333333333
+posture_change,neural.central.hip,9.82011407375,0.00048828125,0.411111111111,0.477777777778
+posture_change,neural.reflex,4.8177424901,0.00048828125,1.23333333333,1.52222222222
+posture_change,neural.central.ankle,3.79872194156,0.00048828125,0.177777777778,0.0
+
+# table: transitions,"Body-state transition frequencies: change under each intervention (intervention minus control, normalised)"
+intervention,quiet->moving,quiet->correcting,quiet->recovering,quiet->fallen,moving->quiet,moving->correcting,moving->recovering,moving->fallen,correcting->quiet,correcting->moving,correcting->recovering,correcting->fallen,recovering->quiet,recovering->moving,recovering->correcting,recovering->fallen,fallen->quiet,fallen->moving,fallen->correcting,fallen->recovering
+sensory_delay,-0.0161135161135,0.044708994709,-0.0755651755652,0.0,0.00877825877826,0.00952380952381,0.0,0.0,-0.0460557960558,0.0502886002886,0.05,0.0,-0.00969215969216,-0.015873015873,0.0,0.0,0.0,0.0,0.0,0.0
+visual_block,-0.0190871779657,0.00872768629778,0.00412896207289,0.0,0.0285318696534,-0.0222518914108,0.00467289719626,0.0,-0.0407456856055,0.0272214804925,0.0,0.0,0.00598328635712,0.00281857291203,0.0,0.0,0.0,0.0,0.0,0.0
+neural_delay,-0.0111765055585,0.0321621782296,-0.0322216277272,0.0,0.0326972237085,-0.0144462279294,0.0,0.0,-0.0350752036145,0.0453005172106,0.00749063670412,0.0,-0.00885797515011,-0.015873015873,0.0,0.0,0.0,0.0,0.0,0.0
+resource_constraint,0.00661375661376,2.81436451649e-05,-0.00486885061353,0.0,0.0010413148711,0.00101317122594,0.0,0.0,0.000365867387144,0.000675447483958,0.0,0.0,0.000365867387144,-0.00523471800068,0.0,0.0,0.0,0.0,0.0,0.0
+contact_change,-0.01357257879,0.000920174833218,-0.0101219231654,0.0,-0.0342765125374,0.0331262939959,0.0,0.0,0.00575109270761,0.0282953761215,0.0,0.0,0.00575109270761,-0.015873015873,0.0,0.0,0.0,0.0,0.0,0.0
+perturbation,-0.0433862433862,0.014708994709,0.0553439153439,0.0,-0.0037671957672,-0.0464761904762,0.0,0.0,-0.00478306878307,-0.0269841269841,0.0,0.0,0.0352169312169,0.020126984127,0.0,0.0,0.0,0.0,0.0,0.0
+posture_change,-0.00954008954009,0.0224013024013,-0.0108099308099,0.0,0.0657712657713,-0.079706959707,0.0215384615385,0.0,-0.0164753764754,-0.0039072039072,0.0,0.0,-0.0103215303215,0.0210500610501,0.0,0.0,0.0,0.0,0.0,0.0
+
+# table: negative_results
+statement,evidence
+"'sensory delay +0.03 s' did not detectably change trunk sway (paired p=0.562, d=0.177)","{""dropped"": 0, ""n"": 12}"
+"'sensory delay +0.03 s' did not detectably change recovery time (restricted mean, censored at the window) (paired p=0.668, d=0.128)","{""dropped"": 0, ""n"": 12}"
+"'sensory delay +0.06 s' did not detectably change trunk sway (paired p=0.0718, d=0.553)","{""dropped"": 0, ""n"": 12}"
+"'sensory delay +0.06 s' did not detectably change peak deviation after push (paired p=0.899, d=-0.0371)","{""dropped"": 0, ""n"": 12}"
+"'visual feedback blocked' did not detectably change trunk sway (paired p=0.987, d=-0.00451)","{""dropped"": 0, ""n"": 12}"
+"'visual feedback blocked' did not detectably change peak deviation after push (paired p=0.812, d=0.0794)","{""dropped"": 0, ""n"": 12}"
+"'visual feedback blocked, reconnected at 3.0 s' did not detectably change trunk sway (paired p=0.987, d=-0.00451)","{""dropped"": 0, ""n"": 12}"
+"'visual feedback blocked, reconnected at 3.0 s' did not detectably change recovery time (restricted mean, censored at the window) (paired p=0.25, d=0.553)","{""dropped"": 0, ""n"": 12}"
+"'neural delay +0.03 s' did not detectably change trunk sway (paired p=0.118, d=0.489)","{""dropped"": 0, ""n"": 12}"
+"'neural delay +0.03 s' did not detectably change recovery time (restricted mean, censored at the window) (paired p=0.0938, d=-0.53)","{""dropped"": 0, ""n"": 12}"
+"'contact condition 0.4' did not detectably change trunk sway (paired p=1, d=0)","{""dropped"": 0, ""n"": 12}"
+"'contact condition 0.4' did not detectably change recovery time (restricted mean, censored at the window) (paired p=0.379, d=-0.263)","{""dropped"": 0, ""n"": 12}"
+"'resource constraint 0.4' did not detectably change peak deviation after push (paired p=1, d=0.0552)","{""dropped"": 0, ""n"": 12}"
+"'resource constraint 0.4' did not detectably change recovery time (restricted mean, censored at the window) (paired p=1, d=0.289)","{""dropped"": 0, ""n"": 12}"
+"'second disturbance 50 N' did not detectably change trunk sway (paired p=1, d=0)","{""dropped"": 0, ""n"": 12}"
+"neural.reflex -> neural.central.hip is associated (r=0.60, lag 0.00 s) but the intervention targeting neural.reflex did not change neural.central.hip detectably: correlation alone does not support the coupling","{""class"": ""correlational-only"", ""correlation"": 0.597988505808, ""interventional"": {""d"": 0.233641143091, ""intervention"": ""neural_delay"", ""n"": 12, ""p"": 0.44189453125}, ""lag_s"": 0.0, ""predictive_gain"": 0.0335902643363, ""source"": ""neural.reflex"", ""target"": ""neural.central.hip""}"
+"neural.central.ankle -> neural.reflex is associated (r=0.67, lag 0.02 s) but the intervention targeting neural.central.ankle did not change neural.reflex detectably: correlation alone does not support the coupling","{""class"": ""correlational-only"", ""correlation"": 0.672173853431, ""interventional"": {""d"": 0.413097720459, ""intervention"": ""neural_delay"", ""n"": 12, ""p"": 0.17626953125}, ""lag_s"": 0.02, ""predictive_gain"": 0.051826535573, ""source"": ""neural.central.ankle"", ""target"": ""neural.reflex""}"
+"neural.central.ankle -> neural.central.hip is associated (r=0.81, lag 0.00 s) but the intervention targeting neural.central.ankle did not change neural.central.hip detectably: correlation alone does not support the coupling","{""class"": ""correlational-only"", ""correlation"": 0.813520374132, ""interventional"": {""d"": 0.233641143091, ""intervention"": ""neural_delay"", ""n"": 12, ""p"": 0.44189453125}, ""lag_s"": 0.0, ""predictive_gain"": 0.0479780264863, ""source"": ""neural.central.ankle"", ""target"": ""neural.central.hip""}"
+"neural.central.hip -> neural.reflex is associated (r=0.60, lag 0.00 s) but the intervention targeting neural.central.hip did not change neural.reflex detectably: correlation alone does not support the coupling","{""class"": ""correlational-only"", ""correlation"": 0.597988505808, ""interventional"": {""d"": 0.413097720459, ""intervention"": ""neural_delay"", ""n"": 12, ""p"": 0.17626953125}, ""lag_s"": 0.0, ""predictive_gain"": 0.0288437147345, ""source"": ""neural.central.hip"", ""target"": ""neural.reflex""}"
+"metabolic.supply -> adapt.gain is associated (r=-0.92, lag 0.00 s) but the intervention targeting metabolic.supply did not change adapt.gain detectably: correlation alone does not support the coupling","{""class"": ""correlational-only"", ""correlation"": -0.917022960946, ""interventional"": {""d"": 0.315504276194, ""intervention"": ""resource_constraint"", ""n"": 12, ""p"": 0.2431640625}, ""lag_s"": 0.0, ""predictive_gain"": 0.0109344136717, ""source"": ""metabolic.supply"", ""target"": ""adapt.gain""}"

@@ -1,0 +1,168 @@
+# record,xb-r-c21ef3036b78
+# experiment,R
+# model_version,xb-tro/1.0
+# digest,c21ef3036b7846e4227455c80ddc0ed87a5d3d4129c1aec13432d2a7c660f163
+# time_step_s,0.01
+# numerical_method,RK4 on the N-link planar Lagrangian equations with the muscle drive held over each step; batched seeds with common random numbers; first-order activation dynamics; digests over 6 significant digits
+# seeds,5000 5001 5002 5003 5004 5005 5006 5007 5008 5009 5010 5011
+# labels,reference = model reference state (not an observation of a real body); observation = simulated model output
+
+# table: label_agreement,"Label of each cell in each variant, and the share of variants that agree with the reference"
+principle,organization,reference,other seeds,mass +10 %,central loop +20 ms,sensor noise x2,stronger push 50 N,agreement with the reference
+lower-abdominal-continuity,posture_stability,improved,improved,improved,improved,improved,improved,1.0
+lower-abdominal-continuity,correction_quality,worsened,worsened,improved,worsened,worsened,no detectable effect,0.666666666667
+lower-abdominal-continuity,turn_speed,improved,improved,improved,no detectable effect,improved,improved,0.833333333333
+lower-abdominal-continuity,precision,no detectable effect,no detectable effect,improved,no detectable effect,no detectable effect,no detectable effect,0.833333333333
+lower-abdominal-continuity,fatigue_cost,worsened,worsened,worsened,worsened,worsened,worsened,1.0
+lower-abdominal-continuity,recovery_time,worsened,no detectable effect,improved,worsened,no detectable effect,no detectable effect,0.333333333333
+lower-abdominal-continuity,fall_rate,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,1.0
+whole-skin-sensing,posture_stability,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,1.0
+whole-skin-sensing,correction_quality,worsened,worsened,no detectable effect,worsened,worsened,worsened,0.833333333333
+whole-skin-sensing,turn_speed,improved,improved,improved,no detectable effect,improved,improved,0.833333333333
+whole-skin-sensing,precision,improved,improved,improved,improved,improved,improved,1.0
+whole-skin-sensing,fatigue_cost,worsened,worsened,worsened,worsened,worsened,worsened,1.0
+whole-skin-sensing,recovery_time,improved,improved,improved,no detectable effect,improved,improved,0.833333333333
+whole-skin-sensing,fall_rate,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,1.0
+axis-maintenance,posture_stability,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,1.0
+axis-maintenance,correction_quality,worsened,worsened,worsened,worsened,no detectable effect,worsened,0.833333333333
+axis-maintenance,turn_speed,improved,improved,improved,no detectable effect,no detectable effect,improved,0.666666666667
+axis-maintenance,precision,no detectable effect,no detectable effect,improved,no detectable effect,no detectable effect,no detectable effect,0.833333333333
+axis-maintenance,fatigue_cost,worsened,worsened,worsened,worsened,worsened,worsened,1.0
+axis-maintenance,recovery_time,worsened,no detectable effect,no detectable effect,worsened,no detectable effect,no detectable effect,0.333333333333
+axis-maintenance,fall_rate,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,1.0
+endpoint-removal,posture_stability,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,1.0
+endpoint-removal,correction_quality,worsened,worsened,worsened,worsened,worsened,worsened,1.0
+endpoint-removal,turn_speed,improved,improved,improved,improved,improved,improved,1.0
+endpoint-removal,precision,improved,improved,improved,improved,improved,improved,1.0
+endpoint-removal,fatigue_cost,worsened,worsened,worsened,worsened,worsened,worsened,1.0
+endpoint-removal,recovery_time,no detectable effect,no detectable effect,no detectable effect,worsened,no detectable effect,no detectable effect,0.833333333333
+endpoint-removal,fall_rate,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,1.0
+low-noise-movement,posture_stability,no detectable effect,improved,no detectable effect,no detectable effect,no detectable effect,no detectable effect,0.833333333333
+low-noise-movement,correction_quality,improved,improved,no detectable effect,worsened,improved,improved,0.666666666667
+low-noise-movement,turn_speed,worsened,worsened,worsened,worsened,worsened,worsened,1.0
+low-noise-movement,precision,worsened,worsened,worsened,worsened,worsened,worsened,1.0
+low-noise-movement,fatigue_cost,worsened,worsened,worsened,worsened,worsened,worsened,1.0
+low-noise-movement,recovery_time,no detectable effect,no detectable effect,no detectable effect,no detectable effect,improved,no detectable effect,0.833333333333
+low-noise-movement,fall_rate,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,1.0
+minimal-approach-distance,posture_stability,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,1.0
+minimal-approach-distance,correction_quality,worsened,worsened,worsened,worsened,worsened,worsened,1.0
+minimal-approach-distance,turn_speed,improved,improved,improved,no detectable effect,improved,improved,0.833333333333
+minimal-approach-distance,precision,improved,improved,improved,no detectable effect,improved,improved,0.833333333333
+minimal-approach-distance,fatigue_cost,worsened,worsened,worsened,worsened,worsened,worsened,1.0
+minimal-approach-distance,recovery_time,worsened,no detectable effect,no detectable effect,worsened,no detectable effect,no detectable effect,0.333333333333
+minimal-approach-distance,fall_rate,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,1.0
+zero-run-up-transition,posture_stability,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,1.0
+zero-run-up-transition,correction_quality,worsened,worsened,worsened,worsened,worsened,worsened,1.0
+zero-run-up-transition,turn_speed,improved,improved,improved,improved,improved,improved,1.0
+zero-run-up-transition,precision,improved,improved,improved,improved,improved,improved,1.0
+zero-run-up-transition,fatigue_cost,worsened,worsened,worsened,worsened,worsened,worsened,1.0
+zero-run-up-transition,recovery_time,no detectable effect,no detectable effect,no detectable effect,worsened,no detectable effect,no detectable effect,0.833333333333
+zero-run-up-transition,fall_rate,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,1.0
+tensegrity,posture_stability,no detectable effect,worsened,worsened,no detectable effect,no detectable effect,no detectable effect,0.666666666667
+tensegrity,correction_quality,no detectable effect,no detectable effect,worsened,worsened,improved,no detectable effect,0.5
+tensegrity,turn_speed,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,1.0
+tensegrity,precision,improved,improved,no detectable effect,no detectable effect,improved,improved,0.666666666667
+tensegrity,fatigue_cost,worsened,worsened,worsened,worsened,worsened,worsened,1.0
+tensegrity,recovery_time,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,1.0
+tensegrity,fall_rate,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,1.0
+slow-movement,posture_stability,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,1.0
+slow-movement,correction_quality,improved,improved,improved,no detectable effect,improved,improved,0.833333333333
+slow-movement,turn_speed,worsened,worsened,worsened,no detectable effect,worsened,worsened,0.833333333333
+slow-movement,precision,worsened,worsened,worsened,worsened,worsened,worsened,1.0
+slow-movement,fatigue_cost,worsened,worsened,worsened,worsened,no detectable effect,worsened,0.833333333333
+slow-movement,recovery_time,no detectable effect,no detectable effect,no detectable effect,worsened,no detectable effect,no detectable effect,0.833333333333
+slow-movement,fall_rate,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,1.0
+narrow-step-balance,posture_stability,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,1.0
+narrow-step-balance,correction_quality,no detectable effect,no detectable effect,worsened,worsened,improved,worsened,0.333333333333
+narrow-step-balance,turn_speed,improved,improved,improved,no detectable effect,no detectable effect,no detectable effect,0.5
+narrow-step-balance,precision,no detectable effect,no detectable effect,no detectable effect,improved,no detectable effect,worsened,0.666666666667
+narrow-step-balance,fatigue_cost,no detectable effect,no detectable effect,no detectable effect,no detectable effect,improved,no detectable effect,0.833333333333
+narrow-step-balance,recovery_time,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,1.0
+narrow-step-balance,fall_rate,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,1.0
+fingertip-tension,posture_stability,improved,improved,improved,improved,improved,improved,1.0
+fingertip-tension,correction_quality,no detectable effect,no detectable effect,improved,no detectable effect,no detectable effect,no detectable effect,0.833333333333
+fingertip-tension,turn_speed,improved,improved,improved,improved,improved,improved,1.0
+fingertip-tension,precision,improved,improved,improved,improved,improved,improved,1.0
+fingertip-tension,fatigue_cost,worsened,worsened,worsened,worsened,worsened,worsened,1.0
+fingertip-tension,recovery_time,no detectable effect,no detectable effect,improved,no detectable effect,no detectable effect,improved,0.666666666667
+fingertip-tension,fall_rate,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,1.0
+breathing-synchronization,posture_stability,improved,improved,improved,improved,improved,improved,1.0
+breathing-synchronization,correction_quality,worsened,worsened,worsened,worsened,worsened,worsened,1.0
+breathing-synchronization,turn_speed,improved,improved,improved,no detectable effect,no detectable effect,improved,0.666666666667
+breathing-synchronization,precision,improved,improved,improved,no detectable effect,improved,improved,0.833333333333
+breathing-synchronization,fatigue_cost,worsened,worsened,worsened,worsened,worsened,worsened,1.0
+breathing-synchronization,recovery_time,improved,improved,improved,worsened,improved,improved,0.833333333333
+breathing-synchronization,fall_rate,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,1.0
+anti-collapse-posture,posture_stability,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,1.0
+anti-collapse-posture,correction_quality,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,1.0
+anti-collapse-posture,turn_speed,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,1.0
+anti-collapse-posture,precision,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,1.0
+anti-collapse-posture,fatigue_cost,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,1.0
+anti-collapse-posture,recovery_time,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,1.0
+anti-collapse-posture,fall_rate,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,1.0
+long-duration-sedimentation,posture_stability,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,1.0
+long-duration-sedimentation,correction_quality,improved,improved,improved,no detectable effect,improved,improved,0.833333333333
+long-duration-sedimentation,turn_speed,improved,improved,improved,no detectable effect,improved,improved,0.833333333333
+long-duration-sedimentation,precision,improved,improved,improved,improved,improved,improved,1.0
+long-duration-sedimentation,fatigue_cost,no detectable effect,no detectable effect,improved,improved,no detectable effect,improved,0.5
+long-duration-sedimentation,recovery_time,improved,improved,no detectable effect,no detectable effect,no detectable effect,improved,0.5
+long-duration-sedimentation,fall_rate,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,no detectable effect,1.0
+
+# table: transfer_robustness,Fragility Transfers per variant
+principle,reference,other seeds,mass +10 %,central loop +20 ms,sensor noise x2,stronger push 50 N
+lower-abdominal-continuity,True,True,False,True,True,False
+whole-skin-sensing,True,True,False,True,True,True
+axis-maintenance,True,True,True,False,False,True
+endpoint-removal,True,True,True,True,True,True
+low-noise-movement,True,True,False,False,True,True
+minimal-approach-distance,True,True,True,False,True,True
+zero-run-up-transition,True,True,True,True,True,True
+tensegrity,False,True,False,False,False,False
+slow-movement,True,True,True,False,True,True
+narrow-step-balance,False,False,True,True,False,False
+fingertip-tension,False,False,False,False,False,False
+breathing-synchronization,True,True,True,True,True,True
+anti-collapse-posture,False,False,False,False,False,False
+long-duration-sedimentation,False,False,False,False,False,False
+
+# table: negative_results
+statement,evidence
+lower-abdominal-continuity / correction_quality: the label depends on the setting,"{""central loop +20 ms"": ""worsened"", ""mass +10 %"": ""improved"", ""other seeds"": ""worsened"", ""reference"": ""worsened"", ""sensor noise x2"": ""worsened"", ""stronger push 50 N"": ""no detectable effect""}"
+lower-abdominal-continuity / turn_speed: the label depends on the setting,"{""central loop +20 ms"": ""no detectable effect"", ""mass +10 %"": ""improved"", ""other seeds"": ""improved"", ""reference"": ""improved"", ""sensor noise x2"": ""improved"", ""stronger push 50 N"": ""improved""}"
+lower-abdominal-continuity / precision: the label depends on the setting,"{""central loop +20 ms"": ""no detectable effect"", ""mass +10 %"": ""improved"", ""other seeds"": ""no detectable effect"", ""reference"": ""no detectable effect"", ""sensor noise x2"": ""no detectable effect"", ""stronger push 50 N"": ""no detectable effect""}"
+lower-abdominal-continuity / recovery_time: the label depends on the setting,"{""central loop +20 ms"": ""worsened"", ""mass +10 %"": ""improved"", ""other seeds"": ""no detectable effect"", ""reference"": ""worsened"", ""sensor noise x2"": ""no detectable effect"", ""stronger push 50 N"": ""no detectable effect""}"
+whole-skin-sensing / correction_quality: the label depends on the setting,"{""central loop +20 ms"": ""worsened"", ""mass +10 %"": ""no detectable effect"", ""other seeds"": ""worsened"", ""reference"": ""worsened"", ""sensor noise x2"": ""worsened"", ""stronger push 50 N"": ""worsened""}"
+whole-skin-sensing / turn_speed: the label depends on the setting,"{""central loop +20 ms"": ""no detectable effect"", ""mass +10 %"": ""improved"", ""other seeds"": ""improved"", ""reference"": ""improved"", ""sensor noise x2"": ""improved"", ""stronger push 50 N"": ""improved""}"
+whole-skin-sensing / recovery_time: the label depends on the setting,"{""central loop +20 ms"": ""no detectable effect"", ""mass +10 %"": ""improved"", ""other seeds"": ""improved"", ""reference"": ""improved"", ""sensor noise x2"": ""improved"", ""stronger push 50 N"": ""improved""}"
+axis-maintenance / correction_quality: the label depends on the setting,"{""central loop +20 ms"": ""worsened"", ""mass +10 %"": ""worsened"", ""other seeds"": ""worsened"", ""reference"": ""worsened"", ""sensor noise x2"": ""no detectable effect"", ""stronger push 50 N"": ""worsened""}"
+axis-maintenance / turn_speed: the label depends on the setting,"{""central loop +20 ms"": ""no detectable effect"", ""mass +10 %"": ""improved"", ""other seeds"": ""improved"", ""reference"": ""improved"", ""sensor noise x2"": ""no detectable effect"", ""stronger push 50 N"": ""improved""}"
+axis-maintenance / precision: the label depends on the setting,"{""central loop +20 ms"": ""no detectable effect"", ""mass +10 %"": ""improved"", ""other seeds"": ""no detectable effect"", ""reference"": ""no detectable effect"", ""sensor noise x2"": ""no detectable effect"", ""stronger push 50 N"": ""no detectable effect""}"
+axis-maintenance / recovery_time: the label depends on the setting,"{""central loop +20 ms"": ""worsened"", ""mass +10 %"": ""no detectable effect"", ""other seeds"": ""no detectable effect"", ""reference"": ""worsened"", ""sensor noise x2"": ""no detectable effect"", ""stronger push 50 N"": ""no detectable effect""}"
+endpoint-removal / recovery_time: the label depends on the setting,"{""central loop +20 ms"": ""worsened"", ""mass +10 %"": ""no detectable effect"", ""other seeds"": ""no detectable effect"", ""reference"": ""no detectable effect"", ""sensor noise x2"": ""no detectable effect"", ""stronger push 50 N"": ""no detectable effect""}"
+low-noise-movement / posture_stability: the label depends on the setting,"{""central loop +20 ms"": ""no detectable effect"", ""mass +10 %"": ""no detectable effect"", ""other seeds"": ""improved"", ""reference"": ""no detectable effect"", ""sensor noise x2"": ""no detectable effect"", ""stronger push 50 N"": ""no detectable effect""}"
+low-noise-movement / correction_quality: the label depends on the setting,"{""central loop +20 ms"": ""worsened"", ""mass +10 %"": ""no detectable effect"", ""other seeds"": ""improved"", ""reference"": ""improved"", ""sensor noise x2"": ""improved"", ""stronger push 50 N"": ""improved""}"
+low-noise-movement / recovery_time: the label depends on the setting,"{""central loop +20 ms"": ""no detectable effect"", ""mass +10 %"": ""no detectable effect"", ""other seeds"": ""no detectable effect"", ""reference"": ""no detectable effect"", ""sensor noise x2"": ""improved"", ""stronger push 50 N"": ""no detectable effect""}"
+minimal-approach-distance / turn_speed: the label depends on the setting,"{""central loop +20 ms"": ""no detectable effect"", ""mass +10 %"": ""improved"", ""other seeds"": ""improved"", ""reference"": ""improved"", ""sensor noise x2"": ""improved"", ""stronger push 50 N"": ""improved""}"
+minimal-approach-distance / precision: the label depends on the setting,"{""central loop +20 ms"": ""no detectable effect"", ""mass +10 %"": ""improved"", ""other seeds"": ""improved"", ""reference"": ""improved"", ""sensor noise x2"": ""improved"", ""stronger push 50 N"": ""improved""}"
+minimal-approach-distance / recovery_time: the label depends on the setting,"{""central loop +20 ms"": ""worsened"", ""mass +10 %"": ""no detectable effect"", ""other seeds"": ""no detectable effect"", ""reference"": ""worsened"", ""sensor noise x2"": ""no detectable effect"", ""stronger push 50 N"": ""no detectable effect""}"
+zero-run-up-transition / recovery_time: the label depends on the setting,"{""central loop +20 ms"": ""worsened"", ""mass +10 %"": ""no detectable effect"", ""other seeds"": ""no detectable effect"", ""reference"": ""no detectable effect"", ""sensor noise x2"": ""no detectable effect"", ""stronger push 50 N"": ""no detectable effect""}"
+tensegrity / posture_stability: the label depends on the setting,"{""central loop +20 ms"": ""no detectable effect"", ""mass +10 %"": ""worsened"", ""other seeds"": ""worsened"", ""reference"": ""no detectable effect"", ""sensor noise x2"": ""no detectable effect"", ""stronger push 50 N"": ""no detectable effect""}"
+tensegrity / correction_quality: the label depends on the setting,"{""central loop +20 ms"": ""worsened"", ""mass +10 %"": ""worsened"", ""other seeds"": ""no detectable effect"", ""reference"": ""no detectable effect"", ""sensor noise x2"": ""improved"", ""stronger push 50 N"": ""no detectable effect""}"
+tensegrity / precision: the label depends on the setting,"{""central loop +20 ms"": ""no detectable effect"", ""mass +10 %"": ""no detectable effect"", ""other seeds"": ""improved"", ""reference"": ""improved"", ""sensor noise x2"": ""improved"", ""stronger push 50 N"": ""improved""}"
+slow-movement / correction_quality: the label depends on the setting,"{""central loop +20 ms"": ""no detectable effect"", ""mass +10 %"": ""improved"", ""other seeds"": ""improved"", ""reference"": ""improved"", ""sensor noise x2"": ""improved"", ""stronger push 50 N"": ""improved""}"
+slow-movement / turn_speed: the label depends on the setting,"{""central loop +20 ms"": ""no detectable effect"", ""mass +10 %"": ""worsened"", ""other seeds"": ""worsened"", ""reference"": ""worsened"", ""sensor noise x2"": ""worsened"", ""stronger push 50 N"": ""worsened""}"
+slow-movement / fatigue_cost: the label depends on the setting,"{""central loop +20 ms"": ""worsened"", ""mass +10 %"": ""worsened"", ""other seeds"": ""worsened"", ""reference"": ""worsened"", ""sensor noise x2"": ""no detectable effect"", ""stronger push 50 N"": ""worsened""}"
+slow-movement / recovery_time: the label depends on the setting,"{""central loop +20 ms"": ""worsened"", ""mass +10 %"": ""no detectable effect"", ""other seeds"": ""no detectable effect"", ""reference"": ""no detectable effect"", ""sensor noise x2"": ""no detectable effect"", ""stronger push 50 N"": ""no detectable effect""}"
+narrow-step-balance / correction_quality: the label depends on the setting,"{""central loop +20 ms"": ""worsened"", ""mass +10 %"": ""worsened"", ""other seeds"": ""no detectable effect"", ""reference"": ""no detectable effect"", ""sensor noise x2"": ""improved"", ""stronger push 50 N"": ""worsened""}"
+narrow-step-balance / turn_speed: the label depends on the setting,"{""central loop +20 ms"": ""no detectable effect"", ""mass +10 %"": ""improved"", ""other seeds"": ""improved"", ""reference"": ""improved"", ""sensor noise x2"": ""no detectable effect"", ""stronger push 50 N"": ""no detectable effect""}"
+narrow-step-balance / precision: the label depends on the setting,"{""central loop +20 ms"": ""improved"", ""mass +10 %"": ""no detectable effect"", ""other seeds"": ""no detectable effect"", ""reference"": ""no detectable effect"", ""sensor noise x2"": ""no detectable effect"", ""stronger push 50 N"": ""worsened""}"
+narrow-step-balance / fatigue_cost: the label depends on the setting,"{""central loop +20 ms"": ""no detectable effect"", ""mass +10 %"": ""no detectable effect"", ""other seeds"": ""no detectable effect"", ""reference"": ""no detectable effect"", ""sensor noise x2"": ""improved"", ""stronger push 50 N"": ""no detectable effect""}"
+fingertip-tension / correction_quality: the label depends on the setting,"{""central loop +20 ms"": ""no detectable effect"", ""mass +10 %"": ""improved"", ""other seeds"": ""no detectable effect"", ""reference"": ""no detectable effect"", ""sensor noise x2"": ""no detectable effect"", ""stronger push 50 N"": ""no detectable effect""}"
+fingertip-tension / recovery_time: the label depends on the setting,"{""central loop +20 ms"": ""no detectable effect"", ""mass +10 %"": ""improved"", ""other seeds"": ""no detectable effect"", ""reference"": ""no detectable effect"", ""sensor noise x2"": ""no detectable effect"", ""stronger push 50 N"": ""improved""}"
+breathing-synchronization / turn_speed: the label depends on the setting,"{""central loop +20 ms"": ""no detectable effect"", ""mass +10 %"": ""improved"", ""other seeds"": ""improved"", ""reference"": ""improved"", ""sensor noise x2"": ""no detectable effect"", ""stronger push 50 N"": ""improved""}"
+breathing-synchronization / precision: the label depends on the setting,"{""central loop +20 ms"": ""no detectable effect"", ""mass +10 %"": ""improved"", ""other seeds"": ""improved"", ""reference"": ""improved"", ""sensor noise x2"": ""improved"", ""stronger push 50 N"": ""improved""}"
+breathing-synchronization / recovery_time: the label depends on the setting,"{""central loop +20 ms"": ""worsened"", ""mass +10 %"": ""improved"", ""other seeds"": ""improved"", ""reference"": ""improved"", ""sensor noise x2"": ""improved"", ""stronger push 50 N"": ""improved""}"
+long-duration-sedimentation / correction_quality: the label depends on the setting,"{""central loop +20 ms"": ""no detectable effect"", ""mass +10 %"": ""improved"", ""other seeds"": ""improved"", ""reference"": ""improved"", ""sensor noise x2"": ""improved"", ""stronger push 50 N"": ""improved""}"
+long-duration-sedimentation / turn_speed: the label depends on the setting,"{""central loop +20 ms"": ""no detectable effect"", ""mass +10 %"": ""improved"", ""other seeds"": ""improved"", ""reference"": ""improved"", ""sensor noise x2"": ""improved"", ""stronger push 50 N"": ""improved""}"
+long-duration-sedimentation / fatigue_cost: the label depends on the setting,"{""central loop +20 ms"": ""improved"", ""mass +10 %"": ""improved"", ""other seeds"": ""no detectable effect"", ""reference"": ""no detectable effect"", ""sensor noise x2"": ""no detectable effect"", ""stronger push 50 N"": ""improved""}"
+long-duration-sedimentation / recovery_time: the label depends on the setting,"{""central loop +20 ms"": ""no detectable effect"", ""mass +10 %"": ""no detectable effect"", ""other seeds"": ""improved"", ""reference"": ""improved"", ""sensor noise x2"": ""no detectable effect"", ""stronger push 50 N"": ""improved""}"

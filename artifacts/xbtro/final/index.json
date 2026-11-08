@@ -1,0 +1,301 @@
+{
+ "runs": [
+  {
+   "name": "A_standard",
+   "set": "standard",
+   "experiment": "A",
+   "params": {
+    "n_seeds": 12
+   },
+   "record": "xb-a-bcea40306ec6",
+   "digest": "bcea40306ec6571c96133efeaeac2485425df33d823fc1d7ae7dde0bd984418c",
+   "seeds": [
+    5000,
+    5011
+   ],
+   "negative_results": 6,
+   "seconds": 1.9,
+   "commit": "d809a258e99410a71d0f107e090a3f1f01d15a9f",
+   "python": "3.12.13",
+   "tolerance_override": null
+  },
+  {
+   "name": "B_standard",
+   "set": "standard",
+   "experiment": "B",
+   "params": {
+    "n_seeds": 12
+   },
+   "record": "xb-b-c53f1e3b769f",
+   "digest": "c53f1e3b769f6d5f82c590f37a2abbd97344757d7dab0aebc7812f8ce9e7aeb8",
+   "seeds": [
+    5000,
+    5011
+   ],
+   "negative_results": 20,
+   "seconds": 15.2,
+   "commit": "d809a258e99410a71d0f107e090a3f1f01d15a9f",
+   "python": "3.12.13",
+   "tolerance_override": null
+  },
+  {
+   "name": "C_standard",
+   "set": "standard",
+   "experiment": "C",
+   "params": {
+    "n_seeds": 12
+   },
+   "record": "xb-c-06072890cfd9",
+   "digest": "06072890cfd92427c60c160f774af48c9e0d9c9e51f313aad50dbede6fb0ffee",
+   "seeds": [
+    5000,
+    5011
+   ],
+   "negative_results": 14,
+   "seconds": 16.1,
+   "commit": "d809a258e99410a71d0f107e090a3f1f01d15a9f",
+   "python": "3.12.13",
+   "tolerance_override": null
+  },
+  {
+   "name": "D_standard",
+   "set": "standard",
+   "experiment": "D",
+   "params": {
+    "n_seeds": 12
+   },
+   "record": "xb-d-f96899506f2d",
+   "digest": "f96899506f2d13dfe9114cd9e3a06e319a62c6e0eb93620db3ecdf5c1dc1de11",
+   "seeds": [
+    5000,
+    5011
+   ],
+   "negative_results": 13,
+   "seconds": 7.5,
+   "commit": "d809a258e99410a71d0f107e090a3f1f01d15a9f",
+   "python": "3.12.13",
+   "tolerance_override": null
+  },
+  {
+   "name": "E_standard",
+   "set": "standard",
+   "experiment": "E",
+   "params": {
+    "n_seeds": 12
+   },
+   "record": "xb-e-4a0fd16addbe",
+   "digest": "4a0fd16addbea1123b379533afd507436d4b19c6a95277790ca24c837a8573d2",
+   "seeds": [
+    5000,
+    5011
+   ],
+   "negative_results": 18,
+   "seconds": 5.3,
+   "commit": "d809a258e99410a71d0f107e090a3f1f01d15a9f",
+   "python": "3.12.13",
+   "tolerance_override": null
+  },
+  {
+   "name": "F_standard",
+   "set": "standard",
+   "experiment": "F",
+   "params": {
+    "n_seeds": 12
+   },
+   "record": "xb-f-9208dab23942",
+   "digest": "9208dab23942922521f17fdcda12be94c5ffad80892d1df6ad1badcd88b3a1c8",
+   "seeds": [
+    5000,
+    5011
+   ],
+   "negative_results": 1,
+   "seconds": 24.4,
+   "commit": "d809a258e99410a71d0f107e090a3f1f01d15a9f",
+   "python": "3.12.13",
+   "tolerance_override": null
+  },
+  {
+   "name": "G_standard",
+   "set": "standard",
+   "experiment": "G",
+   "params": {
+    "n_seeds": 12
+   },
+   "record": "xb-g-41c322db9990",
+   "digest": "41c322db99904644233374640bfa50b94be36cc3158d461931bec34a547d4800",
+   "seeds": [
+    5000,
+    5011
+   ],
+   "negative_results": 7,
+   "seconds": 106.1,
+   "commit": "d809a258e99410a71d0f107e090a3f1f01d15a9f",
+   "python": "3.12.13",
+   "tolerance_override": null
+  },
+  {
+   "name": "M_standard",
+   "set": "standard",
+   "experiment": "M",
+   "params": {
+    "n_seeds": 12
+   },
+   "record": "xb-m-bea03229da51",
+   "digest": "bea03229da5119bf1bcd3dc4abc5d931df70dbd7b69abcac7547490f3974b379",
+   "seeds": [
+    5000,
+    5011
+   ],
+   "negative_results": 5,
+   "seconds": 10.2,
+   "commit": "d809a258e99410a71d0f107e090a3f1f01d15a9f",
+   "python": "3.12.13",
+   "tolerance_override": null
+  },
+  {
+   "name": "R_standard",
+   "set": "standard",
+   "experiment": "R",
+   "params": {
+    "n_seeds": 12
+   },
+   "record": "xb-r-c21ef3036b78",
+   "digest": "c21ef3036b7846e4227455c80ddc0ed87a5d3d4129c1aec13432d2a7c660f163",
+   "seeds": [
+    5000,
+    5011
+   ],
+   "negative_results": 39,
+   "seconds": 80.0,
+   "commit": "d809a258e99410a71d0f107e090a3f1f01d15a9f",
+   "python": "3.12.13",
+   "tolerance_override": null
+  },
+  {
+   "name": "S_standard",
+   "set": "standard",
+   "experiment": "S",
+   "params": {
+    "n_seeds": 12
+   },
+   "record": "xb-s-eb2910e1593f",
+   "digest": "eb2910e1593fac74da9e4ea7b7a7fc141ae5629f025dca01e8772116dd019216",
+   "seeds": [
+    5000,
+    5011
+   ],
+   "negative_results": 5,
+   "seconds": 13.0,
+   "commit": "d809a258e99410a71d0f107e090a3f1f01d15a9f",
+   "python": "3.12.13",
+   "tolerance_override": null
+  },
+  {
+   "name": "V_standard",
+   "set": "standard",
+   "experiment": "V",
+   "params": {
+    "n_seeds": 12
+   },
+   "record": "xb-v-d8bf067d22e3",
+   "digest": "d8bf067d22e31e5e19609d316282ecddf730ec1a345b17f7ebde3a1ae63202aa",
+   "seeds": [
+    5000,
+    5011
+   ],
+   "negative_results": 0,
+   "seconds": 69.8,
+   "commit": "d809a258e99410a71d0f107e090a3f1f01d15a9f",
+   "python": "3.12.13",
+   "tolerance_override": null
+  },
+  {
+   "name": "G_original_conditions",
+   "set": "g-original",
+   "experiment": "G",
+   "params": {
+    "n_seeds": 8,
+    "principles": [
+     "axis-maintenance",
+     "zero-run-up-transition",
+     "slow-movement",
+     "tensegrity"
+    ],
+    "ablate": true
+   },
+   "record": "xb-g-c7d6bd9f83c6",
+   "digest": "c7d6bd9f83c6fcef48a3ad2c51381a17dc11059923a02ef8d09c9033b374dacc",
+   "seeds": [
+    5000,
+    5007
+   ],
+   "negative_results": 2,
+   "seconds": 27.8,
+   "commit": "d809a258e99410a71d0f107e090a3f1f01d15a9f",
+   "python": "3.12.13",
+   "tolerance_override": null
+  },
+  {
+   "name": "G_independent_replication",
+   "set": "g-replicate",
+   "experiment": "G",
+   "params": {
+    "n_seeds": 16,
+    "seed": 7000
+   },
+   "record": "xb-g-43505057a32a",
+   "digest": "43505057a32a26175e20421d5776c4eaba4b098bd3a92409ef6bc0f395bd1bfe",
+   "seeds": [
+    7000,
+    7015
+   ],
+   "negative_results": 6,
+   "seconds": 95.9,
+   "commit": "d809a258e99410a71d0f107e090a3f1f01d15a9f",
+   "python": "3.12.13",
+   "tolerance_override": null
+  },
+  {
+   "name": "B_band_13mm",
+   "set": "band13",
+   "experiment": "B",
+   "params": {
+    "n_seeds": 12
+   },
+   "record": "xb-b-68a347c760c2",
+   "digest": "68a347c760c2229409712c5c80395b82b844f93c50bc9acc8f8761c87cfd9fff",
+   "seeds": [
+    5000,
+    5011
+   ],
+   "negative_results": 18,
+   "seconds": 15.2,
+   "commit": "d809a258e99410a71d0f107e090a3f1f01d15a9f",
+   "python": "3.12.13",
+   "tolerance_override": {
+    "human-like": 0.013
+   }
+  },
+  {
+   "name": "D_band_13mm",
+   "set": "band13",
+   "experiment": "D",
+   "params": {
+    "n_seeds": 12
+   },
+   "record": "xb-d-320ccb2795e3",
+   "digest": "320ccb2795e31be2dd88bb8c05d9af11f01261cdbea7ce6d3a2d46508ecf4259",
+   "seeds": [
+    5000,
+    5011
+   ],
+   "negative_results": 13,
+   "seconds": 7.0,
+   "commit": "d809a258e99410a71d0f107e090a3f1f01d15a9f",
+   "python": "3.12.13",
+   "tolerance_override": {
+    "human-like": 0.013
+   }
+  }
+ ]
+}

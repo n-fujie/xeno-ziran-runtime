@@ -1,0 +1,1169 @@
+{
+ "digest": "eb2910e1593fac74da9e4ea7b7a7fc141ae5629f025dca01e8772116dd019216",
+ "experiment": "S",
+ "history": {
+  "reentry": []
+ },
+ "id": "xb-s-eb2910e1593f",
+ "initial_configuration": {
+  "adaptation": {
+   "cost": 0.0,
+   "enabled": true,
+   "error_target": 0.003,
+   "eta": 0.2,
+   "gain_max": 1.15,
+   "gain_min": 0.9
+  },
+  "environment": {
+   "compliance": 0.0,
+   "friction_mu": 0.8,
+   "gravity": 9.81,
+   "handrail": null,
+   "ledge": null,
+   "pushes": [
+    {
+     "dur": 0.12,
+     "force": 35.0,
+     "link": 2,
+     "point_frac": 0.8,
+     "t": 3.2
+    }
+   ]
+  },
+  "family": "human-like",
+  "foot": {
+   "heel": 0.07,
+   "toe": 0.17
+  },
+  "internal": {
+   "activation_cost": 0.004,
+   "basal_cost": 0.0004,
+   "breath_amp": 0.015,
+   "breath_period": 4.0,
+   "breath_variability": 0.05,
+   "capacity_floor": 0.45,
+   "energy0": 1.0,
+   "energy_floor": 0.3,
+   "fatigue_rate": 0.02,
+   "fatigue_recovery": 0.012,
+   "resources_enabled": true
+  },
+  "joints": [
+   {
+    "act_fall": 0.08,
+    "act_rise": 0.04,
+    "c_passive": 45.0,
+    "id": "ankle",
+    "k_passive": 720.0,
+    "label": "ankle",
+    "q_range": 0.6,
+    "tau_max": 120.0
+   },
+   {
+    "act_fall": 0.08,
+    "act_rise": 0.04,
+    "c_passive": 40.0,
+    "id": "knee",
+    "k_passive": 700.0,
+    "label": "knee",
+    "q_range": 0.6,
+    "tau_max": 150.0
+   },
+   {
+    "act_fall": 0.08,
+    "act_rise": 0.04,
+    "c_passive": 35.0,
+    "id": "hip",
+    "k_passive": 420.0,
+    "label": "hip",
+    "q_range": 0.8,
+    "tau_max": 180.0
+   },
+   {
+    "act_fall": 0.06,
+    "act_rise": 0.03,
+    "c_passive": 4.0,
+    "id": "neck",
+    "k_passive": 45.0,
+    "label": "neck",
+    "q_range": 0.8,
+    "tau_max": 25.0
+   }
+  ],
+  "lines": [
+   {
+    "enabled": true,
+    "id": "mech.passive",
+    "ignition": {
+     "hold_s": 0.0,
+     "signal": "always",
+     "threshold": 0.0
+    },
+    "kind": "mechanical",
+    "label": "viscoelastic joints (passive)",
+    "note": "always on; stiffness and damping per joint",
+    "observable_by": [
+     "posture",
+     "imu"
+    ],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 0.0
+   },
+   {
+    "enabled": true,
+    "id": "sens.proprio",
+    "ignition": {
+     "hold_s": 0.05,
+     "signal": "joint-velocity",
+     "threshold": 0.05
+    },
+    "kind": "sensory",
+    "label": "proprioceptive sensing",
+    "note": "timescale = sensory delay (s); ignites when a joint velocity exceeds the threshold (rad/s)",
+    "observable_by": [
+     "posture",
+     "emg"
+    ],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 0.03
+   },
+   {
+    "enabled": true,
+    "id": "sens.vestibular",
+    "ignition": {
+     "hold_s": 0.05,
+     "signal": "trunk-tilt-rate",
+     "threshold": 0.03
+    },
+    "kind": "sensory",
+    "label": "vestibular / head-motion sensing",
+    "note": "timescale = delay; ignites on trunk tilt rate (rad/s)",
+    "observable_by": [
+     "imu",
+     "eeg"
+    ],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 0.02
+   },
+   {
+    "enabled": true,
+    "id": "sens.visual",
+    "ignition": {
+     "hold_s": 0.1,
+     "signal": "com-offset",
+     "threshold": 0.004
+    },
+    "kind": "sensory",
+    "label": "visual feedback",
+    "note": "timescale = delay; ignites on a visible COM offset (m); can be blocked",
+    "observable_by": [
+     "posture",
+     "eeg"
+    ],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 0.1
+   },
+   {
+    "enabled": true,
+    "id": "sens.tactile",
+    "ignition": {
+     "hold_s": 0.05,
+     "signal": "cop-shift",
+     "threshold": 0.004
+    },
+    "kind": "sensory",
+    "label": "tactile / contact-pressure sensing",
+    "note": "timescale = delay; ignites on a centre-of-pressure shift (m)",
+    "observable_by": [
+     "contact",
+     "eeg"
+    ],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 0.04
+   },
+   {
+    "enabled": true,
+    "id": "sens.cue",
+    "ignition": {
+     "hold_s": 0.05,
+     "signal": "cue",
+     "threshold": 0.5
+    },
+    "kind": "sensory",
+    "label": "cue perception",
+    "note": "timescale = delay; the movement / direction-change cues are sensed through it",
+    "observable_by": [
+     "eeg",
+     "latency"
+    ],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 0.12
+   },
+   {
+    "enabled": true,
+    "id": "neural.reflex",
+    "ignition": {
+     "hold_s": 0.08,
+     "signal": "joint-velocity",
+     "threshold": 0.12
+    },
+    "kind": "neural",
+    "label": "local joint reflex",
+    "note": "timescale = loop latency; ignites on a fast sensed joint motion",
+    "observable_by": [
+     "emg",
+     "latency",
+     "eeg"
+    ],
+    "resource": {
+     "cost_per_s": 0.002,
+     "pool": "energy"
+    },
+    "timescale_s": 0.04
+   },
+   {
+    "enabled": true,
+    "id": "neural.central.ankle",
+    "ignition": {
+     "hold_s": 0.2,
+     "signal": "com-offset",
+     "threshold": 0.003
+    },
+    "kind": "neural",
+    "label": "central balance command (ankle)",
+    "note": "timescale = latency; ignites on a sensed COM offset from the reference",
+    "observable_by": [
+     "emg",
+     "eeg",
+     "latency"
+    ],
+    "resource": {
+     "cost_per_s": 0.004,
+     "pool": "energy"
+    },
+    "timescale_s": 0.1
+   },
+   {
+    "enabled": true,
+    "id": "neural.central.hip",
+    "ignition": {
+     "hold_s": 0.25,
+     "signal": "com-offset",
+     "threshold": 0.02
+    },
+    "kind": "neural",
+    "label": "central balance command (hip)",
+    "note": "timescale = latency; ignites on a large COM offset",
+    "observable_by": [
+     "emg",
+     "eeg",
+     "latency"
+    ],
+    "resource": {
+     "cost_per_s": 0.008,
+     "pool": "energy"
+    },
+    "timescale_s": 0.1
+   },
+   {
+    "enabled": true,
+    "id": "neural.central.cue",
+    "ignition": {
+     "hold_s": 0.3,
+     "signal": "cue",
+     "threshold": 0.5
+    },
+    "kind": "neural",
+    "label": "central movement command (feed-forward)",
+    "note": "timescale = latency; ignites on a sensed cue",
+    "observable_by": [
+     "emg",
+     "eeg",
+     "latency"
+    ],
+    "resource": {
+     "cost_per_s": 0.004,
+     "pool": "energy"
+    },
+    "timescale_s": 0.1
+   },
+   {
+    "enabled": true,
+    "id": "core.tonic",
+    "ignition": {
+     "hold_s": 0.0,
+     "signal": "always",
+     "threshold": 0.0
+    },
+    "kind": "internal",
+    "label": "tonic co-contraction (core)",
+    "note": "baseline co-contraction level; costs energy while on",
+    "observable_by": [
+     "emg"
+    ],
+    "resource": {
+     "cost_per_s": 0.003,
+     "pool": "energy"
+    },
+    "timescale_s": 0.0
+   },
+   {
+    "enabled": true,
+    "id": "breath.cycle",
+    "ignition": {
+     "hold_s": 0.0,
+     "signal": "always",
+     "threshold": 0.0
+    },
+    "kind": "internal",
+    "label": "breathing cycle",
+    "note": "timescale = period (s); modulates trunk drive and chest motion",
+    "observable_by": [
+     "respiration",
+     "imu",
+     "emg"
+    ],
+    "resource": {
+     "cost_per_s": 0.001,
+     "pool": "energy"
+    },
+    "timescale_s": 4.0
+   },
+   {
+    "enabled": true,
+    "id": "metabolic.supply",
+    "ignition": {
+     "hold_s": 0.0,
+     "signal": "always",
+     "threshold": 0.0
+    },
+    "kind": "internal",
+    "label": "energy supply / fatigue",
+    "note": "timescale = fatigue time constant (s); internal, no observation model sees it directly",
+    "observable_by": [],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 30.0
+   },
+   {
+    "enabled": true,
+    "id": "adapt.gain",
+    "ignition": {
+     "hold_s": 0.0,
+     "signal": "always",
+     "threshold": 0.0
+    },
+    "kind": "internal",
+    "label": "gain adaptation",
+    "note": "timescale = adaptation time constant (s); slow retained state",
+    "observable_by": [],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 20.0
+   }
+  ],
+  "links": [
+   {
+    "com_frac": 0.45,
+    "id": "shank",
+    "label": "shank + foot",
+    "length": 0.45,
+    "mass": 6.6,
+    "region": "shank"
+   },
+   {
+    "com_frac": 0.45,
+    "id": "thigh",
+    "label": "thigh",
+    "length": 0.45,
+    "mass": 14.0,
+    "region": "thigh"
+   },
+   {
+    "com_frac": 0.5,
+    "id": "trunk",
+    "label": "trunk + arms",
+    "length": 0.55,
+    "mass": 38.0,
+    "region": "trunk"
+   },
+   {
+    "com_frac": 0.5,
+    "id": "head",
+    "label": "head + neck",
+    "length": 0.3,
+    "mass": 4.8,
+    "region": "head"
+   }
+  ],
+  "model": "xb-tro/1.0",
+  "name": "human-like-planar",
+  "neural": {
+   "cocontraction_base": 0.06,
+   "cocontraction_gain": 2.0,
+   "gain_ankle_d": 3.5,
+   "gain_ankle_p": 3.0,
+   "gain_cop": 0.0,
+   "gain_cue_ff": 1.0,
+   "gain_hip_d": 0.8,
+   "gain_hip_p": 1.2,
+   "gain_reflex_d": 0.05,
+   "gain_reflex_p": 0.6,
+   "gravity_comp": 0.5,
+   "gravity_ff": -0.4,
+   "motor_noise": 0.01,
+   "proprio_weight": 2.0,
+   "strategy": "endpoint",
+   "tactile_weight": 0.6,
+   "vestibular_weight": 1.0,
+   "visual_weight": 1.0,
+   "windup_frac": 0.35,
+   "windup_s": 0.25
+  },
+  "sensors": {
+   "cue": {
+    "noise": 0.15
+   },
+   "proprio": {
+    "gain": 1.0,
+    "noise": 0.002
+   },
+   "tactile": {
+    "gain": 1.0,
+    "noise": 0.003
+   },
+   "vestibular": {
+    "gain": 1.0,
+    "noise": 0.004
+   },
+   "visual": {
+    "blocked_windows": [],
+    "gain": 1.0,
+    "noise": 0.004
+   }
+  },
+  "slow_state0": null,
+  "task": {
+   "dt": 0.01,
+   "horizon": 7.5,
+   "initial_lean": 0.0,
+   "integrator": "rk4",
+   "ramp_s": 0.3,
+   "substeps": 2,
+   "t_cue": 0.8,
+   "t_turn": 5.2,
+   "x_target": 0.035,
+   "x_turn": -0.02
+  },
+  "xeno14": []
+ },
+ "interventions": [
+  {
+   "path": "all lines (baseline)"
+  },
+  {
+   "path": "without the hip balance line"
+  },
+  {
+   "path": "without the reflex line"
+  },
+  {
+   "path": "Xeno-14: zero-run-up transition"
+  },
+  {
+   "path": "Xeno-14: endpoint removal"
+  },
+  {
+   "path": "Xeno-14: slow movement"
+  },
+  {
+   "path": "stop: the response to the cue is switched off"
+  }
+ ],
+ "labels": {
+  "estimate": "model-based estimate computed from observation outputs only",
+  "observation": "output of a simulated observation model applied to the reference (separate from it)",
+  "reference": "model reference state (simulator-internal; not an observation of a real body)"
+ },
+ "model_version": "xb-tro/1.0",
+ "negative_results": [
+  {
+   "evidence": {},
+   "statement": "'Xeno-14: endpoint removal' is dominated for 'reach-target': another path is at least as good on every measure and better on one"
+  },
+  {
+   "evidence": {
+    "defined": 0.0
+   },
+   "statement": "'stop: the response to the cue is switched off': the consequence 'reach-target' was not established in any seed (latency undefined)"
+  },
+  {
+   "evidence": {
+    "defined": 0.0
+   },
+   "statement": "'without the hip balance line': the consequence 'stay-upright' was not established in any seed (latency undefined)"
+  },
+  {
+   "evidence": {
+    "defined": 0.0
+   },
+   "statement": "'without the reflex line': the consequence 'stay-upright' was not established in any seed (latency undefined)"
+  },
+  {
+   "evidence": {
+    "defined": 0.0
+   },
+   "statement": "'stop: the response to the cue is switched off': the consequence 'stay-upright' was not established in any seed (latency undefined)"
+  }
+ ],
+ "numerical_method": "RK4 on the N-link planar Lagrangian equations with the muscle drive held over each step; batched seeds with common random numbers; first-order activation dynamics; digests over 6 significant digits",
+ "observation_configurations": [],
+ "parameters": {
+  "n_seeds": 12,
+  "preset": "human-like-planar",
+  "push_force": 60.0
+ },
+ "provenance": {
+  "machine": "arm64",
+  "numpy": "2.5.3",
+  "platform": "darwin",
+  "python": "3.12.13"
+ },
+ "rerun": {
+  "experiment": "S",
+  "parameters": {
+   "n_seeds": 12,
+   "preset": "human-like-planar",
+   "push_force": 60.0
+  }
+ },
+ "results": {
+  "consequences": {
+   "reach-target": {
+    "collapsed_score": null,
+    "consequence": "reach-target",
+    "front": [
+     0,
+     1,
+     2,
+     3,
+     5,
+     6
+    ],
+    "information_gain_note": "information gain = number of reference differences, relative to the baseline path, that the observation configuration identifies; it is 0 for the baseline by construction",
+    "measures": [
+     "latency_s",
+     "energy",
+     "neg_information_gain",
+     "intervention_reach_s",
+     "lines_changed",
+     "recovery_rmst_s",
+     "fall_rate"
+    ],
+    "paths": [
+     {
+      "diverged_fraction": 0.0,
+      "energy": 0.10200783687,
+      "fall_rate": 0.0,
+      "information_gain": 0.0,
+      "intervention_reach_s": 0.124166666667,
+      "is_stop_path": false,
+      "latency_defined": 1.0,
+      "latency_s": 0.880833333333,
+      "lines_changed": 0.0,
+      "neg_information_gain": 0.0,
+      "non_dominated": true,
+      "path": "all lines (baseline)",
+      "recovered_fraction": 0.25,
+      "recovery_rmst_s": 1.89666666667,
+      "slow_state_distance": 0.0
+     },
+     {
+      "diverged_fraction": 0.0,
+      "energy": 0.0881853753932,
+      "fall_rate": 0.0,
+      "information_gain": 5.0,
+      "intervention_reach_s": 0.124166666667,
+      "is_stop_path": false,
+      "latency_defined": 1.0,
+      "latency_s": 0.870833333333,
+      "lines_changed": 1.0,
+      "neg_information_gain": -5.0,
+      "non_dominated": true,
+      "path": "without the hip balance line",
+      "recovered_fraction": 0.0,
+      "recovery_rmst_s": 2.0,
+      "slow_state_distance": 0.000708793202519
+     },
+     {
+      "diverged_fraction": 0.0,
+      "energy": 0.100857376191,
+      "fall_rate": 0.0,
+      "information_gain": 6.0,
+      "intervention_reach_s": 0.124166666667,
+      "is_stop_path": false,
+      "latency_defined": 1.0,
+      "latency_s": 0.863333333333,
+      "lines_changed": 1.0,
+      "neg_information_gain": -6.0,
+      "non_dominated": true,
+      "path": "without the reflex line",
+      "recovered_fraction": 0.0,
+      "recovery_rmst_s": 2.0,
+      "slow_state_distance": 0.000103556149992
+     },
+     {
+      "diverged_fraction": 0.0,
+      "energy": 0.106164147573,
+      "fall_rate": 0.0,
+      "information_gain": 6.0,
+      "intervention_reach_s": 0.126666666667,
+      "is_stop_path": false,
+      "latency_defined": 1.0,
+      "latency_s": 0.491666666667,
+      "lines_changed": 2.0,
+      "neg_information_gain": -6.0,
+      "non_dominated": true,
+      "path": "Xeno-14: zero-run-up transition",
+      "recovered_fraction": 0.416666666667,
+      "recovery_rmst_s": 1.82333333333,
+      "slow_state_distance": 7.09342604696e-05
+     },
+     {
+      "diverged_fraction": 0.0,
+      "energy": 0.106735632732,
+      "fall_rate": 0.0,
+      "information_gain": 3.0,
+      "intervention_reach_s": 0.1275,
+      "is_stop_path": false,
+      "latency_defined": 1.0,
+      "latency_s": 0.51,
+      "lines_changed": 2.0,
+      "neg_information_gain": -3.0,
+      "non_dominated": false,
+      "path": "Xeno-14: endpoint removal",
+      "recovered_fraction": 0.333333333333,
+      "recovery_rmst_s": 1.85666666667,
+      "slow_state_distance": 5.50529089226e-05
+     },
+     {
+      "diverged_fraction": 0.0,
+      "energy": 0.104410872894,
+      "fall_rate": 0.0,
+      "information_gain": 5.0,
+      "intervention_reach_s": 0.124166666667,
+      "is_stop_path": false,
+      "latency_defined": 1.0,
+      "latency_s": 0.91,
+      "lines_changed": 2.0,
+      "neg_information_gain": -5.0,
+      "non_dominated": true,
+      "path": "Xeno-14: slow movement",
+      "recovered_fraction": 0.333333333333,
+      "recovery_rmst_s": 1.855,
+      "slow_state_distance": 8.32762027174e-05
+     },
+     {
+      "diverged_fraction": 0.0,
+      "energy": 0.0708468735875,
+      "fall_rate": 0.0,
+      "information_gain": 5.0,
+      "intervention_reach_s": 0.1875,
+      "is_stop_path": true,
+      "latency_defined": 0.0,
+      "latency_s": null,
+      "lines_changed": 2.0,
+      "neg_information_gain": -5.0,
+      "non_dominated": true,
+      "path": "stop: the response to the cue is switched off",
+      "recovered_fraction": 0.0,
+      "recovery_rmst_s": 2.0,
+      "slow_state_distance": 0.0177110384007
+     }
+    ],
+    "stop_is_on_front": true
+   },
+   "stay-upright": {
+    "collapsed_score": null,
+    "consequence": "stay-upright",
+    "front": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "information_gain_note": "information gain = number of reference differences, relative to the baseline path, that the observation configuration identifies; it is 0 for the baseline by construction",
+    "measures": [
+     "latency_s",
+     "energy",
+     "neg_information_gain",
+     "intervention_reach_s",
+     "lines_changed",
+     "recovery_rmst_s",
+     "fall_rate"
+    ],
+    "paths": [
+     {
+      "diverged_fraction": 0.0,
+      "energy": 0.10200783687,
+      "fall_rate": 0.0,
+      "information_gain": 0.0,
+      "intervention_reach_s": 0.2225,
+      "is_stop_path": false,
+      "latency_defined": 0.25,
+      "latency_s": 1.58666666667,
+      "lines_changed": 0.0,
+      "neg_information_gain": 0.0,
+      "non_dominated": true,
+      "path": "all lines (baseline)",
+      "recovered_fraction": 0.25,
+      "recovery_rmst_s": 1.89666666667,
+      "slow_state_distance": 0.0
+     },
+     {
+      "diverged_fraction": 0.0,
+      "energy": 0.0881853753932,
+      "fall_rate": 0.0,
+      "information_gain": 5.0,
+      "intervention_reach_s": 0.269166666667,
+      "is_stop_path": false,
+      "latency_defined": 0.0,
+      "latency_s": null,
+      "lines_changed": 1.0,
+      "neg_information_gain": -5.0,
+      "non_dominated": true,
+      "path": "without the hip balance line",
+      "recovered_fraction": 0.0,
+      "recovery_rmst_s": 2.0,
+      "slow_state_distance": 0.000708793202519
+     },
+     {
+      "diverged_fraction": 0.0,
+      "energy": 0.100857376191,
+      "fall_rate": 0.0,
+      "information_gain": 6.0,
+      "intervention_reach_s": 0.256666666667,
+      "is_stop_path": false,
+      "latency_defined": 0.0,
+      "latency_s": null,
+      "lines_changed": 1.0,
+      "neg_information_gain": -6.0,
+      "non_dominated": true,
+      "path": "without the reflex line",
+      "recovered_fraction": 0.0,
+      "recovery_rmst_s": 2.0,
+      "slow_state_distance": 0.000103556149992
+     },
+     {
+      "diverged_fraction": 0.0,
+      "energy": 0.106164147573,
+      "fall_rate": 0.0,
+      "information_gain": 6.0,
+      "intervention_reach_s": 0.108333333333,
+      "is_stop_path": false,
+      "latency_defined": 0.416666666667,
+      "latency_s": 1.576,
+      "lines_changed": 2.0,
+      "neg_information_gain": -6.0,
+      "non_dominated": true,
+      "path": "Xeno-14: zero-run-up transition",
+      "recovered_fraction": 0.416666666667,
+      "recovery_rmst_s": 1.82333333333,
+      "slow_state_distance": 7.09342604696e-05
+     },
+     {
+      "diverged_fraction": 0.0,
+      "energy": 0.106735632732,
+      "fall_rate": 0.0,
+      "information_gain": 3.0,
+      "intervention_reach_s": 0.125833333333,
+      "is_stop_path": false,
+      "latency_defined": 0.333333333333,
+      "latency_s": 1.57,
+      "lines_changed": 2.0,
+      "neg_information_gain": -3.0,
+      "non_dominated": true,
+      "path": "Xeno-14: endpoint removal",
+      "recovered_fraction": 0.333333333333,
+      "recovery_rmst_s": 1.85666666667,
+      "slow_state_distance": 5.50529089226e-05
+     },
+     {
+      "diverged_fraction": 0.0,
+      "energy": 0.104410872894,
+      "fall_rate": 0.0,
+      "information_gain": 5.0,
+      "intervention_reach_s": 0.231666666667,
+      "is_stop_path": false,
+      "latency_defined": 0.333333333333,
+      "latency_s": 1.565,
+      "lines_changed": 2.0,
+      "neg_information_gain": -5.0,
+      "non_dominated": true,
+      "path": "Xeno-14: slow movement",
+      "recovered_fraction": 0.333333333333,
+      "recovery_rmst_s": 1.855,
+      "slow_state_distance": 8.32762027174e-05
+     },
+     {
+      "diverged_fraction": 0.0,
+      "energy": 0.0708468735875,
+      "fall_rate": 0.0,
+      "information_gain": 5.0,
+      "intervention_reach_s": 0.145833333333,
+      "is_stop_path": true,
+      "latency_defined": 0.0,
+      "latency_s": null,
+      "lines_changed": 2.0,
+      "neg_information_gain": -5.0,
+      "non_dominated": true,
+      "path": "stop: the response to the cue is switched off",
+      "recovered_fraction": 0.0,
+      "recovery_rmst_s": 2.0,
+      "slow_state_distance": 0.0177110384007
+     }
+    ],
+    "stop_is_on_front": true
+   }
+  },
+  "reading": "A limited instance over a simulated body. The repository-level status of MS remains NOT IMPLEMENTED (specification section 2).",
+  "selection_rule": "no fall; then the smallest latency, then the smallest energy. A choice exists only under constraints the caller states.",
+  "selection_under_stated_constraints": {
+   "reach-target": "Xeno-14: zero-run-up transition",
+   "stay-upright": "Xeno-14: slow movement"
+  },
+  "status": {
+   "sources": {
+    "definitions": "pa-philosophy-in-audit/data/ziran.ts",
+    "mo_readiness": "pa-simulation-environment/docs/ZIRAN_MO_READINESS_AUDIT.md",
+    "reconciliation": "pa-simulation-environment/docs/ZIRAN_CURRENT_SPECIFICATION.md (2026-09-05 baseline)",
+    "zca_type": "pa-simulation-environment/src/ziran/address/types.ts"
+   },
+   "spec": {
+    "DO": {
+     "definition": "The implementation architecture for heterogeneous distributed observation, privileging no single sensor, observer, scale, or computational system. \u201cTotal-relational\u201d means classes of relations are not excluded in advance.",
+     "name": "Total-Relational Distributed Observation",
+     "not_this": "Not a claim that every relation is already observed."
+    },
+    "MO": {
+     "definition": "The responsibility for maximizing revisable observational reach across potentially relevant relations, scales, boundaries, and time intervals.",
+     "name": "Maximal Observation Theory",
+     "not_this": "Not complete, total, or permanent recording. Actual observation stays selective and conditional, and observing can itself cost latency, perturbation, or trade-offs."
+    },
+    "MS": {
+     "definition": "Conditionally selects and reallocates executable transition paths under measured physical constraints \u2014 latency, energy, information gain, intervention reach time, reconstruction cost, recovery time \u2014 never collapsed into one speed score. Stopping can be the fastest path.",
+     "name": "Maximal-Speed Flow System",
+     "not_this": "Not \u201cModular Switching.\u201d"
+    },
+    "ZCA": {
+     "definition": "A transversal address / provenance layer, \u27e8N, ID, t, s, b, v, p\u27e9, giving stable reference across configuration, physical state, observation, intervention, model, gaish\u014d, concept, theory, and system layers \u2014 without identifying those layers with one another. A linked Concept Address Layer assigns relatively stable series addresses to concepts (life, subject, belief, AI) while tracking definition, application-condition, relation, counterexample, and version changes without erasing the concept.",
+     "name": "Ziran Configuration Address",
+     "not_this": "Not conditional activation. Address \u2260 reality \u2014 a shared address shape never implies two records are the same kind of thing."
+    }
+   },
+   "statement": "These are limited instances over a simulated body. The repository-level status of MO and MS in the Ziran System remains NOT IMPLEMENTED; DO and ZCA remain PARTIAL. Nothing here is evidence about the Ziran System itself.",
+   "status": {
+    "DO": {
+     "not_covered": "real observers and real sensors; computational systems other than the simulated models",
+     "repository_status": "PARTIAL",
+     "xbtro_instance": "distributed_observation(): every deployed observation model is a source with its own provenance, scale, boundary and time resolution; no source is privileged; where several sources can estimate the same quantity their verdicts are kept side by side, and disagreement is recorded as a conflict, never averaged away; classes of relations without any instrument are listed as unobserved, not as absent."
+    },
+    "MO": {
+     "not_covered": "relations, scales, boundaries and time intervals outside this body model; redirection into unrepresented territory (a new instrument is always one from the fixed inventory); anything outside the simulation. The cost model is nominal.",
+     "repository_status": "NOT IMPLEMENTED \u2014 Readiness Audited (PHASE M)",
+     "xbtro_instance": "mo_policy(): over the observation configuration of this body model, generate candidate changes, cost each (set-up time, apparatus perturbation as a vector), choose among the non-dominated ones, apply, measure the actual identifiability gain and the actual perturbation of the body, and retract a change that proves to perturb what it observes. Reach is reported as a vector."
+    },
+    "MS": {
+     "not_covered": "physical flows other than this body's; reallocation while running (paths are compared across runs); latency/energy of real hardware",
+     "repository_status": "NOT IMPLEMENTED",
+     "xbtro_instance": "ms_paths(): executable alternatives (sets of operation lines, Xeno-14 conditions, a stopped response) are run for one stated consequence; each is measured on latency, energy, information gain, intervention reach time, reconstruction cost and recovery time, kept as a vector; the non-dominated set is reported; a choice is made only under constraints stated by the caller. The stopped response is one of the paths."
+    },
+    "ZCA": {
+     "not_covered": "no global registry, no address equivalence (no 'same object' function), no content-hash identity, no address resolution, no Concept Address Layer",
+     "repository_status": "PARTIAL \u2014 Minimal Address Layer v1",
+     "xbtro_instance": "address(), address_record(), address_observation_configuration(), address_body_configuration(): addresses with the specification's fields (namespace, localId, time, scale, boundary, version, provenance), each optional field in one of the four states (known / unknown / not-recorded / not-applicable). The local id reuses the record's own id."
+    }
+   }
+  },
+  "tables": [
+   {
+    "columns": [
+     "path",
+     "stop path",
+     "latency s",
+     "energy",
+     "information gain",
+     "intervention reach s",
+     "lines changed",
+     "slow-state distance",
+     "recovery (restricted mean) s",
+     "recovered fraction",
+     "fall rate",
+     "non-dominated"
+    ],
+    "name": "paths_reach-target",
+    "rows": [
+     [
+      "all lines (baseline)",
+      false,
+      0.880833333333,
+      0.10200783687,
+      0.0,
+      0.124166666667,
+      0.0,
+      0.0,
+      1.89666666667,
+      0.25,
+      0.0,
+      true
+     ],
+     [
+      "without the hip balance line",
+      false,
+      0.870833333333,
+      0.0881853753932,
+      5.0,
+      0.124166666667,
+      1.0,
+      0.000708793202519,
+      2.0,
+      0.0,
+      0.0,
+      true
+     ],
+     [
+      "without the reflex line",
+      false,
+      0.863333333333,
+      0.100857376191,
+      6.0,
+      0.124166666667,
+      1.0,
+      0.000103556149992,
+      2.0,
+      0.0,
+      0.0,
+      true
+     ],
+     [
+      "Xeno-14: zero-run-up transition",
+      false,
+      0.491666666667,
+      0.106164147573,
+      6.0,
+      0.126666666667,
+      2.0,
+      7.09342604696e-05,
+      1.82333333333,
+      0.416666666667,
+      0.0,
+      true
+     ],
+     [
+      "Xeno-14: endpoint removal",
+      false,
+      0.51,
+      0.106735632732,
+      3.0,
+      0.1275,
+      2.0,
+      5.50529089226e-05,
+      1.85666666667,
+      0.333333333333,
+      0.0,
+      false
+     ],
+     [
+      "Xeno-14: slow movement",
+      false,
+      0.91,
+      0.104410872894,
+      5.0,
+      0.124166666667,
+      2.0,
+      8.32762027174e-05,
+      1.855,
+      0.333333333333,
+      0.0,
+      true
+     ],
+     [
+      "stop: the response to the cue is switched off",
+      true,
+      null,
+      0.0708468735875,
+      5.0,
+      0.1875,
+      2.0,
+      0.0177110384007,
+      2.0,
+      0.0,
+      0.0,
+      true
+     ]
+    ],
+    "title": "Paths for the consequence 'reach-target' (vector of measures; no score)"
+   },
+   {
+    "columns": [
+     "path",
+     "stop path",
+     "latency s",
+     "energy",
+     "information gain",
+     "intervention reach s",
+     "lines changed",
+     "slow-state distance",
+     "recovery (restricted mean) s",
+     "recovered fraction",
+     "fall rate",
+     "non-dominated"
+    ],
+    "name": "paths_stay-upright",
+    "rows": [
+     [
+      "all lines (baseline)",
+      false,
+      1.58666666667,
+      0.10200783687,
+      0.0,
+      0.2225,
+      0.0,
+      0.0,
+      1.89666666667,
+      0.25,
+      0.0,
+      true
+     ],
+     [
+      "without the hip balance line",
+      false,
+      null,
+      0.0881853753932,
+      5.0,
+      0.269166666667,
+      1.0,
+      0.000708793202519,
+      2.0,
+      0.0,
+      0.0,
+      true
+     ],
+     [
+      "without the reflex line",
+      false,
+      null,
+      0.100857376191,
+      6.0,
+      0.256666666667,
+      1.0,
+      0.000103556149992,
+      2.0,
+      0.0,
+      0.0,
+      true
+     ],
+     [
+      "Xeno-14: zero-run-up transition",
+      false,
+      1.576,
+      0.106164147573,
+      6.0,
+      0.108333333333,
+      2.0,
+      7.09342604696e-05,
+      1.82333333333,
+      0.416666666667,
+      0.0,
+      true
+     ],
+     [
+      "Xeno-14: endpoint removal",
+      false,
+      1.57,
+      0.106735632732,
+      3.0,
+      0.125833333333,
+      2.0,
+      5.50529089226e-05,
+      1.85666666667,
+      0.333333333333,
+      0.0,
+      true
+     ],
+     [
+      "Xeno-14: slow movement",
+      false,
+      1.565,
+      0.104410872894,
+      5.0,
+      0.231666666667,
+      2.0,
+      8.32762027174e-05,
+      1.855,
+      0.333333333333,
+      0.0,
+      true
+     ],
+     [
+      "stop: the response to the cue is switched off",
+      true,
+      null,
+      0.0708468735875,
+      5.0,
+      0.145833333333,
+      2.0,
+      0.0177110384007,
+      2.0,
+      0.0,
+      0.0,
+      true
+     ]
+    ],
+    "title": "Paths for the consequence 'stay-upright' (vector of measures; no score)"
+   }
+  ]
+ },
+ "schema": "xbtro.record/1",
+ "seeds": [
+  5000,
+  5001,
+  5002,
+  5003,
+  5004,
+  5005,
+  5006,
+  5007,
+  5008,
+  5009,
+  5010,
+  5011
+ ],
+ "time_step_s": 0.01,
+ "unobserved_differences": []
+}

@@ -1,0 +1,1583 @@
+{
+ "digest": "d8bf067d22e31e5e19609d316282ecddf730ec1a345b17f7ebde3a1ae63202aa",
+ "experiment": "V",
+ "history": {
+  "reentry": []
+ },
+ "id": "xb-v-d8bf067d22e3",
+ "initial_configuration": {
+  "adaptation": {
+   "cost": 0.0,
+   "enabled": true,
+   "error_target": 0.003,
+   "eta": 0.2,
+   "gain_max": 1.15,
+   "gain_min": 0.9
+  },
+  "environment": {
+   "compliance": 0.0,
+   "friction_mu": 0.8,
+   "gravity": 9.81,
+   "handrail": null,
+   "ledge": null,
+   "pushes": [
+    {
+     "dur": 0.12,
+     "force": 35.0,
+     "link": 2,
+     "point_frac": 0.8,
+     "t": 3.2
+    }
+   ]
+  },
+  "family": "human-like",
+  "foot": {
+   "heel": 0.07,
+   "toe": 0.17
+  },
+  "internal": {
+   "activation_cost": 0.004,
+   "basal_cost": 0.0004,
+   "breath_amp": 0.015,
+   "breath_period": 4.0,
+   "breath_variability": 0.05,
+   "capacity_floor": 0.45,
+   "energy0": 1.0,
+   "energy_floor": 0.3,
+   "fatigue_rate": 0.02,
+   "fatigue_recovery": 0.012,
+   "resources_enabled": true
+  },
+  "joints": [
+   {
+    "act_fall": 0.08,
+    "act_rise": 0.04,
+    "c_passive": 45.0,
+    "id": "ankle",
+    "k_passive": 720.0,
+    "label": "ankle",
+    "q_range": 0.6,
+    "tau_max": 120.0
+   },
+   {
+    "act_fall": 0.08,
+    "act_rise": 0.04,
+    "c_passive": 40.0,
+    "id": "knee",
+    "k_passive": 700.0,
+    "label": "knee",
+    "q_range": 0.6,
+    "tau_max": 150.0
+   },
+   {
+    "act_fall": 0.08,
+    "act_rise": 0.04,
+    "c_passive": 35.0,
+    "id": "hip",
+    "k_passive": 420.0,
+    "label": "hip",
+    "q_range": 0.8,
+    "tau_max": 180.0
+   },
+   {
+    "act_fall": 0.06,
+    "act_rise": 0.03,
+    "c_passive": 4.0,
+    "id": "neck",
+    "k_passive": 45.0,
+    "label": "neck",
+    "q_range": 0.8,
+    "tau_max": 25.0
+   }
+  ],
+  "lines": [
+   {
+    "enabled": true,
+    "id": "mech.passive",
+    "ignition": {
+     "hold_s": 0.0,
+     "signal": "always",
+     "threshold": 0.0
+    },
+    "kind": "mechanical",
+    "label": "viscoelastic joints (passive)",
+    "note": "always on; stiffness and damping per joint",
+    "observable_by": [
+     "posture",
+     "imu"
+    ],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 0.0
+   },
+   {
+    "enabled": true,
+    "id": "sens.proprio",
+    "ignition": {
+     "hold_s": 0.05,
+     "signal": "joint-velocity",
+     "threshold": 0.05
+    },
+    "kind": "sensory",
+    "label": "proprioceptive sensing",
+    "note": "timescale = sensory delay (s); ignites when a joint velocity exceeds the threshold (rad/s)",
+    "observable_by": [
+     "posture",
+     "emg"
+    ],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 0.03
+   },
+   {
+    "enabled": true,
+    "id": "sens.vestibular",
+    "ignition": {
+     "hold_s": 0.05,
+     "signal": "trunk-tilt-rate",
+     "threshold": 0.03
+    },
+    "kind": "sensory",
+    "label": "vestibular / head-motion sensing",
+    "note": "timescale = delay; ignites on trunk tilt rate (rad/s)",
+    "observable_by": [
+     "imu",
+     "eeg"
+    ],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 0.02
+   },
+   {
+    "enabled": true,
+    "id": "sens.visual",
+    "ignition": {
+     "hold_s": 0.1,
+     "signal": "com-offset",
+     "threshold": 0.004
+    },
+    "kind": "sensory",
+    "label": "visual feedback",
+    "note": "timescale = delay; ignites on a visible COM offset (m); can be blocked",
+    "observable_by": [
+     "posture",
+     "eeg"
+    ],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 0.1
+   },
+   {
+    "enabled": true,
+    "id": "sens.tactile",
+    "ignition": {
+     "hold_s": 0.05,
+     "signal": "cop-shift",
+     "threshold": 0.004
+    },
+    "kind": "sensory",
+    "label": "tactile / contact-pressure sensing",
+    "note": "timescale = delay; ignites on a centre-of-pressure shift (m)",
+    "observable_by": [
+     "contact",
+     "eeg"
+    ],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 0.04
+   },
+   {
+    "enabled": true,
+    "id": "sens.cue",
+    "ignition": {
+     "hold_s": 0.05,
+     "signal": "cue",
+     "threshold": 0.5
+    },
+    "kind": "sensory",
+    "label": "cue perception",
+    "note": "timescale = delay; the movement / direction-change cues are sensed through it",
+    "observable_by": [
+     "eeg",
+     "latency"
+    ],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 0.12
+   },
+   {
+    "enabled": true,
+    "id": "neural.reflex",
+    "ignition": {
+     "hold_s": 0.08,
+     "signal": "joint-velocity",
+     "threshold": 0.12
+    },
+    "kind": "neural",
+    "label": "local joint reflex",
+    "note": "timescale = loop latency; ignites on a fast sensed joint motion",
+    "observable_by": [
+     "emg",
+     "latency",
+     "eeg"
+    ],
+    "resource": {
+     "cost_per_s": 0.002,
+     "pool": "energy"
+    },
+    "timescale_s": 0.04
+   },
+   {
+    "enabled": true,
+    "id": "neural.central.ankle",
+    "ignition": {
+     "hold_s": 0.2,
+     "signal": "com-offset",
+     "threshold": 0.003
+    },
+    "kind": "neural",
+    "label": "central balance command (ankle)",
+    "note": "timescale = latency; ignites on a sensed COM offset from the reference",
+    "observable_by": [
+     "emg",
+     "eeg",
+     "latency"
+    ],
+    "resource": {
+     "cost_per_s": 0.004,
+     "pool": "energy"
+    },
+    "timescale_s": 0.1
+   },
+   {
+    "enabled": true,
+    "id": "neural.central.hip",
+    "ignition": {
+     "hold_s": 0.25,
+     "signal": "com-offset",
+     "threshold": 0.02
+    },
+    "kind": "neural",
+    "label": "central balance command (hip)",
+    "note": "timescale = latency; ignites on a large COM offset",
+    "observable_by": [
+     "emg",
+     "eeg",
+     "latency"
+    ],
+    "resource": {
+     "cost_per_s": 0.008,
+     "pool": "energy"
+    },
+    "timescale_s": 0.1
+   },
+   {
+    "enabled": true,
+    "id": "neural.central.cue",
+    "ignition": {
+     "hold_s": 0.3,
+     "signal": "cue",
+     "threshold": 0.5
+    },
+    "kind": "neural",
+    "label": "central movement command (feed-forward)",
+    "note": "timescale = latency; ignites on a sensed cue",
+    "observable_by": [
+     "emg",
+     "eeg",
+     "latency"
+    ],
+    "resource": {
+     "cost_per_s": 0.004,
+     "pool": "energy"
+    },
+    "timescale_s": 0.1
+   },
+   {
+    "enabled": true,
+    "id": "core.tonic",
+    "ignition": {
+     "hold_s": 0.0,
+     "signal": "always",
+     "threshold": 0.0
+    },
+    "kind": "internal",
+    "label": "tonic co-contraction (core)",
+    "note": "baseline co-contraction level; costs energy while on",
+    "observable_by": [
+     "emg"
+    ],
+    "resource": {
+     "cost_per_s": 0.003,
+     "pool": "energy"
+    },
+    "timescale_s": 0.0
+   },
+   {
+    "enabled": true,
+    "id": "breath.cycle",
+    "ignition": {
+     "hold_s": 0.0,
+     "signal": "always",
+     "threshold": 0.0
+    },
+    "kind": "internal",
+    "label": "breathing cycle",
+    "note": "timescale = period (s); modulates trunk drive and chest motion",
+    "observable_by": [
+     "respiration",
+     "imu",
+     "emg"
+    ],
+    "resource": {
+     "cost_per_s": 0.001,
+     "pool": "energy"
+    },
+    "timescale_s": 4.0
+   },
+   {
+    "enabled": true,
+    "id": "metabolic.supply",
+    "ignition": {
+     "hold_s": 0.0,
+     "signal": "always",
+     "threshold": 0.0
+    },
+    "kind": "internal",
+    "label": "energy supply / fatigue",
+    "note": "timescale = fatigue time constant (s); internal, no observation model sees it directly",
+    "observable_by": [],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 30.0
+   },
+   {
+    "enabled": true,
+    "id": "adapt.gain",
+    "ignition": {
+     "hold_s": 0.0,
+     "signal": "always",
+     "threshold": 0.0
+    },
+    "kind": "internal",
+    "label": "gain adaptation",
+    "note": "timescale = adaptation time constant (s); slow retained state",
+    "observable_by": [],
+    "resource": {
+     "cost_per_s": 0.0,
+     "pool": "energy"
+    },
+    "timescale_s": 20.0
+   }
+  ],
+  "links": [
+   {
+    "com_frac": 0.45,
+    "id": "shank",
+    "label": "shank + foot",
+    "length": 0.45,
+    "mass": 6.6,
+    "region": "shank"
+   },
+   {
+    "com_frac": 0.45,
+    "id": "thigh",
+    "label": "thigh",
+    "length": 0.45,
+    "mass": 14.0,
+    "region": "thigh"
+   },
+   {
+    "com_frac": 0.5,
+    "id": "trunk",
+    "label": "trunk + arms",
+    "length": 0.55,
+    "mass": 38.0,
+    "region": "trunk"
+   },
+   {
+    "com_frac": 0.5,
+    "id": "head",
+    "label": "head + neck",
+    "length": 0.3,
+    "mass": 4.8,
+    "region": "head"
+   }
+  ],
+  "model": "xb-tro/1.0",
+  "name": "human-like-planar",
+  "neural": {
+   "cocontraction_base": 0.06,
+   "cocontraction_gain": 2.0,
+   "gain_ankle_d": 3.5,
+   "gain_ankle_p": 3.0,
+   "gain_cop": 0.0,
+   "gain_cue_ff": 1.0,
+   "gain_hip_d": 0.8,
+   "gain_hip_p": 1.2,
+   "gain_reflex_d": 0.05,
+   "gain_reflex_p": 0.6,
+   "gravity_comp": 0.5,
+   "gravity_ff": -0.4,
+   "motor_noise": 0.01,
+   "proprio_weight": 2.0,
+   "strategy": "endpoint",
+   "tactile_weight": 0.6,
+   "vestibular_weight": 1.0,
+   "visual_weight": 1.0,
+   "windup_frac": 0.35,
+   "windup_s": 0.25
+  },
+  "sensors": {
+   "cue": {
+    "noise": 0.15
+   },
+   "proprio": {
+    "gain": 1.0,
+    "noise": 0.002
+   },
+   "tactile": {
+    "gain": 1.0,
+    "noise": 0.003
+   },
+   "vestibular": {
+    "gain": 1.0,
+    "noise": 0.004
+   },
+   "visual": {
+    "blocked_windows": [],
+    "gain": 1.0,
+    "noise": 0.004
+   }
+  },
+  "slow_state0": null,
+  "task": {
+   "dt": 0.01,
+   "horizon": 7.5,
+   "initial_lean": 0.0,
+   "integrator": "rk4",
+   "ramp_s": 0.3,
+   "substeps": 2,
+   "t_cue": 0.8,
+   "t_turn": 5.2,
+   "x_target": 0.035,
+   "x_turn": -0.02
+  },
+  "xeno14": []
+ },
+ "interventions": [
+  {
+   "condition": "no disturbance"
+  },
+  {
+   "condition": "small disturbance (25 N, extra push)"
+  },
+  {
+   "condition": "large disturbance (120 N, extra push)"
+  },
+  {
+   "condition": "control delay +0.06 s"
+  },
+  {
+   "condition": "resource constraint 0.7"
+  },
+  {
+   "condition": "sensor noise x4"
+  },
+  {
+   "condition": "contact condition 0.5"
+  },
+  {
+   "condition": "control time step halved"
+  }
+ ],
+ "labels": {
+  "estimate": "model-based estimate computed from observation outputs only",
+  "observation": "output of a simulated observation model applied to the reference (separate from it)",
+  "reference": "model reference state (simulator-internal; not an observation of a real body)"
+ },
+ "model_version": "xb-tro/1.0",
+ "negative_results": [],
+ "numerical_method": "RK4 on the N-link planar Lagrangian equations with the muscle drive held over each step; batched seeds with common random numbers; first-order activation dynamics; digests over 6 significant digits",
+ "observation_configurations": [],
+ "parameters": {
+  "seeds": [
+   5000,
+   5001,
+   5002,
+   5003,
+   5004,
+   5005,
+   5006,
+   5007,
+   5008,
+   5009,
+   5010,
+   5011
+  ]
+ },
+ "provenance": {
+  "machine": "arm64",
+  "numpy": "2.5.3",
+  "platform": "darwin",
+  "python": "3.12.13"
+ },
+ "rerun": {
+  "experiment": "V",
+  "parameters": {
+   "seeds": [
+    5000,
+    5001,
+    5002,
+    5003,
+    5004,
+    5005,
+    5006,
+    5007,
+    5008,
+    5009,
+    5010,
+    5011
+   ]
+  }
+ },
+ "results": {
+  "bands": {
+   "human-like": {
+    "band": 0.009,
+    "rule": "max(3 x detrended steady COM SD, 0.25 x smallest step), exploration seeds 1000..1031"
+   },
+   "machine-like": {
+    "band": 0.009,
+    "rule": "max(3 x detrended steady COM SD, 0.25 x smallest step), exploration seeds 1000..1031"
+   }
+  },
+  "seeds": [
+   5000,
+   5001,
+   5002,
+   5003,
+   5004,
+   5005,
+   5006,
+   5007,
+   5008,
+   5009,
+   5010,
+   5011
+  ],
+  "tables": [
+   {
+    "columns": [
+     "preset",
+     "integrator",
+     "co-contraction",
+     "control dt s",
+     "plant substeps",
+     "spectral radius of the step matrix",
+     "passive plant",
+     "max |lambda| h",
+     "condition number of M"
+    ],
+    "name": "stability_human-like-planar",
+    "rows": [
+     [
+      "human-like-planar",
+      "rk4",
+      0.0,
+      0.01,
+      2,
+      0.998968370526,
+      "stable",
+      1.27783030001,
+      227.394907819
+     ],
+     [
+      "human-like-planar",
+      "rk4",
+      0.3,
+      0.01,
+      2,
+      0.998659094992,
+      "stable",
+      1.66711410415,
+      227.394907819
+     ],
+     [
+      "human-like-planar",
+      "rk4",
+      0.9,
+      0.01,
+      2,
+      0.998040856906,
+      "stable",
+      2.46399114068,
+      227.394907819
+     ],
+     [
+      "human-like-planar",
+      "semi-implicit-euler",
+      0.0,
+      0.01,
+      2,
+      0.99896732934,
+      "stable",
+      1.27783030001,
+      227.394907819
+     ],
+     [
+      "human-like-planar",
+      "semi-implicit-euler",
+      0.3,
+      0.01,
+      2,
+      0.998657335198,
+      "stable",
+      1.66711410415,
+      227.394907819
+     ],
+     [
+      "human-like-planar",
+      "semi-implicit-euler",
+      0.9,
+      0.01,
+      2,
+      1.76540995213,
+      "UNSTABLE",
+      2.46399114068,
+      227.394907819
+     ],
+     [
+      "human-like-planar",
+      "explicit-euler",
+      0.0,
+      0.01,
+      2,
+      0.999049459501,
+      "stable",
+      1.27783030001,
+      227.394907819
+     ],
+     [
+      "human-like-planar",
+      "explicit-euler",
+      0.3,
+      0.01,
+      2,
+      0.998788781015,
+      "stable",
+      1.66711410415,
+      227.394907819
+     ],
+     [
+      "human-like-planar",
+      "explicit-euler",
+      0.9,
+      0.01,
+      2,
+      1.46399114068,
+      "UNSTABLE",
+      2.46399114068,
+      227.394907819
+     ]
+    ],
+    "title": "A-priori stability of the passive plant (human-like-planar)"
+   },
+   {
+    "columns": [
+     "preset",
+     "variant",
+     "plant step s",
+     "RMS COM difference to reference (m)",
+     "max COM difference (m)",
+     "state"
+    ],
+    "name": "convergence_human-like-planar",
+    "rows": [
+     [
+      "human-like-planar",
+      "RK4, 1 plant sub-step(s)",
+      0.01,
+      null,
+      null,
+      "refused: the explicit RK4 step is numerically unstable for the passive joint dynamics (pl"
+     ],
+     [
+      "human-like-planar",
+      "RK4, 2 plant sub-step(s)",
+      0.005,
+      2.34531777884e-05,
+      9.3220744109e-05,
+      "ok"
+     ],
+     [
+      "human-like-planar",
+      "RK4, 4 plant sub-step(s)",
+      0.0025,
+      2.35341754474e-07,
+      6.54140459296e-07,
+      "ok"
+     ],
+     [
+      "human-like-planar",
+      "semi-implicit-euler, 2 plant sub-step(s)",
+      0.005,
+      null,
+      null,
+      "refused by the stability check: the explicit RK4 step is numerically unstable for the passiv"
+     ],
+     [
+      "human-like-planar",
+      "explicit-euler, 2 plant sub-step(s)",
+      0.005,
+      null,
+      null,
+      "refused by the stability check: the explicit RK4 step is numerically unstable for the passiv"
+     ],
+     [
+      "human-like-planar",
+      "RK4, control step halved",
+      0.0025,
+      0.00051764198272,
+      0.00132063129732,
+      "ok"
+     ],
+     [
+      "human-like-planar",
+      "RK4, 1 plant sub-step (refused by the check; forced to run, 4 seeds)",
+      0.01,
+      null,
+      null,
+      "check (cc up to 0.9): unstable, rho=12.84; nominal co-contraction run: diverged 0/4, fell 0/4; co-contraction 0.9 run: diverged 4/4, fell 0/4"
+     ],
+     [
+      "human-like-planar",
+      "semi-implicit Euler (refused by the check; forced to run, 4 seeds)",
+      0.005,
+      null,
+      null,
+      "check (cc up to 0.9): unstable, rho=1.77; nominal co-contraction run: diverged 0/4, fell 0/4; co-contraction 0.9 run: diverged 4/4, fell 0/4"
+     ],
+     [
+      "human-like-planar",
+      "explicit Euler (refused by the check; forced to run, 4 seeds)",
+      0.005,
+      null,
+      null,
+      "check (cc up to 0.9): unstable, rho=1.46; nominal co-contraction run: diverged 0/4, fell 0/4; co-contraction 0.9 run: diverged 0/4, fell 4/4"
+     ]
+    ],
+    "title": "Time-step and integrator convergence, noiseless (human-like-planar)"
+   },
+   {
+    "columns": [
+     "preset",
+     "integrator",
+     "co-contraction",
+     "control dt s",
+     "plant substeps",
+     "spectral radius of the step matrix",
+     "passive plant",
+     "max |lambda| h",
+     "condition number of M"
+    ],
+    "name": "stability_machine-like-planar",
+    "rows": [
+     [
+      "machine-like-planar",
+      "rk4",
+      0.0,
+      0.005,
+      2,
+      0.999830223154,
+      "stable",
+      0.220728805818,
+      470.692532215
+     ],
+     [
+      "machine-like-planar",
+      "rk4",
+      0.3,
+      0.005,
+      2,
+      0.999779292553,
+      "stable",
+      0.278904560927,
+      470.692532215
+     ],
+     [
+      "machine-like-planar",
+      "rk4",
+      0.9,
+      0.005,
+      2,
+      0.999677424817,
+      "stable",
+      0.367073697951,
+      470.692532215
+     ],
+     [
+      "machine-like-planar",
+      "semi-implicit-euler",
+      0.0,
+      0.005,
+      2,
+      0.999830195614,
+      "stable",
+      0.220728805818,
+      470.692532215
+     ],
+     [
+      "machine-like-planar",
+      "semi-implicit-euler",
+      0.3,
+      0.005,
+      2,
+      0.999779246007,
+      "stable",
+      0.278904560927,
+      470.692532215
+     ],
+     [
+      "machine-like-planar",
+      "semi-implicit-euler",
+      0.9,
+      0.005,
+      2,
+      0.999677325367,
+      "stable",
+      0.367073697951,
+      470.692532215
+     ],
+     [
+      "machine-like-planar",
+      "explicit-euler",
+      0.0,
+      0.005,
+      2,
+      0.999834549265,
+      "stable",
+      0.220728805818,
+      470.692532215
+     ],
+     [
+      "machine-like-planar",
+      "explicit-euler",
+      0.3,
+      0.005,
+      2,
+      0.999786212198,
+      "stable",
+      0.278904560927,
+      470.692532215
+     ],
+     [
+      "machine-like-planar",
+      "explicit-euler",
+      0.9,
+      0.005,
+      2,
+      0.999689517429,
+      "stable",
+      0.367073697951,
+      470.692532215
+     ]
+    ],
+    "title": "A-priori stability of the passive plant (machine-like-planar)"
+   },
+   {
+    "columns": [
+     "preset",
+     "variant",
+     "plant step s",
+     "RMS COM difference to reference (m)",
+     "max COM difference (m)",
+     "state"
+    ],
+    "name": "convergence_machine-like-planar",
+    "rows": [
+     [
+      "machine-like-planar",
+      "RK4, 1 plant sub-step(s)",
+      0.005,
+      2.83194837957e-08,
+      6.4550940166e-08,
+      "ok"
+     ],
+     [
+      "machine-like-planar",
+      "RK4, 2 plant sub-step(s)",
+      0.0025,
+      1.70288928302e-09,
+      3.88244712074e-09,
+      "ok"
+     ],
+     [
+      "machine-like-planar",
+      "RK4, 4 plant sub-step(s)",
+      0.00125,
+      9.75265647189e-11,
+      2.22559793511e-10,
+      "ok"
+     ],
+     [
+      "machine-like-planar",
+      "semi-implicit-euler, 2 plant sub-step(s)",
+      0.0025,
+      4.78662979644e-05,
+      0.000113981569124,
+      "ok"
+     ],
+     [
+      "machine-like-planar",
+      "explicit-euler, 2 plant sub-step(s)",
+      0.0025,
+      4.20586699928e-05,
+      0.00016156477913,
+      "ok"
+     ],
+     [
+      "machine-like-planar",
+      "RK4, control step halved",
+      0.00125,
+      3.87343710575e-05,
+      0.000144191566523,
+      "ok"
+     ]
+    ],
+    "title": "Time-step and integrator convergence, noiseless (machine-like-planar)"
+   },
+   {
+    "columns": [
+     "preset",
+     "protocol",
+     "condition",
+     "seeds",
+     "fall fraction (physical)",
+     "numerical divergence fraction",
+     "max |COM| m",
+     "max |segment angle| rad",
+     "max |angular rate| rad/s",
+     "max |joint torque| Nm",
+     "min energy",
+     "recovery time, restricted mean s",
+     "recovered in window (fraction)",
+     "settled after the turn (fraction)",
+     "late/early trunk sway growth",
+     "state"
+    ],
+    "name": "preset_matrix",
+    "rows": [
+     [
+      "human-like-planar",
+      "default",
+      "no disturbance",
+      12,
+      0.0,
+      0.0,
+      0.0488354634386,
+      0.1092001001,
+      0.821481749813,
+      75.5678308471,
+      0.899393513683,
+      null,
+      0.0,
+      1.0,
+      0.488937879267,
+      "ok"
+     ],
+     [
+      "human-like-planar",
+      "default",
+      "small disturbance (25 N, extra push)",
+      12,
+      0.0,
+      0.0,
+      0.0574300029194,
+      0.141834034993,
+      0.821481749813,
+      75.5678308471,
+      0.893542195171,
+      null,
+      0.0,
+      1.0,
+      0.482462203575,
+      "ok"
+     ],
+     [
+      "human-like-planar",
+      "default",
+      "large disturbance (120 N, extra push)",
+      12,
+      1.0,
+      0.0,
+      0.413694329508,
+      0.498556429905,
+      1.15751956608,
+      105.73218,
+      0.924597385628,
+      null,
+      0.0,
+      0.0,
+      null,
+      "ok"
+     ],
+     [
+      "human-like-planar",
+      "default",
+      "control delay +0.06 s",
+      12,
+      1.0,
+      0.0,
+      0.416009383583,
+      0.480283076899,
+      1.55718501107,
+      110.884121064,
+      0.868252200222,
+      null,
+      0.0,
+      0.0,
+      null,
+      "ok"
+     ],
+     [
+      "human-like-planar",
+      "default",
+      "resource constraint 0.7",
+      12,
+      0.0,
+      0.0,
+      0.0488712754397,
+      0.108851054433,
+      0.821159325553,
+      75.5064199612,
+      0.270474256162,
+      null,
+      0.0,
+      1.0,
+      0.429731402093,
+      "ok"
+     ],
+     [
+      "human-like-planar",
+      "default",
+      "sensor noise x4",
+      12,
+      0.0,
+      0.0,
+      0.048829226571,
+      0.134207172281,
+      1.01332483802,
+      88.3702894479,
+      0.876907206908,
+      null,
+      0.0,
+      1.0,
+      0.64027407683,
+      "ok"
+     ],
+     [
+      "human-like-planar",
+      "default",
+      "contact condition 0.5",
+      12,
+      0.0,
+      0.0,
+      0.0459281527444,
+      0.113661150083,
+      0.821481749813,
+      56.2976158378,
+      0.901064334979,
+      null,
+      0.0,
+      1.0,
+      0.469627489014,
+      "ok"
+     ],
+     [
+      "human-like-planar",
+      "default",
+      "control time step halved",
+      12,
+      0.0,
+      0.0,
+      0.0523397801035,
+      0.109614177471,
+      0.763115739315,
+      79.114866919,
+      0.899702082821,
+      null,
+      0.0,
+      1.0,
+      0.449375186785,
+      "ok"
+     ],
+     [
+      "human-like-planar",
+      "short",
+      "no disturbance",
+      12,
+      0.0,
+      0.0,
+      0.0618576074109,
+      0.13961102753,
+      0.75447948896,
+      82.5210285165,
+      0.897976031721,
+      1.5825,
+      0.583333333333,
+      1.0,
+      1.61691106211,
+      "ok"
+     ],
+     [
+      "human-like-planar",
+      "short",
+      "small disturbance (25 N, extra push)",
+      12,
+      0.0,
+      0.0,
+      0.0661782343305,
+      0.172131041923,
+      0.75447948896,
+      95.2419949727,
+      0.892433964107,
+      1.8575,
+      0.333333333333,
+      1.0,
+      1.28906827434,
+      "ok"
+     ],
+     [
+      "human-like-planar",
+      "short",
+      "large disturbance (120 N, extra push)",
+      12,
+      1.0,
+      0.0,
+      0.414645785607,
+      0.494414560777,
+      1.12961973622,
+      105.73218,
+      0.930942355748,
+      2.0,
+      0.0,
+      0.0,
+      null,
+      "ok"
+     ],
+     [
+      "human-like-planar",
+      "short",
+      "control delay +0.06 s",
+      12,
+      0.0,
+      0.0,
+      0.337072605146,
+      0.394585132823,
+      1.13490884016,
+      105.73218,
+      0.877103620897,
+      2.0,
+      0.0,
+      0.0,
+      2.27289289999,
+      "ok"
+     ],
+     [
+      "human-like-planar",
+      "short",
+      "resource constraint 0.7",
+      12,
+      0.0,
+      0.0,
+      0.061858617525,
+      0.139211002794,
+      0.75422722955,
+      80.5097362751,
+      0.268924400531,
+      1.58333333333,
+      0.583333333333,
+      1.0,
+      1.62124749511,
+      "ok"
+     ],
+     [
+      "human-like-planar",
+      "short",
+      "sensor noise x4",
+      12,
+      0.0,
+      0.0,
+      0.0726760541416,
+      0.183970281644,
+      0.929451031783,
+      105.73218,
+      0.877866087957,
+      1.90083333333,
+      0.0833333333333,
+      1.0,
+      1.56435010578,
+      "ok"
+     ],
+     [
+      "human-like-planar",
+      "short",
+      "contact condition 0.5",
+      12,
+      0.0,
+      0.0,
+      0.0618544009966,
+      0.136156809912,
+      0.75447948896,
+      78.8910612577,
+      0.899402480641,
+      1.49,
+      0.75,
+      1.0,
+      1.77236915682,
+      "ok"
+     ],
+     [
+      "human-like-planar",
+      "short",
+      "control time step halved",
+      12,
+      0.0,
+      0.0,
+      0.0597411329044,
+      0.131451568739,
+      0.752412379921,
+      77.3766870293,
+      0.899309734416,
+      1.58166666667,
+      0.583333333333,
+      1.0,
+      1.57040560207,
+      "ok"
+     ],
+     [
+      "machine-like-planar",
+      "default",
+      "no disturbance",
+      12,
+      0.0,
+      0.0,
+      0.0393444725908,
+      0.0809395794481,
+      0.557097468787,
+      32.8511008017,
+      0.921232469215,
+      null,
+      0.0,
+      1.0,
+      0.370048202222,
+      "ok"
+     ],
+     [
+      "machine-like-planar",
+      "default",
+      "small disturbance (25 N, extra push)",
+      12,
+      0.0,
+      0.0,
+      0.0439407265829,
+      0.0863020882961,
+      0.557097468787,
+      35.9171833998,
+      0.920762451368,
+      null,
+      0.0,
+      1.0,
+      0.336178281939,
+      "ok"
+     ],
+     [
+      "machine-like-planar",
+      "default",
+      "large disturbance (120 N, extra push)",
+      12,
+      1.0,
+      0.0,
+      0.338741344772,
+      0.473923281527,
+      2.04256149129,
+      134.042168097,
+      0.944838101845,
+      null,
+      0.0,
+      0.0,
+      null,
+      "ok"
+     ],
+     [
+      "machine-like-planar",
+      "default",
+      "control delay +0.06 s",
+      12,
+      1.0,
+      0.0,
+      0.339063003223,
+      0.919816958578,
+      25.1337112201,
+      232.07904604,
+      0.887816813806,
+      null,
+      0.0,
+      0.0,
+      null,
+      "ok"
+     ],
+     [
+      "machine-like-planar",
+      "default",
+      "resource constraint 0.7",
+      12,
+      0.0,
+      0.0,
+      0.0393444725908,
+      0.0809395794481,
+      0.557097468787,
+      32.8511008017,
+      0.291232328427,
+      null,
+      0.0,
+      1.0,
+      0.380663269088,
+      "ok"
+     ],
+     [
+      "machine-like-planar",
+      "default",
+      "sensor noise x4",
+      12,
+      0.0,
+      0.0,
+      0.0389810857653,
+      0.0745574227438,
+      0.584633888454,
+      38.3725558897,
+      0.909659794631,
+      null,
+      0.0,
+      1.0,
+      0.343867341042,
+      "ok"
+     ],
+     [
+      "machine-like-planar",
+      "default",
+      "contact condition 0.5",
+      12,
+      0.0,
+      0.0,
+      0.0393444725908,
+      0.0809395794481,
+      0.557097468787,
+      32.8511008017,
+      0.921232469215,
+      null,
+      0.0,
+      1.0,
+      0.370048202222,
+      "ok"
+     ],
+     [
+      "machine-like-planar",
+      "default",
+      "control time step halved",
+      12,
+      0.0,
+      0.0,
+      0.0389706620634,
+      0.0795580829629,
+      0.540948121623,
+      31.8557348312,
+      0.921327519417,
+      null,
+      0.0,
+      1.0,
+      0.346675769314,
+      "ok"
+     ],
+     [
+      "machine-like-planar",
+      "short",
+      "no disturbance",
+      12,
+      0.0,
+      0.0,
+      0.0470694635815,
+      0.0945671398936,
+      0.757878466526,
+      42.4609463469,
+      0.923795925074,
+      0.770833333333,
+      1.0,
+      1.0,
+      2.680197401,
+      "ok"
+     ],
+     [
+      "machine-like-planar",
+      "short",
+      "small disturbance (25 N, extra push)",
+      12,
+      0.0,
+      0.0,
+      0.0524649554495,
+      0.102146913848,
+      0.757878466526,
+      46.0496696239,
+      0.923056896614,
+      0.911666666667,
+      1.0,
+      1.0,
+      2.13309929138,
+      "ok"
+     ],
+     [
+      "machine-like-planar",
+      "short",
+      "large disturbance (120 N, extra push)",
+      12,
+      1.0,
+      0.0,
+      0.33899921734,
+      0.474194903613,
+      2.03426170645,
+      133.265594081,
+      0.948117148018,
+      2.0,
+      0.0,
+      0.0,
+      null,
+      "ok"
+     ],
+     [
+      "machine-like-planar",
+      "short",
+      "control delay +0.06 s",
+      12,
+      1.0,
+      0.0,
+      0.338177361184,
+      0.902408814626,
+      25.0609959973,
+      185.553712686,
+      0.93704668341,
+      2.0,
+      0.0,
+      0.0,
+      null,
+      "ok"
+     ],
+     [
+      "machine-like-planar",
+      "short",
+      "resource constraint 0.7",
+      12,
+      0.0,
+      0.0,
+      0.0470694635815,
+      0.0945671398936,
+      0.757878466526,
+      42.4609463469,
+      0.29379588293,
+      0.770833333333,
+      1.0,
+      1.0,
+      2.68368805549,
+      "ok"
+     ],
+     [
+      "machine-like-planar",
+      "short",
+      "sensor noise x4",
+      12,
+      0.0,
+      0.0,
+      0.0466885469627,
+      0.0915947931581,
+      0.831289294315,
+      45.2972430055,
+      0.913512009241,
+      0.67375,
+      1.0,
+      1.0,
+      2.40679574267,
+      "ok"
+     ],
+     [
+      "machine-like-planar",
+      "short",
+      "contact condition 0.5",
+      12,
+      0.0,
+      0.0,
+      0.0470675607088,
+      0.0945669801307,
+      0.757878466526,
+      42.4610310229,
+      0.923795925074,
+      0.770833333333,
+      1.0,
+      1.0,
+      2.680197401,
+      "ok"
+     ],
+     [
+      "machine-like-planar",
+      "short",
+      "control time step halved",
+      12,
+      0.0,
+      0.0,
+      0.0471893805197,
+      0.094737493076,
+      0.728091670856,
+      42.1530312265,
+      0.923783736982,
+      0.780208333333,
+      1.0,
+      1.0,
+      2.6446792364,
+      "ok"
+     ]
+    ],
+    "title": "Eight conditions x two presets x two protocols"
+   }
+  ]
+ },
+ "schema": "xbtro.record/1",
+ "seeds": [
+  5000,
+  5001,
+  5002,
+  5003,
+  5004,
+  5005,
+  5006,
+  5007,
+  5008,
+  5009,
+  5010,
+  5011
+ ],
+ "time_step_s": 0.01,
+ "unobserved_differences": []
+}

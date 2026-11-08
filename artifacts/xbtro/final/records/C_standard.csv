@@ -1,0 +1,162 @@
+# record,xb-c-06072890cfd9
+# experiment,C
+# model_version,xb-tro/1.0
+# digest,06072890cfd92427c60c160f774af48c9e0d9c9e51f313aad50dbede6fb0ffee
+# time_step_s,0.01
+# numerical_method,RK4 on the N-link planar Lagrangian equations with the muscle drive held over each step; batched seeds with common random numbers; first-order activation dynamics; digests over 6 significant digits
+# seeds,5000 5001 5002 5003 5004 5005 5006 5007 5008 5009 5010 5011
+# labels,reference = model reference state (not an observation of a real body); observation = simulated model output
+
+# table: transfer_matrix,Paired effect of each Xeno-14 condition on each organization (all 'lower is better': negative d = improvement)
+principle,organization,control mean,condition mean,d (paired),p,"q (BH, whole matrix)",label,touched by the definition,fraction of seeds in which its line ignited
+lower-abdominal-continuity,posture_stability,0.00120308666711,0.000662675684868,-1.41019476358,0.00244140625,0.00509059175532,improved,yes,1.0
+lower-abdominal-continuity,correction_quality,0.0174372156189,0.0185487069035,2.23467397823,0.00048828125,0.00122696314103,worsened,no,1.0
+lower-abdominal-continuity,turn_speed,1.49,1.43083333333,-3.64921398772,0.00048828125,0.00122696314103,improved,yes,1.0
+lower-abdominal-continuity,precision,0.00823094600433,0.00815709626979,-0.20123281921,0.505859375,0.762680288462,no detectable effect,no,1.0
+lower-abdominal-continuity,fatigue_cost,0.0998469852716,0.421583683894,124.365401324,0.00048828125,0.00122696314103,worsened,yes,1.0
+lower-abdominal-continuity,recovery_time,1.5825,2.0,0.90523457641,0.015625,0.0300245098039,worsened,no,1.0
+lower-abdominal-continuity,fall_rate,0.0,0.0,0.0,1.0,1.0,no detectable effect,no,1.0
+whole-skin-sensing,posture_stability,0.00120308666711,0.00120308666711,0.0,1.0,1.0,no detectable effect,yes,1.0
+whole-skin-sensing,correction_quality,0.0174372156189,0.0188780503711,1.70162453302,0.0009765625,0.00233422256098,worsened,yes,1.0
+whole-skin-sensing,turn_speed,1.49,1.42083333333,-3.09557338921,0.00048828125,0.00122696314103,improved,no,1.0
+whole-skin-sensing,precision,0.00823094600433,0.00685662593004,-3.3712699902,0.00048828125,0.00122696314103,improved,no,1.0
+whole-skin-sensing,fatigue_cost,0.0998469852716,0.177913397355,17.0408680392,0.00048828125,0.00122696314103,worsened,yes,1.0
+whole-skin-sensing,recovery_time,1.5825,0.880833333333,-1.51409642844,0.0029296875,0.0059814453125,improved,no,1.0
+whole-skin-sensing,fall_rate,0.0,0.0,0.0,1.0,1.0,no detectable effect,no,1.0
+axis-maintenance,posture_stability,0.00120308666711,0.00120308666711,0.0,1.0,1.0,no detectable effect,yes,1.0
+axis-maintenance,correction_quality,0.0174372156189,0.0238219341667,3.11025087016,0.00048828125,0.00122696314103,worsened,yes,1.0
+axis-maintenance,turn_speed,1.49,0.736666666667,-18.2873232179,0.00048828125,0.00122696314103,improved,no,1.0
+axis-maintenance,precision,0.00823094600433,0.00753231886671,-0.331431688767,0.2734375,0.439293032787,no detectable effect,no,1.0
+axis-maintenance,fatigue_cost,0.0998469852716,0.221133405278,24.3400091118,0.00048828125,0.00122696314103,worsened,no,1.0
+axis-maintenance,recovery_time,1.5825,2.0,0.90523457641,0.015625,0.0300245098039,worsened,no,1.0
+axis-maintenance,fall_rate,0.0,0.0,0.0,1.0,1.0,no detectable effect,no,1.0
+endpoint-removal,posture_stability,0.00120308666711,0.00120308666711,0.0,1.0,1.0,no detectable effect,yes,1.0
+endpoint-removal,correction_quality,0.0174372156189,0.0247814467305,8.63416711746,0.00048828125,0.00122696314103,worsened,no,1.0
+endpoint-removal,turn_speed,1.49,1.445,-3.42398659614,0.00048828125,0.00122696314103,improved,yes,1.0
+endpoint-removal,precision,0.00823094600433,0.00776980519238,-3.00413898011,0.00048828125,0.00122696314103,improved,yes,1.0
+endpoint-removal,fatigue_cost,0.0998469852716,0.105216861805,5.50969042402,0.00048828125,0.00122696314103,worsened,no,1.0
+endpoint-removal,recovery_time,1.5825,1.62916666667,0.0879767915518,0.76416015625,1.0,no detectable effect,no,1.0
+endpoint-removal,fall_rate,0.0,0.0,0.0,1.0,1.0,no detectable effect,no,1.0
+low-noise-movement,posture_stability,0.00120308666711,0.00104859678369,-0.663913632286,0.0439453125,0.076904296875,no detectable effect,yes,1.0
+low-noise-movement,correction_quality,0.0174372156189,0.014539853068,-3.15907546284,0.00048828125,0.00122696314103,improved,yes,1.0
+low-noise-movement,turn_speed,1.49,1.56666666667,4.44887817397,0.00048828125,0.00122696314103,worsened,no,1.0
+low-noise-movement,precision,0.00823094600433,0.00947157586857,4.01780414388,0.00048828125,0.00122696314103,worsened,no,1.0
+low-noise-movement,fatigue_cost,0.0998469852716,0.186636266286,27.3592795117,0.00048828125,0.00122696314103,worsened,no,1.0
+low-noise-movement,recovery_time,1.5825,1.37833333333,-0.456127292891,0.1328125,0.216927083333,no detectable effect,no,1.0
+low-noise-movement,fall_rate,0.0,0.0,0.0,1.0,1.0,no detectable effect,no,1.0
+minimal-approach-distance,posture_stability,0.00120308666711,0.00120308666711,0.0,1.0,1.0,no detectable effect,no,1.0
+minimal-approach-distance,correction_quality,0.0174372156189,0.0235086522918,11.7533332005,0.00048828125,0.00122696314103,worsened,no,1.0
+minimal-approach-distance,turn_speed,1.49,1.35916666667,-5.30453842044,0.00048828125,0.00122696314103,improved,yes,1.0
+minimal-approach-distance,precision,0.00823094600433,0.00677776042317,-4.98011005575,0.00048828125,0.00122696314103,improved,yes,1.0
+minimal-approach-distance,fatigue_cost,0.0998469852716,0.136752232646,23.6382353088,0.00048828125,0.00122696314103,worsened,no,1.0
+minimal-approach-distance,recovery_time,1.5825,2.0,0.90523457641,0.015625,0.0300245098039,worsened,no,1.0
+minimal-approach-distance,fall_rate,0.0,0.0,0.0,1.0,1.0,no detectable effect,no,1.0
+zero-run-up-transition,posture_stability,0.00120308666711,0.00120308666711,0.0,1.0,1.0,no detectable effect,yes,1.0
+zero-run-up-transition,correction_quality,0.0174372156189,0.0249949620146,9.99733058842,0.00048828125,0.00122696314103,worsened,no,1.0
+zero-run-up-transition,turn_speed,1.49,1.42333333333,-7.51067616199,0.00048828125,0.00122696314103,improved,yes,1.0
+zero-run-up-transition,precision,0.00823094600433,0.00739145590239,-5.23688457566,0.00048828125,0.00122696314103,improved,yes,1.0
+zero-run-up-transition,fatigue_cost,0.0998469852716,0.104967978022,5.50359382016,0.00048828125,0.00122696314103,worsened,no,1.0
+zero-run-up-transition,recovery_time,1.5825,1.62916666667,0.0879143234883,0.77734375,1.0,no detectable effect,no,1.0
+zero-run-up-transition,fall_rate,0.0,0.0,0.0,1.0,1.0,no detectable effect,no,1.0
+tensegrity,posture_stability,0.00120308666711,0.00122330277331,0.708949741297,0.03466796875,0.0617720170455,no detectable effect,yes,1.0
+tensegrity,correction_quality,0.0174372156189,0.0174002580765,-0.302629695751,0.31640625,0.500126008065,no detectable effect,no,1.0
+tensegrity,turn_speed,1.49,1.49,0.0,1.0,1.0,no detectable effect,no,1.0
+tensegrity,precision,0.00823094600433,0.00812938442853,-1.37134210356,0.001953125,0.00425347222222,improved,no,1.0
+tensegrity,fatigue_cost,0.0998469852716,0.174966395979,445.664654229,0.00048828125,0.00122696314103,worsened,yes,1.0
+tensegrity,recovery_time,1.5825,1.49,-0.431017364405,0.03125,0.056712962963,no detectable effect,no,1.0
+tensegrity,fall_rate,0.0,0.0,0.0,1.0,1.0,no detectable effect,no,1.0
+slow-movement,posture_stability,0.00120308666711,0.00120308666711,0.0,1.0,1.0,no detectable effect,yes,1.0
+slow-movement,correction_quality,0.0174372156189,0.0120297539693,-10.0998247425,0.00048828125,0.00122696314103,improved,no,1.0
+slow-movement,turn_speed,1.49,1.56583333333,4.03170429759,0.00048828125,0.00122696314103,worsened,yes,1.0
+slow-movement,precision,0.00823094600433,0.00968667520094,3.76400723368,0.00048828125,0.00122696314103,worsened,yes,1.0
+slow-movement,fatigue_cost,0.0998469852716,0.101716214247,1.6349121411,0.001953125,0.00425347222222,worsened,no,1.0
+slow-movement,recovery_time,1.5825,1.35166666667,-0.519895414352,0.06640625,0.112203663793,no detectable effect,no,1.0
+slow-movement,fall_rate,0.0,0.0,0.0,1.0,1.0,no detectable effect,no,1.0
+narrow-step-balance,posture_stability,0.00120308666711,0.00120308666711,0.0,1.0,1.0,no detectable effect,yes,1.0
+narrow-step-balance,correction_quality,0.0174372156189,0.0173845334739,-0.0883260610031,0.74853515625,1.0,no detectable effect,no,1.0
+narrow-step-balance,turn_speed,1.49,1.4775,-1.65831239518,0.001953125,0.00425347222222,improved,no,1.0
+narrow-step-balance,precision,0.00823094600433,0.00813556172134,-0.571549096058,0.0751953125,0.124900688559,no detectable effect,no,1.0
+narrow-step-balance,fatigue_cost,0.0998469852716,0.0993179482469,-0.752208497928,0.02587890625,0.0478515625,no detectable effect,no,1.0
+narrow-step-balance,recovery_time,1.5825,1.47583333333,-0.226162144662,0.44482421875,0.681137084961,no detectable effect,yes,1.0
+narrow-step-balance,fall_rate,0.0,0.0,0.0,1.0,1.0,no detectable effect,yes,1.0
+fingertip-tension,posture_stability,0.00120308666711,0.00103112680173,-1.39852977446,0.00244140625,0.00509059175532,improved,yes,1.0
+fingertip-tension,correction_quality,0.0174372156189,0.0176734210522,0.616543154522,0.05908203125,0.101579632675,no detectable effect,no,1.0
+fingertip-tension,turn_speed,1.49,1.45416666667,-2.88952300312,0.00048828125,0.00122696314103,improved,no,1.0
+fingertip-tension,precision,0.00823094600433,0.00759924896816,-3.12736489618,0.00048828125,0.00122696314103,improved,no,1.0
+fingertip-tension,fatigue_cost,0.0998469852716,0.475474168909,434.71016766,0.00048828125,0.00122696314103,worsened,yes,1.0
+fingertip-tension,recovery_time,1.5825,1.63416666667,0.0776599855114,0.7734375,1.0,no detectable effect,no,1.0
+fingertip-tension,fall_rate,0.0,0.0,0.0,1.0,1.0,no detectable effect,no,1.0
+breathing-synchronization,posture_stability,0.00120308666711,0.00108803112691,-1.2076980849,0.001953125,0.00425347222222,improved,yes,1.0
+breathing-synchronization,correction_quality,0.0174372156189,0.0205615327385,3.98115188658,0.00048828125,0.00122696314103,worsened,yes,1.0
+breathing-synchronization,turn_speed,1.49,1.43833333333,-2.18213466856,0.00048828125,0.00122696314103,improved,no,1.0
+breathing-synchronization,precision,0.00823094600433,0.007417882112,-2.20013562112,0.00048828125,0.00122696314103,improved,no,1.0
+breathing-synchronization,fatigue_cost,0.0998469852716,0.107934979421,7.54231391559,0.00048828125,0.00122696314103,worsened,no,1.0
+breathing-synchronization,recovery_time,1.5825,0.858333333333,-1.54135378689,0.00048828125,0.00122696314103,improved,no,1.0
+breathing-synchronization,fall_rate,0.0,0.0,0.0,1.0,1.0,no detectable effect,no,1.0
+anti-collapse-posture,posture_stability,0.00120308666711,0.00120308666711,0.0,1.0,1.0,no detectable effect,no,0.0
+anti-collapse-posture,correction_quality,0.0174372156189,0.0174372156189,0.0,1.0,1.0,no detectable effect,no,0.0
+anti-collapse-posture,turn_speed,1.49,1.49,0.0,1.0,1.0,no detectable effect,no,0.0
+anti-collapse-posture,precision,0.00823094600433,0.00823094600433,0.0,1.0,1.0,no detectable effect,no,0.0
+anti-collapse-posture,fatigue_cost,0.0998469852716,0.0998469852716,0.0,1.0,1.0,no detectable effect,yes,0.0
+anti-collapse-posture,recovery_time,1.5825,1.5825,0.0,1.0,1.0,no detectable effect,yes,0.0
+anti-collapse-posture,fall_rate,0.0,0.0,0.0,1.0,1.0,no detectable effect,yes,0.0
+long-duration-sedimentation,posture_stability,0.00120308666711,0.00120308666711,0.0,1.0,1.0,no detectable effect,yes,
+long-duration-sedimentation,correction_quality,0.0174372156189,0.0169399002165,-1.48688597976,0.00048828125,0.00122696314103,improved,no,
+long-duration-sedimentation,turn_speed,1.49,1.46916666667,-1.78903654772,0.0009765625,0.00233422256098,improved,no,
+long-duration-sedimentation,precision,0.00823094600433,0.00787052398876,-2.61317154881,0.00048828125,0.00122696314103,improved,no,
+long-duration-sedimentation,fatigue_cost,0.0998469852716,0.0997548656244,-0.24853210976,0.400390625,0.622829861111,no detectable effect,yes,
+long-duration-sedimentation,recovery_time,1.5825,1.04166666667,-0.827312663244,0.0205078125,0.0386493389423,improved,no,
+long-duration-sedimentation,fall_rate,0.0,0.0,0.0,1.0,1.0,no detectable effect,no,
+
+# table: fragility_transfers,Conditions that improved one organization and worsened another (energy use that equals the declared line cost does not count as a worsening)
+principle,improved,worsened,worsened organizations its definition does not name,energy rise only the declared cost
+lower-abdominal-continuity,"posture_stability, turn_speed","correction_quality, recovery_time","correction_quality, recovery_time",fatigue_cost
+whole-skin-sensing,"turn_speed, precision, recovery_time",correction_quality,,fatigue_cost
+axis-maintenance,turn_speed,"correction_quality, recovery_time",recovery_time,fatigue_cost
+endpoint-removal,"turn_speed, precision","correction_quality, fatigue_cost","correction_quality, fatigue_cost",
+low-noise-movement,correction_quality,"turn_speed, precision","turn_speed, precision",fatigue_cost
+minimal-approach-distance,"turn_speed, precision","correction_quality, recovery_time","correction_quality, recovery_time",fatigue_cost
+zero-run-up-transition,"turn_speed, precision","correction_quality, fatigue_cost","correction_quality, fatigue_cost",
+slow-movement,correction_quality,"turn_speed, precision, fatigue_cost",fatigue_cost,
+breathing-synchronization,"posture_stability, turn_speed, precision, recovery_time",correction_quality,,fatigue_cost
+
+# table: pairs,"Pairs of conditions active together: effect, the two single effects, interaction (pair minus sum of singles), line conflicts per second"
+pair,organization,d pair,label,d first,d second,interaction,conflict steps per s
+axis-maintenance + anti-collapse-posture,posture_stability,0.0,no detectable effect,0.0,0.0,0.0,8.57777777778
+axis-maintenance + anti-collapse-posture,correction_quality,3.11025087016,worsened,3.11025087016,0.0,0.0,8.57777777778
+axis-maintenance + anti-collapse-posture,turn_speed,-18.2873232179,improved,-18.2873232179,0.0,0.0,8.57777777778
+axis-maintenance + anti-collapse-posture,precision,-0.331431688767,no detectable effect,-0.331431688767,0.0,0.0,8.57777777778
+axis-maintenance + anti-collapse-posture,fatigue_cost,24.3400091118,worsened,24.3400091118,0.0,4.61852778244e-14,8.57777777778
+axis-maintenance + anti-collapse-posture,recovery_time,0.90523457641,worsened,0.90523457641,0.0,0.0,8.57777777778
+axis-maintenance + anti-collapse-posture,fall_rate,0.0,no detectable effect,0.0,0.0,0.0,8.57777777778
+lower-abdominal-continuity + tensegrity,posture_stability,-1.5604084829,improved,-1.41019476358,0.708949741297,-0.859163460616,0.966666666667
+lower-abdominal-continuity + tensegrity,correction_quality,-0.170539692756,no detectable effect,2.23467397823,-0.302629695751,-2.10258397524,0.966666666667
+lower-abdominal-continuity + tensegrity,turn_speed,-2.86929713408,improved,-3.64921398772,0.0,0.779916853641,0.966666666667
+lower-abdominal-continuity + tensegrity,precision,-0.806100065762,improved,-0.20123281921,-1.37134210356,0.766474857008,0.966666666667
+lower-abdominal-continuity + tensegrity,fatigue_cost,165.935983185,worsened,124.365401324,445.664654229,-404.094072367,0.966666666667
+lower-abdominal-continuity + tensegrity,recovery_time,-0.106994814072,no detectable effect,0.90523457641,-0.431017364405,-0.581212026076,0.966666666667
+lower-abdominal-continuity + tensegrity,fall_rate,0.0,no detectable effect,0.0,0.0,0.0,0.966666666667
+narrow-step-balance + breathing-synchronization,posture_stability,-1.2076980849,improved,0.0,-1.2076980849,0.0,1.43333333333
+narrow-step-balance + breathing-synchronization,correction_quality,1.95114997529,worsened,-0.0883260610031,3.98115188658,-1.94167585029,1.43333333333
+narrow-step-balance + breathing-synchronization,turn_speed,-1.98289611999,improved,-1.65831239518,-2.18213466856,1.85755094375,1.43333333333
+narrow-step-balance + breathing-synchronization,precision,-2.34354201639,improved,-0.571549096058,-2.20013562112,0.428142700784,1.43333333333
+narrow-step-balance + breathing-synchronization,fatigue_cost,6.47536620465,worsened,-0.752208497928,7.54231391559,-0.314739213016,1.43333333333
+narrow-step-balance + breathing-synchronization,recovery_time,-1.66562896519,improved,-0.226162144662,-1.54135378689,0.101886966363,1.43333333333
+narrow-step-balance + breathing-synchronization,fall_rate,0.0,no detectable effect,0.0,0.0,0.0,1.43333333333
+
+# table: negative_results
+statement,evidence
+lower-abdominal-continuity: worsened an organization its own definition touches: ['fatigue_cost'],"{""fatigue_cost"": {""d"": 124.365401324, ""label"": ""worsened"", ""mean"": 0.421583683894, ""mean_control"": 0.0998469852716, ""n"": 12, ""p"": 0.00048828125, ""q"": 0.00122696314103}, ""posture_stability"": {""d"": -1.41019476358, ""label"": ""improved"", ""mean"": 0.000662675684868, ""mean_control"": 0.00120308666711, ""n"": 12, ""p"": 0.00244140625, ""q"": 0.00509059175532}, ""turn_speed"": {""d"": -3.64921398772, ""label"": ""improved"", ""mean"": 1.43083333333, ""mean_control"": 1.49, ""n"": 12, ""p"": 0.00048828125, ""q"": 0.00122696314103}}"
+"whole-skin-sensing: worsened an organization its own definition touches: ['correction_quality', 'fatigue_cost']","{""correction_quality"": {""d"": 1.70162453302, ""label"": ""worsened"", ""mean"": 0.0188780503711, ""mean_control"": 0.0174372156189, ""n"": 12, ""p"": 0.0009765625, ""q"": 0.00233422256098}, ""fatigue_cost"": {""d"": 17.0408680392, ""label"": ""worsened"", ""mean"": 0.177913397355, ""mean_control"": 0.0998469852716, ""n"": 12, ""p"": 0.00048828125, ""q"": 0.00122696314103}, ""posture_stability"": {""d"": 0.0, ""label"": ""no detectable effect"", ""mean"": 0.00120308666711, ""mean_control"": 0.00120308666711, ""n"": 12, ""p"": 1.0, ""q"": 1.0}}"
+"whole-skin-sensing: improved none of the organizations its definition touches (['posture_stability', 'correction_quality', 'fatigue_cost']); changes occurred elsewhere: improved ['turn_speed', 'precision', 'recovery_time'], worsened ['correction_quality', 'fatigue_cost']",{}
+axis-maintenance: worsened an organization its own definition touches: ['correction_quality'],"{""correction_quality"": {""d"": 3.11025087016, ""label"": ""worsened"", ""mean"": 0.0238219341667, ""mean_control"": 0.0174372156189, ""n"": 12, ""p"": 0.00048828125, ""q"": 0.00122696314103}, ""posture_stability"": {""d"": 0.0, ""label"": ""no detectable effect"", ""mean"": 0.00120308666711, ""mean_control"": 0.00120308666711, ""n"": 12, ""p"": 1.0, ""q"": 1.0}}"
+"axis-maintenance: improved none of the organizations its definition touches (['posture_stability', 'correction_quality']); changes occurred elsewhere: improved ['turn_speed'], worsened ['correction_quality', 'fatigue_cost', 'recovery_time']",{}
+tensegrity: worsened an organization its own definition touches: ['fatigue_cost'],"{""fatigue_cost"": {""d"": 445.664654229, ""label"": ""worsened"", ""mean"": 0.174966395979, ""mean_control"": 0.0998469852716, ""n"": 12, ""p"": 0.00048828125, ""q"": 0.00122696314103}, ""posture_stability"": {""d"": 0.708949741297, ""label"": ""no detectable effect"", ""mean"": 0.00122330277331, ""mean_control"": 0.00120308666711, ""n"": 12, ""p"": 0.03466796875, ""q"": 0.0617720170455}}"
+"tensegrity: improved none of the organizations its definition touches (['posture_stability', 'fatigue_cost']); changes occurred elsewhere: improved ['precision'], worsened ['fatigue_cost']",{}
+"slow-movement: worsened an organization its own definition touches: ['turn_speed', 'precision']","{""posture_stability"": {""d"": 0.0, ""label"": ""no detectable effect"", ""mean"": 0.00120308666711, ""mean_control"": 0.00120308666711, ""n"": 12, ""p"": 1.0, ""q"": 1.0}, ""precision"": {""d"": 3.76400723368, ""label"": ""worsened"", ""mean"": 0.00968667520094, ""mean_control"": 0.00823094600433, ""n"": 12, ""p"": 0.00048828125, ""q"": 0.00122696314103}, ""turn_speed"": {""d"": 4.03170429759, ""label"": ""worsened"", ""mean"": 1.56583333333, ""mean_control"": 1.49, ""n"": 12, ""p"": 0.00048828125, ""q"": 0.00122696314103}}"
+"slow-movement: improved none of the organizations its definition touches (['turn_speed', 'precision', 'posture_stability']); changes occurred elsewhere: improved ['correction_quality'], worsened ['turn_speed', 'precision', 'fatigue_cost']",{}
+"narrow-step-balance: improved none of the organizations its definition touches (['posture_stability', 'recovery_time', 'fall_rate']); changes occurred elsewhere: improved ['turn_speed'], worsened []",{}
+fingertip-tension: worsened an organization its own definition touches: ['fatigue_cost'],"{""fatigue_cost"": {""d"": 434.71016766, ""label"": ""worsened"", ""mean"": 0.475474168909, ""mean_control"": 0.0998469852716, ""n"": 12, ""p"": 0.00048828125, ""q"": 0.00122696314103}, ""posture_stability"": {""d"": -1.39852977446, ""label"": ""improved"", ""mean"": 0.00103112680173, ""mean_control"": 0.00120308666711, ""n"": 12, ""p"": 0.00244140625, ""q"": 0.00509059175532}}"
+breathing-synchronization: worsened an organization its own definition touches: ['correction_quality'],"{""correction_quality"": {""d"": 3.98115188658, ""label"": ""worsened"", ""mean"": 0.0205615327385, ""mean_control"": 0.0174372156189, ""n"": 12, ""p"": 0.00048828125, ""q"": 0.00122696314103}, ""posture_stability"": {""d"": -1.2076980849, ""label"": ""improved"", ""mean"": 0.00108803112691, ""mean_control"": 0.00120308666711, ""n"": 12, ""p"": 0.001953125, ""q"": 0.00425347222222}}"
+"anti-collapse-posture: its rule never ignited in the protocol (ignition condition not reached in any seed), so no effect could occur; this says nothing about the principle when it does ignite","{""ignition"": 0.0}"
+"long-duration-sedimentation: improved none of the organizations its definition touches (['posture_stability', 'fatigue_cost']); changes occurred elsewhere: improved ['correction_quality', 'turn_speed', 'precision', 'recovery_time'], worsened []",{}

@@ -26,6 +26,7 @@ const en = {
   view_sbs: 'SBS — Simondonian Body Simulation',
   view_verification: 'Verification — Brassier',
   view_study: 'Experiments',
+  view_xbtro: 'XenoBody',
 };
 
 type Key = keyof typeof en;

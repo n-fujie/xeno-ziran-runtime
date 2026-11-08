@@ -1,0 +1,69 @@
+# record,xb-g-c7d6bd9f83c6
+# experiment,G
+# model_version,xb-tro/1.0
+# digest,c7d6bd9f83c6fcef48a3ad2c51381a17dc11059923a02ef8d09c9033b374dacc
+# time_step_s,0.01
+# numerical_method,RK4 on the N-link planar Lagrangian equations with the muscle drive held over each step; batched seeds with common random numbers; first-order activation dynamics; digests over 6 significant digits
+# seeds,5000 5001 5002 5003 5004 5005 5006 5007
+# labels,reference = model reference state (not an observation of a real body); observation = simulated model output
+
+# table: effects,Paired effect of each condition on each measure (lower is better for all)
+principle,group,measure,control mean,condition mean,d (paired),p,q (BH),label,"of which the rule line (mean, vs ablation)",ignition of the rule line
+axis-maintenance,posture,trunk sway in quiet standing,0.00110520382552,0.00110520382552,0.0,1.0,1.0,no detectable effect,0.0,1.0
+axis-maintenance,posture,peak COM deviation after a forward push at rest (60 N),0.0359550114218,0.0490329186541,1.48254267492,0.0078125,0.0375,worsened,0.0130779072323,1.0
+axis-maintenance,direction,forward disturbance tolerance (rungs not survived),0.0,0.0,0.0,1.0,1.0,no detectable effect,0.0,1.0
+axis-maintenance,direction,backward disturbance tolerance (rungs not survived),1.0,1.0,0.0,1.0,1.0,no detectable effect,0.0,1.0
+axis-maintenance,direction,"recovery region (rungs not recovered from inside the window, both directions)",1.0,3.125,3.31580536482,0.0078125,0.0375,worsened,2.125,1.0
+axis-maintenance,timing,movement-correction latency after a forward push at rest,0.15875,0.13625,-1.42302494708,0.015625,0.0625,no detectable effect,-0.0225,1.0
+axis-maintenance,timing,settling after the direction change (restricted mean),1.4975,0.73375,-16.9647438248,0.0078125,0.0375,improved,-0.76375,1.0
+axis-maintenance,resource,energy used beyond the condition's declared line cost,0.100115435093,0.119590671118,18.5779952147,0.0078125,0.0375,worsened,0.0194752360254,1.0
+axis-maintenance,resource,line conflicts (steps per s),1.1,8.48333333333,5.60240363787,0.0078125,0.0375,worsened,7.38333333333,1.0
+axis-maintenance,resource,time with a muscle drive saturated,0.0,0.0,0.0,1.0,1.0,no detectable effect,0.0,1.0
+axis-maintenance,availability,baseline lines that stopped igniting,0.0,0.0,0.0,1.0,1.0,no detectable effect,0.0,1.0
+axis-maintenance,reachability,direction change not established after the protocol push (0/1 per seed),0.0,0.0,0.0,1.0,1.0,no detectable effect,0.0,1.0
+zero-run-up-transition,posture,trunk sway in quiet standing,0.00110520382552,0.00110520382552,0.0,1.0,1.0,no detectable effect,0.0,1.0
+zero-run-up-transition,posture,peak COM deviation after a forward push at rest (60 N),0.0359550114218,0.0359550114218,0.0,1.0,1.0,no detectable effect,0.0,1.0
+zero-run-up-transition,direction,forward disturbance tolerance (rungs not survived),0.0,0.0,0.0,1.0,1.0,no detectable effect,0.0,1.0
+zero-run-up-transition,direction,backward disturbance tolerance (rungs not survived),1.0,1.0,0.0,1.0,1.0,no detectable effect,0.0,1.0
+zero-run-up-transition,direction,"recovery region (rungs not recovered from inside the window, both directions)",1.0,1.0,0.0,1.0,1.0,no detectable effect,0.0,1.0
+zero-run-up-transition,timing,movement-correction latency after a forward push at rest,0.15875,0.15875,0.0,1.0,1.0,no detectable effect,0.0,1.0
+zero-run-up-transition,timing,settling after the direction change (restricted mean),1.4975,1.42875,-6.93721846276,0.0078125,0.0375,improved,0.0,1.0
+zero-run-up-transition,resource,energy used beyond the condition's declared line cost,0.100115435093,0.105382556284,5.29127053465,0.0078125,0.0375,worsened,0.0,1.0
+zero-run-up-transition,resource,line conflicts (steps per s),1.1,0.0333333333333,-1.94848920179,0.0078125,0.0375,improved,0.0,1.0
+zero-run-up-transition,resource,time with a muscle drive saturated,0.0,0.0,0.0,1.0,1.0,no detectable effect,0.0,1.0
+zero-run-up-transition,availability,baseline lines that stopped igniting,0.0,0.0,0.0,1.0,1.0,no detectable effect,0.0,1.0
+zero-run-up-transition,reachability,direction change not established after the protocol push (0/1 per seed),0.0,0.0,0.0,1.0,1.0,no detectable effect,0.0,1.0
+slow-movement,posture,trunk sway in quiet standing,0.00110520382552,0.00110520382552,0.0,1.0,1.0,no detectable effect,0.0,1.0
+slow-movement,posture,peak COM deviation after a forward push at rest (60 N),0.0359550114218,0.0359550114218,0.0,1.0,1.0,no detectable effect,0.0,1.0
+slow-movement,direction,forward disturbance tolerance (rungs not survived),0.0,0.0,0.0,1.0,1.0,no detectable effect,0.0,1.0
+slow-movement,direction,backward disturbance tolerance (rungs not survived),1.0,1.0,0.0,1.0,1.0,no detectable effect,0.0,1.0
+slow-movement,direction,"recovery region (rungs not recovered from inside the window, both directions)",1.0,1.0,0.0,1.0,1.0,no detectable effect,0.0,1.0
+slow-movement,timing,movement-correction latency after a forward push at rest,0.15875,0.15875,0.0,1.0,1.0,no detectable effect,0.0,1.0
+slow-movement,timing,settling after the direction change (restricted mean),1.4975,1.57625,3.52811290142,0.0078125,0.0375,worsened,0.0,1.0
+slow-movement,resource,energy used beyond the condition's declared line cost,0.100115435093,0.102056584789,1.79972299202,0.015625,0.0625,no detectable effect,0.0,1.0
+slow-movement,resource,line conflicts (steps per s),1.1,2.75,4.38011446021,0.0078125,0.0375,worsened,0.0,1.0
+slow-movement,resource,time with a muscle drive saturated,0.0,0.0,0.0,1.0,1.0,no detectable effect,0.0,1.0
+slow-movement,availability,baseline lines that stopped igniting,0.0,0.0,0.0,1.0,1.0,no detectable effect,0.0,1.0
+slow-movement,reachability,direction change not established after the protocol push (0/1 per seed),0.0,0.0,0.0,1.0,1.0,no detectable effect,0.0,1.0
+tensegrity,posture,trunk sway in quiet standing,0.00110520382552,0.00112971298508,0.733864297139,0.0859375,0.275,no detectable effect,0.0,1.0
+tensegrity,posture,peak COM deviation after a forward push at rest (60 N),0.0359550114218,0.0360356112988,0.858463160695,0.0390625,0.133928571429,no detectable effect,0.0,1.0
+tensegrity,direction,forward disturbance tolerance (rungs not survived),0.0,0.0,0.0,1.0,1.0,no detectable effect,0.0,1.0
+tensegrity,direction,backward disturbance tolerance (rungs not survived),1.0,1.0,0.0,1.0,1.0,no detectable effect,0.0,1.0
+tensegrity,direction,"recovery region (rungs not recovered from inside the window, both directions)",1.0,1.0,0.0,1.0,1.0,no detectable effect,0.0,1.0
+tensegrity,timing,movement-correction latency after a forward push at rest,0.15875,0.16,0.353553390593,1.0,1.0,no detectable effect,0.0,1.0
+tensegrity,timing,settling after the direction change (restricted mean),1.4975,1.4975,0.0,1.0,1.0,no detectable effect,0.0,1.0
+tensegrity,resource,energy used beyond the condition's declared line cost,0.100115435093,0.100272114146,1.00251331902,0.03125,0.115384615385,no detectable effect,0.000284926079622,1.0
+tensegrity,resource,line conflicts (steps per s),1.1,1.08333333333,-0.353553390593,1.0,1.0,no detectable effect,0.0,1.0
+tensegrity,resource,time with a muscle drive saturated,0.0,0.0,0.0,1.0,1.0,no detectable effect,0.0,1.0
+tensegrity,availability,baseline lines that stopped igniting,0.0,0.0,0.0,1.0,1.0,no detectable effect,0.0,1.0
+tensegrity,reachability,direction change not established after the protocol push (0/1 per seed),0.0,0.0,0.0,1.0,1.0,no detectable effect,0.0,1.0
+
+# table: transfers,"Fragility Transfers: one group improves while another weakens, or one direction improves while the other weakens"
+principle,improved,worsened,directional,falls involved,ablation available
+axis-maintenance,turn_settling_after_push,"energy_beyond_declared, line_conflicts, peak_dev_forward, recovery_region",False,False,True
+zero-run-up-transition,"line_conflicts, turn_settling_after_push",energy_beyond_declared,False,False,True
+
+# table: negative_results
+statement,evidence
+"slow-movement: only worsened ['line_conflicts', 'turn_settling_after_push']; nothing improved",{}
+"tensegrity: no detectable effect on any group (BH q < 0.05, |d| >= 0.8, 8 seeds)","{""ignition"": 1.0}"

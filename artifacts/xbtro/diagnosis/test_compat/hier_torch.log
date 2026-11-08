@@ -1,0 +1,4 @@
+numpy 2.5.1 torch 2.13.0 torch BLAS/LAPACK: no-MKL 
+small-600 (75 nodes): numpy.eigh vs reference 0; torch.eigh(f64) vs reference 0; torch.eigh(f32) vs reference 2; torch(f64) vs numpy 0
+reason-lab (375 nodes): numpy.eigh vs reference 186; torch.eigh(f64) vs reference 187; torch.eigh(f32) vs reference 171; torch(f64) vs numpy 6
+demo-3k (188 nodes): numpy.eigh vs reference 80; torch.eigh(f64) vs reference 76; torch.eigh(f32) vs reference 84; torch(f64) vs numpy 24

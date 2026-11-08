@@ -116,6 +116,12 @@ observation status, a declared body graph) are described in [docs/TEOO.md](docs/
 ```bash
 .venv/bin/xzr hpo run hpo-002 --pilot --seeds 8
 ```
+## XenoBody (Research Beta)
+
+`XenoBody — Operational-Shape Robotics Simulator` is a research environment for a simplified planar body, its observation devices and
+the experiments that study how the observation configuration changes what can be identified and how improving one operation can
+weaken another. It is a model with nominal parameters: **no real-robot or human validation, no claim about any real body**
+(`docs/XBTRO.md`). Open the *XenoBody* view of the local app or of the in-browser edition.
 
 ## Reproducibility, citation, license
 
