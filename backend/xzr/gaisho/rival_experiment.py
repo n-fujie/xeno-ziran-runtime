@@ -23,8 +23,6 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
-from concurrent.futures import ProcessPoolExecutor
-from pathlib import Path
 from typing import Any
 
 import numpy as np
@@ -87,14 +85,6 @@ PROTOCOL = {
 PROTOCOL_DIGEST = digest(PROTOCOL)
 
 
-def code_digest() -> str:
-    h = hashlib.sha256()
-    for name in ("rival.py", "rival_experiment.py"):
-        h.update((Path(__file__).with_name(name)).read_bytes())
-    h.update((Path(engine.__file__)).read_bytes())
-    return h.hexdigest()[:16]
-
-
 def build_config(spec: dict[str, Any], delay: float, push: float) -> dict[str, Any]:
     cfg = config.build(PRESET)
     if spec.get("strategy"):
@@ -142,16 +132,9 @@ def _job(args: tuple[str, list[int]]) -> tuple[str, dict[str, Any]]:
     return name, cells
 
 
-def run_conditions(names: list[str], seeds: list[int], workers: int = 4) -> dict[str, Any]:
-    out: dict[str, Any] = {}
-    if workers <= 1:
-        for nm in names:
-            out[nm] = _job((nm, seeds))[1]
-        return out
-    with ProcessPoolExecutor(max_workers=workers) as ex:
-        for nm, cells in ex.map(_job, [(n, seeds) for n in names]):
-            out[nm] = cells
-    return out
+def run_conditions(names: list[str], seeds: list[int]) -> dict[str, Any]:
+    """Sequential; ``scripts/gaisho_rival.py`` runs the same ``_job`` in a process pool (this package touches no file and starts no process, see tests/test_gaisho.py)."""
+    return {nm: _job((nm, seeds))[1] for nm in names}
 
 
 # ------------------------------------------------------------------------------------------------ analysis
@@ -264,11 +247,11 @@ def label_invariance(seeds: list[int]) -> dict[str, Any]:
     return {"cell": "delay 0.1 s, push 100 N", "seeds": seeds, "rows": rows}
 
 
-def record(results: dict[str, Any], seeds: list[int], mode: str) -> dict[str, Any]:
+def record(results: dict[str, Any], seeds: list[int], mode: str, code_digest: str = "") -> dict[str, Any]:
     an = analyse(results)
     body = {
         "protocol_digest": PROTOCOL_DIGEST,
-        "code_digest": code_digest(),
+        "code_digest": code_digest,
         "mode": mode,
         "seeds": seeds,
         "analysis": an,

@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased — GAISHO: an ordinary optimal-feedback rival for the XB-TRO body (R20 §18D)
+
+* New local-only `backend/xzr/gaisho/rival.py` (delay-aware LQR on the engine's own linearised plant, acting through the preset's lines, ledger and noise), `rival_experiment.py` (frozen protocol, paired verdicts, label-invariance control) and `scripts/gaisho_rival.py`; record `docs/gaisho/experiments_rival.json`; `docs/GAISHO.md` section "A matched ordinary-feedback rival for the body". One optional engine hook `Sim.ext_ctrl` / `simulate(ext_ctrl=)` (None by default, bit-identical when unused, tested).
+* Result (simulated planar body only): XenoBody as operationalised (all fourteen principles) has no advantage over the preset's own law (falls more: 0.870 against 0.745); the ordinary rival falls much less (0.400), but only when told the true loop delay (0.755 with the nominal delay). No claim about a person or a practice. D5 stays PARTIAL: no POMDP / online-identification rival, none for domains 002, 003, 005.
+
 ## Unreleased — Verification: the Brassier Machine as an evidence ledger
 
 * New local-only layer `backend/xzr/verification` (excluded from the iOS and browser bundles), route `/api/verification/brassier/demo`, view `?view=verification`, `docs/VERIFICATION.md`. SUPPORTED / WITHHELD / WITHDRAWN verdicts with no authority over what is real; equivalence and interventional identification (OPEN when no protocol separates equivalent mechanisms); a digest-sealed record that keeps negative results, seeds, interventions and provenance; the standard AIC/BIC comparison beside it. Existing results are not changed. SYNTHETIC demonstration only; the earlier Brassier Machine documents (R35, R37) are not in the repository.

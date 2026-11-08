@@ -9,13 +9,29 @@ A simulated planar body only. See xzr/gaisho/rival_experiment.py for what is fro
 
 from __future__ import annotations
 
+import hashlib
 import json
 import sys
+from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 
 from xzr.gaisho import rival_experiment as rx
+from xzr.xbtro import engine
 
 OUT = Path(__file__).resolve().parents[2] / "docs" / "gaisho" / "experiments_rival.json"
+
+
+def code_digest() -> str:
+    h = hashlib.sha256()
+    for name in ("rival.py", "rival_experiment.py"):
+        h.update((Path(rx.__file__).with_name(name)).read_bytes())
+    h.update(Path(engine.__file__).read_bytes())
+    return h.hexdigest()[:16]
+
+
+def run_pool(names: list[str], seeds: list[int], workers: int) -> dict:
+    with ProcessPoolExecutor(max_workers=workers) as ex:
+        return dict(ex.map(rx._job, [(n, seeds) for n in names]))
 
 
 def main(argv: list[str]) -> int:
@@ -23,8 +39,8 @@ def main(argv: list[str]) -> int:
     workers = 4
     if mode == "viability":
         names = ["baseline", "rival (ordinary optimal feedback)"]
-        res = rx.run_conditions(names, rx.EXPLORATION_SEEDS, workers=2)
-        rec = rx.record(res, rx.EXPLORATION_SEEDS, "viability (exploration seeds; not a result)")
+        res = run_pool(names, rx.EXPLORATION_SEEDS, 2)
+        rec = rx.record(res, rx.EXPLORATION_SEEDS, "viability (exploration seeds; not a result)", code_digest())
         cell0 = {n: res[n]["0|0"]["fell"] for n in names}
         ok = sum(1 for f in cell0["rival (ordinary optimal feedback)"] if f < 0.5) == len(rx.EXPLORATION_SEEDS)
         print(json.dumps(rec["analysis"]["fall_share_by_condition"], indent=1))
@@ -36,8 +52,8 @@ def main(argv: list[str]) -> int:
         return 0
     if mode == "final":
         names = list(rx.MAIN) + (list(rx.SINGLES) if "--singles" in argv else [])
-        res = rx.run_conditions(names, rx.FINAL_SEEDS, workers=workers)
-        rec = rx.record(res, rx.FINAL_SEEDS, "final")
+        res = run_pool(names, rx.FINAL_SEEDS, workers)
+        rec = rx.record(res, rx.FINAL_SEEDS, "final", code_digest())
         rec["label_invariance"] = rx.label_invariance(rx.FINAL_SEEDS[:4])
         OUT.parent.mkdir(parents=True, exist_ok=True)
         OUT.write_text(rx.dumps(rec))
